@@ -33,7 +33,7 @@ Enabled by default.
 EXTENSION_BUILD=true
 ```
 
-See also [OTA](#-ota).
+See also [OTA](#%EF%B8%8F-ota).
 
 ## ⏺️ Button
 
@@ -89,12 +89,12 @@ Smart-home integration.
 - [Home thermometer](Modes.md#home-thermometer)
 - [Infrared](#-infrared) on/off
 - [Message](#-message) notifications
-- [Microphone](#-microphone) on/off
-- [Playlist](#-playlist) start/stop
+- [Microphone](#%EF%B8%8F-microphone) on/off
+- [Playlist](#%EF%B8%8F-playlist) start/stop
 - [Ticker](Modes.md#ticker)
 - Various stats, control and debug data.
 
-Requires the [MQTT](#-mqtt) extension.
+Requires the [MQTT](#%EF%B8%8F-mqtt) extension.
 
 [secrets.h](../tree/main/firmware/include/config/secrets.h) example:
 
@@ -119,8 +119,8 @@ With an IR-receiver sensor, it's possible to use a remote control to control the
 - Power on/off
 - Brightness
 - [Mode](Modes.md)
-- [Microphone](#-microphone) on/off
-- [Playlist](#-playlist) start/stop
+- [Microphone](#%EF%B8%8F-microphone) on/off
+- [Playlist](#%EF%B8%8F-playlist) start/stop
 
 Currently supported:
 
@@ -283,13 +283,13 @@ Enabled by default.
 EXTENSION_OTA=true
 ```
 
-See also [Build](#-build).
+See also [Build](#%EF%B8%8F-build).
 
 ## ▶️ Playlist
 
 Set up a playlist of [Modes](Modes.md) that loops with a timer.
 
-Integrated into the [Button](#-button) extension, long-press button #2 to activate. Can also be controlled via the [Home Assistant](#-home-assistant) extension.
+Integrated into the [Button](#%EF%B8%8F-button) extension, long-press button #2 to activate. Can also be controlled via the [Home Assistant](#-home-assistant) extension.
 
 Enabled by default.
 
@@ -382,7 +382,7 @@ Enabled by default.
 EXTENSION_SIGNAL=true
 ```
 
-## 🗄️ Web app
+## 📱 Web app
 
 Handles the `webapp` user-interface located on the ESP32's *SPIFFS* partition.
 

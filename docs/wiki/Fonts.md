@@ -36,13 +36,13 @@ Included by default, but can be excluded by setting `FONT_SMALL` to `false`.
 
 Used by some clocks, currently only digits are supported.
 
-See also [Medium bold](#-medium-bold).
+See also [Medium bold](#🅱%EF%B8%8F-medium-bold).
 
 ## 🅱️ Medium bold
 
 Similar to the "regular" medium font, digits only.
 
-See also [Medium](#️-medium).
+See also [Medium](#%EF%B8%8F-medium).
 
 ## ⬆️ Large
 

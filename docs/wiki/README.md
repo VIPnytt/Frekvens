@@ -7,7 +7,7 @@ Check out the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#re
 - [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
 - [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
 - [Configuration](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-configuration)
-- [Upload](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-upload)
+- [Upload](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#%EF%B8%8F-upload)
 - [FAQ](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-faq)
 - [Troubleshooting](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-troubleshooting)
 

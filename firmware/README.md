@@ -1,4 +1,4 @@
-# Firmware
+# ⚙️ Firmware
 
 The [secrets.h](include/config/secrets.h) file is located in `firmware/include/config/secrets.h`.
 

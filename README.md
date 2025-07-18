@@ -34,7 +34,7 @@ The buttons can do more and the [mic](https://github.com/VIPnytt/Frekvens/wiki/M
 
 The general recommendation is to get a board with an `ESP32-S`-series chip, at the time of writing (2025) the latest model is an `ESP32-S3`. Any board will do but a compact board like eg. [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html) is enough in most cases. Both of these have 8 MB flash storage which might come in handy if there's ever a need to troubleshoot something in *debug mode*.
 
-For newcomers, it can be a bit challanging to derermine which wire needs to be connected to what pin, but since there's litterally hundreds of ESP32 different boards on the market, there won't be a single set to rule them all. Therefore the documentation will always points out what kind of pin should be used, so that it's easy to look up compatible pins on any board. If in doubt, just [ask](https://github.com/VIPnytt/Frekvens/discussions).
+For newcomers, it can be a bit challanging to derermine which wire needs to be connected to what pin, but since there's litterally hundreds of different ESP32 boards on the market, there won't be a single set to rule them all. Therefore the documentation will always points out what kind of pin should be used, so that it's easy to look up compatible pins on any board. If in doubt, just [ask](https://github.com/VIPnytt/Frekvens/discussions).
 
 ### ➕ Accessories
 
@@ -155,7 +155,7 @@ There's multiple weather providers available, common for them all is that they u
 #define LONGITUDE "0.000" // coordinate
 ```
 
-For more info, check out the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Services#-weather) section in the Wiki.
+For more info, check out the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Services#%EF%B8%8F-weather) section in the Wiki.
 
 ### 🎞️ Frame rate
 
@@ -214,19 +214,19 @@ For more info, check out the [OTA](https://github.com/VIPnytt/Frekvens/wiki/Exte
 
 While wired upload is recommended the very first time, existing devices with alternative firmware are in some cases able to migrate OTA via Wi-Fi.
 
-Follow the same instructions as for [OTA](#-over-the-air-updates) directly above, but swap out `upload_ota` with `upload_ota_migration` instead. This way there will be presented different upload options, wether your existing device uses `espota`, `ElegantOTA`/`AsyncElegantOTA` or `WiFiManager`.
+Follow the same instructions as for [OTA](#-over-the-air-updates) above, but swap out `upload_ota` with `upload_ota_migration` instead. This way there will be presented different upload options in the terminal, wether your existing device uses `espota`, `ElegantOTA`/`AsyncElegantOTA` or `WiFiManager`.
 
 Always upload the regular `firmware` first, if any of the two uploads fails, it just means you'll have to flash via USB as the partition scheme needs to be altered slightly to fit everything.
 
 ## 🏠 Smart-home integrations
 
-In theory, any custom smart-home system can be integrated using [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful), [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-mqtt) or [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket). However, when it comes to ready-made integrations that are easy to set up for end-users, these are currently two options:
+In theory, any custom smart-home system can be integrated using [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful), [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt) or [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket). However, when it comes to ready-made integrations that are easy to set up for end-users, these are currently two options:
 
 ### 🎙️ Alexa
 
 *[Amazon Alexa](https://www.amazon.com/b?node=9818047011)* users are able to switch on/off their device, as well as control the brightness, via app, voice or automations.
 
-For more info, check out the [Alexa](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-alexa) section in the Wiki.
+For more info, check out the [Alexa](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-alexa) section in the Wiki.
 
 ### 🤖 Home Assistant
 
@@ -239,7 +239,7 @@ For more info, check out the [Home Assistant](https://github.com/VIPnytt/Frekven
 There's three different API interfaces available, each suited for different applications, but they're all fully equipped, meaning any interface can do any command.
 
 - [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful)
-- [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-mqtt)
+- [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
 In addition to what's already available via the *web app* user-interface, there's even more features hiding under the surface, including a lot of meta data.
