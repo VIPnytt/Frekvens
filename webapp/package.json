@@ -1,0 +1,40 @@
+{
+    "name": "frekvens",
+    "version": "1.0.0",
+    "homepage": "https://github.com/VIPnytt/Frekvens",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/VIPnytt/Frekvens.git",
+        "directory": "webapp"
+    },
+    "license": "MIT",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "serve": "vite preview",
+        "start": "vite"
+    },
+    "dependencies": {
+        "@mdi/js": "^7.4.47",
+        "@solid-primitives/event-listener": "^2.3.3",
+        "@solid-primitives/intersection-observer": "^2.1.6",
+        "@solid-primitives/websocket": "^1.2.2",
+        "compare-versions": "^6.1.1",
+        "js-cookie": "^3.0.5",
+        "solid-js": "^1.9.4"
+    },
+    "devDependencies": {
+        "@types/js-cookie": "^3.0.6",
+        "@types/node": "^22.10.6",
+        "@types/offscreencanvas": "^2019.7.3",
+        "autoprefixer": "^10.4.21",
+        "tailwindcss": "^3.4.17",
+        "tailwindcss-animate": "^1.0.7",
+        "vite": "^6.0.7",
+        "vite-plugin-html": "^3.2.2",
+        "vite-plugin-singlefile": "^2.1.0",
+        "vite-plugin-solid": "^2.11.0"
+    },
+    "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321",
+    "private": true
+}

@@ -1,0 +1,94 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+jobs:
+  frekvens:
+    name: Frekvens build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+          node-version: 22
+
+      - run: |
+          cat <<EOL > include/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_IR 2
+          #define PIN_MIC 3
+          #define PIN_MOSI 4
+          #define PIN_EN 5
+          #define PIN_SCLK 6
+          #define PIN_SW1 7
+          #define PIN_SW2 8
+          EOL
+
+      - run: npm ci
+
+      - run: pio run
+
+  obegransad:
+    name: Obegränsad build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+          node-version: 22
+
+      - run: |
+          cat <<EOL > include/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_EN 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          EOL
+
+      - run: npm ci
+
+      - run: pio run

@@ -1,0 +1,25 @@
+{
+    "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
+    "name": "Frekvens",
+    "version": "1.0.0",
+    "homepage": "https://github.com/VIPnytt/Frekvens",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VIPnytt/Frekvens.git"
+    },
+    "frameworks": "arduino",
+    "platforms": "espressif32",
+    "dependencies": {
+        "256dpi/MQTT": "^2.5.2",
+        "bblanchon/ArduinoJson": "^7.4.1",
+        "crankyoldgit/IRremoteESP8266": "^2.8.6",
+        "ESP32Async/ESPAsyncWebServer": "^3.7.8",
+        "https://github.com/nayarsystems/posix_tz_db.git":"#fb5fa340cfa7599467358a347e5d6e6724d92bb2",
+        "makuna/RTC":"^2.5.0",
+        "vintlabs/FauxmoESP": "^3.4.1"
+    },
+    "build": {
+        "extraScript": "pre:./scripts/preBuild.py"
+    }
+}

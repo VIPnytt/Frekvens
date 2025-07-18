@@ -1,0 +1,138 @@
+#include "config/constants.h"
+
+#if EXTENSION_OTA
+
+#include "extensions/BuildExtension.h"
+#include "extensions/OtaExtension.h"
+#include "fonts/LargeFont.h"
+#include "handlers/TextHandler.h"
+#include "services/DeviceService.h"
+#include "services/DisplayService.h"
+#include "services/FontsService.h"
+#include "services/ModesService.h"
+#include "services/NetworkService.h"
+
+OtaExtension *Ota = nullptr;
+
+OtaExtension::OtaExtension() : ExtensionModule("OTA")
+{
+    Ota = this;
+}
+
+void OtaExtension::setup()
+{
+    ArduinoOTA.setHostname(HOSTNAME);
+    ArduinoOTA.setRebootOnSuccess(false);
+
+#ifdef OTA_KEY_HASH
+    ArduinoOTA.setPasswordHash(OTA_KEY_HASH);
+#elif defined(OTA_KEY)
+    ArduinoOTA.setPassword(OTA_KEY);
+#else
+    WebServer.http->on("/api/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
+#endif // OTA_KEY_HASH
+
+#ifdef MONITOR_SPEED
+    Update.onProgress(&onProgress);
+#endif
+
+    ArduinoOTA.begin();
+    ArduinoOTA.onStart(&onStart);
+    ArduinoOTA.onError(&onError);
+    ArduinoOTA.onEnd(&onEnd);
+
+    JsonDocument doc;
+
+#ifdef OTA_KEY_HASH
+    (*Build->config)[Config::h][__STRING(OTA_KEY_HASH)] = "REDACTED";
+#elif defined(OTA_KEY)
+    (*Build->config)[Config::h][__STRING(OTA_KEY)] = "REDACTED";
+#endif // OTA_KEY_HASH
+
+    doc["platformio.ini"]["upload_protocol"] = "espota";
+    doc["platformio.ini"]["upload_port"] = Network.domain;
+#if defined(OTA_KEY_HASH) || defined(OTA_KEY)
+    doc["platformio.ini"]["upload_flags"] = "--auth=REDACTED";
+#endif // defined(OTA_KEY_HASH) || defined(OTA_KEY)
+
+#if EXTENSION_BUILD
+    (*Build->config)[Config::pio]["upload_protocol"] = "espota";
+#ifdef OTA_KEY
+    (*Build->config)[Config::env][__STRING(OTA_KEY)] = "REDACTED";
+#elif defined(OTA_KEY_HASH)
+    (*Build->config)[Config::h][__STRING(OTA_KEY_HASH)] = "REDACTED";
+#endif // OTA_KEY
+#endif // EXTENSION_BUILD
+
+    Device.transmit(doc, name);
+}
+
+void OtaExtension::handle()
+{
+    ArduinoOTA.handle();
+}
+
+void OtaExtension::onStart()
+{
+    Modes.set(false, Ota->name);
+#ifdef F_INFO
+    Serial.print(Ota->name);
+    Serial.println(": updating");
+#endif
+    Display.clear();
+    TextHandler("U", FontLarge).draw();
+    timerAlarmWrite(Display.timer, 1000000U / (1U << 8), true); // 1 fps
+}
+
+void OtaExtension::onEnd()
+{
+#ifdef F_INFO
+    Serial.print(Ota->name);
+    Serial.println(": complete");
+#endif
+    Device.power(true);
+}
+
+void OtaExtension::onError(ota_error_t error)
+{
+#ifdef F_INFO
+    Serial.print(Ota->name);
+    Serial.print(": ");
+    Serial.println(Update.errorString());
+#endif
+    Device.power(true);
+}
+
+#ifdef MONITOR_SPEED
+void OtaExtension::onProgress(size_t index, size_t len)
+{
+    Serial.print(Ota->name);
+    Serial.print(": writing @ 0x");
+    Serial.println(index, HEX);
+}
+#endif
+
+void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+{
+    if (!index)
+    {
+        onStart();
+    }
+    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("spiffs") >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
+    {
+#ifdef F_INFO
+        Serial.print(Ota->name);
+        Serial.print(": ");
+        Serial.println(Update.errorString());
+#endif
+        request->send(500); // Internal Server Error
+        Device.power(true);
+    }
+    else if (final)
+    {
+        request->send(204); // No Content
+        onEnd();
+    }
+}
+
+#endif // EXTENSION_OTA

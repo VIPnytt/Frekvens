@@ -1,0 +1,25 @@
+name: 'Close stale issues and PRs'
+
+on:
+  schedule:
+    - cron: '0 6 * * 2'
+
+env:
+  DAYS_BEFORE_ISSUE_STALE: 60
+  DAYS_BEFORE_ISSUE_CLOSE: 30
+  DAYS_BEFORE_PR_STALE: 90
+  DAYS_BEFORE_PR_CLOSE: 30
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          stale-issue-message: There hasn't been any activity on this issue recently. This issue has been automatically marked as stale because of that and will be closed if no further activity occurs.
+          days-before-issue-stale: ${{ env.DAYS_BEFORE_ISSUE_STALE }}
+          days-before-issue-close: ${{ env.DAYS_BEFORE_ISSUE_CLOSE }}
+          stale-pr-message: There hasn't been any activity on this pull request recently. This pull request has been automatically marked as stale because of that and will be closed if no further activity occurs.
+          close-pr-message: This pull request has been stale for a long time and is being automatically closed because of that. Feel free to open it again if this is still relevant.
+          days-before-pr-stale: ${{ env.DAYS_BEFORE_PR_STALE }}
+          days-before-pr-close: ${{ env.DAYS_BEFORE_PR_CLOSE }}
