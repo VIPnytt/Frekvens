@@ -37,16 +37,15 @@ jobs:
           node-version: 22
 
       - run: |
-          cat <<EOL > include/secrets.h
+          cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
-          #define PIN_IR 2
+          #define PIN_EN 2
           #define PIN_MIC 3
           #define PIN_MOSI 4
-          #define PIN_EN 5
-          #define PIN_SCLK 6
-          #define PIN_SW1 7
-          #define PIN_SW2 8
+          #define PIN_SCLK 5
+          #define PIN_SW1 6
+          #define PIN_SW2 7
           EOL
 
       - run: npm ci
@@ -80,11 +79,11 @@ jobs:
           node-version: 22
 
       - run: |
-          cat <<EOL > include/secrets.h
+          cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_EN 3
+          #define PIN_EN 2
+          #define PIN_MOSI 3
           #define PIN_SCLK 4
           #define PIN_SW2 5
           EOL
