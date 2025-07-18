@@ -39,7 +39,12 @@ jobs:
         with:
           cache: npm
           cache-dependency-path: webapp/package-lock.json
-          node-version: 22
+          node-version: 24
+
+      - run: |
+          cat <<EOL > .env
+          ENV_FREKVENS=''
+          EOL
 
       - run: |
           cat <<EOL > firmware/include/config/secrets.h
@@ -85,6 +90,11 @@ jobs:
           node-version: 22
 
       - run: |
+          cat <<EOL > .env
+          ENV_OBEGRANSAD=''
+          EOL
+
+      - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
@@ -92,6 +102,102 @@ jobs:
           #define PIN_MOSI 3
           #define PIN_SCLK 4
           #define PIN_SW2 5
+          EOL
+
+      - run: npm ci
+        working-directory: webapp
+
+      - run: pio run
+
+  custom:
+    name: Custom build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+          node-version: 22
+
+      - run: |
+          cat <<EOL > .env
+          DOMAIN='.home.arpa'
+          HOSTNAME='custom'
+          NAME='Custom'
+          OTA_KEY='secret'
+          TIME_ZONE_IANA='Etc/Universal'
+          EOL
+
+      - run: |
+          cat <<EOL > firmware/include/config/secrets.h
+          #pragma once
+          #define DNS1 "1.1.1.1"
+          #define DNS2 "8.8.8.8"
+          #define DNS3 "9.9.9.9"
+          #define F_DEBUG
+          #define F_INFO
+          #define F_VERBOSE
+          #define FRAME_RATE 60
+          #define HOMEASSISTANT_ENTITY "weather.forecast_home"
+          #define HOMEASSISTANT_HOST "homeassistant.local"
+          #define HOMEASSISTANT_KEY "secret"
+          #define HOMEASSISTANT_PORT 8123
+          #define HOMEASSISTANT_TOPIC "homeassistant"
+          #define HOMETHERMOMETER_UNIT "°C"
+          #define LATITUDE "0.000"
+          #define LOCATION "city"
+          #define LONGITUDE "0.000"
+          #define MIC_FLOOR 0
+          #define MQTT_HOST "mqtt.local"
+          #define MQTT_PORT 1883
+          #define MQTT_USER "user"
+          #define MQTT_KEY "secret"
+          #define NTP1 "pool.ntp.org"
+          #define NTP2 "time.nist.gov"
+          #define NTP3 "time.cloudflare.com"
+          #define OPENMETRO_KEY "secret"
+          #define OPENMETRO_PARAMETERS "temperature_unit=celsius"
+          #define OPENWEATHER_KEY "secret"
+          #define OPENWEATHER_PARAMETERS "units=metric"
+          #define PIN_CS 1
+          #define PIN_EN 2
+          #define PIN_INT 3
+          #define PIN_IR 4
+          #define PIN_MISO 5
+          #define PIN_MOSI 6
+          #define PIN_SCL 7
+          #define PIN_SCLK 8
+          #define PIN_SDA 9
+          #define PIN_SW1 10
+          #define PIN_SW2 11
+          #define RTC_DS3232
+          #define SPI_FREQUENCY 10000000
+          #define TASK_STACK_EXTENSIONS 8192
+          #define TASK_STACK_MODES 8192
+          #define WIFI_KEY "secret"
+          #define WIFI_KEY_HOTSPOT "secret"
+          #define WIFI_SSID "name"
+          #define WIFI_SSID_HOTSPOT "name"
+          #define WORLDWEATHERONLINE_KEY "secret"
+          #define WORLDWEATHERONLINE_PARAMETERS "foo=bar"
+          #define WTTRIN_PARAMETERS "m"
+          #define YR_PARAMETERS "altitude=123"
           EOL
 
       - run: npm ci

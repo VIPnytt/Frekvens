@@ -35,7 +35,8 @@ The default frame rate is 60 fps for most ESP32 variants (240 MHz). Depending on
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define FRAME_RATE 60 // fps
+#define FRAME_RATE 50 // fps
+#define SPI_FREQUENCY 10000000 // Hz
 ```
 
 ## 🌐 Network
