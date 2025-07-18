@@ -4,7 +4,7 @@ Even if Frekvens was designed for [IKEA Frekvens](Frekvens) and [IKEA Obegränsa
 
 ## 💻 Resolution
 
-Most [modes](Modes) are designed for flexible display resolutions, the easiest way to getting started is to re-use the config of an existing device, eg. [IKEA Frekvens]([..](https://github.com/VIPnytt/Frekvens)/blob/main/firmware/include/config/Frekvens.h) or [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/Obegransad.h), but what's different.
+Most [modes](Modes) are designed for flexible display resolutions, the easiest way to getting started is to re-use the config of an existing device, eg. [IKEA Frekvens]([..](https://github.com/VIPnytt/Frekvens)/blob/main/firmware/include/config/Frekvens.h) or [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/Obegransad.h), but only change what's different.
 
 Example:
 

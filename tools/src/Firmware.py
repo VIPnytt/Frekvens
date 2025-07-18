@@ -45,7 +45,7 @@ class Firmware:
                 )
             elif option.upper() == "TIME_ZONE_IANA":
                 with open(
-                    f"{self.env['PROJECT_LIBDEPS_DIR']}\\{self.env['PIOENV']}\\posix_tz_db\\zones.json"
+                    f"{self.env['PROJECT_LIBDEPS_DIR']}/{self.env['PIOENV']}/posix_tz_db/zones.json"
                 ) as zones:
                     iana = json.load(zones)
                     if value in iana:
