@@ -67,7 +67,7 @@ export const MainSecondary: Component = () => {
                 <div class="space-y-2">
                     <p class="text-sm text-gray-700 mb-3">
                         <a
-                            href={`${REPOSITORY}/wiki/${ModesName}#${name.toLowerCase().replace(/\s+/g, '-')}`}
+                            href={`${REPOSITORY}/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, '-')}`}
                             target="_blank"
                         >
                             Get started by configuring your <span class="italic">smart-home system</span> to send temperature readings.

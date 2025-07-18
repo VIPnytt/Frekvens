@@ -1,6 +1,7 @@
 .env
 .pio
 .vscode
+__pycache__
 firmware/include/config/secrets.h
 webapp/dist
 webapp/node_modules

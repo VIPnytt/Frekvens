@@ -54,7 +54,7 @@ Use any *digital input* pin.
 
 Avoid **strapping** pins as this pin is pulled *HIGH* when idle.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_IR 1 // GPIO #

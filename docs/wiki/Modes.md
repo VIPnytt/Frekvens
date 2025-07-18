@@ -10,13 +10,13 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_ANIMATION=true
 ```
 
-There's a [Python script](../tree/main/tools/csvAnimationSplitter.py) available, to split exported animations into separate [drawings](#-draw)/frames/files. Exported animations can also be converted to full-fledged modes using the *Mode generator* [Python script](../tree/main/tools/csvModeGenerator.py).
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) available, to split exported animations into separate [drawings](#-draw)/frames/files. Exported animations can also be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py).
 
 See also [Draw](#-draw).
 
@@ -28,7 +28,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_ARROW=true
@@ -38,19 +38,19 @@ MODE_ARROW=true
 
 DMX over UDP/IP, stream in real-time over Wi-Fi.
 
-Python template [script](../tree/main/tools/artnetTemplate.py).
+Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/artnetTemplate.py).
 
 Client: `example.local:6454`
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_ARTNET=true
 ```
 
-There's a [Python script](../tree/main/tools/artnetTemplate.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/artnetTemplate.py) available, serving as a template for clients to connect.
 
 See also [Distributed Display Protocol](#-distributed-display-protocol) and [E1.31](#-e131).
 
@@ -60,7 +60,7 @@ Binary clock, counts seconds since midnight.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BINARYCLOCK=true
@@ -74,7 +74,7 @@ Binary clock, counts seconds since 1970.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BINARYEPOCH=true
@@ -88,7 +88,7 @@ Inspired by the original *IKEA Frekvens* mode.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BLINDS=true
@@ -102,7 +102,7 @@ Use it as an alarm.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BLINK=true
@@ -116,7 +116,7 @@ Clock.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BOLD=true
@@ -130,7 +130,7 @@ Inspired by the classic breakout game.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BREAKOUT=true
@@ -142,7 +142,7 @@ Use it as a lamp, if desired.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BRIGHT=true
@@ -158,7 +158,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_CIRCLE=true
@@ -192,7 +192,7 @@ API examples:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_COUNTDOWN=true
@@ -204,19 +204,19 @@ See also [Blink](#%EF%B8%8F-blink).
 
 Efficient Ethernet pixel data, stream in real-time over Wi-Fi.
 
-There's a [Python script](../tree/main/tools/ddpTemplate.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/ddpTemplate.py) available, serving as a template for clients to connect.
 
 Client: `example.local:4048`
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_DISTRIBUTEDDISPLAYPROTOCOL=true
 ```
 
-There's a [Python script](../tree/main/tools/csvAnimationSplitter.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) available, serving as a template for clients to connect.
 
 See also [Art-Net](#-art-net) and [E1.31](#-e131).
 
@@ -228,31 +228,31 @@ Use the *web app* to get started.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_DRAW=true
 ```
 
-Exported drawing can be converted to full-fledged modes using the *Mode generator* [Python script](../tree/main/tools/csvModeGenerator.py).
+Exported drawing can be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py).
 
 ## 💻 E1.31
 
 Streaming ACN, send DMX512 data over Wi-Fi.
 
-Python template [script](../tree/main/tools/e131Template.py).
+Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/e131Template.py).
 
 Client: `example.local:5568`
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_E131=true
 ```
 
-There's a [Python script](../tree/main/tools/e131Template.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/e131Template.py) available, serving as a template for clients to connect.
 
 See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-display-protocol).
 
@@ -264,7 +264,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_EQUALIZER=true
@@ -276,7 +276,7 @@ Happy new year.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_FIREWORK=true
@@ -288,7 +288,7 @@ Multiplayer fly-simulator.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_FLIES=true
@@ -300,7 +300,7 @@ Inspired by Conway's *Game of Life*.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_GAMEOFLIFE=true
@@ -314,7 +314,7 @@ Inspired by *Conway's Game of Life*
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_GAMEOFLIFECLOCK=true
@@ -328,7 +328,7 @@ Inspired by *snow* on old analog TVs.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_GLITTER=true
@@ -340,7 +340,7 @@ Smart-home integration
 
 Requires an [Long-lived access token](https://my.home-assistant.io/redirect/profile_security/), set using the `HOMEASSISTANT_KEY` variable. Other variables are optional.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define HOMEASSISTANT_KEY "[REDACTED]"
@@ -357,7 +357,7 @@ Requires an [Long-lived access token](https://my.home-assistant.io/redirect/prof
 
 Enabled by default when `HOMEASSISTANT_KEY` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_HOMEASSISTANT=true
@@ -382,7 +382,7 @@ API example:
 }
 ```
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define HOMETHERMOMETER_UNIT "°C"
@@ -390,7 +390,7 @@ API example:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_HOMETHERMOMETER=true
@@ -404,7 +404,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_JAGGEDWAVEFORM=true
@@ -418,7 +418,7 @@ Autumn-inspired.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_LEAFFALL=true
@@ -432,7 +432,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_LINES=true
@@ -446,7 +446,7 @@ Inspired by the original *IKEA Obegränsad* mode.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_NOISE=true
@@ -460,7 +460,7 @@ Updated every 15+ minutes, depending on location.
 
 Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set using the `OPENMETRO_KEY` variable. Other URL [parameters](https://open-meteo.com/en/docs#api_documentation) such as `temperature_unit` can be set using the `OPENMETRO_PARAMETERS` variable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define OPENMETRO_KEY "[REDACTED]"
@@ -472,7 +472,7 @@ Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set u
 
 Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_OPENMETRO=true
@@ -486,7 +486,7 @@ Updated every 10 minutes.
 
 Requires a [API-key](https://openweathermap.org/api), set using the `OPENWEATHER_KEY` variable. Other URL parameters from the [Current Weather Data](https://openweathermap.org/current) and [One Call](https://openweathermap.org/api/one-call-3) APIs such as `units` can be set using the `OPENWEATHER_PARAMETERS` variable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define OPENWEATHER_KEY "[REDACTED]"
@@ -498,7 +498,7 @@ Requires a [API-key](https://openweathermap.org/api), set using the `OPENWEATHER
 
 Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_OPENWEATHER=true
@@ -510,7 +510,7 @@ Inspired by the classic ping-pong game.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_PINGPONG=true
@@ -524,7 +524,7 @@ Inspired by the classic ping-pong game.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_PINGPONGCLOCK=true
@@ -540,7 +540,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_PIXELSEQUENCE=true
@@ -552,7 +552,7 @@ Inspired by the original *IKEA Obegränsad* mode.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_RAIN=true
@@ -566,7 +566,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_RING=true
@@ -582,7 +582,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_SCAN=true
@@ -596,7 +596,7 @@ Clock.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_SMALLCLOCK=true
@@ -612,7 +612,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_SMOOTHWAVEFORM=true
@@ -626,7 +626,7 @@ Inspired by the classic snake-game.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_SNAKE=true
@@ -640,7 +640,7 @@ Inspired by the classic snake-game.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_SNAKECLOCK=true
@@ -654,7 +654,7 @@ Inspired by the original *IKEA Obegränsad* mode.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_STARS=true
@@ -679,7 +679,7 @@ The `font` parameter is optional, if omitted, the last known value will be used.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_TICKER=true
@@ -693,7 +693,7 @@ Clock with a seconds indicator.
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_TICKINGCLOCK=true
@@ -707,7 +707,7 @@ The [Microphone](Extensions.md#microphone) extension can be used to play/pause t
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WAVEFORM=true
@@ -728,7 +728,7 @@ Order of precedence:
 
 Requires a [API-key](https://www.worldweatheronline.com/weather-api/api/docs/), set using the `WORLDWEATHERONLINE_KEY` variable. Other URL [parameters](https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx#http_param) can be set using the `WORLDWEATHERONLINE_PARAMETERS` variable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define WORLDWEATHERONLINE_KEY "[REDACTED]"
@@ -740,7 +740,7 @@ Requires a [API-key](https://www.worldweatheronline.com/weather-api/api/docs/), 
 
 Enabled by default when either `LATITUDE` and `LONGITUDE`, or `LOCATION` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WORLDWEATHERONLINE=true
@@ -760,7 +760,7 @@ Order of precedence:
 
 [URL parameters](https://wttr.in/:help) such as `m` and `u` can be set using the `WTTRIN_PARAMETERS` variable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define WTTRIN_PARAMETERS "m" // query
@@ -768,7 +768,7 @@ Order of precedence:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WTTRIN=true
@@ -782,7 +782,7 @@ Denmark, Finland, Norway and Sweeden uses [Nowcast](https://api.met.no/weatherap
 
 URL parameters such as `altitude` can be set using the `YR_PARAMETERS` variable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define YR_PARAMETERS "altitude=123" // query
@@ -790,7 +790,7 @@ URL parameters such as `altitude` can be set using the `YR_PARAMETERS` variable.
 
 Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_YR=true

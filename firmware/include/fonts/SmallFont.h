@@ -3,7 +3,7 @@
 #include "modules/FontModule.h"
 
 //
-// Font inspired by https://github.com/MakeMagazinDE/Obegraensad/tree/2db1badb62e37076ee96e34f3bbc1f490283d69b
+// Font inspired by https://github.com/MakeMagazinDE/Obegraensad
 //
 
 class SmallFont : public FontModule

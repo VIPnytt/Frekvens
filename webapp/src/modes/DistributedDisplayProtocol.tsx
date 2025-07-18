@@ -46,7 +46,7 @@ export const MainSecondary: Component = () => (
             <div class="space-y-2">
                 <p class="text-sm text-gray-500">
                     <a
-                        href={`${REPOSITORY}/wiki/${ModesName}#${name.toLowerCase().replace(/\s+/g, '-')}`}
+                        href={`${REPOSITORY}/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, '-')}`}
                         target="_blank"
                     >
                         <span class="font-medium text-gray-700">
@@ -64,7 +64,7 @@ export const MainSecondary: Component = () => (
                     </span>
                     &nbsp;
                     <a
-                        href={`${REPOSITORY}/tree/main/tools/ddpTemplate.py`}
+                        href={`${REPOSITORY}/blob/main/tools/scripts/ddpTemplate.py`}
                         target="_blank"
                     >
                         template script

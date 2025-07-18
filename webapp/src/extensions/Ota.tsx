@@ -135,7 +135,7 @@ export const MainThird: Component = () => {
                                         Got a&nbsp;
                                         <a
                                             class="italic"
-                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#${name.toLocaleLowerCase()}`}
+                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#-${name.toLocaleLowerCase()}`}
                                             target="_blank"
                                         >
                                             firmware.bin
@@ -143,7 +143,7 @@ export const MainThird: Component = () => {
                                         &nbsp;or&nbsp;
                                         <a
                                             class="italic"
-                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#${name.toLocaleLowerCase()}`}
+                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#-${name.toLocaleLowerCase()}`}
                                             target="_blank"
                                         >
                                             spiffs.bin

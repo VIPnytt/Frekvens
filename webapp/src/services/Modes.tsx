@@ -41,7 +41,7 @@ export const Main: Component = () => (
         fallback={
             <Center>
                 <a
-                    href={`${REPOSITORY}/wiki/${name}#${getMode()?.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`${REPOSITORY}/wiki/${name}#-${getMode()?.toLowerCase().replace(/\s+/g, '-')}`}
                     target="_blank"
                 >
                     <h2 class="text-4xl">{getMode()}</h2>
@@ -203,7 +203,7 @@ export const MainThird: Component = () => (
                                 return (
                                     <p class="text-gray-700 hover:font-semibold">
                                         <a
-                                            href={`${REPOSITORY}/wiki/${name}#${mode.toLowerCase().replace(/\s+/g, '-')}`}
+                                            href={`${REPOSITORY}/wiki/${name}#-${mode.toLowerCase().replace(/\s+/g, '-')}`}
                                             target="_blank"
                                         >
                                             {mode}
