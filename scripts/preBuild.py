@@ -14,6 +14,13 @@ from tools.src.WebApp import WebApp
 # Dump CLI targets
 # print(COMMAND_LINE_TARGETS)# type: ignore
 
+if env["PIOENV"] in [  # type: ignore
+    "upload_ota",
+    "upload_ota_migration",
+]:
+    print("Skipping environment:", env["PIOENV"])  # type: ignore
+    env.Exit(0)  # type: ignore
+
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["buildfs"],
     ["erase"],
