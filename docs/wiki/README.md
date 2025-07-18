@@ -2,14 +2,14 @@
 
 ## 🚀 Getting Started
 
-Check out the [README](../) for the most basic topics.
+Check out the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for the most basic topics.
 
-- [Features](../#-features)
-- [Hardware](../#-hardware)
-- [Configuration](../#-configuration)
-- [Upload](../#-upload)
-- [FAQ](../#-faq)
-- [Troubleshooting](../#-troubleshooting)
+- [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
+- [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
+- [Configuration](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-configuration)
+- [Upload](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-upload)
+- [FAQ](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-faq)
+- [Troubleshooting](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-troubleshooting)
 
 ## 💡 Devices
 
