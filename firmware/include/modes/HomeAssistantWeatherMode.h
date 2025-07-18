@@ -12,28 +12,22 @@
 class HomeAssistantWeatherMode : public ModeModule
 {
 private:
-#if defined(HOMEASSISTANT_HOST) && defined(HOMEASSISTANT_PORT)
-    static constexpr std::string_view authority = HOMEASSISTANT_HOST ":" HOMEASSISTANT_PORT;
-#elif defined(HOMEASSISTANT_HOST)
-    static constexpr std::string_view authority = HOMEASSISTANT_HOST ":8123";
-#elif defined(HOMEASSISTANT_PORT)
-    static constexpr std::string_view authority = "homeassistant.local:" HOMEASSISTANT_PORT;
-#else
-    static constexpr std::string_view authority = "homeassistant.local:8123";
-#endif // defined(HOMEASSISTANT_HOST) && defined(HOMEASSISTANT_PORT)
-
     unsigned long lastMillis = 0;
 
     // https://developers.home-assistant.io/docs/api/rest
     std::vector<std::string> urls = {
-        std::string("http://").append(authority).append("/api/states/weather.forecast_home"),
+#ifdef HOMEASSISTANT_PORT
+        std::string("http://").append(HOMEASSISTANT_HOST ":").append(std::to_string(HOMEASSISTANT_PORT)).append("/api/states/weather.forecast_home"),
 #ifdef HOMEASSISTANT_ENTITY
-        std::string("http://").append(authority).append("/api/states/" HOMEASSISTANT_ENTITY),
-#endif
-        std::string("https://").append(authority).append("/api/states/weather.forecast_home"),
+        std::string("http://").append(HOMEASSISTANT_HOST ":").append(std::to_string(HOMEASSISTANT_PORT)).append("/api/states/" HOMEASSISTANT_ENTITY),
+#endif // HOMEASSISTANT_ENTITY
+#else
+        std::string("http://").append(HOMEASSISTANT_HOST).append("/api/states/weather.forecast_home"),
 #ifdef HOMEASSISTANT_ENTITY
-        std::string("https://").append(authority).append("/api/states/" HOMEASSISTANT_ENTITY),
-#endif
+        std::string("http://").append(HOMEASSISTANT_HOST).append("/api/states/" HOMEASSISTANT_ENTITY),
+#endif // HOMEASSISTANT_ENTITY
+#endif // HOMEASSISTANT_PORT
+
     };
 
     // https://www.home-assistant.io/integrations/weather/#condition-mapping
