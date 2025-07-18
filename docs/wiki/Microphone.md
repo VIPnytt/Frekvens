@@ -35,7 +35,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 
 Use any *analog input* pin.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MIC 1 // GPIO #

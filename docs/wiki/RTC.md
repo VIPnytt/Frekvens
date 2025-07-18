@@ -153,7 +153,7 @@ Most RTC-modules are 3.3 V compatible, but if 5 V logic is desired, the easiest 
 
 Use any *I2C `SCL`* pin.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SCL 1 // GPIO #
@@ -163,7 +163,7 @@ Use any *I2C `SCL`* pin.
 
 Use any *I2C `SDA`* pin.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SDA 2 // GPIO #
@@ -175,7 +175,7 @@ Use any *SPI `SCLK`* pin.
 
 The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SCLK2 3 // GPIO #
@@ -187,7 +187,7 @@ Use any *SPI `MISO`* pin.
 
 The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MISO2 4 // GPIO #
@@ -199,7 +199,7 @@ Use any *SPI `MOSI`* pin.
 
 The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MOSI2 5 // GPIO #
@@ -211,7 +211,7 @@ Use any *digital output* pin. *First generation ESP32 boards may have specialize
 
 Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_CS2 6 // GPIO #
@@ -223,7 +223,7 @@ Use any *SPI `MISO`* pin.
 
 The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SDIO2 7 // GPIO #
@@ -235,7 +235,7 @@ Optional to connect.
 
 Use any *Digital input* pin that is also RTC-capable.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_INT 8 // GPIO #
@@ -251,7 +251,7 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 
 ### 🕑 DS1302
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_DS1302
@@ -267,7 +267,7 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 
 Logic level shifter required.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_DS1307
@@ -280,7 +280,7 @@ Logic level shifter required.
 
 ### 🕐 DS3231
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_DS3231
@@ -292,7 +292,7 @@ Logic level shifter required.
 
 ### 🕑 DS3232
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_DS3232
@@ -304,7 +304,7 @@ Logic level shifter required.
 
 ### 🕓 DS3234
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_DS3234
@@ -320,7 +320,7 @@ Logic level shifter required.
 
 ### 🕒 PCF8563
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define RTC_PCF8563

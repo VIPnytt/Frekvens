@@ -48,7 +48,7 @@ If desired, extra hardware can be added:
 
 ### 🧵 Wiring
 
-Both [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) have dedicated setup guides explaining everything in detail, but essentially everything you'll have to do is wiring up power, ground, SPI, button and optional accessories to the designated pads.
+Both [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) have dedicated setup guides explaining everything in detail, but essentially everything you'll have to do is wiring up power, ground, SPI, button(s) and optional accessories to the designated pins and pads.
 
 - [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens#-getting-started)
   - Remove the `U2` chip.
@@ -68,9 +68,9 @@ For those who prefer other alternatives, there's multiple download options at th
 
 ## 🏗️ PlatformIO
 
-You'll need to select your specific board model to be able to compile a working build. If your board isn't added to the [platformio.ini](tree/main/.env) config already, look it up in the [Boards](https://docs.platformio.org/en/stable/boards/index.html#espressif-32) section over at PlatformIO. Feel free to submit an PR for your board. This way test builds will run for your board too whenever changes are introduced.
+You'll need to select your specific board model to be able to compile a working build. If your board isn't added to the [platformio.ini](.env) config already, look it up in the [Boards](https://docs.platformio.org/en/stable/boards/index.html#espressif-32) section over at PlatformIO. Feel free to submit an PR for your board. This way test builds will run for your board too whenever changes are introduced.
 
-[platformio.ini](tree/main/platformio.ini) example:
+[platformio.ini](platformio.ini) example:
 
 ```ini
 [env:seeed_xiao_esp32s3]
@@ -81,13 +81,13 @@ board = seeed_xiao_esp32s3
 
 Almost all config options are optional, including most of the pins.
 
-There's different config files, depending on the scope of the variables. Some are shared between different parts of the project, and is therefore strategically placed in the [.env](tree/main/.env) file in the root directory. Other parts which are firmware specific, should be placed in the [firmware/include/config/secrets.h](tree/main/firmware/include/config/secrets.h) file.
+There's different config files, depending on the scope of the variables. Some are shared between different parts of the project, and is therefore strategically placed in the [.env](.env) file in the root directory. Other parts which are firmware specific, should be placed in the [firmware/include/config/secrets.h](firmware/include/config/secrets.h) file.
 
-While the [.env](tree/main/.env) file by default contains a full list of *shared* variables, the firmware equalent [secrets.h](tree/main/firmware/include/config/secrets.h) file is empty. This is due to the extensive list of optional variables, where many needs some sort of explanation for what they do. Therefore it's best to check out the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for options instead.
+While the [.env](.env) file by default contains a full list of *shared* variables, the firmware equalent [secrets.h](firmware/include/config/secrets.h) file is empty. This is due to the extensive list of optional variables, where many needs some sort of explanation for what they do. Therefore it's best to check out the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for options instead.
 
 ### 📝 Template
 
-Depending on device type, the [.env](tree/main/.env) should contain one of these two:
+Depending on device type, the [.env](.env) should contain one of these two:
 
 ```ini
 # IKEA Frekvens
@@ -99,7 +99,7 @@ ENV_FREKVENS=''
 ENV_OBEGRANSAD=''
 ```
 
-In the [secrets.h](tree/main/firmware/include/config/secrets.h), define where everything is connected:
+In the [secrets.h](firmware/include/config/secrets.h), define where everything is connected:
 
 ```h
 #pragma once
@@ -120,7 +120,7 @@ In the [secrets.h](tree/main/firmware/include/config/secrets.h), define where ev
 
 ### 🌍 Time zone
 
-Set the time zone in the [.env](tree/main/.env) config file. It's expected to be in *IANA* format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`. [Lookup](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) your time zone if needed.
+Set the time zone in the [.env](.env) config file. It's expected to be in *IANA* format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`. [Lookup](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) your time zone if needed.
 
 ```ini
 # Time Zone
@@ -131,7 +131,7 @@ For more info, check out the [Time zone](https://github.com/VIPnytt/Frekvens/wik
 
 ### 📶 Wi-Fi
 
-Wi-Fi credentials can both be configured via the [secrets.h](tree/main/firmware/include/config/secrets.h) config file, and at any time using the *web app* user-interface. Multiple Wi-Fi networks is supported.
+Wi-Fi credentials can both be configured via the [secrets.h](firmware/include/config/secrets.h) config file, and at any time using the *web app* user-interface. Multiple Wi-Fi networks is supported.
 
 If no Wi-Fi credentials is provided on first boot, the device will set up an Wi-Fi hotspot for configuration. This hotspot feature can also be activated later by holding any physical button on the device during startup. For security reasons, it won't activate if the Wi-Fi signal is lost or out of reach.
 
@@ -147,7 +147,7 @@ For more info, check out the [Wi-Fi](https://github.com/VIPnytt/Frekvens/wiki/Se
 
 There's multiple weather providers available, common for them all is that they use coordinates to derermine the closest location. Three decimals is usally sufficient.
 
-[secrets.h](tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](firmware/include/config/secrets.h) example:
 
 ```h
 // Weather (optional)
@@ -161,7 +161,7 @@ For more info, check out the [Weather](https://github.com/VIPnytt/Frekvens/wiki/
 
 The achievable frame rate depends on the SPI speed. Real-world factors like wiring layout, connection quality, and cable length can affect reliability and may require tuning for optimal performance.
 
-[secrets.h](tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](firmware/include/config/secrets.h) examples:
 
 ```h
 #define FRAME_RATE 60 // fps
@@ -190,7 +190,7 @@ Doing a *regular* "Upload" will upload the `firmware.bin` file only. The `webapp
 
 By extending your boards configuration with `env:upload_ota`, the upload will happen over Wi-Fi instead of USB.
 
-[platformio.ini](tree/main/platformio.ini) example:
+[platformio.ini](platformio.ini) example:
 
 ```ini
 extends = env:upload_ota
@@ -198,7 +198,7 @@ extends = env:upload_ota
 
 Make sure to set the correct *host*, or *IP address* in the `upload_port` option. If [password protection](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-ota) has been enabled using `OTA_KEY` or `OTA_KEY_HASH`, make sure also the password is specified in the `--auth` option of `upload_flags`.
 
-[platformio.ini](tree/main/platformio.ini) example:
+[platformio.ini](platformio.ini) example:
 
 ```ini
 upload_protocol = espota

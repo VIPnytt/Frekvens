@@ -77,7 +77,7 @@ export const MainThird: Component = () => (
             <Icon path={mdiPlaylistPlay} />
         </h2>
         <a
-            href={`${REPOSITORY}/wiki/${ModesName}#${name.toLowerCase()}`}
+            href={`${REPOSITORY}/wiki/${ModesName}#-${name.toLowerCase()}`}
             target="_blank"
         >
             <p class="text-xl mt-2 text-gray-300">

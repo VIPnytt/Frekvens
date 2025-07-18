@@ -185,7 +185,7 @@ Use any *SPI `SCLK`* pin.
 
 If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SCLK 1 // GPIO #
@@ -199,7 +199,7 @@ Use any *SPI `MISO`* pin.
 
 If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MISO 2 // GPIO #
@@ -213,7 +213,7 @@ Use any *SPI `MOSI`* pin.
 
 If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MOSI 3 // GPIO #
@@ -227,7 +227,7 @@ Use any *digital output* pin. *First generation ESP32 boards may have specialize
 
 Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_CS 4 // GPIO #
@@ -241,7 +241,7 @@ Use any *PWM output* pin.
 
 Avoid **strapping** pins as this pin is pulled *HIGH* using a resistor.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_EN 5 // GPIO #
@@ -255,7 +255,7 @@ Use any *digital input* pins, preferably those that are also RTC-capable, to all
 
 Avoid **strapping** pins as these is be pulled *LOW* when pressed.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SW1 6 // GPIO #
@@ -272,7 +272,7 @@ Use any *analog input* pin.
 
 Avoid **strapping** pins as this pin is biased.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MIC 8 // GPIO #
@@ -280,7 +280,7 @@ Avoid **strapping** pins as this pin is biased.
 
 ## 📝 Template
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 # Device type
@@ -293,7 +293,7 @@ NAME='Frekvens'
 TIME_ZONE_IANA='Etc/Universal'
 ```
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #pragma once

@@ -8,7 +8,7 @@ World's smallest font with just 2x3 pixels.
 
 Included by default, but can be excluded by setting `FONT_BRAILLE` to `false`.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define FONT_BRAILLE true // boolean
@@ -26,7 +26,7 @@ A good middleground, most characters are about 4x5 pixels.
 
 Included by default, but can be excluded by setting `FONT_SMALL` to `false`.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define FONT_SMALL true // boolean

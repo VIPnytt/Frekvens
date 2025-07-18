@@ -120,7 +120,7 @@ export const MainThird: Component = () => (
                                 return (
                                     <p class="text-gray-700 hover:font-semibold">
                                         <a
-                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#${extension.toLowerCase().replace(/\s+/g, '-')}`}
+                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#-${extension.toLowerCase().replace(/\s+/g, '-')}`}
                                             target="_blank"
                                         >
                                             {extension}

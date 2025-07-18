@@ -11,7 +11,7 @@ Use app, voice control, or automations based on eg. *time* or *presence* to:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_ALEXA=true
@@ -27,7 +27,7 @@ Providing a nice user-interface with details about every variable in the config 
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_BUILD=true
@@ -56,7 +56,7 @@ For devices with only 1 button:
 
 Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_SW1 1 // GPIO #
@@ -70,7 +70,7 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 
 Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_BUTTON=true
@@ -96,7 +96,7 @@ Smart-home integration.
 
 Requires the [MQTT](#%EF%B8%8F-mqtt) extension.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define HOMEASSISTANT_TOPIC "homeassistant"
@@ -104,7 +104,7 @@ Requires the [MQTT](#%EF%B8%8F-mqtt) extension.
 
 Enabled by default when the *[MQTT](#️-mqtt) extension* is enabled.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_HOMEASSISTANT=true
@@ -129,7 +129,7 @@ Currently supported:
 
 Use the *web app* to activate or deactivate this input method, it is also controllable via the [Home Assistant](#-home-assistant) extension.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_IR 3 // GPIO #
@@ -137,7 +137,7 @@ Use the *web app* to activate or deactivate this input method, it is also contro
 
 Enabled by default when `PIN_IR` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_INFRARED=true
@@ -167,7 +167,7 @@ The `font` and `repeat` parameters is optional, if omitted, the last known value
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MESSAGE=true
@@ -181,7 +181,7 @@ Many of the [modes](Modes.md) has the ability to react to sounds, eg. syncing an
 
 Use the *web app* to activate or deactivate this input method, it is also controllable via the [Home Assistant](#-home-assistant) extension.
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define PIN_MIC 4 // GPIO #
@@ -193,7 +193,7 @@ Use the *web app* to activate or deactivate this input method, it is also contro
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MICROPHONE=true
@@ -220,7 +220,7 @@ API message example:
 }
 ```
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define MQTT_HOST "example.local"
@@ -234,7 +234,7 @@ API message example:
 
 Enabled by default when `MQTT_HOST` is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MQTT=true
@@ -250,7 +250,7 @@ URL: `http://example.local/#/extensions/ota`
 
 Another option is directly from the IDE/editor via Wi-Fi using `espota`.
 
-[platformio.ini](../tree/main/platformio.ini) examples:
+[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) examples:
 
 ```ini
 upload_protocol = espota
@@ -263,13 +263,13 @@ upload_flags = --auth=REDACTED
 
 There's also optional password protection, which disables the ability to upload manually via the [web app](#️-web-app) user-interface.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 OTA_KEY='REDACTED'
 ```
 
-[secrets.h](../tree/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define OTA_KEY_HASH "REDACTED"
@@ -277,7 +277,7 @@ OTA_KEY='REDACTED'
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_OTA=true
@@ -293,7 +293,7 @@ Integrated into the [Button](#%EF%B8%8F-button) extension, long-press button #2 
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_PLAYLIST=true
@@ -320,7 +320,7 @@ API payload example:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_RESTFUL=true
@@ -332,7 +332,7 @@ Reliable clock, even without Wi-Fi connectivity.
 
 Enabled by default when a [supported](RTC#-supported-types) RTC-module is defined.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_RTC=true
@@ -376,7 +376,7 @@ The `duration` parameters is optional, if omitted, the last known value will be 
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_SIGNAL=true
@@ -393,7 +393,7 @@ Canonical host check:
 
 Enabled by default.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_WEBAPP=true
@@ -417,7 +417,7 @@ API message example:
 
 Enabled by default. It is also required for the frontend `webapp` user-interface to be functional.
 
-[.env](../tree/main/.env) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_WEBSOCKET=true
