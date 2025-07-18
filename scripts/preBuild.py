@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 Import("env")  # type: ignore
-sys.path.insert(0, env['PROJECT_DIR'])  # type: ignore
+sys.path.insert(0, env["PROJECT_DIR"])  # type: ignore
 subprocess.check_call(["pip", "install", "--quiet", "-r", "tools/requirements.txt"])
 
 from tools.src.Firmware import Firmware
@@ -18,7 +18,7 @@ if env["PIOENV"] in [  # type: ignore
     "upload_ota",
     "upload_ota_migration",
 ]:
-    print("Skipping environment:", env["PIOENV"])  # type: ignore
+    print(f"Skipping environment: {env['PIOENV']}")  # type: ignore
     env.Exit(0)  # type: ignore
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
