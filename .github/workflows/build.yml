@@ -49,6 +49,7 @@ jobs:
           EOL
 
       - run: npm ci
+        working-directory: webapp
 
       - run: pio run
 
@@ -89,5 +90,6 @@ jobs:
           EOL
 
       - run: npm ci
+        working-directory: webapp
 
       - run: pio run

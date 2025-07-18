@@ -4,23 +4,23 @@
 
 ## Animation splitter
 
-Python script to split [animation](../../wiki/Modes#-animation)s into separate [drawings](../../wiki/Modes#-draw)/frames/files.
+Python script to split [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) into separate [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw)/frames/files.
 
 ## Art-Net
 
-Python template script to test the [Art-Net](../../wiki/Modes#-art-net) mode.
+Python template script to test the [Art-Net](https://github.com/VIPnytt/Frekvens/wiki/Modes#art-net) mode.
 
 ## Distributed Display Protocol
 
-Python template script to test the [Distributed Display Protocol](../../wiki/Modes#-distributed-display-protocol) mode.
+Python template script to test the [Distributed Display Protocol](https://github.com/VIPnytt/Frekvens/wiki/Modes#-distributed-display-protocol) mode.
 
 ## E1.31
 
-Python template script to test the [E1.31](../../wiki/Modes#-e131) mode.
+Python template script to test the [E1.31](https://github.com/VIPnytt/Frekvens/wiki/Modes#-e131) mode.
 
 ## Mode generator
 
-Python script to convert [animation](../../wiki/Modes#-animation)s and [draw](../../wiki/Modes#-draw)ings into full-fledged modes.
+Python script to convert [animation](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation)s and [draw](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw)ings into full-fledged modes.
 
 1. Execute the script.
 2. Compile/upload.
