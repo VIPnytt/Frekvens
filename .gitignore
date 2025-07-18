@@ -1,0 +1,6 @@
+.env
+.pio
+.vscode/*
+firmware/include/config/secrets.h
+webapp/dist
+webapp/node_modules
