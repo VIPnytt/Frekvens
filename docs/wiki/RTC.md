@@ -11,7 +11,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 - [DS3234](https://www.sparkfun.com/sparkfun-deadon-rtc-breakout-ds3234.html)
 - [PCF8563](https://www.waveshare.com/PCF8563-RTC-Board.htm)
 
-**Note:** [DS1307](#-ds1307) operates at 5 V only, and will therefore require an [logic level shifter](#-logic-level-shifter).
+**Note:** [DS1307](#-ds1307) operates at 5 V only, and will therefore require an [logic level shifter](#%EF%B8%8F-logic-level-shifter).
 
 ## 📈 Schematics
 

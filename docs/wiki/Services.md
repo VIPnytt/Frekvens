@@ -199,4 +199,4 @@ The hotspot will be activated automatically if no Wi-Fi credentials is configure
 #define WIFI_KEY_HOTSPOT "[REDACTED]"
 ```
 
-See also [Button](Extensions.md#️-button) extension.
+See also [Button](Extensions.md#%EF%B8%8F-button) extension.

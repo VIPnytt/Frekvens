@@ -2,7 +2,7 @@
 
 - [Schematics](#-schematics)
 - [Getting started](#-getting-started)
-- [Logic level shifter](#️-logic-level-shifter)
+- [Logic level shifter](#%EF%B8%8F-logic-level-shifter)
 - [Hardware considerations](#️-hardware-considerations)
 - [Configuration](#-configuration)
 - [Template](#-template)
@@ -106,7 +106,7 @@ The first thing to do is removing the chip labeled `U1`, as this is the core han
 
 ### 🧵 Wiring the LED panels
 
-Next up is attaching the ESP32, via the [logic level shifter](#️-logic-level-shifter). There's two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There's two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
 
 **Note:** *the LED panels are rotated 180° compared to the device's natural orientation.*
 
@@ -189,7 +189,7 @@ The capacitors will help prevent timing issues, as well as minimize noise from t
 
 ### 🕒 SPI SCLK
 
-[Logic level shifter](#️-logic-level-shifter) required.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Use any *SPI `SCLK`* pin.
 
@@ -203,7 +203,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 ### ⬇️ SPI MISO
 
-Optional to connect, but if so, an [logic level shifter](#️-logic-level-shifter) is required.
+Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
 Use any *SPI `MISO`* pin.
 
@@ -217,7 +217,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 ### ⬆️ SPI MOSI
 
-[Logic level shifter](#️-logic-level-shifter) required.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Use any *SPI `MOSI`* pin.
 
@@ -231,7 +231,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 ### 🛡️ SPI CS
 
-[Logic level shifter](#️-logic-level-shifter) required.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
 
@@ -245,7 +245,7 @@ Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 
 ### ✅ Enable
 
-[Logic level shifter](#️-logic-level-shifter) required.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Use any *PWM output* pin.
 

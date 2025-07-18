@@ -34,7 +34,7 @@ Enabled by default.
 MODE_ARROW=true
 ```
 
-## 💻Art-net
+## 💻 Art-net
 
 DMX over UDP/IP, stream in real-time over Wi-Fi.
 
@@ -66,7 +66,7 @@ Enabled by default.
 MODE_BINARYCLOCK=true
 ```
 
-See also [Binary epoch](#-binary-epoch).
+See also [Binary epoch](#1%EF%B8%8F⃣-binary-epoch).
 
 ## 1️⃣ Binary epoch
 
@@ -80,7 +80,7 @@ Enabled by default.
 MODE_BINARYEPOCH=true
 ```
 
-See also [Binary clock](#-binary-clock).
+See also [Binary clock](#0%EF%B8%8F⃣-binary-clock).
 
 ## 🪟 Blinds
 
@@ -122,7 +122,7 @@ Enabled by default.
 MODE_BOLD=true
 ```
 
-See also [Small clock](#-small-clock).
+See also [Small clock](#%EF%B8%8F-small-clock).
 
 ## 💥 Breakout clock
 
@@ -148,7 +148,7 @@ Enabled by default.
 MODE_BRIGHT=true
 ```
 
-See also [Blink](#-blink).
+See also [Blink](#%EF%B8%8F-blink).
 
 ## ⚪ Circle
 
@@ -198,7 +198,7 @@ Enabled by default.
 MODE_COUNTDOWN=true
 ```
 
-See also [Blink](#-blink).
+See also [Blink](#%EF%B8%8F-blink).
 
 ## 💻 Distributed Display Protocol
 
@@ -410,7 +410,7 @@ Enabled by default.
 MODE_JAGGEDWAVEFORM=true
 ```
 
-See also [Smooth waveform](#-smooth-waveform) and [Waveform](#-waveform).
+See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
 
 ## 🍂 Leaf fall
 
@@ -602,7 +602,7 @@ Enabled by default.
 MODE_SMALLCLOCK=true
 ```
 
-See also [Bold clock](#-bold-clock).
+See also [Bold clock](#%EF%B8%8F-bold-clock).
 
 ## 〰️ Smooth waveform
 
@@ -632,7 +632,7 @@ Enabled by default.
 MODE_SNAKE=true
 ```
 
-See also [Snake clock](#-snake-clock).
+See also [Snake clock](#%EF%B8%8F-snake-clock).
 
 ## 🕰️ Snake clock
 

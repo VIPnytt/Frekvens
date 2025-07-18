@@ -1,4 +1,4 @@
-# Scripts
+# ⚙️ Scripts
 
 ## `preBuild.py`
 
