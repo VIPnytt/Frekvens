@@ -23,7 +23,7 @@ void DisplayService::setup()
 #ifdef PIN_MISO
     SPI.begin(PIN_SCLK, PIN_MISO, PIN_MOSI, PIN_CS);
 #else
-    SPI.begin(PIN_SCLK, -1, PIN_MOSI, PIN_CS);
+    SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
 #ifdef SPI_FREQUENCY
     SPI.beginTransaction(SPISettings(SPI_FREQUENCY, MSBFIRST, SPI_MODE0));
