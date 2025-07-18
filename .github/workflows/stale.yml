@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: '0 6 * * 2'
 
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  issues: write
+  pull-requests: write
+
 env:
   DAYS_BEFORE_ISSUE_STALE: 60
   DAYS_BEFORE_ISSUE_CLOSE: 30

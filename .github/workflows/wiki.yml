@@ -6,6 +6,7 @@ on:
     paths:
       - docs/wiki/**
       - .github/workflows/wiki.yml
+
   workflow_dispatch:
 
 concurrency:

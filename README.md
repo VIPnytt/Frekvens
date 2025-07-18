@@ -276,4 +276,4 @@ If the display otherwise is looking normal, try increasing the [frame rate](http
 
 The [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) draws approximately 2.0 A @ 5 V when idling and fully illuminated at maximum brightness. Ensure that the USB power supply can deliver at least 10 W of continuous power.
 
-If you're got error messages in the terminal, feel free to create a [issue](issues/new) about it.
+If you're got error messages in the terminal, feel free to create a [issue](https://github.com/VIPnytt/Frekvens/issues) about it.
