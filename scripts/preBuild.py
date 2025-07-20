@@ -4,6 +4,7 @@ import sys
 
 Import("env")  # type: ignore
 sys.path.insert(0, env["PROJECT_DIR"])  # type: ignore
+env.Execute(f"cd tools && pip install --quiet .")  # type: ignore
 
 from tools.src.Firmware import Firmware
 from tools.src.Tools import Tools

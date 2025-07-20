@@ -1,50 +1,12 @@
 import dotenv
-import importlib.metadata
 import json
 import re
-import subprocess
-import sys
+
 
 
 class Tools:
     def __init__(self, env):
         self.env = env
-        self.check()
-
-    def check(self):
-        requirements_txt_path = "tools/requirements.txt"
-
-        with open(requirements_txt_path) as txt:
-
-            for requirement in txt:
-
-                requirement = requirement.strip()
-                if not requirement or requirement.startswith("#"):
-                    continue
-                package = (
-                    requirement.split(";")[0]
-                    .split("==")[0]
-                    .split(">=")[0]
-                    .split("<=")[0]
-                    .split(">")[0]
-                    .split("<")[0]
-                    .strip()
-                )
-                if package:
-                    try:
-                        importlib.metadata.version(package)
-                    except importlib.metadata.PackageNotFoundError:
-                        subprocess.check_call(
-                            [
-                                sys.executable,
-                                "-m",
-                                "pip",
-                                "install",
-                                "--quiet",
-                                "-r",
-                                requirements_txt_path,
-                            ]
-                        )
 
     def environment(self):
         env_py_path = "tools/.env"
@@ -79,7 +41,8 @@ class Tools:
             print(env_py_path)
 
     def version(self):
-        with open("library.json") as pio, open("tools/project.toml", "r+") as toml:
+        config = "tools/pyproject.toml"
+        with open("library.json") as pio, open(config, "r+") as toml:
             library = json.load(pio)
             if "version" in library:
                 lines = toml.readlines()
@@ -91,5 +54,5 @@ class Tools:
                         lines[i] = f'version = "{library["version"]}"\n'
                         toml.seek(0)
                         toml.writelines(lines)
-                        print("tools/project.toml")
+                        print(config)
                         break
