@@ -90,7 +90,7 @@ Some additional Python packages are needed, most notabily `python-dotenv` which 
 To install all dependencies, run the following command from the IDE terminal:
 
 ```bash
-pip install -r tools/requirements.txt
+pip install ./tools
 ```
 
 ## 🏗️ Configuration

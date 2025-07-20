@@ -7,15 +7,11 @@ import re
 import subprocess
 import sys
 
-from tools.src.Tools import Tools
-
 
 class WebApp:
     def __init__(self, env):
         self.env = env
         self.check()
-        tools = Tools(env)  # type: ignore
-        tools.check()
 
     def build(self):
         with open("library.json") as pio, open("webapp/package.json") as npm, open(

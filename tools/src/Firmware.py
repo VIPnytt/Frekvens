@@ -7,14 +7,11 @@ import os
 
 from tools.src.config import Frekvens
 from tools.src.config import Obegransad
-from tools.src.Tools import Tools
 
 
 class Firmware:
     def __init__(self, env):
         self.env = env
-        tools = Tools(env)  # type: ignore
-        tools.check()
 
     def define(self):
         env_pio = dotenv.dotenv_values(".env")
