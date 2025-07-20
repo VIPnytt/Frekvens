@@ -8,7 +8,7 @@
 class BreakoutClockMode : public ModeModule
 {
 private:
-    static constexpr float speed = 0.009;
+    static constexpr float speed = 0.0007 * ROWS;
 
     double
         xDec,
@@ -20,7 +20,7 @@ private:
 
     uint8_t
         hour,
-        min,
+        minute,
         x,
         y;
 

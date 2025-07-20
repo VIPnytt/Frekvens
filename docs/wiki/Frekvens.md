@@ -1,15 +1,8 @@
 # 💡 IKEA Frekvens
 
-- [Schematics](#-schematics)
-- [Getting started](#-getting-started)
-- [Logic level shifter](#%EF%B8%8F-logic-level-shifter)
-- [Hardware considerations](#️-hardware-considerations)
-- [Configuration](#-configuration)
-- [Template](#-template)
-
 ## 📈 Schematics
 
-### 💡 LED panel schema
+### LED panel schema
 
 ```text
              ┌────────────────────── SPI CS
@@ -37,7 +30,7 @@
              └────────────────────── SPI MISO
 ```
 
-### ⏺️ Buttons schema
+### Buttons schema
 
 ```text
 ┌────────────┐
@@ -48,7 +41,7 @@
    └─────────── 0 V DC
 ```
 
-### ⚡ Power supply schema
+### Power supply schema
 
 ```text
               ┌──────┐
@@ -57,7 +50,7 @@
               └──────┘
 ```
 
-### 🧠 ESP32 schema
+### ESP32 schema
 
 ```text
 ┌────────────────┐
@@ -80,7 +73,7 @@
 └────────────────┘
 ```
 
-### ↔️ Logic level shifter schema
+### Logic level shifter schema
 
 ```text
    0 V DC ────────┬──────── 0 V DC
@@ -97,34 +90,34 @@
 
 ## 🚀 Getting started
 
-### 🛠️ Opening up
+### Opening up
 
 After removing the 4 screws and opening the back panel, there's eight nuts hidden behind the white adhesive. Once those are removed too, everything slides out nicely.
 
-### ⏺️ Disconnect the buttons
+### Disconnect the buttons
 
 The next step is to disconnect the buttons from the green PCB, `SW1`, `SW2` and `COM`.
 
-### ✂️ Removing the `U2` chip
+### Removing the `U2` chip
 
 This step can be a bit challanging, removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is the core handling the mic and button inputs as well as the display output.
 
 Alternatively, if the microphone functionality isn't necessary, just remove the green PCB from whe white PCB altogether. The green PCB is only needed for the microphone, and can be re-soldered back on later, if desired.
 
-### 🎙️ Wiring the microphone
+### Wiring the microphone
 
 For the microphone to be functional, connect a wire from the [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier labeled `U3` pin 7 to an analog input on the ESP32.
 Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` now is removed, it might be easier to connect to `U2` pad 11 instead. It's internally connected to `U3` pin 7 via traces on the PCB.
 
-### 🚫 The missing IR-receiver
+### The missing IR-receiver
 
 When it comes to the IR-pad, it's worth noting that *IKEA Frekvens* never shipped with an IR-receiver sensor, so this pad has no function.
 
-### 🧵 Wiring the LED panel
+### Wiring the LED panel
 
 Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There's two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left where two of the left-most pads will be blocked by the chassis.
 
-### ⏺️ Connecting the button
+### Connecting the button
 
 The last step is to connect the buttons, `SW` and `SW1` both connects to separate pins on ESP32, while the third `COM` connects to ground.
 
@@ -138,13 +131,13 @@ The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_da
 
 It is considered best practice to keep all logic signals at a consistent voltage level within each interface. Therefore, it is recommended to use a logic level shifter on all relevant signal lines, even if not strictly required.
 
-**Note:** *While there are reports suggesting that these devices can work together without level shifting, this is strongly discouraged. Exceeding the [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)’s voltage ratings may result in unpredictable behavior or permanent damage to the microcontroller.*
+> While there are reports suggesting that these devices can work together without level shifting, this is strongly discouraged. Exceeding the [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)’s voltage ratings may result in unpredictable behavior or permanent damage to the microcontroller.
 
 ## 🛠️ Hardware considerations
 
 The *IKEA Frekvens* hardware isn't perfect, but for there's room for improvements for those who desire.
 
-### 🔋 Capacitors
+### Capacitors
 
 For dimming of the display, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) datasheet suggests adding an additional *"4.7 µF or more"* depending on the LED load current (~2.78 mA/output), for every chip. With 16 chips in total, that's a minimum of 75.2 µF. The same datasheet also recommends adding *"greater than 10 µF"* besides the LEDs, bringing the total up to 85.2 µF.
 
@@ -169,15 +162,15 @@ The capacitors mentioned aren't present on the PCB, but will help prevent timing
 | `SW`        |                     | Digital input  | Button 2   | `PIN_SW2`  |
 | `U3` pin 7  |                     | Analog input   | Microphone | `PIN_MIC`  |
 
-### ⚡ Power and ground
+### Power and ground
 
 - `DC+` and `DC-` is intended to supply high current to the LEDs.
 - `VCC` and `GND` is intended as outputs for low current components handling the logic.
 - Both are tied together internally on the PCB.
 
-**Note:** *To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.*
+> To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.
 
-### 🕒 SPI SCLK
+### SPI SCLK
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
@@ -191,7 +184,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 #define PIN_SCLK 1 // GPIO #
 ```
 
-### ⬇️ SPI MISO
+### SPI MISO
 
 Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
@@ -205,7 +198,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 #define PIN_MISO 2 // GPIO #
 ```
 
-### ⬆️ SPI MOSI
+### SPI MOSI
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
@@ -219,7 +212,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 #define PIN_MOSI 3 // GPIO #
 ```
 
-### 🛡️ SPI CS
+### SPI CS
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
@@ -233,7 +226,7 @@ Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 #define PIN_CS 4 // GPIO #
 ```
 
-### ✅ Enable
+### Enable
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
@@ -247,7 +240,7 @@ Avoid **strapping** pins as this pin is pulled *HIGH* using a resistor.
 #define PIN_EN 5 // GPIO #
 ```
 
-### ⏺️ Buttons
+### Buttons
 
 Optional to connect.
 
@@ -262,9 +255,9 @@ Avoid **strapping** pins as these is be pulled *LOW* when pressed.
 #define PIN_SW2 7 // GPIO #
 ```
 
-**Note:** `COM` must be connected to `GND`.
+> `COM` must be connected to ground.
 
-### 🎙️ Microphone
+### Microphone
 
 Optional to connect.
 

@@ -1,3 +1,4 @@
+#include <HTTPClient.h>
 #include <WiFi.h>
 
 #include "services/NetworkService.h"
@@ -14,14 +15,14 @@ void WebServerService::onOptionsCanonical(AsyncWebServerRequest *request)
 {
     if (std::string_view(request->host().c_str()) == Network.domain)
     {
-        AsyncWebServerResponse *response = request->beginResponse(204); // No Content
+        AsyncWebServerResponse *response = request->beginResponse(t_http_codes::HTTP_CODE_NO_CONTENT);
         response->addHeader("Access-Control-Allow-Methods", "OPTIONS");
         response->addHeader("Access-Control-Allow-Origin", "*");
         request->send(response);
     }
     else
     {
-        request->redirect(std::string("http://").append(Network.domain).append("/canonical").c_str()); // Found
+        request->redirect(std::string("http://").append(Network.domain).append("/canonical").c_str(), t_http_codes::HTTP_CODE_FOUND);
     }
 }
 
@@ -33,7 +34,7 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
         Serial.print(WebServer.name);
         Serial.println(": redirecting");
 #endif
-        request->redirect("http://" + WiFi.softAPIP().toString()); // Found
+        request->redirect("http://" + WiFi.softAPIP().toString(), t_http_codes::HTTP_CODE_FOUND);
     }
     else
     {
@@ -44,7 +45,7 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
         Serial.print(" ");
         Serial.println(request->url());
 #endif
-        request->send(404); // Not Found
+        request->send(t_http_codes::HTTP_CODE_NOT_FOUND);
     }
 }
 

@@ -177,8 +177,6 @@ void ModesService::setup()
         component[Abbreviations::device_class] = "data_size";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
-        component[Abbreviations::force_update] = true;
         component[Abbreviations::icon] = "mdi:memory";
         component[Abbreviations::name] = std::string(name).append(" stack");
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
@@ -307,39 +305,44 @@ void ModesService::splash()
 #endif
         Display.setPower(true);
     }
-    String text = active->name;
-    std::transform(text.begin(), text.end(), text.begin(), ::toupper);
-    std::vector<String> lines = {""};
+    String _name = active->name;
+    std::transform(_name.begin(), _name.end(), _name.begin(), toupper);
+    std::vector<String> chunks = {""};
     uint8_t line = 0;
-    for (uint8_t charIndex = 0; charIndex < text.length(); ++charIndex)
+    for (uint8_t i = 0; i < _name.length(); ++i)
     {
-        switch (text[charIndex])
+        switch (_name[i])
         {
         case 32: // Space
         case 45: // Hyphen-minus
-            lines.push_back("");
+            chunks.push_back("");
             ++line;
             break;
         default:
-            lines[line] += text[charIndex];
+            chunks[line] += _name[i];
         }
     }
-    uint8_t textHeight = 0;
-    for (const String line : lines)
+    uint8_t height = 0;
+    std::vector<TextHandler> texts;
+    for (const String &chunk : chunks)
     {
-        textHeight += TextHandler(line, FontMicro).getHeight();
+        texts.push_back(TextHandler(chunk, FontMicro));
+        height += texts.back().getHeight();
+        if (height >= ROWS)
+        {
+            break;
+        }
     }
     uint8_t
-        textMargins = max(0, ROWS - textHeight) / (lines.size() + 1),
-        lineNo = 0,
-        y = textMargins;
+        margin = (ROWS - min((uint8_t)ROWS, height)) / (chunks.size() + 1),
+        y = margin;
     Display.clear();
-    for (const String line : lines)
+    for (TextHandler &text : texts)
     {
-        TextHandler text = TextHandler(line, FontMicro);
-        text.draw(max(0, (COLUMNS - text.getWidth()) / 2), y);
-        y += text.getHeight() + max((uint8_t)1, textMargins);
+        text.draw((COLUMNS - min((uint8_t)COLUMNS, text.getWidth())) / 2, y);
+        y += text.getHeight() + max((uint8_t)1, margin);
     }
+    Display.flush();
 }
 
 void ModesService::teardown()

@@ -42,6 +42,7 @@ void SignalExtension::handle()
             BitmapHandler(signals.front()).draw();
             signals.erase(signals.begin());
             lastMillis = millis();
+            Display.flush();
             JsonDocument doc;
             doc["event"] = "signal";
             Device.transmit(doc, name, false);

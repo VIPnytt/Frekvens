@@ -12,6 +12,13 @@ class DisplayService : public ServiceModule
 private:
     DisplayService() : ServiceModule("Display") {};
 
+    enum Orientation {
+        deg0,
+        deg90,
+        deg180,
+        deg270,
+    };
+
     // https://www.hackster.io/news/philip-stapelfeldt-s-ikea-hack-turns-your-obegransad-wall-lamp-into-a-smart-display-and-more-15d20d2463d2
     const std::vector<uint16_t> hi = {
         0b1000001001,
@@ -38,10 +45,11 @@ private:
 
     uint8_t
         globalBrightness = UINT8_MAX,
-        globalOrientation = 0,
         frameDraft[COLUMNS * ROWS] = {0},
         frameReady[COLUMNS * ROWS] = {0},
         pixelBitOrder[COLUMNS * ROWS] = PIXEL_ORDER;
+
+    Orientation globalOrientation = Orientation::deg0;
 
     void transmit();
 
@@ -60,8 +68,8 @@ public:
 
     double getCellRatio() const;
 
-    uint8_t getGlobalOrientation() const;
-    void setGlobalOrientation(uint8_t rotation);
+    Orientation getGlobalOrientation() const;
+    void setGlobalOrientation(Orientation rotation);
 
     bool getPower() const;
     void setPower(bool state);

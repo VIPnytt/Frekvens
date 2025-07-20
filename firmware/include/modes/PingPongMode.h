@@ -7,6 +7,8 @@
 class PingPongMode : public ModeModule
 {
 private:
+    static constexpr float speed = 0.0005 * ROWS;
+
     double
         xDec,
         yDec;

@@ -8,21 +8,21 @@ void SnakeClockMode::wake()
 {
     Display.clear();
     hour = 0;
-    min = 0;
+    minute = 0;
     stage = 0;
 }
 
 void SnakeClockMode::handle()
 {
-    if (getLocalTime(&local) && (min != local.tm_min || hour != local.tm_hour))
+    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
     {
         hour = local.tm_hour;
-        min = local.tm_min;
+        minute = local.tm_min;
         Display.drawRectangle(0, 0, COLUMNS - 1, 4, true, 0);
         TextHandler((String)(hour / 10), FontMini).draw(0, 0);
         TextHandler((String)(hour % 10), FontMini).draw(4, 0);
-        TextHandler((String)(min / 10), FontMini).draw(9, 0);
-        TextHandler((String)(min % 10), FontMini).draw(13, 0);
+        TextHandler((String)(minute / 10), FontMini).draw(9, 0);
+        TextHandler((String)(minute % 10), FontMini).draw(13, 0);
     }
     switch (stage)
     {

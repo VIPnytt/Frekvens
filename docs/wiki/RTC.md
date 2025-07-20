@@ -11,11 +11,11 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 - [DS3234](https://www.sparkfun.com/sparkfun-deadon-rtc-breakout-ds3234.html)
 - [PCF8563](https://www.waveshare.com/PCF8563-RTC-Board.htm)
 
-**Note:** [DS1307](#-ds1307) operates at 5 V only, and will therefore require an [logic level shifter](#%EF%B8%8F-logic-level-shifter).
+> [DS1307](#-ds1307) operates at 5 V only and is therefore incompatible with [IKEA Frekvens](Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
 ## 📈 Schematics
 
-### 🕑 DS1302 schema
+### DS1302 schema
 
 ```text
 ┌──────┐
@@ -28,7 +28,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └──────┘
 ```
 
-### 🕖 DS1307 schema
+### DS1307 schema
 
 ```text
 ┌─────┐
@@ -40,7 +40,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └─────┘
 ```
 
-### 🕐 DS3231 schema
+### DS3231 schema
 
 ```text
 ┌─────┐
@@ -54,7 +54,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └─────┘
 ```
 
-### 🕐 DS3232 schema
+### DS3232 schema
 
 ```text
 ┌─────┐
@@ -68,7 +68,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └─────┘
 ```
 
-### 🕓 DS3234 schema
+### DS3234 schema
 
 ```text
 ┌──────┐
@@ -84,7 +84,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └──────┘
 ```
 
-### 🕐 PCF8563 schema
+### PCF8563 schema
 
 ```text
 ┌─────┐
@@ -98,7 +98,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └─────┘
 ```
 
-### 🧠 ESP32 schema
+### ESP32 schema
 
 ```text
 ┌────────────────┐
@@ -121,7 +121,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 └────────────────┘
 ```
 
-### ↔️ Logic level shifter schema
+### Logic level shifter schema
 
 ```text
    0 V DC ────────┬──────── 0 V DC
@@ -145,11 +145,11 @@ SPI SDIO  ─┤             ├─ SPI SDIO
 ## ↔️ Logic level shifter
 
 Components connected to voltage levels above 3.3 V often requires an voltage-level translator to remain ESP32-compatible.
-Most RTC-modules are 3.3 V compatible, but if 5 V logic is desired, the easiest solution might be to use an [TXS0108E](https://www.sparkfun.com/sparkfun-level-shifter-8-channel-txs0108e.html) which is both SPI and I2C compatible. For SPI specifically it's also possible to use [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395), but be aware that these does not work as well with strong pull-up or pull-down resistors which *some* RTC-modules *may* have on the `INT` pin.
+Most RTC-modules are 3.3 V compatible, but if 5 V logic is desired, the easiest solution might be to use an [TXS0108E](https://www.sparkfun.com/sparkfun-level-shifter-8-channel-txs0108e.html) which is both SPI and I2C compatible. For SPI specifically it's also possible to use [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395), but be aware that these does not work as well with strong pull-up or pull-down resistors *some* RTC-modules *may* have on the `INT` pin.
 
 ## 🔧 Configuration
 
-### 🕒 I2C SCL
+### I2C SCL
 
 Use any *I2C `SCL`* pin.
 
@@ -159,7 +159,7 @@ Use any *I2C `SCL`* pin.
 #define PIN_SCL 1 // GPIO #
 ```
 
-### ↔️ I2C SDA
+### I2C SDA
 
 Use any *I2C `SDA`* pin.
 
@@ -169,7 +169,7 @@ Use any *I2C `SDA`* pin.
 #define PIN_SDA 2 // GPIO #
 ```
 
-### 🕒 SPI SCLK
+### SPI SCLK
 
 Use any *SPI `SCLK`* pin.
 
@@ -181,7 +181,7 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 #define PIN_SCLK2 3 // GPIO #
 ```
 
-### ⬇️ SPI MISO
+### SPI MISO
 
 Use any *SPI `MISO`* pin.
 
@@ -193,7 +193,7 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 #define PIN_MISO2 4 // GPIO #
 ```
 
-### ⬆️ SPI MOSI
+### SPI MOSI
 
 Use any *SPI `MOSI`* pin.
 
@@ -205,19 +205,7 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 #define PIN_MOSI2 5 // GPIO #
 ```
 
-### 🛡️ SPI CS
-
-Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
-
-Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define PIN_CS2 6 // GPIO #
-```
-
-### ↔️ SPI SDIO
+### SPI SDIO
 
 Use any *SPI `MISO`* pin.
 
@@ -229,7 +217,19 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 #define PIN_SDIO2 7 // GPIO #
 ```
 
-### ⏰ RTC INT
+### SPI CS
+
+Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
+
+Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define PIN_CS2 6 // GPIO #
+```
+
+### RTC INT
 
 Optional to connect.
 
@@ -249,7 +249,7 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 
 ## 📝 Templates
 
-### 🕑 DS1302
+### DS1302
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -261,9 +261,9 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 #define PIN_CS2 3
 ```
 
-**Note:** *Make sure the ESP32 of choice supports both HSPI and VSPI, as one of them needs to be dedicated to the display.*
+> Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
 
-### 🕖 DS1307
+### DS1307
 
 Logic level shifter required.
 
@@ -276,9 +276,9 @@ Logic level shifter required.
 #define PIN_SDA 2
 ```
 
-**Note:** *Incompatible with [IKEA Frekvens](Frekvens) due to the lack of a 5 V power supply.*
+> Incompatible with [IKEA Frekvens](Frekvens) due to the lack of a 5 V power supply.
 
-### 🕐 DS3231
+### DS3231
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -290,7 +290,7 @@ Logic level shifter required.
 #define PIN_INT 3
 ```
 
-### 🕑 DS3232
+### DS3232
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -302,7 +302,7 @@ Logic level shifter required.
 #define PIN_INT 3
 ```
 
-### 🕓 DS3234
+### DS3234
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -316,9 +316,9 @@ Logic level shifter required.
 #define PIN_INT 5
 ```
 
-**Note:** *Make sure the ESP32 of choice supports both HSPI and VSPI, as one of them needs to be dedicated to the display.*
+> Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
 
-### 🕒 PCF8563
+### PCF8563
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 

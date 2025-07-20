@@ -9,12 +9,6 @@
 class MicrophoneExtension : public ExtensionModule
 {
 private:
-#ifdef MIC_FLOOR
-    const uint16_t floor = MIC_FLOOR;
-#else
-    const uint16_t floor = 1 << 10;
-#endif // MIC_FLOOR
-
     bool
         active = false,
         detected = false,
@@ -22,7 +16,8 @@ private:
 
     uint16_t
         level = 0,
-        mic;
+        mic,
+        treshold = INT8_MAX;
 
     unsigned long
         lastMillis = 0,
@@ -39,6 +34,7 @@ public:
 
     bool get();
     void set(bool enable);
+    void set(uint16_t treshold);
     bool play();
 
     void receiverHook(const JsonDocument doc) override;

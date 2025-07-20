@@ -2,7 +2,7 @@
 
 ## 🖥️ Device
 
-### 🆔 Name
+### Name
 
 Set the device name using `NAME`.
 
@@ -12,51 +12,34 @@ Set the device name using `NAME`.
 NAME='Frekvens'
 ```
 
-API examples:
-
-```json
-{
-    "action": "sleep"
-}
-```
-
-```json
-{
-    "action": "reboot"
-}
-```
-
 ## 📺 Display
 
-### 🎬 Frame rate
+### Frame rate
 
-The default frame rate is 60 fps for most ESP32 variants (240 MHz). Depending on what [extensions](Extensions.md) and [modes](Modes.md) are included in the build, it's possible to increase the frame rate drastically.
+The achievable frame rate depends on the SPI speed. Real-world factors like wiring layout, connection quality, and cable length can affect reliability and may require tuning for optimal performance.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
+
+```h
+#define FRAME_RATE 60 // fps
+#define SPI_FREQUENCY 16000000 // Hz
+```
 
 ```h
 #define FRAME_RATE 50 // fps
-#define SPI_FREQUENCY 10000000 // Hz
+#define SPI_FREQUENCY 8888888 // Hz
+```
+
+```h
+#define FRAME_RATE 40 // fps
+#define SPI_FREQUENCY 6666666 // Hz
 ```
 
 ## 🌐 Network
 
-### 🔗 Host
+### DNS
 
-Hostname is automatically set based on device type.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-HOSTNAME='frekvens'
-DOMAIN='.local'
-```
-
-### 🗺️ DNS
-
-DHCP provides up to two DNS servers, but it's actually possible to set up three manually if desired.
-
-The `DNS3` option is only possible to set manually.
+While `DNS1` and `DNS2` override any DHCP-provided servers, `DNS3` is only available statically.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -66,11 +49,22 @@ The `DNS3` option is only possible to set manually.
 #define DNS3 "9.9.9.9" // IPv4
 ```
 
+### Host
+
+Hostname is by default set based on device type.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+HOSTNAME='frekvens'
+DOMAIN='.local'
+```
+
 ## 📜 Serial
 
-### 📋 Log level
+### Log level
 
-Useful when debugging or testing experimenting with the APIs.
+Useful when debugging or experimenting with the APIs.
 
 [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
 
@@ -81,21 +75,21 @@ build_flags =
 ;   -DF_VERBOSE
 ```
 
-### 💻 Monitor speed
+### Monitor speed
 
-Requires `monitor_speed` to be set.
+[Log level](#-log-level) requires `monitor_speed` to be set.
 
 [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
 
 ```ini
-monitor_speed = 115200 ; bits
+monitor_speed = 115200 ; bits/s
 ```
 
 ## ✅ Tasks
 
-### 🧩 Extensions
+### Extensions
 
-Too many [extensions](#-extensions) or API-requests simultaneously can cause memory overflow.
+Too much [extension](#-extensions) activity simultaneously can cause memory overflow.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -103,9 +97,9 @@ Too many [extensions](#-extensions) or API-requests simultaneously can cause mem
 #define TASK_STACK_EXTENSIONS 4096 // bytes
 ```
 
-### 🎛️ Modes
+### Modes
 
-Memory overflow can cause the ESP32 to crash.
+Demanding [modes](#️-modes) can cause memory overflow.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -115,7 +109,7 @@ Memory overflow can cause the ESP32 to crash.
 
 ## 🕰️ Time
 
-### 🌐 Time server
+### Time server
 
 To be able to sync the clock over Wi-Fi, an NTP-server is required.
 
@@ -129,7 +123,7 @@ Check out the [server suggestion list](https://gist.github.com/mutin-sa/eea1c396
 #define NTP3 "time.cloudflare.com"
 ```
 
-### 🌍 Time zone
+### Time zone
 
 Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
 
@@ -141,7 +135,7 @@ Lookup your [time zone](https://github.com/nayarsystems/posix_tz_db/blob/master/
 TIME_ZONE_IANA='Etc/Universal'
 ```
 
-It can also be provided in *POSIX* format, if desired.
+It can also be provided in *POSIX* format.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -151,7 +145,7 @@ It can also be provided in *POSIX* format, if desired.
 
 ## ☀️ Weather
 
-### 📍 Coordinates
+### Coordinates
 
 Weather providers uses coordinates to derermine correct location.
 
@@ -164,7 +158,7 @@ Some providers have resolution grid sizes down to 250 m, which means at least 3 
 #define LONGITUDE "0.000" // coordinate
 ```
 
-### 🏙️ Location
+### Location
 
 A small list of providers also supports location, usually in the form of a city or village.
 
@@ -174,9 +168,9 @@ A small list of providers also supports location, usually in the form of a city 
 #define LOCATION "city"
 ```
 
-## 📡 Wi-Fi
+## 📶 Wi-Fi
 
-### 📶 Wi-Fi client
+### Wi-Fi client
 
 While Wi-Fi can be re-configured at any time, it's often less hassle to configure everything at once.
 
@@ -187,7 +181,7 @@ While Wi-Fi can be re-configured at any time, it's often less hassle to configur
 #define WIFI_KEY "[REDACTED]"
 ```
 
-### 📱 Wi-Fi hotspot
+### Wi-Fi hotspot
 
 If no hotspot credentials is configured, an open hotspot will be configured automatically.
 

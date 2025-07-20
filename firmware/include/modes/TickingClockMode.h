@@ -9,8 +9,8 @@ private:
 
     uint8_t
         hour,
-        min,
-        sec = 0;
+        minute,
+        secound = 0;
 
 public:
     TickingClockMode() : ModeModule("Ticking clock") {};

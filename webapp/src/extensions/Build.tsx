@@ -77,7 +77,7 @@ export const MainThird: Component = () => {
                                                 </span>
                                                 &nbsp;
                                                 <span class="text-gray-500">
-                                                    {key == 'upload_port' ? location.hostname : value.toLocaleString()}
+                                                    {key == 'upload_port' ? location.hostname : value.toString()}
                                                 </span>
                                             </a>
                                             <br />
@@ -116,7 +116,7 @@ export const MainThird: Component = () => {
                                                     typeof value === 'string' ? (
                                                         <span class="text-gray-300">"<span class="text-gray-500">{value}</span>"</span>
                                                     ) : (
-                                                        <span class="text-gray-500">{value?.toLocaleString()}</span>
+                                                        <span class="text-gray-500">{value?.toString()}</span>
                                                     )
                                                 }
                                             </a>
@@ -148,7 +148,7 @@ export const MainThird: Component = () => {
                                                     {key}
                                                 </span>
                                                 <span class="text-gray-300">
-                                                    ='<span class="text-gray-500">{value?.toLocaleString()}</span>'
+                                                    ='<span class="text-gray-500">{value?.toString()}</span>'
                                                 </span>
                                             </a>
                                             <br />

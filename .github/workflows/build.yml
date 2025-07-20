@@ -39,7 +39,7 @@ jobs:
         with:
           cache: npm
           cache-dependency-path: webapp/package-lock.json
-          node-version: 24
+          node-version: 22
 
       - run: |
           cat <<EOL > .env
@@ -150,8 +150,6 @@ jobs:
           #define DNS1 "1.1.1.1"
           #define DNS2 "8.8.8.8"
           #define DNS3 "9.9.9.9"
-          #define F_DEBUG
-          #define F_INFO
           #define F_VERBOSE
           #define FRAME_RATE 50
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
@@ -163,7 +161,6 @@ jobs:
           #define LATITUDE "0.000"
           #define LOCATION "city"
           #define LONGITUDE "0.000"
-          #define MIC_FLOOR 0
           #define MQTT_HOST "mqtt.local"
           #define MQTT_PORT 1883
           #define MQTT_USER "user"
@@ -176,16 +173,21 @@ jobs:
           #define OPENWEATHER_KEY "secret"
           #define OPENWEATHER_PARAMETERS "units=metric"
           #define PIN_CS 1
-          #define PIN_EN 2
-          #define PIN_INT 3
-          #define PIN_IR 4
-          #define PIN_MISO 5
-          #define PIN_MOSI 6
-          #define PIN_SCL 7
-          #define PIN_SCLK 8
-          #define PIN_SDA 9
-          #define PIN_SW1 10
-          #define PIN_SW2 11
+          #define PIN_CS2 2
+          #define PIN_EN 3
+          #define PIN_INT 4
+          #define PIN_IR 5
+          #define PIN_MISO 6
+          #define PIN_MISO2 7
+          #define PIN_MOSI 8
+          #define PIN_MOSI2 9
+          #define PIN_SCL 10
+          #define PIN_SCLK 11
+          #define PIN_SCLK2 12
+          #define PIN_SDA 13
+          #define PIN_SDIO2 14
+          #define PIN_SW1 15
+          #define PIN_SW2 16
           #define RTC_DS3232
           #define SPI_FREQUENCY 10000000
           #define TASK_STACK_EXTENSIONS 8192

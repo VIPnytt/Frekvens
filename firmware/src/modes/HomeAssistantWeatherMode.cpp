@@ -21,12 +21,27 @@ void HomeAssistantWeatherMode::setup()
 #ifdef HOMEASSISTANT_PORT
     (*Build->config)[Config::h][__STRING(HOMEASSISTANT_PORT)] = HOMEASSISTANT_PORT;
 #endif // HOMEASSISTANT_PORT
+#ifdef HOMEASSISTANT_PROTOCOL
+    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_PROTOCOL)] = HOMEASSISTANT_PROTOCOL;
+#endif // HOMEASSISTANT_PROTOCOL
 }
 #endif // EXTENSION_BUILD
 
 void HomeAssistantWeatherMode::wake()
 {
+#ifdef F_INFO
+    if (urls.empty())
+    {
+        Serial.print(name);
+        Serial.println(": unable to fetch weather");
+    }
+    else
+    {
+        lastMillis = 0;
+    }
+#else
     lastMillis = 0;
+#endif // F_INFO
 }
 
 void HomeAssistantWeatherMode::handle()
@@ -50,18 +65,11 @@ void HomeAssistantWeatherMode::update()
 
 #ifdef F_DEBUG
     Serial.print(name);
-    Serial.print(": GET ");
+    Serial.print(": ");
     Serial.println(urls.back().c_str());
 #endif
 
     const int code = http.GET();
-
-#ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.print(": HTTP ");
-    Serial.println(code);
-#endif
-
     if (code == t_http_codes::HTTP_CODE_OK)
     {
         JsonDocument doc;
@@ -80,7 +88,7 @@ void HomeAssistantWeatherMode::update()
         weather.parse(doc["state"].as<std::string>(), codesets);
         weather.draw();
     }
-    else if (WiFi.isConnected() && (code < 0 || (code >= 400 && code < 500)))
+    else if (code < 0 || (code >= 400 && code < 500))
     {
         urls.pop_back();
         lastMillis = 0;

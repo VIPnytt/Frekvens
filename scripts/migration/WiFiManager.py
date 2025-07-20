@@ -17,9 +17,11 @@ import requests
 
 def on_upload(source, target, env):
     file = str(source[0])
-    host = env.GetProjectOption("upload_port")
+    upload_port = env.GetProjectOption("upload_port")
 
-    print("Username for WiFiManager (enter only if login is required, leave blank otherwise):")
+    print(
+        "Username for WiFiManager (enter only if login is required, leave blank otherwise):"
+    )
     user = input()
     if len(user):
         print("Password:")
@@ -31,13 +33,13 @@ def on_upload(source, target, env):
     with open(file, "rb") as firmware:
         if user is not None and key is not None:
             response = requests.post(
-                f"http://{host}/u",
+                f"http://{upload_port}/u",
                 auth=(user, key),
                 files={os.path.split(file)[-1]: firmware},
             )
         else:
             response = requests.post(
-                f"http://{host}/u",
+                f"http://{upload_port}/u",
                 files={os.path.split(file)[-1]: firmware},
             )
         print(response, response.text)

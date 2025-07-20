@@ -1,11 +1,50 @@
 import dotenv
+import importlib.metadata
 import json
 import re
+import subprocess
+import sys
 
 
 class Tools:
     def __init__(self, env):
         self.env = env
+        self.check()
+
+    def check(self):
+        requirements_txt_path = "tools/requirements.txt"
+
+        with open(requirements_txt_path) as txt:
+
+            for requirement in txt:
+
+                requirement = requirement.strip()
+                if not requirement or requirement.startswith("#"):
+                    continue
+                package = (
+                    requirement.split(";")[0]
+                    .split("==")[0]
+                    .split(">=")[0]
+                    .split("<=")[0]
+                    .split(">")[0]
+                    .split("<")[0]
+                    .strip()
+                )
+                if package:
+                    try:
+                        importlib.metadata.version(package)
+                    except importlib.metadata.PackageNotFoundError:
+                        subprocess.check_call(
+                            [
+                                sys.executable,
+                                "-m",
+                                "pip",
+                                "install",
+                                "--quiet",
+                                "-r",
+                                requirements_txt_path,
+                            ]
+                        )
 
     def environment(self):
         env_py_path = "tools/.env"

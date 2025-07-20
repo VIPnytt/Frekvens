@@ -2,6 +2,7 @@
 
 #if EXTENSION_WEBAPP
 
+#include <HTTPClient.h>
 #include <SPIFFS.h>
 
 #include "extensions/WebAppExtension.h"
@@ -27,7 +28,7 @@ void WebAppExtension::setup()
 
 void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
 {
-    AsyncWebServerResponse *response = request->beginResponse(200); // OK
+    AsyncWebServerResponse *response = request->beginResponse(t_http_codes::HTTP_CODE_OK);
     response->addHeader("Access-Control-Allow-Methods", "HEAD");
     response->addHeader("Access-Control-Allow-Origin", "*");
     request->send(response);

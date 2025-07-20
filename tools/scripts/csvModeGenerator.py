@@ -3,11 +3,12 @@
 import csv
 import os
 import re
-import src.config.constants
 import sys
 
-if src.config.constants.ROWS is None:
-    src.config.constants.ROWS = 16
+from src.config.constants import ROWS
+
+if ROWS is None:
+    ROWS = 16
 
 
 def check(_file):
@@ -38,7 +39,7 @@ if not os.path.isfile(filepath):
 # .csv downloaded via webapp
 with open(filepath) as csvArt:
     rows = csv.reader(csvArt)
-    method = "wake" if sum(1 for row in rows) <= src.config.constants.ROWS else "handle"
+    method = "wake" if sum(1 for row in rows) <= ROWS else "handle"
     csvArt.seek(0)
 
     rowNo = 1
@@ -53,7 +54,7 @@ with open(filepath) as csvArt:
         variable = f"std::vector<uint16_t> frame = {{"
 
     for row in rows:
-        if rowNo > src.config.constants.ROWS:
+        if rowNo > ROWS:
             variable += f"\n    }},\n    {{"
             rowNo = 1
         variable += "\n        0b" if method == "wake" else "\n            0b"

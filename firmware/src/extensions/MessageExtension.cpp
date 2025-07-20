@@ -80,6 +80,7 @@ void MessageExtension::handle()
             text->draw(offsetX, offsetY);
             --offsetX;
             lastMillis = millis();
+            Display.flush();
         }
         else if (messages.size())
         {

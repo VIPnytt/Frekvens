@@ -8,7 +8,7 @@
 void PingPongClockMode::wake()
 {
     hour = 0;
-    min = 0;
+    minute = 0;
     Display.clear();
     paddleL.clear();
     paddleR.clear();
@@ -29,15 +29,15 @@ void PingPongClockMode::wake()
 
 void PingPongClockMode::handle()
 {
-    if (getLocalTime(&local) && (min != local.tm_min || hour != local.tm_hour))
+    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
     {
         hour = local.tm_hour;
-        min = local.tm_min;
+        minute = local.tm_min;
         Display.drawRectangle(0, 0, COLUMNS - 1, 4, true, 0);
         TextHandler((String)(hour / 10), FontMini).draw(0, 0);
         TextHandler((String)(hour % 10), FontMini).draw(4, 0);
-        TextHandler((String)(min / 10), FontMini).draw(9, 0);
-        TextHandler((String)(min % 10), FontMini).draw(13, 0);
+        TextHandler((String)(minute / 10), FontMini).draw(9, 0);
+        TextHandler((String)(minute % 10), FontMini).draw(13, 0);
     }
     if (xDec <= 1 && deg >= 90 && deg < 270)
     {
@@ -58,8 +58,8 @@ void PingPongClockMode::handle()
         predict();
     }
     Display.setPixel(x, y, 0);
-    xDec += cos(deg * DEG_TO_RAD) * 0.008;
-    yDec -= sin(deg * DEG_TO_RAD) * 0.008;
+    xDec += cos(deg * DEG_TO_RAD) * speed;
+    yDec -= sin(deg * DEG_TO_RAD) * speed;
     x = xDec + .5;
     y = yDec + .5;
     Display.setPixel(x, y);

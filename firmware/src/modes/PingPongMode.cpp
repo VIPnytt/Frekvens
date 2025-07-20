@@ -43,8 +43,8 @@ void PingPongMode::handle()
         predict();
     }
     Display.setPixel(x, y, 0);
-    xDec += cos(deg * DEG_TO_RAD) * 0.008;
-    yDec -= sin(deg * DEG_TO_RAD) * 0.008;
+    xDec += cos(deg * DEG_TO_RAD) * speed;
+    yDec -= sin(deg * DEG_TO_RAD) * speed;
     x = xDec + .5;
     y = yDec + .5;
     Display.setPixel(x, y);

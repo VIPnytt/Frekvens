@@ -33,7 +33,7 @@ private:
     uint8_t
         blink = 0,
         hour,
-        min,
+        minute,
         stage = 0;
 
     std::deque<Pixel> snake;

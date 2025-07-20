@@ -12,11 +12,11 @@ Example:
 #define COLUMNS 16     // px
 #define ROWS 16        // px
 
-#define PIXEL_ORDER {} // bit mask array
+#define PIXEL_ORDER {0x0, 0x1, 0x2, 0x3} // bit mask array
 ```
 
 ## 📱 Web app
 
-The *Web app* user-interface will continue to be functional no matter what device is specified.
+The Web app UI will continue to be functional no matter what device is specified.
 
 Even custom resolutions is supported for interactive [modes](Modes), as long as the `MODEL` is set to a known value.

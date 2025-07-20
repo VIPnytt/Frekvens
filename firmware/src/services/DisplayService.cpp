@@ -13,11 +13,11 @@
 void DisplayService::setup()
 {
     pinMode(PIN_CS, OUTPUT);
+    pinMode(PIN_EN, OUTPUT);
 #ifdef PIN_MISO
     pinMode(PIN_MISO, INPUT);
 #endif
     pinMode(PIN_MOSI, OUTPUT);
-    pinMode(PIN_EN, OUTPUT);
     pinMode(PIN_SCLK, OUTPUT);
 
 #ifdef PIN_MISO
@@ -25,26 +25,30 @@ void DisplayService::setup()
 #else
     SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
+
 #ifdef SPI_FREQUENCY
     SPI.beginTransaction(SPISettings(SPI_FREQUENCY, MSBFIRST, SPI_MODE0));
 #else
     SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
 #endif // SPI_FREQUENCY
+
     timer = timerBegin(0, rtc_clk_apb_freq_get() / 1000000U, true);
     timerAttachInterrupt(timer, &onTimer, true);
+
 #ifdef FRAME_RATE
     timerAlarmWrite(timer, 1000000U / (1U << 8) / FRAME_RATE, true);
 #else
     timerAlarmWrite(timer, 1000000U / (1U << 8) / 50, true);
 #endif // FRAME_RATE
+
     timerAlarmEnable(timer);
     timerStart(timer);
 
-    ledcSetup(0, 1 / PWM_WIDTH / (double)(1U << SOC_LEDC_TIMER_BIT_WIDE_NUM), SOC_LEDC_TIMER_BIT_WIDE_NUM);
+    ledcSetup(0, 1 / PWM_WIDTH / (double)(1U << PWM_DEPTH), PWM_DEPTH);
 
-    uint8_t
-        brightness = globalBrightness,
-        orientation = globalOrientation;
+    uint8_t brightness = globalBrightness;
+    Orientation orientation = globalOrientation;
+
     Preferences Storage;
     Storage.begin(name, true);
     if (Storage.isKey("brightness"))
@@ -53,7 +57,7 @@ void DisplayService::setup()
     }
     if (Storage.isKey("orientation"))
     {
-        orientation = Storage.getUShort("orientation");
+        orientation = (Orientation)Storage.getUShort("orientation");
     }
     Storage.end();
     setGlobalOrientation(orientation);
@@ -127,43 +131,41 @@ double DisplayService::getCellRatio() const
     return cellRatio;
 }
 
-uint8_t DisplayService::getGlobalOrientation() const
+DisplayService::Orientation DisplayService::getGlobalOrientation() const
 {
     return globalOrientation;
 }
 
-void DisplayService::setGlobalOrientation(uint8_t orientation)
+void DisplayService::setGlobalOrientation(Orientation orientation)
 {
     uint8_t _pixelBitOrder[COLUMNS * ROWS];
     switch ((orientation - globalOrientation + 4) % 4)
     {
-#if COLUMNS == ROWS
-    case 1: // Δ 90°
-        for (const uint8_t i : pixelBitOrder)
-        {
-            _pixelBitOrder[i] = (pixelBitOrder[i] >> __builtin_ctz(COLUMNS)) + (COLUMNS - 1 - (pixelBitOrder[i] & (COLUMNS - 1))) * COLUMNS;
-        }
-        break;
-#endif      // COLUMNS == ROWS
-    case 2: // Δ 180°
+    case Orientation::deg180:
         for (const uint8_t i : pixelBitOrder)
         {
             _pixelBitOrder[i] = (COLUMNS - 1 - (pixelBitOrder[i] & (COLUMNS - 1))) + (ROWS - 1 - (pixelBitOrder[i] >> __builtin_ctz(COLUMNS))) * COLUMNS;
         }
         break;
 #if COLUMNS == ROWS
-    case 3: // Δ 270°
+    case Orientation::deg90:
+        for (const uint8_t i : pixelBitOrder)
+        {
+            _pixelBitOrder[i] = (pixelBitOrder[i] >> __builtin_ctz(COLUMNS)) + (COLUMNS - 1 - (pixelBitOrder[i] & (COLUMNS - 1))) * COLUMNS;
+        }
+        break;
+    case Orientation::deg270:
         for (const uint8_t i : pixelBitOrder)
         {
             _pixelBitOrder[i] = (ROWS - 1 - (pixelBitOrder[i] >> __builtin_ctz(COLUMNS))) + (pixelBitOrder[i] & (COLUMNS - 1)) * COLUMNS;
         }
         break;
-#endif       // COLUMNS == ROWS
-    default: // Δ 0°
+#endif // COLUMNS == ROWS
+    default:
         return;
     }
     memcpy(pixelBitOrder, _pixelBitOrder, sizeof(_pixelBitOrder));
-    globalOrientation = orientation % 4;
+    globalOrientation = orientation;
     globalRatio = globalOrientation % 2 ? 1 / ((COLUMNS * CELL_WIDTH) / (float)(ROWS * CELL_HEIGHT)) : (COLUMNS * CELL_WIDTH) / (ROWS * CELL_HEIGHT);
 
     Preferences Storage;
@@ -349,7 +351,7 @@ void DisplayService::receiverHook(const JsonDocument doc)
     // Orientation
     if (doc["orientation"].is<uint16_t>())
     {
-        setGlobalOrientation(doc["orientation"].as<uint16_t>() % 360 / 90 % 4);
+        setGlobalOrientation((Orientation)(doc["orientation"].as<uint16_t>() % 360 / 90 % 4));
     }
     // Power
     if (doc["power"].is<bool>())

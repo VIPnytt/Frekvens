@@ -1,11 +1,9 @@
 # Pre-build script
 
-import subprocess
 import sys
 
 Import("env")  # type: ignore
 sys.path.insert(0, env["PROJECT_DIR"])  # type: ignore
-subprocess.check_call(["pip", "install", "--quiet", "-r", "tools/requirements.txt"])
 
 from tools.src.Firmware import Firmware
 from tools.src.Tools import Tools
@@ -38,6 +36,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["upload"],
 ]:
     webapp = WebApp(env)  # type: ignore
+    webapp.check()
     webapp.version()
     webapp.evironment()
     webapp.environment_dev()

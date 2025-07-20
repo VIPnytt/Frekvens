@@ -2,6 +2,8 @@
 
 #if EXTENSION_OTA
 
+#include <HTTPClient.h>
+
 #include "extensions/BuildExtension.h"
 #include "extensions/OtaExtension.h"
 #include "fonts/LargeFont.h"
@@ -22,7 +24,6 @@ OtaExtension::OtaExtension() : ExtensionModule("OTA")
 void OtaExtension::setup()
 {
     ArduinoOTA.setHostname(HOSTNAME);
-    ArduinoOTA.setRebootOnSuccess(false);
 
 #ifdef OTA_KEY_HASH
     ArduinoOTA.setPasswordHash(OTA_KEY_HASH);
@@ -32,7 +33,7 @@ void OtaExtension::setup()
     WebServer.http->on("/api/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
 #endif // OTA_KEY_HASH
 
-#ifdef MONITOR_SPEED
+#ifdef F_INFO
     Update.onProgress(&onProgress);
 #endif
 
@@ -42,16 +43,9 @@ void OtaExtension::setup()
     ArduinoOTA.onEnd(&onEnd);
 
     JsonDocument doc;
-
-#ifdef OTA_KEY_HASH
-    (*Build->config)[Config::h][__STRING(OTA_KEY_HASH)] = "REDACTED";
-#elif defined(OTA_KEY)
-    (*Build->config)[Config::h][__STRING(OTA_KEY)] = "REDACTED";
-#endif // OTA_KEY_HASH
-
     doc["platformio.ini"]["upload_protocol"] = "espota";
     doc["platformio.ini"]["upload_port"] = Network.domain;
-#if defined(OTA_KEY_HASH) || defined(OTA_KEY)
+#if defined(OTA_KEY) || defined(OTA_KEY_HASH)
     doc["platformio.ini"]["upload_flags"] = "--auth=REDACTED";
 #endif // defined(OTA_KEY_HASH) || defined(OTA_KEY)
 
@@ -81,6 +75,7 @@ void OtaExtension::onStart()
 #endif
     Display.clear();
     TextHandler("U", FontLarge).draw();
+    Display.flush();
     timerAlarmWrite(Display.timer, 1000000U / (1U << 8), true); // 1 fps
 }
 
@@ -103,7 +98,7 @@ void OtaExtension::onError(ota_error_t error)
     Device.power(true);
 }
 
-#ifdef MONITOR_SPEED
+#ifdef F_INFO
 void OtaExtension::onProgress(size_t index, size_t len)
 {
     Serial.print(Ota->name);
@@ -112,6 +107,7 @@ void OtaExtension::onProgress(size_t index, size_t len)
 }
 #endif
 
+#if !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
 void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
 {
     if (!index)
@@ -125,14 +121,15 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
         Serial.print(": ");
         Serial.println(Update.errorString());
 #endif
-        request->send(500); // Internal Server Error
+        request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
         Device.power(true);
     }
     else if (final)
     {
-        request->send(204); // No Content
+        request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
         onEnd();
     }
 }
+#endif // !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
 
 #endif // EXTENSION_OTA
