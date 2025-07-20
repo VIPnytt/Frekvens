@@ -9,7 +9,7 @@ private:
 
     uint8_t
         hour,
-        min;
+        minute;
 
 public:
     BoldClockMode() : ModeModule("Bold clock") {};

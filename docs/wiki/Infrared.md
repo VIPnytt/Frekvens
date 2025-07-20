@@ -7,7 +7,7 @@ While virtually *any* IR-receiver sensor can be used, the simplest way to gettin
 
 ## 📈 Schematics
 
-### 🔴 Infrared schema
+### Infrared schema
 
 ```text
 ┌─────┐
@@ -18,7 +18,7 @@ While virtually *any* IR-receiver sensor can be used, the simplest way to gettin
 └─────┘
 ```
 
-### 🧠 ESP32 schema
+### ESP32 schema
 
 ```text
 ┌────────────────┐
@@ -30,7 +30,7 @@ While virtually *any* IR-receiver sensor can be used, the simplest way to gettin
 └────────────────┘
 ```
 
-### ↔️ Logic level shifter schema
+### Logic level shifter schema
 
 ```text
    0 V DC ────────┬──────── 0 V DC
@@ -48,7 +48,7 @@ Most IR-remote sensors are 3.3 V compatible, but if 5 V logic is desired, the ea
 
 ## 🔧 Configuration
 
-### 🔴 Data
+### Data
 
 Use any *digital input* pin.
 

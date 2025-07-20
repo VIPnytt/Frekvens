@@ -88,7 +88,7 @@ void RtcExtension::setup()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::device_class] = "temperature";
         component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::expire_after] = INT8_MAX;
+        component[Abbreviations::expire_after] = UINT8_MAX;
         component[Abbreviations::force_update] = true;
         component[Abbreviations::name] = std::string(name).append(" temperature");
         component[Abbreviations::object_id] = HOSTNAME "_" + id;

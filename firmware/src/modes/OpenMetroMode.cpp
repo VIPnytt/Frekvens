@@ -22,7 +22,19 @@ void OpenMetroMode::setup()
 
 void OpenMetroMode::wake()
 {
+#ifdef F_INFO
+    if (urls.empty())
+    {
+        Serial.print(name);
+        Serial.println(": unable to fetch weather");
+    }
+    else
+    {
+        lastMillis = 0;
+    }
+#else
     lastMillis = 0;
+#endif // F_INFO
 }
 
 void OpenMetroMode::handle()
@@ -45,18 +57,11 @@ void OpenMetroMode::update()
 
 #ifdef F_DEBUG
     Serial.print(name);
-    Serial.print(": GET ");
+    Serial.print(": ");
     Serial.println(urls.back());
 #endif
 
     const int code = http.GET();
-
-#ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.print(": HTTP ");
-    Serial.println(code);
-#endif
-
     if (code == t_http_codes::HTTP_CODE_OK)
     {
         JsonDocument doc;
@@ -75,7 +80,7 @@ void OpenMetroMode::update()
         weather.parse(doc["current"]["weather_code"].as<uint8_t>(), codesets);
         weather.draw();
     }
-    else if (WiFi.isConnected() && (code < 0 || (code >= 400 && code < 500)))
+    else if (code < 0 || (code >= 400 && code < 500))
     {
         urls.pop_back();
         lastMillis = 0;

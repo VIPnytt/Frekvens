@@ -7,7 +7,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 
 ## 📈 Schematics
 
-### 🎙️ Microphone schematics
+### Microphone schematics
 
 ```text
 ┌─────┐
@@ -18,7 +18,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 └─────┘
 ```
 
-### 🧠 ESP32 schematics
+### ESP32 schematics
 
 ```text
 ┌──────────────┐
@@ -31,7 +31,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 
 ## 🔧 Configuration
 
-### 🎙️ Signal
+### Signal
 
 Use any *analog input* pin.
 

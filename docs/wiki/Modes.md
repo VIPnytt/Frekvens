@@ -4,7 +4,7 @@
 
 Create simple animations and show it off on the display.
 
-Use the *web app* to get started.
+Use the Web app to get started.
 
 The [Microphone](Extensions.md#microphone) extension can be used to play/pause the animations.
 
@@ -16,7 +16,7 @@ Enabled by default.
 MODE_ANIMATION=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) available, to split exported animations into separate [drawings](#-draw)/frames/files. Exported animations can also be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py).
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvAnimationSplitter.py) available, to split exported animations into separate [drawings](#-draw)/frames/files. Exported animations can also be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvModeGenerator.py).
 
 See also [Draw](#-draw).
 
@@ -38,7 +38,7 @@ MODE_ARROW=true
 
 DMX over UDP/IP, stream in real-time over Wi-Fi.
 
-Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/artnetTemplate.py).
+Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/artnetTemplate.py).
 
 Client: `example.local:6454`
 
@@ -50,7 +50,7 @@ Enabled by default.
 MODE_ARTNET=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/artnetTemplate.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/artnetTemplate.py) available, serving as a template for clients to connect.
 
 See also [Distributed Display Protocol](#-distributed-display-protocol) and [E1.31](#-e131).
 
@@ -172,9 +172,9 @@ Start a countdown timer.
 
 The display will blink when the timer reaches zero.
 
-Use the *web app* to get started. Integrated into [Home Assistant](#-home-assistant).
+Use the Web app to start a new countdown, it can also be automated via [Home Assistant](#-home-assistant).
 
-API examples:
+API payload examples:
 
 ```json
 {
@@ -188,7 +188,7 @@ API examples:
 }
 ```
 
-**Note:** *The timestamp should be a valid ISO 8601 timestamp, without timezone suffix.*
+> The timestamp should be a valid ISO 8601 timestamp, without timezone suffix.
 
 Enabled by default.
 
@@ -204,7 +204,7 @@ See also [Blink](#%EF%B8%8F-blink).
 
 Efficient Ethernet pixel data, stream in real-time over Wi-Fi.
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/ddpTemplate.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/ddpTemplate.py) available, serving as a template for clients to connect.
 
 Client: `example.local:4048`
 
@@ -216,7 +216,7 @@ Enabled by default.
 MODE_DISTRIBUTEDDISPLAYPROTOCOL=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvAnimationSplitter.py) available, serving as a template for clients to connect.
 
 See also [Art-Net](#-art-net) and [E1.31](#-e131).
 
@@ -224,7 +224,7 @@ See also [Art-Net](#-art-net) and [E1.31](#-e131).
 
 Create artwork and show it off on the display.
 
-Use the *web app* to get started.
+Use the Web app to get started.
 
 Enabled by default.
 
@@ -234,13 +234,13 @@ Enabled by default.
 MODE_DRAW=true
 ```
 
-Exported drawing can be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py).
+Exported drawing can be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvModeGenerator.py).
 
 ## 💻 E1.31
 
 Streaming ACN, send DMX512 data over Wi-Fi.
 
-Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/e131Template.py).
+Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/e131Template.py).
 
 Client: `example.local:5568`
 
@@ -252,7 +252,7 @@ Enabled by default.
 MODE_E131=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/e131Template.py) available, serving as a template for clients to connect.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/e131Template.py) available, serving as a template for clients to connect.
 
 See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-display-protocol).
 
@@ -347,11 +347,9 @@ Requires an [Long-lived access token](https://my.home-assistant.io/redirect/prof
 ```
 
 ```h
+#define HOMEASSISTANT_PROTOCOL "http:"
 #define HOMEASSISTANT_HOST "homeassistant.local"
-#define HOMEASSISTANT_PORT 8123 // port #
-```
-
-```h
+#define HOMEASSISTANT_PORT 8123
 #define HOMEASSISTANT_ENTITY "weather.forecast_home"
 ```
 
@@ -373,7 +371,7 @@ Display the current indoor and outdoor temperatures.
 
 Integrated into [Home Assistant](Extensions.md#home-assistant).
 
-API example:
+API payload example:
 
 ```json
 {
@@ -664,9 +662,9 @@ MODE_STARS=true
 
 Rolling text.
 
-Use the *web app* to get started. Integrated into [Home Assistant](#-home-assistant).
+Use the Web app to set a message, or automate it via [Home Assistant](#-home-assistant).
 
-API example:
+API payload example:
 
 ```json
 {
@@ -674,8 +672,6 @@ API example:
     "message": "Hello world!"
 }
 ```
-
-The `font` parameter is optional, if omitted, the last known value will be used.
 
 Enabled by default.
 

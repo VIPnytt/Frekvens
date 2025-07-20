@@ -35,6 +35,22 @@ void DeviceService::init()
     Serial.println(": " BOARD_NAME);
 #endif
 
+    gpio_deep_sleep_hold_dis();
+#if defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2)
+#ifdef PIN_INT
+    gpio_pullup_en((gpio_num_t)PIN_INT);
+    gpio_hold_en((gpio_num_t)PIN_INT);
+#endif
+#ifdef PIN_SW1
+    gpio_pullup_en((gpio_num_t)PIN_SW1);
+    gpio_hold_en((gpio_num_t)PIN_SW1);
+#endif
+#ifdef PIN_SW2
+    gpio_pullup_en((gpio_num_t)PIN_SW2);
+    gpio_hold_en((gpio_num_t)PIN_SW2);
+#endif
+    gpio_deep_sleep_hold_en();
+#endif // defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2)
 #if SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
     esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_INT, LOW);
     esp_sleep_enable_ext1_wakeup(1ULL << PIN_SW1, ESP_EXT1_WAKEUP_ALL_LOW);
@@ -203,7 +219,7 @@ void DeviceService::ready()
         component[Abbreviations::device_class] = "data_size";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
+        component[Abbreviations::expire_after] = UINT8_MAX;
         component[Abbreviations::force_update] = true;
         component[Abbreviations::icon] = "mdi:memory";
         component[Abbreviations::name] = "Heap";
@@ -248,7 +264,6 @@ void DeviceService::ready()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::command_template] = "{\"action\":\"{{value}}\"}";
         component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "config";
         component[Abbreviations::icon] = "mdi:power";
         component[Abbreviations::name] = "Power off";
@@ -263,8 +278,6 @@ void DeviceService::ready()
         component[Abbreviations::device_class] = "data_size";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
-        component[Abbreviations::force_update] = true;
         component[Abbreviations::icon] = "mdi:memory";
         component[Abbreviations::name] = "Main stack";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
@@ -281,7 +294,7 @@ void DeviceService::ready()
         component[Abbreviations::device_class] = "temperature";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
+        component[Abbreviations::expire_after] = UINT8_MAX;
         component[Abbreviations::force_update] = true;
         component[Abbreviations::name] = "Internal temperature";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
@@ -524,8 +537,13 @@ void DeviceService::receiverHook(const JsonDocument doc)
     if (doc["action"].is<const char *>())
     {
         const char *const action = doc["action"].as<const char *>();
+        // Identify
+        if (!strcmp(action, "identify"))
+        {
+            identify();
+        }
         // Power off
-        if (!strcmp(action, "power"))
+        else if (!strcmp(action, "power"))
         {
             power(false);
         }
@@ -533,11 +551,6 @@ void DeviceService::receiverHook(const JsonDocument doc)
         else if (!strcmp(action, "reboot"))
         {
             power(true);
-        }
-        // Identify
-        else if (!strcmp(action, "identify"))
-        {
-            identify();
         }
     }
 }

@@ -2,6 +2,8 @@
 
 #if EXTENSION_ALEXA
 
+#include <HTTPClient.h>
+
 #include "extensions/AlexaExtension.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
@@ -52,7 +54,7 @@ void AlexaExtension::onGetApi(AsyncWebServerRequest *request)
 {
     if (!Alexa->fauxmo.process(request->client(), true, request->url(), ""))
     {
-        request->send(500); // Internal Server Error
+        request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -60,7 +62,7 @@ void AlexaExtension::onSetApi(AsyncWebServerRequest *request, uint8_t *data, siz
 {
     if (!Alexa->fauxmo.process(request->client(), false, request->url(), (char *)data))
     {
-        request->send(400); // Bad Request
+        request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }
 }
 

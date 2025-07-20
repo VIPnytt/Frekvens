@@ -10,7 +10,7 @@ private:
     uint8_t
         active,
         hour,
-        min;
+        minute;
 
     unsigned long lastMillis = 0;
 

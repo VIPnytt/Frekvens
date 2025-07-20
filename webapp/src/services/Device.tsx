@@ -40,10 +40,10 @@ const { toast } = Toast();
 const event = (action: string) => {
     switch (action) {
         case 'power':
-            toast('Powering off', 30e3);
+            toast('Power off', 60e3);
             break;
         case 'reboot':
-            toast('Rebooting', 15e3);
+            toast('Rebooting', 10e3);
             break;
     }
 };

@@ -2,6 +2,7 @@
 
 #if EXTENSION_RESTFUL
 
+#include <HTTPClient.h>
 #include <vector>
 
 #include "config/constants.h"
@@ -38,7 +39,7 @@ void RestfulExtension::onGetApi(AsyncWebServerRequest *request)
     const size_t length = measureJson(doc);
     char *payload = new char[length + 1];
     serializeJson(doc, payload, length + 1);
-    request->send(200, "application/json", payload); // OK
+    request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload);
     delete[] payload;
 }
 
@@ -51,12 +52,12 @@ void RestfulExtension::onGetApiModule(AsyncWebServerRequest *request)
         const size_t length = measureJson(doc);
         char *payload = new char[length + 1];
         serializeJson(doc, payload, length + 1);
-        request->send(200, "application/json", payload); // OK
+        request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload);
         delete[] payload;
     }
     else
     {
-        request->send(204); // No Content
+        request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
     }
 }
 
@@ -66,11 +67,11 @@ void RestfulExtension::onSetApiModule(AsyncWebServerRequest *request, uint8_t *d
     if (request->contentType() == "application/json" && !deserializeJson(doc, data))
     {
         Device.receive(doc, Restful->name, request->url().substring(prefixLength).c_str());
-        request->send(204); // No Content
+        request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
     }
     else
     {
-        request->send(400); // Bad Request
+        request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }
 }
 

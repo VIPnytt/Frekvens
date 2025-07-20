@@ -104,7 +104,7 @@ void NetworkService::ready()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::device_class] = "signal_strength";
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
+        component[Abbreviations::expire_after] = UINT8_MAX;
         component[Abbreviations::force_update] = true;
         component[Abbreviations::name] = "Wi-Fi signal";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;

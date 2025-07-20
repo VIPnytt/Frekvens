@@ -71,8 +71,6 @@ void ExtensionsService::ready()
         component[Abbreviations::device_class] = "data_size";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
-        component[Abbreviations::force_update] = true;
         component[Abbreviations::icon] = "mdi:memory";
         component[Abbreviations::name] = std::string(name).append(" stack");
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
@@ -94,7 +92,7 @@ void ExtensionsService::ready()
 
 void ExtensionsService::handle()
 {
-    if (Display.getPower() && millis() - lastMillis > UINT16_MAX)
+    if (millis() - lastMillis > UINT16_MAX)
     {
         transmit();
     }
@@ -125,10 +123,6 @@ void ExtensionsService::onTask(void *parameter)
         for (ExtensionModule *extension : Extensions.getAll())
         {
             extension->handle();
-        }
-        if (Modes.taskHandle && eTaskGetState(Modes.taskHandle) == eTaskState::eSuspended)
-        {
-            Display.flush();
         }
         vTaskDelay(1);
     }

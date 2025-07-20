@@ -2,8 +2,8 @@
 
 ## `preBuild.py`
 
-PlatformIO build script, handles everything from the various `.env` files to building of the `webapp`.
+PlatformIO build script, handles everything from distribution of environment variables to building of the Web app.
 
 ## `preUpload.py`
 
-Migration scripts for devices running alternative firmware using either `ayushsharma82/ElegantOTA`, `ayushsharma82/AsyncElegantOTA` or `tzapu/WiFiManager`.
+PlatformIO upload script, for migration of devices running alternative firmware.

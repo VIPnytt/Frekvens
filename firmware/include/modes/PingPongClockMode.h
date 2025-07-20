@@ -8,6 +8,8 @@
 class PingPongClockMode : public ModeModule
 {
 private:
+    static constexpr float speed = 0.0006 * COLUMNS;
+
     double
         xDec,
         yDec;
@@ -20,7 +22,7 @@ private:
 
     uint8_t
         hour,
-        min,
+        minute,
         targetY,
         x,
         y;

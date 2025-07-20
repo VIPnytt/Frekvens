@@ -40,14 +40,14 @@ void BreakoutClockMode::handle()
     {
         // Bottom
         deg = random(30, 150); // ±60°
-        if (getLocalTime(&local) && (min != local.tm_min || hour != local.tm_hour))
+        if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
         {
             hour = local.tm_hour;
-            min = local.tm_min;
+            minute = local.tm_min;
             TextHandler((String)(hour / 10), FontMini).draw(0, 0);
             TextHandler((String)(hour % 10), FontMini).draw(4, 0);
-            TextHandler((String)(min / 10), FontMini).draw(9, 0);
-            TextHandler((String)(min % 10), FontMini).draw(13, 0);
+            TextHandler((String)(minute / 10), FontMini).draw(9, 0);
+            TextHandler((String)(minute % 10), FontMini).draw(13, 0);
         }
     }
     else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY))

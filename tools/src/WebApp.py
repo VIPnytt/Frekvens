@@ -4,11 +4,18 @@ import json
 import os
 import pathlib
 import re
+import subprocess
+import sys
+
+from tools.src.Tools import Tools
 
 
 class WebApp:
     def __init__(self, env):
         self.env = env
+        self.check()
+        tools = Tools(env)  # type: ignore
+        tools.check()
 
     def build(self):
         with open("library.json") as pio, open("webapp/package.json") as npm, open(
@@ -29,19 +36,33 @@ class WebApp:
                 if self.env.Execute(f"cd webapp && npm run build"):
                     self.env.Execute(f"cd webapp && npm install && npm run build")
 
+    def check(self):
+        try:
+            subprocess.run(
+                ["node", "--version"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            print("Node.js is required but was not found on your system.")
+            print("Please install Node.js from https://nodejs.org/")
+            sys.exit(1)
+
     def clean(self):
         for dist in os.scandir("webapp/dist"):
             if dist.is_file():
                 pathlib.Path(dist.path).unlink()
 
     def dist(self):
-        pathlib.Path("data/webapp").mkdir(parents=True, exist_ok=True)
+        data_prefix = "data/webapp"
+        pathlib.Path(data_prefix).mkdir(parents=True, exist_ok=True)
         for dist in os.scandir("webapp/dist"):
             if dist.is_file():
                 with open(dist.path, "rb") as extracted:
-                    with gzip.open(f"data/webapp/{dist.name}.gz", "wb") as compressed:
+                    with gzip.open(f"{data_prefix}/{dist.name}.gz", "wb") as compressed:
                         compressed.writelines(extracted)
-                        print(f"data/webapp/{dist.name}.gz")
+                        print(f"{data_prefix}/{dist.name}.gz")
 
     def evironment(self):
         env_ts_path = "webapp/.env"
@@ -86,7 +107,8 @@ class WebApp:
                     print(env_ts_path)
 
     def version(self):
-        with open("library.json") as pio, open("webapp/package.json") as npm:
+        package_json_path = "webapp/package.json"
+        with open("library.json") as pio, open(package_json_path) as npm:
             library = json.load(pio)
             if "version" in library:
                 package = json.load(npm)
@@ -94,4 +116,4 @@ class WebApp:
                     if not self.env.Execute(
                         f"cd webapp && npm version {library['version']}"
                     ):
-                        print("webapp/package.json")
+                        print(package_json_path)

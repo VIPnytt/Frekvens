@@ -45,9 +45,6 @@
 /*
  * Mic
  */
-/*
-#define MIC_FLOOR 1024
-*/
 #if !defined(EXTENSION_MICROPHONE) && defined(PIN_MIC)
 #define EXTENSION_MICROPHONE true
 #endif

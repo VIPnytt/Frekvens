@@ -1,105 +1,131 @@
 # 💡 Frekvens
 
-Frekvens is an ESP32-based mod designed specifically for [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) devices.
+**Frekvens** is a ESP32-mod for [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) LED displays, powered by the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) LED driver.
 
-Both devices use the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) LED driver, and the firmware is built with flexibility in mind. Thanks to its modular design, it can be easily adapted for custom or third-party devices, including those with different display resolutions or configurations, with only minor adjustments.
+The modular firmware is designed for flexibility and can be adapted to third-party or custom display configurations.
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Hardware](#-hardware)
+- [IDE setup](#-ide-setup)
+- [Configuration](#️-configuration)
+- [Uploading](#️-uploading)
+- [Smart-home integrations](#-smart-home-integrations)
+- [API](#-api)
+- [FAQ](#-faq)
+- [Troubleshooting](#-troubleshooting)
 
 ## ✨ Features
 
-Featuring replicas of all the same [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes), but incluses everything from new animations and weather services to user-interactive activities and smart-home [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions).
+Frekvens replicates all original display modes while introducing a range of new features, including smart-home integration, streaming content, interactive tools, and real-time services.
 
-The buttons can do more and the [mic](https://github.com/VIPnytt/Frekvens/wiki/Microphone) still syncs with the music. New capabilities have also been added, like [IR](https://github.com/VIPnytt/Frekvens/wiki/Infrared) remote-control support, a feature [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) was designed for, but never shipped with.
+### Key highlights
 
-### 📋 Quick summary
-
-- Web app
-- 46 [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
+- **Web-based interface**
+- **46 display modes**:
   - Animations
   - Clocks
-  - Interactives
-  - Scroller
-  - Streaming
-  - Weather
-- 15 [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
+  - Interactive tools
+  - Text scroller
+  - Streaming content
+  - Weather displays
+- **15 extensions**, including:
   - Smart-home integrations
   - Notifications
-  - Accessories
-- 7 [fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
-- 3 API protocols
-- [Documentation](https://github.com/VIPnytt/Frekvens/wiki)
+  - External accessories
+- **7 fonts**
+- **3 API protocols** (RESTful, MQTT, WebSocket)
+- Extensive [documentation](https://github.com/VIPnytt/Frekvens/wiki) available
 
-## 🔌 Hardware
+## ⚙️ Hardware
 
-### 🧠 ESP32
+### ESP32
 
-The general recommendation is to get a board with an `ESP32-S`-series chip, at the time of writing (2025) the latest model is an `ESP32-S3`. Any board will do but a compact board like eg. [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html) is enough in most cases. Both of these have 8 MB flash storage which might come in handy if there's ever a need to troubleshoot something in *debug mode*.
+Frekvens supports most Wi-Fi enabled ESP32 boards. For new installations, the `ESP32-S3` is recommended for its performance and broad compatibility. A compact board (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases. Boards with 8 MB flash memory are recommended, as they offer additional space for debugging and future expansion, though 4 MB is sufficient for basic operation.
 
-For newcomers, it can be a bit challanging to derermine which wire needs to be connected to what pin, but since there's litterally hundreds of different ESP32 boards on the market, there won't be a single set to rule them all. Therefore the documentation will always points out what kind of pin should be used, so that it's easy to look up compatible pins on any board. If in doubt, just [ask](https://github.com/VIPnytt/Frekvens/discussions).
+Due to significant variation in ESP32 board layouts, the documentation references pin types rather than fixed pin numbers. Refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or ask in the [discussions](https://github.com/VIPnytt/Frekvens/discussions) section if uncertain.
 
-### ➕ Accessories
+### Optional Accessories
 
 If desired, extra hardware can be added:
 
-- [IR](https://github.com/VIPnytt/Frekvens/wiki/Infrared)-receiver
+- [Infrared receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared)
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
-- [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC)-module
+- [Real-time clock (RTC)](https://github.com/VIPnytt/Frekvens/wiki/RTC)
 
-**Note:** *[IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) already has a built-in microphone.*
+> The [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) display includes a built-in microphone.
 
-### 🧵 Wiring
+### Wiring
 
-Both [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) have dedicated setup guides explaining everything in detail, but essentially everything you'll have to do is wiring up power, ground, SPI, button(s) and optional accessories to the designated pins and pads.
+Each display model has its own hardware setup guide:
 
 - [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens#-getting-started)
-  - Remove the `U2` chip.
-  - The microphone can be wired in from either `U3` pin 7 or `U2` pin 11.
+  - Remove chip `U2`
+  - Microphone input available at `U3` pin 7 or `U2` pin 11
 - [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad#getting-started)
-  - Remove the `U1` chip.
+  - Remove chip `U1`
 
-**Note:** Both of these devices requires an logic level shifter as ESP32 uses 3.3 V logic.
+> Both devices require a logic level shifter (ESP32 uses 3.3 V logic).
 
-## 💻 IDE
+## 💻 IDE setup
 
-Feel free to use [any IDE](https://docs.platformio.org/en/latest/integration/ide/index.html) of choice, as long as it supports [PlatformIO](https://platformio.org). For starters, [VS Code](https://code.visualstudio.com) is a good cross-platform candidate, that's also free to use.
+Any [IDE](https://docs.platformio.org/en/latest/integration/ide/index.html) supporting [PlatformIO](https://platformio.org) can be used. [Visual Studio Code](https://code.visualstudio.com) is recommended for new users.
 
-Open the project by selecting *clone Git repository* from inside your IDE, then provide this URL: `https://github.com/vipnytt/frekvens.git`.
+To open the project:
 
-For those who prefer other alternatives, there's multiple download options at the top of the [project page](https://github.com/vipnytt/frekvens), just hit the green *Code* button.
+- Choose *Clone Git Repository* in your IDE
+- Use this URL: `https://github.com/vipnytt/frekvens.git`
 
-## 🏗️ PlatformIO
+Alternatives such as manual ZIP download are available via the green *Code* button on the [project page](https://github.com/vipnytt/frekvens).
 
-You'll need to select your specific board model to be able to compile a working build. If your board isn't added to the [platformio.ini](.env) config already, look it up in the [Boards](https://docs.platformio.org/en/stable/boards/index.html#espressif-32) section over at PlatformIO. Feel free to submit an PR for your board. This way test builds will run for your board too whenever changes are introduced.
+### Node.js
 
-[platformio.ini](platformio.ini) example:
+To build the Web UI, [Node.js](https://nodejs.org) is required. The LTS version is recommended for most users, but any recent version will work.
+
+### Python
+
+Some additional Python packages are needed, most notabily `python-dotenv` which manages environment variables across different parts of the project.
+
+To install all dependencies, run the following command from the IDE terminal:
+
+```bash
+pip install -r tools/requirements.txt
+```
+
+## 🏗️ Configuration
+
+### PlatformIO
+
+Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://docs.platformio.org/en/stable/boards/index.html#espressif-32) reference.
+
+[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
 
 ```ini
 [env:seeed_xiao_esp32s3]
 board = seeed_xiao_esp32s3
 ```
 
-## 🔧 Configuration
+### File Structure
 
-Almost all config options are optional, including most of the pins.
+- Shared variables: [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
+- Firmware-specific settings: [`firmware/include/config/secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h)
 
-There's different config files, depending on the scope of the variables. Some are shared between different parts of the project, and is therefore strategically placed in the [.env](.env) file in the root directory. Other parts which are firmware specific, should be placed in the [firmware/include/config/secrets.h](firmware/include/config/secrets.h) file.
+While [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env) includes a complete set of shared options by default, [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) is empty to encourage only necessary definitions. See the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for configuration options.
 
-While the [.env](.env) file by default contains a full list of *shared* variables, the firmware equalent [secrets.h](firmware/include/config/secrets.h) file is empty. This is due to the extensive list of optional variables, where many needs some sort of explanation for what they do. Therefore it's best to check out the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for options instead.
+### Environment Template
 
-### 📝 Template
-
-Depending on device type, the [.env](.env) should contain one of these two:
+Add one if the following to [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 # IKEA Frekvens
 ENV_FREKVENS=''
-```
 
-```ini
 # IKEA Obegränsad
 ENV_OBEGRANSAD=''
 ```
 
-In the [secrets.h](firmware/include/config/secrets.h), define where everything is connected:
+Define pin assignments in [`secrets.h`](firmware/include/config/secrets.h):
 
 ```h
 #pragma once
@@ -110,95 +136,71 @@ In the [secrets.h](firmware/include/config/secrets.h), define where everything i
 #define PIN_CS 3
 #define PIN_EN 4
 #define PIN_SW2 5
-```
 
-```h
 // IKEA Frekvens only
 #define PIN_SW1 6
 #define PIN_MIC 7
 ```
 
-### 🌍 Time zone
+### Time zone
 
-Set the time zone in the [.env](.env) config file. It's expected to be in *IANA* format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`. [Lookup](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) your time zone if needed.
+Set the IANA time zone in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). Example:
 
 ```ini
-# Time Zone
 TIME_ZONE_IANA='Etc/Universal'
 ```
 
-For more info, check out the [Time zone](https://github.com/VIPnytt/Frekvens/wiki/Services#-time-zone) section in the Wiki.
+[Time zone lookup](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv)
 
-### 📶 Wi-Fi
+### Wi-Fi
 
-Wi-Fi credentials can both be configured via the [secrets.h](firmware/include/config/secrets.h) config file, and at any time using the *web app* user-interface. Multiple Wi-Fi networks is supported.
-
-If no Wi-Fi credentials is provided on first boot, the device will set up an Wi-Fi hotspot for configuration. This hotspot feature can also be activated later by holding any physical button on the device during startup. For security reasons, it won't activate if the Wi-Fi signal is lost or out of reach.
+Wi-Fi credentials can be defined in [`secrets.h`](firmware/include/config/secrets.h) or configured through the web UI.
 
 ```h
-// Wi-Fi (optional)
 #define WIFI_SSID "name"
 #define WIFI_KEY "password"
 ```
 
-For more info, check out the [Wi-Fi](https://github.com/VIPnytt/Frekvens/wiki/Services#-wi-fi) section in the Wiki.
+If no credentials are set, the device enters access point mode on first boot. Holding any button during startup also activates AP mode. This will not trigger if a known Wi-Fi signal is lost.
 
-### ☀️ Weather
+### Weather
 
-There's multiple weather providers available, common for them all is that they use coordinates to derermine the closest location. Three decimals is usally sufficient.
-
-[secrets.h](firmware/include/config/secrets.h) example:
+Coordinates are required for weather services:
 
 ```h
-// Weather (optional)
-#define LATITUDE "0.000"  // coordinate
-#define LONGITUDE "0.000" // coordinate
+#define LATITUDE "0.000"
+#define LONGITUDE "0.000"
 ```
 
-For more info, check out the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Services#%EF%B8%8F-weather) section in the Wiki.
+### Frame rate
 
-### 🎞️ Frame rate
-
-The achievable frame rate depends on the SPI speed. Real-world factors like wiring layout, connection quality, and cable length can affect reliability and may require tuning for optimal performance.
-
-[secrets.h](firmware/include/config/secrets.h) examples:
-
-```h
-#define FRAME_RATE 60 // fps
-#define SPI_FREQUENCY 16000000 // Hz
-```
+Performance depends on SPI speed and signal quality:
 
 ```h
 #define FRAME_RATE 50 // fps
-#define SPI_FREQUENCY 8888888 // Hz
+#define SPI_FREQUENCY 10000000 // Hz
 ```
 
-```h
-#define FRAME_RATE 40 // fps
-#define SPI_FREQUENCY 6666666 // Hz
-```
+See [Display](https://github.com/VIPnytt/Frekvens/wiki/Services#-display) documentation for tuning guidance.
 
-For more info, check out the [Display](https://github.com/VIPnytt/Frekvens/wiki/Services#-display) section in the Wiki.
+## ⬆️ Uploading
 
-## ⬆️ Upload
+Use the PlatformIO menu to build and upload the firmware. Note that:
 
-When the configuration is done, it's time to build and upload. There's *[documentation](https://docs.platformio.org/en/latest/integration/ide/index.html)* for most IDEs, but for *[VS Code](https://docs.platformio.org/en/latest/integration/ide/vscode.html)* you'll essentially find the all the options in the *PlatformIO* menu on left side.
+- *"Upload"* uploads `firmware.bin`
 
-Doing a *regular* "Upload" will upload the `firmware.bin` file only. The `webapp` *web app* is located in `spiffs.bin` which needs to be uploaded separately using *"Upload Filesystem Image"*.
+- *"Upload Filesystem Image"* uploads `spiffs.bin` (web app)
 
-### 📡 Over the Air updates
+### OTA Uploads
 
-By extending your boards configuration with `env:upload_ota`, the upload will happen over Wi-Fi instead of USB.
-
-[platformio.ini](platformio.ini) example:
+To enable Over-the-Air (OTA) uploads, extend your environment:
 
 ```ini
 extends = env:upload_ota
 ```
 
-Make sure to set the correct *host*, or *IP address* in the `upload_port` option. If [password protection](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-ota) has been enabled using `OTA_KEY` or `OTA_KEY_HASH`, make sure also the password is specified in the `--auth` option of `upload_flags`.
+Specify upload details:
 
-[platformio.ini](platformio.ini) example:
 
 ```ini
 upload_protocol = espota
@@ -206,74 +208,69 @@ upload_port = example.local
 ;upload_flags = --auth=password
 ```
 
-While OTA updates directly from the IDE is the easiest, there's also a user-interface for manual upload of `firmware.bin` and `spiffs.bin` files in the *web app*.
+OTA uploads can also be performed manually via the Web app.
 
-For more info, check out the [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-ota) section in the Wiki.
+### Migration
 
-### 🔄 Migration from similar projects
+Devices running certain OTA-libraries can use OTA migration:
+
+```ini
+extends = env:upload_ota_migration
+```
+
+Follow the standard OTA process, starting with the firmware upload. If either upload fails, a USB flash is required due to partition changes.
 
 While wired upload is recommended the very first time, existing devices with alternative firmware are in some cases able to migrate OTA via Wi-Fi.
 
-Follow the same instructions as for [OTA](#-over-the-air-updates) above, but swap out `upload_ota` with `upload_ota_migration` instead. This way there will be presented different upload options in the terminal, wether your existing device uses `espota`, `ElegantOTA`/`AsyncElegantOTA` or `WiFiManager`.
-
-Always upload the regular `firmware` first, if any of the two uploads fails, it just means you'll have to flash via USB as the partition scheme needs to be altered slightly to fit everything.
-
 ## 🏠 Smart-home integrations
 
-In theory, any custom smart-home system can be integrated using [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful), [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt) or [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket). However, when it comes to ready-made integrations that are easy to set up for end-users, these are currently two options:
+### Alexa
 
-### 🎙️ Alexa
+Control power and brightness via Amazon Alexa, using voice, app, or automation.
 
-*[Amazon Alexa](https://www.amazon.com/b?node=9818047011)* users are able to switch on/off their device, as well as control the brightness, via app, voice or automations.
+### Home Assistant
 
-For more info, check out the [Alexa](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-alexa) section in the Wiki.
+Home Assistant integration supports full control over power, brightness, modes, extensions, and more.
 
-### 🤖 Home Assistant
-
-Most features are supported in *[Home Assistant](https://www.home-assistant.io)*, including switching on/off, controlling brightness, mode, settings, extensions and modes. Use the *Home Assistant* app, voice or even automations to control them all.
-
-For more info, check out the [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant) section in the Wiki.
+More details available in the [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) section.
 
 ## 🤝 API
 
-There's three different API interfaces available, each suited for different applications, but they're all fully equipped, meaning any interface can do any command.
+Three full-featured API interfaces are supported:
 
 - [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful)
 - [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
-In addition to what's already available via the *web app* user-interface, there's even more features hiding under the surface, including a lot of meta data.
+Each protocol provides complete access to commands and metadata.
 
-Please visit the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) to learn more info about what's supported in each [service](https://github.com/VIPnytt/Frekvens/wiki/Services), [extension](https://github.com/VIPnytt/Frekvens/wiki/Extensions) or [mode](https://github.com/VIPnytt/Frekvens/wiki/Modes).
+Refer to the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.
 
 ## ❓ FAQ
 
-### Where is the *web app* user-interface?
+### Where is the web UI?
 
-Make sure to upload the *filesystem* image too, as described in the [upload](#️-upload) section.
+Ensure `spiffs.bin` is uploaded. The device logs its IP and domain to the terminal at boot. Access the interface through a browser.
 
-Both the *domain* and *IP address* is logged to the terminal during startup, open either of them in the web browser. *It's also possible to look up the these values using various "network discovery" apps.*
+### How do I change Wi-Fi network?
 
-### How can I change Wi-Fi network?
+- If disconnected: hold a physical button during boot to activate AP mode.
+- If connected: update credentials through the web UI.
 
-If the device is no longer connected to any Wi-Fi network, disconnect the power, press and hold any physical button on the device, and then re-connect power. Release the button about 5-10 seconds after the display lits up. A Wi-Fi hotspot network should apear, connect to it and open the web browser to input the new Wi-Fi credentials.
+### Is ESP8266 supported?
 
-If you're still able to access the device via your old Wi-Fi, the process is much simpler, just connect to the new Wi-Fi network via the *web app* user-interface instead.
-
-### How about the ESP8266, is supported?
-
-No, it's considered a legacy platform and lacks the performance needed to run this project smoothly.
+No. ESP8266 lacks the required performance for this project.
 
 ## 🚧 Troubleshooting
 
 ### The display is flickering
 
-If you're seeing *"snow"*, this is usually an indication of EMI caused by bad wiring and/or connections. Keep it short and avoid pluggable connectors, especially jumper-wires and breadboards. Noise from some power supplies can also cause trouble, which in most cases can be prevented by installing capacitors. Make sure to follow the guidelines for your specific device, [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) or [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad).
+Flicker or "snow" usually indicates EMI or poor wiring. Avoid jumper wires and breadboards; use proper power filtering. Refer to wiring recommendations in the device-specific setup guides.
 
-If the display otherwise is looking normal, try increasing the [frame rate](https://github.com/VIPnytt/Frekvens/wiki/Services#-display).
+If display content is otherwise intact, try lowering the [frame rate](https://github.com/VIPnytt/Frekvens/wiki/Services#-display).
 
-### The device reboots randomly
+### Unexpected Reboots
 
-The [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) draws approximately 2.0 A @ 5 V when idling and fully illuminated at maximum brightness. Ensure that the USB power supply can deliver at least 10 W of continuous power.
+The [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) display draws approximately 2.0 A @ 5 V under full load. Use a USB power source rated for at least 10 W continuous.
 
-If you're got error messages in the terminal, feel free to create a [issue](https://github.com/VIPnytt/Frekvens/issues) about it.
+If terminal logs include error messages, please [report an issue](https://github.com/VIPnytt/Frekvens/issues).

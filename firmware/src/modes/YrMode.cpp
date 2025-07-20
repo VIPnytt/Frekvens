@@ -17,7 +17,19 @@ void YrMode::setup()
 
 void YrMode::wake()
 {
+#ifdef F_INFO
+    if (urls.empty())
+    {
+        Serial.print(name);
+        Serial.println(": unable to fetch weather");
+    }
+    else
+    {
+        lastMillis = 0;
+    }
+#else
     lastMillis = 0;
+#endif // F_INFO
 }
 
 void YrMode::handle()
@@ -40,18 +52,11 @@ void YrMode::update()
 
 #ifdef F_DEBUG
     Serial.print(name);
-    Serial.print(": GET ");
+    Serial.print(": ");
     Serial.println(urls.back());
 #endif
 
     const int code = http.GET();
-
-#ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.print(": HTTP ");
-    Serial.println(code);
-#endif
-
     if (code == t_http_codes::HTTP_CODE_OK)
     {
         JsonDocument doc;

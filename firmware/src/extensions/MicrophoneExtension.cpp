@@ -22,10 +22,6 @@ void MicrophoneExtension::setup()
 {
     pinMode(PIN_MIC, ANALOG);
 
-#if EXTENSION_BUILD && defined(MIC_FLOOR)
-    (*Build->config)[Config::h][__STRING(MIC_FLOOR)] = MIC_FLOOR;
-#endif // EXTENSION_BUILD && defined(MIC_FLOOR)
-
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -50,7 +46,7 @@ void MicrophoneExtension::setup()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = INT8_MAX;
+        component[Abbreviations::expire_after] = UINT8_MAX;
         component[Abbreviations::force_update] = true;
         component[Abbreviations::icon] = "mdi:microphone";
         component[Abbreviations::name] = "Sound level";
@@ -61,6 +57,22 @@ void MicrophoneExtension::setup()
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
         component[Abbreviations::value_template] = "{{value_json.level}}";
     }
+    {
+        const std::string id = std::string(name).append("_treshold");
+        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
+        component[Abbreviations::command_template] = "{\"treshold\":{{value}}}";
+        component[Abbreviations::command_topic] = topic + "/set";
+        component[Abbreviations::enabled_by_default] = false;
+        component[Abbreviations::entity_category] = "config";
+        component[Abbreviations::icon] = "mdi:microphone";
+        component[Abbreviations::max] = (1 << 12) - 1;
+        component[Abbreviations::name] = "Treshold";
+        component[Abbreviations::object_id] = HOSTNAME "_" + id;
+        component[Abbreviations::platform] = "number";
+        component[Abbreviations::state_topic] = topic;
+        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[Abbreviations::value_template] = "{{value_json.treshold}}";
+    }
 #endif // EXTENSION_HOMEASSISTANT
 }
 
@@ -69,6 +81,10 @@ void MicrophoneExtension::ready()
     Preferences Storage;
     Storage.begin(name, true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
+    if (Storage.isKey("treshold"))
+    {
+        treshold = Storage.getUShort("treshold");
+    }
     Storage.end();
     _active ? set(true) : transmit();
 }
@@ -86,12 +102,12 @@ void MicrophoneExtension::handle()
     {
         const uint16_t lastMic = mic;
         mic = analogReadRaw(PIN_MIC);
-        uint16_t _level = abs(mic - lastMic);
-        if (_level > level)
+        uint16_t measured = abs(mic - lastMic);
+        if (measured > level)
         {
-            level = _level;
+            level = measured;
         }
-        if (_level > floor)
+        if (measured >= treshold)
         {
             _lastMillis = millis();
             if (!detected)
@@ -145,6 +161,19 @@ void MicrophoneExtension::set(bool enable)
     }
 }
 
+void MicrophoneExtension::set(uint16_t floor)
+{
+    if (floor != treshold)
+    {
+        treshold = floor;
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putUShort("treshold", treshold);
+        Storage.end();
+        pending = true;
+    }
+}
+
 bool MicrophoneExtension::play()
 {
     return detected || !active;
@@ -154,8 +183,8 @@ void MicrophoneExtension::transmit()
 {
     JsonDocument doc;
     doc["active"] = active;
-    doc["floor"] = floor;
     doc["level"] = level;
+    doc["treshold"] = treshold;
     Device.transmit(doc, name);
 }
 
@@ -165,6 +194,11 @@ void MicrophoneExtension::receiverHook(const JsonDocument doc)
     if (doc["active"].is<bool>())
     {
         set(doc["active"].as<bool>());
+    }
+    // Treshold
+    if (doc["treshold"].is<uint16_t>())
+    {
+        set(doc["treshold"].as<uint16_t>());
     }
 }
 

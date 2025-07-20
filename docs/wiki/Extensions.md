@@ -1,6 +1,6 @@
 # 🧩 Extensions
 
-## 🎙️ Alexa
+## 🎤 Alexa
 
 Smart-home integration.
 
@@ -66,7 +66,7 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 #define PIN_SW2 2 // GPIO #
 ```
 
-**Note:** Long press *any* button during startup to activate the [Wi-Fi hotspot](Services#-wi-fi-hotspot).
+> Long press *any* button during startup to activate the [Wi-Fi hotspot](Services#-wi-fi-hotspot).
 
 Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
 
@@ -78,7 +78,7 @@ EXTENSION_BUTTON=true
 
 See also [IKEA Frekvens](Frekvens.md) and [IKEA Obegränsad](Obegransad.md).
 
-## 🤖 Home Assistant
+## 🧬 Home Assistant
 
 Smart-home integration.
 
@@ -127,7 +127,15 @@ Currently supported:
 - Philips
 - Sony
 
-Use the *web app* to activate or deactivate this input method, it is also controllable via the [Home Assistant](#-home-assistant) extension.
+Use the Web app or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
+
+API payload example:
+
+```json
+{
+    "active": true
+}
+```
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -149,11 +157,9 @@ Check out the [Infrared](Infrared.md) wiki for more info.
 
 Display rolling notification text messages on-demand.
 
-Use the *web app* to get started.
+Use the Web app to send messages, or set up automations via [Home Assistant](#-home-assistant).
 
-Integrated into [Home Assistant](#-home-assistant).
-
-API example:
+API payload example:
 
 ```json
 {
@@ -179,16 +185,20 @@ See also [Ticker](Modes.md#ticker).
 
 Many of the [modes](Modes.md) has the ability to react to sounds, eg. syncing animations up with the music.
 
-Use the *web app* to activate or deactivate this input method, it is also controllable via the [Home Assistant](#-home-assistant) extension.
+Use the Web app or [Home Assistant](#-home-assistant) to control this input method.
+
+API payload example:
+
+```json
+{
+    "active": true,
+}
+```
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
 #define PIN_MIC 4 // GPIO #
-```
-
-```h
-#define MIC_FLOOR 1024 // level
 ```
 
 Enabled by default.
@@ -201,7 +211,7 @@ EXTENSION_MICROPHONE=true
 
 Check out the [Microphone](Microphone.md) wiki for more info.
 
-**Privacy note:** *there's an toggle in the user-interface to disable the microphone. It's also woth noting that the ESP32's analog inputs is capable of reading voltage levels only, not frequencies, therefore it's not possible to recording audio.*
+> There's a toggle in the Web app to enable/disable the microphone.
 
 ## ✉️ MQTT
 
@@ -255,13 +265,10 @@ Another option is directly from the IDE/editor via Wi-Fi using `espota`.
 ```ini
 upload_protocol = espota
 upload_port = example.local
+;upload_flags = --auth=password
 ```
 
-```ini
-upload_flags = --auth=REDACTED
-```
-
-There's also optional password protection, which disables the ability to upload manually via the [web app](#️-web-app) user-interface.
+The optional password protection removes the ability to upload manually via the [Web app](#️-web-app) user-interface.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -344,7 +351,7 @@ Check out the [RTC](RTC.md) wiki for more info.
 
 Display drawings/icons on-demand.
 
-API examples:
+API payload examples:
 
 ```json
 {

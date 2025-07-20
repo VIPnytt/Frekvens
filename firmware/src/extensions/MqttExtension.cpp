@@ -19,8 +19,8 @@ MqttExtension::MqttExtension() : ExtensionModule("MQTT")
 
 void MqttExtension::setup()
 {
-    client.onMessage(&onMessage);
     client.onConnect(&onConnect);
+    client.onMessage(&onMessage);
     client.onDisconnect(&onDisconnect);
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
@@ -76,8 +76,8 @@ void MqttExtension::disconnect()
     if (client.connected())
     {
         client.publish("frekvens/" HOSTNAME "/availability", 1, true, "offline");
-        client.disconnect();
         client.loop();
+        client.disconnect();
     }
 }
 

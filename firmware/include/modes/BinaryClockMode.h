@@ -11,8 +11,8 @@ private:
 
     uint8_t
         hour,
-        min,
-        sec;
+        minute,
+        second;
 
     void draw(uint8_t col, uint8_t value);
 

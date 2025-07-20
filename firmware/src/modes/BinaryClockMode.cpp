@@ -14,15 +14,15 @@ void BinaryClockMode::handle()
 {
     if (getLocalTime(&local))
     {
-        if (sec != local.tm_sec || pending)
+        if (second != local.tm_sec || pending)
         {
-            sec = local.tm_sec;
-            draw(11, sec);
+            second = local.tm_sec;
+            draw(11, second);
         }
-        if (min != local.tm_min || pending)
+        if (minute != local.tm_min || pending)
         {
-            min = local.tm_min;
-            draw(6, min);
+            minute = local.tm_min;
+            draw(6, minute);
         }
         if (hour != local.tm_hour || pending)
         {

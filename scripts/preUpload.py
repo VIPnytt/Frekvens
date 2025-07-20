@@ -9,7 +9,7 @@ print("2: ElegantOTA")
 print("3: WiFiManager")
 method = input()
 
-Import("env") # type: ignore
+Import("env")  # type: ignore
 
 match method:
     case 2 | "ElegantOTA":
@@ -23,5 +23,5 @@ match method:
             [os.path.join(os.path.dirname(__file__), "migration/WiFiManager.py")]
         )
     case _:
-        env["UPLOAD_PROTOCOL"]="espota"  # type: ignore
+        env["UPLOAD_PROTOCOL"] = "espota"  # type: ignore
         pass

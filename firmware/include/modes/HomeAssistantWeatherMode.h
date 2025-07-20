@@ -12,21 +12,30 @@
 class HomeAssistantWeatherMode : public ModeModule
 {
 private:
+#ifdef HOMEASSISTANT_PROTOCOL
+    static constexpr std::string_view protocol = HOMEASSISTANT_PROTOCOL;
+#else
+    static constexpr std::string_view protocol = "http:";
+#endif
+#ifdef HOMEASSISTANT_HOST
+    static constexpr std::string_view host = HOMEASSISTANT_HOST;
+#else
+    static constexpr std::string_view host = "homeassistant.local";
+#endif
+#ifdef HOMEASSISTANT_PORT
+    static constexpr uint16_t port = HOMEASSISTANT_PORT;
+#else
+    static constexpr uint16_t port = 8123;
+#endif
+
     unsigned long lastMillis = 0;
 
     // https://developers.home-assistant.io/docs/api/rest
     std::vector<std::string> urls = {
-#ifdef HOMEASSISTANT_PORT
-        std::string("http://").append(HOMEASSISTANT_HOST ":").append(std::to_string(HOMEASSISTANT_PORT)).append("/api/states/weather.forecast_home"),
+        std::string(protocol).append("//").append(host).append(":").append(std::to_string(port)).append("/api/states/weather.forecast_home"),
 #ifdef HOMEASSISTANT_ENTITY
-        std::string("http://").append(HOMEASSISTANT_HOST ":").append(std::to_string(HOMEASSISTANT_PORT)).append("/api/states/" HOMEASSISTANT_ENTITY),
-#endif // HOMEASSISTANT_ENTITY
-#else
-        std::string("http://").append(HOMEASSISTANT_HOST).append("/api/states/weather.forecast_home"),
-#ifdef HOMEASSISTANT_ENTITY
-        std::string("http://").append(HOMEASSISTANT_HOST).append("/api/states/" HOMEASSISTANT_ENTITY),
-#endif // HOMEASSISTANT_ENTITY
-#endif // HOMEASSISTANT_PORT
+        std::string(protocol).append("//").append(host).append(":").append(std::to_string(port)).append("/api/states/" HOMEASSISTANT_ENTITY),
+#endif
 
     };
 

@@ -14,12 +14,13 @@ import requests_toolbelt
 import tqdm
 
 
-
 def on_upload(source, target, env):
     file = str(source[0])
-    host = env.GetProjectOption("upload_port")
+    upload_port = env.GetProjectOption("upload_port")
 
-    print("Username for ElegantOTA (enter only if login is required, leave blank otherwise):")
+    print(
+        "Username for ElegantOTA (enter only if login is required, leave blank otherwise):"
+    )
     user = input()
     if len(user):
         print("Password:")
@@ -33,7 +34,11 @@ def on_upload(source, target, env):
         firmware.seek(0)
         encoder = requests_toolbelt.MultipartEncoder(
             fields={
-                "firmware": (os.path.split(file)[-1], firmware, "application/octet-stream"),
+                "firmware": (
+                    os.path.split(file)[-1],
+                    firmware,
+                    "application/octet-stream",
+                ),
                 "MD5": hash,
             }
         )
@@ -51,14 +56,14 @@ def on_upload(source, target, env):
 
         if user is not None and key is not None:
             response = requests.post(
-                f"http://{host}/update",
+                f"http://{upload_port}/update",
                 auth=(user, key),
                 headers={"Content-Type": monitor.content_type},
                 data=monitor,
             )
         else:
             response = requests.post(
-                f"http://{host}/update",
+                f"http://{upload_port}/update",
                 headers={"Content-Type": monitor.content_type},
                 data=monitor,
             )
