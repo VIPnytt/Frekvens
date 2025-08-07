@@ -38,7 +38,7 @@ void DisplayService::setup()
 #ifdef FRAME_RATE
     timerAlarmWrite(timer, 1000000U / (1U << 8) / FRAME_RATE, true);
 #else
-    timerAlarmWrite(timer, 1000000U / (1U << 8) / 40, true);
+    timerAlarmWrite(timer, 1000000U / (1U << 8) / 50, true);
 #endif // FRAME_RATE
 
     timerAlarmEnable(timer);
