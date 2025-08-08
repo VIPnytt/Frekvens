@@ -32,8 +32,7 @@ void HomeAssistantWeatherMode::wake()
 #ifdef F_INFO
     if (urls.empty())
     {
-        Serial.print(name);
-        Serial.println(": unable to fetch weather");
+        Serial.printf("%s: unable to fetch weather\n", name);
     }
     else
     {
@@ -64,9 +63,7 @@ void HomeAssistantWeatherMode::update()
     http.setUserAgent(Network.userAgent.data());
 
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.println(urls.back().c_str());
+    Serial.printf("%s: %s\n", name, urls.back().c_str());
 #endif
 
     const int code = http.GET();
@@ -78,8 +75,7 @@ void HomeAssistantWeatherMode::update()
             urls.pop_back();
             lastMillis = 0;
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": unprocessable data");
+            Serial.printf("%s: unprocessable data\n", name);
 #endif
             return;
         }
@@ -95,8 +91,7 @@ void HomeAssistantWeatherMode::update()
 #ifdef F_INFO
         if (urls.empty())
         {
-            Serial.print(name);
-            Serial.println(": unable to fetch weather");
+            Serial.printf("%s: unable to fetch weather\n", name);
         }
 #endif
     }

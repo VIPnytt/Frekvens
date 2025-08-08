@@ -11,8 +11,7 @@ void ArtNetMode::wake()
         {
             udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": listening at port 6454");
+            Serial.printf("%s: listening at port 6454\n", name);
 #endif
         }
     }
@@ -30,7 +29,7 @@ void ArtNetMode::onPacket(AsyncUDPPacket packet)
         break;
 #ifdef F_DEBUG
     default:
-        Serial.println("Art-Net: unsupported package received");
+        Serial.printf("%s: : unsupported package received\n", "Art-Net");
 #endif
     }
 }

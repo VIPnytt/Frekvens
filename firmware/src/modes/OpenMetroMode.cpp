@@ -25,8 +25,7 @@ void OpenMetroMode::wake()
 #ifdef F_INFO
     if (urls.empty())
     {
-        Serial.print(name);
-        Serial.println(": unable to fetch weather");
+        Serial.printf("%s: unable to fetch weather\n", name);
     }
     else
     {
@@ -56,9 +55,7 @@ void OpenMetroMode::update()
     http.setUserAgent(Network.userAgent.data());
 
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.println(urls.back());
+    Serial.printf("%s: %s\n", name, urls.back());
 #endif
 
     const int code = http.GET();
@@ -70,8 +67,7 @@ void OpenMetroMode::update()
             urls.pop_back();
             lastMillis = 0;
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": unprocessable data");
+            Serial.printf("%s: unprocessable data\n", name);
 #endif
             return;
         }
@@ -87,8 +83,7 @@ void OpenMetroMode::update()
 #ifdef F_INFO
         if (urls.empty())
         {
-            Serial.print(name);
-            Serial.println(": unable to fetch weather");
+            Serial.printf("%s: unable to fetch weather\n", name);
         }
 #endif
     }

@@ -146,10 +146,6 @@ void HomeThermometerMode::set(const char *const where, const int16_t temperature
     transmit();
 
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.print(where);
-    Serial.print(" ");
-    Serial.println(temperature);
+    Serial.printf("%s: %s %d\n", name, where, temperature);
 #endif
 }

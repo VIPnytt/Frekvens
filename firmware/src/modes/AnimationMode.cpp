@@ -101,8 +101,7 @@ void AnimationMode::receiverHook(const JsonDocument doc)
         Storage.end();
         transmit();
 #ifdef F_VERBOSE
-        Serial.print(name);
-        Serial.println(": frame saved");
+        Serial.printf("%s: frame saved\n", name);
 #endif
     }
     if (doc["duration"].is<uint16_t>())

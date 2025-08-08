@@ -10,8 +10,7 @@ void ExtensionsService::setup()
         extension->setup();
     }
 #ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.println(": setup complete");
+    Serial.printf("%s: setup complete\n", name);
 #endif
 }
 

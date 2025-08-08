@@ -42,8 +42,7 @@ void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, 
     if (!strcmp(deviceName, NAME))
     {
 #ifdef F_INFO
-        Serial.print(Alexa->name);
-        Serial.println(state == Display.getPower() ? ": brightness" : ": power");
+        Serial.printf(state == Display.getPower() ? "%s: brightness\n" : "%s: power\n", Alexa->name);
 #endif
         Display.setGlobalBrightness(static_cast<uint8_t>(value));
         Display.setPower(state);

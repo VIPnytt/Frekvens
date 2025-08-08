@@ -77,8 +77,7 @@ void ButtonExtension::handle()
     if (powerShort)
     {
 #ifdef F_INFO
-        Serial.print(Button->name);
-        Serial.println(": power");
+        Serial.printf("%s: power\n", Button->name);
 #endif // F_INFO
         Display.setPower(!Display.getPower());
 #if EXTENSION_MQTT || EXTENSION_WEBSOCKET
@@ -94,8 +93,7 @@ void ButtonExtension::handle()
             brightnessIncrease = !brightnessIncrease;
         }
 #ifdef F_INFO
-        Serial.print(Button->name);
-        Serial.println(brightnessIncrease ? ": brightness +" : ": brightness -");
+        Serial.printf(brightnessIncrease ? "%s: brightness +\n" : "%s: brightness -\n", Button->name);
 #endif // F_INFO
         Display.setGlobalBrightness(brightnessIncrease ? brightness + 1 : brightness - 1);
 #if EXTENSION_MQTT || EXTENSION_WEBSOCKET
@@ -113,14 +111,12 @@ void ButtonExtension::handle()
     {
 #ifdef PIN_SW1
 #ifdef F_INFO
-        Serial.print(Button->name);
-        Serial.println(": mode");
+        Serial.printf("%s: mode\n", Button->name);
 #endif // F_INFO
         Modes.next();
 #else
 #ifdef F_INFO
-        Serial.print(Button->name);
-        Serial.println(": power");
+        Serial.printf("%s: power\n", Button->name);
 #endif // F_INFO
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
@@ -133,8 +129,7 @@ void ButtonExtension::handle()
     {
         modeMillis = millis();
 #ifdef F_INFO
-        Serial.print(Button->name);
-        Serial.println(": mode");
+        Serial.printf("%s: mode\n", Button->name);
 #endif // F_INFO
         Modes.next();
 #if EXTENSION_MQTT || EXTENSION_WEBSOCKET

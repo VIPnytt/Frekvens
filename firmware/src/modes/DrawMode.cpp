@@ -92,8 +92,7 @@ void DrawMode::receiverHook(const JsonDocument doc)
         save(true);
         pending = true;
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.println(": frame");
+        Serial.printf("%s: frame\n", name);
 #endif
     }
     // Pixel
@@ -143,8 +142,7 @@ void DrawMode::save(bool cache)
             Storage.putBytes(cache ? "cache" : "saved", drawing, COLUMNS * ROWS);
             Storage.end();
 #ifdef F_VERBOSE
-            Serial.print(name);
-            Serial.println(cache ? ": cached" : ": saved");
+            Serial.printf(cache ? "%s: cached\n" : "%s: saved\n", name);
 #endif
             break;
         }

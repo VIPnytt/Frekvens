@@ -63,8 +63,7 @@ void MqttExtension::handle()
         {
             client.clearQueue();
 #ifdef F_DEBUG
-            Serial.print(Mqtt->name);
-            Serial.println(": queue dropped");
+            Serial.printf("%s: queue dropped\n", Mqtt->name);
 #endif // F_DEBUG
         }
     }
@@ -84,8 +83,7 @@ void MqttExtension::disconnect()
 void MqttExtension::onConnect(bool sessionPresent)
 {
 #ifdef F_DEBUG
-    Serial.print(Mqtt->name);
-    Serial.println(": connected");
+    Serial.printf("%s: connected\n", Mqtt->name);
 #endif
     if (!sessionPresent)
     {
@@ -103,8 +101,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 #ifdef F_DEBUG
     if (len < total)
     {
-        Serial.print(Mqtt->name);
-        Serial.println(": chunked messages is currently not supported");
+        Serial.printf("%s: chunked messages is currently not supported\n", Mqtt->name);
         return;
     }
 #endif
@@ -119,12 +116,9 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
 #ifdef F_VERBOSE
-    Serial.print(Mqtt->name);
-    Serial.print(": disconnected, ");
-    Serial.println(espMqttClientTypes::disconnectReasonToString(reason));
+    Serial.printf("%s: disconnected, %s\n", Mqtt->name, espMqttClientTypes::disconnectReasonToString(reason));
 #elif defined(F_DEBUG)
-    Serial.print(Mqtt->name);
-    Serial.println(": disconnected");
+    Serial.printf("%s: disconnected\n", Mqtt->name);
 #endif // F_DEBUG
     Mqtt->pending = true;
 }
