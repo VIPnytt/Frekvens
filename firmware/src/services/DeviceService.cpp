@@ -449,7 +449,9 @@ void DeviceService::transmit()
     doc["model"] = MODEL;
     doc["name"] = NAME;
     doc["releases_url"] = "https://github.com/VIPnytt/Frekvens/releases";
+#ifdef F_VERBOSE
     doc["stack"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(nullptr);
+#endif
     doc["temperature"] = temperatureRead();
     doc["version_current"] = VERSION;
     doc["version_available"] = latest.empty() ? VERSION : latest;
