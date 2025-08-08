@@ -62,7 +62,7 @@ void ExtensionsService::ready()
     (*Build->config)[Config::h][__STRING(EXTENSION_WEBSOCKET)] = false;
 #endif
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_HOMEASSISTANT && defined(F_VERBOSE)
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_stack");
@@ -80,7 +80,7 @@ void ExtensionsService::ready()
         component[Abbreviations::unit_of_measurement] = "kB";
         component[Abbreviations::value_template] = "{{value_json.stack/2**10 }}";
     }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_HOMEASSISTANT && defined(F_VERBOSE)
     for (ExtensionModule *extension : modules)
     {
         extension->ready();
@@ -89,6 +89,7 @@ void ExtensionsService::ready()
     transmit();
 }
 
+#ifdef F_VERBOSE
 void ExtensionsService::handle()
 {
     if (millis() - lastMillis > UINT16_MAX)
@@ -96,6 +97,7 @@ void ExtensionsService::handle()
         transmit();
     }
 }
+#endif // F_VERBOSE
 
 const std::vector<ExtensionModule *> &ExtensionsService::getAll() const
 {
@@ -111,7 +113,9 @@ void ExtensionsService::transmit()
         list.add(extension->name);
     }
     lastMillis = millis();
+#ifdef F_VERBOSE
     doc["stack"] = stackSize - uxTaskGetStackHighWaterMark(taskHandle);
+#endif
     Device.transmit(doc, name);
 }
 
