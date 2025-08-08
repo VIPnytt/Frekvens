@@ -171,6 +171,7 @@ void ModesService::setup()
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
         component[Abbreviations::value_template] = "{{value_json.mode}}";
     }
+#ifdef F_VERBOSE
     {
         const std::string id = std::string(name).append("_stack");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -187,6 +188,7 @@ void ModesService::setup()
         component[Abbreviations::unit_of_measurement] = "kB";
         component[Abbreviations::value_template] = "{{value_json.stack/2**10}}";
     }
+#endif // F_VERBOSE
 #endif // EXTENSION_HOMEASSISTANT
 
     for (ModeModule *mode : modules)
@@ -230,10 +232,12 @@ void ModesService::handle()
         }
         pending = false;
     }
+#ifdef F_VERBOSE
     else if (active && Display.getPower() && millis() - _lastMillis > UINT16_MAX)
     {
         transmit();
     }
+#endif // F_VERBOSE
 }
 
 void ModesService::set(bool enable, const char *const source)
@@ -427,8 +431,10 @@ void ModesService::transmit()
     {
         doc["mode"] = active->name;
     }
+#ifdef F_VERBOSE
     doc["stack"] = stackSize - uxTaskGetStackHighWaterMark(taskHandle);
     _lastMillis = millis();
+#endif
     Device.transmit(doc, name);
 }
 
