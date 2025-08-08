@@ -104,8 +104,7 @@ void SignalExtension::receiverHook(const JsonDocument doc)
         }
         signals.push_back(sign);
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.println(": received");
+        Serial.printf("%s: received\n", name);
 #endif
     }
 }

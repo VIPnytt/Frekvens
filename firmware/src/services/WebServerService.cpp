@@ -31,20 +31,15 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
     if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
 #ifdef F_VERBOSE
-        Serial.print(WebServer.name);
-        Serial.println(": redirecting");
-#endif
+        Serial.printf("%s: redirecting\n", WebServer.name);
+#endif // F_VERBOSE
         request->redirect("http://" + WiFi.softAPIP().toString(), t_http_codes::HTTP_CODE_FOUND);
     }
     else
     {
 #ifdef F_VERBOSE
-        Serial.print(WebServer.name);
-        Serial.print(": HTTP 404, ");
-        Serial.print(request->methodToString());
-        Serial.print(" ");
-        Serial.println(request->url());
-#endif
+        Serial.printf("%s: HTTP 404, %s %s\n", WebServer.name, request->methodToString(), request->url());
+#endif // F_VERBOSE
         request->send(t_http_codes::HTTP_CODE_NOT_FOUND);
     }
 }

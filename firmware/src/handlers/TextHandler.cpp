@@ -68,12 +68,7 @@ TextHandler::TextHandler(String text, FontModule *font) : text(text), font(font)
 #ifdef F_DEBUG
                 else
                 {
-                    Serial.print("TextHandler: missing symbol, ");
-                    Serial.print(font->name);
-                    Serial.print(" @ 0x");
-                    Serial.print((1U << 8) * multiplier + text[charIndex], HEX);
-                    Serial.print(" ");
-                    Serial.println(text[charIndex]);
+                    Serial.printf("%s: missing symbol, %s @ 0x%X %s\n", name, font->name, (1U << 8) * multiplier + text[charIndex], text[charIndex]);
                 }
 #endif
                 multiplier = 0;

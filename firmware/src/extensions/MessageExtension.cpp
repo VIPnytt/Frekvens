@@ -126,9 +126,7 @@ void MessageExtension::setFont(const char *const fontName)
             }
         }
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.print(": unknown font ");
-        Serial.println(fontName);
+        Serial.printf("%s: unknown font %s\n", name, fontName);
 #endif
     }
 }
@@ -178,8 +176,7 @@ void MessageExtension::receiverHook(const JsonDocument doc)
             }
         }
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.println(": received");
+        Serial.printf("%s: received\n", name);
 #endif
     }
 }

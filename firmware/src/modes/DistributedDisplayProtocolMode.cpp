@@ -11,8 +11,7 @@ void DistributedDisplayProtocolMode::wake()
         {
             udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": listening at port 4048");
+            Serial.printf("%s: listening at port 4048\n", name);
 #endif
         }
     }
@@ -36,7 +35,7 @@ void DistributedDisplayProtocolMode::onPacket(AsyncUDPPacket packet)
         break;
 #ifdef F_DEBUG
     default:
-        Serial.println("Distributed Display Protocol: unsupported package received");
+        Serial.printf("%s: unsupported package received\n", "Distributed Display Protocol");
 #endif
     }
 }

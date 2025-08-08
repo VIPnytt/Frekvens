@@ -70,8 +70,7 @@ void OtaExtension::onStart()
 {
     Modes.set(false, Ota->name);
 #ifdef F_INFO
-    Serial.print(Ota->name);
-    Serial.println(": updating");
+    Serial.printf("%s: updating\n", Ota->name);
 #endif
     Display.clear();
     TextHandler("U", FontLarge).draw();
@@ -82,8 +81,7 @@ void OtaExtension::onStart()
 void OtaExtension::onEnd()
 {
 #ifdef F_INFO
-    Serial.print(Ota->name);
-    Serial.println(": complete");
+    Serial.printf("%s: complete\n", Ota->name);
 #endif
     Device.power(true);
 }
@@ -91,9 +89,7 @@ void OtaExtension::onEnd()
 void OtaExtension::onError(ota_error_t error)
 {
 #ifdef F_INFO
-    Serial.print(Ota->name);
-    Serial.print(": ");
-    Serial.println(Update.errorString());
+    Serial.printf("%s: %s\n", Ota->name, Update.errorString());
 #endif
     Device.power(true);
 }
@@ -101,9 +97,7 @@ void OtaExtension::onError(ota_error_t error)
 #ifdef F_INFO
 void OtaExtension::onProgress(size_t index, size_t len)
 {
-    Serial.print(Ota->name);
-    Serial.print(": writing @ 0x");
-    Serial.println(index, HEX);
+    Serial.printf("%s: writing @ 0x%X\n", Ota->name, index);
 }
 #endif
 
@@ -117,9 +111,7 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
     if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("spiffs") >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
     {
 #ifdef F_INFO
-        Serial.print(Ota->name);
-        Serial.print(": ");
-        Serial.println(Update.errorString());
+        Serial.printf("%s: %s\n", Ota->name, Update.errorString());
 #endif
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
         Device.power(true);

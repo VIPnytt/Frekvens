@@ -26,8 +26,7 @@ void WorldWeatherOnlineMode::wake()
 #ifdef F_INFO
     if (urls.empty())
     {
-        Serial.print(name);
-        Serial.println(": unable to fetch weather");
+        Serial.printf("%s: unable to fetch weather\n", name);
     }
     else
     {
@@ -57,9 +56,7 @@ void WorldWeatherOnlineMode::update()
     http.setUserAgent(Network.userAgent.data());
 
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.println(urls.back());
+    Serial.printf("%s: %s\n", name, urls.back());
 #endif
 
     const int code = http.GET();
@@ -77,8 +74,7 @@ void WorldWeatherOnlineMode::update()
             urls.pop_back();
             lastMillis = 0;
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": unprocessable data");
+            Serial.printf("%s: unprocessable data\n", name);
 #endif
             return;
         }
@@ -98,8 +94,7 @@ void WorldWeatherOnlineMode::update()
 #ifdef F_INFO
         if (urls.empty())
         {
-            Serial.print(name);
-            Serial.println(": unable to fetch weather");
+            Serial.printf("%s: unable to fetch weather\n", name);
         }
 #endif
     }

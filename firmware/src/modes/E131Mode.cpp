@@ -11,8 +11,7 @@ void E131Mode::wake()
         {
             udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.print(name);
-            Serial.println(": listening at port 5568");
+            Serial.printf("%s: listening at port 5568\n", name);
 #endif
         }
     }
@@ -36,7 +35,7 @@ void E131Mode::onPacket(AsyncUDPPacket packet)
         break;
 #ifdef F_DEBUG
     default:
-        Serial.println("E1.31: unsupported package received");
+        Serial.printf("%s: unsupported package received\n", "E1.31");
 #endif
     }
 }

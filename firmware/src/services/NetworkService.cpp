@@ -32,8 +32,7 @@ void NetworkService::setup()
 #endif // defined(PIN_SW1) || defined(PIN_SW2)
     {
 #ifdef F_VERBOSE
-        Serial.print(name);
-        Serial.println(": initializing Wi-Fi hotspot");
+        Serial.printf("%s: initializing Wi-Fi hotspot\n", name);
 #endif // F_VERBOSE
         hotspot();
     }
@@ -185,9 +184,7 @@ bool NetworkService::vault()
         Storage.putString(ssidKey.c_str(), item.first.c_str());
         Storage.putString(keyKey.c_str(), item.second.c_str());
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.print(": SSID ");
-        Serial.println(item.first.c_str());
+        Serial.printf("%s: SSID %s\n", name, item.first.c_str());
 #endif // F_DEBUG
         multi->addAP(item.first.c_str(), item.second.empty() ? nullptr : item.second.c_str());
         ++i;
@@ -228,30 +225,22 @@ void NetworkService::hotspot()
     }
 #ifdef F_INFO
 #ifdef WIFI_SSID_HOTSPOT
-    Serial.print(name);
-    Serial.print(": hotspot SSID " WIFI_SSID_HOTSPOT);
+    Serial.printf("%s: hotspot SSID " WIFI_SSID_HOTSPOT "\n", name);
 #else
-    Serial.print(name);
-    Serial.print(": hotspot SSID " NAME);
+    Serial.printf("%s: hotspot SSID " NAME "\n", name);
 #endif // WIFI_SSID_HOTSPOT
 #endif // F_INFO
 #if defined(WIFI_KEY_HOTSPOT) && defined(F_VERBOSE)
-    Serial.print(name);
-    Serial.println(": hotspot key " WIFI_KEY_HOTSPOT);
+    Serial.printf("%s: hotspot key " WIFI_KEY_HOTSPOT "\n", name);
 #endif
 #if EXTENSION_WEBAPP && defined(F_DEBUG)
-    Serial.print(name);
-    Serial.print(": user interface @ http://");
-    Serial.print(WiFi.softAPIP().toString());
-    String url = "/#/";
-    url += name;
-    url.toLowerCase();
-    Serial.println(url);
+    String _name = name;
+    _name.toLowerCase();
+    Serial.printf("%s: user interface @ http://%s/#/%s\n", name, WiFi.softAPIP().toString(), _name.c_str());
 #endif // EXTENSION_WEBAPP && defined(F_DEBUG)
-#ifdef MONITOR_SPEED
-    Serial.print(name);
-    Serial.println(": awaiting Wi-Fi config, please connect to the Wi-Fi hotspot...");
-#endif // MONITOR_SPEED
+#ifdef F_INFO
+    Serial.printf("%s: awaiting Wi-Fi config, please connect to the Wi-Fi hotspot...\n", name);
+#endif // F_INFO
 }
 
 void NetworkService::scan()
@@ -261,8 +250,7 @@ void NetworkService::scan()
     {
     case WIFI_SCAN_FAILED:
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.println(": scanning for Wi-Fi networks...");
+        Serial.printf("%s: scanning for Wi-Fi networks...\n", name);
 #endif // F_DEBUG
 #ifdef F_DEBUG
         WiFi.scanNetworks(true, true);
@@ -272,8 +260,7 @@ void NetworkService::scan()
         return;
     case WIFI_SCAN_RUNNING:
 #ifdef F_VERBOSE
-        Serial.print(name);
-        Serial.println(": scan ongoing...");
+        Serial.printf("%s: scan ongoing...\n", name);
 #endif // F_VERBOSE
         return;
     }
@@ -308,9 +295,7 @@ void NetworkService::connect(const char *const ssid, const char *const key)
         WiFi.mode(wifi_mode_t::WIFI_MODE_APSTA);
     }
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": SSID ");
-    Serial.println(ssid);
+    Serial.printf("%s: SSID %s\n", name, ssid);
 #endif // F_DEBUG
     WiFi.begin(ssid, key);
     if (WiFi.waitForConnectResult() == wl_status_t::WL_CONNECTED)
@@ -321,8 +306,7 @@ void NetworkService::connect(const char *const ssid, const char *const key)
 #ifdef F_DEBUG
         if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
         {
-            Serial.print(name);
-            Serial.println(": shutting down Wi-Fi hotspot");
+            Serial.printf("%s: terminating Wi-Fi hotspot\n", name);
         }
 #endif // F_DEBUG
         WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
@@ -366,8 +350,7 @@ void NetworkService::setDns()
 #ifdef F_DEBUG
         if (!esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_MAIN, &dns))
         {
-            Serial.print(name);
-            Serial.println(": DNS " DNS1);
+            Serial.printf("%s: DNS " DNS1 "\n", name);
         }
 #else
         esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_MAIN, &dns);
@@ -383,8 +366,7 @@ void NetworkService::setDns()
 #ifdef F_DEBUG
         if (!esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_BACKUP, &dns))
         {
-            Serial.print(name);
-            Serial.println(": DNS " DNS2);
+            Serial.printf("%s: DNS " DNS2 "\n", name);
         }
 #else
         esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_BACKUP, &dns);
@@ -400,8 +382,7 @@ void NetworkService::setDns()
 #ifdef F_DEBUG
         if (!esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_FALLBACK, &dns))
         {
-            Serial.print(name);
-            Serial.println(": DNS " DNS3);
+            Serial.printf("%s: DNS " DNS3 "\n", name);
         }
 #else
         esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_FALLBACK, &dns);
@@ -413,21 +394,13 @@ void NetworkService::setDns()
 
 void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
-#ifdef F_INFO
-    Serial.print(Network.name);
-    Serial.println(": connected");
-#endif
-
-#ifdef F_DEBUG
-    Serial.print(Network.name);
-    Serial.print(": ");
 #ifdef F_VERBOSE
-    Serial.print(WiFi.SSID());
-    Serial.print(" @ ");
+    Serial.printf("%s: connected, %d dBm @ %s\n", Network.name, WiFi.RSSI(), WiFi.SSID().c_str());
+#elif defined(F_DEBUG)
+    Serial.printf("%s: connected, %d dBm\n", Network.name, WiFi.RSSI());
+#elif defined(F_INFO)
+    Serial.printf("%s: connected\n", Network.name);
 #endif // F_VERBOSE
-    Serial.print(WiFi.RSSI());
-    Serial.println(" dBm");
-#endif // F_DEBUG
     String _ipv4 = WiFi.localIP().toString();
     String _ipv6 = WiFi.localIPv6().toString();
     if (Network.IPv4 != _ipv4 || Network.IPv6 != _ipv6)
@@ -440,22 +413,15 @@ void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 #ifdef F_INFO
         if (Network.IPv4 != IPAddress().toString())
         {
-            Serial.print(Network.name);
-            Serial.print(": IPv4 ");
-            Serial.println(Network.IPv4);
+            Serial.printf("%s: IPv4 %s\n", Network.name, Network.IPv4.c_str());
         }
         if (Network.IPv6 != IPv6Address().toString())
         {
-            Serial.print(Network.name);
-            Serial.print(": IPv6 ");
-            Serial.println(Network.IPv6);
+            Serial.printf("%s: IPv6 %s\n", Network.name, Network.IPv6.c_str());
         }
 #endif // F_INFO
 #ifdef F_INFO
-        Serial.print(Network.name);
-        Serial.print(": domain ");
-        Serial.write(domain.data(), domain.size());
-        Serial.println();
+        Serial.printf("%s: domain %s\n", Network.name, domain.data());
 #endif // F_INFO
     }
 #if defined(DNS1) || defined(DNS2) || defined(DNS3)
@@ -470,12 +436,9 @@ void NetworkService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
     Network.lastMillis = millis();
 #ifdef F_DEBUG
-    Serial.print(Network.name);
-    Serial.print(": disconnected, ");
-    Serial.println(WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
+    Serial.printf("%s: disconnected, %s\n", Network.name, WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 #elif defined(F_INFO)
-    Serial.print(Network.name);
-    Serial.println(": disconnected");
+    Serial.printf("%s: disconnected\n", Network.name);
 #endif // F_DEBUG
     WiFi.reconnect();
 }
