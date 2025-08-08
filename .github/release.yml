@@ -1,0 +1,17 @@
+changelog:
+  exclude:
+    authors:
+      - dependabot
+  categories:
+    - title: "🚀 Features"
+      labels:
+        - enhancement
+    - title: "🐛 Bug Fixes"
+      labels:
+        - bug
+    - title: "📦 Dependency Updates"
+      labels:
+        - dependencies
+    - title: "🔧 Other Changes"
+      labels:
+        - "*"
