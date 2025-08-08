@@ -11,14 +11,12 @@
 class WebSocketExtension : public ExtensionModule
 {
 private:
-    bool pending = false;
-
     static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
 
 public:
     WebSocketExtension();
 
-    AsyncWebSocket *server = new AsyncWebSocket("/ws");
+    AsyncWebSocket *ws = new AsyncWebSocket("/ws");
 
     void ready() override;
     void handle() override;
