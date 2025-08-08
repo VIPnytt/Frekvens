@@ -201,9 +201,11 @@ private:
 
     bool pending = false;
 
-    unsigned long
-        lastMillis = 0,
-        _lastMillis = 0;
+    unsigned long lastMillis = 0;
+
+#ifdef F_VERBOSE
+    unsigned long _lastMillis = 0;
+#endif
 
 #ifdef TASK_STACK_MODES
     static constexpr uint16_t stackSize = TASK_STACK_MODES;

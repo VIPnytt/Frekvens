@@ -24,7 +24,7 @@ void DeviceService::init()
     Serial.begin(MONITOR_SPEED);
 #endif
 #ifdef F_VERBOSE
-    delay(1 << 11);
+    delay(1 << 10);
 #endif
 #ifdef F_INFO
     Serial.printf("%s: Frekvens " VERSION "\n", name);
@@ -208,6 +208,7 @@ void DeviceService::ready()
 #endif // EXTENSION_BUILD
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+#ifdef F_VERBOSE
     {
         const std::string id = std::string(name).append("_heap");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -226,6 +227,7 @@ void DeviceService::ready()
         component[Abbreviations::unit_of_measurement] = "kB";
         component[Abbreviations::value_template] = "{{value_json.heap/2**10}}";
     }
+#endif // F_VERBOSE
     {
         const std::string id = std::string(name).append("_identify");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -267,6 +269,7 @@ void DeviceService::ready()
         component[Abbreviations::platform] = "button";
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
     }
+#ifdef F_VERBOSE
     {
         const std::string id = std::string(name).append("_stack");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -283,6 +286,7 @@ void DeviceService::ready()
         component[Abbreviations::unit_of_measurement] = "kB";
         component[Abbreviations::value_template] = "{{value_json.stack/2**10}}";
     }
+#endif // F_VERBOSE
     {
         const std::string id = std::string(name).append("_temperature");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -336,7 +340,9 @@ void DeviceService::run()
 {
     Network.handle();
     Display.handle();
+#ifdef F_VERBOSE
     Extensions.handle();
+#endif
     Modes.handle();
     if (millis() - lastMillis > UINT16_MAX)
     {
@@ -437,11 +443,15 @@ void DeviceService::transmit()
 #ifdef BOARD_NAME
     doc["board"] = BOARD_NAME;
 #endif
+#ifdef F_VERBOSE
     doc["heap"] = ESP.getHeapSize() - ESP.getFreeHeap();
+#endif
     doc["model"] = MODEL;
     doc["name"] = NAME;
     doc["releases_url"] = "https://github.com/VIPnytt/Frekvens/releases";
+#ifdef F_VERBOSE
     doc["stack"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(nullptr);
+#endif
     doc["temperature"] = temperatureRead();
     doc["version_current"] = VERSION;
     doc["version_available"] = latest.empty() ? VERSION : latest;

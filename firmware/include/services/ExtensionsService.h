@@ -92,7 +92,11 @@ public:
 
     void setup();
     void ready();
+
+#ifdef F_VERBOSE
     void handle();
+#endif
+
     const std::vector<ExtensionModule *> &getAll() const;
 
     static ExtensionsService &getInstance();
