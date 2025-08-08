@@ -7,7 +7,11 @@
 void WebServerService::setup()
 {
     http->on("/canonical", WebRequestMethod::HTTP_OPTIONS, &onOptionsCanonical);
+
+#if EXTENSION_WEBAPP
     http->onNotFound(&onNotFound);
+#endif // EXTENSION_WEBAPP
+
     http->begin();
 }
 
@@ -26,8 +30,10 @@ void WebServerService::onOptionsCanonical(AsyncWebServerRequest *request)
     }
 }
 
+#if EXTENSION_WEBAPP || defined(F_VERBOSE)
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {
+#if EXTENSION_WEBAPP
     if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
 #ifdef F_VERBOSE
@@ -36,6 +42,7 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
         request->redirect("http://" + WiFi.softAPIP().toString(), t_http_codes::HTTP_CODE_FOUND);
     }
     else
+#endif // EXTENSION_WEBAPP
     {
 #ifdef F_VERBOSE
         Serial.printf("%s: HTTP 404, %s %s\n", WebServer.name, request->methodToString(), request->url());
@@ -43,6 +50,7 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
         request->send(t_http_codes::HTTP_CODE_NOT_FOUND);
     }
 }
+#endif // EXTENSION_WEBAPP || defined(F_VERBOSE)
 
 WebServerService &WebServerService::getInstance()
 {
