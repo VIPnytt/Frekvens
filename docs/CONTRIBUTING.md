@@ -79,7 +79,7 @@ When collecting information:
 
 ### Submitting a Bug Report
 
-> **Important:** Do not report security vulnerabilities publicly. Submit them via [GitHub Security Advisories](https://github.com/VIPnytt/Frekvens/security).
+> **Important:** Do not report security vulnerabilities publicly. Submit them via GitHub [Security advisory](https://github.com/VIPnytt/Frekvens/security).
 
 To report a bug:
 
@@ -131,7 +131,7 @@ Look for issues labeled `good first issue` or `help wanted`. Then:
 
 1. Fork the repository
 2. Create a new branch for your changes
-3. Follow our [Style Guidelines](#style-guidelines)
+3. Follow our [Style Guidelines](#-style-guidelines)
 4. Submit a pull request with a clear and concise description
 
 ## 📖 Improving the Documentation
@@ -157,7 +157,7 @@ To keep the codebase clean and consistent:
 
 Use descriptive commit messages that explain what changed and why.
 
-Format: `type(scope): short description` or `Longer description.`
+Format: `type(scope): short description` or `Longer description`.
 
 Examples of `type`:
 
