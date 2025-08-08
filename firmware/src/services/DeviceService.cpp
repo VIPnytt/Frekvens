@@ -398,7 +398,7 @@ void DeviceService::power(bool state)
     Mqtt->disconnect();
 #endif
 #if EXTENSION_WEBSOCKET
-    WebSocket->server->closeAll();
+    WebSocket->ws->closeAll();
 #endif
     WiFi.disconnect(true);
     state ? ESP.restart() : esp_deep_sleep_start();
