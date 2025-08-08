@@ -27,12 +27,9 @@ void DeviceService::init()
     delay(1 << 11);
 #endif
 #ifdef F_INFO
-    Serial.print(name);
-    Serial.println(": Frekvens " VERSION);
-    Serial.print(name);
-    Serial.println(": " MANUFACTURER " " MODEL);
-    Serial.print(name);
-    Serial.println(": " BOARD_NAME);
+    Serial.printf("%s: Frekvens " VERSION "\n", name);
+    Serial.printf("%s: " MANUFACTURER " " MODEL "\n", name);
+    Serial.printf("%s: " BOARD_NAME "\n", name);
 #endif
 
     gpio_deep_sleep_hold_dis();
@@ -120,9 +117,7 @@ void DeviceService::ready()
             if (Storage.isKey("active"))
             {
 #ifdef F_DEBUG
-                Serial.print(name);
-                Serial.print(": resetting ");
-                Serial.println(_name);
+                Serial.printf("%s: resetting %s\n", name, _name);
 #endif
                 Storage.remove("active");
             }
@@ -333,8 +328,7 @@ void DeviceService::ready()
     transmit();
 
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.println(": ready");
+    Serial.printf("%s: ready\n", name);
 #endif
 }
 
@@ -369,12 +363,7 @@ void DeviceService::update()
             if (latest != VERSION)
             {
 #ifdef F_INFO
-                Serial.print(name);
-                Serial.print(": update available, ");
-                Serial.print(VERSION);
-                Serial.print(" -> ");
-                Serial.print(latest.c_str());
-                Serial.println(" - release notes @ https://github.com/VIPnytt/Frekvens/releases");
+                Serial.printf("%s: update available, " VERSION " -> %s - release notes @ %s/releases/latest\n", name, latest.c_str(), repository.data());
 #endif
             }
         }
@@ -385,8 +374,7 @@ void DeviceService::identify()
 {
     Modes.set(false, name);
 #ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.println(": identify");
+    Serial.printf("%s: identify\n", name);
 #endif
     Display.clear();
     TextHandler("!", FontLarge).draw();
@@ -396,8 +384,7 @@ void DeviceService::identify()
 void DeviceService::power(bool state)
 {
 #ifdef F_INFO
-    Serial.print(name);
-    Serial.println(state ? ": rebooting..." : ": powering off...");
+    Serial.printf(state ? "%s: rebooting...\n" : "%s: powering off...\n", name);
 #endif
     JsonDocument doc;
     doc["event"] = state ? "reboot" : "power";
@@ -474,9 +461,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
     }
 #endif // F_DEBUG
 #ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.print(": transmitting, ");
-    Serial.println(source);
+    Serial.printf("%s: transmitting, %s\n", name, source);
 #endif // F_VERBOSE
     if (retain)
     {
@@ -491,9 +476,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
 void DeviceService::receive(const JsonDocument doc, const char *const source, const char *const destination)
 {
 #ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.print(": receiving @ ");
-    Serial.println(source);
+    Serial.printf("%s: receiving @ %s\n", name, source);
 #endif
     ServiceModule *services[] = {
         &Device,
@@ -525,11 +508,6 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
             return;
         }
     }
-#ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": unknown module ");
-    Serial.println(destination);
-#endif
 }
 
 void DeviceService::receiverHook(const JsonDocument doc)

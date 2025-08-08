@@ -114,9 +114,7 @@ void MicrophoneExtension::handle()
             {
                 detected = true;
 #ifdef F_VERBOSE
-                Serial.print(name);
-                Serial.print(": sound, level ");
-                Serial.println(level);
+                Serial.printf("%s: sound, level %d\n", name, level);
 #endif
             }
         }
@@ -124,9 +122,7 @@ void MicrophoneExtension::handle()
         {
             detected = false;
 #ifdef F_VERBOSE
-            Serial.print(name);
-            Serial.print(": silence, level ");
-            Serial.println(level);
+            Serial.printf("%s: silence, level %d\n", name, level);
 #endif
         }
     }
@@ -155,8 +151,7 @@ void MicrophoneExtension::set(bool enable)
         pending = true;
 
 #ifdef F_INFO
-        Serial.print(name);
-        Serial.println(active ? ": active" : ": inactive");
+        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
 #endif
     }
 }

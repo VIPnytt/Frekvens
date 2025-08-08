@@ -80,8 +80,7 @@ void PlaylistExtension::handle()
             step = 0;
         }
 #ifdef F_INFO
-        Serial.print(name);
-        Serial.println(": next mode");
+        Serial.printf("%s: next mode\n", name);
 #endif
         Modes.set(playlist[step].mode.c_str());
         lastMillis = millis();
@@ -108,8 +107,7 @@ void PlaylistExtension::set(bool enable)
         transmit();
 
 #ifdef F_INFO
-        Serial.print(name);
-        Serial.println(active ? ": active" : ": inactive");
+        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
 #endif
     }
 }

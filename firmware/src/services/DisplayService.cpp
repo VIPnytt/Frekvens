@@ -67,17 +67,9 @@ void DisplayService::setup()
     flush();
 
 #if defined(F_VERBOSE) && defined(SPI_FREQUENCY)
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.print(1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer));
-    Serial.print(" fps @ ");
-    Serial.print(SPI_FREQUENCY / (float)1000000);
-    Serial.println(" MHz");
+    Serial.printf("%s: %.0f fps @ %.1f MHz\n", name, 1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer), SPI_FREQUENCY / (float)1000000);
 #elif defined(F_DEBUG)
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.print(1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer));
-    Serial.println(" fps");
+    Serial.printf("%s: %.0f fps\n", name, 1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer));
 #endif
 }
 
@@ -259,11 +251,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
 #ifdef F_VERBOSE
     if (x >= COLUMNS || y >= ROWS)
     {
-        Serial.print(name);
-        Serial.print(": overflow ");
-        Serial.print(x);
-        Serial.print(":");
-        Serial.println(y);
+        Serial.printf("%s: invalid %d:%d\n", name, x, y);
     }
 #endif
     return frameDraft[x + y * COLUMNS];
@@ -274,11 +262,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 #ifdef F_VERBOSE
     if (x >= COLUMNS || y >= ROWS)
     {
-        Serial.print(name);
-        Serial.print(": overflow ");
-        Serial.print(x);
-        Serial.print(":");
-        Serial.println(y);
+        Serial.printf("%s: invalid %d:%d\n", name, x, y);
     }
 #endif
     frameDraft[x + y * COLUMNS] = brightness;

@@ -108,9 +108,7 @@ void TickerMode::setFont(const char *const fontName)
         }
     }
 #ifdef F_DEBUG
-    Serial.print(name);
-    Serial.print(": unknown font ");
-    Serial.println(fontName);
+    Serial.printf("%s: unknown font %s\n", name, fontName);
 #endif
 }
 
@@ -147,8 +145,7 @@ void TickerMode::receiverHook(const JsonDocument doc)
     {
         setMessage(doc["message"].as<String>());
 #ifdef F_DEBUG
-        Serial.print(name);
-        Serial.println(": received");
+        Serial.printf("%s: received\n", name);
 #endif
     }
 }

@@ -194,8 +194,7 @@ void ModesService::setup()
         mode->setup();
     }
 #ifdef F_VERBOSE
-    Serial.print(name);
-    Serial.println(": setup complete");
+    Serial.printf("%s: setup complete\n", name);
 #endif
 }
 
@@ -242,16 +241,14 @@ void ModesService::set(bool enable, const char *const source)
     if (enable && taskHandle && eTaskGetState(taskHandle) == eTaskState::eSuspended)
     {
 #ifdef F_DEBUG
-        Serial.print(source);
-        Serial.println(": resuming mode");
+        Serial.printf("%s: resuming mode\n", source);
 #endif
         vTaskResume(taskHandle);
     }
     else if (!enable && taskHandle && eTaskGetState(taskHandle) != eTaskState::eSuspended)
     {
 #ifdef F_DEBUG
-        Serial.print(source);
-        Serial.println(": suspending mode");
+        Serial.printf("%s: suspending mode\n", source);
 #endif
         vTaskSuspend(taskHandle);
     }
@@ -279,9 +276,7 @@ void ModesService::set(ModeModule *mode)
     teardown();
     active = mode;
 #ifdef F_INFO
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.println(active->name);
+    Serial.printf("%s: %s\n", name, active->name);
 #endif
 
     Preferences Storage;
@@ -300,8 +295,7 @@ void ModesService::splash()
     if (!Display.getPower())
     {
 #ifdef F_INFO
-        Serial.print(name);
-        Serial.println(": power");
+        Serial.printf("%s: power\n", name);
 #endif
         Display.setPower(true);
     }

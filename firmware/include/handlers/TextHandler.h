@@ -7,6 +7,8 @@
 class TextHandler
 {
 private:
+    static constexpr std::string_view name = "TextHandler";
+
     const String text;
 
     FontModule *font;
