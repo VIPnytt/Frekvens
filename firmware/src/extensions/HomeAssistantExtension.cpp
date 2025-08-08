@@ -63,7 +63,11 @@ void HomeAssistantExtension::setup()
 
 void HomeAssistantExtension::ready()
 {
-    (*discovery)[Abbreviations::availability][Abbreviations::topic] = "frekvens/" HOSTNAME "/availability";
+    {
+        JsonObject availability = (*discovery)[Abbreviations::availability].to<JsonObject>();
+        availability[Abbreviations::payload_not_available] = "";
+        availability[Abbreviations::topic] = "frekvens/" HOSTNAME "/availability";
+    }
     {
         JsonObject device = (*discovery)[Abbreviations::device].to<JsonObject>();
 #if EXTENSION_WEBAPP
