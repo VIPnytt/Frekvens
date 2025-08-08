@@ -74,7 +74,7 @@ void MqttExtension::disconnect()
     lastMillis = millis();
     if (client.connected())
     {
-        client.publish("frekvens/" HOSTNAME "/availability", 1, true, "offline");
+        client.publish("frekvens/" HOSTNAME "/availability", 1, true, reinterpret_cast<const uint8_t *>(""), 0);
         client.loop();
         client.disconnect();
     }
