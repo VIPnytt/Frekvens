@@ -32,7 +32,7 @@ This Code of Conduct applies to all community spaces — including GitHub reposi
 
 Community maintainers are responsible for enforcing this Code of Conduct and may take action as appropriate.
 
-If you witness or experience unacceptable behavior, please report it to the maintainers via GitHub’s [Security Advisory form](https://github.com/VIPnytt/Frekvens/security). Reports will be reviewed promptly, confidentially, and fairly.
+If you witness or experience unacceptable behavior, please report it to the maintainers via GitHub [Security advisory](https://github.com/VIPnytt/Frekvens/security). Reports will be reviewed promptly, confidentially, and fairly.
 
 ## ⚠️ Consequences
 
