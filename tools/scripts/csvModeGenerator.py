@@ -1,4 +1,4 @@
-# Generate full-fledged compile-ready modes from .csv files, provided by the webapp via the "Animation" or "Draw" modes.
+# Generate modes from .csv files provided by the "Animation" or "Draw" modes.
 
 import csv
 import os
@@ -13,8 +13,7 @@ if ROWS is None:
 
 def check(_file):
     if (
-        os.path.isfile("firmware/src/modes.cpp")
-        and os.path.isdir("firmware/include/modes/")
+        os.path.isdir("firmware/include/modes/")
         and os.path.isdir("firmware/src/modes/")
         and not os.path.isfile(f"firmware/include/modes/{_file}Mode.h")
         and not os.path.isfile(f"firmware/src/modes/{_file}Mode.cpp")
@@ -137,26 +136,6 @@ void {file}Mode::{method}()
         )
     print(f"firmware/src/modes/{file}Mode.cpp")
 
-# /src/modes.cpp
-with open("firmware/src/modes.cpp", "r+") as cppModes:
-    lines = cppModes.readlines()
-    insertInclude = True
-    insertNew = True
-    posInclude = len(lines)
-    posNew = len(lines)
-    for lineNo, line in enumerate(lines):
-        if line.find(f"modes/{file}Mode.h") >= 0:
-            insertInclude = False
-        if line.find(f"new {file}Mode") >= 0:
-            insertNew = False
-        if line.rstrip() == "{":
-            posInclude = lineNo - 2
-        if line.rstrip() == "}":
-            posNew = lineNo - 1
-    if insertNew:
-        lines.insert(posNew, f"        new {file}Mode\n")
-    if insertInclude:
-        lines.insert(posInclude, f'#include "modes/{file}Mode.h"\n')
-    cppModes.seek(0)
-    cppModes.writelines(lines)
-    print("firmware/src/modes.cpp")
+print("The mode has been generated successfully!")
+print("Modify the generated files as needed.")
+print("When done, add the mode to firmware/include/ModesService.h")
