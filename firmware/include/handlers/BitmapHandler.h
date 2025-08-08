@@ -1,11 +1,14 @@
 #pragma once
 
 #include <stdint.h>
+#include <string_view>
 #include <vector>
 
 class BitmapHandler
 {
 private:
+    static constexpr std::string_view name = "BitmapHandler";
+
     const std::vector<uint16_t> bitmap;
 
     uint8_t

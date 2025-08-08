@@ -119,8 +119,7 @@ void HomeAssistantExtension::undiscover()
 {
     Mqtt->client.publish(discoveryTopic.c_str(), 1, true, reinterpret_cast<const uint8_t *>(""), 0);
 #ifdef F_INFO
-    Serial.print(name);
-    Serial.println(": discovery packet removed");
+    Serial.printf("%s: discovery packet removed\n", name);
 #endif
 }
 

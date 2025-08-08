@@ -48,6 +48,8 @@ public:
     void draw();
 
 private:
+    static constexpr std::string_view name = "WeatherHandler";
+
     const std::vector<uint16_t>
         conditionClear = {
             0b0011100,

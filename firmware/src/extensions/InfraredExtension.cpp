@@ -66,26 +66,22 @@ void InfraredExtension::handle()
 #ifdef F_VERBOSE
         if (!results.repeat && results.decode_type != decode_type_t::UNKNOWN && !parse(results))
         {
-            Serial.print(name);
-            Serial.print(": ");
             switch (results.decode_type)
             {
 #if DECODE_RC5
             case decode_type_t::RC5:
-                Serial.print(D_STR_RC5);
+                Serial.printf("%s: " D_STR_RC5 " 0x%X\n", name, results.command);
                 break;
 #endif // DECODE_RC5
 #if DECODE_SONY
             case decode_type_t::SONY:
-                Serial.print(D_STR_SONY);
+                Serial.printf("%s: " D_STR_SONY " 0x%X\n", name, results.command);
                 break;
 #endif // DECODE_SONY
             default:
-                Serial.print(results.decode_type);
+                Serial.printf("%s: protocol %d code 0x%X\n", name, results.decode_type, results.command);
                 break;
             }
-            Serial.print(", 0x");
-            Serial.println(results.command, HEX);
         }
 #else
         if (!results.repeat && results.decode_type != decode_type_t::UNKNOWN)
@@ -111,8 +107,7 @@ bool InfraredExtension::parse(decode_results results)
                     if (brightness > 0)
                     {
 #ifdef F_INFO
-                        Serial.print(name);
-                        Serial.println(": brightness -");
+                        Serial.printf("%s: brightness -\n", name);
 #endif
                         Display.setGlobalBrightness(max(0, brightness - 5));
                         lastMillis = millis();
@@ -128,8 +123,7 @@ bool InfraredExtension::parse(decode_results results)
                     if (brightness < UINT8_MAX)
                     {
 #ifdef F_INFO
-                        Serial.print(name);
-                        Serial.println(": brightness +");
+                        Serial.printf("%s: brightness +\n", name);
 #endif
                         Display.setGlobalBrightness(min(UINT8_MAX, brightness + 5));
                         lastMillis = millis();
@@ -142,8 +136,7 @@ bool InfraredExtension::parse(decode_results results)
                 if (millis() - lastMillis > 1000)
                 {
 #ifdef F_INFO
-                    Serial.print(name);
-                    Serial.println(": power");
+                    Serial.printf("%s: power\n", name);
 #endif
                     Display.setPower(!Display.getPower());
                     lastMillis = millis();
@@ -156,8 +149,7 @@ bool InfraredExtension::parse(decode_results results)
                 if (millis() - lastMillis > 1000)
                 {
 #ifdef F_INFO
-                    Serial.print(name);
-                    Serial.println(": mic");
+                    Serial.printf("%s: microphone\n", name);
 #endif
                     Microphone->set(!Microphone->get());
                     lastMillis = millis();
@@ -171,8 +163,7 @@ bool InfraredExtension::parse(decode_results results)
                 if (millis() - lastMillis > 1000)
                 {
 #ifdef F_INFO
-                    Serial.print(name);
-                    Serial.println(": playlist");
+                    Serial.printf("%s: playlist\n", name);
 #endif
                     Playlist->set(!Playlist->get());
                     lastMillis = millis();
@@ -185,8 +176,7 @@ bool InfraredExtension::parse(decode_results results)
                 if (millis() - lastMillis > 500)
                 {
 #ifdef F_INFO
-                    Serial.print(name);
-                    Serial.println(": mode +");
+                    Serial.printf("%s: mode +\n", name);
 #endif
                     Modes.next();
                     lastMillis = millis();
@@ -198,8 +188,7 @@ bool InfraredExtension::parse(decode_results results)
                 if (millis() - lastMillis > 500)
                 {
 #ifdef F_INFO
-                    Serial.print(name);
-                    Serial.println(": mode -");
+                    Serial.printf("%s: mode -\n", name);
 #endif
                     Modes.previous();
                     lastMillis = millis();
@@ -232,8 +221,7 @@ void InfraredExtension::set(bool enable)
         transmit();
 
 #ifdef F_INFO
-        Serial.print(name);
-        Serial.println(active ? ": active" : ": inactive");
+        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
 #endif
     }
 }

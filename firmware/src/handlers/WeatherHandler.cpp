@@ -16,8 +16,7 @@ void WeatherHandler::parse(const std::string code, const std::vector<Codeset> co
         }
     }
 #ifdef F_VERBOSE
-    Serial.print("WeatherHandler: unknown condition code ");
-    Serial.println(code.c_str());
+    Serial.printf("%s: unknown condition code %s\n", name, code.c_str());
 #endif
 }
 
@@ -32,8 +31,7 @@ void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codes
         }
     }
 #ifdef F_VERBOSE
-    Serial.print("WeatherHandler: unknown condition code ");
-    Serial.println(code);
+    Serial.printf("%s: unknown condition code %d\n", name, code);
 #endif
 }
 
@@ -48,8 +46,7 @@ void WeatherHandler::parse(const uint16_t code, const std::vector<Codeset16> cod
         }
     }
 #ifdef F_VERBOSE
-    Serial.print("WeatherHandler: unknown condition code ");
-    Serial.println(code);
+    Serial.printf("%s: unknown condition code %d\n", name, code);
 #endif
 }
 

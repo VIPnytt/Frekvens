@@ -50,15 +50,13 @@ void RtcExtension::setup()
         tv.tv_sec = rtc.GetDateTime().Unix64Time();
         settimeofday(&tv, nullptr);
 #ifdef F_VERBOSE
-        Serial.print(Rtc->name);
-        Serial.println(": sync");
+        Serial.printf("%s: sync\n", Rtc->name);
 #endif // F_VERBOSE
     }
 #ifdef F_DEBUG
     else
     {
-        Serial.print(Rtc->name);
-        Serial.println(": out of sync");
+        Serial.printf("%s: out of sync\n", name);
     }
 #endif // F_INFO
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
@@ -155,8 +153,7 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
     Rtc->rtc.SetDateTime(dt);
 
 #ifdef F_VERBOSE
-    Serial.print(Rtc->name);
-    Serial.println(": NTP sync");
+    Serial.printf("%s: NTP sync\n", Rtc->name);
 #endif // F_VERBOSE
 }
 

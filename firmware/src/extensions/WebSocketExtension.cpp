@@ -56,8 +56,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
 #ifdef F_DEBUG
         if (len < info->len)
         {
-            Serial.print(WebSocket->name);
-            Serial.println(": chunked messages is currently not supported");
+                Serial.printf("%s: chunked messages is currently not supported\n", WebSocket->name);
             return;
         }
 #endif
