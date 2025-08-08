@@ -24,6 +24,7 @@ OtaExtension::OtaExtension() : ExtensionModule("OTA")
 void OtaExtension::setup()
 {
     ArduinoOTA.setHostname(HOSTNAME);
+    ArduinoOTA.setMdnsEnabled(false);
 
 #ifdef OTA_KEY_HASH
     ArduinoOTA.setPasswordHash(OTA_KEY_HASH);

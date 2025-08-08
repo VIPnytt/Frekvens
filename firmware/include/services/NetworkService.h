@@ -11,7 +11,9 @@ class NetworkService : public ServiceModule
 private:
     NetworkService() : ServiceModule("Network") {};
 
-    bool pending = false;
+    bool
+        mDNS = false,
+        pending = false;
 
     unsigned long
         lastMillis = 0,
