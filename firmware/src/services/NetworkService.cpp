@@ -401,15 +401,28 @@ void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 #elif defined(F_INFO)
     Serial.printf("%s: connected\n", Network.name);
 #endif // F_VERBOSE
+    if (!Network.mDNS)
+    {
+        Network.mDNS = MDNS.begin(HOSTNAME);
+        if (Network.mDNS)
+        {
+            MDNS.setInstanceName(NAME);
+#if EXTENSION_WEBAPP
+            MDNS.addService("http", "tcp", 80);
+#endif // EXTENSION_WEBAPP
+#if EXTENSION_OTA && (defined(OTA_KEY_HASH) || defined(OTA_KEY))
+            MDNS.enableArduino(3232, true);
+#elif EXTENSION_OTA
+            MDNS.enableArduino(3232, false);
+#endif // EXTENSION_OTA && (defined(OTA_KEY_HASH) || defined(OTA_KEY))
+        }
+    }
     String _ipv4 = WiFi.localIP().toString();
     String _ipv6 = WiFi.localIPv6().toString();
     if (Network.IPv4 != _ipv4 || Network.IPv6 != _ipv6)
     {
         Network.IPv4 = _ipv4;
         Network.IPv6 = _ipv6;
-        MDNS.begin(HOSTNAME);
-        MDNS.setInstanceName(NAME);
-        MDNS.addService("http", "tcp", 80);
 #ifdef F_INFO
         if (Network.IPv4 != IPAddress().toString())
         {
