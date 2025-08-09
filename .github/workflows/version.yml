@@ -1,0 +1,58 @@
+name: Version
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Version check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - id: firmware
+        run: |
+          echo version=$(grep '#define VERSION' firmware/include/config/version.h | awk '{print $3}' | tr -d '"') >> $GITHUB_OUTPUT
+
+      - id: platformio
+        run: |
+          echo version=$(jq -r '.version' library.json) >> $GITHUB_OUTPUT
+
+      - id: tools
+        run: |
+          echo version=$(python -c "import tomllib; f=open('tools/pyproject.toml','rb'); print(tomllib.load(f)['project']['version'])") >> $GITHUB_OUTPUT
+
+      - id: webapp
+        run: |
+          echo version=$(jq -r '.version' webapp/package.json) >> $GITHUB_OUTPUT
+          echo version_lock=$(jq -r '.version' webapp/package-lock.json) >> $GITHUB_OUTPUT
+          echo version_lock_package=$(jq -r '.packages[""].version' webapp/package-lock.json) >> $GITHUB_OUTPUT
+
+      - name: Compare versions
+        run: |
+          firmware="${{ steps.firmware.outputs.version }}"
+          platformio="${{ steps.platformio.outputs.version }}"
+          tools="${{ steps.tools.outputs.version }}"
+          webapp="${{ steps.webapp.outputs.version }}"
+          webapp_lock="${{ steps.webapp.outputs.version_lock }}"
+          webapp_lock_package="${{ steps.webapp.outputs.version_lock_package }}"
+          if [ "$platformio" != "$firmware" ] || [ "$tools" != "$firmware" ] || [ "$webapp" != "$firmware" ] || [ "$webapp_lock" != "$firmware" ] || [ "$webapp_lock_package" != "$firmware" ]; then
+            echo "❌ Version mismatch: Firmware=$firmware, PlatformIO=$platformio, Tools=$tools, WebApp=$webapp, WebAppLock=$webapp_lock, WebAppLockPackage=$webapp_lock_package"
+            exit 1
+          fi
+          echo "✅ All versions match: $firmware"
