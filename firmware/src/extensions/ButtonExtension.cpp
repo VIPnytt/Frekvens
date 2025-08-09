@@ -86,19 +86,26 @@ void ButtonExtension::handle()
     else if (powerState && millis() - powerMillis > UINT8_MAX)
     {
         uint8_t brightness = Display.getGlobalBrightness();
-        if ((brightness <= 0 && !brightnessIncrease) || (brightness >= UINT8_MAX && brightnessIncrease))
+        if (!powerLong)
         {
-            brightnessIncrease = !brightnessIncrease;
+            powerLong = true;
+            event("power", "long");
+            switch (brightness)
+            {
+            case 0:
+                brightnessIncrease = true;
+                break;
+            case UINT8_MAX:
+                brightnessIncrease = false;
+                break;
+            default:
+                brightnessIncrease = !brightnessIncrease;
+            }
         }
 #ifdef F_INFO
         Serial.printf(brightnessIncrease ? "%s: brightness +\n" : "%s: brightness -\n", Button->name);
 #endif // F_INFO
         Display.setGlobalBrightness(brightnessIncrease ? brightness + 1 : brightness - 1);
-        if (!powerLong)
-        {
-            event("power", "long");
-        }
-        powerLong = true;
     }
 #endif // PIN_SW1
 
@@ -119,18 +126,18 @@ void ButtonExtension::handle()
         event("mode", "short");
         modeShort = false;
     }
-    else if (modeState && millis() - modeMillis > 750)
+    else if (modeState && millis() - modeMillis > 1000)
     {
         modeMillis = millis();
+        if (!modeLong)
+        {
+            modeLong = true;
+            event("mode", "long");
+        }
 #ifdef F_INFO
         Serial.printf("%s: mode\n", Button->name);
 #endif // F_INFO
         Modes.next();
-        if (!modeLong)
-        {
-            event("mode", "long");
-        }
-        modeLong = true;
     }
 
 #endif // PIN_SW2
