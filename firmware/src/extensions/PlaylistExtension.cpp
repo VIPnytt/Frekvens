@@ -176,11 +176,6 @@ void PlaylistExtension::transmitterHook(const JsonDocument &doc, const char *con
 
 void PlaylistExtension::receiverHook(const JsonDocument doc)
 {
-    // Active
-    if (doc["active"].is<bool>())
-    {
-        set(doc["active"].as<bool>());
-    }
     // Playlist
     if (doc["playlist"].is<JsonArrayConst>())
     {
@@ -196,6 +191,11 @@ void PlaylistExtension::receiverHook(const JsonDocument doc)
             }
         }
         load(_playlist);
+    }
+    // Active
+    if (doc["active"].is<bool>())
+    {
+        set(doc["active"].as<bool>());
     }
 }
 
