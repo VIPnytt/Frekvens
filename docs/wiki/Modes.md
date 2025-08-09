@@ -24,15 +24,15 @@ See also [Draw](#-draw).
 
 Inspired by the original *IKEA Frekvens* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the arrow, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the arrow, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_ARROW=true
 ```
+
+> Enabled by default.
 
 ## 💻 Art-net
 
@@ -58,13 +58,13 @@ See also [Distributed Display Protocol](#-distributed-display-protocol) and [E1.
 
 Binary clock, counts seconds since midnight.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BINARYCLOCK=true
 ```
+
+> Enabled by default.
 
 See also [Binary epoch](#1%EF%B8%8F⃣-binary-epoch).
 
@@ -72,13 +72,13 @@ See also [Binary epoch](#1%EF%B8%8F⃣-binary-epoch).
 
 Binary clock, counts seconds since 1970.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_BINARYEPOCH=true
 ```
+
+> Enabled by default.
 
 See also [Binary clock](#0%EF%B8%8F⃣-binary-clock).
 
@@ -86,7 +86,7 @@ See also [Binary clock](#0%EF%B8%8F⃣-binary-clock).
 
 Inspired by the original *IKEA Frekvens* mode.
 
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the blinds.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -94,13 +94,11 @@ Enabled by default.
 MODE_BLINDS=true
 ```
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the blinds.
+> Enabled by default.
 
 ## 👁️ Blink
 
 Use it as an alarm.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -108,13 +106,13 @@ Enabled by default.
 MODE_BLINK=true
 ```
 
+> Enabled by default.
+
 See also [Bright](#-bright).
 
 ## 🕰️ Bold clock
 
 Clock.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -122,13 +120,13 @@ Enabled by default.
 MODE_BOLD=true
 ```
 
+> Enabled by default.
+
 See also [Small clock](#%EF%B8%8F-small-clock).
 
 ## 💥 Breakout clock
 
 Inspired by the classic breakout game.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -136,11 +134,11 @@ Enabled by default.
 MODE_BREAKOUT=true
 ```
 
+> Enabled by default.
+
 ## 🌟 Bright
 
 Use it as a lamp, if desired.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -148,21 +146,23 @@ Enabled by default.
 MODE_BRIGHT=true
 ```
 
+> Enabled by default.
+
 See also [Blink](#%EF%B8%8F-blink).
 
 ## ⚪ Circle
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the circle.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the circle.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_CIRCLE=true
 ```
+
+> Enabled by default.
 
 See also [Ring](#-ring).
 
@@ -190,13 +190,13 @@ API payload examples:
 
 > The timestamp should be a valid ISO 8601 timestamp, without timezone suffix.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_COUNTDOWN=true
 ```
+
+> Enabled by default.
 
 See also [Blink](#%EF%B8%8F-blink).
 
@@ -260,9 +260,7 @@ See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-d
 
 Inspired by the original *IKEA Frekvens* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the equalizer, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the equalizer, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -270,11 +268,11 @@ Enabled by default.
 MODE_EQUALIZER=true
 ```
 
+> Enabled by default.
+
 ## 🎆 Firework
 
 Happy new year.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -282,11 +280,11 @@ Enabled by default.
 MODE_FIREWORK=true
 ```
 
+> Enabled by default.
+
 ## 🪰 Flies
 
 Multiplayer fly-simulator.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -294,11 +292,11 @@ Enabled by default.
 MODE_FLIES=true
 ```
 
+> Enabled by default.
+
 ## 🌱 Game of life
 
 Inspired by Conway's *Game of Life*.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -306,13 +304,13 @@ Enabled by default.
 MODE_GAMEOFLIFE=true
 ```
 
+> Enabled by default.
+
 See also [Game of life clock](#-game-of-life-clock).
 
 ## 🌳 Game of life clock
 
 Inspired by *Conway's Game of Life*
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -320,19 +318,21 @@ Enabled by default.
 MODE_GAMEOFLIFECLOCK=true
 ```
 
+> Enabled by default.
+
 See also [Game of life](#-game-of-life).
 
 ## ✨ Glitter
 
 Inspired by *snow* on old analog TVs.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_GLITTER=true
 ```
+
+> Enabled by default.
 
 ## 🏡 Home Assistant weather
 
@@ -343,7 +343,7 @@ Requires an [Long-lived access token](https://my.home-assistant.io/redirect/prof
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define HOMEASSISTANT_KEY "[REDACTED]"
+#define HOMEASSISTANT_KEY "secret"
 ```
 
 ```h
@@ -353,13 +353,13 @@ Requires an [Long-lived access token](https://my.home-assistant.io/redirect/prof
 #define HOMEASSISTANT_ENTITY "weather.forecast_home"
 ```
 
-Enabled by default when `HOMEASSISTANT_KEY` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_HOMEASSISTANT=true
 ```
+
+> Enabled by default when `HOMEASSISTANT_KEY` is defined.
 
 See also [Home Assistant](Extensions.md#home-assistant) extension.
 
@@ -386,21 +386,19 @@ API payload example:
 #define HOMETHERMOMETER_UNIT "°C"
 ```
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_HOMETHERMOMETER=true
 ```
 
+> Enabled by default.
+
 ## 📈 Jagged waveform
 
 Inspired by the original *IKEA Frekvens* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -408,13 +406,13 @@ Enabled by default.
 MODE_JAGGEDWAVEFORM=true
 ```
 
+> Enabled by default.
+
 See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
 
 ## 🍂 Leaf fall
 
 Autumn-inspired.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -422,13 +420,13 @@ Enabled by default.
 MODE_LEAFFALL=true
 ```
 
+> Enabled by default.
+
 ## ☰ Lines
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the lines, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the lines, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -436,19 +434,21 @@ Enabled by default.
 MODE_LINES=true
 ```
 
+> Enabled by default.
+
 See also [Scan](#-scan).
 
 ## 🔇 Noise
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_NOISE=true
 ```
+
+> Enabled by default.
 
 ## 🚇 Open metro
 
@@ -461,20 +461,20 @@ Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set u
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define OPENMETRO_KEY "[REDACTED]"
+#define OPENMETRO_KEY "secret"
 ```
 
 ```h
 #define OPENMETRO_PARAMETERS "temperature_unit=celsius" // query
 ```
 
-Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_OPENMETRO=true
 ```
+
+> Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 
 ## ☀️ Open Weather
 
@@ -487,14 +487,12 @@ Requires a [API-key](https://openweathermap.org/api), set using the `OPENWEATHER
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define OPENWEATHER_KEY "[REDACTED]"
+#define OPENWEATHER_KEY "secret"
 ```
 
 ```h
 #define OPENWEATHER_PARAMETERS "units=metric" // query
 ```
-
-Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -502,11 +500,11 @@ Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
 MODE_OPENWEATHER=true
 ```
 
+> Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
+
 ## 🏓 Ping-pong
 
 Inspired by the classic ping-pong game.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -514,13 +512,13 @@ Enabled by default.
 MODE_PINGPONG=true
 ```
 
+> Enabled by default.
+
 See also [Ping-pong clock](#-ping-pong-clock).
 
 ## 🎱 Ping-pong clock
 
 Inspired by the classic ping-pong game.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -528,15 +526,15 @@ Enabled by default.
 MODE_PINGPONGCLOCK=true
 ```
 
+> Enabled by default.
+
 See also [Ping-pong](#-ping-pong).
 
 ## 🔢 Pixel sequence
 
-For tech-nerds, iterates through the pixels one by one in the exact same order as the pixels are addressed on the SPI-bus.
+For tech-geeks, iterates through the pixels one by one in the exact same order as the pixels are addressed on the SPI-bus.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the sequence.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the sequence.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -544,11 +542,11 @@ Enabled by default.
 MODE_PIXELSEQUENCE=true
 ```
 
+> Enabled by default.
+
 ## ☔ Rain
 
 Inspired by the original *IKEA Obegränsad* mode.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -556,13 +554,13 @@ Enabled by default.
 MODE_RAIN=true
 ```
 
+> Enabled by default.
+
 ## 💍 Ring
 
 Inspired by the original *IKEA Frekvens* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the ring, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the ring, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -570,15 +568,15 @@ Enabled by default.
 MODE_RING=true
 ```
 
+> Enabled by default.
+
 See also [Circle](#-circle).
 
 ## 🔍 Scan
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the scan.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the scan.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -586,13 +584,13 @@ Enabled by default.
 MODE_SCAN=true
 ```
 
+> Enabled by default.
+
 See also [Lines](#-lines).
 
 ## ⏲️ Small clock
 
 Clock.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -600,15 +598,15 @@ Enabled by default.
 MODE_SMALLCLOCK=true
 ```
 
+> Enabled by default.
+
 See also [Bold clock](#%EF%B8%8F-bold-clock).
 
 ## 〰️ Smooth waveform
 
 Inspired by the original *IKEA Frekvens* mode.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -616,13 +614,13 @@ Enabled by default.
 MODE_SMOOTHWAVEFORM=true
 ```
 
+> Enabled by default.
+
 See also [Jagged waveform](#-jagged-waveform) and [Waveform](#-waveform).
 
 ## 🐍 Snake
 
 Inspired by the classic snake-game.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -630,13 +628,13 @@ Enabled by default.
 MODE_SNAKE=true
 ```
 
+> Enabled by default.
+
 See also [Snake clock](#%EF%B8%8F-snake-clock).
 
 ## 🕰️ Snake clock
 
 Inspired by the classic snake-game.
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -644,19 +642,21 @@ Enabled by default.
 MODE_SNAKECLOCK=true
 ```
 
+> Enabled by default.
+
 See also [Snake](#-snake).
 
 ## ⭐ Stars
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_STARS=true
 ```
+
+> Enabled by default.
 
 ## 🅰️ Ticker
 
@@ -673,13 +673,13 @@ API payload example:
 }
 ```
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_TICKER=true
 ```
+
+> Enabled by default.
 
 See also [Message](Extensions.md#message).
 
@@ -687,27 +687,27 @@ See also [Message](Extensions.md#message).
 
 Clock with a seconds indicator.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_TICKINGCLOCK=true
 ```
 
+> Enabled by default.
+
 ## 🔊 Waveform
 
 Inspired by the two original *IKEA Frekvens* modes.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waves, just like on the original *IKEA Frekvens* device.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waves, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WAVEFORM=true
 ```
+
+> Enabled by default.
 
 See also [Jagged waveform](#-jagged-waveform) and [Smooth waveform](#️-smooth-waveform).
 
@@ -727,20 +727,20 @@ Requires a [API-key](https://www.worldweatheronline.com/weather-api/api/docs/), 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define WORLDWEATHERONLINE_KEY "[REDACTED]"
+#define WORLDWEATHERONLINE_KEY "secret"
 ```
 
 ```h
 #define WORLDWEATHERONLINE_PARAMETERS "foo=bar" // query
 ```
 
-Enabled by default when either `LATITUDE` and `LONGITUDE`, or `LOCATION` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WORLDWEATHERONLINE=true
 ```
+
+> Enabled by default when either `LATITUDE` and `LONGITUDE`, or `LOCATION` is defined.
 
 ## ☀️ Wttr.in
 
@@ -762,13 +762,13 @@ Order of precedence:
 #define WTTRIN_PARAMETERS "m" // query
 ```
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_WTTRIN=true
 ```
+
+> Enabled by default.
 
 ## 🌧️ Yr
 
@@ -784,10 +784,10 @@ URL parameters such as `altitude` can be set using the `YR_PARAMETERS` variable.
 #define YR_PARAMETERS "altitude=123" // query
 ```
 
-Enabled by default when `LATITUDE` and `LONGITUDE` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 MODE_YR=true
 ```
+
+> Enabled by default when `LATITUDE` and `LONGITUDE` is defined.

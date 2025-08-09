@@ -14,7 +14,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 │ VCC ├─ +3.3 V DC
 │ GND ├─ 0 V DC
 │     │
-│ OUT ├─ Signal
+│ OUT ├─ Amplifier
 └─────┘
 ```
 
@@ -25,13 +25,13 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 │          3V3 ├─ +3.3 V DC
 │          GND ├─ 0 V DC
 │              │
-│ Analog input ├─ Signal
+│ Analog input ├─ Amplifier
 └──────────────┘
 ```
 
 ## 🔧 Configuration
 
-### Signal
+### Amplifier
 
 Use any *analog input* pin.
 
@@ -53,4 +53,4 @@ The device has an MEMS microphone built-in.
 On the green PCB there's an [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier, simply connect `U3` pin 7 to an analog input on the ESP32.
 Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) should be removed anyway, it might be easier to conenct from `U2` pad 11 instead.
 
-Check out the [IKEA Frekvens](Frekvens.md#️-wiring-the-microphone) wiki for more info.
+Check out the [IKEA Frekvens](IKEA-Frekvens.md#️-wiring-the-microphone) wiki for more info.

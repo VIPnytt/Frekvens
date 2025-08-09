@@ -2,7 +2,38 @@
 
 ## 🖥️ Device
 
-### Name
+**Identify:**
+
+API payload example:
+
+```json
+{
+    "action": "identify"
+}
+```
+
+**Log level:**
+
+Useful when debugging or experimenting with the APIs.
+
+[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
+
+```ini
+build_flags =
+    -DF_INFO
+;   -DF_DEBUG
+;   -DF_VERBOSE
+```
+
+Requires `monitor_speed` to be set.
+
+[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
+
+```ini
+monitor_speed = 115200 ; bits/s
+```
+
+**Name:**
 
 Set the device name using `NAME`.
 
@@ -12,9 +43,29 @@ Set the device name using `NAME`.
 NAME='Frekvens'
 ```
 
+**Power off:**
+
+API payload example:
+
+```json
+{
+    "action": "power"
+}
+```
+
+**Reboot:**
+
+API payload example:
+
+```json
+{
+    "action": "reboot"
+}
+```
+
 ## 📺 Display
 
-### Frame rate
+**Frame rate:**
 
 The achievable frame rate depends on the SPI speed. Real-world factors like wiring layout, connection quality, and cable length can affect reliability and may require tuning for optimal performance.
 
@@ -35,61 +86,9 @@ The achievable frame rate depends on the SPI speed. Real-world factors like wiri
 #define SPI_FREQUENCY 6666666 // Hz
 ```
 
-## 🌐 Network
+## 🧩 Extensions
 
-### DNS
-
-While `DNS1` and `DNS2` override any DHCP-provided servers, `DNS3` is only available statically.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define DNS1 "1.1.1.1" // IPv4
-#define DNS2 "8.8.8.8" // IPv4
-#define DNS3 "9.9.9.9" // IPv4
-```
-
-### Host
-
-Hostname is by default set based on device type.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-HOSTNAME='frekvens'
-DOMAIN='.local'
-```
-
-## 📜 Serial
-
-### Log level
-
-Useful when debugging or experimenting with the APIs.
-
-[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
-
-```ini
-build_flags =
-    -DF_INFO
-;   -DF_DEBUG
-;   -DF_VERBOSE
-```
-
-### Monitor speed
-
-[Log level](#-log-level) requires `monitor_speed` to be set.
-
-[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
-
-```ini
-monitor_speed = 115200 ; bits/s
-```
-
-## ✅ Tasks
-
-### Extensions
-
-Too much [extension](#-extensions) activity simultaneously can cause memory overflow.
+**Task stack:**
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -97,9 +96,9 @@ Too much [extension](#-extensions) activity simultaneously can cause memory over
 #define TASK_STACK_EXTENSIONS 4096 // bytes
 ```
 
-### Modes
+## 🎛️ Modes
 
-Demanding [modes](#️-modes) can cause memory overflow.
+**Task stack:**
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -107,47 +106,7 @@ Demanding [modes](#️-modes) can cause memory overflow.
 #define TASK_STACK_MODES 8192 // bytes
 ```
 
-## 🕰️ Time
-
-### Time server
-
-To be able to sync the clock over Wi-Fi, an NTP-server is required.
-
-Check out the [server suggestion list](https://gist.github.com/mutin-sa/eea1c396b1e610a2da1e5550d94b0453), if unsure.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define NTP1 "pool.ntp.org"
-#define NTP2 "time.nist.gov"
-#define NTP3 "time.cloudflare.com"
-```
-
-### Time zone
-
-Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
-
-Lookup your [time zone](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) if unsure.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-TIME_ZONE_IANA='Etc/Universal'
-```
-
-It can also be provided in *POSIX* format.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define TIME_ZONE_POSIX "UTC0"
-```
-
-## ☀️ Weather
-
-### Coordinates
-
-Weather providers uses coordinates to derermine correct location.
+**Weather:**
 
 Some providers have resolution grid sizes down to 250 m, which means at least 3 decimals have to be provided for the most accurate weather reports. At the same time, more than 4 decimals is not advised for privacy reasons. Check out [Accuracy of decimal places in Latitude and Longitude degrees](https://support.garmin.com/en-US/?faq=hRMBoCTy5a7HqVkxukhHd8) for more information.
 
@@ -158,8 +117,6 @@ Some providers have resolution grid sizes down to 250 m, which means at least 3 
 #define LONGITUDE "0.000" // coordinate
 ```
 
-### Location
-
 A small list of providers also supports location, usually in the form of a city or village.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
@@ -168,9 +125,62 @@ A small list of providers also supports location, usually in the form of a city 
 #define LOCATION "city"
 ```
 
-## 📶 Wi-Fi
+## 🌐 Network
 
-### Wi-Fi client
+**DNS:**
+
+While `DNS1` and `DNS2` override any DHCP-provided servers, `DNS3` is only available programmatically.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define DNS1 "1.1.1.1" // IPv4
+#define DNS2 "8.8.8.8" // IPv4
+#define DNS3 "9.9.9.9" // IPv4
+```
+
+**Host:**
+
+Hostname is by default set based on device type.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+HOSTNAME='frekvens'
+DOMAIN='.local'
+```
+
+**Time server:**
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define NTP1 "pool.ntp.org"
+#define NTP2 "time.nist.gov"
+#define NTP3 "time.cloudflare.com"
+```
+
+**Time zone:**
+
+Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
+
+Lookup your [time zone](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) if needed.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+TIME_ZONE_IANA='Etc/Universal'
+```
+
+It can alternatively be provided in *POSIX* format.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define TIME_ZONE_POSIX "UTC0"
+```
+
+**Wi-Fi client:**
 
 While Wi-Fi can be re-configured at any time, it's often less hassle to configure everything at once.
 
@@ -178,10 +188,10 @@ While Wi-Fi can be re-configured at any time, it's often less hassle to configur
 
 ```h
 #define WIFI_SSID "name"
-#define WIFI_KEY "[REDACTED]"
+#define WIFI_KEY "secret"
 ```
 
-### Wi-Fi hotspot
+**Wi-Fi hotspot:**
 
 If no hotspot credentials is configured, an open hotspot will be configured automatically.
 
@@ -191,7 +201,14 @@ The hotspot will be activated automatically if no Wi-Fi credentials is configure
 
 ```h
 #define WIFI_SSID_HOTSPOT "name"
-#define WIFI_KEY_HOTSPOT "[REDACTED]"
+#define WIFI_KEY_HOTSPOT "secret"
 ```
 
 See also [Button](Extensions.md#%EF%B8%8F-button) extension.
+
+## ☁️ Web server
+
+**Host check:**
+
+- Method: `OPTIONS`
+- URL: `http://example.local/canonical`
