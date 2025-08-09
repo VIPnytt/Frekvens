@@ -470,7 +470,9 @@ void NetworkService::transmit()
     for (esp_netif_dns_type_t dnsType : {
              esp_netif_dns_type_t::ESP_NETIF_DNS_MAIN,
              esp_netif_dns_type_t::ESP_NETIF_DNS_BACKUP,
+#ifdef DNS3
              esp_netif_dns_type_t::ESP_NETIF_DNS_FALLBACK,
+#endif // DNS3
          })
     {
         String _dns = WiFi.dnsIP(dnsType).toString();
