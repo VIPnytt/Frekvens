@@ -80,9 +80,7 @@ void ButtonExtension::handle()
         Serial.printf("%s: power\n", Button->name);
 #endif // F_INFO
         Display.setPower(!Display.getPower());
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
         event("power", "short");
-#endif // EXTENSION_MQTT
         powerShort = false;
     }
     else if (powerState && millis() - powerMillis > UINT8_MAX)
@@ -96,12 +94,10 @@ void ButtonExtension::handle()
         Serial.printf(brightnessIncrease ? "%s: brightness +\n" : "%s: brightness -\n", Button->name);
 #endif // F_INFO
         Display.setGlobalBrightness(brightnessIncrease ? brightness + 1 : brightness - 1);
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
         if (!powerLong)
         {
             event("power", "long");
         }
-#endif // EXTENSION_MQTT
         powerLong = true;
     }
 #endif // PIN_SW1
@@ -120,9 +116,7 @@ void ButtonExtension::handle()
 #endif // F_INFO
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
         event("mode", "short");
-#endif // EXTENSION_MQTT
         modeShort = false;
     }
     else if (modeState && millis() - modeMillis > 750)
@@ -132,12 +126,10 @@ void ButtonExtension::handle()
         Serial.printf("%s: mode\n", Button->name);
 #endif // F_INFO
         Modes.next();
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
         if (!modeLong)
         {
             event("mode", "long");
         }
-#endif // EXTENSION_MQTT
         modeLong = true;
     }
 
@@ -180,13 +172,11 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #endif // PIN_SW2
 }
 
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
 void ButtonExtension::event(const char *key, const char *value)
 {
     JsonDocument doc;
     doc["event"][key] = value;
     Device.transmit(doc, Button->name, false);
 }
-#endif // EXTENSION_MQTT || EXTENSION_WEBSOCKET
 
 #endif // EXTENSION_BUTTON
