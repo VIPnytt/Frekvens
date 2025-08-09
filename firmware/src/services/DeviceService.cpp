@@ -34,6 +34,50 @@ void DeviceService::init()
     Serial.printf("%s: " BOARD_NAME "\n", name);
 #endif
 
+#ifdef F_DEBUG
+    switch (esp_reset_reason())
+    {
+    case esp_reset_reason_t::ESP_RST_BROWNOUT:
+        reset = reset_brownout.data();
+        break;
+#if (SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP) && (defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2))
+    case esp_reset_reason_t::ESP_RST_DEEPSLEEP:
+    {
+        switch (esp_sleep_get_wakeup_cause())
+        {
+#ifdef SOC_PM_SUPPORT_EXT_WAKEUP
+        case esp_sleep_source_t::ESP_SLEEP_WAKEUP_EXT0:
+        case esp_sleep_source_t::ESP_SLEEP_WAKEUP_EXT1:
+#elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
+        case esp_sleep_source_t::ESP_SLEEP_WAKEUP_GPIO:
+#endif // SOC_PM_SUPPORT_EXT_WAKEUP
+            reset = reset_external.data();
+            break;
+        }
+    }
+    break;
+#endif // (SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP) && (defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2))
+    case esp_reset_reason_t::ESP_RST_INT_WDT:
+        reset = reset_interrupt.data();
+        break;
+    case esp_reset_reason_t::ESP_RST_PANIC:
+        reset = reset_exception.data();
+        break;
+    case esp_reset_reason_t::ESP_RST_POWERON:
+        reset = reset_power.data();
+        break;
+    case esp_reset_reason_t::ESP_RST_SW:
+        reset = reset_software.data();
+        break;
+    case esp_reset_reason_t::ESP_RST_TASK_WDT:
+        reset = reset_task.data();
+        break;
+    case esp_reset_reason_t::ESP_RST_WDT:
+        reset = reset_watchdog.data();
+        break;
+    }
+#endif // F_DEBUG
+
 #if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
     gpio_deep_sleep_hold_dis();
 #ifdef PIN_INT
@@ -233,6 +277,35 @@ void DeviceService::ready()
         component[Abbreviations::platform] = "button";
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
     }
+#ifdef F_DEBUG
+    {
+        const std::string id = std::string(name).append("_reset");
+        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
+        component[Abbreviations::device_class] = "enum";
+        component[Abbreviations::enabled_by_default] = false;
+        component[Abbreviations::entity_category] = "diagnostic";
+        component[Abbreviations::icon] = "mdi:power-cycle";
+        component[Abbreviations::name] = "Reset reason";
+        component[Abbreviations::object_id] = HOSTNAME "_" + id;
+        {
+            JsonArray options = component[Abbreviations::options].to<JsonArray>();
+            options.add(reset_brownout);
+            options.add(reset_exception);
+#if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
+            options.add(reset_external);
+#endif // SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
+            options.add(reset_interrupt);
+            options.add(reset_power);
+            options.add(reset_software);
+            options.add(reset_task);
+            options.add(reset_watchdog);
+        }
+        component[Abbreviations::platform] = "sensor";
+        component[Abbreviations::state_topic] = topic;
+        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[Abbreviations::value_template] = "{{value_json.reset}}";
+    }
+#endif // F_DEBUG
     {
         const std::string id = std::string(name).append("_power");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
@@ -457,6 +530,9 @@ void DeviceService::transmit()
 #endif
     doc["model"] = MODEL;
     doc["name"] = NAME;
+#ifdef F_DEBUG
+    doc["reset"] = reset;
+#endif
     doc["releases_url"] = "https://github.com/VIPnytt/Frekvens/releases";
 #ifdef F_VERBOSE
     doc["stack"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(nullptr);
