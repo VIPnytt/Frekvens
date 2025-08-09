@@ -59,10 +59,7 @@ public:
     hw_timer_t *timer;
 
     void setup();
-
-#if EXTENSION_BUILD
     void ready();
-#endif
 
     void handle();
 

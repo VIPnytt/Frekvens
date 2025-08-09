@@ -73,17 +73,43 @@ void DisplayService::setup()
 #endif
 }
 
-#if EXTENSION_BUILD
 void DisplayService::ready()
 {
-#ifdef FRAME_RATE
+#if EXTENSION_BUILD && defined(FRAME_RATE)
     (*Build->config)[Config::h][__STRING(FRAME_RATE)] = FRAME_RATE;
 #endif
-#ifdef SPI_FREQUENCY
+#if EXTENSION_BUILD && defined(SPI_FREQUENCY)
     (*Build->config)[Config::h][__STRING(SPI_FREQUENCY)] = SPI_FREQUENCY;
 #endif
+
+#if EXTENSION_HOMEASSISTANT
+    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    {
+        const std::string id = std::string(name).append("_orientation");
+        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
+        component[Abbreviations::command_template] = "{\"orientation\":{{value.replace('°','')}}}";
+        component[Abbreviations::command_topic] = topic + "/set";
+        component[Abbreviations::enabled_by_default] = false;
+        component[Abbreviations::entity_category] = "config";
+        component[Abbreviations::icon] = "mdi:rotate-right-variant";
+        component[Abbreviations::name] = "Orientation";
+        component[Abbreviations::object_id] = HOSTNAME "_" + id;
+        JsonArray options = component[Abbreviations::options].to<JsonArray>();
+        options.add("0°");
+#if COLUMNS == ROWS
+        options.add("90°");
+#endif // COLUMNS == ROWS
+        options.add("180°");
+#if COLUMNS == ROWS
+        options.add("270°");
+#endif // COLUMNS == ROWS
+        component[Abbreviations::platform] = "select";
+        component[Abbreviations::state_topic] = topic;
+        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[Abbreviations::value_template] = "{{value_json.orientation}}°";
+    }
+#endif // EXTENSION_BUILD || EXTENSION_HOMEASSISTANT
 }
-#endif // EXTENSION_BUILD
 
 void DisplayService::handle()
 {
