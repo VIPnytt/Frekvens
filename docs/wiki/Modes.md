@@ -6,9 +6,7 @@ Create simple animations and show it off on the display.
 
 Use the Web app to get started.
 
-The [Microphone](Extensions.md#microphone) extension can be used to play/pause the animations.
-
-Enabled by default.
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the animations.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -16,7 +14,11 @@ Enabled by default.
 MODE_ANIMATION=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvAnimationSplitter.py) available, to split exported animations into separate [drawings](#-draw)/frames/files. Exported animations can also be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvModeGenerator.py).
+> Enabled by default.
+
+> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script can convert animations into modes.
+
+> There's also a [animation splitter](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) Python script available to split exported animations into separate [drawings](#-draw)/frames/files.
 
 See also [Draw](#-draw).
 
@@ -38,11 +40,9 @@ MODE_ARROW=true
 
 DMX over UDP/IP, stream in real-time over Wi-Fi.
 
-Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/artnetTemplate.py).
-
 Client: `example.local:6454`
 
-Enabled by default.
+> There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/artnetTemplate.py) available, serving as a template for generating *Art-net packages*.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -50,7 +50,7 @@ Enabled by default.
 MODE_ARTNET=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/artnetTemplate.py) available, serving as a template for clients to connect.
+> Enabled by default.
 
 See also [Distributed Display Protocol](#-distributed-display-protocol) and [E1.31](#-e131).
 
@@ -204,11 +204,9 @@ See also [Blink](#%EF%B8%8F-blink).
 
 Efficient Ethernet pixel data, stream in real-time over Wi-Fi.
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/ddpTemplate.py) available, serving as a template for clients to connect.
-
 Client: `example.local:4048`
 
-Enabled by default.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/ddpTemplate.py) available, serving as a template for generating *DDP packages*.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -216,7 +214,7 @@ Enabled by default.
 MODE_DISTRIBUTEDDISPLAYPROTOCOL=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvAnimationSplitter.py) available, serving as a template for clients to connect.
+> Enabled by default.
 
 See also [Art-Net](#-art-net) and [E1.31](#-e131).
 
@@ -226,7 +224,7 @@ Create artwork and show it off on the display.
 
 Use the Web app to get started.
 
-Enabled by default.
+The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script can convert drawings into modes.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -234,17 +232,15 @@ Enabled by default.
 MODE_DRAW=true
 ```
 
-Exported drawing can be converted to full-fledged modes using the *Mode generator* [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/csvModeGenerator.py).
+> Enabled by default.
 
 ## 💻 E1.31
 
 Streaming ACN, send DMX512 data over Wi-Fi.
 
-Python template [script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/e131Template.py).
-
 Client: `example.local:5568`
 
-Enabled by default.
+There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/e131Template.py) available, serving as a template for generating *E1.31 packages*.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -252,7 +248,7 @@ Enabled by default.
 MODE_E131=true
 ```
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/tools/scripts/e131Template.py) available, serving as a template for clients to connect.
+> Enabled by default.
 
 See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-display-protocol).
 
