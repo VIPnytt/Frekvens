@@ -123,11 +123,11 @@ jobs:
 
       - run: |
           cat <<EOL > extra/ESPHome/IKEA-Frekvens-LED-spotlight/secrets.yaml
-          ap_password: "secret"
-          api_key: "secret"
-          ota_password: "secret"
-          wifi_password: "secret"
-          wifi_ssid: "secret"
+          ap_password: "redacted"
+          api_key: "redacted"
+          ota_password: "redacted"
+          wifi_password: "redacted"
+          wifi_ssid: "redacted"
           EOL
 
       - uses: esphome/build-action@v7
