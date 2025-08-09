@@ -76,6 +76,7 @@ void OtaExtension::onStart()
     Display.clear();
     TextHandler("U", FontLarge).draw();
     Display.flush();
+    Display.setPower(true);
     timerAlarmWrite(Display.timer, 1000000U / (1U << 8), true); // 1 fps
 }
 
