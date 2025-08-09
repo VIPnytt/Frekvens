@@ -1,4 +1,4 @@
-# ⏰ Real Time Clock
+# ⏰ Real-Time Clock
 
 An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 
@@ -11,7 +11,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 - [DS3234](https://www.sparkfun.com/sparkfun-deadon-rtc-breakout-ds3234.html)
 - [PCF8563](https://www.waveshare.com/PCF8563-RTC-Board.htm)
 
-> [DS1307](#-ds1307) operates at 5 V only and is therefore incompatible with [IKEA Frekvens](Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
+> [DS1307](#-ds1307) operates at 5 V only and is therefore incompatible with [IKEA Frekvens](IKEA-Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
 ## 📈 Schematics
 
@@ -276,7 +276,7 @@ Logic level shifter required.
 #define PIN_SDA 2
 ```
 
-> Incompatible with [IKEA Frekvens](Frekvens) due to the lack of a 5 V power supply.
+> Incompatible with [IKEA Frekvens](IKEA-Frekvens) due to the lack of a 5 V power supply.
 
 ### DS3231
 

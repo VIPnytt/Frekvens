@@ -4,9 +4,7 @@ Character availability varies a lot, but fortunately it's easy to add new charac
 
 ## 👁️ Braille
 
-World's smallest font with just 2x3 pixels.
-
-Included by default, but can be excluded by setting `FONT_BRAILLE` to `false`.
+Ultra-compact 2×3 pixel font, ideal for minimal space constraints.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -14,17 +12,19 @@ Included by default, but can be excluded by setting `FONT_BRAILLE` to `false`.
 #define FONT_BRAILLE true // boolean
 ```
 
+> Enabled by default.
+
 ## 🔬 Micro
 
-Microscopic but "readable" font. Most characters are 3x3 pixels.
+Extremely small 3×3 pixel font, offering basic legibility in tight layouts.
 
 ## 🤏 Mini
 
-A good middleground, most characters are about 4x5 pixels.
+Balanced 4×5 pixel font providing improved readability without taking up much space.
 
 ## ⬇️ Small
 
-Included by default, but can be excluded by setting `FONT_SMALL` to `false`.
+Small yet clear font suitable for most general-purpose display needs.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -32,18 +32,20 @@ Included by default, but can be excluded by setting `FONT_SMALL` to `false`.
 #define FONT_SMALL true // boolean
 ```
 
+> Enabled by default.
+
 ## ➡️ Medium
 
-Used by some clocks, currently only digits are supported.
+Clean and versatile font with a slightly larger footprint, great for numeric and text content.
 
 See also [Medium bold](#🅱%EF%B8%8F-medium-bold).
 
 ## 🅱️ Medium bold
 
-Similar to the "regular" medium font, digits only.
+Bold and legible style based on the medium font, suited for headings and emphasis.
 
 See also [Medium](#%EF%B8%8F-medium).
 
 ## ⬆️ Large
 
-Stylish, but so large that it almost isn't practical.
+High-impact display font with oversized characters for standout visibility.

@@ -2,7 +2,7 @@
 
 ## 🚀 Getting Started
 
-Check out the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for the most basic topics.
+If you're new to the project, we recommend starting with the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
 
 - [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
 - [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
@@ -18,9 +18,9 @@ Check out the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#re
 
 Detailed instructions, schematics and templates.
 
-- [IKEA Frekvens](Frekvens)
-- [IKEA Obegränsad](Obegransad)
-- [Custom devices](Custom)
+- [IKEA Frekvens](IKEA-Frekvens)
+- [IKEA Obegränsad](IKEA-Obegransad)
+- [Custom devices](Custom-devices)
 
 ## 📦 Modules
 

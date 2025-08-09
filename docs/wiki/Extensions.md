@@ -9,13 +9,22 @@ Use app, voice control, or automations based on eg. *time* or *presence* to:
 - Power on/off
 - Adjust brightness
 
-Enabled by default.
+In the *Alexa app*, navigate to:
+
+1. Devices
+2. Add Device
+3. Other
+4. Wi-Fi
+
+> An [*Amazon Alexa*](https://www.amazon.com/smart-home-devices/b?node=9818047011) device is required.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_ALEXA=true
 ```
+
+> Enabled by default.
 
 See also [Home Assistant](#-home-assistant).
 
@@ -25,13 +34,13 @@ Firmware updates can be a hassle, the *Build* extension was *built* to change th
 
 Providing a nice user-interface with details about every variable in the config files, as well as copy/paste options just in case the previous project files got deleted in the past.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_BUILD=true
 ```
+
+> Enabled by default.
 
 See also [OTA](#%EF%B8%8F-ota).
 
@@ -68,15 +77,15 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 
 > Long press *any* button during startup to activate the [Wi-Fi hotspot](Services#-wi-fi-hotspot).
 
-Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_BUTTON=true
 ```
 
-See also [IKEA Frekvens](Frekvens.md) and [IKEA Obegränsad](Obegransad.md).
+> Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
+
+See also [IKEA Frekvens](IKEA-Frekvens.md) and [IKEA Obegränsad](IKEA-Obegransad.md).
 
 ## 🧬 Home Assistant
 
@@ -87,14 +96,14 @@ Smart-home integration.
 - [Mode](Modes.md)
 - [Countdown](Modes.md#countdown) timer
 - [Home thermometer](Modes.md#home-thermometer)
-- [Infrared](#-infrared) on/off
+- [Infrared](#-infrared)
 - [Message](#-message) notifications
-- [Microphone](#%EF%B8%8F-microphone) on/off
-- [Playlist](#%EF%B8%8F-playlist) start/stop
-- [Ticker](Modes.md#ticker)
+- [Microphone](#%EF%B8%8F-microphone)
+- [Playlist](#%EF%B8%8F-playlist)
+- [Ticker](Modes.md#ticker) text
 - Various stats, control and debug data.
 
-Requires the [MQTT](#%EF%B8%8F-mqtt) extension.
+> The [*MQTT*](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -102,12 +111,24 @@ Requires the [MQTT](#%EF%B8%8F-mqtt) extension.
 #define HOMEASSISTANT_TOPIC "homeassistant"
 ```
 
-Enabled by default when the *[MQTT](#️-mqtt) extension* is enabled.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_HOMEASSISTANT=true
+```
+
+> Enabled by default when the *[MQTT](#%EF%B8%8F-mqtt) extension* is enabled.
+
+**Remove:**
+
+Removes the *MQTT discovery packet*.
+
+API payload example:
+
+```json
+{
+    "action": "remove"
+}
 ```
 
 See also [Home Assistant weather](Modes.md#home-assistant-weather) mode.
@@ -143,13 +164,13 @@ API payload example:
 #define PIN_IR 3 // GPIO #
 ```
 
-Enabled by default when `PIN_IR` is defined.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_INFRARED=true
 ```
+
+> Enabled by default when `PIN_IR` is defined.
 
 Check out the [Infrared](Infrared.md) wiki for more info.
 
@@ -171,13 +192,13 @@ API payload example:
 
 The `font` and `repeat` parameters is optional, if omitted, the last known value will be used.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MESSAGE=true
 ```
+
+> Enabled by default.
 
 See also [Ticker](Modes.md#ticker).
 
@@ -201,17 +222,15 @@ API payload example:
 #define PIN_MIC 4 // GPIO #
 ```
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MICROPHONE=true
 ```
 
-Check out the [Microphone](Microphone.md) wiki for more info.
+> Enabled by default.
 
-> There's a toggle in the Web app to enable/disable the microphone.
+Check out the [Microphone](Microphone.md) wiki for hardware instructions.
 
 ## ✉️ MQTT
 
@@ -239,16 +258,16 @@ API message example:
 
 ```h
 #define MQTT_USER "name"
-#define MQTT_KEY "[REDACTED]"
+#define MQTT_KEY "secret"
 ```
-
-Enabled by default when `MQTT_HOST` is defined.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_MQTT=true
 ```
+
+> Enabled by default when `MQTT_HOST` is defined.
 
 ## ✈️ OTA
 
@@ -265,30 +284,30 @@ Another option is directly from the IDE/editor via Wi-Fi using `espota`.
 ```ini
 upload_protocol = espota
 upload_port = example.local
-;upload_flags = --auth=password
+;upload_flags = --auth=secret
 ```
 
-The optional password protection removes the ability to upload manually via the [Web app](#️-web-app) user-interface.
+The optional password protection removes the ability to upload manually via the [Web app](#-web-app) user-interface.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
-OTA_KEY='REDACTED'
+OTA_KEY='secret'
 ```
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define OTA_KEY_HASH "REDACTED"
+#define OTA_KEY_HASH "0123456789abcdef0123456789abcdef"
 ```
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_OTA=true
 ```
+
+> Enabled by default.
 
 See also [Build](#%EF%B8%8F-build).
 
@@ -298,23 +317,23 @@ Set up a playlist of [Modes](Modes.md) that loops with a timer.
 
 Integrated into the [Button](#%EF%B8%8F-button) extension, long-press button #2 to activate. Can also be controlled via the [Home Assistant](#-home-assistant) extension.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_PLAYLIST=true
 ```
 
-## 💻 RESTful
+> Enabled by default.
+
+## ↔️ RESTful
 
 Provides a *RESTful* API.
 
 - Full:
-  - Method: `GET`.
-  - URL: `http://example.local/api/get`
+  - Method: `GET`
+  - URL: `http://example.local/api/`
 - Module:
-  - Method: `GET` or `PATCH`.
+  - Method: `GET` or `PATCH`
   - URL prefix: `http://example.local/api/`
 
 API payload example:
@@ -325,19 +344,17 @@ API payload example:
 }
 ```
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_RESTFUL=true
 ```
 
+> Enabled by default.
+
 ## ⏰ RTC
 
 Reliable clock, even without Wi-Fi connectivity.
-
-Enabled by default when a [supported](RTC#-supported-types) RTC-module is defined.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -345,7 +362,9 @@ Enabled by default when a [supported](RTC#-supported-types) RTC-module is define
 EXTENSION_RTC=true
 ```
 
-Check out the [RTC](RTC.md) wiki for more info.
+> Enabled by default when a [*supported*](RTC#-supported-types) RTC-module is defined.
+
+Check out the [RTC](RTC.md) wiki for hardware instructions.
 
 ## ☮️ Signal
 
@@ -381,30 +400,25 @@ API payload examples:
 
 The `duration` parameters is optional, if omitted, the last known value will be used.
 
-Enabled by default.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_SIGNAL=true
 ```
 
+> Enabled by default.
+
 ## 📱 Web app
 
 Handles the `webapp` user-interface located on the ESP32's *SPIFFS* partition.
-
-Canonical host check:
-
-- Method: `GET`.
-- URL: `http://example.local/canonical`
-
-Enabled by default.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_WEBAPP=true
 ```
+
+> Enabled by default when the *[WebSocket](#-websocket) extension* is enabled.
 
 ## 📞 WebSocket
 
@@ -422,10 +436,10 @@ API message example:
 }
 ```
 
-Enabled by default. It is also required for the frontend `webapp` user-interface to be functional.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
 EXTENSION_WEBSOCKET=true
 ```
+
+> Enabled by default.
