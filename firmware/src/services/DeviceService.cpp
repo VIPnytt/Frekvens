@@ -1,5 +1,6 @@
 #include <HTTPClient.h>
 #include <nvs.h>
+#include <nvs_flash.h>
 #include <Preferences.h>
 #include <regex>
 #include <vector>
@@ -389,6 +390,35 @@ void DeviceService::power(bool state)
     state ? ESP.restart() : esp_deep_sleep_start();
 }
 
+void DeviceService::restore()
+{
+#ifdef F_INFO
+    Serial.printf("%s: restoring...\n", name);
+#endif
+    if (Modes.active && eTaskGetState(Modes.taskHandle) != eTaskState::eSuspended)
+    {
+        Modes.set(false, name);
+    }
+#if EXTENSION_HOMEASSISTANT
+    HomeAssistant->undiscover();
+#endif
+#if EXTENSION_MQTT
+    Mqtt->client.loop();
+    Mqtt->client.disconnect();
+#endif
+#if EXTENSION_SERVERSENTEVENTS
+    ServerSentEvents->sse->close();
+#endif
+#if EXTENSION_WEBSOCKET
+    WebSocket->ws->closeAll();
+#endif
+    WiFi.disconnect(true, true);
+    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+    gpio_deep_sleep_hold_dis();
+    nvs_flash_erase();
+    esp_deep_sleep_start();
+}
+
 const std::vector<const char *> DeviceService::getNames() const
 {
     std::vector<const char *> modules = {
@@ -518,6 +548,11 @@ void DeviceService::receiverHook(const JsonDocument doc)
         else if (!strcmp(action, "reboot"))
         {
             power(true);
+        }
+        // Restore
+        else if (!strcmp(action, "restore"))
+        {
+            restore();
         }
     }
 }
