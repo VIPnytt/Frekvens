@@ -102,7 +102,7 @@ export const MainThird: Component = () => {
                             oninput={(e) =>
                                 setKeyNew(e.currentTarget.value)
                             }
-                            placeholder={!getSsidNew() && getSsid() ? 'Redacted' : 'Secret'}
+                            placeholder={!getSsidNew() && getSsid() ? '********' : 'Password'}
                             type="password"
                         />
                     </div>
