@@ -1,4 +1,6 @@
-# 💡 IKEA Obegränsad
+# 💡 IKEA Obegränsad LED wall lamp
+
+> Article number 005.262.48
 
 ## 📈 Schematics
 
@@ -25,7 +27,7 @@
 └─────────────────────────────────── 0 V DC
 ```
 
-> There's four daisy-chained panels, above shown as one combined unit.
+> There's four daisy-chained panels, here shown as one combined unit.
 
 ### Button schema
 
@@ -85,7 +87,7 @@ Black ─┼─ 0 V DC
 
 ### Opening the back panel
 
-People on the internet have found numerous methods to open up the device, including creative usage of a knife, but when it comes to *non-destructive* methods, the best overall seems to be using a drill.
+Several methods for opening the device have been shared online. Among them, the most *consistently reliable* and *non-destructive* approach appears to involve the careful use of a drill.
 
 By using a sharp 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they're all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, preferably with the help of small pliers.
 
@@ -186,7 +188,7 @@ The capacitors will help prevent timing issues, as well as minimize noise from t
 
 Use any *SPI `SCLK`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -200,7 +202,7 @@ Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-
 
 Use any *SPI `MISO`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -214,7 +216,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 Use any *SPI `MOSI`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -228,7 +230,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
 
-Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -242,7 +244,7 @@ Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 
 Use any *PWM output* pin.
 
-Avoid **strapping** pins as this pin is pulled *HIGH* using a resistor.
+> Avoid strapping pins as this pin is pulled *HIGH* using a resistor.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -256,7 +258,7 @@ Optional to connect.
 
 Use any *digital input* pin, preferably one that is also RTC-capable, to allow deep sleep wake-up functionality.
 
-Avoid **strapping** pins as this pin is pulled *LOW* when pressed.
+> Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -295,7 +297,7 @@ TIME_ZONE_IANA='Etc/Universal'
 
 // Wi-Fi credentials (optional)
 #define WIFI_SSID "name"
-#define WIFI_KEY "password"
+#define WIFI_KEY "secret"
 
 // Weather location (optional)
 #define LATITUDE "0.000"
