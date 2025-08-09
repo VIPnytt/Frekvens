@@ -205,17 +205,30 @@ void ModesService::ready()
     xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
     if (!active)
     {
-        Preferences Storage;
-        Storage.begin(name, true);
-        if (Storage.isKey("active"))
+        switch (esp_reset_reason())
         {
-            const String _active = Storage.getString("active");
-            Storage.end();
-            set(_active.c_str());
+        case esp_reset_reason_t::ESP_RST_BROWNOUT:
+        case esp_reset_reason_t::ESP_RST_INT_WDT:
+        case esp_reset_reason_t::ESP_RST_PANIC:
+        case esp_reset_reason_t::ESP_RST_TASK_WDT:
+        case esp_reset_reason_t::ESP_RST_WDT:
+            break;
+        default:
+            Preferences Storage;
+            Storage.begin(name, true);
+            if (Storage.isKey("active"))
+            {
+                const String _active = Storage.getString("active");
+                Storage.end();
+                set(_active.c_str());
+            }
+            else
+            {
+                Storage.end();
+            }
         }
-        else
+        if (!active)
         {
-            Storage.end();
             set(modules[random(0, modules.size())]->name);
         }
     }
