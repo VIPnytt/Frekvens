@@ -83,16 +83,6 @@ Alternatives such as manual ZIP download are available via the green *Code* butt
 
 To build the Web UI, [Node.js](https://nodejs.org) is required. The LTS version is recommended for most users, but any recent version will work.
 
-### Python
-
-Some additional Python packages are needed, most notabily `python-dotenv` which manages environment variables across different parts of the project.
-
-To install all dependencies, run the following command from the IDE terminal:
-
-```bash
-pip install ./tools
-```
-
 ## 🏗️ Configuration
 
 ### PlatformIO

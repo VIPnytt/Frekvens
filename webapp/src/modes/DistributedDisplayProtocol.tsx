@@ -64,7 +64,7 @@ export const MainSecondary: Component = () => (
                     </span>
                     &nbsp;
                     <a
-                        href={`${REPOSITORY}/blob/main/tools/scripts/ddpTemplate.py`}
+                        href={`${REPOSITORY}/blob/main/extra/Python/ddpTemplate.py`}
                         target="_blank"
                     >
                         template script

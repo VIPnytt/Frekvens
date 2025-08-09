@@ -1,9 +1,11 @@
 # ⚙️ Scripts
 
-## `preBuild.py`
+For PlatformIO.
 
-PlatformIO build script, handles everything from distribution of environment variables to building of the Web app.
+## 🏗️ Pre-build
 
-## `preUpload.py`
+Build script, handles everything from distribution of environment variables between different sections of the project to building of the Web app.
 
-PlatformIO upload script, for migration of devices running alternative firmware.
+## ⬆️ Pre-upload
+
+Upload script used specifically for migration of devices running alternative firmware.

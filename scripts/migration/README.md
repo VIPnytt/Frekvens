@@ -1,11 +1,11 @@
-# ⚙️ Migration
+# ⚙️ Migration scripts
 
 One-time OTA migration.
 
-## `ElegantOTA.py`
+## 📲 ElegantOTA
 
 PlatformIO upload script for devices running `ayushsharma82/ElegantOTA` or `ayushsharma82/AsyncElegantOTA`.
 
-## `WiFiManager.py`
+## 📶 WiFiManager
 
 PlatformIO upload script for devices running `tzapu/WiFiManager`.

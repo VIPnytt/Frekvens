@@ -64,7 +64,7 @@ export const MainSecondary: Component = () => (
                     </span>
                     &nbsp;
                     <a
-                        href={`${REPOSITORY}/blob/main/tools/scripts/artnetTemplate.py`}
+                        href={`${REPOSITORY}/blob/main/extra/Python/artnetTemplate.py`}
                         target="_blank"
                     >
                         template script
