@@ -100,28 +100,6 @@ void DeviceService::init()
 
 void DeviceService::ready()
 {
-    Preferences Storage;
-    switch (esp_reset_reason())
-    {
-    case esp_reset_reason_t::ESP_RST_BROWNOUT:
-    case esp_reset_reason_t::ESP_RST_INT_WDT:
-    case esp_reset_reason_t::ESP_RST_PANIC:
-    case esp_reset_reason_t::ESP_RST_TASK_WDT:
-    case esp_reset_reason_t::ESP_RST_WDT:
-        for (const char *const _name : getNames())
-        {
-            Storage.begin(std::string(_name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str());
-            if (Storage.isKey("active"))
-            {
-#ifdef F_DEBUG
-                Serial.printf("%s: resetting %s\n", name, _name);
-#endif
-                Storage.remove("active");
-            }
-            Storage.end();
-        }
-        break;
-    }
 #if EXTENSION_BUILD
     (*Build->config)[Config::env][ENV] = "";
     (*Build->config)[Config::env][__STRING(NAME)] = NAME;
