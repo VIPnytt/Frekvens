@@ -37,9 +37,7 @@ private:
 
     static IRAM_ATTR void onInterrupt();
 
-#if EXTENSION_MQTT || EXTENSION_WEBSOCKET
     static void event(const char *key, const char *value);
-#endif
 
 public:
     ButtonExtension();

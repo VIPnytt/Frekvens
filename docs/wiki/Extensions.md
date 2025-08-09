@@ -352,6 +352,8 @@ EXTENSION_RESTFUL=true
 
 > Enabled by default.
 
+See also [Server-Sent Events](#-server-sent-events).
+
 ## ⏰ RTC
 
 Reliable clock, even without Wi-Fi connectivity.
@@ -365,6 +367,22 @@ EXTENSION_RTC=true
 > Enabled by default when a [*supported*](RTC#-supported-types) RTC-module is defined.
 
 Check out the [RTC](RTC.md) wiki for hardware instructions.
+
+## 📜 Server-Sent Events
+
+Real-time event stream API.
+
+Endpoint: `http://example.local/api/events`
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+EXTENSION_SERVERSENTEVENTS=true
+```
+
+> Enabled by default.
+
+See also [RESTful](#️-restful).
 
 ## ☮️ Signal
 

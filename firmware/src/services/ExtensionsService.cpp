@@ -52,6 +52,9 @@ void ExtensionsService::ready()
 #if EXTENSION_BUILD && defined(EXTENSION_RTC) && !(EXTENSION_RTC)
     (*Build->config)[Config::h][__STRING(EXTENSION_RTC)] = false;
 #endif
+#if EXTENSION_BUILD && defined(EXTENSION_SERVERSENTEVENTS) && !(EXTENSION_SERVERSENTEVENTS)
+    (*Build->config)[Config::h][__STRING(EXTENSION_SERVERSENTEVENTS)] = false;
+#endif
 #if EXTENSION_BUILD && defined(EXTENSION_SIGNAL) && !(EXTENSION_SIGNAL)
     (*Build->config)[Config::h][__STRING(EXTENSION_SIGNAL)] = false;
 #endif
