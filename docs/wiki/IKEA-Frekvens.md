@@ -1,4 +1,6 @@
-# 💡 IKEA Frekvens
+# 💡 IKEA Frekvens LED multi-use light
+
+> Article number 504.203.53
 
 ## 📈 Schematics
 
@@ -23,11 +25,11 @@
 │ │               ┤ ├           │ │
 │ │ MIC           └─┘           │ │
 │ └──┬──────────────────────────┘ │
-│       CLK DA  EN  VCC   DC- DC+ │
-└────────────┼─────────────┼───┼──┘
-             │             │   └──── +4 V DC
-             │             └──────── 0 V DC
-             └────────────────────── SPI MISO
+│ GND LAK CLK DA  EN  VCC DC- DC+ │
+└──────────────┼───────────┼───┼──┘
+               │           │   └──── +4 V DC
+               │           └──────── 0 V DC
+               └──────────────────── SPI MISO
 ```
 
 ### Buttons schema
@@ -92,7 +94,7 @@
 
 ### Opening up
 
-After removing the 4 screws and opening the back panel, there's eight nuts hidden behind the white adhesive. Once those are removed too, everything slides out nicely.
+After loosening the four screws and opening the back panel, there's eight nuts held in place by four plastic clips. Once those and the four screws in the bottom are removed, everything slides out nicely.
 
 ### Disconnect the buttons
 
@@ -135,7 +137,7 @@ It is considered best practice to keep all logic signals at a consistent voltage
 
 ## 🛠️ Hardware considerations
 
-The *IKEA Frekvens* hardware isn't perfect, but for there's room for improvements for those who desire.
+The *IKEA Frekvens* hardware isn't perfect, but there's room for improvements for those who desire.
 
 ### Capacitors
 
@@ -176,7 +178,7 @@ The capacitors mentioned aren't present on the PCB, but will help prevent timing
 
 Use any *SPI `SCLK`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -190,7 +192,7 @@ Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-
 
 Use any *SPI `MISO`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -204,7 +206,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 Use any *SPI `MOSI`* pin.
 
-If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -218,7 +220,7 @@ If the board has two sets of SPI pins, choose any of them, but be consistent and
 
 Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
 
-Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -232,7 +234,7 @@ Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
 
 Use any *PWM output* pin.
 
-Avoid **strapping** pins as this pin is pulled *HIGH* using a resistor.
+> Avoid strapping pins as this pin is pulled *HIGH* using a resistor.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -246,7 +248,7 @@ Optional to connect.
 
 Use any *digital input* pins, preferably those that are also RTC-capable, to allow deep sleep wake-up functionality.
 
-Avoid **strapping** pins as these is be pulled *LOW* when pressed.
+> Avoid strapping pins as these is be pulled *LOW* when pressed.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -263,7 +265,7 @@ Optional to connect.
 
 Use any *analog input* pin.
 
-Avoid **strapping** pins as this pin is biased.
+> Avoid strapping pins as this pin is biased.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -302,7 +304,7 @@ TIME_ZONE_IANA='Etc/Universal'
 
 // Wi-Fi credentials (optional)
 #define WIFI_SSID "name"
-#define WIFI_KEY "password"
+#define WIFI_KEY "secret"
 
 // Weather location (optional)
 #define LATITUDE "0.000"

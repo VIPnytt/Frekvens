@@ -1,13 +1,13 @@
 # 💡 Frekvens
 
-**Frekvens** is a ESP32-mod for [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) LED displays, powered by the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) LED driver.
+**Frekvens** is a ESP32-mod for [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad) LED displays, powered by the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) LED driver.
 
 The modular firmware is designed for flexibility and can be adapted to third-party or custom display configurations.
 
 ## 📋 Table of Contents
 
 - [Features](#-features)
-- [Hardware](#-hardware)
+- [Hardware](#%EF%B8%8F-hardware)
 - [IDE setup](#-ide-setup)
 - [Configuration](#️-configuration)
 - [Uploading](#️-uploading)
@@ -20,7 +20,7 @@ The modular firmware is designed for flexibility and can be adapted to third-par
 
 Frekvens replicates all original display modes while introducing a range of new features, including smart-home integration, streaming content, interactive tools, and real-time services.
 
-### Key highlights
+### Key Highlights
 
 - **Web-based interface**
 - **46 display modes**:
@@ -44,7 +44,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 Frekvens supports most Wi-Fi enabled ESP32 boards. For new installations, the `ESP32-S3` is recommended for its performance and broad compatibility. A compact board (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases. Boards with 8 MB flash memory are recommended, as they offer additional space for debugging and future expansion, though 4 MB is sufficient for basic operation.
 
-Due to significant variation in ESP32 board layouts, the documentation references pin types rather than fixed pin numbers. Refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or ask in the [discussions](https://github.com/VIPnytt/Frekvens/discussions) section if uncertain.
+Due to significant variation in ESP32 board layouts, the documentation references pin types rather than fixed pin numbers. For board-specific recommendations, first check the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. If you're still unsure, refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or open a new topic for clarification.
 
 ### Optional Accessories
 
@@ -54,30 +54,40 @@ If desired, extra hardware can be added:
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
 - [Real-time clock (RTC)](https://github.com/VIPnytt/Frekvens/wiki/RTC)
 
-> The [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens) display includes a built-in microphone.
+> The [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) display includes a built-in microphone.
 
 ### Wiring
 
 Each display model has its own hardware setup guide:
 
-- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/Frekvens#-getting-started)
-  - Remove chip `U2`
+- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens#-getting-started)
+  - Unsolder the `U2` chip
+  - Connect power, SPI and enable
   - Microphone input available at `U3` pin 7 or `U2` pin 11
-- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad#getting-started)
-  - Remove chip `U1`
+- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad#getting-started)
+  - Unsolder the `U1` chip
+  - Connect power, SPI and enable
 
-> Both devices require a logic level shifter (ESP32 uses 3.3 V logic).
+> Both devices require a logic level shifter.
 
 ## 💻 IDE setup
 
 Any [IDE](https://docs.platformio.org/en/latest/integration/ide/index.html) supporting [PlatformIO](https://platformio.org) can be used. [Visual Studio Code](https://code.visualstudio.com) is recommended for new users.
 
-To open the project:
+To get started, choose **one** of the following setup methods:
 
-- Choose *Clone Git Repository* in your IDE
-- Use this URL: `https://github.com/vipnytt/frekvens.git`
+1. **Clone the Repository**
 
-Alternatives such as manual ZIP download are available via the green *Code* button on the [project page](https://github.com/vipnytt/frekvens).
+    Use your IDE’s *Clone Git Repository* function and enter:
+    `https://github.com/vipnytt/frekvens.git`
+
+2. **Use a Stable Release**
+
+   Visit the [Releases page](https://github.com/vipnytt/frekvens/releases) to download the latest stable source code as a `.zip` or `.tar.gz` archive.
+
+3. **Manual Download**
+
+   Alternatively, download the current development version using the green **Code** button on the [project page](https://github.com/vipnytt/frekvens).
 
 ### Node.js
 
@@ -87,7 +97,7 @@ To build the Web UI, [Node.js](https://nodejs.org) is required. The LTS version 
 
 ### PlatformIO
 
-Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://docs.platformio.org/en/stable/boards/index.html#espressif-32) reference.
+Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://registry.platformio.org/platforms/platformio/espressif32/boards) reference.
 
 [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
 
@@ -148,7 +158,7 @@ Wi-Fi credentials can be defined in [`secrets.h`](firmware/include/config/secret
 
 ```h
 #define WIFI_SSID "name"
-#define WIFI_KEY "password"
+#define WIFI_KEY "secret"
 ```
 
 If no credentials are set, the device enters access point mode on first boot. Holding any button during startup also activates AP mode. This will not trigger if a known Wi-Fi signal is lost.
@@ -191,7 +201,6 @@ extends = env:upload_ota
 
 Specify upload details:
 
-
 ```ini
 upload_protocol = espota
 upload_port = example.local
@@ -232,8 +241,6 @@ Three full-featured API interfaces are supported:
 - [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
-Each protocol provides complete access to commands and metadata.
-
 Refer to the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.
 
 ## ❓ FAQ
@@ -255,12 +262,12 @@ No. ESP8266 lacks the required performance for this project.
 
 ### The display is flickering
 
-Flicker or "snow" usually indicates EMI or poor wiring. Avoid jumper wires and breadboards; use proper power filtering. Refer to wiring recommendations in the device-specific setup guides.
+Flicker or "snow" usually indicates EMI or poor wiring. Avoid jumper wires and breadboards. Refer to wiring recommendations in the device-specific setup guides.
 
 If display content is otherwise intact, try lowering the [frame rate](https://github.com/VIPnytt/Frekvens/wiki/Services#-display).
 
 ### Unexpected Reboots
 
-The [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/Obegransad) display draws approximately 2.0 A @ 5 V under full load. Use a USB power source rated for at least 10 W continuous.
+The [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad) display draws up to *2.0 A @ 5.0 V* under full load. Use a USB power source rated for at least *10 W continuous*, and power the device using the original USB cable. Do not power the display through the ESP32’s USB port, as it is not designed to supply such current levels.
 
 If terminal logs include error messages, please [report an issue](https://github.com/VIPnytt/Frekvens/issues).
