@@ -3,7 +3,7 @@
 import argparse
 import socket
 
-from src.config.constants import COLUMNS, HOST, ROWS
+from tools.src.config.constants import COLUMNS, HOST, ROWS
 
 if COLUMNS is None:
     COLUMNS = 16
