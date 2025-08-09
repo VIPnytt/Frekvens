@@ -63,9 +63,27 @@ void PlaylistExtension::setup()
 
 void PlaylistExtension::ready()
 {
+    bool _active = false;
     Preferences Storage;
-    Storage.begin(name, true);
-    bool _active = Storage.isKey("active") && Storage.getBool("active");
+    Storage.begin(name);
+    switch (esp_reset_reason())
+    {
+    case esp_reset_reason_t::ESP_RST_BROWNOUT:
+    case esp_reset_reason_t::ESP_RST_INT_WDT:
+    case esp_reset_reason_t::ESP_RST_PANIC:
+    case esp_reset_reason_t::ESP_RST_TASK_WDT:
+    case esp_reset_reason_t::ESP_RST_WDT:
+        if (Storage.isKey("active"))
+        {
+            Storage.remove("active");
+        }
+        break;
+    default:
+        if (Storage.isKey("active") && Storage.getBool("active"))
+        {
+            _active = true;
+        }
+    }
     Storage.end();
     _active ? set(_active) : transmit();
 }
