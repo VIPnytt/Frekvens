@@ -63,6 +63,23 @@ API payload example:
 }
 ```
 
+**Restore:**
+
+Performs a full reset of the device’s non-volatile storage (NVS), clearing all user preferences, settings, and Wi-Fi credentials.
+This is functionally equivalent to a "factory reset" for this customized device.
+
+After the NVS partition is erased, the device will shut down automatically.
+
+API payload example:
+
+```json
+{
+    "action": "restore"
+}
+```
+
+> **Note:** A manual power cycle is required to restart the device.
+
 ## 📺 Display
 
 **Frame rate:**

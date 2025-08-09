@@ -30,6 +30,7 @@ public:
 
     void identify();
     void power(bool state);
+    void restore();
     void update();
 
     void transmit(JsonDocument doc, const char *const source, bool retain = true);
