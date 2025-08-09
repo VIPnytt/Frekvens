@@ -101,6 +101,13 @@
 #endif
 
 /*
+ * Server-Sent Events
+ */
+#ifndef EXTENSION_SERVERSENTEVENTS
+#define EXTENSION_SERVERSENTEVENTS true
+#endif
+
+/*
  * Signal
  */
 #ifndef EXTENSION_SIGNAL

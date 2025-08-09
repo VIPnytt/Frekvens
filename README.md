@@ -30,12 +30,12 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Text scroller
   - Streaming content
   - Weather displays
-- **15 extensions**, including:
+- **16 extensions**, including:
   - Smart-home integrations
   - Notifications
   - External accessories
 - **7 fonts**
-- **3 API protocols** (RESTful, MQTT, WebSocket)
+- **4 API interfaces**
 - Extensive [documentation](https://github.com/VIPnytt/Frekvens/wiki) available
 
 ## ⚙️ Hardware
@@ -235,10 +235,11 @@ More details available in the [Extensions](https://github.com/VIPnytt/Frekvens/w
 
 ## 🤝 API
 
-Three full-featured API interfaces are supported:
+Four API interfaces are supported:
 
 - [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful)
 - [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
+- [Server-Sent Events](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-server-sent-events)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
 Refer to the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.

@@ -8,6 +8,7 @@
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
+#include "extensions/ServerSentEventsExtension.h"
 #include "extensions/WebSocketExtension.h"
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
@@ -377,6 +378,9 @@ void DeviceService::power(bool state)
     }
 #if EXTENSION_MQTT
     Mqtt->disconnect();
+#endif
+#if EXTENSION_SERVERSENTEVENTS
+    ServerSentEvents->sse->close();
 #endif
 #if EXTENSION_WEBSOCKET
     WebSocket->ws->closeAll();

@@ -16,6 +16,7 @@
 #include "extensions/PlaylistExtension.h"
 #include "extensions/RestfulExtension.h"
 #include "extensions/RtcExtension.h"
+#include "extensions/ServerSentEventsExtension.h"
 #include "extensions/SignalExtension.h"
 #include "extensions/WebAppExtension.h"
 #include "extensions/WebSocketExtension.h"
@@ -64,6 +65,9 @@ private:
 #if EXTENSION_RTC
         new RtcExtension(),
 #endif
+#if EXTENSION_SERVERSENTEVENTS
+        new ServerSentEventsExtension(),
+#endif
 #if EXTENSION_SIGNAL
         new SignalExtension(),
 #endif
@@ -81,7 +85,7 @@ private:
     static constexpr uint16_t stackSize = TASK_STACK_EXTENSIONS;
 #else
     static constexpr uint16_t stackSize = 4096;
-#endif
+#endif // TASK_STACK_EXTENSIONS
 
     void transmit();
 
