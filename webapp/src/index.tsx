@@ -28,7 +28,7 @@ createEffect(() => {
 
 const Page = () => (
     <div class="h-full">
-        {WebServerPath() == '/' ? (
+        {WebServerPath() == '/' && location.hostname != '192.168.4.1' && !location.hostname.startsWith('[fe80::') ? (
             <Primary />
         ) : (
             <Secondary />
@@ -80,7 +80,7 @@ const Secondary: Component = () => (
                 fallback={
                     <DeviceSecondary />
                 }>
-                <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname.endsWith('.1') || location.hostname.startsWith('[fe80::')}>
+                <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
                     <NetworkThird />
                 </Match>
                 <Match when={WebServerPath().startsWith(`/${ExtensionsName.toLowerCase()}`)}>
@@ -103,7 +103,7 @@ const Secondary: Component = () => (
                             <NetworkSecondarySidebar />
                         </>
                     }>
-                    <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname.endsWith('.1') || location.hostname.startsWith('[fe80::')}>
+                    <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
                         <NetworkThirdSidebar />
                     </Match>
                     <Match when={WebServerPath().startsWith(`/${ExtensionsName.toLowerCase()}`)}>
