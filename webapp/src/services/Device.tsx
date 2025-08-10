@@ -25,7 +25,7 @@ export const receiver = (json: any) => {
     json[name]?.event !== undefined && event(json[name].event);
     json[name]?.model !== undefined && setModel(json[name].model);
     json[name]?.name !== undefined && setName(json[name].name);
-    json[name]?.version_available !== undefined && setVersionLatest(json[name].version_available);
+    json[name]?.version_latest !== undefined && setVersionLatest(json[name].version_latest);
 };
 
 createEffect(() => {
