@@ -360,8 +360,6 @@ void DeviceService::ready()
         component[Abbreviations::device_class] = "firmware";
         component[Abbreviations::entity_category] = "diagnostic";
         component[Abbreviations::icon] = "mdi:github";
-        component[Abbreviations::latest_version_template] = "{{value_json.version_available}}";
-        component[Abbreviations::latest_version_topic] = topic;
         component[Abbreviations::name] = "Firmware";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
         component[Abbreviations::platform] = "update";
@@ -369,12 +367,10 @@ void DeviceService::ready()
         component[Abbreviations::state_topic] = topic;
         component[Abbreviations::title] = "Frekvens";
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.version_current}}";
+        component[Abbreviations::value_template] = "{{{'installed_version':value_json.version,'latest_version':value_json.version_latest,'release_summary':(value_json.release_notes[:252]~'...')if(value_json.release_notes or '')|length>255 else(value_json.release_notes or '')}|to_json}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
-#if EXTENSION_BUILD
     Display.ready();
-#endif // EXTENSION_BUILD
     Network.ready();
     Fonts.ready();
     Extensions.ready();
@@ -396,7 +392,7 @@ void DeviceService::run()
     Modes.handle();
     if (millis() - lastMillis > UINT16_MAX)
     {
-        if (latest.empty() && WiFi.isConnected())
+        if (versionLatest.empty() && WiFi.isConnected())
         {
             update();
         }
@@ -413,15 +409,48 @@ void DeviceService::update()
     if (http.GET() == t_http_codes::HTTP_CODE_OK)
     {
         JsonDocument doc;
-        if (!deserializeJson(doc, http.getString()) && doc["tag_name"].is<std::string>())
+        if (!deserializeJson(doc, http.getString()) && doc["body"].is<std::string>() && doc["tag_name"].is<std::string>())
         {
-            latest = std::regex_replace(doc["tag_name"].as<std::string>(), std::regex(R"(^v)"), "");
-            if (latest != VERSION)
+            switch (esp_reset_reason())
             {
-#ifdef F_INFO
-                Serial.printf("%s: update available, " VERSION " -> %s - release notes @ %s/releases/latest\n", name, latest.c_str(), repository.data());
-#endif
+            case esp_reset_reason_t::ESP_RST_INT_WDT:
+            case esp_reset_reason_t::ESP_RST_PANIC:
+            case esp_reset_reason_t::ESP_RST_TASK_WDT:
+            case esp_reset_reason_t::ESP_RST_WDT:
+                break;
+            default:
+                const std::vector<std::string> prefixes = {
+                    "<!--",
+                    "## What's Changed",
+                    "## New Contributors",
+                    "* @",
+                    "**Full Changelog**:",
+                };
+                std::stringstream body(doc["body"].as<std::string>());
+                std::string line;
+                while (std::getline(body, line))
+                {
+                    if (std::any_of(prefixes.begin(), prefixes.end(), [&](const std::string &prefix)
+                                    { return line.rfind(prefix, 0) == 0; }))
+                    {
+                        continue;
+                    }
+                    size_t pos = line.find(" by @");
+                    if (pos != std::string::npos && line.find(" in http", pos) != std::string::npos)
+                    {
+                        line = line.substr(0, pos);
+                    }
+                    releaseNotes += std::regex_replace(line, std::regex(R"(\s+$)"), "") + '\n';
+                }
+                releaseNotes = std::regex_replace(releaseNotes, std::regex(R"(\s+$)"), "");
             }
+            versionLatest = std::regex_replace(doc["tag_name"].as<std::string>(), std::regex(R"(^v)"), "");
+#ifdef F_INFO
+            if (versionLatest != VERSION)
+            {
+                Serial.printf("%s: update available, " VERSION " -> %s - release notes @ %s/releases/latest\n", name, versionLatest.c_str(), repository.data());
+            }
+#endif
         }
     }
 }
@@ -530,16 +559,23 @@ void DeviceService::transmit()
 #endif
     doc["model"] = MODEL;
     doc["name"] = NAME;
+    if (!releaseNotes.empty())
+    {
+        doc["release_notes"] = releaseNotes;
+    }
+    doc["release_url"] = std::string(repository).append("/releases/latest");
 #ifdef F_DEBUG
     doc["reset"] = reset;
 #endif
-    doc["releases_url"] = "https://github.com/VIPnytt/Frekvens/releases";
 #ifdef F_VERBOSE
     doc["stack"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(nullptr);
 #endif
     doc["temperature"] = temperatureRead();
-    doc["version_current"] = VERSION;
-    doc["version_available"] = latest.empty() ? VERSION : latest;
+    doc["version"] = VERSION;
+    if (!versionLatest.empty())
+    {
+        doc["version_latest"] = versionLatest;
+    }
     lastMillis = millis();
     Device.transmit(doc, name);
 }
