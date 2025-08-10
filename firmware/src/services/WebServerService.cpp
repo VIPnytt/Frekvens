@@ -34,7 +34,7 @@ void WebServerService::onOptionsCanonical(AsyncWebServerRequest *request)
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {
 #if EXTENSION_WEBAPP
-    if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
+    if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP && request->host() != WiFi.softAPIP().toString() && request->host() != WiFi.softAPIPv6().toString())
     {
 #ifdef F_VERBOSE
         Serial.printf("%s: redirecting\n", WebServer.name);
