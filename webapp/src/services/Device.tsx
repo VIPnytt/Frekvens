@@ -1,4 +1,4 @@
-import { mdiPower, mdiRestart } from '@mdi/js';
+import { mdiPower } from '@mdi/js';
 import { compareVersions } from 'compare-versions';
 import { Component, createEffect, createSignal } from 'solid-js';
 
@@ -108,11 +108,11 @@ export const MainSecondary: Component = () => {
 };
 
 export const SidebarSecondary: Component = () => {
-    const handlePower = (power: boolean = false) => {
-        if (power || confirm('Are you sure you want to power off?')) {
+    const handlePower = () => {
+        if (confirm('Are you sure you want to power off?')) {
             ws.send(JSON.stringify({
                 [name]: {
-                    action: power ? 'reboot' : 'power',
+                    action: 'power',
                 },
             }));
         }
@@ -121,7 +121,7 @@ export const SidebarSecondary: Component = () => {
     return (
         <SidebarSection title={name}>
             <div class="space-y-2">
-                <div class={`grid grid-cols-[1fr_48px_48px] gap-3 items-center font-medium text-gray-700 hover:text-gray-900`}>
+                <div class={`grid grid-cols-[1fr_48px] gap-3 items-center font-medium text-gray-700 hover:text-gray-900`}>
                     <div>
                         <Icon
                             class="mr-2"
@@ -129,18 +129,10 @@ export const SidebarSecondary: Component = () => {
                         />
                         Power
                     </div>
-                    <Tooltip text="Reboot">
-                        <Button
-                            class={`w-full bg-blue-600 hover:bg-red-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded`}
-                            onClick={() => handlePower(true)}
-                        >
-                            <Icon path={mdiRestart} />
-                        </Button>
-                    </Tooltip>
                     <Tooltip text="Power off">
                         <Button
                             class="w-full bg-blue-600 hover:bg-red-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
-                            onClick={() => handlePower(false)}
+                            onClick={() => handlePower()}
                         >
                             <Icon path={mdiPower} />
                         </Button>
