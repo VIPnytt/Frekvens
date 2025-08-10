@@ -234,9 +234,7 @@ void NetworkService::hotspot()
     Serial.printf("%s: hotspot key " WIFI_KEY_HOTSPOT "\n", name);
 #endif
 #if EXTENSION_WEBAPP && defined(F_DEBUG)
-    String _name = name;
-    _name.toLowerCase();
-    Serial.printf("%s: user interface @ http://%s/#/%s\n", name, WiFi.softAPIP().toString(), _name.c_str());
+    Serial.printf("%s: user interface @ http://%s\n", name, WiFi.softAPIP().toString());
 #endif // EXTENSION_WEBAPP && defined(F_DEBUG)
 #ifdef F_INFO
     Serial.printf("%s: awaiting Wi-Fi config, please connect to the Wi-Fi hotspot...\n", name);
