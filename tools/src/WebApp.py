@@ -21,16 +21,21 @@ class WebApp:
             package = json.load(npm)
             package_lock = json.load(npm_lock)
             if (
-                "version" not in library
-                or "version" not in package_lock
+                "version" not in package_lock
                 or library["version"] != package["version"]
                 or library["version"] != package_lock["version"]
-                or package["version"] != package_lock["version"]
             ):
                 self.env.Execute(f"cd webapp && npm install && npm run build")
             else:
                 if self.env.Execute(f"cd webapp && npm run build"):
                     self.env.Execute(f"cd webapp && npm install && npm run build")
+            prefix = "data/webapp"
+            pathlib.Path(prefix).mkdir(parents=True, exist_ok=True)
+            index = f"{prefix}/v{library['version']}.html.gz"
+            with open("webapp/dist/index.html", "rb") as html:
+                with gzip.open(index, "wb") as gz:
+                    gz.writelines(html)
+                    print(index)
 
     def check(self):
         try:
@@ -46,19 +51,12 @@ class WebApp:
             sys.exit(1)
 
     def clean(self):
+        for data in os.scandir("data/webapp"):
+            if data.is_file():
+                pathlib.Path(data.path).unlink()
         for dist in os.scandir("webapp/dist"):
             if dist.is_file():
                 pathlib.Path(dist.path).unlink()
-
-    def dist(self):
-        data_prefix = "data/webapp"
-        pathlib.Path(data_prefix).mkdir(parents=True, exist_ok=True)
-        for dist in os.scandir("webapp/dist"):
-            if dist.is_file():
-                with open(dist.path, "rb") as extracted:
-                    with gzip.open(f"{data_prefix}/{dist.name}.gz", "wb") as compressed:
-                        compressed.writelines(extracted)
-                        print(f"{data_prefix}/{dist.name}.gz")
 
     def evironment(self):
         env_ts_path = "webapp/.env"
