@@ -44,7 +44,6 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     webapp.evironment()
     webapp.environment_dev()
     webapp.build()
-    webapp.dist()
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["erase"],

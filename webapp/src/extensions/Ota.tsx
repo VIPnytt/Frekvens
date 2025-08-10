@@ -5,7 +5,6 @@ import { Button } from '../components/Button';
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
-import { DeviceVersion } from '../services/Device';
 import { name as ExtensionsName } from '../services/Extensions';
 
 
@@ -165,9 +164,6 @@ export const MainThird: Component = () => {
                                     >
                                         Update
                                     </Button>
-                                    <p class="text-center text-sm text-gray-300">
-                                        Firmware v{DeviceVersion()} — Filesystem v{__VERSION__}
-                                    </p>
                                 </>
                             )
                         }
