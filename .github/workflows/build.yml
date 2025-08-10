@@ -15,100 +15,6 @@ permissions:
   contents: read
 
 jobs:
-  frekvens:
-    name: Frekvens build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.platformio/.cache
-          key: ${{ runner.os }}-pio
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install --upgrade platformio
-
-      - uses: actions/setup-node@v4
-        with:
-          cache: npm
-          cache-dependency-path: webapp/package-lock.json
-          node-version: 22
-
-      - run: |
-          cat <<EOL > .env
-          ENV_FREKVENS=''
-          EOL
-
-      - run: |
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_EN 2
-          #define PIN_MIC 3
-          #define PIN_MOSI 4
-          #define PIN_SCLK 5
-          #define PIN_SW1 6
-          #define PIN_SW2 7
-          EOL
-
-      - run: npm ci
-        working-directory: webapp
-
-      - run: pio run
-
-  obegransad:
-    name: Obegränsad build
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.platformio/.cache
-          key: ${{ runner.os }}-pio
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install --upgrade platformio
-
-      - uses: actions/setup-node@v4
-        with:
-          cache: npm
-          cache-dependency-path: webapp/package-lock.json
-          node-version: 22
-
-      - run: |
-          cat <<EOL > .env
-          ENV_OBEGRANSAD=''
-          EOL
-
-      - run: |
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_EN 2
-          #define PIN_MOSI 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          EOL
-
-      - run: npm ci
-        working-directory: webapp
-
-      - run: pio run
-
   custom:
     name: Custom build
     runs-on: ubuntu-latest
@@ -200,6 +106,121 @@ jobs:
           #define WORLDWEATHERONLINE_PARAMETERS "foo=bar"
           #define WTTRIN_PARAMETERS "m"
           #define YR_PARAMETERS "altitude=123"
+          EOL
+
+      - run: npm ci
+        working-directory: webapp
+
+      - run: pio run
+
+  esphome:
+    name: ESPHome build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          cat <<EOL > extra/ESPHome/IKEA-Frekvens-LED-spotlight/secrets.yaml
+          ap_password: "redacted"
+          api_key: "redacted"
+          ota_password: "redacted"
+          wifi_password: "redacted"
+          wifi_ssid: "redacted"
+          EOL
+
+      - uses: esphome/build-action@v7
+        with:
+          yaml-file: extra/ESPHome/IKEA-Frekvens-LED-spotlight/esphome.yaml
+
+  frekvens:
+    name: Frekvens build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+          node-version: 22
+
+      - run: |
+          cat <<EOL > .env
+          ENV_FREKVENS=''
+          EOL
+
+      - run: |
+          cat <<EOL > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_EN 2
+          #define PIN_MIC 3
+          #define PIN_MOSI 4
+          #define PIN_SCLK 5
+          #define PIN_SW1 6
+          #define PIN_SW2 7
+          EOL
+
+      - run: npm ci
+        working-directory: webapp
+
+      - run: pio run
+
+  obegransad:
+    name: Obegränsad build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+          node-version: 22
+
+      - run: |
+          cat <<EOL > .env
+          ENV_OBEGRANSAD=''
+          EOL
+
+      - run: |
+          cat <<EOL > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_EN 2
+          #define PIN_MOSI 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
           EOL
 
       - run: npm ci
