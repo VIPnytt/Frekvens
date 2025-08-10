@@ -1,10 +1,9 @@
-import { mdiContentSave, mdiDelete, mdiPlay, mdiPlaylistPlay, mdiPlus, mdiStop } from '@mdi/js';
+import { mdiDelete, mdiPlay, mdiPlaylistPlay, mdiPlus, mdiStop } from '@mdi/js';
 import Cookies from 'js-cookie';
 import { Component, createSignal, For, Index } from 'solid-js';
 
 import { Button } from '../components/Button';
 import { Center } from '../components/Center';
-import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { ws } from './WebSocket';
@@ -22,7 +21,6 @@ interface Item {
 const [getActive, setActive] = createSignal<boolean>(false);
 const [getDuration, setDuration] = createSignal<number>(parseInt(Cookies.get(`${name}.duration`) ?? '', 10) || 60);
 const [getPlaylist, setPlaylist] = createSignal<Item[]>([]);
-const [getSaved, setSaved] = createSignal<boolean>(true);
 
 export const PlaylistActive = getActive;
 
@@ -36,11 +34,9 @@ const handleActive = () => {
     ws.send(JSON.stringify({
         [name]: {
             active: getActive(),
+            playlist: getPlaylist(),
         },
     }));
-    Cookies.set(`${name}.duration`, getDuration().toString(), {
-        expires: 365,
-    });
 };
 
 export const Sidebar: Component = () => (
@@ -88,10 +84,7 @@ export const MainThird: Component = () => (
 );
 
 export const Secondary: Component = () => {
-    const { toast } = Toast();
-
     const handleAdd = () => {
-        setSaved(false);
         do {
             setPlaylist([
                 ...getPlaylist(),
@@ -108,6 +101,9 @@ export const Secondary: Component = () => {
         setPlaylist(getPlaylist().map((item, i) =>
             i === index ? { ...item, duration } : item,
         ));
+        Cookies.set(`${name}.duration`, getDuration().toString(), {
+            expires: 365,
+        });
     };
 
     const handleMode = (index: number, name: string) => {
@@ -117,18 +113,7 @@ export const Secondary: Component = () => {
     };
 
     const handleRemove = (index: number) => {
-        setSaved(false);
         setPlaylist(getPlaylist().filter((_, i) => i !== index));
-    };
-
-    const handleSave = () => {
-        setSaved(true);
-        ws.send(JSON.stringify({
-            [name]: {
-                playlist: getPlaylist(),
-            },
-        }));
-        toast(`${name} saved`);
     };
 
     return (
@@ -186,7 +171,7 @@ export const Secondary: Component = () => {
                             </Index>
                         </>
                     )}
-                    <div class="grid grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 gap-3">
                         <Tooltip text="Add mode">
                             <Button
                                 class="hover:bg-green-600 transition-colors"
@@ -196,19 +181,10 @@ export const Secondary: Component = () => {
                                 <Icon path={mdiPlus} />
                             </Button>
                         </Tooltip>
-                        <Tooltip text={`Save ${name.toLowerCase()}`}>
-                            <Button
-                                class="hover:bg-green-600 transition-colors"
-                                disabled={getPlaylist().length < 2 || getSaved() || getActive()}
-                                onClick={handleSave}
-                            >
-                                <Icon path={mdiContentSave} />
-                            </Button>
-                        </Tooltip>
                         <Tooltip text={`${getActive() ? 'Stop' : 'Play'} ${name.toLowerCase()}`}>
                             <Button
                                 class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
-                                disabled={getPlaylist().length < 2 || !getSaved()}
+                                disabled={getPlaylist().length < 2}
                                 onClick={handleActive}
                             >
                                 <Icon path={getActive() ? mdiStop : mdiPlay} />
