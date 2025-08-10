@@ -31,7 +31,9 @@ private:
     const char *reset = nullptr;
 #endif
 
-    std::string latest = "";
+    std::string
+        releaseNotes = "",
+        versionLatest = "";
 
     JsonDocument transmits;
 
