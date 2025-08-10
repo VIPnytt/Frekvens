@@ -177,7 +177,7 @@ Coordinates are required for weather services:
 Performance depends on SPI speed and signal quality:
 
 ```h
-#define FRAME_RATE 50 // fps
+#define FRAME_RATE 40 // fps
 #define SPI_FREQUENCY 10000000 // Hz
 ```
 
