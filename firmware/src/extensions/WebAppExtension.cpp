@@ -17,11 +17,18 @@ WebAppExtension::WebAppExtension() : ExtensionModule("Web app")
 
 void WebAppExtension::setup()
 {
-    SPIFFS.begin();
 #ifdef F_VERBOSE
-    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=60").setDefaultFile("index.html");
+    if (SPIFFS.begin() && SPIFFS.exists("/webapp/v" VERSION ".html.gz"))
+    {
+        WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=60").setDefaultFile("v" VERSION ".html");
+    }
+    else
+    {
+        Serial.printf("%s: not found\n", name);
+    }
 #else
-    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
+    SPIFFS.begin();
+    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=3600").setDefaultFile("v" VERSION ".html");
 #endif // F_VERBOSE
     WebServer.http->on("/", WebRequestMethod::HTTP_HEAD, &onHeadRoot);
 }

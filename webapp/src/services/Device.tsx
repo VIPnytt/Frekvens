@@ -16,19 +16,16 @@ export const name = 'Device';
 
 const [getModel, setModel] = createSignal<string>(MODEL || MODEL_FREKVENS);
 const [getName, setName] = createSignal<string>(NAME || MODEL || MODEL_FREKVENS);
-const [getUpdate, setUpdate] = createSignal<string>(__VERSION__);
-const [getVersion, setVersion] = createSignal<string>(__VERSION__);
+const [getVersionLatest, setVersionLatest] = createSignal<string>(__VERSION__);
 
 export const DeviceModel = getModel;
 export const DeviceName = getName;
-export const DeviceVersion = getVersion;
 
 export const receiver = (json: any) => {
     json[name]?.event !== undefined && event(json[name].event);
     json[name]?.model !== undefined && setModel(json[name].model);
     json[name]?.name !== undefined && setName(json[name].name);
-    json[name]?.version_available !== undefined && setUpdate(json[name].version_available);
-    json[name]?.version_current !== undefined && setVersion(json[name].version_current);
+    json[name]?.version_available !== undefined && setVersionLatest(json[name].version_available);
 };
 
 createEffect(() => {
@@ -48,64 +45,28 @@ const event = (action: string) => {
     }
 };
 
-export const MainSecondary: Component = () => {
-    const versionState = compareVersions(getVersion(), __VERSION__);
-    return (
-        <Center>
-            {versionState ? (
-                <div class="space-y-3 p-5">
-                    <h3 class="text-4xl text-white tracking-wide">Frekvens</h3>
-                    <div class="bg-white p-6 rounded-md">
-                        <div class="space-y-2">
-                            <a
-                                href={`${REPOSITORY}/releases`}
-                                target="_blank"
-                            >
-                                <h3 class="font-semibold text-gray-700 tracking-wide">
-                                    {versionState > 0 ? 'Web interface' : 'Firmware'} update required
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    The device's {versionState > 0 ? 'firmware' : 'web interface'} has been updated, but the {versionState > 0 ? 'web interface' : 'firmware'} was designed for an older version.
-                                    <br />
-                                    This can lead to unexpected behavior, missing features, or data corruption.
-                                </p>
-                                <p class="text-sm text-gray-500 mt-2">
-                                    Please update your device's {versionState > 0 ? 'web interface' : 'firmware'} to ensure full compatibility and access to all features.
-                                </p>
-                                <p class="text-sm text-gray-700 mt-2">
-                                    <span class="font-medium">Firmware:</span> {getVersion()}
-                                    <br />
-                                    <span class="font-medium">Web interface:</span> {__VERSION__}
-                                </p>
-                            </a>
-                        </div>
-                    </div>
-                </div >
-            ) : (
-                <>
-                    <h2 class="text-4xl">
-                        {getName()}
-                    </h2>
-                    <a
-                        href={getUpdate() == getVersion() ? REPOSITORY : `${REPOSITORY}/releases`}
-                        target="_blank"
-                    >
-                        <Tooltip text={`Frekvens ${getVersion()}`}>
-                            <p class="text-xl mt-2 text-gray-300">
-                                Frekvens
-                            </p>
-                            {getUpdate() != getVersion() && (
-                                <p class="text-xs mt-2 text-gray-300">
-                                    {compareVersions(getUpdate(), getVersion()) === -1 ? 'Rollback' : 'Update'} available: {getUpdate()}
-                                </p>
-                            )}
-                        </Tooltip>
-                    </a>
-                </>
-            )}
-        </Center>
-    );
-};
+export const MainSecondary = () => (
+    <Center>
+        <h2 class="text-4xl">
+            {getName()}
+        </h2>
+        <a
+            href={getVersionLatest() == __VERSION__ ? REPOSITORY : `${REPOSITORY}/releases`}
+            target="_blank"
+        >
+            <Tooltip text={`Frekvens ${__VERSION__}`}>
+                <p class="text-xl mt-2 text-gray-300">
+                    Frekvens
+                </p>
+                {getVersionLatest() != __VERSION__ && (
+                    <p class="text-xs mt-2 text-gray-300">
+                        {compareVersions(getVersionLatest(), __VERSION__) === -1 ? 'Rollback' : 'Update'} available: {getVersionLatest()}
+                    </p>
+                )}
+            </Tooltip>
+        </a>
+    </Center>
+);
 
 export const SidebarSecondary: Component = () => {
     const handlePower = (power: boolean = false) => {
