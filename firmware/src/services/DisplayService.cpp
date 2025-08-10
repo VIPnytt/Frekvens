@@ -38,7 +38,7 @@ void DisplayService::setup()
 #ifdef FRAME_RATE
     timerAlarmWrite(timer, 1000000U / (1U << 8) / FRAME_RATE, true);
 #else
-    timerAlarmWrite(timer, 1000000U / (1U << 8) / 50, true);
+    timerAlarmWrite(timer, 1000000U / (1U << 8) / 40, true);
 #endif // FRAME_RATE
 
     timerAlarmEnable(timer);
@@ -131,16 +131,9 @@ IRAM_ATTR void DisplayService::onTimer()
         tx[i >> 3] |= (Display.frameReady[Display.pixelBitOrder[i]] > filter) << (7 - (i & 7));
     }
     ++filter;
-#if CONFIG_IDF_TARGET_ESP32
-    unsigned char *_tx = (unsigned char *)tx;
-    digitalWrite(PIN_CS, LOW);
-    SPI.writeBytes(_tx, sizeof(_tx));
-    digitalWrite(PIN_CS, HIGH);
-#else
     digitalWrite(PIN_CS, LOW);
     SPI.writeBytes(tx, sizeof(tx));
     digitalWrite(PIN_CS, HIGH);
-#endif // CONFIG_IDF_TARGET_ESP32
 }
 
 void DisplayService::flush()
