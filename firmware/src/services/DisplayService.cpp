@@ -184,7 +184,10 @@ void DisplayService::setGlobalOrientation(Orientation orientation)
     }
     memcpy(pixelBitOrder, _pixelBitOrder, sizeof(_pixelBitOrder));
     globalOrientation = orientation;
-    globalRatio = globalOrientation % 2 ? 1 / ((COLUMNS * CELL_WIDTH) / (float)(ROWS * CELL_HEIGHT)) : (COLUMNS * CELL_WIDTH) / (ROWS * CELL_HEIGHT);
+#if COLUMNS == ROWS
+    globalRatio = globalOrientation % 2 ? ROWS * CELL_HEIGHT / (float)COLUMNS / (float)CELL_WIDTH : COLUMNS * CELL_WIDTH / (float)ROWS / (float)CELL_HEIGHT;
+    cellRatio = globalOrientation % 2 ? CELL_HEIGHT / (float)CELL_WIDTH : CELL_WIDTH / (float)CELL_HEIGHT;
+#endif // COLUMNS == ROWS
 
     Preferences Storage;
     Storage.begin(name);
@@ -344,8 +347,8 @@ void DisplayService::transmit()
     doc["pixel"]["rows"] = globalOrientation % 2 ? ROWS : COLUMNS;
 #endif // COLUMNS == ROWS
 #if CELL_WIDTH != CELL_HEIGHT
-    doc["pixel"]["ratio"] = PIXEL_SIZE / min(CELL_WIDTH, CELL_HEIGHT);
-#endif
+    doc["pixel"]["ratio"] = PIXEL_SIZE / (float)min(CELL_WIDTH, CELL_HEIGHT);
+#endif // CELL_WIDTH != CELL_HEIGHT
     doc["power"] = power;
     doc["ratio"] = globalRatio;
     Device.transmit(doc, name);
