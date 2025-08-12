@@ -1,9 +1,6 @@
 #pragma once
 
 #include <deque>
-#include <map>
-#include <queue>
-#include <vector>
 
 #include "modules/ModeModule.h"
 
@@ -27,6 +24,8 @@ private:
     };
 
     tm local;
+
+    bool pending = false;
 
     unsigned long lastMillis = 0;
 

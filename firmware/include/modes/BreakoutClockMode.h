@@ -1,14 +1,14 @@
 #pragma once
 
 #include <deque>
-#include <vector>
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class BreakoutClockMode : public ModeModule
 {
 private:
-    static constexpr float speed = 0.0007 * ROWS;
+    static constexpr float speed = 7e-4 * ROWS;
 
     double
         xDec,

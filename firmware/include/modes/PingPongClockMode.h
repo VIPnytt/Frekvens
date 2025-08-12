@@ -1,14 +1,16 @@
 #pragma once
 
 #include <deque>
-#include <vector>
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class PingPongClockMode : public ModeModule
 {
 private:
-    static constexpr float speed = 0.0006 * COLUMNS;
+    static constexpr float speed = 6e-4 * COLUMNS;
+
+    bool pending = false;
 
     double
         xDec,
