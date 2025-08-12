@@ -7,6 +7,8 @@ class GameOfLifeClockMode : public ModeModule
 private:
     tm local;
 
+    bool pending = false;
+
     uint8_t
         active,
         hour,

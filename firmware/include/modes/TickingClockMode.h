@@ -7,13 +7,16 @@ class TickingClockMode : public ModeModule
 private:
     tm local;
 
+    bool pending = false;
+
     uint8_t
         hour,
         minute,
-        secound = 0;
+        secound;
 
 public:
     TickingClockMode() : ModeModule("Ticking clock") {};
 
+    void wake() override;
     void handle() override;
 };
