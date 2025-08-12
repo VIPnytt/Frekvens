@@ -3,11 +3,7 @@
 
 void BinaryClockMode::wake()
 {
-    if (getLocalTime(&local))
-    {
-        pending = true;
-        Display.clear();
-    }
+    pending = true;
 }
 
 void BinaryClockMode::handle()
@@ -28,8 +24,8 @@ void BinaryClockMode::handle()
         {
             hour = local.tm_hour;
             draw(1, hour);
+            pending = false;
         }
-        pending = false;
     }
 }
 

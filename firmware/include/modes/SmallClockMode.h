@@ -7,6 +7,8 @@ class SmallClockMode : public ModeModule
 private:
     tm local;
 
+    bool pending = false;
+
     uint8_t
         hour,
         minute;
@@ -14,5 +16,6 @@ private:
 public:
     SmallClockMode() : ModeModule("Small clock") {};
 
+    void wake() override;
     void handle() override;
 };

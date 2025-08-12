@@ -5,11 +5,16 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
+void TickingClockMode::wake()
+{
+    pending = true;
+}
+
 void TickingClockMode::handle()
 {
     if (getLocalTime(&local))
     {
-        if (minute != local.tm_min || hour != local.tm_hour)
+        if (minute != local.tm_min || hour != local.tm_hour || pending)
         {
             hour = local.tm_hour;
             minute = local.tm_min;
@@ -22,6 +27,7 @@ void TickingClockMode::handle()
             m1.draw(COLUMNS / 2 - 1 - m1.getWidth(), ROWS - m1.getHeight());
             TextHandler m2 = TextHandler((String)(minute % 10), FontMedium);
             m2.draw(COLUMNS - m2.getWidth(), ROWS - m2.getHeight());
+            pending = false;
         }
         if (secound != local.tm_sec)
         {
