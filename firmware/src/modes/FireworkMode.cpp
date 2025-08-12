@@ -50,7 +50,7 @@ void FireworkMode::launching()
         if (rocketY <= random(ROWS / 2))
         {
             radius = 0;
-#if defined(CELL_HEIGHT) && defined(CELL_HEIGHT)
+#if defined(CELL_HEIGHT) && defined(CELL_WIDTH)
             maxRadius = random(min(COLUMNS * CELL_WIDTH / (float)CELL_HEIGHT, ROWS / (float)CELL_WIDTH * CELL_HEIGHT) / 2);
 #else
             maxRadius = random(min(COLUMNS, ROWS) / 2);
