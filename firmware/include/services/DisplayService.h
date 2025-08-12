@@ -12,7 +12,8 @@ class DisplayService : public ServiceModule
 private:
     DisplayService() : ServiceModule("Display") {};
 
-    enum Orientation {
+    enum Orientation
+    {
         deg0,
         deg90,
         deg180,
@@ -39,9 +40,13 @@ private:
         pending = false,
         power = false;
 
+#if COLUMNS == ROWS
     float
+#else
+    static constexpr float
+#endif
         cellRatio = CELL_WIDTH / (float)CELL_HEIGHT,
-        globalRatio = (COLUMNS * CELL_WIDTH) / (float)(ROWS * CELL_HEIGHT);
+        globalRatio = COLUMNS * CELL_WIDTH / (float)ROWS / (float)CELL_HEIGHT;
 
     uint8_t
         globalBrightness = UINT8_MAX,
