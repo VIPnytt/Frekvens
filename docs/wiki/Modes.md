@@ -434,6 +434,20 @@ MODE_LINES=true
 
 See also [Scan](#-scan).
 
+## 🔵 Metaballs
+
+Inspired by organic, blob-like shapes.
+
+> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the movement of the shapes.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+MODE_METABALLS=true
+```
+
+> Enabled by default.
+
 ## 🔇 Noise
 
 Inspired by the original *IKEA Obegränsad* mode.
