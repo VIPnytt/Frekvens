@@ -1,4 +1,3 @@
-#include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/PingPongClockMode.h"
@@ -7,8 +6,7 @@
 
 void PingPongClockMode::wake()
 {
-    hour = 0;
-    minute = 0;
+    pending = true;
     Display.clear();
     paddleL.clear();
     paddleR.clear();
@@ -29,7 +27,7 @@ void PingPongClockMode::wake()
 
 void PingPongClockMode::handle()
 {
-    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
+    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
     {
         hour = local.tm_hour;
         minute = local.tm_min;
@@ -38,6 +36,7 @@ void PingPongClockMode::handle()
         TextHandler((String)(hour % 10), FontMini).draw(4, 0);
         TextHandler((String)(minute / 10), FontMini).draw(9, 0);
         TextHandler((String)(minute % 10), FontMini).draw(13, 0);
+        pending = false;
     }
     if (xDec <= 1 && deg >= 90 && deg < 270)
     {

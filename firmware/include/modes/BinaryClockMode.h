@@ -5,9 +5,9 @@
 class BinaryClockMode : public ModeModule
 {
 private:
-    bool pending = true;
-
     tm local;
+
+    bool pending = false;
 
     uint8_t
         hour,

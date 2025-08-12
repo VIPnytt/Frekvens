@@ -1,3 +1,6 @@
+#include <map>
+#include <queue>
+
 #include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
@@ -7,14 +10,13 @@
 void SnakeClockMode::wake()
 {
     Display.clear();
-    hour = 0;
-    minute = 0;
+    pending = true;
     stage = 0;
 }
 
 void SnakeClockMode::handle()
 {
-    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
+    if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
     {
         hour = local.tm_hour;
         minute = local.tm_min;
@@ -23,6 +25,7 @@ void SnakeClockMode::handle()
         TextHandler((String)(hour % 10), FontMini).draw(4, 0);
         TextHandler((String)(minute / 10), FontMini).draw(9, 0);
         TextHandler((String)(minute % 10), FontMini).draw(13, 0);
+        pending = false;
     }
     switch (stage)
     {
