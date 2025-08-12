@@ -23,7 +23,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 ### Key Highlights
 
 - **Web-based interface**
-- **46 display modes**:
+- **47 display modes**:
   - Animations
   - Clocks
   - Interactive tools

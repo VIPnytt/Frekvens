@@ -202,6 +202,13 @@
 #endif
 
 /*
+ * Metaballs
+ */
+#ifndef MODE_METABALLS
+#define MODE_METABALLS true
+#endif
+
+/*
  * Noise
  */
 #ifndef MODE_NOISE
