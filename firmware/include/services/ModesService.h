@@ -30,6 +30,7 @@
 #include "modes/JaggedWaveformMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
+#include "modes/MetaballsMode.h"
 #include "modes/NoiseMode.h"
 #include "modes/OpenMetroMode.h"
 #include "modes/OpenWeatherMode.h"
@@ -136,6 +137,9 @@ private:
 #endif
 #if MODE_LINES
         new LinesMode(),
+#endif
+#if MODE_METABALLS
+        new MetaballsMode(),
 #endif
 #if MODE_NOISE
         new NoiseMode(),
