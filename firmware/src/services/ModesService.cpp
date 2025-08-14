@@ -317,15 +317,14 @@ void ModesService::splash()
         Display.setPower(true);
     }
     String _name = active->name;
-    std::transform(_name.begin(), _name.end(), _name.begin(), toupper);
     std::vector<String> chunks = {""};
     uint8_t line = 0;
     for (uint8_t i = 0; i < _name.length(); ++i)
     {
         switch (_name[i])
         {
-        case 32: // Space
-        case 45: // Hyphen-minus
+        case 0x20: //   Space
+        case 0x2D: // - Hyphen-minus
             chunks.push_back("");
             ++line;
             break;
