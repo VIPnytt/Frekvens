@@ -17,7 +17,7 @@
     "dependencies": {
         "@mdi/js": "^7.4.47",
         "@solid-primitives/event-listener": "^2.3.3",
-        "@solid-primitives/intersection-observer": "^2.1.6",
+        "@solid-primitives/intersection-observer": "^2.2.2",
         "@solid-primitives/websocket": "^1.2.2",
         "compare-versions": "^6.1.1",
         "js-cookie": "^3.0.5",
