@@ -2,17 +2,41 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    labels:
+      - "chore"
+      - "dependencies"
+      - "github_actions"
+      - "no-changelog"
     schedule:
       interval: "weekly"
+    versioning-strategy: "increase-if-necessary"
 
   - package-ecosystem: "npm"
     directory: "/webapp"
+    labels:
+      - chore
+      - dependencies
+      - webapp
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    versioning-strategy: "increase"
 
   - package-ecosystem: "pip"
-    directories:
-      - "/extra/Python"
-      - "/tools"
+    directory: "/extra/Python"
+    labels:
+      - chore
+      - dependencies
+      - extra
     schedule:
       interval: "weekly"
+    versioning-strategy: "increase-if-necessary"
+
+  - package-ecosystem: "pip"
+    directory: "/tools"
+    labels:
+      - chore
+      - dependencies
+      - tools
+    schedule:
+      interval: "monthly"
+    versioning-strategy: "increase"
