@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: PlatformIO Dependabot
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: peterus/platformio_dependabot@v1
         with:
