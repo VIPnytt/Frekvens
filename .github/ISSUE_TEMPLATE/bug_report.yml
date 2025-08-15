@@ -1,0 +1,64 @@
+name: 🐛 Bug Report
+description: Tell us about something that isn't working as it should.
+type: Bug
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below as completely as possible.
+        The more detail you can provide, the faster we can help.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version did you encounter the bug on?
+      placeholder: e.g. v1.2.0 or 9f3a2b1
+
+  - type: textarea
+    id: bug-summary
+    attributes:
+      label: What happened?
+      description: A simple and clear description of the problem. What were you trying to do, and what happened instead?
+      placeholder: For example, "When I press the mode button, the display flashes and then the device restarts."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Please list the steps you took to make the bug happen.
+                   Number them so it's easy to follow.
+      placeholder: |
+        1. Turn on the device.
+        2. Press and hold the mode button for 5 seconds.
+        3. The device becomes unresponsive.
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What did you expect to happen?
+      description: What did you think the device or software should do in that situation?
+      placeholder: The device should have switched mode when I pressed the mode button.
+
+  - type: input
+    id: board-model
+    attributes:
+      label: Which ESP32 board are you using?
+      description: For example, "Adafruit QT Py ESP32-S3", "Seeed Studio XIAO ESP32C3" or "WeMos LOLIN D32".
+      placeholder: Board model
+
+  - type: textarea
+    id: relevant-logs
+    attributes:
+      label: Relevant Logs or Error Messages
+      description: Paste any error messages or logs here. Use code blocks if possible.
+      render: shell
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Any other helpful information?
+      description: Add screenshots, configuration files, or any other details that might help us understand the issue.
