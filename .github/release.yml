@@ -1,7 +1,4 @@
 changelog:
-  exclude:
-    authors:
-      - dependabot
   categories:
     - title: "🚀 Features"
       labels:
@@ -12,6 +9,9 @@ changelog:
     - title: "📦 Dependency Updates"
       labels:
         - dependencies
-    - title: "🔧 Other Changes"
+    - title: "🔧 Miscellaneous"
       labels:
         - "*"
+  exclude:
+    labels:
+      - "no-changelog"

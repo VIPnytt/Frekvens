@@ -1,0 +1,51 @@
+name: ✨ Feature Request
+description: Share your idea for a new pattern, animation, or functionality for the display.
+type: Feature
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature!
+        Please fill out this form so we can fully understand your idea.
+        The more detail you provide, the better we can evaluate and implement it.
+
+  - type: input
+    id: feature-title
+    attributes:
+      label: Feature Title
+      description: A short title for your idea.
+      placeholder: e.g. "Raindrop Animation" or "Matrix-style Scrolling"
+
+  - type: textarea
+    id: feature-idea
+    attributes:
+      label: What is your feature idea?
+      description: Describe the new pattern, animation, or function you'd like to see.
+      placeholder: "I'd love a new animation that looks like water dripping or flowing down the screen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-solved
+    attributes:
+      label: Why is this feature useful?
+      description: Explain why this feature would be useful or what new creative possibilities it opens up.
+      placeholder: "This would create a calm, ambient lighting effect that's different from the current moving patterns."
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: How might this work?
+      description: If you have an idea, describe how this might work. Don't worry about being too technical!
+      placeholder: "Maybe it uses different shades of gray to show the 'water' moving down the screen, and we could change the speed in the settings."
+    validations:
+      required: false
+
+  - type: textarea
+    id: inspiration
+    attributes:
+      label: Inspiration or References
+      description: Add sketches, videos, or links to similar effects for inspiration.
+      placeholder: "Here's a link to a video on YouTube that has a similar effect."
+
