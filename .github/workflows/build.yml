@@ -57,7 +57,7 @@ jobs:
           #define DNS2 "8.8.8.8"
           #define DNS3 "9.9.9.9"
           #define F_VERBOSE
-          #define FRAME_RATE 50
+          #define FRAME_RATE 60
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
           #define HOMEASSISTANT_HOST "homeassistant.local"
           #define HOMEASSISTANT_KEY "secret"
