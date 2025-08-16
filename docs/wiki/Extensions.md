@@ -32,7 +32,7 @@ See also [Home Assistant](#-home-assistant).
 
 Firmware updates can be a hassle, the *Build* extension was *built* to change that.
 
-Providing a nice user-interface with details about every variable in the config files, as well as copy/paste options just in case the previous project files got deleted in the past.
+Providing a nice user-interface with details about every variable in the config files, as well as copy/paste options just in case the previous configuration files got lost in the past.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -57,7 +57,7 @@ For devices with 2 buttons:
   - Click: *Next [mode](Mode)*
   - Hold: *Iterate between [modes](Mode)*
 
-For devices with only 1 button:
+For devices with only one button:
 
 - Button #2:
   - Click: *Power on/off*
@@ -91,17 +91,11 @@ See also [IKEA Frekvens](IKEA-Frekvens.md) and [IKEA Obegränsad](IKEA-Obegransa
 
 Smart-home integration.
 
-- Power on/off
-- Brightness
-- [Mode](Modes.md)
-- [Countdown](Modes.md#countdown) timer
-- [Home thermometer](Modes.md#home-thermometer)
-- [Infrared](#-infrared)
-- [Message](#-message) notifications
-- [Microphone](#%EF%B8%8F-microphone)
-- [Playlist](#%EF%B8%8F-playlist)
-- [Ticker](Modes.md#ticker) text
-- Various stats, control and debug data.
+Key supported features include:
+
+- Power, brightness, and [mode](https://github.com/VIPnytt/Frekvens/wiki/Modes) selection.
+- Control over [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) like the microphone and infrared receiver.
+- Access to various statistics, debug data, and advanced settings.
 
 > The [*MQTT*](https://www.home-assistant.io/integrations/mqtt) integration is required.
 

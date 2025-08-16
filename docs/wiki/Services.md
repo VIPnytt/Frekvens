@@ -84,23 +84,13 @@ API payload example:
 
 **Frame rate:**
 
-The achievable frame rate depends on the SPI speed. Real-world factors like wiring layout, connection quality, and cable length can affect reliability and may require tuning for optimal performance.
+The achievable frame rate depends on the SPI speed. In practice, factors such as wiring layout, wire type and quality, connection integrity, cable length, and shielding can all influence signal reliability, potentially requiring speed adjustments for optimal performance.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define FRAME_RATE 60 // fps
-#define SPI_FREQUENCY 16000000 // Hz
-```
-
-```h
-#define FRAME_RATE 50 // fps
-#define SPI_FREQUENCY 8888888 // Hz
-```
-
-```h
-#define FRAME_RATE 40 // fps
-#define SPI_FREQUENCY 6666666 // Hz
+#define SPI_FREQUENCY 10000000 // Hz
 ```
 
 ## 🧩 Extensions

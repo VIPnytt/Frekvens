@@ -79,7 +79,7 @@ When collecting information:
 
 ### Submitting a Bug Report
 
-> **Important:** Do not report security vulnerabilities publicly. Submit them via GitHub [Security advisory](https://github.com/VIPnytt/Frekvens/security).
+> **Important:** Do not report security vulnerabilities publicly. Submit them via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new).
 
 To report a bug:
 

@@ -9,7 +9,7 @@
 
 ## 🚨 Reporting a Vulnerability
 
-If you discover a security vulnerability in this project, please report it **privately** via via GitHub [Security advisory](https://github.com/VIPnytt/Frekvens/security) to prevent potential abuse.
+If you discover a security vulnerability in this project, please report it **privately** via via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new) to prevent potential abuse.
 
 Please include:
 
