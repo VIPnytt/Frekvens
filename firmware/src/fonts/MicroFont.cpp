@@ -7,7 +7,7 @@ MicroFont::MicroFont() : FontModule("Micro")
     FontMicro = this;
 }
 
-FontModule::Symbol MicroFont::getChar(wchar_t character)
+FontModule::Symbol MicroFont::getChar(uint32_t character)
 {
     if (character >= 0x20 && character <= 0x7F && character < ascii.size() + 0x20)
     {
@@ -15,9 +15,9 @@ FontModule::Symbol MicroFont::getChar(wchar_t character)
                    ? ascii[character - 0x40]
                    : ascii[character - 0x20];
     }
-    else if (character >= 0xC280 && character <= 0xDFBF)
+    else if (character >= 0x80 && character <= 0x10FFFF)
     {
-        for (const SymbolExtended extended : unicode)
+        for (const SymbolExtended &extended : unicode)
         {
             if (extended.hex == character)
             {

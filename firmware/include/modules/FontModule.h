@@ -28,5 +28,5 @@ public:
 
     const char *const name;
 
-    virtual Symbol getChar(wchar_t character);
+    virtual Symbol getChar(uint32_t character);
 };

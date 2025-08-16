@@ -13,10 +13,18 @@ private:
 
     FontModule *font;
 
+    size_t utf8Index = 0;
+
     uint8_t
         height = 0,
         width = 0,
         spacing = 1;
+
+    uint8_t calcMsbMax(const FontModule::Symbol &character);
+
+    bool nextCodepoint(uint32_t &out);
+
+    static const char *encodeUtf8(uint32_t codepoint, char *out);
 
 public:
     TextHandler(String text, FontModule *font);

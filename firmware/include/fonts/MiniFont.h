@@ -844,7 +844,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xC2B0, // °
+            0xB0, // °
             {
                 {
                     0b11,
@@ -854,12 +854,25 @@ private:
                 3,
             },
         },
+        {
+            0x3C0, // π
+            {
+                {
+                    0b11111,
+                    0b01010,
+                    0b01010,
+                    0b01010,
+                },
+                0,
+                0,
+            },
+        },
     };
 
 public:
     MiniFont();
 
-    Symbol getChar(wchar_t character) override;
+    Symbol getChar(uint32_t character) override;
 };
 
 extern MiniFont *FontMini;
