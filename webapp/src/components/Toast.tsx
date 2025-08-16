@@ -28,7 +28,8 @@ export const ToastProvider: ParentComponent = (props) => {
     const Toast = (props: { text: string }) => {
         return (
             <div
-                class="fixed left-4 bottom-4 px-4 py-3 bg-gray-800 text-white shadow-lg border border-gray-700 flex items-center space-x-2 z-50 animate-toast-slide-up rounded-md"
+                class="fixed left-4 bottom-4 px-4 py-3 bg-gray-800 text-white shadow-lg border border-gray-700 flex items-center space-x-2 z-50 rounded-md"
+                style="animation: toastSlideUp 0.2s ease-out forwards;"
                 onClick={() => setToast(null)}
             >
                 <Icon

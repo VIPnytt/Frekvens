@@ -1,4 +1,5 @@
 import { mdiDotsGrid } from '@mdi/js';
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import solidPlugin from 'vite-plugin-solid';
@@ -55,6 +56,7 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
         },
         plugins: [
             solidPlugin(),
+            tailwindcss(),
             createHtmlPlugin(createHtml),
             viteSingleFile(),
         ],
