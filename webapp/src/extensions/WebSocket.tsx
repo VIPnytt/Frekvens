@@ -1,4 +1,4 @@
-import { batch, createEffect, on, ParentComponent } from 'solid-js';
+import { batch, createEffect, ParentComponent } from 'solid-js';
 import { createEventSignal } from '@solid-primitives/event-listener';
 import { createReconnectingWS, createWSState } from '@solid-primitives/websocket';
 

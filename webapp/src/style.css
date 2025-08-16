@@ -1,11 +1,18 @@
 /*
-@author Philip Stapelfeldt - https://github.com/ph1p/ikea-led-obegraensad
-@copyright MIT License 2022
-*/
+ * Copyright (c) 2025 Jan-Petter Gundersen
+ *
+ * This file is part of the Frekvens project.
+ *
+ * Original code by Philip Stapelfeldt, 2022, licensed under the MIT License.
+ * Source: https://github.com/ph1p/ikea-led-obegraensad
+ *
+ * All other code by Jan-Petter Gundersen, 2025, licensed under the MIT License.
+ * Source: https://github.com/VIPnytt/Frekvens
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
     :root {
@@ -43,8 +50,4 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.animate-toast-slide-up {
-    animation: toastSlideUp 0.2s ease-out forwards;
 }
