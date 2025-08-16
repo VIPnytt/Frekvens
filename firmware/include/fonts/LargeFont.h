@@ -66,7 +66,21 @@ private:
         {},
         {},
         {},
-        {},
+        {
+            // 0x49, I
+            {
+                0b111111,
+                0b001100,
+                0b001100,
+                0b001100,
+                0b001100,
+                0b001100,
+                0b001100,
+                0b111111,
+            },
+            0,
+            0,
+        },
         {},
         {},
         {},
@@ -109,10 +123,30 @@ private:
         },
     };
 
+    const std::vector<SymbolExtended> unicode = {
+        {
+            0x3C0, // π
+            {
+                {
+                    0b11111111,
+                    0b11111111,
+                    0b00100100,
+                    0b00100100,
+                    0b00100100,
+                    0b00100100,
+                    0b00100101,
+                    0b11000010,
+                },
+                0,
+                0,
+            },
+        },
+    };
+
 public:
     LargeFont();
 
-    Symbol getChar(wchar_t character) override;
+    Symbol getChar(uint32_t character) override;
 };
 
 extern LargeFont *FontLarge;

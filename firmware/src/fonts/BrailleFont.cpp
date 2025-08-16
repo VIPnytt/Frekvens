@@ -7,13 +7,15 @@ BrailleFont::BrailleFont() : FontModule("Braille")
     FontBraille = this;
 }
 
-FontModule::Symbol BrailleFont::getChar(wchar_t character)
+FontModule::Symbol BrailleFont::getChar(uint32_t character)
 {
-    if (character >= 0x20 && character <= 0x7F && character < ascii.size() + 0x20)
+    if (character >= 0x20 && character <= 0x5A)
     {
-        return character >= 0x61 && character <= 0x7A && ascii[character - 0x20].bitmap.empty()
-                   ? ascii[character - 0x40]
-                   : ascii[character - 0x20];
+        return ascii[character - 0x20];
+    }
+    else if (character >= 0x61 && character <= 0x7A)
+    {
+        return ascii[character - 0x40];
     }
     return {};
 }

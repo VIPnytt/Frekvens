@@ -342,7 +342,7 @@ private:
 public:
     BrailleFont();
 
-    Symbol getChar(wchar_t character) override;
+    Symbol getChar(uint32_t character) override;
 };
 
 extern BrailleFont *FontBraille;
