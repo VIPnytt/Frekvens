@@ -9,6 +9,7 @@
 #include "handlers/BitmapHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ModesService.h"
 
 void DisplayService::setup()
 {
@@ -38,7 +39,7 @@ void DisplayService::setup()
 #ifdef FRAME_RATE
     timerAlarmWrite(timer, 1000000U / (1U << 8) / FRAME_RATE, true);
 #else
-    timerAlarmWrite(timer, 1000000U / (1U << 8) / 40, true);
+    timerAlarmWrite(timer, 1000000U / (1U << 8) / 60, true);
 #endif // FRAME_RATE
 
     timerAlarmEnable(timer);
@@ -124,16 +125,32 @@ IRAM_ATTR void DisplayService::onTimer()
 {
     static uint8_t
         filter = 0,
-        tx[(COLUMNS * ROWS + 7) / 8];
-    memset(tx, 0, sizeof(tx));
-    for (const uint8_t i : Display.pixelBitOrder)
+        data[(COLUMNS * ROWS + 7) / 8];
+    uint8_t
+        *frame = Display.frameReady,
+        *out = data,
+        bitMask = 0x80,
+        outByte = 0;
+    for (uint16_t i = 0; i < COLUMNS * ROWS; i++)
     {
-        tx[i >> 3] |= (Display.frameReady[Display.pixelBitOrder[i]] > filter) << (7 - (i & 7));
+        if (*frame++ > filter)
+        {
+            outByte |= bitMask;
+        }
+        if (!(bitMask >>= 1))
+        {
+            *out++ = outByte;
+            outByte = 0;
+            bitMask = 0x80;
+        }
     }
+#if COLUMNS * ROWS % 8
+    *out = outByte;
+#endif // COLUMNS * ROWS % 8
     ++filter;
-    digitalWrite(PIN_CS, LOW);
-    SPI.writeBytes(tx, sizeof(tx));
-    digitalWrite(PIN_CS, HIGH);
+    gpio_set_level((gpio_num_t)PIN_CS, 0);
+    SPI.transferBytes(data, nullptr, sizeof(data));
+    gpio_set_level((gpio_num_t)PIN_CS, 1);
 }
 
 void DisplayService::flush()
@@ -160,22 +177,22 @@ void DisplayService::setGlobalOrientation(Orientation orientation)
     switch ((orientation - globalOrientation + 4) % 4)
     {
     case Orientation::deg180:
-        for (const uint8_t i : pixelBitOrder)
+        for (uint16_t i = 0; i < COLUMNS * ROWS; ++i)
         {
-            _pixelBitOrder[i] = (COLUMNS - 1 - (pixelBitOrder[i] & (COLUMNS - 1))) + (ROWS - 1 - (pixelBitOrder[i] >> __builtin_ctz(COLUMNS))) * COLUMNS;
+            _pixelBitOrder[i] = pixelBitOrder[((ROWS - 1 - (i >> __builtin_ctz(COLUMNS))) << __builtin_ctz(COLUMNS)) | (COLUMNS - 1 - (i & (COLUMNS - 1)))];
         }
         break;
 #if COLUMNS == ROWS
     case Orientation::deg90:
-        for (const uint8_t i : pixelBitOrder)
+        for (uint16_t i = 0; i < COLUMNS * ROWS; ++i)
         {
-            _pixelBitOrder[i] = (pixelBitOrder[i] >> __builtin_ctz(COLUMNS)) + (COLUMNS - 1 - (pixelBitOrder[i] & (COLUMNS - 1))) * COLUMNS;
+            _pixelBitOrder[i] = pixelBitOrder[((COLUMNS - 1 - (i & (COLUMNS - 1))) << __builtin_ctz(COLUMNS)) | (i >> __builtin_ctz(COLUMNS))];
         }
         break;
     case Orientation::deg270:
-        for (const uint8_t i : pixelBitOrder)
+        for (uint16_t i = 0; i < COLUMNS * ROWS; ++i)
         {
-            _pixelBitOrder[i] = (ROWS - 1 - (pixelBitOrder[i] >> __builtin_ctz(COLUMNS))) + (pixelBitOrder[i] & (COLUMNS - 1)) * COLUMNS;
+            _pixelBitOrder[i] = pixelBitOrder[((i & (COLUMNS - 1)) << __builtin_ctz(COLUMNS)) | (ROWS - 1 - (i >> __builtin_ctz(COLUMNS)))];
         }
         break;
 #endif // COLUMNS == ROWS
@@ -185,16 +202,22 @@ void DisplayService::setGlobalOrientation(Orientation orientation)
     memcpy(pixelBitOrder, _pixelBitOrder, sizeof(_pixelBitOrder));
     globalOrientation = orientation;
 #if COLUMNS == ROWS
-    globalRatio = globalOrientation % 2 ? ROWS * CELL_HEIGHT / (float)COLUMNS / (float)CELL_WIDTH : COLUMNS * CELL_WIDTH / (float)ROWS / (float)CELL_HEIGHT;
-    cellRatio = globalOrientation % 2 ? CELL_HEIGHT / (float)CELL_WIDTH : CELL_WIDTH / (float)CELL_HEIGHT;
-#endif // COLUMNS == ROWS
-
+    globalRatio = globalOrientation % 2
+                      ? ROWS * CELL_HEIGHT / (float)COLUMNS / (float)CELL_WIDTH
+                      : COLUMNS * CELL_WIDTH / (float)ROWS / (float)CELL_HEIGHT;
+    cellRatio = globalOrientation % 2
+                    ? CELL_HEIGHT / (float)CELL_WIDTH
+                    : CELL_WIDTH / (float)CELL_HEIGHT;
+#endif
     Preferences Storage;
     Storage.begin(name);
     Storage.putUShort("orientation", globalOrientation);
     Storage.end();
-
     pending = true;
+    if (Modes.active)
+    {
+        Modes.active->wake();
+    }
 }
 
 bool DisplayService::getPower() const
@@ -260,12 +283,18 @@ void DisplayService::invert()
 
 void DisplayService::getFrame(uint8_t frame[COLUMNS * ROWS])
 {
-    memcpy(frame, frameReady, sizeof(frameReady));
+    for (uint16_t i = 0; i < COLUMNS * ROWS; i++)
+    {
+        frame[i] = frameReady[pixelBitOrder[i]];
+    }
 }
 
 void DisplayService::setFrame(uint8_t frame[COLUMNS * ROWS])
 {
-    memcpy(frameDraft, frame, sizeof(frameDraft));
+    for (uint16_t i = 0; i < COLUMNS * ROWS; i++)
+    {
+        frameDraft[pixelBitOrder[i]] = frame[i];
+    }
 }
 
 uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
@@ -276,7 +305,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
         Serial.printf("%s: invalid %d:%d\n", name, x, y);
     }
 #endif
-    return frameDraft[x + y * COLUMNS];
+    return frameReady[pixelBitOrder[x + y * COLUMNS]];
 }
 
 void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
@@ -287,26 +316,27 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
         Serial.printf("%s: invalid %d:%d\n", name, x, y);
     }
 #endif
-    frameDraft[x + y * COLUMNS] = brightness;
+    frameDraft[pixelBitOrder[x + y * COLUMNS]] = brightness;
 }
 
 void DisplayService::drawEllipse(double x, double y, double radius, double ratio, bool fill, uint8_t brightness)
 {
-    double _ratio = (cellRatio * COLUMNS / (double)ROWS * ratio - 1) / 2.0 + 1;
-    float rSq = radius * radius;
-    uint8_t
-        maxX = min(COLUMNS - 1.0, ceil(x + radius / _ratio)),
-        maxY = min(ROWS - 1.0, ceil(y + radius * _ratio)),
-        minX = max(0.0, floor(x - radius / _ratio)),
-        minY = max(0.0, floor(y - radius * _ratio));
+    const double _ratio = (cellRatio * COLUMNS / (double)ROWS * ratio - 1) / 2.0 + 1;
+    const float rSq = radius * radius;
+    const uint8_t
+        xMax = min(COLUMNS - 1.0, ceil(x + radius / _ratio)),
+        yMax = min(ROWS - 1.0, ceil(y + radius * _ratio)),
+        xMin = max(0.0, floor(x - radius / _ratio)),
+        yMin = max(0.0, floor(y - radius * _ratio));
 
-    for (uint8_t _x = minX; _x <= maxX; ++_x)
+    for (uint8_t _x = xMin; _x <= xMax; ++_x)
     {
-        for (uint8_t _y = minY; _y <= maxY; ++_y)
+        for (uint8_t _y = yMin; _y <= yMax; ++_y)
         {
-            float dX = (_x - x) * _ratio;
-            float dY = (_y - y) / _ratio;
-            float distSq = dX * dX + dY * dY;
+            const float
+                xDist = (_x - x) * _ratio,
+                yDist = (_y - y) / _ratio,
+                distSq = xDist * xDist + yDist * yDist;
 
             if (fill && distSq <= rSq)
             {
