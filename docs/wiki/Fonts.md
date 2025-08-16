@@ -26,12 +26,6 @@ Balanced 4×5 pixel font providing improved readability without taking up much s
 
 Small yet clear font suitable for most general-purpose display needs.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define FONT_SMALL true // boolean
-```
-
 > Enabled by default.
 
 ## ➡️ Medium
