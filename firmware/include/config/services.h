@@ -15,7 +15,7 @@
  * Display
  */
 /*
-#define FRAME_RATE 40 // fps
+#define FRAME_RATE 60 // fps
 #define SPI_FREQUENCY 10000000 // Hz
 */
 
