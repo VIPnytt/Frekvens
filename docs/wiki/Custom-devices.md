@@ -9,8 +9,8 @@ Most [modes](Modes) are designed for flexible display resolutions, the easiest w
 Example:
 
 ```h
-#define COLUMNS 16     // px
-#define ROWS 16        // px
+#define COLUMNS 16 // px
+#define ROWS 16    // px
 
 #define PIXEL_ORDER {0x0, 0x1, 0x2, 0x3} // bit mask array
 ```
