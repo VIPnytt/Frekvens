@@ -34,6 +34,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     firmware.upload()
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
+    ["build"],
     ["erase"],
     ["size"],
     ["upload"],
@@ -56,6 +57,8 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
 if env.IsCleanTarget():  # type: ignore
     webapp = WebApp(env)  # type: ignore
     webapp.clean()
+    tools = Tools(env)  # type: ignore
+    tools.clean()
 
 # Dump environment variables
 # print(env.Dump())# type: ignore

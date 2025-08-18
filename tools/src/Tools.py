@@ -1,12 +1,23 @@
 import dotenv
 import json
-import re
-
+import os
+import shutil
 
 
 class Tools:
     def __init__(self, env):
         self.env = env
+
+    def clean(self):
+        for path in [
+            "tools/__pycache__",
+            "tools/src/__pycache__",
+            "tools/src/config/__pycache__",
+            "tools/src/frekvens.egg-info",
+        ]:
+            if os.path.exists(path):
+                shutil.rmtree(path, ignore_errors=True)
+                print(f"Removing {path}")
 
     def environment(self):
         env_py_path = "tools/.env"
@@ -28,11 +39,16 @@ class Tools:
         for prefix in [
             "ENV",
             "EXTENSION",
+            "FONT",
             "MODE",
         ]:
+            for option, value in env_pio.items():
+                if option.startswith(f"{prefix}_") and env_py.get(prefix) != value:
+                    dotenv.set_key(env_py_path, option, value or "")
+                    wrote = True
             for option, value in env_py.items():
                 if (
-                    re.fullmatch(rf"^{prefix}_[A-Z0-9]+$", option)
+                    option.startswith(f"{prefix}_")
                     and not option in env_pio.keys()
                 ):
                     dotenv.unset_key(env_py_path, option)
