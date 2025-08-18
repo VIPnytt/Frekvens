@@ -3,7 +3,7 @@ import gzip
 import json
 import os
 import pathlib
-import re
+import shutil
 import subprocess
 import sys
 
@@ -51,12 +51,18 @@ class WebApp:
             sys.exit(1)
 
     def clean(self):
-        for data in os.scandir("data/webapp"):
-            if data.is_file():
-                pathlib.Path(data.path).unlink()
-        for dist in os.scandir("webapp/dist"):
-            if dist.is_file():
-                pathlib.Path(dist.path).unlink()
+        for path in [
+            "data/webapp",
+            "webapp/dist",
+        ]:
+            for data in os.scandir(path):
+                if data.is_file():
+                    pathlib.Path(data.path).unlink()
+                    print(f"Removing {data.path}")
+        node_modules = "webapp/node_modules"
+        if os.path.exists(node_modules):
+            shutil.rmtree(node_modules, ignore_errors=True)
+            print(f"Removing {node_modules}")
 
     def evironment(self):
         env_ts_path = "webapp/.env"
@@ -77,11 +83,19 @@ class WebApp:
         for prefix in [
             "ENV",
             "EXTENSION",
+            "FONT",
             "MODE",
         ]:
+            for option, value in env_pio.items():
+                if (
+                    option.startswith(f"{prefix}_")
+                    and env_ts.get(f"VITE_{prefix}") != value
+                ):
+                    dotenv.set_key(env_ts_path, f"VITE_{option}", value or "")
+                    wrote = True
             for option, value in env_ts.items():
                 if (
-                    re.fullmatch(rf"^VITE_{prefix}_[A-Z0-9]+$", option)
+                    option.startswith(f"VITE_{prefix}_")
                     and not option.removeprefix("VITE_") in env_pio.keys()
                 ):
                     dotenv.unset_key(env_ts_path, option)
