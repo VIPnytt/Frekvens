@@ -6,9 +6,9 @@
 
 void BreakoutClockMode::wake()
 {
-    Display.drawRectangle(0, 0, COLUMNS - 1, 4);
+    Display.drawRectangle(0, 0, COLUMNS - 1, 5 - 1);
     paddle.clear();
-    uint8_t paddleX = random(COLUMNS - 4);
+    const uint8_t paddleX = random(COLUMNS - 1 - 3);
     for (uint8_t _x = 0; _x < 3; ++_x)
     {
         paddle.push_back(paddleX + _x);
@@ -22,7 +22,7 @@ void BreakoutClockMode::wake()
 
 void BreakoutClockMode::handle()
 {
-    uint8_t
+    const uint8_t
         nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5,
         nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5;
     if (y <= 0 && deg < 180)
@@ -57,7 +57,7 @@ void BreakoutClockMode::handle()
         {
             deg = 360 - deg; // Invert Y
         }
-        else if (nextY = y)
+        else if (nextY == y)
         {
             deg = deg >= 180 ? 540 - deg : 180 - deg; // Invert X
         }
@@ -69,7 +69,7 @@ void BreakoutClockMode::handle()
     y = yDec + .5;
     Display.setPixel(x, y);
 
-    double angle = atan((ROWS - 2 - yDec) / abs(paddle[1] - xDec)) * RAD_TO_DEG;
+    const double angle = atan((ROWS - 2 - yDec) / abs(paddle[1] - xDec)) * RAD_TO_DEG;
     if (xDec > paddle.back() && angle < 67.5 && paddle.back() < COLUMNS - 1)
     {
         // Right
