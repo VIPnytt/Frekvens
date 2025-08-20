@@ -316,7 +316,7 @@ void ModesService::splash()
 #endif
         Display.setPower(true);
     }
-    String _name = active->name;
+    const String _name = active->name;
     std::vector<String> chunks = {""};
     uint8_t line = 0;
     for (uint8_t i = 0; i < _name.length(); ++i)
@@ -343,21 +343,20 @@ void ModesService::splash()
             break;
         }
     }
-    uint8_t
-        margin = (ROWS - min((uint8_t)ROWS, height)) / (chunks.size() + 1),
-        y = margin;
+    const uint8_t margin = (ROWS - min<uint8_t>(ROWS, height)) / (chunks.size() + 1);
+    uint8_t y = margin;
     Display.clear();
     for (TextHandler &text : texts)
     {
-        text.draw((COLUMNS - min((uint8_t)COLUMNS, text.getWidth())) / 2, y);
-        y += text.getHeight() + max((uint8_t)1, margin);
+        text.draw((COLUMNS - min<uint8_t>(COLUMNS, text.getWidth())) / 2, y);
+        y += text.getHeight() + max<uint8_t>(1, margin);
     }
     Display.flush();
 }
 
 void ModesService::teardown()
 {
-    if (active && taskHandle && eTaskGetState(taskHandle) != eTaskState::eSuspended)
+    if (active)
     {
         active->sleep();
     }
