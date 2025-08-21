@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Generate modes from .csv files provided by the "Animation" or "Draw" modes.
 
 import csv
@@ -7,7 +9,7 @@ import sys
 
 from src.config.constants import ROWS
 
-if ROWS is None:
+if not ROWS:
     ROWS = 16
 
 

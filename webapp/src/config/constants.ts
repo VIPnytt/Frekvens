@@ -1,5 +1,5 @@
-import { MODEL as MODEL_FREKVENS } from './Frekvens';
-import { MODEL as MODEL_OBEGRANSAD } from './Obegransad';
+import { MODEL as MODEL_FREKVENS } from './ikeaFrekvens';
+import { MODEL as MODEL_OBEGRANSAD } from './ikeaObegransad';
 
 const ENV_FREKVENS: boolean = import.meta.env.VITE_ENV_FREKVENS !== undefined;
 const ENV_OBEGRANSAD: boolean = import.meta.env.VITE_ENV_OBEGRANSAD !== undefined;
