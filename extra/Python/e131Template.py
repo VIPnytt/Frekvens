@@ -5,11 +5,11 @@ import socket
 
 from tools.src.config.constants import COLUMNS, HOST, ROWS
 
-if COLUMNS is None:
+if not COLUMNS:
     COLUMNS = 16
-if HOST is None:
+if not HOST:
     HOST = "frekvens.local"
-if ROWS is None:
+if not ROWS:
     ROWS = 16
 
 parser = argparse.ArgumentParser(description="Send E1.31 packet")

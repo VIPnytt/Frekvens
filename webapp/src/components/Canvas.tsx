@@ -3,8 +3,8 @@ import { createVisibilityObserver } from '@solid-primitives/intersection-observe
 
 import { Tooltip } from './Tooltip';
 import { MODEL } from '../config/constants';
-import { MODEL as MODEL_FREKVENS } from '../config/Frekvens';
-import { MODEL as MODEL_OBEGRANSAD } from '../config/Obegransad';
+import { MODEL as MODEL_FREKVENS } from '../config/ikeaFrekvens';
+import { MODEL as MODEL_OBEGRANSAD } from '../config/ikeaObegransad';
 import { DeviceModel } from '../services/Device';
 import { DisplayBrightness, DisplayColumns, DisplayRatio, DisplayPixelRatio, DisplayRows } from '../services/Display';
 import { PageSidebar } from '../index';

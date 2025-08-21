@@ -8,7 +8,7 @@ import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { MODEL, NAME } from '../config/constants';
-import { MODEL as MODEL_FREKVENS } from '../config/Frekvens';
+import { MODEL as MODEL_FREKVENS } from '../config/ikeaFrekvens';
 import { ws } from '../extensions/WebSocket';
 import { SidebarSection } from './WebServer';
 

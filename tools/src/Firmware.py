@@ -5,8 +5,7 @@ import json
 import numbers
 import os
 
-from tools.src.config import Frekvens
-from tools.src.config import Obegransad
+from tools.src.config import ikeaFrekvens, ikeaObegransad
 
 
 class Firmware:
@@ -116,8 +115,8 @@ class Firmware:
     def upload(self):
         env_pio = dotenv.dotenv_values(".env")
         for option, value in {
-            "ENV_FREKVENS": Frekvens.HOSTNAME,
-            "ENV_OBEGRANSAD": Obegransad.HOSTNAME,
+            "ENV_FREKVENS": ikeaFrekvens.HOSTNAME,
+            "ENV_OBEGRANSAD": ikeaObegransad.HOSTNAME,
         }.items():
             if (
                 option in env_pio.keys()

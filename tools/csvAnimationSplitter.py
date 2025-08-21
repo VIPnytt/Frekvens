@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Split .csv files from the "Animation" mode into multiple frames or drawings.
 
 import os
@@ -6,7 +8,7 @@ import sys
 from src.config.constants import ROWS
 
 
-if ROWS is None:
+if not ROWS:
     ROWS = 16
 
 filepath = input(".csv file path: ")
