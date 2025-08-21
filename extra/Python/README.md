@@ -13,3 +13,7 @@ Template script for streaming to the [Distributed Display Protocol](https://gith
 ## 💻 E1.31
 
 Template script for streaming to the [E1.31](https://github.com/VIPnytt/Frekvens/wiki/Modes#-e131) mode.
+
+## 🅱️ Font generator
+
+Template script for generating character bitmaps.
