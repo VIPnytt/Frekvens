@@ -8,10 +8,12 @@
 class ArtNetMode : public ModeModule
 {
 private:
+    static constexpr std::string_view _name = "Art-Net";
+
     std::unique_ptr<AsyncUDP> udp;
 
 public:
-    ArtNetMode() : ModeModule("Art-Net") {};
+    ArtNetMode() : ModeModule(_name.data()) {};
 
     void wake() override;
     void sleep() override;

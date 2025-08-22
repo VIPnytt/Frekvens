@@ -14,6 +14,7 @@ class Tools:
             "tools/src/__pycache__",
             "tools/src/config/__pycache__",
             "tools/src/frekvens.egg-info",
+            "tools/src/modes/__pycache__",
         ]:
             if os.path.exists(path):
                 shutil.rmtree(path, ignore_errors=True)

@@ -19,7 +19,7 @@
 #endif
 
 /*
- * Art-net
+ * Art-Net
  */
 #ifndef MODE_ARTNET
 #define MODE_ARTNET true

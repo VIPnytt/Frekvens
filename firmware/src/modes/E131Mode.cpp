@@ -1,43 +1,32 @@
 #include "config/constants.h"
 #include "modes/E131Mode.h"
 #include "services/DisplayService.h"
+#include "services/NetworkService.h"
 
 void E131Mode::wake()
 {
-    if (!udp)
+    udp = std::make_unique<AsyncUDP>();
+    if (udp->listen(5568))
     {
-        udp = std::make_unique<AsyncUDP>();
-        if (udp->listen(5568))
-        {
-            udp->onPacket(&onPacket);
+        udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.printf("%s: listening at port 5568\n", name);
+        Serial.printf("%s: listening at %s:5568\n", name, Network.domain.data());
 #endif
-        }
     }
 }
 
 void E131Mode::onPacket(AsyncUDPPacket packet)
 {
-    switch (packet.length())
+    if (packet.length() == 126 + COLUMNS * ROWS)
     {
-    case (60 + COLUMNS * ROWS):
-        Display.setFrame(packet.data() + 60);
-        break;
-    case (126 + COLUMNS * ROWS):
         Display.setFrame(packet.data() + 126);
-        break;
-    case (60 + 1):
-        Display.clear(packet.data()[60]);
-        break;
-    case (126 + 1):
-        Display.clear(packet.data()[126]);
-        break;
-#ifdef F_DEBUG
-    default:
-        Serial.printf("%s: unsupported package received\n", "E1.31");
-#endif
     }
+#ifdef F_DEBUG
+    else
+    {
+        Serial.printf("%s: : malformed packet received\n", _name.data());
+    }
+#endif
 }
 
 void E131Mode::sleep()

@@ -26,3 +26,16 @@ MODEL = (
     if ENV_FREKVENS
     else ikeaObegransad.MODEL if ENV_OBEGRANSAD else None
 )
+
+MODE_ARTNET = (
+    True if dotenv.dotenv_values("tools/.env").get("MODE_ARTNET") != "false" else False
+)
+MODE_DISTRIBUTEDDISPLAYPROTOCOL = (
+    True
+    if dotenv.dotenv_values("tools/.env").get("MODE_DISTRIBUTEDDISPLAYPROTOCOL")
+    != "false"
+    else False
+)
+MODE_E131 = (
+    True if dotenv.dotenv_values("tools/.env").get("MODE_E131") != "false" else False
+)

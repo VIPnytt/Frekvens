@@ -8,13 +8,15 @@
 class DistributedDisplayProtocolMode : public ModeModule
 {
 private:
+    static constexpr std::string_view _name = "Distributed Display Protocol";
+
     std::unique_ptr<AsyncUDP> udp;
 
 public:
-    DistributedDisplayProtocolMode() : ModeModule("Distributed Display Protocol") {};
+    DistributedDisplayProtocolMode() : ModeModule(_name.data()) {};
 
     void wake() override;
     void sleep() override;
-    
+
     static void onPacket(AsyncUDPPacket packet);
 };
