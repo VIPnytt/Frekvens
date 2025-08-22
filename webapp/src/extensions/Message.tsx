@@ -7,7 +7,7 @@ import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { ws } from './WebSocket';
-import { name as DisplayName } from '../services/Display';
+import { DisplayColumns, name as DisplayName } from '../services/Display';
 import { name as ExtensionsName } from '../services/Extensions';
 import { FontsList } from '../services/Fonts';
 
@@ -26,7 +26,7 @@ export const receiver = (json: any) => {
 const { toast } = Toast();
 
 const event = (message: string) => {
-    toast(message, message.length * 1000);
+    toast(message, Math.pow(2, 7) * (DisplayColumns() + message.length * 6.8));
 };
 
 export const Link: Component = () => (
