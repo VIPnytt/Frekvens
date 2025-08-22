@@ -7,11 +7,11 @@ import { Icon } from '../components/Vector';
 import { MODEL, MODE_ANIMATION, MODE_ARTNET, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_FLIES, MODE_HOMETHERMOMETER, MODE_TICKER } from '../config/constants';
 import { ws } from '../extensions/WebSocket';
 import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
-import { Main as ModeArtNetMain, Link as ModeArtNetLink, MainSecondary as ModeArtNetMainThird, name as ModeArtNetName } from '../modes/ArtNet';
+import { Main as ModeArtNetMain, name as ModeArtNetName } from '../modes/ArtNet';
 import { Main as ModeCountdownMain, Sidebar as ModeCountdownSidebar, receiver as ModeCountdown, name as ModeCountdownName } from '../modes/Countdown';
-import { Main as ModeDistributedDisplayProtocolMain, Link as ModeDistributedDisplayProtocolLink, MainSecondary as ModeDistributedDisplayProtocolMainThird, name as ModeDistributedDisplayProtocolName } from '../modes/DistributedDisplayProtocol';
+import { Main as ModeDistributedDisplayProtocolMain, name as ModeDistributedDisplayProtocolName } from '../modes/DistributedDisplayProtocol';
 import { Main as ModeDrawMain, Sidebar as ModeDrawSidebar, receiver as ModeDraw, name as ModeDrawName } from '../modes/Draw';
-import { Main as ModeE131Main, Link as ModeE131Link, MainSecondary as ModeE131MainThird, name as ModeE131Name } from '../modes/E131';
+import { Main as ModeE131Main, name as ModeE131Name } from '../modes/E131';
 import { Main as ModeFliesMain, name as ModeFliesName } from '../modes/Flies';
 import { Main as ModeHomeThermometerMain, Link as ModeHomeThermometerLink, receiver as ModeHomeThermometer, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
 import { Sidebar as ModeTickerSidebar, receiver as ModeTicker, name as ModeTickerName } from '../modes/Ticker';
@@ -217,27 +217,6 @@ export const MainThird: Component = () => (
             </div >
         }>
         {
-            MODE_ARTNET && (
-                <Match when={WebServerPath() === `/${name.toLowerCase()}/${ModeArtNetName.toLowerCase()}`}>
-                    <ModeArtNetMainThird />
-                </Match>
-            )
-        }
-        {
-            MODE_DISTRIBUTEDDISPLAYPROTOCOL && (
-                <Match when={WebServerPath() === `/${name.toLowerCase()}/${ModeDistributedDisplayProtocolName.toLowerCase().replace(/\s+/g, '-')}`}>
-                    <ModeDistributedDisplayProtocolMainThird />
-                </Match>
-            )
-        }
-        {
-            MODE_E131 && (
-                <Match when={WebServerPath() === `/${name.toLowerCase()}/${ModeE131Name.toLowerCase()}`}>
-                    <ModeE131MainThird />
-                </Match>
-            )
-        }
-        {
             MODE_HOMETHERMOMETER && (
                 <Match when={WebServerPath() === `/${name.toLowerCase()}/${ModeHomeThermometerName.toLowerCase().replace(/\s+/g, '-')}`}>
                     <ModeHomeThermometerMainThird />
@@ -250,21 +229,6 @@ export const MainThird: Component = () => (
 export const SidebarThird: Component = () => (
     <SidebarSection title={name}>
         <>
-            {
-                MODE_ARTNET && ModesList().includes(ModeArtNetName) && (
-                    <ModeArtNetLink />
-                )
-            }
-            {
-                MODE_DISTRIBUTEDDISPLAYPROTOCOL && ModesList().includes(ModeDistributedDisplayProtocolName) && (
-                    <ModeDistributedDisplayProtocolLink />
-                )
-            }
-            {
-                MODE_E131 && ModesList().includes(ModeE131Name) && (
-                    <ModeE131Link />
-                )
-            }
             {
                 MODE_HOMETHERMOMETER && ModesList().includes(ModeHomeThermometerName) && (
                     <ModeHomeThermometerLink />

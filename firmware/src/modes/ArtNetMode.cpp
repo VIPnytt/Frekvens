@@ -1,37 +1,32 @@
 #include "config/constants.h"
 #include "modes/ArtNetMode.h"
 #include "services/DisplayService.h"
+#include "services/NetworkService.h"
 
 void ArtNetMode::wake()
 {
-    if (!udp)
+    udp = std::make_unique<AsyncUDP>();
+    if (udp->listen(6454))
     {
-        udp = std::make_unique<AsyncUDP>();
-        if (udp->listen(6454))
-        {
-            udp->onPacket(&onPacket);
+        udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.printf("%s: listening at port 6454\n", name);
+        Serial.printf("%s: listening at %s:6454\n", name, Network.domain.data());
 #endif
-        }
     }
 }
 
 void ArtNetMode::onPacket(AsyncUDPPacket packet)
 {
-    switch (packet.length())
+    if (packet.length() == 18 + COLUMNS * ROWS)
     {
-    case (18 + COLUMNS * ROWS):
         Display.setFrame(packet.data() + 18);
-        break;
-    case (18 + 1):
-        Display.clear(packet.data()[18]);
-        break;
-#ifdef F_DEBUG
-    default:
-        Serial.printf("%s: : unsupported package received\n", "Art-Net");
-#endif
     }
+#ifdef F_DEBUG
+    else
+    {
+        Serial.printf("%s: : malformed packet received\n", _name.data());
+    }
+#endif
 }
 
 void ArtNetMode::sleep()

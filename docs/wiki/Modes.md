@@ -36,13 +36,13 @@ MODE_ARROW=true
 
 > Enabled by default.
 
-## 💻 Art-net
+## 💻 Art-Net
 
 DMX over UDP/IP, stream in real-time over Wi-Fi.
 
 Client: `example.local:6454`
 
-> There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/artnetTemplate.py) available, serving as a template for generating *Art-net packages*.
+> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -206,7 +206,7 @@ Efficient Ethernet pixel data, stream in real-time over Wi-Fi.
 
 Client: `example.local:4048`
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/ddpTemplate.py) available, serving as a template for generating *DDP packages*.
+> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -240,7 +240,7 @@ Streaming ACN, send DMX512 data over Wi-Fi.
 
 Client: `example.local:5568`
 
-There's a [Python script](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/e131Template.py) available, serving as a template for generating *E1.31 packages*.
+> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

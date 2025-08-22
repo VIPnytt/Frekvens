@@ -1,43 +1,33 @@
 #include "config/constants.h"
 #include "modes/DistributedDisplayProtocolMode.h"
 #include "services/DisplayService.h"
+#include "services/NetworkService.h"
 
 void DistributedDisplayProtocolMode::wake()
 {
-    if (!udp)
+    udp = std::make_unique<AsyncUDP>();
+    if (udp->listen(4048))
     {
-        udp = std::make_unique<AsyncUDP>();
-        if (udp->listen(4048))
-        {
-            udp->onPacket(&onPacket);
+        udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-            Serial.printf("%s: listening at port 4048\n", name);
+        Serial.printf("%s: listening at %s:4048\n", name, Network.domain.data());
 #endif
-        }
     }
 }
 
 void DistributedDisplayProtocolMode::onPacket(AsyncUDPPacket packet)
 {
-    switch (packet.length())
+    const size_t len = packet.length();
+    if (len == 10 + COLUMNS * ROWS || len == 14 + COLUMNS * ROWS)
     {
-    case (10 + COLUMNS * ROWS):
-        Display.setFrame(packet.data() + 10);
-        break;
-    case (14 + COLUMNS * ROWS):
-        Display.setFrame(packet.data() + 14);
-        break;
-    case (10 + 1):
-        Display.clear(packet.data()[10]);
-        break;
-    case (14 + 1):
-        Display.clear(packet.data()[14]);
-        break;
-#ifdef F_DEBUG
-    default:
-        Serial.printf("%s: unsupported package received\n", "Distributed Display Protocol");
-#endif
+        Display.setFrame(packet.data() + len - COLUMNS * ROWS);
     }
+#ifdef F_DEBUG
+    else
+    {
+        Serial.printf("%s: malformed packet received\n", _name.data());
+    }
+#endif
 }
 
 void DistributedDisplayProtocolMode::sleep()

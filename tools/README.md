@@ -10,6 +10,6 @@ Python script to split [animations](https://github.com/VIPnytt/Frekvens/wiki/Mod
 
 Python script to convert [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) into modes.
 
-1. Execute the script.
-2. Compile/upload.
-3. Select it from the mode list to see it in action.
+## 📺 Streamer
+
+Python script to stream custom content created in the [Animation](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [Drawing](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) modes using [Art-Net](https://github.com/VIPnytt/Frekvens/wiki/Modes#-art-net), [Distributed Display Protocol](https://github.com/VIPnytt/Frekvens/wiki/Modes#-distributed-display-protocol) or [E1.31](https://github.com/VIPnytt/Frekvens/wiki/Modes#-e131).
