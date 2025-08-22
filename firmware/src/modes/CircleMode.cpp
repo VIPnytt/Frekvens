@@ -1,4 +1,3 @@
-#include "config/constants.h"
 #include "extensions/MicrophoneExtension.h"
 #include "modes/CircleMode.h"
 #include "services/DisplayService.h"
