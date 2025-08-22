@@ -2,17 +2,25 @@
 #include "modes/MetaballsMode.h"
 #include "services/DisplayService.h"
 
-void MetaballsMode::wake()
+void MetaballsMode::setup()
 {
-    const float r = min((float)(COLUMNS * Display.getCellRatio()), (float)ROWS) / 5.0f;
-    radiusSq = r * r;
+    for (int16_t i = 0; i < sizeof(contributions); ++i)
+    {
+        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1 << 6)) >> 16;
+    }
     for (Ball &ball : balls)
     {
         ball.x = random(COLUMNS);
         ball.y = random(ROWS);
-        ball.xVelocity = random(1, 1 << 3) * speed * (random(2) * 2 - 1);
-        ball.yVelocity = random(1, 1 << 3) * speed * (random(2) * 2 - 1);
+        ball.xVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
+        ball.yVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
     }
+}
+
+void MetaballsMode::wake()
+{
+    radius = min<float>(COLUMNS * Display.getCellRatio(), ROWS) / 5.0f;
+    radiusSq = radius * radius;
 }
 
 void MetaballsMode::handle()
@@ -21,28 +29,35 @@ void MetaballsMode::handle()
     if (Microphone->play())
 #endif
     {
-        for (uint8_t x = 0; x < COLUMNS; ++x)
+        for (const Ball &ball : balls)
         {
-            for (uint8_t y = 0; y < ROWS; ++y)
+            const uint8_t
+                xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0),
+                yMin = max<int8_t>(ball.y - radius - max<float>(ball.yVelocity, 0), 0),
+                xMax = min<int8_t>(ceil(ball.x + radius - min<float>(ball.xVelocity, 0)), COLUMNS - 1),
+                yMax = min<int8_t>(ceil(ball.y + radius - min<float>(ball.yVelocity, 0)), ROWS - 1);
+            for (uint8_t x = xMin; x <= xMax; ++x)
             {
-                uint8_t brightness = 0;
-                for (const Ball &ball : balls)
+                for (uint8_t y = yMin; y <= yMax; ++y)
                 {
-                    const float
-                        xDist = (ball.x - x) * Display.getCellRatio(),
-                        yDist = ball.y - y,
-                        distSq = xDist * xDist + yDist * yDist;
-                    if (distSq < radiusSq)
+                    uint8_t brightness = 0;
+                    for (const Ball &ball : balls)
                     {
-                        const float ratio = distSq / radiusSq;
-                        brightness = min((uint16_t)(brightness + (1.0f - ratio) * (1.0f - ratio) * (1 << 6)), (uint16_t)UINT8_MAX);
-                        if (brightness >= UINT8_MAX)
+                        const float
+                            xDist = (ball.x - x) * Display.getCellRatio(),
+                            yDist = ball.y - y,
+                            distSq = xDist * xDist + yDist * yDist;
+                        if (distSq < radiusSq)
                         {
-                            break;
+                            brightness = min<uint8_t>(brightness + contributions[(uint8_t)(distSq * UINT8_MAX / radiusSq)], UINT8_MAX);
+                            if (brightness >= UINT8_MAX)
+                            {
+                                break;
+                            }
                         }
                     }
+                    Display.setPixel(x, y, brightness);
                 }
-                Display.setPixel(x, y, brightness);
             }
         }
         for (Ball &ball : balls)
@@ -52,22 +67,22 @@ void MetaballsMode::handle()
             if (ball.x < 0)
             {
                 ball.x = 0;
-                ball.xVelocity = random(1, 1 << 3) * speed;
+                ball.xVelocity = random(1, multiplier) * speed;
             }
             else if (ball.x > COLUMNS - 1)
             {
                 ball.x = COLUMNS - 1;
-                ball.xVelocity = random(1, 1 << 3) * -speed;
+                ball.xVelocity = random(1, multiplier) * -speed;
             }
             if (ball.y < 0)
             {
                 ball.y = 0;
-                ball.yVelocity = random(1, 1 << 3) * speed;
+                ball.yVelocity = random(1, multiplier) * speed;
             }
             else if (ball.y > ROWS - 1)
             {
                 ball.y = ROWS - 1;
-                ball.yVelocity = random(1, 1 << 3) * -speed;
+                ball.yVelocity = random(1, multiplier) * -speed;
             }
         }
     }
