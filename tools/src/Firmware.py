@@ -4,15 +4,17 @@ import hashlib
 import json
 import numbers
 import os
+import tzlocal
 
-from tools.src.config import ikeaFrekvens, ikeaObegransad
+from .config import ikeaFrekvens, ikeaObegransad
+from .services import Network
 
 
 class Firmware:
-    def __init__(self, env):
+    def __init__(self, env) -> None:
         self.env = env
 
-    def define(self):
+    def define(self) -> None:
         env_pio = dotenv.dotenv_values(".env")
         for option, value in env_pio.items():
             if option.upper() in [
@@ -42,24 +44,6 @@ class Firmware:
                         ),
                     ]
                 )
-            elif option.upper() == "TIME_ZONE_IANA":
-                with open(
-                    f"{self.env['PROJECT_LIBDEPS_DIR']}/{self.env['PIOENV']}/posix_tz_db/zones.json"
-                ) as zones:
-                    iana = json.load(zones)
-                    if value in iana:
-                        self.env.Append(
-                            CPPDEFINES=[
-                                (
-                                    option.upper(),
-                                    self.env.StringifyMacro(value),
-                                ),
-                                (
-                                    "TIME_ZONE_POSIX",
-                                    self.env.StringifyMacro(iana[value]),
-                                ),
-                            ]
-                        )
             elif value is not None and value.lower() in [
                 "true",
                 "false",
@@ -73,6 +57,29 @@ class Firmware:
                                 if value is not None and value.lower() != "false"
                                 else "false"
                             ),
+                        ),
+                    ]
+                )
+        iana = env_pio.get("TIME_ZONE_IANA")
+        if iana is None:
+            iana = tzlocal.get_localzone_name()
+        else:
+            self.env.Append(
+                CPPDEFINES=[
+                    (
+                        "TIME_ZONE_IANA",
+                        self.env.StringifyMacro(iana),
+                    ),
+                ]
+            )
+        if iana:
+            posix = Network.Network().tz_lookup(iana)
+            if posix:
+                self.env.Append(
+                    CPPDEFINES=[
+                        (
+                            "TIME_ZONE_POSIX",
+                            self.env.StringifyMacro(posix),
                         ),
                     ]
                 )
@@ -112,7 +119,7 @@ class Firmware:
                     ]
                 )
 
-    def upload(self):
+    def upload(self) -> None:
         env_pio = dotenv.dotenv_values(".env")
         for option, value in {
             "ENV_FREKVENS": ikeaFrekvens.HOSTNAME,
@@ -133,7 +140,7 @@ class Firmware:
             if not option in os.environ and not option in env_pio.keys():
                 os.environ[option] = value
 
-    def version(self):
+    def version(self) -> None:
         config = "firmware/include/config/version.h"
         with open("library.json") as pio, open(config, "r+") as h:
             library = json.load(pio)

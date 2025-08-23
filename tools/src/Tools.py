@@ -5,22 +5,23 @@ import shutil
 
 
 class Tools:
-    def __init__(self, env):
+    def __init__(self, env) -> None:
         self.env = env
 
-    def clean(self):
+    def clean(self) -> None:
         for path in [
             "tools/__pycache__",
             "tools/src/__pycache__",
             "tools/src/config/__pycache__",
             "tools/src/frekvens.egg-info",
             "tools/src/modes/__pycache__",
+            "tools/src/services/__pycache__",
         ]:
             if os.path.exists(path):
                 shutil.rmtree(path, ignore_errors=True)
                 print(f"Removing {path}")
 
-    def environment(self):
+    def environment(self) -> None:
         env_py_path = "tools/.env"
         env_pio = dotenv.dotenv_values(".env")
         env_py = dotenv.dotenv_values(env_py_path)
@@ -57,7 +58,7 @@ class Tools:
         if wrote:
             print(env_py_path)
 
-    def version(self):
+    def version(self) -> None:
         config = "tools/pyproject.toml"
         with open("library.json") as pio, open(config, "r+") as toml:
             library = json.load(pio)
