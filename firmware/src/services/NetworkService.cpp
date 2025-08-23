@@ -65,10 +65,10 @@ void NetworkService::ready()
     (*Build->config)[Config::h][__STRING(DNS1)] = DNS1;
 #ifdef DNS2
     (*Build->config)[Config::h][__STRING(DNS2)] = DNS2;
-#endif
+#endif // DNS2
 #ifdef DNS3
     (*Build->config)[Config::h][__STRING(DNS3)] = DNS3;
-#endif
+#endif // DNS3
 #endif // DNS1
 #ifdef NTP1
     (*Build->config)[Config::h][__STRING(NTP1)] = NTP1;
@@ -79,9 +79,6 @@ void NetworkService::ready()
 #endif // NTP3
 #endif // NTP2
 #endif // NTP1
-#if defined(TIME_ZONE_POSIX) && !defined(TIME_ZONE_IANA)
-    (*Build->config)[Config::h][__STRING(TIME_ZONE_POSIX)] = TIME_ZONE_POSIX;
-#endif // defined(TIME_ZONE_POSIX) && !defined(TIME_ZONE_IANA)
 #ifdef WIFI_SSID
     (*Build->config)[Config::h][__STRING(WIFI_SSID)] = WIFI_SSID;
 #ifdef WIFI_KEY
@@ -415,8 +412,9 @@ void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 #endif // EXTENSION_OTA && (defined(OTA_KEY_HASH) || defined(OTA_KEY))
         }
     }
-    String _ipv4 = WiFi.localIP().toString();
-    String _ipv6 = WiFi.localIPv6().toString();
+    const String
+        _ipv4 = WiFi.localIP().toString(),
+        _ipv6 = WiFi.localIPv6().toString();
     if (Network.IPv4 != _ipv4 || Network.IPv6 != _ipv6)
     {
         Network.IPv4 = _ipv4;
