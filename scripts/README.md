@@ -1,6 +1,6 @@
 # ⚙️ Scripts
 
-For PlatformIO.
+Scripts intended for PlatformIO only.
 
 ## 🏗️ Pre-build
 

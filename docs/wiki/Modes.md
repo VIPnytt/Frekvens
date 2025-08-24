@@ -4,9 +4,9 @@
 
 Create simple animations and show it off on the display.
 
-Use the Web app to get started.
+Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to get started.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the animations.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the animations.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -16,9 +16,9 @@ MODE_ANIMATION=true
 
 > Enabled by default.
 
-> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script can convert animations into modes.
+> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script converts animations into reusable modes.
 
-> There's also a [animation splitter](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) Python script available to split exported animations into separate [drawings](#-draw)/frames/files.
+> The [animation splitter](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) Python script separates exported animations into individual [drawings](#-draw).
 
 See also [Draw](#-draw).
 
@@ -26,7 +26,7 @@ See also [Draw](#-draw).
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the arrow, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the arrow, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -86,7 +86,7 @@ See also [Binary clock](#0%EF%B8%8F⃣-binary-clock).
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the blinds.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the blinds.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -154,7 +154,7 @@ See also [Blink](#%EF%B8%8F-blink).
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the circle.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the circle.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -172,7 +172,7 @@ Start a countdown timer.
 
 The display will blink when the timer reaches zero.
 
-Use the Web app to start a new countdown, it can also be automated via [Home Assistant](#-home-assistant).
+Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to start a new countdown, it can also be automated via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
 
 API payload examples:
 
@@ -222,9 +222,9 @@ See also [Art-Net](#-art-net) and [E1.31](#-e131).
 
 Create artwork and show it off on the display.
 
-Use the Web app to get started.
+Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to get started.
 
-The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script can convert drawings into modes.
+> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script converts drawings into reusable modes.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -256,7 +256,7 @@ See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-d
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the equalizer, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the equalizer, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -357,7 +357,7 @@ MODE_HOMEASSISTANT=true
 
 > Enabled by default when `HOMEASSISTANT_KEY` is defined.
 
-See also [Home Assistant](Extensions.md#home-assistant) extension.
+See also [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#home-assistant) extension.
 
 ## 🌡️ Home thermometer
 
@@ -365,7 +365,7 @@ Smart-home integration.
 
 Display the current indoor and outdoor temperatures.
 
-Integrated into [Home Assistant](Extensions.md#home-assistant).
+Integrated into [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#home-assistant).
 
 API payload example:
 
@@ -394,7 +394,7 @@ MODE_HOMETHERMOMETER=true
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -422,7 +422,7 @@ MODE_LEAFFALL=true
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the lines, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the lines, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -438,7 +438,7 @@ See also [Scan](#-scan).
 
 Inspired by organic, blob-like shapes.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the movement of the shapes.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the movement of the shapes.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -544,7 +544,7 @@ See also [Ping-pong](#-ping-pong).
 
 For tech-geeks, iterates through the pixels one by one in the exact same order as the pixels are addressed on the SPI-bus.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the sequence.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the sequence.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -570,7 +570,7 @@ MODE_RAIN=true
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the ring, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the ring, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -586,7 +586,7 @@ See also [Circle](#-circle).
 
 Inspired by the original *IKEA Obegränsad* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the scan.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the scan.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -616,7 +616,7 @@ See also [Bold clock](#%EF%B8%8F-bold-clock).
 
 Inspired by the original *IKEA Frekvens* mode.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -672,7 +672,7 @@ MODE_STARS=true
 
 Rolling text.
 
-Use the Web app to set a message, or automate it via [Home Assistant](#-home-assistant).
+Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to set a message, or automate it via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
 
 API payload example:
 
@@ -691,7 +691,7 @@ MODE_TICKER=true
 
 > Enabled by default.
 
-See also [Message](Extensions.md#message).
+See also [Message](https://github.com/VIPnytt/Frekvens/wiki/Extensions#message).
 
 ## ⏱️ Ticking clock
 
@@ -709,7 +709,7 @@ MODE_TICKINGCLOCK=true
 
 Inspired by the two original *IKEA Frekvens* modes.
 
-> The [Microphone](Extensions.md#microphone) extension can be used to play/pause the waves, just like on the original *IKEA Frekvens* device.
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waves, just like on the original *IKEA Frekvens* device.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

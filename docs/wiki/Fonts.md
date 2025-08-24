@@ -1,15 +1,15 @@
 # 🔤 Fonts
 
-Character availability varies a lot, but fortunately it's easy to add new characters.
+Character support may vary, but additional characters can be added easily — either by hand or through auto-generation.
 
 ## 👁️ Braille
 
 Ultra-compact 2×3 pixel font, ideal for minimal space constraints.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
-```h
-#define FONT_BRAILLE true // boolean
+```ini
+FONT_BRAILLE=true
 ```
 
 > Enabled by default.
@@ -30,13 +30,13 @@ Small yet clear font suitable for most general-purpose display needs.
 
 ## ➡️ Medium
 
-Clean and versatile font with a slightly larger footprint, great for numeric and text content.
+Clean and versatile font with a slightly larger footprint.
 
 See also [Medium bold](#🅱%EF%B8%8F-medium-bold).
 
 ## 🅱️ Medium bold
 
-Bold and legible style based on the medium font, suited for headings and emphasis.
+Bold and legible style based on the medium font.
 
 See also [Medium](#%EF%B8%8F-medium).
 

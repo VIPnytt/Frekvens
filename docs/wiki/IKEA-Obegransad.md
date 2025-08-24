@@ -109,15 +109,15 @@ Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-l
 
 There's different options based on skill level and time investment:
 
-- *Best practice:*
+- *Beginner friendly:*
+  - Disconnect `SW` and re-connect it to the ESP32.
+  - Leave `SW1` connected.
+- *Clear wiring:*
   - Disconnect both `SW` and `SW1`.
   - Connect one end to ESP32 and the other end to `GND`.
-- *Minimalistic:*
-  - Connect the now empty `U1` pad 7 to the ESP32.
+- *Minimal changes:*
+  - Connect the desoldered `U1` pad 7 to the ESP32.
   - Leave both `SW` and `SW1` connected.
-- *Beginner friendly:*
-  - Disconnect `SW` and then re-connect it to ESP32 instead.
-  - Leave `SW1` connected.
 
 ## ↔️ Logic level shifter
 
@@ -138,30 +138,31 @@ The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_da
 
 The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for those who desire it's easy and straight forward to do something about it.
 
-Prioritize the wiring, but feel free to skip the capacitors if there isn't any to spare.
-
 ### Wiring
 
 The power supply (USB) should be connected to every `DC+` and `DC-` pad. This will help reduce the current travelling through the traces on the PCB, reduce voltage losses, and ultimately frequency noise.
 
-**Suggestions:**
+**Suggestion:**
 
-- Connect all four `DC+` terminals with wires.
-- Connect all four `DC-` terminals with wires.
+- Connect all four `DC+` pads with wires.
+- Connect all four `DC-` pads with wires.
 
-**Tip:** Keep the wires as short as possible.
+> Keep the wires reasonably short.
 
 ### Capacitors
 
-For dimming of the display, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) datasheet suggests adding an additional *"4.7 µF or more"* depending on the LED load current (~7 mA/output), for every chip. With four chips, that's a minimum of 18.8 µF per LED panel. The same datasheet also recommends adding *"greater than 10 µF"* besides the LEDs, bringing the total up to 28.8 µF each. With four LED panels, that's a combined minimum of 115.2 µF.
+According to the [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf), adding decoupling capacitors can improve dimming performance by reducing noise and preventing timing issues. The datasheet suggests *4.7 µF or more* depending on LED load current (~7.0 mA/pixel), and *greater than 10 µF* across the LEDs — equivalent to at least 28.8 µF per panel, or 115.2 µF total.
 
-The capacitors will help prevent timing issues, as well as minimize noise from the USB power supply. Ideally they should be placed as close to the load as possible.
+Placement should be as close to the load as possible.
 
-**Suggestion:**
+> These capacitors are optional and only worth adding if you already have some on hand, or if you encounter issues.
 
-- Add at least 28.8 µF to each of the four panels.
+**Possible placement points:**
 
-**Tip:** The four `DC+` and `DC-` pads are good positions for soldering capacitors. Other positions are the two `VCC` and `GND` pads on the top and bottom. Also the `J3` JTAG pads can be retrofitted if desired, `J3` pin 1 (square) is tied to `VCC` while `J3` pin 4 (rectangle) is tied to `GND`. For those who prefer SMDs, theres two labeled `C2` and `C7` on each panel, except the first LED panel where `C2` is occupied as it was paired with the `U1` chip which got disassembled.
+- The four `DC+` / `DC-` pads *(one set per panel)*
+- The `VCC` / `GND` pads at the top and bottom of the board
+- The J3 JTAG header — pin 1 is the square pad (tied to `VCC`), and pin 4 (round) is tied to `GND`
+- The SMD pads labeled `C2` and `C7` on each panel *(except `C2` on the first panel, which is already populated)*
 
 ## 🔧 Configuration
 
@@ -186,9 +187,9 @@ The capacitors will help prevent timing issues, as well as minimize noise from t
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *SPI `SCLK`* pin.
+Any *SPI `SCLK`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -198,11 +199,11 @@ Use any *SPI `SCLK`* pin.
 
 ### SPI MISO
 
-Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
+Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *SPI `MISO`* pin.
+Any *SPI `MISO`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -214,9 +215,9 @@ Use any *SPI `MISO`* pin.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *SPI `MOSI`* pin.
+Any *SPI `MOSI`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -228,9 +229,9 @@ Use any *SPI `MOSI`* pin.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
+Any *digital output* pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a resistor.
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -242,7 +243,7 @@ Use any *digital output* pin. *First generation ESP32 boards may have specialize
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *PWM output* pin.
+Any *PWM output* pin can be used.
 
 > Avoid strapping pins as this pin is pulled *HIGH* using a resistor.
 
@@ -256,7 +257,7 @@ Use any *PWM output* pin.
 
 Optional to connect.
 
-Use any *digital input* pin, preferably one that is also RTC-capable, to allow deep sleep wake-up functionality.
+Any *digital input* pin can be used, but those that are also RTC-capable are preferred.
 
 > Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
@@ -265,8 +266,6 @@ Use any *digital input* pin, preferably one that is also RTC-capable, to allow d
 ```h
 #define PIN_SW2 6 // GPIO #
 ```
-
-> The other end of the button must be connected to ground. By default, it's connected to `SW1` which is tied to `GND` via `DC-`.
 
 ## 📝 Template
 
@@ -278,9 +277,6 @@ ENV_OBEGRANSAD=''
 
 # Custom device name (optional)
 NAME='Obegränsad'
-
-# Time zone (optional)
-TIME_ZONE_IANA='Etc/Universal'
 ```
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:

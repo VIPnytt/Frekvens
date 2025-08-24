@@ -54,14 +54,14 @@ For devices with 2 buttons:
   - Click: *Power on/off*
   - Hold: *Brightness up/down*
 - Button #2:
-  - Click: *Next [mode](Mode)*
-  - Hold: *Iterate between [modes](Mode)*
+  - Click: *Next [mode](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
+  - Hold: *Iterate between [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
 
 For devices with only one button:
 
 - Button #2:
   - Click: *Power on/off*
-  - Hold: *Iterate between [modes](Mode)*
+  - Hold: *Iterate between [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
 
 Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
 
@@ -85,7 +85,7 @@ EXTENSION_BUTTON=true
 
 > Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
 
-See also [IKEA Frekvens](IKEA-Frekvens.md) and [IKEA Obegränsad](IKEA-Obegransad.md).
+See also [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad).
 
 ## 🧬 Home Assistant
 
@@ -125,15 +125,15 @@ API payload example:
 }
 ```
 
-See also [Home Assistant weather](Modes.md#home-assistant-weather) mode.
+See also [Home Assistant weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#home-assistant-weather) mode.
 
 ## 🔴 Infrared
 
-With an IR-receiver sensor, it's possible to use a remote control to control the device.
+By adding an IR sensor, you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.
 
 - Power on/off
 - Brightness
-- [Mode](Modes.md)
+- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes)
 - [Microphone](#%EF%B8%8F-microphone) on/off
 - [Playlist](#%EF%B8%8F-playlist) start/stop
 
@@ -142,7 +142,7 @@ Currently supported:
 - Philips
 - Sony
 
-Use the Web app or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
+Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
 
 API payload example:
 
@@ -166,13 +166,13 @@ EXTENSION_INFRARED=true
 
 > Enabled by default when `PIN_IR` is defined.
 
-Check out the [Infrared](Infrared.md) wiki for more info.
+Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared) wiki for more info.
 
 ## 📢 Message
 
 Display rolling notification text messages on-demand.
 
-Use the Web app to send messages, or set up automations via [Home Assistant](#-home-assistant).
+Use the [Web app](#-web-app) to send messages, or set up automations via [Home Assistant](#-home-assistant).
 
 API payload example:
 
@@ -194,13 +194,13 @@ EXTENSION_MESSAGE=true
 
 > Enabled by default.
 
-See also [Ticker](Modes.md#ticker).
+See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#ticker).
 
 ## 🎙️ Microphone
 
-Many of the [modes](Modes.md) has the ability to react to sounds, eg. syncing animations up with the music.
+Many of the [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) has the ability to react to sounds, eg. syncing animations up with the music.
 
-Use the Web app or [Home Assistant](#-home-assistant) to control this input method.
+Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
 API payload example:
 
@@ -224,7 +224,7 @@ EXTENSION_MICROPHONE=true
 
 > Enabled by default.
 
-Check out the [Microphone](Microphone.md) wiki for hardware instructions.
+Check out the [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone) wiki for hardware instructions.
 
 ## ✉️ MQTT
 
@@ -307,7 +307,7 @@ See also [Build](#%EF%B8%8F-build).
 
 ## ▶️ Playlist
 
-Set up a playlist of [Modes](Modes.md) that loops with a timer.
+Set up a playlist of [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) that loops with a timer.
 
 Integrated into the [Button](#%EF%B8%8F-button) extension, long-press button #2 to activate. Can also be controlled via the [Home Assistant](#-home-assistant) extension.
 
@@ -360,7 +360,7 @@ EXTENSION_RTC=true
 
 > Enabled by default when a [*supported*](RTC#-supported-types) RTC-module is defined.
 
-Check out the [RTC](RTC.md) wiki for hardware instructions.
+Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC) wiki for hardware instructions.
 
 ## 📜 Server-Sent Events
 

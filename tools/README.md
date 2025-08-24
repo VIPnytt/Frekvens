@@ -2,13 +2,19 @@
 
 > Most configuration options should be set using the global [.env](https://github.com/VIPnytt/Frekvens/.env) file in the root directory, as some options is shared between `firmware`, `tools` and `webapp`.
 
+Installation of Python dependency packages:
+
+```bash
+pip install tools/
+```
+
 ## ✂️ Animation splitter
 
-Python script to split [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) into separate [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw)/frames/files.
+Python script to separate [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) into individual [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw).
 
 ## 🏭 Mode generator
 
-Python script to convert [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) into modes.
+Python script to convert [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) into reusable modes.
 
 ## 📺 Streamer
 

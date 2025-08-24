@@ -8,7 +8,7 @@
 
 ```text
          ┌──────────────────────────────────┐
-         │     ┌───────────────────┬────────┼─ Microphone
+         │     ┌───────────────────┬────────┼─ Amplifier
  0 V DC ─┼ DC- │    ┌───────┐      │ ┌─┐    │
 +4 V DC ─┼ DC+ │    │┌────┐ │      │ ┤ ├    │
          │     │ U2 ││    │ │      │ ┤ ├    │
@@ -22,7 +22,7 @@
          │        └──┤ ├  └──┤ ├  K3 └─┘    │
          │        U6 ┤ ├  U7 ┤ ├            │
          │           └─┘     └─┘       MIC- │
-         │ LED+ LED-                   MIC+ ┼─ Signal
+         │ LED+ LED-                   MIC+ ┼─ Microphone
          └───────┼──────────────────────────┘
     LED ─────────┘
 ```
@@ -31,7 +31,7 @@
 
 ```text
 ┌─────┐
-│ VCC ├─ Signal
+│ VCC ├─ Microphone
 │ GND ├─ 0 V DC
 └─────┘
 ```
@@ -65,36 +65,38 @@
 │                │
 │  Digital input ├─ Button
 │                │
-│   Analog input ├─ Microphone
+│   Analog input ├─ Amplifier
 └────────────────┘
 ```
 
 ## 🚀 Getting started
 
-Remove the `U2` chip, then connect each component to the ESP32 using wires.
+First, desolder the `U2` chip, and then wire the ESP32 according to the provided schematics.
 
-Refer to the [PCB schema](#pcb-schema) above for the internal connections of each component on the board — this allows you to solder the wire to any convenient point on the PCB.
+Refer to the [PCB schema](#pcb-schema) above for the internal connections of each component on the board — this will allow you to choose a convenient soldering point.
 
 ## 🔧 Configuration
 
 ### Power and ground
 
+The `DC+`/`LED+` and `DC-`/`MIC-` pins are internally connected on the PCB.
+
 > To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.
 
 ### Enable
 
-Use any *PWM output* pin.
+Any *PWM output* pin can be used.
 
 > Avoid strapping pins as this pin may be floating.
 
 ### Button
 
-Use any *digital input* pin, preferably those that are also RTC-capable, to allow deep sleep wake-up functionality.
+Any *digital input* pin can be used, but those that are also RTC-capable are preferred.
 
 > Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
 
-### Microphone
+### Amplifier
 
-Use any *analog input* pin.
+Any *analog input* pin can be used, but those on the ADC1 channel are preferred.
 
-> Avoid strapping pins as this pin is biased.
+> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based, original series) boards, the ADC2 channel pins are not supported.
