@@ -1,3 +1,4 @@
+#include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/BitmapHandler.h"
 #include "handlers/TextHandler.h"
@@ -16,7 +17,7 @@ void WeatherHandler::parse(const std::string code, const std::vector<Codeset> co
         }
     }
 #ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %s\n", name, code.c_str());
+    Serial.printf("%s: unknown condition code %s\n", _name.data(), code.c_str());
 #endif
 }
 
@@ -31,7 +32,7 @@ void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codes
         }
     }
 #ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %d\n", name, code);
+    Serial.printf("%s: unknown condition code %d\n", _name.data(), code);
 #endif
 }
 
@@ -46,7 +47,7 @@ void WeatherHandler::parse(const uint16_t code, const std::vector<Codeset16> cod
         }
     }
 #ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %d\n", name, code);
+    Serial.printf("%s: unknown condition code %d\n", _name.data(), code);
 #endif
 }
 
@@ -93,8 +94,9 @@ void WeatherHandler::draw()
     TextHandler text = TextHandler((String)temperature + "°", FontMini);
     BitmapHandler bitmap = BitmapHandler(sign);
 
-    uint8_t textHeight = text.getHeight();
-    uint8_t marginsY = max(0, ROWS - bitmap.getHeight() - textHeight) / 3;
+    const uint8_t
+        textHeight = text.getHeight(),
+        marginsY = max(0, ROWS - bitmap.getHeight() - textHeight) / 3;
 
     Display.clear();
     bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, marginsY);

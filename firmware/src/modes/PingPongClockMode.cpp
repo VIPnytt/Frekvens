@@ -10,7 +10,7 @@ void PingPongClockMode::wake()
     Display.clear();
     paddleL.clear();
     paddleR.clear();
-    uint8_t paddleY = random(5, ROWS - 4);
+    const uint8_t paddleY = random(5, ROWS - 1 - 3);
     for (uint8_t _y = 0; _y < 3; ++_y)
     {
         paddleL.push_back(paddleY + _y);

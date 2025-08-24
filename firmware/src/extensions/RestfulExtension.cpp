@@ -5,7 +5,6 @@
 #include <HTTPClient.h>
 #include <vector>
 
-#include "config/constants.h"
 #include "extensions/RestfulExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"

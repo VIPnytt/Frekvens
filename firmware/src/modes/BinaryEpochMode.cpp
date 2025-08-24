@@ -9,8 +9,9 @@ void BinaryEpochMode::handle()
         epoch = _epoch;
         for (uint8_t i = 0; i < COLUMNS / 2 * ROWS / 4; ++i)
         {
-            uint8_t x = COLUMNS - 2 - i % (COLUMNS / 2) * 2;
-            uint8_t y = ROWS - 4 - i / (COLUMNS / 2) * 4;
+            const uint8_t
+                x = COLUMNS - 2 - i % (COLUMNS / 2) * 2,
+                y = ROWS - 4 - i / (COLUMNS / 2) * 4;
             Display.drawRectangle(x, y, x + 1, y + 3, true, epoch & (1U << i) ? UINT8_MAX : 0);
         }
     }

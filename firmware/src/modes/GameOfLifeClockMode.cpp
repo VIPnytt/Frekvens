@@ -57,7 +57,7 @@ void GameOfLifeClockMode::handle()
                         }
                     }
                 }
-                bool lit = Display.getPixel(x, y);
+                const bool lit = Display.getPixel(x, y);
                 if (lit && (n < 2 || n > 3))
                 {
                     Display.setPixel(x, y, 0);

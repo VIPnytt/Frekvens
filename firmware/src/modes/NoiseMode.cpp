@@ -1,4 +1,3 @@
-#include "config/constants.h"
 #include "modes/NoiseMode.h"
 #include "services/DisplayService.h"
 

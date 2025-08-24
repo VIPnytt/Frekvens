@@ -3,9 +3,7 @@
 #include <nvs_flash.h>
 #include <Preferences.h>
 #include <regex>
-#include <vector>
 
-#include "config/constants.h"
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"

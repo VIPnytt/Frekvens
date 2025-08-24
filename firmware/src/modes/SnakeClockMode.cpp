@@ -45,7 +45,7 @@ void SnakeClockMode::handle()
 
 void SnakeClockMode::idle()
 {
-    uint8_t
+    const uint8_t
         x = random(COLUMNS),
         y = random(5, ROWS);
     snake = {{x, y}};

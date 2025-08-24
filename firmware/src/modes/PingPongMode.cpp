@@ -1,4 +1,3 @@
-#include "config/constants.h"
 #include "modes/PingPongMode.h"
 #include "services/DisplayService.h"
 
@@ -7,7 +6,7 @@ void PingPongMode::wake()
     Display.clear();
     paddleT.clear();
     paddleB.clear();
-    uint8_t paddleX = random(COLUMNS - 4);
+    const uint8_t paddleX = random(COLUMNS - 1 - 3);
     for (uint8_t _x = 0; _x < 3; ++_x)
     {
         paddleT.push_back(paddleX + _x);

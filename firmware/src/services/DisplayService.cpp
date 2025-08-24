@@ -258,7 +258,7 @@ void DisplayService::setGlobalBrightness(uint8_t brightness)
     power = true;
     globalBrightness = brightness;
     ledcAttachPin(PIN_EN, 0);
-    ledcWrite(0, (1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 1 - max((uint16_t)globalBrightness, (uint16_t)(pow(globalBrightness / (double)UINT8_MAX, GAMMA) * ((1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 2) + 1)));
+    ledcWrite(0, (1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 1 - max<uint16_t>(globalBrightness, pow(globalBrightness / (double)UINT8_MAX, GAMMA) * ((1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 2) + 1));
 
     Preferences Storage;
     Storage.begin(name);
@@ -324,10 +324,10 @@ void DisplayService::drawEllipse(double x, double y, double radius, double ratio
     const double _ratio = (cellRatio * COLUMNS / (double)ROWS * ratio - 1) / 2.0 + 1;
     const float rSq = radius * radius;
     const uint8_t
-        xMax = min(COLUMNS - 1.0, ceil(x + radius / _ratio)),
-        yMax = min(ROWS - 1.0, ceil(y + radius * _ratio)),
-        xMin = max(0.0, floor(x - radius / _ratio)),
-        yMin = max(0.0, floor(y - radius * _ratio));
+        xMax = min<uint8_t>(COLUMNS - 1, ceil(x + radius / _ratio)),
+        yMax = min<uint8_t>(ROWS - 1, ceil(y + radius * _ratio)),
+        xMin = max<uint8_t>(0, floor(x - radius / _ratio)),
+        yMin = max<uint8_t>(0, floor(y - radius * _ratio));
 
     for (uint8_t _x = xMin; _x <= xMax; ++_x)
     {

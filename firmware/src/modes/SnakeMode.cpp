@@ -31,7 +31,7 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    uint8_t
+    const uint8_t
         x = random(COLUMNS),
         y = random(ROWS);
     snake = {{x, y}};

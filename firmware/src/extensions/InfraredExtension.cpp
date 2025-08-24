@@ -53,9 +53,9 @@ void InfraredExtension::ready()
 {
     Preferences Storage;
     Storage.begin(name, true);
-    bool _active = Storage.isKey("active") && Storage.getBool("active");
+    const bool _active = Storage.isKey("active") && Storage.getBool("active");
     Storage.end();
-    _active ? set(_active) : transmit();
+    _active ? set(true) : transmit();
 }
 
 void InfraredExtension::handle()
@@ -95,7 +95,7 @@ void InfraredExtension::handle()
 
 bool InfraredExtension::parse(decode_results results)
 {
-    for (const Code code : codes)
+    for (const Code &code : codes)
     {
         if (code.protocol == results.decode_type)
         {

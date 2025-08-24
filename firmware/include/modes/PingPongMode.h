@@ -2,12 +2,13 @@
 
 #include <deque>
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class PingPongMode : public ModeModule
 {
 private:
-    static constexpr float speed = 0.0005 * ROWS;
+    static constexpr float speed = 5e-4 * ROWS;
 
     double
         xDec,

@@ -85,7 +85,7 @@ void ButtonExtension::handle()
     }
     else if (powerState && millis() - powerMillis > UINT8_MAX)
     {
-        uint8_t brightness = Display.getGlobalBrightness();
+        const uint8_t brightness = Display.getGlobalBrightness();
         if (!powerLong)
         {
             powerLong = true;
