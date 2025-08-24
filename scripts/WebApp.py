@@ -9,11 +9,11 @@ import sys
 
 
 class WebApp:
-    def __init__(self, env):
+    def __init__(self, env) -> None:
         self.env = env
         self.check()
 
-    def build(self):
+    def build(self) -> None:
         with open("library.json") as pio, open("webapp/package.json") as npm, open(
             "webapp/package-lock.json"
         ) as npm_lock:
@@ -37,7 +37,7 @@ class WebApp:
                     gz.writelines(html)
                     print(index)
 
-    def check(self):
+    def check(self) -> None:
         try:
             subprocess.run(
                 ["node", "--version"],
@@ -50,7 +50,7 @@ class WebApp:
             print("Please install Node.js from https://nodejs.org/")
             sys.exit(1)
 
-    def clean(self):
+    def clean(self) -> None:
         for path in [
             "data/webapp",
             "webapp/dist",
@@ -64,7 +64,7 @@ class WebApp:
             shutil.rmtree(node_modules, ignore_errors=True)
             print(f"Removing {node_modules}")
 
-    def evironment(self):
+    def evironment(self) -> None:
         env_ts_path = "webapp/.env"
         env_pio = dotenv.dotenv_values(".env")
         env_ts = dotenv.dotenv_values(env_ts_path)
@@ -103,7 +103,7 @@ class WebApp:
         if wrote:
             print(env_ts_path)
 
-    def environment_dev(self):
+    def environment_dev(self) -> None:
         env_ts_path = "webapp/.env.development"
         env_pio = dotenv.dotenv_values(".env")
         env_ts = dotenv.dotenv_values(env_ts_path)
@@ -114,7 +114,7 @@ class WebApp:
                     dotenv.set_key(env_ts_path, "VITE_HOST", host)
                     print(env_ts_path)
 
-    def version(self):
+    def version(self) -> None:
         package_json_path = "webapp/package.json"
         with open("library.json") as pio, open(package_json_path) as npm:
             library = json.load(pio)

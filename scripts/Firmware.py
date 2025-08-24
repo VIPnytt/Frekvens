@@ -6,8 +6,8 @@ import numbers
 import os
 import tzlocal
 
-from .config import ikeaFrekvens, ikeaObegransad
-from .services import Network
+from tools.src.config import ikeaFrekvens, ikeaObegransad
+from tools.src.services import Network
 
 
 class Firmware:
