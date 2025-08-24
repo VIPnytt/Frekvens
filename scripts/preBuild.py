@@ -6,11 +6,10 @@ Import("env")  # type: ignore
 sys.path.insert(0, env["PROJECT_DIR"])  # type: ignore
 
 if not env.IsCleanTarget():  # type: ignore
-    env.Execute(f"cd tools && pip install --quiet .")  # type: ignore
+    env.Execute(f"pip -q install -r scripts/requirements.txt")  # type: ignore
+    env.Execute(f"pip -q install tools/")  # type: ignore
 
-from tools.src.Firmware import Firmware
-from tools.src.Tools import Tools
-from tools.src.WebApp import WebApp
+from scripts import Firmware, Scripts, Tools, WebApp
 
 # Dump CLI targets
 # print(COMMAND_LINE_TARGETS)# type: ignore
@@ -28,7 +27,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["uploadfs"],
     ["uploadfsota"],
 ]:
-    firmware = Firmware(env)  # type: ignore
+    firmware = Firmware.Firmware(env)  # type: ignore
     firmware.version()
     firmware.define()
     firmware.upload()
@@ -39,7 +38,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["size"],
     ["upload"],
 ]:
-    webapp = WebApp(env)  # type: ignore
+    webapp = WebApp.WebApp(env)  # type: ignore
     webapp.check()
     webapp.version()
     webapp.evironment()
@@ -50,15 +49,17 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["erase"],
     ["size"],
 ]:
-    tools = Tools(env)  # type: ignore
+    tools = Tools.Tools(env)  # type: ignore
     tools.version()
     tools.environment()
 
 if env.IsCleanTarget():  # type: ignore
-    webapp = WebApp(env)  # type: ignore
-    webapp.clean()
-    tools = Tools(env)  # type: ignore
+    tools = Tools.Tools(env)  # type: ignore
     tools.clean()
+    webapp = WebApp.WebApp(env)  # type: ignore
+    webapp.clean()
+    scripts = Scripts.Scripts(env)  # type: ignore
+    scripts.clean()
 
 # Dump environment variables
 # print(env.Dump())# type: ignore
