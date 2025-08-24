@@ -11,7 +11,7 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 - [DS3234](https://www.sparkfun.com/sparkfun-deadon-rtc-breakout-ds3234.html)
 - [PCF8563](https://www.waveshare.com/PCF8563-RTC-Board.htm)
 
-> [DS1307](#-ds1307) operates at 5 V only and is therefore incompatible with [IKEA Frekvens](IKEA-Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
+> [DS1307](#ds1307) operates at 5 V and is therefore incompatible with [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
 ## 📈 Schematics
 
@@ -151,7 +151,7 @@ Most RTC-modules are 3.3 V compatible, but if 5 V logic is desired, the easiest 
 
 ### I2C SCL
 
-Use any *I2C `SCL`* pin.
+Any *I2C `SCL`* pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -161,7 +161,7 @@ Use any *I2C `SCL`* pin.
 
 ### I2C SDA
 
-Use any *I2C `SDA`* pin.
+Any *I2C `SDA`* pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -171,9 +171,9 @@ Use any *I2C `SDA`* pin.
 
 ### SPI SCLK
 
-Use any *SPI `SCLK`* pin.
+Any *SPI `SCLK`* pin can be used.
 
-The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
+> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -183,9 +183,9 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 
 ### SPI MISO
 
-Use any *SPI `MISO`* pin.
+Any *SPI `MISO`* pin can be used.
 
-The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
+> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -195,9 +195,9 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 
 ### SPI MOSI
 
-Use any *SPI `MOSI`* pin.
+Any *SPI `MOSI`* pin can be used.
 
-The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
+> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -207,33 +207,33 @@ The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but al
 
 ### SPI SDIO
 
-Use any *SPI `MISO`* pin.
+Any *SPI `MISO`* pin can be used.
 
-The board must have two sets of SPI pins, choose either `HSPI` or `VSPI`, but always the opposite of the display, as these cannot share the same SPI bus.
+> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SDIO2 7 // GPIO #
+#define PIN_SDIO2 6 // GPIO #
 ```
 
 ### SPI CS
 
-Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
+Any *digital output* pin can be used.
 
-Avoid **strapping** pins as this pin is pulled *LOW* using a resistor.
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_CS2 6 // GPIO #
+#define PIN_CS2 7 // GPIO #
 ```
 
 ### RTC INT
 
 Optional to connect.
 
-Use any *Digital input* pin that is also RTC-capable.
+Any *Digital input* pin that are also RTC-capable can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 

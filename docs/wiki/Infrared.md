@@ -1,9 +1,9 @@
 # 🔴 Infrared
 
-With an IR-receiver it's possible to use a TV-remote or similar to control the device.
+By adding an IR sensor, you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.
 
 Most remotes are using the 38 kHz frequency band.
-While virtually *any* IR-receiver sensor can be used, the simplest way to getting started might be to use an [TSOP382](https://www.adafruit.com/product/157).
+While virtually *any* IR sensor can be used, the simplest way to getting started might be to use an [TSOP382](https://www.adafruit.com/product/157).
 
 ## 📈 Schematics
 
@@ -50,9 +50,9 @@ Most IR-remote sensors are 3.3 V compatible, but if 5 V logic is desired, the ea
 
 ### Data
 
-Use any *digital input* pin.
+Any *digital input* pin can be used.
 
-Avoid **strapping** pins as this pin is pulled *HIGH* when idle.
+> Avoid **strapping** pins as this pin is pulled *HIGH* when idle.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -62,9 +62,9 @@ Avoid **strapping** pins as this pin is pulled *HIGH* when idle.
 
 ## 🧩 Extension
 
-Using the [Infrared](Extensions#-infrared) extension, the device can be controlled using a remote control.
+Using the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-infrared) extension, the device can be controlled using a remote control.
 
-Check out the [Infrared](Extensions#-infrared) extension for more info.
+Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-infrared) extension for more info.
 
 ## 🚫 IKEA Frekvens
 

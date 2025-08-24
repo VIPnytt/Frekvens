@@ -20,7 +20,7 @@
 │ │ COM                │        │ │
 │ │               ┌─┐  │        │ │
 │ │            U3 ┤ ├  │        │ │
-│ │         LM358 ┤ ├──┴────────┼─┼─ Microphone
+│ │         LM358 ┤ ├──┴────────┼─┼─ Amplifier
 │ ┤ IR            ┤ ├           │ │
 │ │               ┤ ├           │ │
 │ │ MIC           └─┘           │ │
@@ -71,7 +71,7 @@
 │  Digital input ├─ Button 1
 │  Digital input ├─ Button 2
 │                │
-│   Analog input ├─ Microphone
+│   Analog input ├─ Amplifier
 └────────────────┘
 ```
 
@@ -94,7 +94,7 @@
 
 ### Opening up
 
-After loosening the four screws and opening the back panel, there's eight nuts held in place by four plastic clips. Once those and the four screws in the bottom are removed, everything slides out nicely.
+After loosening the four screws and opening the back panel, there's eight nuts held in place by four plastic clips. Once those and the four screws in the bottom are removed, everything slides out easily.
 
 ### Disconnect the buttons
 
@@ -102,22 +102,27 @@ The next step is to disconnect the buttons from the green PCB, `SW1`, `SW2` and 
 
 ### Removing the `U2` chip
 
-This step can be a bit challanging, removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is the core handling the mic and button inputs as well as the display output.
+This step can be a bit challanging, removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is the core handling the microphone and button inputs as well as the display output.
 
-Alternatively, if the microphone functionality isn't necessary, just remove the green PCB from whe white PCB altogether. The green PCB is only needed for the microphone, and can be re-soldered back on later, if desired.
+> Alternatively, if the microphone functionality isn't necessary, just remove the green PCB from whe white PCB altogether. The green PCB is only needed for the microphone, and can be re-soldered back on later if desired.
 
 ### Wiring the microphone
 
-For the microphone to be functional, connect a wire from the [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier labeled `U3` pin 7 to an analog input on the ESP32.
-Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` now is removed, it might be easier to connect to `U2` pad 11 instead. It's internally connected to `U3` pin 7 via traces on the PCB.
+For the microphone to be functional, connect a wire from the [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier labeled `U3` pin 7 to an *analog input* on the ESP32.
 
-### The missing IR-receiver
+> Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip should be desoldered, it might be easier to connect from `U2` pad 11 instead. It's internally connected to `U3` pin 7 via traces on the PCB.
 
-When it comes to the IR-pad, it's worth noting that *IKEA Frekvens* never shipped with an IR-receiver sensor, so this pad has no function.
+### Missing hardware
+
+The *IKEA Frekvens* never shipped with an infrared receiver, so the `IR` pad has no function.
+
+> However, an *IR sensor* can be added as an [accessory](https://github.com/VIPnytt/Frekvens/wiki/Infrared), effectively enabling a capability that was planned but never realized in the original design.
 
 ### Wiring the LED panel
 
-Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There's two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left where two of the left-most pads will be blocked by the chassis.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There's two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left.
+
+> The two left-most pads will be blocked by the chassis.
 
 ### Connecting the button
 
@@ -141,28 +146,29 @@ The *IKEA Frekvens* hardware isn't perfect, but there's room for improvements fo
 
 ### Capacitors
 
-For dimming of the display, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) datasheet suggests adding an additional *"4.7 µF or more"* depending on the LED load current (~2.78 mA/output), for every chip. With 16 chips in total, that's a minimum of 75.2 µF. The same datasheet also recommends adding *"greater than 10 µF"* besides the LEDs, bringing the total up to 85.2 µF.
+According to the [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf), adding decoupling capacitors can improve dimming performance by reducing noise and preventing timing issues. The datasheet suggests *4.7 µF or more* depending on LED load current (~2.8 mA/pixel), and *greater than 10 µF* across the LEDs — equivalent to at least 85.2 µF.
 
-The capacitors mentioned aren't present on the PCB, but will help prevent timing issues, as well as minimize noise from the power supply. Ideally they should be placed as close to the load as possible.
+Placement should be as close to the load as possible.
 
-**Suggestion:**
+> These capacitors are optional and only worth adding if you already have some on hand, or if you encounter issues.
 
-- Add at least 85.2 µF, eg. [100 µF](https://www.adafruit.com/product/2193)
+**Possible placement points:**
 
-**Tip:** The top `VCC` and `GND` pads are good positions for capacitors. Another option is the `DC+` and `DC-` pads.
+- The `VCC` / `GND` pads at the top of the board
+- The main `DC+` / `DC-` pads
 
 ## 🔧 Configuration
 
-| Frekvens    | Via                 | ESP32          | Function   | Constant |
-| ----------- | ------------------- | -------------- | ---------- | ---------|
-| `CLK`       | Logic level shifter | SPI SCLK       | SPI SCLK   | `PIN_SCLK` |
-| `DA` output | Logic level shifter | SPI MISO       | SPI MISO   | `PIN_MISO` |
-| `DA` input  | Logic level shifter | SPI MOSI       | SPI MOSI   | `PIN_MOSI` |
-| `LAK`       | Logic level shifter | Digital output | SPI CS     | `PIN_CS`   |
-| `EN`        | Logic level shifter | PWM output     | Enable     | `PIN_EN`   |
-| `SW1`       |                     | Digital input  | Button 1   | `PIN_SW1`  |
-| `SW`        |                     | Digital input  | Button 2   | `PIN_SW2`  |
-| `U3` pin 7  |                     | Analog input   | Microphone | `PIN_MIC`  |
+| Frekvens    | Via                 | ESP32          | Function  | Constant |
+| ----------- | ------------------- | -------------- | --------- | ---------|
+| `CLK`       | Logic level shifter | SPI SCLK       | SPI SCLK  | `PIN_SCLK` |
+| `DA` output | Logic level shifter | SPI MISO       | SPI MISO  | `PIN_MISO` |
+| `DA` input  | Logic level shifter | SPI MOSI       | SPI MOSI  | `PIN_MOSI` |
+| `LAK`       | Logic level shifter | Digital output | SPI CS    | `PIN_CS`   |
+| `EN`        | Logic level shifter | PWM output     | Enable    | `PIN_EN`   |
+| `SW1`       |                     | Digital input  | Button 1  | `PIN_SW1`  |
+| `SW`        |                     | Digital input  | Button 2  | `PIN_SW2`  |
+| `U3` pin 7  |                     | Analog input   | Amplifier | `PIN_MIC`  |
 
 ### Power and ground
 
@@ -176,9 +182,9 @@ The capacitors mentioned aren't present on the PCB, but will help prevent timing
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
-Use any *SPI `SCLK`* pin.
+Any *SPI `SCLK`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -188,11 +194,11 @@ Use any *SPI `SCLK`* pin.
 
 ### SPI MISO
 
-Optional to connect, but if so, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
+Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *SPI `MISO`* pin.
+Any *SPI `MISO`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -204,9 +210,9 @@ Use any *SPI `MISO`* pin.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
-Use any *SPI `MOSI`* pin.
+Any *SPI `MOSI`* pin can be used.
 
-> If the board has two sets of SPI pins, choose any of them, but be consistent and always use either `HSPI` or `VSPI`.
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -218,9 +224,9 @@ Use any *SPI `MOSI`* pin.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
 
-Use any *digital output* pin. *First generation ESP32 boards may have specialized pins (`CS`/`SS`) that are preferable to other pins.*
+Any *digital output* pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a resistor.
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -232,7 +238,7 @@ Use any *digital output* pin. *First generation ESP32 boards may have specialize
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Use any *PWM output* pin.
+Any *PWM output* pin can be used.
 
 > Avoid strapping pins as this pin is pulled *HIGH* using a resistor.
 
@@ -246,9 +252,9 @@ Use any *PWM output* pin.
 
 Optional to connect.
 
-Use any *digital input* pins, preferably those that are also RTC-capable, to allow deep sleep wake-up functionality.
+Any *digital input* pins can be used, but those that are also RTC-capable are preferred.
 
-> Avoid strapping pins as these is be pulled *LOW* when pressed.
+> Avoid strapping pins as these is pulled *LOW* when pressed.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -257,15 +263,13 @@ Use any *digital input* pins, preferably those that are also RTC-capable, to all
 #define PIN_SW2 7 // GPIO #
 ```
 
-> `COM` must be connected to ground.
-
-### Microphone
+### Amplifier
 
 Optional to connect.
 
-Use any *analog input* pin.
+Any *analog input* pin can be used, but those on the ADC1 channel are preferred.
 
-> Avoid strapping pins as this pin is biased.
+> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based, original series) boards, the ADC2 channel pins are not supported.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -283,9 +287,6 @@ ENV_FREKVENS=''
 
 # Custom device name (optional)
 NAME='Frekvens'
-
-# Time zone (optional)
-TIME_ZONE_IANA='Etc/Universal'
 ```
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:

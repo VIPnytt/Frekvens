@@ -6,9 +6,8 @@ If you're new to the project, we recommend starting with the [README](https://gi
 
 - [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
 - [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
-- [IDE setup](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-ide-setup)
-- [Configuration](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-configuration)
-- [Uploading](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#%EF%B8%8F-uploading)
+- [Getting started](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-getting-started)
+- [Upload to the device](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-upload-to-the-device)
 - [Smart-home integrations](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-smart-home-integrations)
 - [FAQ](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-faq)
 - [API](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-api)
@@ -18,23 +17,23 @@ If you're new to the project, we recommend starting with the [README](https://gi
 
 Detailed instructions, schematics and templates.
 
-- [IKEA Frekvens](IKEA-Frekvens)
-- [IKEA Obegränsad](IKEA-Obegransad)
-- [Custom devices](Custom-devices)
+- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens)
+- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad)
+- [Custom devices](https://github.com/VIPnytt/Frekvens/wiki/Custom-devices)
 
 ## 📦 Modules
 
 API documentation and configuration options.
 
-- [Services](Services)
-- [Extensions](Extensions)
-- [Modes](Modes)
-- [Fonts](Fonts)
+- [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
+- [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
+- [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
+- [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
 
 ## ➕ Accessories
 
 Optional hardware that adds new capabilities and functionality to the device.
 
-- [Infrared](Infrared)
-- [Microphone](Microphone)
-- [RTC](RTC)
+- [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared)
+- [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
+- [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC)

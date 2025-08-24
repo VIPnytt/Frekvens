@@ -69,7 +69,7 @@ Each display model has its own hardware setup guide:
 
 ## 🏗️ Getting started
 
-We recommend [PlatformIO IDE](https://platformio.org/platformio-ide) for [VS Code](https://code.visualstudio.com), though any [IDE](https://platformio.org/install/integration) will work.
+For the smoothest setup, we recommend [PlatformIO IDE](https://platformio.org/platformio-ide) for [VS Code](https://code.visualstudio.com). PlatformIO also provides [integrations](https://platformio.org/install/integration) for a wide range of other editors and IDEs — use whichever environment you are most comfortable with.
 
 ### Download the source code
 
@@ -131,16 +131,6 @@ Define pin assignments in [`secrets.h`](firmware/include/config/secrets.h):
 #define PIN_SW1 6
 #define PIN_MIC 7
 ```
-
-### Time zone
-
-Set the IANA time zone in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). Example:
-
-```ini
-TIME_ZONE_IANA='Etc/Universal'
-```
-
-[Time zone lookup](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv)
 
 ### Wi-Fi
 

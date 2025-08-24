@@ -78,7 +78,7 @@ API payload example:
 }
 ```
 
-> **Note:** A manual power cycle is required to restart the device.
+> A manual power cycle is required to restart the device.
 
 ## 📺 Display
 
@@ -171,8 +171,6 @@ DOMAIN='.local'
 
 Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
 
-Lookup your [time zone](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv) if needed.
-
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
@@ -211,7 +209,7 @@ The hotspot will be activated automatically if no Wi-Fi credentials is configure
 #define WIFI_KEY_HOTSPOT "secret"
 ```
 
-See also [Button](Extensions.md#%EF%B8%8F-button) extension.
+See also [Button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-button) extension.
 
 ## ☁️ Web server
 
