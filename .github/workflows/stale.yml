@@ -29,3 +29,4 @@ jobs:
           stale-pr-message: This pull request hasn't seen any recent activity and is now marked as stale. It will be closed soon if no further updates are made, so please make sure it's up to date and still relevant.
           days-before-pr-stale: ${{ env.DAYS_BEFORE_PR_STALE }}
           days-before-pr-close: ${{ env.DAYS_BEFORE_PR_CLOSE }}
+          exempt-pr-labels: 'dependencies'

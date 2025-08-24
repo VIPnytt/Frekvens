@@ -2,40 +2,70 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    cooldown:
+      default-days: 90
     labels:
       - "chore"
       - "dependencies"
       - "github_actions"
       - "no-changelog"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
 
   - package-ecosystem: "npm"
     directory: "/webapp"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 7
+      semver-patch-days: 1
     labels:
-      - chore
-      - dependencies
-      - webapp
+      - "chore"
+      - "dependencies"
+      - "webapp"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "pip"
+    directory: "/extra/Python"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 30
+      semver-patch-days: 7
+    labels:
+      - "chore"
+      - "dependencies"
+      - "extra"
+    schedule:
+      interval: "quarterly"
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "pip"
+    directory: "/scripts"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 7
+      semver-patch-days: 1
+    labels:
+      - "chore"
+      - "dependencies"
+      - "tools"
     schedule:
       interval: "monthly"
     versioning-strategy: "increase"
 
   - package-ecosystem: "pip"
-    directory: "/extra/Python"
+    directory: "/tools"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 7
+      semver-patch-days: 1
+      exclude:
+        - "tzdata"
     labels:
-      - chore
-      - dependencies
-      - extra
+      - "chore"
+      - "dependencies"
+      - "tools"
     schedule:
       interval: "weekly"
-    versioning-strategy: "increase-if-necessary"
-
-  - package-ecosystem: "pip"
-    directory: "/tools"
-    labels:
-      - chore
-      - dependencies
-      - tools
-    schedule:
-      interval: "monthly"
     versioning-strategy: "increase"
