@@ -38,12 +38,12 @@ void GameOfLifeMode::handle()
                         }
                     }
                 }
-                bool p = Display.getPixel(x, y);
-                if (p && (n < 2 || n > 3))
+                const bool lit = Display.getPixel(x, y);
+                if (lit && (n < 2 || n > 3))
                 {
                     Display.setPixel(x, y, 0);
                 }
-                else if (!p && n == 3)
+                else if (!lit && n == 3)
                 {
                     Display.setPixel(x, y);
                     ++active;

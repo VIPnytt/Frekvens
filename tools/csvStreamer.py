@@ -19,7 +19,7 @@ if not ROWS:
     ROWS = 16
 
 
-def main():
+def main() -> None:
     try:
         filepath = input(".csv file path: ")
         if not os.path.isfile(filepath):
@@ -45,7 +45,7 @@ def main():
         pass
 
 
-def begin(frames, duration):
+def begin(frames: list[list[int]], duration: int) -> None:
     if MODE_DISTRIBUTEDDISPLAYPROTOCOL:
         with DistributedDisplayProtocol.DistributedDisplayProtocol(HOST) as mode:
             handle(mode, frames, duration)
@@ -59,7 +59,7 @@ def begin(frames, duration):
         raise RuntimeError("No streaming extensions available.")
 
 
-def handle(mode, frames, duration):
+def handle(mode, frames: list[list[int]], duration: int) -> None:
     count = len(frames)
     if count > 1:
         print(f"{mode.NAME} stream started. Press Ctrl+C to terminate gracefully.")

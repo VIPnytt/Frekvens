@@ -37,7 +37,7 @@ void CountdownMode::setup()
     Storage.begin(name, true);
     if (Storage.isKey("target"))
     {
-        int64_t epoch = Storage.getLong64("target");
+        const int64_t epoch = Storage.getLong64("target");
         Storage.end();
         target = std::chrono::system_clock::time_point{std::chrono::seconds{epoch}};
         transmit();

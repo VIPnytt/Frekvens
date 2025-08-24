@@ -85,7 +85,7 @@ void PlaylistExtension::ready()
         }
     }
     Storage.end();
-    _active ? set(_active) : transmit();
+    _active ? set(true) : transmit();
 }
 
 void PlaylistExtension::handle()
@@ -156,7 +156,7 @@ void PlaylistExtension::transmit()
     JsonDocument doc;
     doc["active"] = active;
     JsonArray _playlist = doc["playlist"].to<JsonArray>();
-    for (const PlaylistExtension::Item mode : playlist)
+    for (const PlaylistExtension::Item &mode : playlist)
     {
         JsonObject _item = _playlist.add<JsonObject>();
         _item["duration"] = mode.duration;

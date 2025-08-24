@@ -1,12 +1,11 @@
 #pragma once
 
-#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class HomeThermometerMode : public ModeModule
 {
 private:
-    bool pending = true;
+    bool pending = false;
 
     void update();
     void set(const char *const where, const int16_t temperature);

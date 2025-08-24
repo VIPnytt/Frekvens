@@ -40,7 +40,7 @@ TextHandler::TextHandler(String text, FontModule *font) : text(text), font(font)
                 else
                 {
                     char utf8buf[5];
-                    Serial.printf("%s: missing symbol, %s @ 0x%X %s\n", name.data(), font->name, codepoint, encodeUtf8(codepoint, utf8buf));
+                    Serial.printf("%s: missing symbol, %s @ 0x%X %s\n", _name.data(), font->name, codepoint, encodeUtf8(codepoint, utf8buf));
                 }
 #endif
             }
@@ -101,7 +101,7 @@ bool TextHandler::nextCodepoint(uint32_t &out)
     {
         return false;
     }
-    uint8_t byte = text[utf8Index++];
+    const uint8_t byte = text[utf8Index++];
     if (byte <= 0x7F)
     {
         out = byte;
@@ -130,7 +130,7 @@ bool TextHandler::nextCodepoint(uint32_t &out)
     }
     while (extraBytes-- && utf8Index < text.length())
     {
-        uint8_t cont = text[utf8Index++];
+        const uint8_t cont = text[utf8Index++];
         if ((cont & 0xC0) != 0x80)
         {
             out = 0xFFFD;

@@ -19,7 +19,7 @@ void EqualizerMode::handle()
         lastMillis = millis();
         interval = random(100, 900);
 
-        uint8_t
+        const uint8_t
             h = random(1, ROWS),
             x = random(COLUMNS / (width + 1)) * (width + 1);
 

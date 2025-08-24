@@ -33,7 +33,7 @@ void BinaryClockMode::draw(uint8_t y, uint8_t value)
 {
     for (uint8_t i = 0; i < 6; ++i)
     {
-        uint8_t x = 12 - (i * 2);
+        const uint8_t x = 12 - i * 2;
         Display.drawRectangle(x, y, x + 1, y + 3, true, value & (1U << i) ? UINT8_MAX : 0);
     }
 }

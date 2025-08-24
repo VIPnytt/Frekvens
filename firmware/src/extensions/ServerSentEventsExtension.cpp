@@ -36,7 +36,7 @@ void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
     JsonDocument doc = Device.getTransmits();
     for (const JsonPairConst pair : doc.as<JsonObjectConst>())
     {
-        size_t length = measureJson(pair.value());
+        const size_t length = measureJson(pair.value());
         char *payload = new char[length + 1];
         serializeJson(pair.value(), payload, length + 1);
         client->send(payload, pair.key().c_str());

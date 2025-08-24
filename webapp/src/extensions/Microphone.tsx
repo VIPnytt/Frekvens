@@ -6,8 +6,6 @@ import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { ws } from './WebSocket';
 import { name as ExtensionsName } from '../services/Extensions';
-import { name as ModesName } from '../services/Modes';
-
 
 export const name = 'Microphone';
 

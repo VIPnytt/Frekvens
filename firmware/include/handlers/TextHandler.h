@@ -7,7 +7,7 @@
 class TextHandler
 {
 private:
-    static constexpr std::string_view name = "TextHandler";
+    static constexpr std::string_view _name = "TextHandler";
 
     const String text;
 

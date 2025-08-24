@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <vector>
 
-#include "config/constants.h"
-
 class WeatherHandler
 {
 public:
@@ -48,7 +46,7 @@ public:
     void draw();
 
 private:
-    static constexpr std::string_view name = "WeatherHandler";
+    static constexpr std::string_view _name = "WeatherHandler";
 
     const std::vector<uint16_t>
         conditionClear = {

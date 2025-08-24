@@ -1,6 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class EqualizerMode : public ModeModule

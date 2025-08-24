@@ -13,7 +13,7 @@ if not ROWS:
     ROWS = 16
 
 
-def check(_file):
+def check(_file) -> bool:
     if (
         os.path.isdir("firmware/include/modes/")
         and os.path.isdir("firmware/src/modes/")
@@ -32,8 +32,6 @@ if len(file) < 2:
     sys.exit("Name too short")
 
 filepath = input(".csv file path: ")
-if not os.path.isfile(filepath) and os.path.isfile(sys.path[0] + os.sep + filepath):
-    filepath = sys.path[0] + os.sep + filepath
 if not os.path.isfile(filepath):
     sys.exit("Read error")
 
@@ -69,7 +67,7 @@ with open(filepath) as csvArt:
     else:
         variable += "\n        }};"
 
-# /include/modes/GeneratedMode.h
+# firmware/include/modes/GeneratedMode.h
 with open(f"firmware/include/modes/{file}Mode.h", "w") as hMode:
     hMode.write(
         f"""#pragma once
@@ -93,7 +91,7 @@ public:
     )
     print(f"firmware/include/modes/{file}Mode.h")
 
-# /src/modes/GeneratedMode.cpp
+# firmware/src/modes/GeneratedMode.cpp
 with open(f"firmware/src/modes/{file}Mode.cpp", "w") as cppMode:
     if method == "handle":
         cppMode.write(

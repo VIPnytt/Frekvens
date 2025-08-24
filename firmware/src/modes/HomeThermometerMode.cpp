@@ -88,7 +88,7 @@ void HomeThermometerMode::update()
         Storage.end();
         return;
     }
-    int16_t
+    const int16_t
         indoorInt = Storage.getShort("indoor"),
         outdoorInt = Storage.getShort("outdoor");
     Storage.end();
@@ -96,7 +96,7 @@ void HomeThermometerMode::update()
     TextHandler
         indoorText = TextHandler((String)indoorInt + "°", FontMini),
         outdoorText = TextHandler((String)outdoorInt + "°", FontMini);
-    uint8_t
+    const uint8_t
         outdoorHeight = outdoorText.getHeight(),
         marginsY = (ROWS - indoorText.getHeight() - outdoorHeight) / 3;
     Display.clear();
