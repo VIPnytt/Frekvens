@@ -1,2 +1,2 @@
-matplotlib >= 3.10.5, < 4,
-pillow >= 11.3.0, < 12,
+matplotlib==3.10.5
+pillow==11.3.0
