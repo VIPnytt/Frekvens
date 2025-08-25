@@ -477,8 +477,7 @@ void DeviceService::power(bool state)
         Modes.active->sleep();
         Modes.set(false, name);
     }
-    Display.clear();
-    Display.flush();
+    Display.setPower(false);
 #if EXTENSION_MQTT
     Mqtt->disconnect();
 #endif
@@ -501,8 +500,7 @@ void DeviceService::restore()
     {
         Modes.set(false, name);
     }
-    Display.clear();
-    Display.flush();
+    Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
     HomeAssistant->undiscover();
 #endif

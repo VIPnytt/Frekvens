@@ -238,6 +238,7 @@ void DisplayService::setPower(bool state)
     }
     else
     {
+        memset(frameReady, 0, sizeof(frameReady));
         ledcDetachPin(PIN_EN);
         digitalWrite(PIN_EN, HIGH);
     }

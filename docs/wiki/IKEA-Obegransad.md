@@ -121,14 +121,14 @@ There's different options based on skill level and time investment:
 
 ## ↔️ Logic level shifter
 
-The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V logic. Therefore, a bidirectional logic level shifter compatible with SPI, such as the [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395), is required to ensure reliable and safe communication between the devices.
+The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V logic. To ensure reliable and safe communication between the two devices, a suitable logic level shifter designed for SPI signals is required.
 
-- The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s logic *HIGH* level is below [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s minimum voltage requirement:
+- The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s logic *HIGH* level is below [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s minimum voltage requirement on the following GPIO pins:
   - SPI SCLK *`CLK`*
   - SPI MOSI *`DI`*
   - SPI CS *`CLA`*
   - Enable *`EN`*
-- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on its GPIO pins:
+- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on these GPIO pins:
   - SPI MISO *`DO`*
   - Enable *`EN`*
 
