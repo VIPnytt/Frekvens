@@ -43,8 +43,7 @@ While virtually *any* IR sensor can be used, the simplest way to getting started
 
 ## ↔️ Logic level shifter
 
-Components connected to voltage levels above 3.3 V often requires an voltage-level translator to remain compatible with ESP32's logic pins.
-Most IR-remote sensors are 3.3 V compatible, but if 5 V logic is desired, the easiest solution might be to use an [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395).
+Components operating at voltages higher than 3.3 V often require level translation to remain compatible with the ESP32. While many IR sensors are designed for 3.3 V logic, some variants may use 5 V. To ensure reliable and safe communication between the two devices in such cases, a suitable logic level shifter should be used.
 
 ## 🔧 Configuration
 

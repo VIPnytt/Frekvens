@@ -144,8 +144,7 @@ SPI SDIO  ─┤             ├─ SPI SDIO
 
 ## ↔️ Logic level shifter
 
-Components connected to voltage levels above 3.3 V often requires an voltage-level translator to remain ESP32-compatible.
-Most RTC-modules are 3.3 V compatible, but if 5 V logic is desired, the easiest solution might be to use an [TXS0108E](https://www.sparkfun.com/sparkfun-level-shifter-8-channel-txs0108e.html) which is both SPI and I2C compatible. For SPI specifically it's also possible to use [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395), but be aware that these does not work as well with strong pull-up or pull-down resistors *some* RTC-modules *may* have on the `INT` pin.
+Components operating at voltages higher than 3.3 V often require level translation to remain compatible with the ESP32. While many RTC modules are designed for 3.3 V logic, some variants may use 5 V. To ensure reliable and safe communication between the two devices in such cases, a suitable logic level shifter should be used.
 
 ## 🔧 Configuration
 

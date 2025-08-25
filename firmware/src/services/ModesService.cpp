@@ -309,13 +309,6 @@ void ModesService::set(ModeModule *mode)
 
 void ModesService::splash()
 {
-    if (!Display.getPower())
-    {
-#ifdef F_INFO
-        Serial.printf("%s: power\n", name);
-#endif
-        Display.setPower(true);
-    }
     const String _name = active->name;
     std::vector<String> chunks = {""};
     uint8_t line = 0;
@@ -352,6 +345,13 @@ void ModesService::splash()
         y += text.getHeight() + max<uint8_t>(1, margin);
     }
     Display.flush();
+    if (!Display.getPower())
+    {
+#ifdef F_INFO
+        Serial.printf("%s: power\n", name);
+#endif
+        Display.setPower(true);
+    }
 }
 
 void ModesService::teardown()

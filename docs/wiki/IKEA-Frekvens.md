@@ -130,13 +130,13 @@ The last step is to connect the buttons, `SW` and `SW1` both connects to separat
 
 ## ↔️ Logic level shifter
 
-The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 4 V logic. Therefore, a bidirectional logic level shifter compatible with SPI, such as the [TXB0104](https://www.adafruit.com/product/1875) or [TXB0108](https://www.adafruit.com/product/395), is required to ensure reliable and safe communication between the devices.
+The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 4 V logic. To ensure reliable and safe communication between the two devices, a suitable logic level shifter designed for SPI signals is required.
 
-- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on its GPIO pins:
+- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on the following GPIO pins:
   - SPI MISO *`DA`*
   - Enable *`EN`*
 
-It is considered best practice to keep all logic signals at a consistent voltage level within each interface. Therefore, it is recommended to use a logic level shifter on all relevant signal lines, even if not strictly required.
+> It is considered best practice to keep all logic signals at a consistent voltage level within each interface. Therefore, it is recommended to use a logic level shifter on all relevant signal lines — even if not strictly required.
 
 > While there are reports suggesting that these devices can work together without level shifting, this is strongly discouraged. Exceeding the [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)’s voltage ratings may result in unpredictable behavior or permanent damage to the microcontroller.
 
