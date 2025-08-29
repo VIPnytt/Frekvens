@@ -9,6 +9,7 @@
 #include "extensions/MqttExtension.h"
 #include "extensions/RtcExtension.h"
 #include "services/DeviceService.h"
+#include "services/DisplayService.h"
 
 RtcExtension *Rtc = nullptr;
 
@@ -114,6 +115,15 @@ void RtcExtension::handle()
             rtc.LatchAlarmTriggeredFlag();
             rtc.LatchTimerTriggeredFlag();
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#ifdef F_INFO
+            if (!Display.getPower())
+            {
+                Serial.printf("%s: power\n", name);
+                Display.setPower(true);
+            }
+#else
+            Display.setPower(true);
+#endif // F_INFO
         }
         pending = false;
     }
