@@ -135,71 +135,51 @@ void NetworkService::handle()
 
 bool NetworkService::vault()
 {
-    std::unordered_map<std::string, std::string> list;
+    JsonDocument doc;
+    Preferences Storage;
+    Storage.begin(name);
+    if (Storage.isKey("saved"))
+    {
+        const size_t _len = Storage.getBytesLength("saved");
+        uint8_t *_buf = new uint8_t[_len];
+        Storage.getBytes("saved", _buf, _len);
+        deserializeJson(doc, _buf, _len);
+        delete[] _buf;
+    }
     wifi_config_t config;
     if (!esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config))
     {
-        const std::string
-            ssid(reinterpret_cast<const char *>(config.sta.ssid), strnlen(reinterpret_cast<const char *>(config.sta.ssid), sizeof(config.sta.ssid))),
-            key(reinterpret_cast<const char *>(config.sta.password), strnlen(reinterpret_cast<const char *>(config.sta.password), sizeof(config.sta.password)));
-        if (!ssid.empty())
+        const char *_ssid = reinterpret_cast<const char *>(config.sta.ssid);
+        const std::string_view ssid(_ssid, strnlen(_ssid, sizeof(config.sta.ssid)));
+        if (ssid.length())
         {
-            list[ssid.c_str()] = key;
+            const char *_key = reinterpret_cast<const char *>(config.sta.password);
+            const std::string_view key(_key, strnlen(_key, sizeof(config.sta.password)));
+            doc[ssid] = key.length() ? key : nullptr;
         }
-    }
-    Preferences Storage;
-    Storage.begin(name);
-    for (uint8_t i = 0; i < UINT8_MAX; ++i)
-    {
-        const std::string
-            ssidKey = "ssid" + std::to_string(i),
-            keyKey = "key" + std::to_string(i);
-        if (!Storage.isKey(ssidKey.c_str()) || !Storage.isKey(keyKey.c_str()))
-        {
-            break;
-        }
-        list[Storage.getString(ssidKey.c_str()).c_str()] = Storage.getString(keyKey.c_str()).c_str();
     }
 #ifdef WIFI_SSID
+    if (doc[WIFI_SSID].isUnbound())
+    {
 #ifdef WIFI_KEY
-    list[WIFI_SSID] = WIFI_KEY;
+        doc[WIFI_SSID] = WIFI_KEY;
 #else
-    credentials[WIFI_SSID] = "";
+        doc[WIFI_SSID] = nullptr;
 #endif // WIFI_KEY
+    }
 #endif // WIFI_SSID
-    multi = std::make_unique<WiFiMulti>();
-    uint8_t i = 0;
-    for (const auto &item : list)
-    {
-        if (i >= UINT8_MAX)
-        {
-            break;
-        }
-        const std::string
-            ssidKey = "ssid" + std::to_string(i),
-            keyKey = "key" + std::to_string(i);
-        Storage.putString(ssidKey.c_str(), item.first.c_str());
-        Storage.putString(keyKey.c_str(), item.second.c_str());
-#ifdef F_DEBUG
-        Serial.printf("%s: SSID %s\n", name, item.first.c_str());
-#endif // F_DEBUG
-        multi->addAP(item.first.c_str(), item.second.empty() ? nullptr : item.second.c_str());
-        ++i;
-    }
-    for (; i < UINT8_MAX; ++i)
-    {
-        const std::string
-            ssidKey = "ssid" + std::to_string(i),
-            keyKey = "key" + std::to_string(i);
-        if (!Storage.isKey(ssidKey.c_str()) && !Storage.isKey(keyKey.c_str()))
-        {
-            break;
-        }
-        Storage.remove(ssidKey.c_str());
-        Storage.remove(keyKey.c_str());
-    }
+    const size_t len = measureJson(doc);
+    uint8_t *buf = new uint8_t[len + 1];
+    serializeJson(doc, reinterpret_cast<char *>(buf), len + 1);
+    Storage.putBytes("saved", buf, len + 1);
     Storage.end();
-    return !list.empty();
+    delete[] buf;
+    multi = std::make_unique<WiFiMulti>();
+    for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
+    {
+        multi->addAP(pair.key().c_str(), pair.value().as<const char *>());
+    }
+    return doc.size();
 }
 
 void NetworkService::hotspot()
@@ -508,19 +488,29 @@ void NetworkService::transmit()
 
     doc["rssi"] = WiFi.RSSI();
     {
-        JsonArray saved = doc["saved"].to<JsonArray>();
         Preferences Storage;
         Storage.begin(name, true);
-        for (uint8_t i = 0; i < UINT8_MAX; ++i)
+        if (Storage.isKey("saved"))
         {
-            const std::string ssidKey = "ssid" + std::to_string(i);
-            if (!Storage.isKey(ssidKey.c_str()))
+            const size_t len = Storage.getBytesLength("saved");
+            uint8_t *buf = new uint8_t[len];
+            Storage.getBytes("saved", buf, len);
+            Storage.end();
+            JsonDocument _saved;
+            if (!deserializeJson(_saved, buf, len))
             {
-                break;
+                JsonArray saved = doc["saved"].to<JsonArray>();
+                for (const JsonPairConst &pair : _saved.as<JsonObjectConst>())
+                {
+                    saved.add(pair.key());
+                }
             }
-            saved.add(Storage.getString(ssidKey.c_str()));
+            delete[] buf;
         }
-        Storage.end();
+        else
+        {
+            Storage.end();
+        }
     }
     if (WiFi.SSID().length())
     {
