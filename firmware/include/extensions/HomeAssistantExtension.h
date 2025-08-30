@@ -4,8 +4,6 @@
 
 #if EXTENSION_HOMEASSISTANT
 
-#include <ArduinoJson.h>
-
 #include "modules/ExtensionModule.h"
 
 class HomeAssistantExtension : public ExtensionModule
