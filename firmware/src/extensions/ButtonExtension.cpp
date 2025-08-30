@@ -47,7 +47,7 @@ void ButtonExtension::setup()
                 component[Abbreviations::automation_type] = "trigger";
                 component[Abbreviations::payload] = payload;
                 component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "button_1";
+                component[Abbreviations::subtype] = "Power button";
                 component[Abbreviations::topic] = topic;
                 component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
                 component[Abbreviations::value_template] = "{{value_json.event.power}}";
@@ -60,7 +60,7 @@ void ButtonExtension::setup()
                 component[Abbreviations::automation_type] = "trigger";
                 component[Abbreviations::payload] = payload;
                 component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "button_2";
+                component[Abbreviations::subtype] = "Mode button";
                 component[Abbreviations::topic] = topic;
                 component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
                 component[Abbreviations::value_template] = "{{value_json.event.mode}}";
