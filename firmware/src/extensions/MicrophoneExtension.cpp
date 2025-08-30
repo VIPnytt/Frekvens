@@ -22,6 +22,14 @@ void MicrophoneExtension::setup()
 {
     pinMode(PIN_MIC, ANALOG);
 
+    Preferences Storage;
+    Storage.begin(name, true);
+    if (Storage.isKey("max"))
+    {
+        levelMax = Storage.getUShort("max");
+    }
+    Storage.end();
+
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -42,20 +50,15 @@ void MicrophoneExtension::setup()
         component[Abbreviations::value_template] = "{{value_json.active}}";
     }
     {
-        const std::string id = std::string(name).append("_level");
+        const std::string id = std::string(name).append("_sound");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::expire_after] = UINT8_MAX;
-        component[Abbreviations::force_update] = true;
-        component[Abbreviations::icon] = "mdi:microphone";
-        component[Abbreviations::name] = "Sound level";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "sensor";
-        component[Abbreviations::state_class] = "measurement";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.level}}";
+        component[Abbreviations::automation_type] = "trigger";
+        component[Abbreviations::payload] = "sound";
+        component[Abbreviations::platform] = "device_automation";
+        component[Abbreviations::subtype] = name;
+        component[Abbreviations::topic] = topic;
+        component[Abbreviations::type] = "sound detected";
+        component[Abbreviations::value_template] = "{{value_json.event}}";
     }
     {
         const std::string id = std::string(name).append("_treshold");
@@ -65,7 +68,9 @@ void MicrophoneExtension::setup()
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "config";
         component[Abbreviations::icon] = "mdi:microphone";
-        component[Abbreviations::max] = (1 << 12) - 1;
+        component[Abbreviations::max] = levelMax;
+        component[Abbreviations::min] = 1;
+        component[Abbreviations::mode] = "slider";
         component[Abbreviations::name] = "Treshold";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
         component[Abbreviations::platform] = "number";
@@ -91,34 +96,44 @@ void MicrophoneExtension::ready()
 
 void MicrophoneExtension::handle()
 {
-    if (pending || (active && Display.getPower() && millis() - lastMillis > UINT16_MAX))
+    if (pending)
     {
         pending = false;
-        lastMillis = millis();
         transmit();
-        level = 0;
     }
     else if (active && Display.getPower())
     {
         const uint16_t lastMic = mic;
         mic = analogReadRaw(PIN_MIC);
-        uint16_t measured = abs(mic - lastMic);
-        if (measured > level)
+        uint16_t level = abs(mic - lastMic);
+        if (level >= treshold)
         {
-            level = measured;
-        }
-        if (measured >= treshold)
-        {
-            _lastMillis = millis();
+            lastMillis = millis();
             if (!detected)
             {
                 detected = true;
+                if (lastMillis - _lastMillis > UINT16_MAX)
+                {
+                    JsonDocument doc;
+                    doc["event"] = "sound";
+                    Device.transmit(doc, name, false);
+                    _lastMillis = lastMillis;
+                }
 #ifdef F_VERBOSE
                 Serial.printf("%s: sound, level %d\n", name, level);
 #endif
             }
+            else if (level > levelMax)
+            {
+                levelMax = level;
+                Preferences Storage;
+                Storage.begin(name);
+                Storage.putUShort("max", levelMax);
+                Storage.end();
+                pending = true;
+            }
         }
-        else if (detected && millis() - _lastMillis > INT8_MAX)
+        else if (detected && millis() - lastMillis > INT8_MAX)
         {
             detected = false;
 #ifdef F_VERBOSE
@@ -178,7 +193,7 @@ void MicrophoneExtension::transmit()
 {
     JsonDocument doc;
     doc["active"] = active;
-    doc["level"] = level;
+    doc["max"] = levelMax;
     doc["treshold"] = treshold;
     Device.transmit(doc, name);
 }
