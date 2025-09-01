@@ -9,24 +9,28 @@ ENV_OBEGRANSAD = (
     True if "ENV_OBEGRANSAD" in dotenv.dotenv_values("tools/.env").keys() else False
 )
 
-HOST = (dotenv.dotenv_values("tools/.env").get("HOSTNAME") or "frekvens") + (
-    dotenv.dotenv_values("tools/.env").get("DOMAIN") or ".local"
-)
-
 COLUMNS = (
     ikeaFrekvens.COLUMNS
     if ENV_FREKVENS
     else ikeaObegransad.COLUMNS if ENV_OBEGRANSAD else 0
 )
-ROWS = (
-    ikeaFrekvens.ROWS if ENV_FREKVENS else ikeaObegransad.ROWS if ENV_OBEGRANSAD else 0
+HOST = (dotenv.dotenv_values("tools/.env").get("HOSTNAME") or "frekvens") + (
+    dotenv.dotenv_values("tools/.env").get("DOMAIN") or ".local"
 )
 MODEL = (
     ikeaFrekvens.MODEL
     if ENV_FREKVENS
     else ikeaObegransad.MODEL if ENV_OBEGRANSAD else None
 )
+ROWS = (
+    ikeaFrekvens.ROWS if ENV_FREKVENS else ikeaObegransad.ROWS if ENV_OBEGRANSAD else 0
+)
 
+MODE_ANIMATION = (
+    True
+    if dotenv.dotenv_values("tools/.env").get("MODE_ANIMATION") != "false"
+    else False
+)
 MODE_ARTNET = (
     True if dotenv.dotenv_values("tools/.env").get("MODE_ARTNET") != "false" else False
 )

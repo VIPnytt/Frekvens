@@ -1,2 +1,3 @@
+fonttools==4.59.2
 matplotlib==3.10.5
 pillow==11.3.0
