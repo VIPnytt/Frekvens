@@ -13,64 +13,69 @@ from src.config.constants import (
     MODE_DISTRIBUTEDDISPLAYPROTOCOL,
     MODE_E131,
 )
-from src.modes import ArtNet, DistributedDisplayProtocol, E131
+from src.modes.Animation import Animation
+from src.modes.ArtNet import ArtNet
+from src.modes.DistributedDisplayProtocol import DistributedDisplayProtocol
+from src.modes.E131 import E131
 
 if not ROWS:
-    ROWS = 16
+    ROWS = 16  # px
 
 
-def main() -> None:
-    try:
-        filepath = input(".csv file path: ")
-        if not os.path.isfile(filepath):
-            raise RuntimeError("Read error")
-        frames = []
+class csvStreamer:
+    def __init__(self, duration: int = Animation.DURATION) -> None:
+        self.duration = duration
+        self.frames: list[list[int]] = []
+
+    def read(self, filepath: str) -> None:
         with open(filepath, newline="", encoding="utf-8") as csvfile:
             i = 0
             reader = csv.reader(csvfile)
             for row in reader:
                 if not i % ROWS:
-                    frames.append([])
+                    self.frames.append([])
                 for value in row:
-                    frames[-1].append(int(value.strip()))
+                    self.frames[-1].append(int(value.strip()))
                 i += 1
 
-        duration = 500
-        if len(frames) > 1:
-            _duration = input(f"Frame duration (default is {duration} ms): ")
-            if len(_duration) and int(_duration) > 0:
-                duration = int(_duration)
-        begin(frames, duration)
-    except KeyboardInterrupt:
-        pass
+    def begin(self) -> None:
+        if MODE_DISTRIBUTEDDISPLAYPROTOCOL:
+            with DistributedDisplayProtocol(HOST) as mode:
+                self._handle(mode)
+        elif MODE_ARTNET:
+            with ArtNet(HOST) as mode:
+                self._handle(mode)
+        elif MODE_E131:
+            with E131(HOST) as mode:
+                self._handle(mode)
+        else:
+            raise NotImplementedError("No streaming extensions available.")
 
-
-def begin(frames: list[list[int]], duration: int) -> None:
-    if MODE_DISTRIBUTEDDISPLAYPROTOCOL:
-        with DistributedDisplayProtocol.DistributedDisplayProtocol(HOST) as mode:
-            handle(mode, frames, duration)
-    elif MODE_ARTNET:
-        with ArtNet.ArtNet(HOST) as mode:
-            handle(mode, frames, duration)
-    elif MODE_E131:
-        with E131.E131(HOST) as mode:
-            handle(mode, frames, duration)
-    else:
-        raise RuntimeError("No streaming extensions available.")
-
-
-def handle(mode, frames: list[list[int]], duration: int) -> None:
-    count = len(frames)
-    if count > 1:
-        print(f"{mode.NAME} stream started. Press Ctrl+C to terminate gracefully.")
-    frame = 0
-    while True:
-        mode.send(frames[frame % count])
-        if count < 2:
-            break
-        frame += 1
-        time.sleep(duration / 1000)
+    def _handle(self, mode) -> None:
+        count = len(self.frames)
+        if count > 1:
+            print(f"{mode.NAME} stream started. Press Ctrl+C to terminate gracefully.")
+        frame = 0
+        try:
+            while True:
+                mode.send(self.frames[frame % count])
+                if count < 2:
+                    break
+                frame += 1
+                time.sleep(self.duration / 1000)
+        except KeyboardInterrupt:
+            pass
 
 
 if __name__ == "__main__":
-    main()
+    path = input(".csv file path: ")
+    if os.path.isfile(path):
+        duration = int(input(f"Frame duration (default {Animation.DURATION} ms): "))
+        if not duration:
+            duration = Animation.DURATION
+        stream = csvStreamer(duration)
+        stream.read(path)
+        stream.begin()
+    else:
+        print(f"File not found")
+        raise FileNotFoundError(path)
