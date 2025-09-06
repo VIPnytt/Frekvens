@@ -19,10 +19,14 @@ private:
             displayBrightnessDecrease,
             displayBrightnessIncrease,
             displayPowerToggle,
-            extensionMicToggle,
+#if EXTENSION_MICROPHONE
+            extensionMicrophoneToggle,
+#endif // EXTENSION_MICROPHONE
+#if EXTENSION_PLAYLIST
             extensionPlaylistToggle,
-            modesSetNext,
-            modesSetPrevious;
+#endif // EXTENSION_PLAYLIST
+            modeNext,
+            modePrevious;
     };
 
     const std::vector<Code> codes = {
@@ -38,13 +42,17 @@ private:
             {
                 0xC, // Philips: Power
             },
+#if EXTENSION_MICROPHONE
             {
                 0xD, // Philips: Mute
             },
+#endif // EXTENSION_MICROPHONE
+#if EXTENSION_PLAYLIST
             {
                 0x35, // Philips: Play/pause
                 0x36, // Philips: Stop
             },
+#endif // EXTENSION_PLAYLIST
             {
                 0x1E, // Philips: Album next
                 0x20, // Philips: Title next
@@ -68,14 +76,18 @@ private:
                 0x15,   // Sony: Power
                 0x7115, // Sony: Power
             },
+#if EXTENSION_MICROPHONE
             {
                 0x14, // Sony: Mute
             },
+#endif // EXTENSION_MICROPHONE
+#if EXTENSION_PLAYLIST
             {
                 0x7118, // Sony: Stop
                 0x7119, // Sony: Pause
                 0x711A, // Sony: Play
             },
+#endif // EXTENSION_PLAYLIST
             {
                 0x10,   // Sony: Program+
                 0x711C, // Sony: Fast forward
