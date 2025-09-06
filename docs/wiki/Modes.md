@@ -16,7 +16,7 @@ MODE_ANIMATION=true
 
 > Enabled by default.
 
-> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script converts animations into reusable modes.
+> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/csvModeGenerator.py) Python script converts animations into reusable modes.
 
 > The [animation splitter](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvAnimationSplitter.py) Python script separates exported animations into individual [drawings](#-draw).
 
@@ -224,7 +224,7 @@ Create artwork and show it off on the display.
 
 Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to get started.
 
-> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvModeGenerator.py) Python script converts drawings into reusable modes.
+> The [mode generator](https://github.com/VIPnytt/Frekvens/blob/main/extra/Python/csvModeGenerator.py) Python script converts drawings into reusable modes.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

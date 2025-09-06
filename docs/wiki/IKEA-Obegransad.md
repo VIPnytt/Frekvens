@@ -107,32 +107,19 @@ Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-l
 
 ### Connecting the button
 
-There's different options based on skill level and time investment:
+The button can be wired in several ways, depending on how much modification is preferred. The most straightforward approach is to connect it directly between the ESP32 and `GND`. This method is recommended because it makes the wiring easy to follow and keeps the setup visually clear.
 
-- *Beginner friendly:*
-  - Disconnect `SW` and re-connect it to the ESP32.
-  - Leave `SW1` connected.
-- *Clear wiring:*
-  - Disconnect both `SW` and `SW1`.
-  - Connect one end to ESP32 and the other end to `GND`.
-- *Minimal changes:*
-  - Connect the desoldered `U1` pad 7 to the ESP32.
-  - Leave both `SW` and `SW1` connected.
+For those who prefer to reuse existing connections, the wire connected to `SW` can be re-routed to the ESP32 instead. As an alternative with minimal changes, it is also possible to connect the empty `U1` pad 7 directly to the ESP32.
+
+> On the LED panel, `SW1` is already tied to `GND`.
 
 ## ↔️ Logic level shifter
 
-The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V logic. To ensure reliable and safe communication between the two devices, a suitable logic level shifter designed for SPI signals is required.
+For safe and reliable communication between the ESP32 and the LED panels, a suitable logic level shifter is required.
 
-- The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s logic *HIGH* level is below [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s minimum voltage requirement on the following GPIO pins:
-  - SPI SCLK *`CLK`*
-  - SPI MOSI *`DI`*
-  - SPI CS *`CLA`*
-  - Enable *`EN`*
-- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on these GPIO pins:
-  - SPI MISO *`DO`*
-  - Enable *`EN`*
+The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs signals at 5 V and uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
 
-> While there are reports suggesting that these devices can work together without level shifting, this is strongly discouraged. The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) is not guaranteed to operate reliably at 3.3 V logic levels, and exceeding the [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)’s voltage ratings may result in unpredictable behavior or permanent damage to the microcontroller.
+> Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to misread signals, unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
 
@@ -140,29 +127,25 @@ The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for t
 
 ### Wiring
 
-The power supply (USB) should be connected to every `DC+` and `DC-` pad. This will help reduce the current travelling through the traces on the PCB, reduce voltage losses, and ultimately frequency noise.
+The USB cable powers the first LED panel by connecting to its `DC+` and `DC-` pads. Power is then passed along to the other panels through internal traces and the secondary bus interface.
 
-**Suggestion:**
-
-- Connect all four `DC+` pads with wires.
-- Connect all four `DC-` pads with wires.
-
-> Keep the wires reasonably short.
+For best performance, however, the power supply should also be connected directly to the `DC+` and `DC-` pads on all four panels. This ensures shorter current paths, more even power delivery, and reduced noise.
 
 ### Capacitors
 
-According to the [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf), adding decoupling capacitors can improve dimming performance by reducing noise and preventing timing issues. The datasheet suggests *4.7 µF or more* depending on LED load current (~7.0 mA/pixel), and *greater than 10 µF* across the LEDs — equivalent to at least 28.8 µF per panel, or 115.2 µF total.
+The original `U1` microcontroller lacked dimming capabilities, but the ESP32 enables full PWM dimming. Because PWM involves rapid switching, it can stress the power supply and introduce noise. Decoupling capacitors are recommended to smooth out these fluctuations, improving stability and preventing timing issues.
 
-Placement should be as close to the load as possible.
+The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) suggests a total of ≈≥85 µF, placed as close as possible to the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) chips and LEDs. Optimal performance is achieved by distributing capacitance across multiple solder points, rather than concentrating it in a single large capacitor.
 
-> These capacitors are optional and only worth adding if you already have some on hand, or if you encounter issues.
+**Easily accessible soldering points:**
 
-**Possible placement points:**
+- 4x `DC+` / `DC-` pads — one at each panel
+- 2x `VCC` / `GND` pads — top and bottom
+- 4x `J3` JTAG pads — pin 1 (square, `VCC`) and pin 4 (round, `GND`)
+- 3x `C2` SMD pads — one at each panel, the fourth is already populated
+- 4x `C7` SMD pads — one at each panel
 
-- The four `DC+` / `DC-` pads *(one set per panel)*
-- The `VCC` / `GND` pads at the top and bottom of the board
-- The J3 JTAG header — pin 1 is the square pad (tied to `VCC`), and pin 4 (round) is tied to `GND`
-- The SMD pads labeled `C2` and `C7` on each panel *(except `C2` on the first panel, which is already populated)*
+> Capacitors are optional — consider adding them if you already have some available, or if you notice flicker or instability.
 
 ## 🔧 Configuration
 
@@ -177,8 +160,8 @@ Placement should be as close to the load as possible.
 
 ### Power and ground
 
-- `DC+` and `DC-` is intended to supply high current to the LEDs.
-- `VCC` and `GND` is intended as outputs for low corrent components handling the logic.
+- `DC+` / `DC-` is intended to supply high current to the LEDs.
+- `VCC` / `GND` is intended as outputs for low current components handling the logic.
 - Both are tied together internally on the PCB.
 
 > Do not use the ESP32's USB port while the *IKEA Obegränsad's* USB-cable is connected to a power source!

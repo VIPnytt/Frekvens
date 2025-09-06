@@ -1,6 +1,6 @@
 # ✨ Custom devices
 
-> Even if Frekvens was designed for [IKEA Frekvens](IKEA-Frekvens) and [IKEA Obegränsad](IKEA-Obegransad), which both are [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)-based, the firmware can easily be adapted for custom or third-party devices, including those with different display resolutions or configurations, with only minor adjustments.
+> Even if Frekvens was designed for [IKEA Frekvens](IKEA-Frekvens) and [IKEA Obegränsad](IKEA-Obegransad), which both are [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)-based, the firmware can easily be adapted for custom or third-party devices, including those with different display resolutions or configurations.
 
 ## 💻 Resolution
 

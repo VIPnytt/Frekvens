@@ -1,12 +1,12 @@
 # 🎙️ Microphone
 
-Many of the [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) has the ability to react to sounds, eg. syncing animations up with the music.
+Some [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) can react to sound — for example, syncing animations with music.
 
-Most analog microphones paired with an amplifier can be used, eg. [SPW2430](https://www.adafruit.com/product/2716) or [MAX4466](https://www.adafruit.com/product/1063).
+Most analog microphone modules with a built-in amplifier will work. A good starting point is a electret microphone (e.g. [BOB-12758](https://www.sparkfun.com/sparkfun-electret-microphone-breakout.html)) or an MEMS microphone (e.g. [SPW2430](https://www.adafruit.com/product/2716)).
 
 ## 📈 Schematics
 
-### Microphone schematics
+### Amplifier schema
 
 ```text
 ┌─────┐
@@ -17,7 +17,7 @@ Most analog microphones paired with an amplifier can be used, eg. [SPW2430](http
 └─────┘
 ```
 
-### ESP32 schematics
+### ESP32 schema
 
 ```text
 ┌──────────────┐
