@@ -102,10 +102,20 @@ void ButtonExtension::handle()
                 brightnessIncrease = !brightnessIncrease;
             }
         }
+        if (brightnessIncrease && brightness < UINT8_MAX)
+        {
 #ifdef F_INFO
-        Serial.printf(brightnessIncrease ? "%s: brightness +\n" : "%s: brightness -\n", Button->name);
+            Serial.printf("%s: brightness +\n", Button->name);
 #endif // F_INFO
-        Display.setGlobalBrightness(brightnessIncrease ? brightness + 1 : brightness - 1);
+            Display.setGlobalBrightness(brightness + 1);
+        }
+        else if (!brightnessIncrease && brightness > 0)
+        {
+#ifdef F_INFO
+            Serial.printf("%s: brightness -\n", Button->name);
+#endif // F_INFO
+            Display.setGlobalBrightness(brightness - 1);
+        }
     }
 #endif // PIN_SW1
 
