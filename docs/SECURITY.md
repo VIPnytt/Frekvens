@@ -1,12 +1,5 @@
 # 🔒 Security Policy
 
-## ✅ Supported Versions
-
-| Version | Supported          |
-|---------|--------------------|
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
-
 ## 🚨 Reporting a Vulnerability
 
 If you discover a security vulnerability in this project, please report it **privately** via via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new) to prevent potential abuse.
@@ -22,3 +15,10 @@ If confirmed, a patch or mitigation will be prioritized and released as appropri
 ## 🛡️ Disclosure Policy
 
 Vulnerabilities will be publicly disclosed **after a fix has been released** and affected users have had reasonable time to update. Coordinated disclosure is preferred where possible.
+
+## ✅ Supported Versions
+
+| Version | Supported          |
+|---------|--------------------|
+| 1.1.x   | :white_check_mark: |
+| < 1.0   | :x:                |

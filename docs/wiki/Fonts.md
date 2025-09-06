@@ -1,6 +1,6 @@
 # 🔤 Fonts
 
-Character support may vary, but additional characters can be added easily — either by hand or through auto-generation.
+Character support may vary, but additional fonts and characters can be added easily — either by hand or through auto-generation.
 
 ## 👁️ Braille
 

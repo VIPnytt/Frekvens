@@ -12,10 +12,6 @@ pip install tools/
 
 Python script to separate [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) into individual [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw).
 
-## 🏭 Mode generator
-
-Python script to convert [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) into reusable modes.
-
 ## 📺 Streamer
 
 Python script to stream custom content created in the [Animation](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [Drawing](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) modes using [Art-Net](https://github.com/VIPnytt/Frekvens/wiki/Modes#-art-net), [Distributed Display Protocol](https://github.com/VIPnytt/Frekvens/wiki/Modes#-distributed-display-protocol) or [E1.31](https://github.com/VIPnytt/Frekvens/wiki/Modes#-e131).

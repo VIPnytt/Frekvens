@@ -1,6 +1,8 @@
 # ⏰ Real-Time Clock
 
-An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
+A real-time clock (RTC) module keeps accurate time, even without Wi-Fi or power.
+
+Most common RTC modules will work. Good starting points include the [DS3231](https://www.adafruit.com/product/3013) and the [DS1307](https://www.adafruit.com/product/3296).
 
 ## ✅ Supported types
 
@@ -35,8 +37,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 │ VCC ├─ +5 V DC
 │ GND ├─ 0 V DC
 |     |
-│ SCL ├─ I2C SCL
-│ SDA ├─ I2C SDA
+│ SCL ├─ I²C SCL
+│ SDA ├─ I²C SDA
 └─────┘
 ```
 
@@ -47,8 +49,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 │ VCC ├─ +3.3 V DC
 │ GND ├─ 0 V DC
 |     |
-│ SCL ├─ I2C SCL
-│ SDA ├─ I2C SDA
+│ SCL ├─ I²C SCL
+│ SDA ├─ I²C SDA
 |     |
 │ INT ├─ RTC INT
 └─────┘
@@ -61,8 +63,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 │ VCC ├─ +3.3 V DC
 │ GND ├─ 0 V DC
 |     |
-│ SCL ├─ I2C SCL
-│ SDA ├─ I2C SDA
+│ SCL ├─ I²C SCL
+│ SDA ├─ I²C SDA
 |     |
 │ INT ├─ RTC INT
 └─────┘
@@ -91,8 +93,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 │ VCC ├─ +3.3 V DC
 │ GND ├─ 0 V DC
 |     |
-│ SCL ├─ I2C SCL
-│ SDA ├─ I2C SDA
+│ SCL ├─ I²C SCL
+│ SDA ├─ I²C SDA
 |     |
 │ INT ├─ RTC INT
 └─────┘
@@ -106,8 +108,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 │            3V3 ├─ +3.3 V DC
 │            GND ├─ 0 V DC
 │                │
-│        I2C SCL ├─ I2C SCL
-│        I2C SDA ├─ I2C SDA
+│        I²C SCL ├─ I²C SCL
+│        I²C SDA ├─ I²C SDA
 │                │
 │       SPI SCLK ├─ SPI SCLK
 │       SPI MISO ├─ SPI MISO
@@ -128,8 +130,8 @@ An RTC-module can provide a reliable clock, even without Wi-Fi connectivity.
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
- I2C SCL  ─┤             ├─ I2C SCL
- I2C SDA  ─┤             ├─ I2C SDA
+ I²C SCL  ─┤             ├─ I²C SCL
+ I²C SDA  ─┤             ├─ I²C SDA
            │             │
 SPI SCLK  ─┤             ├─ SPI SCLK
 SPI MISO  ─┤             ├─ SPI MISO
@@ -144,13 +146,13 @@ SPI SDIO  ─┤             ├─ SPI SDIO
 
 ## ↔️ Logic level shifter
 
-Components operating at voltages higher than 3.3 V often require level translation to remain compatible with the ESP32. While many RTC modules are designed for 3.3 V logic, some variants may use 5 V. To ensure reliable and safe communication between the two devices in such cases, a suitable logic level shifter should be used.
+Most RTC modules are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). In those cases, a logic level shifter is required to ensure safe communication with the ESP32. Since RTC modules can use either SPI or I²C depending on the variant, the level shifter should be suitable for the chosen interface.
 
 ## 🔧 Configuration
 
-### I2C SCL
+### I²C SCL
 
-Any *I2C `SCL`* pin can be used.
+Any *I²C `SCL`* pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -158,9 +160,9 @@ Any *I2C `SCL`* pin can be used.
 #define PIN_SCL 1 // GPIO #
 ```
 
-### I2C SDA
+### I²C SDA
 
-Any *I2C `SDA`* pin can be used.
+Any *I²C `SDA`* pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -264,7 +266,7 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 
 ### DS1307
 
-Logic level shifter required.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 

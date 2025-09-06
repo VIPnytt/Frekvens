@@ -102,9 +102,9 @@ The next step is to disconnect the buttons from the green PCB, `SW1`, `SW2` and 
 
 ### Removing the `U2` chip
 
-This step can be a bit challanging, removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is the core handling the microphone and button inputs as well as the display output.
+This step can be a bit challanging: removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is responsible for handling the integrated microphone, button inputs and display output.
 
-> Alternatively, if the microphone functionality isn't necessary, just remove the green PCB from whe white PCB altogether. The green PCB is only needed for the microphone, and can be re-soldered back on later if desired.
+> If the integrated microphone is not needed, the entire green PCB can be removed from the LED panel. This makes the modification easier, while still allowing the board to be re-soldered later if microphone support is desired.
 
 ### Wiring the microphone
 
@@ -112,11 +112,11 @@ For the microphone to be functional, connect a wire from the [LM358](https://www
 
 > Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip should be desoldered, it might be easier to connect from `U2` pad 11 instead. It's internally connected to `U3` pin 7 via traces on the PCB.
 
-### Missing hardware
+### The Missing IR sensor
 
-The *IKEA Frekvens* never shipped with an infrared receiver, so the `IR` pad has no function.
+The device was originally designed with an IR sensor in mind, but the feature was never implemented in production — leaving the `IR` pad unused.
 
-> However, an *IR sensor* can be added as an [accessory](https://github.com/VIPnytt/Frekvens/wiki/Infrared), effectively enabling a capability that was planned but never realized in the original design.
+The hole next to `C10` was reserved for this purpose and can still be used to mount an [IR sensor](https://github.com/VIPnytt/Frekvens/wiki/Infrared), enabling a capability that was planned in the original design but never realized.
 
 ### Wiring the LED panel
 
@@ -126,19 +126,17 @@ Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-l
 
 ### Connecting the button
 
-The last step is to connect the buttons, `SW` and `SW1` both connects to separate pins on ESP32, while the third `COM` connects to ground.
+The last step is to connect the buttons: `SW` and `SW1` each connect to separate pins on the ESP32, while `COM` connects to `GND`.
+
+> On the stock wiring harness, the red *power* button `SW1` uses the black wire, the yellow *mode* button `SW` uses the white wire, and both share a red wire for `COM`.
 
 ## ↔️ Logic level shifter
 
-The [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) operates at 3.3 V logic, while the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 4 V logic. To ensure reliable and safe communication between the two devices, a suitable logic level shifter designed for SPI signals is required.
+For safe and reliable communication between the ESP32 and the LED panel, a suitable logic level shifter is required.
 
-- The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)'s logic *HIGH* level is above [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)'s absolute maximum voltage rating on the following GPIO pins:
-  - SPI MISO *`DA`*
-  - Enable *`EN`*
+The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs 4 V signals and also uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines should go through a level shifter*, not just those that are at risk.
 
-> It is considered best practice to keep all logic signals at a consistent voltage level within each interface. Therefore, it is recommended to use a logic level shifter on all relevant signal lines — even if not strictly required.
-
-> While there are reports suggesting that these devices can work together without level shifting, this is strongly discouraged. Exceeding the [ESP32](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf)’s voltage ratings may result in unpredictable behavior or permanent damage to the microcontroller.
+> Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
 
@@ -146,16 +144,16 @@ The *IKEA Frekvens* hardware isn't perfect, but there's room for improvements fo
 
 ### Capacitors
 
-According to the [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf), adding decoupling capacitors can improve dimming performance by reducing noise and preventing timing issues. The datasheet suggests *4.7 µF or more* depending on LED load current (~2.8 mA/pixel), and *greater than 10 µF* across the LEDs — equivalent to at least 85.2 µF.
+The original [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip lacked dimming capabilities, but the ESP32 enables full PWM dimming. Because PWM involves rapid switching, it can stress the power supply and introduce noise. Decoupling capacitors are recommended to smooth out these fluctuations, improving stability and preventing timing issues.
 
-Placement should be as close to the load as possible.
+The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) suggests a total of ≈≥85 µF, placed as close as possible to the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) chips and LEDs. Instead of a single large capacitor, it is generally better to use two smaller ones.
 
-> These capacitors are optional and only worth adding if you already have some on hand, or if you encounter issues.
+**Easily accessible soldering points:**
 
-**Possible placement points:**
+- `VCC` / `GND` pads — near the top of the panel
+- `DC+` / `DC-` pads — near the middle
 
-- The `VCC` / `GND` pads at the top of the board
-- The main `DC+` / `DC-` pads
+> Capacitors are optional — consider adding them if you already have some available, or if you notice flicker or instability.
 
 ## 🔧 Configuration
 
@@ -172,8 +170,8 @@ Placement should be as close to the load as possible.
 
 ### Power and ground
 
-- `DC+` and `DC-` is intended to supply high current to the LEDs.
-- `VCC` and `GND` is intended as outputs for low current components handling the logic.
+- `DC+`/`DC-` is intended to supply high current to the LEDs.
+- `VCC`/`GND` is intended as outputs for low current components handling the logic.
 - Both are tied together internally on the PCB.
 
 > To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.

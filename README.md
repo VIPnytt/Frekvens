@@ -49,9 +49,9 @@ Due to significant variation in ESP32 board layouts, the documentation reference
 
 If desired, extra hardware can be added:
 
-- IR — remote control
-- Microphone — sync up with the music
-- RTC — Real-time clock
+- IR sensor — lets you control the device with a standard TV-style remote
+- Microphone — syncs the display with music
+- RTC (real-time clock) — keeps accurate time, even when powered off
 
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.
 

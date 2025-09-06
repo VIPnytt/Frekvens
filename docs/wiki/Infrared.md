@@ -1,9 +1,8 @@
 # 🔴 Infrared
 
-By adding an IR sensor, you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.
+By adding an IR sensor, you can control the device with almost any common remote — such as a TV remote you already own.
 
-Most remotes are using the 38 kHz frequency band.
-While virtually *any* IR sensor can be used, the simplest way to getting started might be to use an [TSOP382](https://www.adafruit.com/product/157).
+Most remotes operate around the 38 kHz frequency band. While many IR sensors and modules will work, a good starting point is the TSOP382 series (e.g. [TSOP38238](https://www.adafruit.com/product/157)).
 
 ## 📈 Schematics
 
@@ -43,7 +42,7 @@ While virtually *any* IR sensor can be used, the simplest way to getting started
 
 ## ↔️ Logic level shifter
 
-Components operating at voltages higher than 3.3 V often require level translation to remain compatible with the ESP32. While many IR sensors are designed for 3.3 V logic, some variants may use 5 V. To ensure reliable and safe communication between the two devices in such cases, a suitable logic level shifter should be used.
+Most IR sensors are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). If so, a logic level shifter is required to protect the ESP32. Unlike the high-speed SPI lines for the display, this signal is low-speed and single-channel — meaning almost any level-shifting method will work.
 
 ## 🔧 Configuration
 
@@ -51,7 +50,7 @@ Components operating at voltages higher than 3.3 V often require level translati
 
 Any *digital input* pin can be used.
 
-> Avoid **strapping** pins as this pin is pulled *HIGH* when idle.
+> Avoid strapping pins as this pin is pulled *HIGH* when idle.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -67,4 +66,4 @@ Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-in
 
 ## 🚫 IKEA Frekvens
 
-The device was designed with IR capabilities in mind, but shipped without.
+The device was originally designed with an IR sensor in mind, but the feature was never implemented in production. The unused hole next to `C10` can, however, be repurposed for adding one.
