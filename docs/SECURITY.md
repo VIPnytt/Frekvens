@@ -21,4 +21,4 @@ Vulnerabilities will be publicly disclosed **after a fix has been released** and
 | Version | Supported          |
 |---------|--------------------|
 | 1.1.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 1.0.x   | :x:                |
