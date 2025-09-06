@@ -34,7 +34,7 @@ void ServerSentEventsExtension::transmitterHook(const JsonDocument &doc, const c
 void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
 {
     JsonDocument doc = Device.getTransmits();
-    for (const JsonPairConst pair : doc.as<JsonObjectConst>())
+    for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
     {
         const size_t length = measureJson(pair.value());
         char *payload = new char[length + 1];

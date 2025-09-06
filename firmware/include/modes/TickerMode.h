@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ArduinoJson.h>
 #include <bits/unique_ptr.h>
 
 #include "handlers/TextHandler.h"

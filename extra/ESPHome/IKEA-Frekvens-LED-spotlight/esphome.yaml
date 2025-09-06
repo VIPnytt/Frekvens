@@ -5,14 +5,17 @@ esphome:
   friendly_name: "Frekvens spotlight"
   comment: "IKEA Frekvens LED spotlight"
   min_version: "2025.7.0"
+  project:
+    name: "IKEA.Frekvens"
+    version: "2025.9.0"
 
-esp32:
+esp32: # https://registry.platformio.org/platforms/platformio/espressif32/boards
   board: seeed_xiao_esp32c3 # Replace with the board you are using
 
 substitutions:
-  PIN_LED: 3 # PWM output to LED drivers (U6/U7)
-  PIN_MIC: 4 # Analog input from microphone (U3)
-  PIN_SW1: 5 # Digital input from button (K3)
+  PIN_LED: 3 # PWM output to the LED drivers (U6/U7)
+  PIN_MIC: 4 # Analog input from the amplifier (U3)
+  PIN_SW1: 5 # Digital input from the button (K3)
 
 api:
   # Optional: enable encryption if desired
@@ -117,7 +120,7 @@ globals:
   - type: float
     id: mic_peak
     restore_value: False # Temporary peak value, resets every interval
-    initial_value: '0'
+    initial_value: "0"
 
   - type: int
     id: mic_last
@@ -125,7 +128,7 @@ globals:
 
   - type: int
     id: mic_threshold
-    initial_value: '512'
+    initial_value: "512"
     restore_value: True # Threshold for triggering sound response
 
 interval:
@@ -156,9 +159,8 @@ number:
     icon: "mdi:microphone"
     entity_category: config
     disabled_by_default: True
-    mode: box
     step: 1
-    max_value: 4095
+    max_value: ${2**12 - 1}
     min_value: 1
     lambda: !lambda 'return id(mic_threshold);'
     set_action:
@@ -170,8 +172,8 @@ output:
   - platform: ledc
     id: led_pwm
     pin: ${PIN_LED}
-    frequency: ${80000000 / 65536 | int} # Max resolution (12-bit)
-    min_power: ${1 / 255}
+    frequency: ${(80000000 / (2**16 - 1)) | int} # Max resolution (16-bit)
+    min_power: ${1 / (2**8 - 1)}
     zero_means_zero: True # Ensures 0% = fully off
 
 script:

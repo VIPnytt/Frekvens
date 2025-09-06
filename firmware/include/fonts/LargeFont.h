@@ -7,7 +7,7 @@ class LargeFont : public FontModule
 private:
     const std::vector<Symbol> ascii = {
         {
-            // 0x20, (Space)
+            // 0x20, SPACE
             {},
             6,
             0,

@@ -4,8 +4,6 @@
 
 #if EXTENSION_SIGNAL
 
-#include <ArduinoJson.h>
-
 #include "handlers/BitmapHandler.h"
 #include "modules/ExtensionModule.h"
 

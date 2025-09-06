@@ -4,7 +4,6 @@
 
 #if EXTENSION_PLAYLIST
 
-#include <ArduinoJson.h>
 #include <vector>
 
 #include "modules/ExtensionModule.h"

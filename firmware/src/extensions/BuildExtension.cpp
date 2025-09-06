@@ -2,8 +2,6 @@
 
 #if EXTENSION_BUILD
 
-#include <ArduinoJson.h>
-
 #include "extensions/BuildExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"

@@ -11,7 +11,7 @@ class SmallFont : public FontModule
 private:
     const std::vector<Symbol> ascii = {
         {
-            // 0x20, (Space)
+            // 0x20, SPACE
             {},
             3,
             0,
@@ -804,7 +804,7 @@ private:
             0,
         },
         {
-            // 0x5C, (\)
+            // 0x5C, REVERSE SOLIDUS
             {
                 0b10000,
                 0b01000,
