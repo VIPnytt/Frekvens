@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Arduino.h>
+#include <string_view>
+#include <WString.h>
 
 #include "modules/FontModule.h"
 

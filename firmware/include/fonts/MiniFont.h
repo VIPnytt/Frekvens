@@ -7,7 +7,7 @@ class MiniFont : public FontModule
 private:
     const std::vector<Symbol> ascii = {
         {
-            // 0x20, (Space)
+            // 0x20, SPACE
             {},
             3,
             0,
@@ -529,7 +529,7 @@ private:
         },
         {},
         {
-            // 0x5C, ]
+            // 0x5D, ]
             {
                 0b11,
                 0b01,

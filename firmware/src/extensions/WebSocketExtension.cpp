@@ -64,7 +64,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
             JsonDocument doc;
             if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
             {
-                for (const JsonPairConst pair : doc.as<JsonObjectConst>())
+                for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
                 {
                     if (pair.value().is<JsonObjectConst>())
                     {

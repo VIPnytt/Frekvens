@@ -4,7 +4,6 @@
 
 #if EXTENSION_MQTT
 
-#include <ArduinoJson.h>
 #include <espMqttClient.h>
 
 #include "modules/ExtensionModule.h"

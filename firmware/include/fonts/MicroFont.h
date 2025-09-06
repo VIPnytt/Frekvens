@@ -7,7 +7,7 @@ class MicroFont : public FontModule
 private:
     const std::vector<Symbol> ascii = {
         {
-            // 0x20, (Space)
+            // 0x20, SPACE
             {},
             3,
             0,
@@ -528,7 +528,7 @@ private:
             0,
         },
         {
-            // 0x5C, "\"
+            // 0x5C, REVERSE SOLIDUS
             {
                 0b100,
                 0b010,

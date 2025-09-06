@@ -80,7 +80,7 @@ export const Sidebar: Component = () => {
                     </Button>
                     <Tooltip text={`Brightness ${Math.ceil((getBrightness() + 1) / (Math.pow(2, 8)) * 100)} %`}>
                         <input
-                            class="w-full bg-red-600"
+                            class="w-full"
                             type="range"
                             min="0"
                             max={Math.pow(2, 8) - 1}
