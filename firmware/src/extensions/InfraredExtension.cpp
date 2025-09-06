@@ -108,7 +108,7 @@ bool InfraredExtension::parse(decode_results results)
                     {
 #ifdef F_INFO
                         Serial.printf("%s: brightness -\n", name);
-#endif
+#endif // F_INFO
                         Display.setGlobalBrightness(max(0, brightness - 5));
                         lastMillis = millis();
                     }
@@ -124,7 +124,7 @@ bool InfraredExtension::parse(decode_results results)
                     {
 #ifdef F_INFO
                         Serial.printf("%s: brightness +\n", name);
-#endif
+#endif // F_INFO
                         Display.setGlobalBrightness(min(UINT8_MAX, brightness + 5));
                         lastMillis = millis();
                     }
@@ -137,20 +137,20 @@ bool InfraredExtension::parse(decode_results results)
                 {
 #ifdef F_INFO
                     Serial.printf("%s: power\n", name);
-#endif
+#endif // F_INFO
                     Display.setPower(!Display.getPower());
                     lastMillis = millis();
                 }
                 return true;
             }
 #if EXTENSION_MICROPHONE
-            else if (std::find(code.extensionMicToggle.begin(), code.extensionMicToggle.end(), results.command) != code.extensionMicToggle.end())
+            else if (std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), results.command) != code.extensionMicrophoneToggle.end())
             {
                 if (millis() - lastMillis > 1000)
                 {
 #ifdef F_INFO
                     Serial.printf("%s: microphone\n", name);
-#endif
+#endif // F_INFO
                     Microphone->set(!Microphone->get());
                     lastMillis = millis();
                 }
@@ -164,32 +164,32 @@ bool InfraredExtension::parse(decode_results results)
                 {
 #ifdef F_INFO
                     Serial.printf("%s: playlist\n", name);
-#endif
+#endif // F_INFO
                     Playlist->set(!Playlist->get());
                     lastMillis = millis();
                 }
                 return true;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (std::find(code.modesSetNext.begin(), code.modesSetNext.end(), results.command) != code.modesSetNext.end())
+            else if (std::find(code.modeNext.begin(), code.modeNext.end(), results.command) != code.modeNext.end())
             {
                 if (millis() - lastMillis > 500)
                 {
 #ifdef F_INFO
                     Serial.printf("%s: mode +\n", name);
-#endif
+#endif // F_INFO
                     Modes.next();
                     lastMillis = millis();
                 }
                 return true;
             }
-            else if (std::find(code.modesSetPrevious.begin(), code.modesSetPrevious.end(), results.command) != code.modesSetPrevious.end())
+            else if (std::find(code.modePrevious.begin(), code.modePrevious.end(), results.command) != code.modePrevious.end())
             {
                 if (millis() - lastMillis > 500)
                 {
 #ifdef F_INFO
                     Serial.printf("%s: mode -\n", name);
-#endif
+#endif // F_INFO
                     Modes.previous();
                     lastMillis = millis();
                 }
