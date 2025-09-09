@@ -68,14 +68,14 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SW1 1 // GPIO #
+#define PIN_SW1 1 // Power button
 ```
 
 ```h
-#define PIN_SW2 2 // GPIO #
+#define PIN_SW2 2 // Mode button
 ```
 
-> Long press *any* button during startup to activate the [Wi-Fi hotspot](Services#-wi-fi-hotspot).
+> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-network).
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -155,7 +155,7 @@ API payload example:
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_IR 3 // GPIO #
+#define PIN_IR 3 // Data
 ```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
@@ -213,7 +213,7 @@ API payload example:
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define PIN_MIC 4 // GPIO #
+#define PIN_MIC 4 // Amplifier
 ```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
@@ -358,7 +358,7 @@ Reliable clock, even without Wi-Fi connectivity.
 EXTENSION_RTC=true
 ```
 
-> Enabled by default when a [*supported*](RTC#-supported-types) RTC-module is defined.
+> Enabled by default when a [supported](https://github.com/VIPnytt/Frekvens/wiki/RTC#-supported-types) RTC-module is defined.
 
 Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC) wiki for hardware instructions.
 

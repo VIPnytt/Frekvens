@@ -108,14 +108,14 @@ Most common RTC modules will work. Good starting points include the [DS3231](htt
 │            3V3 ├─ +3.3 V DC
 │            GND ├─ 0 V DC
 │                │
-│        I²C SCL ├─ I²C SCL
-│        I²C SDA ├─ I²C SDA
+│            SCL ├─ I²C SCL
+│            SDA ├─ I²C SDA
 │                │
-│       SPI SCLK ├─ SPI SCLK
-│       SPI MISO ├─ SPI MISO
-│       SPI MOSI ├─ SPI MOSI
+│           SCLK ├─ SPI SCLK
+│           MISO ├─ SPI MISO
+│           MOSI ├─ SPI MOSI
 │                │
-│       SPI MISO ├─ SPI SDIO
+│           MISO ├─ SPI SDIO
 │                │
 │ Digital output ├─ SPI CS
 │                │
@@ -130,17 +130,17 @@ Most common RTC modules will work. Good starting points include the [DS3231](htt
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
- I²C SCL  ─┤             ├─ I²C SCL
- I²C SDA  ─┤             ├─ I²C SDA
+ I²C SCL  ─┤     ──►     ├─ I²C SCL
+ I²C SDA  ─┤     ◄─►     ├─ I²C SDA
            │             │
-SPI SCLK  ─┤             ├─ SPI SCLK
-SPI MISO  ─┤             ├─ SPI MISO
-SPI MOSI  ─┤             ├─ SPI MOSI
-  SPI CS  ─┤             ├─ SPI CS
+SPI SCLK  ─┤     ──►     ├─ SPI SCLK
+SPI MISO  ─┤     ◄──     ├─ SPI MISO
+SPI MOSI  ─┤     ──►     ├─ SPI MOSI
+  SPI CS  ─┤     ──►     ├─ SPI CS
            │             │
-SPI SDIO  ─┤             ├─ SPI SDIO
+SPI SDIO  ─┤     ◄─►     ├─ SPI SDIO
            │             │
- RTC INT  ─┤             ├─ RTC INT
+ RTC INT  ─┤     ◄──     ├─ RTC INT
            └─────────────┘
 ```
 
@@ -152,101 +152,101 @@ Most RTC modules are 3.3 V compatible, but some variants use higher logic levels
 
 ### I²C SCL
 
-Any *I²C `SCL`* pin can be used.
+Any I²C `SCL` pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SCL 1 // GPIO #
+#define PIN_SCL 1 // I²C SCL
 ```
 
 ### I²C SDA
 
-Any *I²C `SDA`* pin can be used.
+Any I²C `SDA` pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SDA 2 // GPIO #
+#define PIN_SDA 2 // I²C SDA
 ```
 
 ### SPI SCLK
 
-Any *SPI `SCLK`* pin can be used.
+Any SPI `SCLK` pin can be used.
 
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SCLK2 3 // GPIO #
+#define PIN_SCLK2 3 // SPI SCLK
 ```
 
 ### SPI MISO
 
-Any *SPI `MISO`* pin can be used.
+Any SPI `MISO` pin can be used.
 
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MISO2 4 // GPIO #
+#define PIN_MISO2 4 // SPI MISO
 ```
 
 ### SPI MOSI
 
-Any *SPI `MOSI`* pin can be used.
+Any SPI `MOSI` pin can be used.
 
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MOSI2 5 // GPIO #
+#define PIN_MOSI2 5 // SPI MOSI
 ```
 
 ### SPI SDIO
 
-Any *SPI `MISO`* pin can be used.
+Any SPI `MISO` pin can be used.
 
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SDIO2 6 // GPIO #
+#define PIN_SDIO2 6 // SPI SDIO
 ```
 
 ### SPI CS
 
-Any *digital output* pin can be used.
+Any digital output pin can be used.
 
 > Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_CS2 7 // GPIO #
+#define PIN_CS2 7 // SPI CS
 ```
 
 ### RTC INT
 
 Optional to connect.
 
-Any *Digital input* pin that are also RTC-capable can be used.
+Any digital input pin that are also RTC-capable can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_INT 8 // GPIO #
+#define PIN_INT 8 // RTC INT
 ```
 
 ## 🧩 Extension
 
-Using the [RTC](Extensions#-rtc) extension, the clock will automatically sync during during startup.
+Using the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) extension, the clock will automatically sync during during startup.
 
-Check out the [RTC](Extensions#-rtc) extension for more info.
+Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) extension for more info.
 
 ## 📝 Templates
 
@@ -257,9 +257,9 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_DS1302
 
-#define PIN_SCLK2 1
-#define PIN_SDIO2 2
-#define PIN_CS2 3
+#define PIN_SCLK2 1 // SPI SCLK
+#define PIN_SDIO2 2 // SPI SDIO
+#define PIN_CS2 3   // SPI CS
 ```
 
 > Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
@@ -273,11 +273,11 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_DS1307
 
-#define PIN_SCL 1
-#define PIN_SDA 2
+#define PIN_SCL 1 // I²C SCL
+#define PIN_SDA 2 // I²C SDA
 ```
 
-> Incompatible with [IKEA Frekvens](IKEA-Frekvens) due to the lack of a 5 V power supply.
+> Incompatible with [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) due to the lack of a 5 V power supply.
 
 ### DS3231
 
@@ -286,9 +286,9 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_DS3231
 
-#define PIN_SCL 1
-#define PIN_SDA 2
-#define PIN_INT 3
+#define PIN_SCL 1 // I²C SCL
+#define PIN_SDA 2 // I²C SDA
+#define PIN_INT 3 // RTC INT
 ```
 
 ### DS3232
@@ -298,9 +298,9 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_DS3232
 
-#define PIN_SCL 1
-#define PIN_SDA 2
-#define PIN_INT 3
+#define PIN_SCL 1 // I²C SCL
+#define PIN_SDA 2 // I²C SDA
+#define PIN_INT 3 // RTC INT
 ```
 
 ### DS3234
@@ -310,11 +310,11 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_DS3234
 
-#define PIN_SCLK2 1
-#define PIN_MISO2 2
-#define PIN_MOSI2 3
-#define PIN_CS2 4
-#define PIN_INT 5
+#define PIN_SCLK2 1 // SPI SCLK
+#define PIN_MISO2 2 // SPI MISO
+#define PIN_MOSI2 3 // SPI MOSI
+#define PIN_CS2 4   // SPI CS
+#define PIN_INT 5   // RTC INT
 ```
 
 > Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
@@ -326,7 +326,7 @@ Check out the [RTC](Extensions#-rtc) extension for more info.
 ```h
 #define RTC_PCF8563
 
-#define PIN_SCL 1
-#define PIN_SDA 2
-#define PIN_INT 3
+#define PIN_SCL 1 // I²C SCL
+#define PIN_SDA 2 // I²C SDA
+#define PIN_INT 3 // RTC INT
 ```

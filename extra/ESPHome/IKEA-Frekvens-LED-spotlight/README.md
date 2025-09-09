@@ -85,30 +85,30 @@ The `DC+`/`LED+` and `DC-`/`MIC-` pins are internally connected via traces on th
 
 ### Enable
 
-Any *PWM output* pin can be used.
+Any PWM output pin can be used.
 
 > Avoid strapping pins as this pin may be floating.
 
 ```yaml
-PIN_LED: 1 # GPIO #
+PIN_LED: 1 # U6/U7
 ```
 
 ### Button
 
-Any *digital input* pin can be used, but those that are also RTC-capable are preferred.
+Any digital input pin can be used, but those that are also RTC-capable are preferred.
 
 > Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
 
 ```yaml
-PIN_SW1: 2 # GPIO #
+PIN_SW1: 2 # K3
 ```
 
 ### Amplifier
 
-Any *analog input* pin can be used, but those on the ADC1 channel are preferred.
+Any analog input pin can be used, but those on the ADC1 channel are preferred.
 
 > Avoid strapping pins as this pin is biased. On ESP32 (LX6-based, original series) boards, the ADC2 channel pins are not supported.
 
 ```yaml
-PIN_MIC: 3 # GPIO #
+PIN_MIC: 3 # U3
 ```

@@ -33,47 +33,47 @@
 #define ROWS 16          // px
 
 /*
-#define PIN_SCLK 1 // GPIO #
+#define PIN_SCLK 1 // CLK
 */
 #ifndef PIN_SCLK
-#error "SPI Serial Clock pin is not defined."
+#error "Configuration error: SPI clock pin (PIN_SCLK, PCB label 'CLK') is not defined."
 #endif
 
 /*
-#define PIN_MISO 2 // GPIO #
+#define PIN_MISO 2
 */
 
 /*
-#define PIN_MOSI 3 // GPIO #
+#define PIN_MOSI 3 // DA
 */
 #ifndef PIN_MOSI
-#error "SPI MainOutSubIn pin is not defined."
+#error "Configuration error: SPI MOSI pin (PIN_MOSI, PCB label 'DA') is not defined."
 #endif
 
 /*
-#define PIN_CS 4 // GPIO #
+#define PIN_CS 4 // LAK
 */
 #ifndef PIN_CS
-#error "SPI Chip Select pin is not defined."
+#error "Configuration error: SPI chip select pin (PIN_CS, PCB label 'LAK') is not defined."
 #endif
 
 /*
-#define PIN_EN 5 // GPIO #
+#define PIN_EN 5 // EN
 */
 #ifndef PIN_EN
-#error "PWM Display Enable pin is not defined."
+#error "Configuration error: Enable pin (PIN_EN, PCB label 'EN') is not defined."
 #endif
 
 /*
-#define PIN_SW1 6 // GPIO #
+#define PIN_SW1 6 // SW1
 */
 
 /*
-#define PIN_SW2 7 // GPIO #
+#define PIN_SW2 7 // SW
 */
 
 /*
-#define PIN_MIC 8 // GPIO #
+#define PIN_MIC 8 // U3 pin 7
 */
 
 #endif // ENV

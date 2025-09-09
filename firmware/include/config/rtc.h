@@ -24,20 +24,20 @@
 */
 
 /*
-#define PIN_SCL 1 // GPIO #
-#define PIN_SDA 2 // GPIO #
+#define PIN_SCL 1 // I²C SCL
+#define PIN_SDA 2 // I²C SDA
 */
 
 /*
-#define PIN_SCLK2 4 // GPIO #
-#define PIN_CS2 3 // GPIO #
+#define PIN_SCLK2 3 // SPI SCLK
+#define PIN_CS2 4   // SPI CS
 */
 
 /*
-#define PIN_MISO2 5 // GPIO #
-#define PIN_MOSI2 6 // GPIO #
+#define PIN_MISO2 5 // SPI MISO
+#define PIN_MOSI2 6 // SPI MOSI
 */
 
 /*
-#define PIN_SDIO2 7 // GPIO #
+#define PIN_SDIO2 7 // SPI SDIO
 */
