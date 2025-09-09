@@ -41,10 +41,10 @@
 ### USB cable schema
 
 ```text
-───────┐
-White ─┼─ +5 V DC
-Black ─┼─ 0 V DC
-───────┘
+──────┐
+White ┼─ +5 V DC
+Black ┼─ 0 V DC
+──────┘
 ```
 
 ### ESP32 schema
@@ -55,9 +55,9 @@ Black ─┼─ 0 V DC
 │            3V3 ├─ +3.3 V DC
 │            GND ├─ 0 V DC
 │                │
-│       SPI SCLK ├─ SPI SCLK
-│       SPI MISO ├─ SPI MISO
-│       SPI MOSI ├─ SPI MOSI
+│           SCLK ├─ SPI SCLK
+│           MISO ├─ SPI MISO
+│           MOSI ├─ SPI MOSI
 │                │
 │ Digital output ├─ SPI CS
 │                │
@@ -74,12 +74,11 @@ Black ─┼─ 0 V DC
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
- SPI SCLK ─┤             ├─ SPI SCLK
- SPI MISO ─┤             ├─ SPI MISO
- SPI MOSI ─┤             ├─ SPI MOSI
-   SPI CS ─┤             ├─ SPI CS
-   Enable ─┤             ├─ Enable
-           │             │
+ SPI SCLK ─┤     ──►     ├─ SPI SCLK
+ SPI MISO ─┤     ◄──     ├─ SPI MISO
+ SPI MOSI ─┤     ──►     ├─ SPI MOSI
+   SPI CS ─┤     ──►     ├─ SPI CS
+   Enable ─┤     ──►     ├─ Enable
            └─────────────┘
 ```
 
@@ -170,84 +169,84 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Any *SPI `SCLK`* pin can be used.
+Any SPI `SCLK` pin can be used.
 
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SCLK 1 // GPIO #
+#define PIN_SCLK 1 // CLK
 ```
 
 ### SPI MISO
 
 Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Any *SPI `MISO`* pin can be used.
+Any SPI `MISO` pin can be used.
 
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MISO 2 // GPIO #
+#define PIN_MISO 2 // DO
 ```
 
 ### SPI MOSI
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Any *SPI `MOSI`* pin can be used.
+Any SPI `MOSI` pin can be used.
 
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MOSI 3 // GPIO #
+#define PIN_MOSI 3 // DI
 ```
 
 ### SPI CS
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Any *digital output* pin can be used.
+Any digital output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+> Avoid strapping pins as this pin is pulled *LOW* using a 25 kΩ resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_CS 4 // GPIO #
+#define PIN_CS 4 // CLA
 ```
 
 ### Enable
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-Any *PWM output* pin can be used.
+Any PWM output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *HIGH* using a resistor.
+> Avoid strapping pins as this pin is pulled *HIGH* using a 25 kΩ resistor.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_EN 5 // GPIO #
+#define PIN_EN 5 // EN
 ```
 
 ### Button
 
 Optional to connect.
 
-Any *digital input* pin can be used, but those that are also RTC-capable are preferred.
+Any digital input pin can be used, but those that are also RTC-capable are preferred.
 
 > Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SW2 6 // GPIO #
+#define PIN_SW2 6 // SW
 ```
 
 ## 📝 Template
@@ -268,11 +267,11 @@ NAME='Obegränsad'
 #pragma once
 
 // GPIO pins
-#define PIN_SCLK 1
-#define PIN_MOSI 2
-#define PIN_CS 3
-#define PIN_EN 4
-#define PIN_SW2 5
+#define PIN_SCLK 1 // CLK
+#define PIN_MOSI 2 // DI
+#define PIN_CS 3   // CLA
+#define PIN_EN 4   // EN
+#define PIN_SW2 5  // SW
 
 // Wi-Fi credentials (optional)
 #define WIFI_SSID "name"

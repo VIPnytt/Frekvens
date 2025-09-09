@@ -41,9 +41,11 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### ESP32 board
 
-Frekvens supports most Wi-Fi enabled ESP32 boards. For new installations, the `ESP32-S3` is recommended for its performance and broad compatibility. A compact board (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases.
+Frekvens works with most Wi-Fi enabled ESP32 boards that support the Arduino framework, as listed in [PlatformIO's board registry](https://registry.platformio.org/platforms/platformio/espressif32/boards).
 
-Due to significant variation in ESP32 board layouts, the documentation references pin types rather than fixed pin numbers. For board-specific recommendations, first check the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. If you're still unsure, refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or open a new topic for clarification.
+For new installations, the `ESP32-S3` is recommended due to its performance and broad compatibility. Compact boards (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases.
+
+Because board layouts can differ significantly, the documentation references pin types rather than fixed pin numbers. For board-specific recommendations, first check the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. If you’re still unsure, refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or open a new topic for clarification.
 
 ### Optional Accessories
 
@@ -115,26 +117,26 @@ ENV_FREKVENS=''
 ENV_OBEGRANSAD=''
 ```
 
-Define pin assignments in [`secrets.h`](firmware/include/config/secrets.h):
+Define pin assignments in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #pragma once
 
 // GPIO pins
-#define PIN_SCLK 1
-#define PIN_MOSI 2
-#define PIN_CS 3
-#define PIN_EN 4
-#define PIN_SW2 5
+#define PIN_SCLK 1 // CLK
+#define PIN_MOSI 2 // DA/DO
+#define PIN_CS 3   // LAK/CLA
+#define PIN_EN 4   // EN
+#define PIN_SW2 5  // SW
 
 // IKEA Frekvens only
-#define PIN_SW1 6
-#define PIN_MIC 7
+#define PIN_SW1 6  // SW1
+#define PIN_MIC 7  // U3 pin 7
 ```
 
 ### Wi-Fi
 
-Wi-Fi credentials can be defined in [`secrets.h`](firmware/include/config/secrets.h) or configured through the web UI.
+Wi-Fi credentials can be defined in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) or configured through the web UI.
 
 ```h
 #define WIFI_SSID "name"

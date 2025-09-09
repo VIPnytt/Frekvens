@@ -20,13 +20,13 @@ Most remotes operate around the 38 kHz frequency band. While many IR sensors and
 ### ESP32 schema
 
 ```text
-┌────────────────┐
-│            VIN ├─ +5 V DC
-│            3V3 ├─ +3.3 V DC
-│            GND ├─ 0 V DC
-│                │
-│  Digital input ├─ Data
-└────────────────┘
+┌───────────────┐
+│           VIN ├─ +5 V DC
+│           3V3 ├─ +3.3 V DC
+│           GND ├─ 0 V DC
+│               │
+│ Digital input ├─ Data
+└───────────────┘
 ```
 
 ### Logic level shifter schema
@@ -36,7 +36,7 @@ Most remotes operate around the 38 kHz frequency band. While many IR sensors and
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
-    Data  ─┤             ├─ Data
+    Data  ─┤     ◄──     ├─ Data
            └─────────────┘
 ```
 
@@ -48,14 +48,14 @@ Most IR sensors are 3.3 V compatible, but some variants use higher logic levels 
 
 ### Data
 
-Any *digital input* pin can be used.
+Any digital input pin can be used.
 
 > Avoid strapping pins as this pin is pulled *HIGH* when idle.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_IR 1 // GPIO #
+#define PIN_IR 1 // Data
 ```
 
 ## 🧩 Extension
