@@ -17,11 +17,13 @@ class Network:
             zone_file = os.path.join(tz_path, tz_name)
             if os.path.exists(zone_file):
                 with open(zone_file, "rb") as f:
-                    data = f.read()
-                if b"\x00" in data:
-                    posix = (
-                        data.split(b"\x00")[-1].decode("ascii", errors="ignore").strip()
-                    )
-                    if posix:
-                        return posix
+                    lines = [
+                        line.strip()
+                        for line in f.read()
+                        .decode("ascii", errors="ignore")
+                        .splitlines()
+                        if line.strip()
+                    ]
+                    if len(lines) >= 2:
+                        return lines[-1]
         return None
