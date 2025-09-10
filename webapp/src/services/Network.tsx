@@ -126,19 +126,6 @@ export const MainThird: Component = () => {
 };
 
 export const SidebarThird: Component = () => {
-    const handleScan = () => {
-        (async () => {
-            while (getScan().length === 0) {
-                ws.send(JSON.stringify({
-                    [name]: {
-                        action: "scan",
-                    },
-                }));
-                await new Promise(resolve => setTimeout(resolve, 5e3));
-            }
-        })();
-    };
-
     const handleSelect = (ssid: string | undefined) => {
         if (window.innerWidth < 640) {
             PageSidebarSet(false)
@@ -150,7 +137,11 @@ export const SidebarThird: Component = () => {
     };
 
     if (!getScan.length) {
-        handleScan();
+        ws.send(JSON.stringify({
+            [name]: {
+                action: "scan",
+            },
+        }));
     }
 
     return (

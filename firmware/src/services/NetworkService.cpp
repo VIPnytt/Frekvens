@@ -22,6 +22,7 @@ void NetworkService::setup()
 #endif
     WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
     WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+    WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIpV6();
@@ -221,46 +222,21 @@ void NetworkService::hotspot()
 void NetworkService::scan()
 {
     int16_t n = WiFi.scanComplete();
-    switch (n)
+    if (n == WIFI_SCAN_FAILED)
     {
-    case WIFI_SCAN_FAILED:
 #ifdef F_DEBUG
         Serial.printf("%s: scanning for Wi-Fi networks...\n", name);
-#endif // F_DEBUG
-#ifdef F_DEBUG
         WiFi.scanNetworks(true, true);
 #else
         WiFi.scanNetworks(true);
-#endif // F_VERBOSE
-        return;
-    case WIFI_SCAN_RUNNING:
-#ifdef F_VERBOSE
-        Serial.printf("%s: scan ongoing...\n", name);
-#endif // F_VERBOSE
-        return;
-    }
-    JsonDocument doc;
-    JsonArray scan = doc["scan"].to<JsonArray>();
-    for (uint8_t i = 0; i < n; ++i)
-    {
-        JsonObject _scan = scan.add<JsonObject>();
-#ifdef F_DEBUG
-        _scan["bssid"] = WiFi.BSSIDstr(i);
-        _scan["channel"] = WiFi.channel(i);
 #endif // F_DEBUG
-        _scan["encrypted"] = (bool)WiFi.encryptionType(i);
-        _scan["rssi"] = WiFi.RSSI(i);
-#ifdef F_VERBOSE
-        if (WiFi.SSID(i).length())
-        {
-#endif // F_VERBOSE
-            _scan["ssid"] = WiFi.SSID(i);
-#ifdef F_VERBOSE
-        }
-#endif // F_VERBOSE
     }
-    WiFi.scanDelete();
-    Device.transmit(doc, name, false);
+#ifdef F_VERBOSE
+    else if (n == WIFI_SCAN_RUNNING)
+    {
+        Serial.printf("%s: scan already ongoing...\n", name);
+    }
+#endif // F_VERBOSE
 }
 
 void NetworkService::connect(const char *const ssid, const char *const key)
@@ -430,6 +406,39 @@ void NetworkService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
     Serial.printf("%s: disconnected\n", Network.name);
 #endif // F_DEBUG
     WiFi.reconnect();
+}
+
+void NetworkService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+#ifdef F_VERBOSE
+    Serial.printf("%s: scan complete\n", _name.data());
+#endif // F_VERBOSE
+    int16_t n = WiFi.scanComplete();
+    if (n > 0)
+    {
+        JsonDocument doc;
+        JsonArray scan = doc["scan"].to<JsonArray>();
+        for (uint8_t i = 0; i < n; ++i)
+        {
+            JsonObject _scan = scan.add<JsonObject>();
+#ifdef F_DEBUG
+            _scan["bssid"] = WiFi.BSSIDstr(i);
+            _scan["channel"] = WiFi.channel(i);
+#endif // F_DEBUG
+            _scan["encrypted"] = (bool)WiFi.encryptionType(i);
+            _scan["rssi"] = WiFi.RSSI(i);
+#ifdef F_VERBOSE
+            if (WiFi.SSID(i).length())
+            {
+                _scan["ssid"] = WiFi.SSID(i);
+            }
+#else
+            _scan["ssid"] = WiFi.SSID(i);
+#endif // F_VERBOSE
+        }
+        Device.transmit(doc, _name.data(), false);
+    }
+    WiFi.scanDelete();
 }
 
 void NetworkService::transmit()
