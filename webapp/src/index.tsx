@@ -19,6 +19,7 @@ import './style.css';
 const [getSidebar, setSidebar] = createSignal<boolean>(true);
 
 export const PageSidebar = getSidebar;
+export const PageSidebarSet = setSidebar;
 
 createEffect(() => {
     if (!DisplayPower() && !getSidebar()) {

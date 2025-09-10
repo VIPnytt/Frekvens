@@ -6,6 +6,7 @@ import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { ws } from '../extensions/WebSocket';
+import { PageSidebarSet } from '../index'
 import { SidebarSection } from './WebServer';
 
 export const name = 'Network';
@@ -139,6 +140,9 @@ export const SidebarThird: Component = () => {
     };
 
     const handleSelect = (ssid: string | undefined) => {
+        if (window.innerWidth < 640) {
+            PageSidebarSet(false)
+        }
         if (ssid !== undefined) {
             setSsidNew(ssid);
         }
