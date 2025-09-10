@@ -9,7 +9,9 @@
 class NetworkService : public ServiceModule
 {
 private:
-    NetworkService() : ServiceModule("Network") {};
+    static constexpr std::string_view _name = "Network";
+
+    NetworkService() : ServiceModule(_name.data()) {};
 
     bool
         mDNS = false,
@@ -40,6 +42,7 @@ private:
 
     static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
     static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 public:
 #ifdef DOMAIN
