@@ -61,9 +61,9 @@ void MicrophoneExtension::setup()
         component[Abbreviations::value_template] = "{{value_json.event}}";
     }
     {
-        const std::string id = std::string(name).append("_treshold");
+        const std::string id = std::string(name).append("_threshold");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"treshold\":{{value}}}";
+        component[Abbreviations::command_template] = "{\"threshold\":{{value}}}";
         component[Abbreviations::command_topic] = topic + "/set";
         component[Abbreviations::enabled_by_default] = false;
         component[Abbreviations::entity_category] = "config";
@@ -71,12 +71,12 @@ void MicrophoneExtension::setup()
         component[Abbreviations::max] = levelMax;
         component[Abbreviations::min] = 1;
         component[Abbreviations::mode] = "slider";
-        component[Abbreviations::name] = "Treshold";
+        component[Abbreviations::name] = "Threshold";
         component[Abbreviations::object_id] = HOSTNAME "_" + id;
         component[Abbreviations::platform] = "number";
         component[Abbreviations::state_topic] = topic;
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.treshold}}";
+        component[Abbreviations::value_template] = "{{value_json.threshold}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -86,9 +86,9 @@ void MicrophoneExtension::ready()
     Preferences Storage;
     Storage.begin(name, true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
-    if (Storage.isKey("treshold"))
+    if (Storage.isKey("threshold"))
     {
-        treshold = Storage.getUShort("treshold");
+        threshold = Storage.getUShort("threshold");
     }
     Storage.end();
     _active ? set(true) : transmit();
@@ -106,7 +106,7 @@ void MicrophoneExtension::handle()
         const uint16_t lastMic = mic;
         mic = analogReadRaw(PIN_MIC);
         uint16_t level = abs(mic - lastMic);
-        if (level >= treshold)
+        if (level >= threshold)
         {
             lastMillis = millis();
             if (!detected)
@@ -152,17 +152,15 @@ void MicrophoneExtension::set(bool enable)
 {
     if ((enable && !active) || (!enable && active))
     {
+        if (enable)
+        {
+            mic = analogReadRaw(PIN_MIC);
+        }
         active = enable;
-
         Preferences Storage;
         Storage.begin(name);
         Storage.putBool("active", active);
         Storage.end();
-
-        if (active)
-        {
-            mic = analogReadRaw(PIN_MIC);
-        }
         pending = true;
 
 #ifdef F_INFO
@@ -173,12 +171,12 @@ void MicrophoneExtension::set(bool enable)
 
 void MicrophoneExtension::set(uint16_t floor)
 {
-    if (floor != treshold)
+    if (floor != threshold)
     {
-        treshold = floor;
+        threshold = floor;
         Preferences Storage;
         Storage.begin(name);
-        Storage.putUShort("treshold", treshold);
+        Storage.putUShort("threshold", threshold);
         Storage.end();
         pending = true;
     }
@@ -194,7 +192,7 @@ void MicrophoneExtension::transmit()
     JsonDocument doc;
     doc["active"] = active;
     doc["max"] = levelMax;
-    doc["treshold"] = treshold;
+    doc["threshold"] = threshold;
     Device.transmit(doc, name);
 }
 
@@ -205,10 +203,10 @@ void MicrophoneExtension::receiverHook(const JsonDocument doc)
     {
         set(doc["active"].as<bool>());
     }
-    // Treshold
-    if (doc["treshold"].is<uint16_t>())
+    // Threshold
+    if (doc["threshold"].is<uint16_t>())
     {
-        set(doc["treshold"].as<uint16_t>());
+        set(doc["threshold"].as<uint16_t>());
     }
 }
 

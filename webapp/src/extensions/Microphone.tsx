@@ -11,14 +11,14 @@ export const name = 'Microphone';
 
 const [getActive, setActive] = createSignal<boolean>(false);
 const [getMax, setMax] = createSignal<number>(0);
-const [getTreshold, setTreshold] = createSignal<number>(0);
+const [getThreshold, setThreshold] = createSignal<number>(0);
 
 export const MicActive = getActive;
 
 export const receiver = (json: any) => {
     json[name]?.active !== undefined && setActive(json[name].active);
     json[name]?.max !== undefined && setMax(json[name].max);
-    json[name]?.treshold !== undefined && setTreshold(json[name].treshold);
+    json[name]?.threshold !== undefined && setThreshold(json[name].threshold);
 };
 
 const handleActive = () => {
@@ -66,12 +66,12 @@ export const Link: Component = () => (
 );
 
 export const MainThird: Component = () => {
-    const handleTreshold = (level: number, send: boolean = true) => {
-        setTreshold(level);
+    const handleThreshold = (level: number, send: boolean = true) => {
+        setThreshold(level);
         if (send) {
             ws.send(JSON.stringify({
                 [name]: {
-                    treshold: getTreshold(),
+                    threshold: getThreshold(),
                 },
             }));
         }
@@ -82,22 +82,22 @@ export const MainThird: Component = () => {
             <h3 class="text-4xl text-white tracking-wide">{name}</h3>
             <div class="bg-white p-6 rounded-md">
                 <div class="space-y-2">
-                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Treshold</h3>
-                    <Tooltip text={`Treshold ${Math.round(getTreshold() / getMax() * 100)} %`}>
+                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Threshold</h3>
+                    <Tooltip text={`Threshold ${Math.round(getThreshold() / getMax() * 100)} %`}>
                         <input
                             class="w-full"
                             type="range"
                             min="1"
                             max={getMax() - 1}
-                            value={getTreshold()}
+                            value={getThreshold()}
                             onInput={(e) =>
-                                handleTreshold(parseFloat(e.currentTarget.value), false)
+                                handleThreshold(parseFloat(e.currentTarget.value), false)
                             }
                             onKeyUp={(e) =>
-                                handleTreshold(getTreshold())
+                                handleThreshold(getThreshold())
                             }
                             onPointerUp={(e) =>
-                                handleTreshold(getTreshold())
+                                handleThreshold(getThreshold())
                             }
                         />
                     </Tooltip>
