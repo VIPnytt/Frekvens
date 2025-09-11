@@ -17,7 +17,7 @@ private:
     uint16_t
         levelMax = INT8_MAX,
         mic,
-        treshold = INT8_MAX;
+        threshold = INT8_MAX;
 
     unsigned long
         lastMillis = 0,
@@ -34,7 +34,7 @@ public:
 
     bool get();
     void set(bool enable);
-    void set(uint16_t treshold);
+    void set(uint16_t floor);
     bool play();
 
     void receiverHook(const JsonDocument doc) override;
