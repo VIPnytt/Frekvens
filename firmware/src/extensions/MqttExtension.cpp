@@ -25,14 +25,14 @@ void MqttExtension::setup()
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
     client.setWill("frekvens/" HOSTNAME "/availability", 1, true, reinterpret_cast<const uint8_t *>(""), 0);
-#if defined(MQTT_PORT)
+#ifdef MQTT_PORT
     client.setServer(MQTT_HOST, MQTT_PORT);
 #else
     client.setServer(MQTT_HOST, 1883);
-#endif
+#endif // MQTT_PORT
 #if defined(MQTT_USER) && defined(MQTT_KEY)
     client.setCredentials(MQTT_USER, MQTT_KEY);
-#endif
+#endif // defined(MQTT_USER) && defined(MQTT_KEY)
     if (WiFi.isConnected())
     {
         client.connect();
@@ -84,13 +84,14 @@ void MqttExtension::onConnect(bool sessionPresent)
 {
 #ifdef F_DEBUG
     Serial.printf("%s: connected\n", Mqtt->name);
-#endif
-    if (!sessionPresent)
+#endif // F_DEBUG
+    if (!sessionPresent || subscribe)
     {
         for (const char *const _name : Device.getNames())
         {
             Mqtt->client.subscribe(std::string("frekvens/" HOSTNAME "/").append(_name).append("/set").c_str(), 2);
         }
+        subscribe = false;
     }
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
     Mqtt->pending = true;
@@ -104,7 +105,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
         Serial.printf("%s: chunked messages is currently not supported\n", Mqtt->name);
         return;
     }
-#endif
+#endif // F_DEBUG
     JsonDocument doc;
     if (deserializeJson(doc, payload, len))
     {

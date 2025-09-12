@@ -15,8 +15,11 @@ private:
 
     unsigned long lastMillis = 0;
 
-    static constexpr size_t prefixLength = sizeof("frekvens/" HOSTNAME);
-    static constexpr size_t suffixLength = sizeof("set");
+    static inline bool subscribe = true;
+
+    static constexpr size_t
+        prefixLength = sizeof("frekvens/" HOSTNAME),
+        suffixLength = sizeof("set");
 
     void transmit();
 
