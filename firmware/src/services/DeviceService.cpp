@@ -461,6 +461,7 @@ void DeviceService::identify()
 #endif
     Display.clear();
     TextHandler("!", FontLarge).draw();
+    Display.flush();
     Display.setGlobalBrightness(UINT8_MAX);
 }
 
