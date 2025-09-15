@@ -10,7 +10,7 @@
              ┌────────────────────── SPI CS
              │   ┌────────────────── SPI SCLK
              │   │   ┌────────────── SPI MOSI
-             │   │   │   ┌────────── Enable
+             │   │   │   ┌────────── OE
 ┌────────────┼───┼───┼───┼────────┐
 │ ┌──────┴───┴───┴───┴───┴───┴──┐ │
 │ │     GND LAK CLK DA  EN  VCC │ │
@@ -66,7 +66,7 @@
 │                │
 │ Digital output ├─ SPI CS
 │                │
-│     PWM output ├─ Enable
+│     PWM output ├─ OE
 │                │
 │  Digital input ├─ Button 1
 │  Digital input ├─ Button 2
@@ -86,7 +86,7 @@
  SPI MISO ─┤     ◄──     ├─ SPI MISO
  SPI MOSI ─┤     ──►     ├─ SPI MOSI
    SPI CS ─┤     ──►     ├─ SPI CS
-   Enable ─┤     ──►     ├─ Enable
+       OE ─┤     ──►     ├─ OE
            └─────────────┘
 ```
 
@@ -163,7 +163,7 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 | `DA` output | Logic level shifter | SPI MISO       | SPI MISO   | `PIN_MISO` |
 | `DA` input  | Logic level shifter | SPI MOSI       | SPI MOSI   | `PIN_MOSI` |
 | `LAK`       | Logic level shifter | Digital output | SPI CS     | `PIN_CS`   |
-| `EN`        | Logic level shifter | PWM output     | Enable     | `PIN_EN`   |
+| `EN`        | Logic level shifter | PWM output     | OE         | `PIN_OE`   |
 | `SW1`       |                     | Digital input  | Button 1   | `PIN_SW1`  |
 | `SW`        |                     | Digital input  | Button 2   | `PIN_SW2`  |
 | `U3` pin 7  |                     | Analog input   | Microphone | `PIN_MIC`  |
@@ -201,7 +201,7 @@ Any SPI `MISO` pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MISO 2
+#define PIN_MISO 2 // DA (unlabeled)
 ```
 
 ### SPI MOSI
@@ -215,7 +215,7 @@ Any SPI `MOSI` pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MOSI 3 // DA
+#define PIN_MOSI 3 // DA (labeled)
 ```
 
 ### SPI CS
@@ -232,9 +232,9 @@ Any digital output pin can be used.
 #define PIN_CS 4 // LAK
 ```
 
-### Enable
+### Output Enable
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required. If left unconnected, `OE` must be tied to `GND`.
 
 Any PWM output pin can be used.
 
@@ -243,7 +243,7 @@ Any PWM output pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_EN 5 // EN
+#define PIN_OE 5 // EN
 ```
 
 ### Buttons
@@ -296,7 +296,7 @@ NAME='Frekvens'
 #define PIN_SCLK 1 // CLK
 #define PIN_MOSI 2 // DA
 #define PIN_CS 3   // LAK
-#define PIN_EN 4   // EN
+#define PIN_OE 4   // EN
 #define PIN_SW1 5  // SW1
 #define PIN_SW2 6  // SW
 #define PIN_MIC 7  // U3 pin 7

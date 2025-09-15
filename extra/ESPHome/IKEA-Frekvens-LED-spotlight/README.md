@@ -15,7 +15,7 @@
          │     │   ┌┴┴┴┴┐ │ │  U3  └─┤ ├    │
          │     │   └┬┬┬┬┘ │ │  LM358 ┤ ├    │
          │     └────┘     │ │        └─┘    │
- Enable ─┼────────┬───────┤ └─────┬───────┬─┼─ Button
+     OE ─┼────────┬───────┤ └─────┬───────┬─┼─ Button
          │        │  ┌─┐  │  ┌─┐  │  ┌─┐  │ │
          │        │  ┤ ├  │  ┤ ├  │  ┤ ├  │ │
          │        │  ┤ ├  │  ┤ ├  └──┤ ├──┘ │
@@ -61,7 +61,7 @@
 │           VIN ├─ +4 V DC
 │           GND ├─ 0 V DC
 │               │
-│    PWM output ├─ Enable
+│    PWM output ├─ OE
 │               │
 │ Digital input ├─ Button
 │               │
@@ -83,7 +83,7 @@ The `DC+`/`LED+` and `DC-`/`MIC-` pins are internally connected via traces on th
 
 > To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.
 
-### Enable
+### Output Enable
 
 Any PWM output pin can be used.
 

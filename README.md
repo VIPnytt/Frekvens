@@ -63,11 +63,11 @@ Each display model has its own hardware setup guide:
 
 - [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens#-getting-started)
   - Unsolder the `U2` chip
-  - Connect power, SPI and enable
+  - Connect power, SPI and `EN`
   - Microphone input available at `U3` pin 7 or `U2` pin 11
 - [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad#getting-started)
   - Unsolder the `U1` chip
-  - Connect power, SPI and enable
+  - Connect power, SPI and `EN`
 
 ## 🏗️ Getting started
 
@@ -124,9 +124,9 @@ Define pin assignments in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob
 
 // GPIO pins
 #define PIN_SCLK 1 // CLK
-#define PIN_MOSI 2 // DA/DO
+#define PIN_MOSI 2 // DA/DI
 #define PIN_CS 3   // LAK/CLA
-#define PIN_EN 4   // EN
+#define PIN_OE 4   // EN
 #define PIN_SW2 5  // SW
 
 // IKEA Frekvens only

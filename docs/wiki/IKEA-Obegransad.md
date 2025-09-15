@@ -11,7 +11,7 @@
            │   ┌──────────────────── SPI CS
            │   │   ┌──────────────── SPI SCLK
            │   │   │   ┌──────────── SPI MOSI
-           │   │   │   │   ┌──────── Enable
+           │   │   │   │   ┌──────── OE
            │   │   │   │   │   ┌──── 0 V DC
     ┌──────┼───┼───┼───┼───┼───┼──┐
     │     VCC CLA CLK DI  EN  GND │
@@ -61,7 +61,7 @@ Black ┼─ 0 V DC
 │                │
 │ Digital output ├─ SPI CS
 │                │
-│     PWM output ├─ Enable
+│     PWM output ├─ OE
 │                │
 │  Digital input ├─ Button
 └────────────────┘
@@ -78,7 +78,7 @@ Black ┼─ 0 V DC
  SPI MISO ─┤     ◄──     ├─ SPI MISO
  SPI MOSI ─┤     ──►     ├─ SPI MOSI
    SPI CS ─┤     ──►     ├─ SPI CS
-   Enable ─┤     ──►     ├─ Enable
+       OE ─┤     ──►     ├─ OE
            └─────────────┘
 ```
 
@@ -154,7 +154,7 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 | `DO`       | Logic level shifter | SPI MISO       | SPI MISO | `PIN_MISO` |
 | `DI`       | Logic level shifter | SPI MOSI       | SPI MOSI | `PIN_MOSI` |
 | `CLA`      | Logic level shifter | Digital output | SPI CS   | `PIN_CS`   |
-| `EN`       | Logic level shifter | PWM output     | Enable   | `PIN_EN`   |
+| `EN`       | Logic level shifter | PWM output     | OE       | `PIN_OE`   |
 | `SW`       |                     | Digital input  | Button   | `PIN_SW2`  |
 
 ### Power and ground
@@ -221,9 +221,9 @@ Any digital output pin can be used.
 #define PIN_CS 4 // CLA
 ```
 
-### Enable
+### Output Enable
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required. If left unconnected, `OE` must be tied to `GND`.
 
 Any PWM output pin can be used.
 
@@ -232,7 +232,7 @@ Any PWM output pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_EN 5 // EN
+#define PIN_OE 5 // EN
 ```
 
 ### Button
@@ -270,7 +270,7 @@ NAME='Obegränsad'
 #define PIN_SCLK 1 // CLK
 #define PIN_MOSI 2 // DI
 #define PIN_CS 3   // CLA
-#define PIN_EN 4   // EN
+#define PIN_OE 4   // EN
 #define PIN_SW2 5  // SW
 
 // Wi-Fi credentials (optional)
