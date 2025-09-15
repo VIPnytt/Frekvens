@@ -1,5 +1,5 @@
 #pragma once
-/*
+/**
  * https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
@@ -32,27 +32,19 @@
 #define PWM_WIDTH 180e-9 // s
 #define ROWS 16          // px
 
-/*
-#define PIN_SCLK 1 // CLK
-*/
+// #define PIN_SCLK 1 // CLK
 #ifndef PIN_SCLK
 #error "Configuration error: SPI clock pin (PIN_SCLK, PCB label 'CLK') is not defined."
 #endif
 
-/*
-#define PIN_MISO 2 // DO
-*/
+// #define PIN_MISO 2 // DO
 
-/*
-#define PIN_MOSI 3 // DI
-*/
+// #define PIN_MOSI 3 // DI
 #ifndef PIN_MOSI
 #error "Configuration error: SPI MOSI pin (PIN_MOSI, PCB label 'DI') is not defined."
 #endif
 
-/*
-#define PIN_CS 4 // CLA
-*/
+// #define PIN_CS 4 // CLA
 #ifndef PIN_CS
 #error "Configuration error: SPI chip select pin (PIN_CS, PCB label 'CLA') is not defined."
 #endif
@@ -64,8 +56,6 @@
 #error "Configuration error: Enable pin (PIN_EN, PCB label 'EN') is not defined."
 #endif
 
-/*
-#define PIN_SW2 6 // SW
-*/
+// #define PIN_SW2 6 // SW
 
 #endif // ENV

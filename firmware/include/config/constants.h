@@ -1,10 +1,10 @@
 #pragma once
-/*
+/**
  * https://github.com/VIPnytt/Frekvens/wiki
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
-/*
+/**
  * Device
  */
 #if !defined(ENV) && defined(ENV_FREKVENS)
@@ -19,14 +19,14 @@
 #error "Unsupported configuration. Please ensure that the correct environment is defined."
 #endif
 
-/*
+/**
  * Accessories
  */
 #include "config/infrared.h"
 #include "config/microphone.h"
 #include "config/rtc.h"
 
-/*
+/**
  * Essentials
  */
 #include "config/services.h"

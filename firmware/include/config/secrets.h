@@ -1,5 +1,5 @@
 #pragma once
-/*
+/**
  * https://github.com/VIPnytt/Frekvens/wiki
  *
  * Definitions for the firmware sectron of the Frekvens project.

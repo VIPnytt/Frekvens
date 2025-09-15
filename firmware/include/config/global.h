@@ -1,12 +1,12 @@
 #pragma once
-/*
+/**
  * https://github.com/VIPnytt/Frekvens/wiki
  *
  * Put your custom definitions in the "secrets.h" file
  * This file is enforced globally, even across external libraries
  */
 
-/*
+/**
  * crankyoldgit/IRremoteESP8266
  */
 #ifndef DECODE_RC5
