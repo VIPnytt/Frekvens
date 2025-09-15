@@ -135,6 +135,7 @@ By adding an IR sensor, you can use a remote control, like a TV remote, to opera
 - Brightness
 - [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes)
 - [Microphone](#%EF%B8%8F-microphone) on/off
+- [Photocell](#-photocell) on/off
 - [Playlist](#%EF%B8%8F-playlist) start/stop
 
 Currently supported:
@@ -304,6 +305,46 @@ EXTENSION_OTA=true
 > Enabled by default.
 
 See also [Build](#%EF%B8%8F-build).
+
+## 🔆 Photocell
+
+Automatic ambient brightness adaption.
+
+Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
+
+API payload example:
+
+```json
+{
+    "active": true,
+}
+```
+
+**Reset:**
+
+API payload example:
+
+```json
+{
+    "action": "reset"
+}
+```
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define PIN_LDR 5 // Sensor
+```
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+EXTENSION_PHOTOCELL=true
+```
+
+> Enabled by default.
+
+Check out the [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell) wiki for hardware instructions.
 
 ## ▶️ Playlist
 

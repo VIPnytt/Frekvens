@@ -9,6 +9,7 @@
 #include "extensions/InfraredExtension.h"
 #include "extensions/MicrophoneExtension.h"
 #include "extensions/MqttExtension.h"
+#include "extensions/PhotocellExtension.h"
 #include "extensions/PlaylistExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -71,6 +72,11 @@ void InfraredExtension::handle()
 #if DECODE_RC5
             case decode_type_t::RC5:
                 Serial.printf("%s: " D_STR_RC5 " 0x%X\n", name, results.command);
+                break;
+#endif // DECODE_RC5
+#if DECODE_RC5X
+            case decode_type_t::RC5X:
+                Serial.printf("%s: " D_STR_RC5X " 0x%X\n", name, results.command);
                 break;
 #endif // DECODE_RC5
 #if DECODE_SONY
@@ -157,6 +163,20 @@ bool InfraredExtension::parse(decode_results results)
                 return true;
             }
 #endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+            else if (std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), results.command) != code.extensionPhotocellToggle.end())
+            {
+                if (millis() - lastMillis > 1000)
+                {
+#ifdef F_INFO
+                    Serial.printf("%s: photocell\n", name);
+#endif // F_INFO
+                    Photocell->set(!Photocell->get());
+                    lastMillis = millis();
+                }
+                return true;
+            }
+#endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             else if (std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), results.command) != code.extensionPlaylistToggle.end())
             {

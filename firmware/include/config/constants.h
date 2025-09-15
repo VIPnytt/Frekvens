@@ -24,6 +24,7 @@
  */
 #include "config/infrared.h"
 #include "config/microphone.h"
+#include "config/photocell.h"
 #include "config/rtc.h"
 
 /**

@@ -22,6 +22,9 @@ private:
 #if EXTENSION_MICROPHONE
             extensionMicrophoneToggle,
 #endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+            extensionPhotocellToggle,
+#endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             extensionPlaylistToggle,
 #endif // EXTENSION_PLAYLIST
@@ -47,6 +50,9 @@ private:
                 0xD, // Philips: Mute
             },
 #endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+            {},
+#endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             {
                 0x35, // Philips: Play/pause
@@ -63,6 +69,27 @@ private:
             },
         },
 #endif // DECODE_RC5
+#if DECODE_RC5X
+        {
+            decode_type_t::RC5X,
+            {},
+            {},
+            {},
+#if EXTENSION_MICROPHONE
+            {},
+#endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+            {
+                0x47, // Philips: Dim
+            },
+#endif // EXTENSION_PHOTOCELL
+#if EXTENSION_PLAYLIST
+            {},
+#endif // EXTENSION_PLAYLIST
+            {},
+            {},
+        },
+#endif // DECODE_RC5X
 #if DECODE_SONY
         {
             decode_type_t::SONY,
@@ -81,6 +108,11 @@ private:
                 0x14, // Sony: Mute
             },
 #endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+            {
+                0x78, // Sony: Scene
+            },
+#endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             {
                 0x7118, // Sony: Stop
