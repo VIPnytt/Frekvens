@@ -151,7 +151,6 @@ void DeviceService::ready()
 #ifdef PIN_CS2
     (*Build->config)[Config::h][__STRING(PIN_CS2)] = PIN_CS2;
 #endif
-    (*Build->config)[Config::h][__STRING(PIN_EN)] = PIN_EN;
 #ifdef PIN_INT
     (*Build->config)[Config::h][__STRING(PIN_INT)] = PIN_INT;
 #endif
@@ -170,6 +169,9 @@ void DeviceService::ready()
     (*Build->config)[Config::h][__STRING(PIN_MOSI)] = PIN_MOSI;
 #ifdef PIN_MOSI2
     (*Build->config)[Config::h][__STRING(PIN_MOSI2)] = PIN_MOSI2;
+#endif
+#ifdef PIN_OE
+    (*Build->config)[Config::h][__STRING(PIN_OE)] = PIN_OE;
 #endif
 #ifdef PIN_SCL
     (*Build->config)[Config::h][__STRING(PIN_SCL)] = PIN_SCL;

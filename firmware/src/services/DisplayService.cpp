@@ -14,11 +14,13 @@
 void DisplayService::setup()
 {
     pinMode(PIN_CS, OUTPUT);
-    pinMode(PIN_EN, OUTPUT);
 #ifdef PIN_MISO
     pinMode(PIN_MISO, INPUT);
 #endif
     pinMode(PIN_MOSI, OUTPUT);
+#ifdef PIN_OE
+    pinMode(PIN_OE, OUTPUT);
+#endif
     pinMode(PIN_SCLK, OUTPUT);
 
 #ifdef PIN_MISO
@@ -45,24 +47,32 @@ void DisplayService::setup()
     timerAlarmEnable(timer);
     timerStart(timer);
 
+#ifdef PIN_OE
     ledcSetup(0, 1 / PWM_WIDTH / (double)(1U << PWM_DEPTH), PWM_DEPTH);
-
     uint8_t brightness = globalBrightness;
+#endif // PIN_OE
+
     Orientation orientation = globalOrientation;
 
     Preferences Storage;
     Storage.begin(name, true);
+#ifdef PIN_OE
     if (Storage.isKey("brightness"))
     {
         brightness = Storage.getUShort("brightness");
     }
+#endif // PIN_OE
     if (Storage.isKey("orientation"))
     {
         orientation = (Orientation)Storage.getUShort("orientation");
     }
     Storage.end();
     setGlobalOrientation(orientation);
+#ifdef PIN_OE
     setGlobalBrightness(brightness);
+#else
+    setPower(true);
+#endif // PIN_OE
 
     BitmapHandler(hi).draw();
     flush();
@@ -232,15 +242,17 @@ void DisplayService::setPower(bool state)
         return;
     }
     power = state;
-    if (power)
+    if (!power)
     {
-        ledcAttachPin(PIN_EN, 0);
+        memset(frameReady, 0, sizeof(frameReady));
+#ifdef PIN_OE
+        ledcDetachPin(PIN_OE);
+        digitalWrite(PIN_OE, HIGH);
     }
     else
     {
-        memset(frameReady, 0, sizeof(frameReady));
-        ledcDetachPin(PIN_EN);
-        digitalWrite(PIN_EN, HIGH);
+        ledcAttachPin(PIN_OE, 0);
+#endif
     }
     pending = true;
 }
@@ -257,15 +269,15 @@ void DisplayService::setGlobalBrightness(uint8_t brightness)
         return;
     }
     power = true;
+#ifdef PIN_OE
     globalBrightness = brightness;
-    ledcAttachPin(PIN_EN, 0);
+    ledcAttachPin(PIN_OE, 0);
     ledcWrite(0, (1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 1 - max<uint16_t>(globalBrightness, pow(globalBrightness / (double)UINT8_MAX, GAMMA) * ((1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 2) + 1));
-
     Preferences Storage;
     Storage.begin(name);
     Storage.putUShort("brightness", globalBrightness);
     Storage.end();
-
+#endif // PIN_OE
     pending = true;
 }
 

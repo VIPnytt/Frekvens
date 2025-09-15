@@ -80,13 +80,13 @@ jobs:
           #define OPENWEATHER_PARAMETERS "units=metric"
           #define PIN_CS 1
           #define PIN_CS2 2
-          #define PIN_EN 3
-          #define PIN_INT 4
-          #define PIN_IR 5
-          #define PIN_MISO 6
-          #define PIN_MISO2 7
-          #define PIN_MOSI 8
-          #define PIN_MOSI2 9
+          #define PIN_INT 3
+          #define PIN_IR 4
+          #define PIN_MISO 5
+          #define PIN_MISO2 6
+          #define PIN_MOSI 7
+          #define PIN_MOSI2 8
+          #define PIN_OE 9
           #define PIN_SCL 10
           #define PIN_SCLK 11
           #define PIN_SCLK2 12
@@ -169,9 +169,9 @@ jobs:
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
-          #define PIN_EN 2
-          #define PIN_MIC 3
-          #define PIN_MOSI 4
+          #define PIN_MIC 2
+          #define PIN_MOSI 3
+          #define PIN_OE 4
           #define PIN_SCLK 5
           #define PIN_SW1 6
           #define PIN_SW2 7
@@ -217,8 +217,8 @@ jobs:
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
-          #define PIN_EN 2
-          #define PIN_MOSI 3
+          #define PIN_MOSI 2
+          #define PIN_OE 3
           #define PIN_SCLK 4
           #define PIN_SW2 5
           EOL
