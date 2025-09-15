@@ -82,18 +82,19 @@ jobs:
           #define PIN_CS2 2
           #define PIN_INT 3
           #define PIN_IR 4
-          #define PIN_MISO 5
-          #define PIN_MISO2 6
-          #define PIN_MOSI 7
-          #define PIN_MOSI2 8
-          #define PIN_OE 9
-          #define PIN_SCL 10
-          #define PIN_SCLK 11
-          #define PIN_SCLK2 12
-          #define PIN_SDA 13
-          #define PIN_SDIO2 14
-          #define PIN_SW1 15
-          #define PIN_SW2 16
+          #define PIN_LDR 5
+          #define PIN_MISO 6
+          #define PIN_MISO2 7
+          #define PIN_MOSI 8
+          #define PIN_MOSI2 9
+          #define PIN_OE 10
+          #define PIN_SCL 11
+          #define PIN_SCLK 12
+          #define PIN_SCLK2 13
+          #define PIN_SDA 14
+          #define PIN_SDIO2 15
+          #define PIN_SW1 16
+          #define PIN_SW2 17
           #define RTC_DS3232
           #define SPI_FREQUENCY 10000000
           #define TASK_STACK_EXTENSIONS 8192

@@ -3,13 +3,14 @@ import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
-import { EXTENSION_BUILD, EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_MQTT, EXTENSION_OTA, EXTENSION_PLAYLIST, EXTENSION_SIGNAL } from '../config/constants';
+import { EXTENSION_BUILD, EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_MQTT, EXTENSION_OTA, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST, EXTENSION_SIGNAL } from '../config/constants';
 import { MainThird as ExtensionBuildThird, Link as ExtensionBuildLink, receiver as ExtensionBuild, name as ExtensionBuildName } from '../extensions/Build';
 import { MainThird as ExtensionIrThird, Link as ExtensionIrLink, Actions as ExtensionIrActions, receiver as ExtensionIr, name as ExtensionIrName } from '../extensions/Infrared';
 import { MainThird as ExtensionMessageThird, Link as ExtensionMessageLink, receiver as ExtensionMessage, name as ExtensionMessageName } from '../extensions/Message';
 import { MainThird as ExtensionMicThird, Link as ExtensionMicLink, Actions as ExtensionMicActions, receiver as ExtensionMic, name as ExtensionMicName } from '../extensions/Microphone';
 import { MainThird as ExtensionMqttThird, Link as ExtensionMqttLink, receiver as ExtensionMqtt, name as ExtensionMqttName } from '../extensions/Mqtt';
 import { MainThird as ExtensionOtaThird, Link as ExtensionOtaLink, receiver as ExtensionOta, name as ExtensionOtaName } from '../extensions/Ota';
+import { MainThird as ExtensionPhotocellThird, Link as ExtensionPhotocellLink, Actions as ExtensionPhotocellActions, receiver as ExtensionPhotocell, name as ExtensionPhotocellName } from '../extensions/Photocell';
 import { MainThird as ExtensionPlaylistMain, Sidebar as ExtensionPlaylistSidebar, PlaylistActive as ExtensionPlaylistActive, Secondary as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
 import { receiver as ExtensionSignal } from '../extensions/Signal';
 import { name as ExtensionsName } from './Extensions';
@@ -30,6 +31,7 @@ export const receiver = (json: any) => {
     EXTENSION_MICROPHONE && ExtensionMic(json);
     EXTENSION_MQTT && ExtensionMqtt(json);
     EXTENSION_OTA && ExtensionOta(json);
+    EXTENSION_PHOTOCELL && ExtensionPhotocell(json);
     EXTENSION_PLAYLIST && ExtensionPlaylist(json);
     EXTENSION_SIGNAL && ExtensionSignal(json);
 };
@@ -72,6 +74,11 @@ export const Footer: Component = () => (
             )
         }
         {
+            EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
+                <ExtensionPhotocellLink />
+            )
+        }
+        {
             EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
                 <ExtensionPlaylistLink />
             )
@@ -90,6 +97,11 @@ export const SidebarSecondary: Component = () => (
             {
                 EXTENSION_MICROPHONE && ExtensionsList().includes(ExtensionMicName) && (
                     <ExtensionMicActions />
+                )
+            }
+            {
+                EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
+                    <ExtensionPhotocellActions />
                 )
             }
             <Tooltip text={`All ${name.toLowerCase()}`}>
@@ -176,6 +188,13 @@ export const MainThird: Component = () => (
             )
         }
         {
+            EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
+                <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionPhotocellName.toLowerCase()}`}>
+                    <ExtensionPhotocellThird />
+                </Match>
+            )
+        }
+        {
             EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
                 <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionPlaylistName.toLowerCase()}`}>
                     <ExtensionPlaylistThird />
@@ -216,6 +235,11 @@ export const SidebarThird: Component = () => (
             {
                 EXTENSION_OTA && ExtensionsList().includes(ExtensionOtaName) && (
                     <ExtensionOtaLink />
+                )
+            }
+            {
+                EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
+                    <ExtensionPhotocellLink />
                 )
             }
             {

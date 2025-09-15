@@ -4,7 +4,8 @@ import { Component, createSignal } from 'solid-js';
 import { Button } from '../components/Button';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
-import { EXTENSION_MICROPHONE, EXTENSION_PLAYLIST } from '../config/constants';
+import { EXTENSION_MICROPHONE, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST } from '../config/constants';
+import { name as PhotocellName } from './Photocell';
 import { name as PlaylistName } from './Playlist';
 import { name as MicName } from './Microphone';
 import { ws } from './WebSocket';
@@ -80,6 +81,13 @@ export const MainThird: Component = () => (
                         EXTENSION_MICROPHONE && (
                             <>
                                 - {MicName}<br />
+                            </>
+                        )
+                    }
+                    {
+                        EXTENSION_PHOTOCELL && (
+                            <>
+                                - {PhotocellName}<br />
                             </>
                         )
                     }

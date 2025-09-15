@@ -43,6 +43,9 @@ void ExtensionsService::ready()
 #if EXTENSION_BUILD && defined(EXTENSION_OTA) && !(EXTENSION_OTA)
     (*Build->config)[Config::h][__STRING(EXTENSION_OTA)] = false;
 #endif
+#if EXTENSION_BUILD && defined(EXTENSION_PHOTOCELL) && !(EXTENSION_PHOTOCELL)
+    (*Build->config)[Config::h][__STRING(EXTENSION_PHOTOCELL)] = false;
+#endif
 #if EXTENSION_BUILD && defined(EXTENSION_PLAYLIST) && !(EXTENSION_PLAYLIST)
     (*Build->config)[Config::h][__STRING(EXTENSION_PLAYLIST)] = false;
 #endif

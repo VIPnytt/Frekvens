@@ -11,6 +11,7 @@ export const EXTENSION_MESSAGE: boolean = import.meta.env.VITE_EXTENSION_MESSAGE
 export const EXTENSION_MICROPHONE: boolean = import.meta.env.VITE_EXTENSION_MICROPHONE !== 'false';
 export const EXTENSION_MQTT: boolean = import.meta.env.VITE_EXTENSION_MQTT !== 'false';
 export const EXTENSION_OTA: boolean = import.meta.env.VITE_EXTENSION_OTA !== 'false';
+export const EXTENSION_PHOTOCELL: boolean = import.meta.env.VITE_EXTENSION_PHOTOCELL !== 'false';
 export const EXTENSION_PLAYLIST: boolean = import.meta.env.VITE_EXTENSION_PLAYLIST !== 'false';
 export const EXTENSION_RESTFUL: boolean = import.meta.env.VITE_EXTENSION_REST !== 'false';
 export const EXTENSION_SIGNAL: boolean = import.meta.env.VITE_EXTENSION_SIGNAL !== 'false';

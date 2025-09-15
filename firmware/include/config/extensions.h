@@ -70,6 +70,13 @@
 #endif
 
 /**
+ * Photocell
+ */
+#if !defined(EXTENSION_PHOTOCELL) && defined(PIN_LDR)
+#define EXTENSION_PHOTOCELL true
+#endif
+
+/**
  * Playlist
  */
 #ifndef EXTENSION_PLAYLIST

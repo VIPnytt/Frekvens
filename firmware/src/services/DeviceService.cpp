@@ -157,6 +157,9 @@ void DeviceService::ready()
 #ifdef PIN_IR
     (*Build->config)[Config::h][__STRING(PIN_IR)] = PIN_IR;
 #endif
+#ifdef PIN_LDR
+    (*Build->config)[Config::h][__STRING(PIN_LDR)] = PIN_LDR;
+#endif
 #ifdef PIN_MIC
     (*Build->config)[Config::h][__STRING(PIN_MIC)] = PIN_MIC;
 #endif

@@ -29,7 +29,7 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Text scroller
   - Streaming content
   - Weather displays
-- **16 extensions**, including:
+- **17 extensions**, including:
   - Smart-home integrations
   - Notifications
   - Accessories
@@ -53,6 +53,7 @@ If desired, extra hardware can be added:
 
 - IR sensor — lets you control the device with a standard TV-style remote
 - Microphone — syncs the display with music
+- Photocell — automatic ambient brightness adaption
 - RTC (real-time clock) — keeps accurate time, even when powered off
 
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.

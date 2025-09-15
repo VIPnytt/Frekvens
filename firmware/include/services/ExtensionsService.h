@@ -13,6 +13,7 @@
 #include "extensions/MicrophoneExtension.h"
 #include "extensions/MqttExtension.h"
 #include "extensions/OtaExtension.h"
+#include "extensions/PhotocellExtension.h"
 #include "extensions/PlaylistExtension.h"
 #include "extensions/RestfulExtension.h"
 #include "extensions/RtcExtension.h"
@@ -55,6 +56,9 @@ private:
 #endif
 #if EXTENSION_OTA
         new OtaExtension(),
+#endif
+#if EXTENSION_PHOTOCELL
+        new PhotocellExtension(),
 #endif
 #if EXTENSION_PLAYLIST
         new PlaylistExtension(),

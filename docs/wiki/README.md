@@ -36,4 +36,5 @@ Optional hardware that adds new capabilities and functionality to the device.
 
 - [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared)
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
+- [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
 - [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC)
