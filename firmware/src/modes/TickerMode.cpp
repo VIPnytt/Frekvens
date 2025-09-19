@@ -2,7 +2,6 @@
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
 #include "modes/TickerMode.h"
@@ -49,11 +48,11 @@ void TickerMode::setup()
     }
     if (!font)
     {
-#if FONT_SMALL
-        font = FontSmall;
-#else
+#if defined(FONT_SMALL) && !FONT_SMALL
         font = FontMini;
-#endif // FONT_SMALL
+#else
+        font = FontSmall;
+#endif // defined(FONT_SMALL) && !FONT_SMALL
     }
     if (_transmit)
     {
