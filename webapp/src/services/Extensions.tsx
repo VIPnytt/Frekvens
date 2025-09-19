@@ -11,10 +11,9 @@ import { MainThird as ExtensionMicThird, Link as ExtensionMicLink, Actions as Ex
 import { MainThird as ExtensionMqttThird, Link as ExtensionMqttLink, receiver as ExtensionMqtt, name as ExtensionMqttName } from '../extensions/Mqtt';
 import { MainThird as ExtensionOtaThird, Link as ExtensionOtaLink, receiver as ExtensionOta, name as ExtensionOtaName } from '../extensions/Ota';
 import { MainThird as ExtensionPhotocellThird, Link as ExtensionPhotocellLink, Actions as ExtensionPhotocellActions, receiver as ExtensionPhotocell, name as ExtensionPhotocellName } from '../extensions/Photocell';
-import { MainThird as ExtensionPlaylistMain, Sidebar as ExtensionPlaylistSidebar, PlaylistActive as ExtensionPlaylistActive, Secondary as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
+import { MainThird as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, Actions as ExtensionPlaylistActions, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
 import { receiver as ExtensionSignal } from '../extensions/Signal';
 import { name as ExtensionsName } from './Extensions';
-import { Main as ModesMain, SidebarModules as ModesSidebar } from './Modes';
 import { WebServerPath, SidebarSection } from './WebServer';
 
 export const name = 'Extensions';
@@ -36,51 +35,11 @@ export const receiver = (json: any) => {
     EXTENSION_SIGNAL && ExtensionSignal(json);
 };
 
-export const Main: Component = () => (
-    <Switch
-        fallback={
-            <ModesMain />
-        }>
-        {
-            EXTENSION_PLAYLIST && (
-                <Match when={ExtensionPlaylistActive()}>
-                    <ExtensionPlaylistMain />
-                </Match>
-            )
-        }
-    </Switch>
-);
-
-export const Sidebar: Component = () => (
-    <Switch
-        fallback={
-            <ModesSidebar />
-        }>
-        {
-            EXTENSION_PLAYLIST && (
-                <Match when={ExtensionPlaylistActive()}>
-                    <ExtensionPlaylistSidebar />
-                </Match>
-            )
-        }
-    </Switch>
-);
-
 export const Footer: Component = () => (
     <>
         {
             EXTENSION_MESSAGE && ExtensionsList().includes(ExtensionMessageName) && (
                 <ExtensionMessageLink />
-            )
-        }
-        {
-            EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
-                <ExtensionPhotocellLink />
-            )
-        }
-        {
-            EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
-                <ExtensionPlaylistLink />
             )
         }
     </>
@@ -102,6 +61,11 @@ export const SidebarSecondary: Component = () => (
             {
                 EXTENSION_PHOTOCELL && ExtensionsList().includes(ExtensionPhotocellName) && (
                     <ExtensionPhotocellActions />
+                )
+            }
+            {
+                EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
+                    <ExtensionPlaylistActions />
                 )
             }
             <Tooltip text={`All ${name.toLowerCase()}`}>
@@ -251,4 +215,4 @@ export const SidebarThird: Component = () => (
     </SidebarSection>
 );
 
-export default Main;
+export default MainThird;

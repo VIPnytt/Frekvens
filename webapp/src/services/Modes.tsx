@@ -110,39 +110,6 @@ export const Main: Component = () => (
     </Switch>
 );
 
-export const SidebarModules: Component = () => (
-    <Switch>
-        {
-            MODE_ANIMATION && (!MODEL || MODEL && DeviceModel() === MODEL) && (
-                <Match when={ModesMode() === ModeAnimationName}>
-                    <ModeAnimationSidebar />
-                </Match>
-            )
-        }
-        {
-            MODE_COUNTDOWN && (
-                <Match when={ModesMode() === ModeCountdownName}>
-                    <ModeCountdownSidebar />
-                </Match>
-            )
-        }
-        {
-            MODE_DRAW && (!MODEL || MODEL && DeviceModel() === MODEL) && (
-                <Match when={ModesMode() === ModeDrawName}>
-                    <ModeDrawSidebar />
-                </Match>
-            )
-        }
-        {
-            MODE_TICKER && (
-                <Match when={ModesMode() === ModeTickerName}>
-                    <ModeTickerSidebar />
-                </Match>
-            )
-        }
-    </Switch>
-);
-
 export const Sidebar: Component = () => {
     const handleMode = (mode: string) => {
         setMode(mode)
@@ -154,21 +121,53 @@ export const Sidebar: Component = () => {
     };
 
     return (
-        <SidebarSection title="Mode">
-            <select
-                class="w-full px-2.5 py-2.5 bg-gray-50 border border-gray-200 rounded"
-                value={getMode()}
-                onchange={(e) =>
-                    handleMode(e.currentTarget.value)
-                }
-            >
-                <For each={getModes()}>
-                    {
-                        (mode) => <option>{mode}</option>
+        <>
+            <SidebarSection title="Mode">
+                <select
+                    class="w-full px-2.5 py-2.5 bg-gray-50 border border-gray-200 rounded"
+                    value={getMode()}
+                    onchange={(e) =>
+                        handleMode(e.currentTarget.value)
                     }
-                </For>
-            </select>
-        </SidebarSection>
+                >
+                    <For each={getModes()}>
+                        {
+                            (mode) => <option>{mode}</option>
+                        }
+                    </For>
+                </select>
+            </SidebarSection>
+            <Switch>
+                {
+                    MODE_ANIMATION && (!MODEL || MODEL && DeviceModel() === MODEL) && (
+                        <Match when={ModesMode() === ModeAnimationName}>
+                            <ModeAnimationSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_COUNTDOWN && (
+                        <Match when={ModesMode() === ModeCountdownName}>
+                            <ModeCountdownSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_DRAW && (!MODEL || MODEL && DeviceModel() === MODEL) && (
+                        <Match when={ModesMode() === ModeDrawName}>
+                            <ModeDrawSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_TICKER && (
+                        <Match when={ModesMode() === ModeTickerName}>
+                            <ModeTickerSidebar />
+                        </Match>
+                    )
+                }
+            </Switch>
+        </>
     );
 };
 

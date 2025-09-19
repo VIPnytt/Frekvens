@@ -99,7 +99,7 @@ export const MainThird: Component = () => (
                         )
                     }
                 </p>
-                <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name}`}>
+                <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name.toLowerCase()}`}>
                     <Button
                         class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
                         onClick={handleActive}
