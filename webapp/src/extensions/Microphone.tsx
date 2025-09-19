@@ -82,6 +82,12 @@ export const MainThird: Component = () => {
             <h3 class="text-4xl text-white tracking-wide">{name}</h3>
             <div class="bg-white p-6 rounded-md">
                 <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Beat synchronization
+                    </h3>
+                    <p class="text-sm">
+                        Some modes has the ability to react to sounds.
+                    </p>
                     <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Threshold</h3>
                     <Tooltip text={`Threshold ${Math.round(getThreshold() / getMax() * 100)} %`}>
                         <input

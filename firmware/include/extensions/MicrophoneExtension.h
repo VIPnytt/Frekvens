@@ -15,7 +15,7 @@ private:
         pending = false;
 
     uint16_t
-        levelMax = INT8_MAX,
+        levelMax = UINT8_MAX,
         mic,
         threshold = INT8_MAX;
 
