@@ -320,16 +320,6 @@ API payload example:
 }
 ```
 
-**Reset:**
-
-API payload example:
-
-```json
-{
-    "action": "reset"
-}
-```
-
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
