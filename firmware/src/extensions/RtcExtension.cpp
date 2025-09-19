@@ -6,7 +6,6 @@
 
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "extensions/RtcExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"

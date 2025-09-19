@@ -4,13 +4,6 @@
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
-// #define RTC_DS1302
-// #define RTC_DS1307
-// #define RTC_DS3231
-// #define RTC_DS3232
-// #define RTC_DS3234
-// #define RTC_PCF8563
-
 // #define PIN_SCL 1 // I²C SCL
 // #define PIN_SDA 2 // I²C SDA
 
