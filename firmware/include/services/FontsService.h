@@ -20,7 +20,7 @@ private:
 #endif
         new MicroFont(),
         new MiniFont(),
-#if FONT_SMALL
+#if !defined(FONT_SMALL) || FONT_SMALL
         new SmallFont(),
 #endif
         new MediumFont(),

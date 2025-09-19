@@ -6,7 +6,6 @@
 
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MessageExtension.h"
-#include "extensions/MqttExtension.h"
 #include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
@@ -56,11 +55,11 @@ void MessageExtension::ready()
     }
     if (!font)
     {
-#if FONT_SMALL
-        font = FontSmall;
-#else
+#if defined(FONT_SMALL) && !FONT_SMALL
         font = FontMini;
-#endif // FONT_SMALL
+#else
+        font = FontSmall;
+#endif // defined(FONT_SMALL) && !FONT_SMALL
     }
     pending = true;
 }
