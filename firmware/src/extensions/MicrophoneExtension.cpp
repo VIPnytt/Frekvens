@@ -4,10 +4,8 @@
 
 #include <Preferences.h>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MicrophoneExtension.h"
-#include "extensions/MqttExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -105,7 +103,7 @@ void MicrophoneExtension::handle()
     {
         const uint16_t lastMic = mic;
         mic = analogReadRaw(PIN_MIC);
-        uint16_t level = abs(mic - lastMic);
+        const uint16_t level = abs(mic - lastMic);
         if (level >= threshold)
         {
             lastMillis = millis();
