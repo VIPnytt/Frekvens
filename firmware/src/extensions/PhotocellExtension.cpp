@@ -39,25 +39,6 @@ void PhotocellExtension::setup()
         component[Abbreviations::value_template] = "{{value_json.active}}";
     }
     {
-        const std::string id = std::string(name).append("_gamma");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"gamma\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "config";
-        component[Abbreviations::icon] = "mdi:brightness-auto";
-        component[Abbreviations::max] = 10;
-        component[Abbreviations::min] = 0.1f;
-        component[Abbreviations::mode] = "box";
-        component[Abbreviations::name] = "Gamma";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "number";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::step] = 0.1f;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.gamma}}";
-    }
-    {
         const std::string id = std::string(name).append("_illuminance");
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::enabled_by_default] = false;
@@ -71,23 +52,6 @@ void PhotocellExtension::setup()
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
         component[Abbreviations::value_template] = "{{value_json.illuminance}}";
     }
-    {
-        const std::string id = std::string(name).append("_threshold");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"threshold\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "config";
-        component[Abbreviations::icon] = "mdi:brightness-auto";
-        component[Abbreviations::max] = (1 << 7) - 1;
-        component[Abbreviations::mode] = "slider";
-        component[Abbreviations::name] = "Threshold";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "number";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.threshold}}";
-    }
 #endif // EXTENSION_HOMEASSISTANT
 }
 
@@ -100,18 +64,6 @@ void PhotocellExtension::ready()
     {
         gamma = Storage.getFloat("gamma");
     }
-    if (Storage.isKey("max"))
-    {
-        levelMax = Storage.getUShort("max");
-    }
-    if (Storage.isKey("min"))
-    {
-        levelMin = Storage.getUShort("min");
-    }
-    if (Storage.isKey("threshold"))
-    {
-        threshold = Storage.getUShort("threshold");
-    }
     Storage.end();
     _active ? set(true) : transmit();
 }
@@ -123,60 +75,30 @@ void PhotocellExtension::handle()
         pending = false;
         if (!active || !Display.getPower())
         {
-            read();
+            raw = analogReadRaw(PIN_LDR);
         }
         transmit();
     }
     else if (active && Display.getPower() && millis() - _lastMillis > UINT8_MAX)
     {
         _lastMillis = millis();
-        read();
-        const uint8_t _brightness = round(powf((level - levelMin) / (float)(levelMax - levelMin), gamma) * UINT8_MAX);
-        if (_brightness > brightness)
+        raw = analogReadRaw(PIN_LDR);
+        const uint8_t _brightness = round(powf((raw) / (float)((1 << 12) - 1), gamma) * UINT8_MAX);
+        if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
-            if (debounce >= threshold)
-            {
-                setBrightness(_brightness);
-            }
-            else
-            {
-                debounce += 1;
-            }
+            direction = !direction;
+            counter /= 2;
         }
-        else if (_brightness < brightness)
+        counter += _brightness - brightness;
+        if (counter <= -threshold || counter >= threshold)
         {
-            if (debounce <= -threshold)
-            {
-                setBrightness(_brightness);
-            }
-            else
-            {
-                debounce -= 1;
-            }
+            brightness = _brightness;
+            counter = 0;
+#ifdef F_INFO
+            Serial.printf("%s: brightness\n", name);
+#endif // F_INFO
+            Display.setGlobalBrightness(brightness);
         }
-    }
-}
-
-void PhotocellExtension::read()
-{
-    level = analogReadRaw(PIN_LDR);
-    if (level > levelMax)
-    {
-        levelMax = level;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("max", levelMax);
-        Storage.end();
-        pending = true;
-    }
-    else if (level < levelMin)
-    {
-        levelMin = level;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("min", levelMin);
-        Storage.end();
-        pending = true;
     }
 }
 
@@ -191,7 +113,7 @@ void PhotocellExtension::set(bool enable)
     {
         if (enable)
         {
-            debounce = 0;
+            counter = 0;
             brightness = Display.getGlobalBrightness();
         }
         active = enable;
@@ -206,89 +128,46 @@ void PhotocellExtension::set(bool enable)
     }
 }
 
-void PhotocellExtension::setBrightness(uint8_t _brightness)
-{
-    brightness = _brightness;
-    debounce = 0;
-#ifdef F_INFO
-    Serial.printf("%s: brightness\n", name);
-#endif // F_INFO
-    Display.setGlobalBrightness(brightness);
-}
-
 void PhotocellExtension::setGamma(float _gamma)
 {
-    if (_gamma != gamma && _gamma > 0)
+    if (_gamma != gamma)
     {
         gamma = _gamma;
         Preferences Storage;
         Storage.begin(name);
         Storage.putFloat("gamma", gamma);
         Storage.end();
-        pending = true;
     }
-}
-
-void PhotocellExtension::setThreshold(int8_t _threshold)
-{
-    if (_threshold != threshold && _threshold >= 0)
-    {
-        threshold = _threshold;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("threshold", threshold);
-        Storage.end();
-        pending = true;
-    }
-}
-
-void PhotocellExtension::reset()
-{
-    levelMax = level;
-    levelMin = level;
 }
 
 void PhotocellExtension::transmit()
 {
     JsonDocument doc;
     doc["active"] = active;
-    doc["gamma"] = gamma;
-    doc["illuminance"] = level;
-    doc["threshold"] = threshold;
+    doc["illuminance"] = raw;
     Device.transmit(doc, name);
     lastMillis = millis();
 }
 
 void PhotocellExtension::receiverHook(const JsonDocument doc)
 {
-    // Action: Reset
-    if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "reset"))
-    {
-        reset();
-    }
     // Active
     if (doc["active"].is<bool>())
     {
         set(doc["active"].as<bool>());
-    }
-    // Gamma
-    if (doc["gamma"].is<float>())
-    {
-        setGamma(doc["gamma"].as<float>());
-    }
-    // Threshold
-    if (doc["threshold"].is<int8_t>())
-    {
-        setThreshold(doc["threshold"].as<int8_t>());
     }
 }
 
 void PhotocellExtension::transmitterHook(const JsonDocument &doc, const char *const source)
 {
     // Display: Brightness
-    if (!strcmp(source, Display.name) && doc["brightness"].is<uint8_t>() && doc["brightness"].as<uint8_t>() != brightness)
+    if (active && !strcmp(source, Display.name) && doc["brightness"].is<uint8_t>())
     {
-        set(false);
+        const uint8_t _brightness = doc["brightness"].as<uint8_t>();
+        if (_brightness != brightness)
+        {
+            setGamma(log((_brightness + 1) / (double)((1 << 8) + 1)) / log((raw + 1) / (double)((1 << 12) + 1)));
+        }
     }
 }
 
