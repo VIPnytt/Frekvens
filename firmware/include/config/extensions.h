@@ -93,6 +93,12 @@
 /**
  * RTC
  */
+// #define RTC_DS1302
+// #define RTC_DS1307
+// #define RTC_DS3231
+// #define RTC_DS3232
+// #define RTC_DS3234
+// #define RTC_PCF8563
 #if !defined(EXTENSION_RTC) && (defined(RTC_TYPE_DS1307) || defined(RTC_TYPE_DS3231) || defined(RTC_TYPE_PCF8523) || defined(RTC_TYPE_PCF8563))
 #define EXTENSION_RTC true
 #endif
