@@ -2,16 +2,16 @@ import { mdiCog, mdiHome, mdiMenu } from '@mdi/js';
 import { Component, createEffect, createSignal, JSX, Match, Switch } from 'solid-js';
 import { render } from 'solid-js/web';
 
-import Button from './components/Button';
+import { Button } from './components/Button';
 import { Center } from './components/Center';
 import { ToastProvider } from './components/Toast';
 import { Icon } from './components/Vector';
 import { MessageProvider, WebSocketState } from './extensions/WebSocket';
 import { MainSecondary as DeviceSecondary, SidebarSecondary as DeviceSecondarySidebar, DeviceName } from './services/Device';
 import { Main as DisplayMain, Sidebar as DisplaySidebar, SidebarSecondary as DisplaySecondarySidebar, DisplayPower } from './services/Display';
-import { Main as ExtensionsMain, Sidebar as ExtensionsSidebar, Footer as ExtensionsFooter, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar, name as ExtensionsName } from './services/Extensions';
-import { MainThird as ModesThird, Sidebar as ModesSidebar, SidebarSecondary as ModesSecondarySidebar, SidebarThird as ModesThirdSidebar, name as ModesName } from './services/Modes';
-import { MainThird as NetworkThird, SidebarSecondary as NetworkSecondarySidebar, SidebarThird as NetworkThirdSidebar, name as NetworkName, NetworkDomain } from './services/Network';
+import { Footer as ExtensionsFooter, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar, name as ExtensionsName } from './services/Extensions';
+import { Main as ModesMain, MainThird as ModesThird, Sidebar as ModesSidebar, SidebarSecondary as ModesSecondarySidebar, SidebarThird as ModesThirdSidebar, name as ModesName } from './services/Modes';
+import { MainThird as NetworkThird, SidebarSecondary as NetworkSecondarySidebar, SidebarThird as NetworkThirdSidebar, name as NetworkName } from './services/Network';
 import { WebServerPath } from './services/WebServer';
 
 import './style.css';
@@ -45,7 +45,7 @@ const Primary: Component = () => (
         main={
             <Switch
                 fallback={
-                    <ExtensionsMain />
+                    <ModesMain />
                 }
             >
                 <Match when={!DisplayPower()}>
@@ -57,14 +57,6 @@ const Primary: Component = () => (
             <>
                 <DisplaySidebar />
                 <ModesSidebar />
-                <Switch
-                    fallback={
-                        <ExtensionsSidebar />
-                    }>
-                    <Match when={!DisplayPower()}>
-                        <></>
-                    </Match>
-                </Switch>
                 <div class="mt-auto mb-3 border-t border-gray-200" />
                 <ExtensionsFooter />
                 <div class="mt-3 border-t border-gray-200" />

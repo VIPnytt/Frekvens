@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 import { Component, createSignal, For, Index } from 'solid-js';
 
 import { Button } from '../components/Button';
-import { Center } from '../components/Center';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { ws } from './WebSocket';
@@ -52,6 +51,27 @@ export const Sidebar: Component = () => (
     </SidebarSection>
 );
 
+export const Actions: Component = () => (
+    <div class="grid grid-cols-[1fr_48px] gap-3 items-center font-medium text-gray-700 hover:text-gray-900">
+        <a href={`#/${ExtensionsName.toLowerCase()}/${name.toLowerCase()}`}>
+            <Icon
+                class="mr-2"
+                path={mdiPlaylistPlay}
+            />
+            {name}
+        </a>
+        <Tooltip text={`${getActive() ? 'Stop' : 'Play'} ${name.toLowerCase()}`}>
+            <Button
+                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
+                disabled={!getPlaylist().length}
+                onClick={handleActive}
+            >
+                <Icon path={getActive() ? mdiStop : mdiPlay} />
+            </Button>
+        </Tooltip>
+    </div>
+);
+
 export const Link: Component = () => (
     <Tooltip text={`Switch between ${ModesName.toLowerCase()} automatically`}>
         <a
@@ -67,23 +87,7 @@ export const Link: Component = () => (
     </Tooltip>
 );
 
-export const MainThird: Component = () => (
-    <Center>
-        <h2 class="text-4xl">
-            <Icon path={mdiPlaylistPlay} />
-        </h2>
-        <a
-            href={`${REPOSITORY}/wiki/${ModesName}#-${name.toLowerCase()}`}
-            target="_blank"
-        >
-            <p class="text-xl mt-2 text-gray-300">
-                {name} is active.
-            </p>
-        </a>
-    </Center>
-);
-
-export const Secondary: Component = () => {
+export const MainThird: Component = () => {
     const handleAdd = () => {
         do {
             setPlaylist([
