@@ -5,7 +5,6 @@
 
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -334,14 +333,16 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 
 void DisplayService::drawEllipse(double x, double y, double radius, double ratio, bool fill, uint8_t brightness)
 {
-    const double _ratio = (cellRatio * COLUMNS / (double)ROWS * ratio - 1) / 2.0 + 1;
-    const float rSq = radius * radius;
+    const float
+        _ratio = (cellRatio * COLUMNS / (float)ROWS * ratio - 1.0f) / 2.0f + 1.0f,
+        xExt = radius * max(1.0f, _ratio),
+        yExt = radius / min(1.0f, _ratio),
+        rSq = radius * radius;
     const uint8_t
-        xMax = min<uint8_t>(COLUMNS - 1, ceil(x + radius / _ratio)),
-        yMax = min<uint8_t>(ROWS - 1, ceil(y + radius * _ratio)),
-        xMin = max<uint8_t>(0, floor(x - radius / _ratio)),
-        yMin = max<uint8_t>(0, floor(y - radius * _ratio));
-
+        xMax = min(COLUMNS - 1, (int)ceil(x + xExt)),
+        yMax = min(ROWS - 1, (int)ceil(y + yExt)),
+        xMin = max(0, (int)floor(x - xExt)),
+        yMin = max(0, (int)floor(y - yExt));
     for (uint8_t _x = xMin; _x <= xMax; ++_x)
     {
         for (uint8_t _y = yMin; _y <= yMax; ++_y)
@@ -350,12 +351,7 @@ void DisplayService::drawEllipse(double x, double y, double radius, double ratio
                 xDist = (_x - x) * _ratio,
                 yDist = (_y - y) / _ratio,
                 distSq = xDist * xDist + yDist * yDist;
-
-            if (fill && distSq <= rSq)
-            {
-                setPixel(_x, _y, brightness);
-            }
-            else if (fabs(distSq - rSq) <= radius)
+            if (fill ? (distSq <= rSq) : (fabsf(distSq - rSq) <= radius))
             {
                 setPixel(_x, _y, brightness);
             }
