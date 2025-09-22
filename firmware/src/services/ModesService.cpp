@@ -2,7 +2,6 @@
 
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "fonts/MicroFont.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
@@ -96,8 +95,8 @@ void ModesService::setup()
 #if EXTENSION_BUILD && defined(MODE_NOISE) && !(MODE_NOISE)
     (*Build->config)[Config::h][__STRING(MODE_NOISE)] = false;
 #endif
-#if EXTENSION_BUILD && defined(MODE_OPENMETRO) && !(MODE_OPENMETRO)
-    (*Build->config)[Config::h][__STRING(MODE_OPENMETRO)] = false;
+#if EXTENSION_BUILD && defined(MODE_OPENMETEO) && !(MODE_OPENMETEO)
+    (*Build->config)[Config::h][__STRING(MODE_OPENMETEO)] = false;
 #endif
 #if EXTENSION_BUILD && defined(MODE_OPENWEATHER) && !(MODE_OPENWEATHER)
     (*Build->config)[Config::h][__STRING(MODE_OPENWEATHER)] = false;
