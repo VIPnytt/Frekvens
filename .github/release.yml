@@ -1,12 +1,12 @@
 changelog:
   categories:
-    - title: "🚀 Features"
+    - title: "✨ Improvements"
       labels:
         - enhancement
     - title: "🐛 Bug Fixes"
       labels:
         - bug
-    - title: "📦 Dependency Updates"
+    - title: "📦 Dependencies"
       labels:
         - dependencies
     - title: "🔧 Miscellaneous"
