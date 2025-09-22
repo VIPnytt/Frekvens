@@ -460,28 +460,28 @@ MODE_NOISE=true
 
 > Enabled by default.
 
-## 🚇 Open metro
+## ⛅ Open-Meteo
 
 Weather service.
 
 Updated every 15+ minutes, depending on location.
 
-Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set using the `OPENMETRO_KEY` variable. Other URL [parameters](https://open-meteo.com/en/docs#api_documentation) such as `temperature_unit` can be set using the `OPENMETRO_PARAMETERS` variable.
+Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set using the `OPENMETEO_KEY` variable. Other URL [parameters](https://open-meteo.com/en/docs#api_documentation) such as `temperature_unit` can be set using the `OPENMETEO_PARAMETERS` variable.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
 
 ```h
-#define OPENMETRO_KEY "secret"
+#define OPENMETEO_KEY "secret"
 ```
 
 ```h
-#define OPENMETRO_PARAMETERS "temperature_unit=celsius" // query
+#define OPENMETEO_PARAMETERS "temperature_unit=celsius" // query
 ```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
 ```ini
-MODE_OPENMETRO=true
+MODE_OPENMETEO=true
 ```
 
 > Enabled by default when `LATITUDE` and `LONGITUDE` is defined.

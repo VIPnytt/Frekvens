@@ -5,22 +5,22 @@
 #include <HTTPClient.h>
 
 #include "extensions/BuildExtension.h"
-#include "modes/OpenMetroMode.h"
+#include "modes/OpenMeteoMode.h"
 #include "services/NetworkService.h"
 
-#if EXTENSION_BUILD && (defined(OPENMETRO_KEY) || defined(OPENMETRO_PARAMETERS))
-void OpenMetroMode::setup()
+#if EXTENSION_BUILD && (defined(OPENMETEO_KEY) || defined(OPENMETEO_PARAMETERS))
+void OpenMeteoMode::setup()
 {
-#ifdef OPENMETRO_KEY
-    (*Build->config)[Config::h][__STRING(OPENMETRO_KEY)] = "REDACTED";
-#endif // OPENMETRO_KEY
-#ifdef OPENMETRO_PARAMETERS
-    (*Build->config)[Config::h][__STRING(OPENMETRO_PARAMETERS)] = OPENMETRO_PARAMETERS;
-#endif // OPENMETRO_PARAMETERS
+#ifdef OPENMETEO_KEY
+    (*Build->config)[Config::h][__STRING(OPENMETEO_KEY)] = "REDACTED";
+#endif // OPENMETEO_KEY
+#ifdef OPENMETEO_PARAMETERS
+    (*Build->config)[Config::h][__STRING(OPENMETEO_PARAMETERS)] = OPENMETEO_PARAMETERS;
+#endif // OPENMETEO_PARAMETERS
 }
-#endif // EXTENSION_BUILD && (defined(OPENMETRO_KEY) || defined(OPENMETRO_PARAMETERS))
+#endif // EXTENSION_BUILD && (defined(OPENMETEO_KEY) || defined(OPENMETEO_PARAMETERS))
 
-void OpenMetroMode::wake()
+void OpenMeteoMode::wake()
 {
 #ifdef F_INFO
     if (urls.empty())
@@ -36,16 +36,16 @@ void OpenMetroMode::wake()
 #endif // F_INFO
 }
 
-void OpenMetroMode::handle()
+void OpenMeteoMode::handle()
 {
-    // Open-Metro data resolution: down to 15 minutes (depending on location)
+    // Open-Meteo data resolution: down to 15 minutes (depending on location)
     if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 15 || lastMillis == 0))
     {
         update();
     }
 }
 
-void OpenMetroMode::update()
+void OpenMeteoMode::update()
 {
     lastMillis = millis();
     HTTPClient http;

@@ -31,7 +31,7 @@
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
 #include "modes/NoiseMode.h"
-#include "modes/OpenMetroMode.h"
+#include "modes/OpenMeteoMode.h"
 #include "modes/OpenWeatherMode.h"
 #include "modes/PingPongClockMode.h"
 #include "modes/PingPongMode.h"
@@ -143,8 +143,8 @@ private:
 #if MODE_NOISE
         new NoiseMode(),
 #endif
-#if MODE_OPENMETRO
-        new OpenMetroMode(),
+#if MODE_OPENMETEO
+        new OpenMeteoMode(),
 #endif
 #if MODE_OPENWEATHER
         new OpenWeatherMode(),

@@ -9,7 +9,7 @@
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
-class OpenMetroMode : public ModeModule
+class OpenMeteoMode : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -17,14 +17,14 @@ private:
     // https://open-meteo.com/en/docs#api-documentation
     std::vector<const char *> urls = {
         "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
-#if defined(OPENMETRO_PARAMETERS)
-        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&" OPENMETRO_PARAMETERS,
+#if defined(OPENMETEO_PARAMETERS)
+        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&" OPENMETEO_PARAMETERS,
 #endif
-#if defined(OPENMETRO_KEY)
-        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETRO_KEY,
+#if defined(OPENMETEO_KEY)
+        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
 #endif
-#if defined(OPENMETRO_KEY) && defined(OPENMETRO_PARAMETERS)
-        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETRO_KEY "&" OPENMETRO_PARAMETERS,
+#if defined(OPENMETEO_KEY) && defined(OPENMETEO_PARAMETERS)
+        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY "&" OPENMETEO_PARAMETERS,
 #endif
     };
 
@@ -63,9 +63,9 @@ private:
     void update();
 
 public:
-    OpenMetroMode() : ModeModule("Open-Metro") {};
+    OpenMeteoMode() : ModeModule("Open-Meteo") {};
 
-#if EXTENSION_BUILD && (defined(OPENMETRO_KEY) || defined(OPENMETRO_PARAMETERS))
+#if EXTENSION_BUILD && (defined(OPENMETEO_KEY) || defined(OPENMETEO_PARAMETERS))
     void setup() override;
 #endif
     void wake() override;

@@ -74,8 +74,8 @@ jobs:
           #define NTP1 "pool.ntp.org"
           #define NTP2 "time.nist.gov"
           #define NTP3 "time.cloudflare.com"
-          #define OPENMETRO_KEY "secret"
-          #define OPENMETRO_PARAMETERS "temperature_unit=celsius"
+          #define OPENMETEO_KEY "secret"
+          #define OPENMETEO_PARAMETERS "temperature_unit=celsius"
           #define OPENWEATHER_KEY "secret"
           #define OPENWEATHER_PARAMETERS "units=metric"
           #define PIN_CS 1
