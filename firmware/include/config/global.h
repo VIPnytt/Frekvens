@@ -12,9 +12,6 @@
 #ifndef DECODE_RC5
 #define DECODE_RC5 true // Override
 #endif
-#ifndef DECODE_RC5X
-#define DECODE_RC5X true // Override
-#endif
 #ifndef DECODE_SONY
 #define DECODE_SONY true // Override
 #endif

@@ -68,8 +68,6 @@ private:
                 0x21, // Philips: Title previous
             },
         },
-#endif // DECODE_RC5
-#if DECODE_RC5X
         {
             decode_type_t::RC5X,
             {},
@@ -89,7 +87,7 @@ private:
             {},
             {},
         },
-#endif // DECODE_RC5X
+#endif // DECODE_RC5
 #if DECODE_SONY
         {
             decode_type_t::SONY,

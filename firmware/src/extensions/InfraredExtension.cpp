@@ -8,7 +8,6 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/InfraredExtension.h"
 #include "extensions/MicrophoneExtension.h"
-#include "extensions/MqttExtension.h"
 #include "extensions/PhotocellExtension.h"
 #include "extensions/PlaylistExtension.h"
 #include "services/DeviceService.h"
@@ -73,8 +72,6 @@ void InfraredExtension::handle()
             case decode_type_t::RC5:
                 Serial.printf("%s: " D_STR_RC5 " 0x%X\n", name, results.command);
                 break;
-#endif // DECODE_RC5
-#if DECODE_RC5X
             case decode_type_t::RC5X:
                 Serial.printf("%s: " D_STR_RC5X " 0x%X\n", name, results.command);
                 break;
