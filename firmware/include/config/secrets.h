@@ -7,19 +7,24 @@
  */
 
 /**
- * GPIO pins
+ * IKEA Frekvens
  */
-// #define PIN_SCLK 1 // CLK
-// #define PIN_MOSI 2 // DA/DI
-// #define PIN_CS 3   // LAK/CLA
+// #define PIN_CS 1   // LAK
+// #define PIN_SCLK 2 // CLK
+// #define PIN_MOSI 3 // DA
 // #define PIN_OE 4   // EN
-// #define PIN_SW2 5  // SW
+// #define PIN_SW1 5  // SW1
+// #define PIN_SW2 6  // SW
+// #define PIN_MIC 7  // U3 pin 7
 
 /**
- * IKEA Frekvens only (optional)
+ * IKEA Obegränsad
  */
-// #define PIN_SW1 6 // SW1
-// #define PIN_MIC 7 // U3 pin 7
+// #define PIN_CS 1   // CLA
+// #define PIN_SCLK 2 // CLK
+// #define PIN_MOSI 3 // DI
+// #define PIN_OE 4   // EN
+// #define PIN_SW2 5  // SW
 
 /**
  * Wi-Fi credentials (optional)

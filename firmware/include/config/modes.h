@@ -212,36 +212,6 @@
  */
 // #define OPENMETEO_KEY "secret"
 // #define OPENMETEO_PARAMETERS "elevation=123"
-/**
- * OPENMETRO_KEY
- *
- * OPENMETRO_KEY has been replaced by OPENMETEO_KEY.
- * To ensure forward compatibility, update your configuration:
- * Replace OPENMETRO_KEY with OPENMETEO_KEY.
- */
-#ifdef OPENMETRO_KEY
-#define OPENMETEO_KEY OPENMETRO_KEY
-#endif
-/**
- * OPENMETRO_PARAMETERS
- *
- * OPENMETRO_PARAMETERS has been replaced by OPENMETEO_PARAMETERS.
- * To ensure forward compatibility, update your configuration:
- * Replace OPENMETRO_PARAMETERS with OPENMETEO_PARAMETERS.
- */
-#ifdef OPENMETRO_PARAMETERS
-#define OPENMETEO_PARAMETERS OPENMETRO_PARAMETERS
-#endif
-/**
- * MODE_OPENMETRO
- *
- * MODE_OPENMETRO has been replaced by MODE_OPENMETEO.
- * To ensure forward compatibility, update your configuration:
- * Replace MODE_OPENMETRO with MODE_OPENMETEO.
- */
-#ifdef MODE_OPENMETRO
-#define MODE_OPENMETEO MODE_OPENMETRO
-#endif
 #if !defined(MODE_OPENMETEO) && defined(LATITUDE) && defined(LONGITUDE)
 #define MODE_OPENMETEO true
 #endif
