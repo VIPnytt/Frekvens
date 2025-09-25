@@ -49,17 +49,6 @@
 #error "Configuration error: SPI chip select pin (PIN_CS, PCB label 'LAK') is not defined."
 #endif
 
-/**
- * PIN_EN
- *
- * PIN_EN has been replaced by PIN_OE.
- * To ensure forward compatibility, update your configuration:
- * Replace PIN_EN with PIN_OE.
- */
-#ifdef PIN_EN
-#define PIN_OE PIN_EN
-#endif
-
 // #define PIN_OE 5 // EN
 
 // #define PIN_SW1 6 // SW1

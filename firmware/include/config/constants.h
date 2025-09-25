@@ -5,6 +5,11 @@
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
 /**
+ * Deprecations
+ */
+#include "config/deprecated.h"
+
+/**
  * Device
  */
 #if !defined(ENV) && defined(ENV_FREKVENS)
