@@ -370,7 +370,7 @@ void DeviceService::ready()
         component[Abbreviations::state_topic] = topic;
         component[Abbreviations::title] = "Frekvens";
         component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{{'installed_version':value_json.version,'latest_version':value_json.version_latest,'release_summary':(value_json.release_notes[:252]~'...')if(value_json.release_notes or '')|length>255 else(value_json.release_notes or '')}|to_json}}";
+        component[Abbreviations::value_template] = "{%set t=value_json.get('release_notes','')%}{{{'installed_version':value_json.version,'latest_version':value_json.version_latest,'release_summary':t[:252]~'...'if t|length>255 else t}|to_json}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
     Display.ready();
@@ -424,10 +424,9 @@ void DeviceService::update()
             default:
                 const std::vector<std::string> prefixes = {
                     "<!--",
-                    "## What's Changed",
-                    "## New Contributors",
+                    "#",
                     "* @",
-                    "**Full Changelog**:",
+                    "**Full Changelog",
                 };
                 std::stringstream body(doc["body"].as<std::string>());
                 std::string line;
@@ -438,7 +437,7 @@ void DeviceService::update()
                     {
                         continue;
                     }
-                    size_t pos = line.find(" by @");
+                    const size_t pos = line.find(" by @");
                     if (pos != std::string::npos && line.find(" in http", pos) != std::string::npos)
                     {
                         line = line.substr(0, pos);
