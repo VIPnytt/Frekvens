@@ -2,7 +2,7 @@
 
 > Article number 504.203.67
 
-## 📈 Schematics
+## 📌 Schematics
 
 ### PCB schema
 
@@ -27,15 +27,6 @@
     LED ─────────┘
 ```
 
-### Microphone schema
-
-```text
-┌─────┐
-│ VCC ├─ Microphone
-│ GND ├─ 0 V DC
-└─────┘
-```
-
 ### LED diode schema
 
 ```text
@@ -43,6 +34,15 @@
 │  Anode ├─ +4 V DC
 │ Catode ├─ LED
 └────────┘
+```
+
+### Microphone schema
+
+```text
+┌─────┐
+│ VCC ├─ Microphone
+│ GND ├─ 0 V DC
+└─────┘
 ```
 
 ### Power supply schema
@@ -71,7 +71,7 @@
 
 ## 🚀 Getting started
 
-First, desolder the `U2` chip and wire up the ESP32 according to the provided schematics.
+First, desolder the `U2` chip and wire up the ESP32.
 
 Refer to the [PCB schema](#pcb-schema) above for the internal connections of each component on the board — this will allow you to choose a convenient soldering point.
 
@@ -79,36 +79,51 @@ Refer to the [PCB schema](#pcb-schema) above for the internal connections of eac
 
 ### Power and ground
 
+Supplies power to both logic and the LED.
+
 The `DC+`/`LED+` and `DC-`/`MIC-` pins are internally connected via traces on the PCB.
 
 > To prevent backfeeding, never connect the ESP32 to USB while the 4 V power supply is connected — even if it is unplugged from the mains.
 
 ### Output Enable
 
+Enables or disables LED output.
+
 Any PWM output pin can be used.
 
 > Avoid strapping pins as this pin may be floating.
 
 ```yaml
-PIN_LED: 1 # U6/U7
+PIN_OE: 1 # U6/U7
 ```
 
 ### Button
 
-Any digital input pin can be used, but those that are also RTC-capable are preferred.
+Button inputs for user interaction.
+
+Use digital input pins, preferably RTC-capable.
 
 > Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
 
 ```yaml
-PIN_SW1: 2 # K3
+PIN_SW: 2 # K3
 ```
 
-### Amplifier
+### Microphone amplifier
 
-Any analog input pin can be used, but those on the ADC1 channel are preferred.
+Analog input from the microphone amplifier.
 
-> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based, original series) boards, the ADC2 channel pins are not supported.
+Use an ADC1-channel analog pin for best compatibility.
+
+> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based) boards, the ADC2 channel pins are not supported.
 
 ```yaml
 PIN_MIC: 3 # U3
 ```
+
+## 🔗 Resources
+
+External links for deeper exploration — provided for reference only and with no formal connection to this project.
+
+- [IKEA: FREKVENS PR kit](https://www.ikea.com/us/en/files/pdf/27/28/27281cda/frekvens_pr_kit.pdf)
+- [Instagram: Simple IKEA FREKVENS Hack](https://www.instagram.com/p/B8cVZQCo1BH/)
