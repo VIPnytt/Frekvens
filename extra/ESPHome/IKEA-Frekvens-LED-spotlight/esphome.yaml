@@ -7,15 +7,15 @@ esphome:
   min_version: "2025.7.0"
   project:
     name: "IKEA.Frekvens"
-    version: "2025.9.0"
+    version: "2025.10.0"
 
 esp32: # https://registry.platformio.org/platforms/platformio/espressif32/boards
   board: seeed_xiao_esp32c3 # Replace with the board you are using
 
 substitutions:
-  PIN_LED: 3 # PWM output to the LED drivers (U6/U7)
+  PIN_OE: 3 # PWM output to the LED drivers (U6/U7)
+  PIN_SW: 5 # Digital input from the button (K3)
   PIN_MIC: 4 # Analog input from the amplifier (U3)
-  PIN_SW1: 5 # Digital input from the button (K3)
 
 api:
   # Optional: enable encryption if desired
@@ -52,7 +52,7 @@ binary_sensor:
     disabled_by_default: True # Hidden from Home Assistant UI
     internal: True # Optional
     pin:
-      number: ${PIN_SW1}
+      number: ${PIN_SW}
       allow_other_uses: true
     filters:
       - invert
@@ -108,7 +108,7 @@ button:
 
 deep_sleep:
   wakeup_pin:
-    number: ${PIN_SW1}
+    number: ${PIN_SW}
     inverted: True
     allow_other_uses: True
 
@@ -171,7 +171,7 @@ number:
 output:
   - platform: ledc
     id: led_pwm
-    pin: ${PIN_LED}
+    pin: ${PIN_OE}
     frequency: ${(80000000 / (2**16 - 1)) | int} # Max resolution (16-bit)
     min_power: ${1 / (2**8 - 1)}
     zero_means_zero: True # Ensures 0% = fully off
