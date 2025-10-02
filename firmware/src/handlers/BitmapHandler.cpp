@@ -48,7 +48,7 @@ void BitmapHandler::draw(uint8_t x, uint8_t y, uint8_t brightness)
     {
         for (uint8_t _y = 0; _y < height; ++_y)
         {
-            if (bitmap[_y] >> msbMax - _x & 1)
+            if ((bitmap[_y] >> (msbMax - _x)) & 1)
             {
                 Display.setPixel(x + _x, y + _y, brightness);
             }

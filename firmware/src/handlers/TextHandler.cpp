@@ -70,7 +70,7 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
             {
                 for (uint8_t _y = 0; _y < character.bitmap.size(); ++_y)
                 {
-                    if (x + character.offsetX + _x >= 0 && x + character.offsetX + _x < COLUMNS && y + height - character.bitmap.size() - character.offsetY + _y >= 0 && y + height - character.bitmap.size() - character.offsetY + _y < ROWS && (character.bitmap[_y] >> (msbMax - _x)) & 1)
+                    if ((x + character.offsetX + _x) >= 0 && (x + character.offsetX + _x) < COLUMNS && (int16_t)(y + height - character.bitmap.size() - character.offsetY + _y) >= 0 && (int16_t)(y + height - character.bitmap.size() - character.offsetY + _y) < ROWS && (character.bitmap[_y] >> (msbMax - _x)) & 1)
                     {
                         Display.setPixel(x + character.offsetX + _x, y + height - character.bitmap.size() - character.offsetY + _y, brightness);
                     }

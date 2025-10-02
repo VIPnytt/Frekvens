@@ -4,7 +4,6 @@
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/CountdownMode.h"

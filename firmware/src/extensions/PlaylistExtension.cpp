@@ -5,7 +5,6 @@
 #include <Preferences.h>
 
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "extensions/PlaylistExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -29,7 +28,7 @@ void PlaylistExtension::setup()
         queued.mode = Storage.getString(std::string("mode" + std::to_string(i)).c_str());
         queued.duration = Storage.getUShort(std::string("duration" + std::to_string(i)).c_str());
         playlist.push_back(queued);
-        if (i == UINT8_MAX)
+        if (i >= UINT8_MAX)
         {
             break;
         }

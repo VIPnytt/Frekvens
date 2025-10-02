@@ -1,11 +1,13 @@
 *.egg-info
-*/build/lib/
+*/build/lib
 .env
 .pio
-.vscode/*
+.vscode
 __pycache__
 data/webapp
 firmware/include/config/secrets*.h
+sdkconfig.*
 webapp/dist
 webapp/node_modules
 !.vscode/README.md
+!sdkconfig.defaults*
