@@ -75,6 +75,8 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
         }
     }
     break;
+    default:
+        break;
     }
 }
 

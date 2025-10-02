@@ -17,6 +17,7 @@
 #include "services/FontsService.h"
 #include "services/ModesService.h"
 #include "services/NetworkService.h"
+#include "services/WebServerService.h"
 
 void DeviceService::init()
 {
@@ -51,7 +52,11 @@ void DeviceService::init()
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP
             reset = reset_external.data();
             break;
+        default:
+            break;
         }
+    default:
+        break;
     }
     break;
 #endif // (SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP) && (defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2))

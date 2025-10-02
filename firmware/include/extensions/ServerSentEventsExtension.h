@@ -5,7 +5,6 @@
 #if EXTENSION_SERVERSENTEVENTS
 
 #include <ESPAsyncWebServer.h>
-#include <fauxmoESP.h>
 
 #include "modules/ExtensionModule.h"
 

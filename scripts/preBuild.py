@@ -24,6 +24,7 @@ if env["PIOENV"] in [  # type: ignore
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["buildfs"],
     ["erase"],
+    ["menuconfig"],
     ["uploadfs"],
     ["uploadfsota"],
 ]:
@@ -35,6 +36,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["build"],
     ["erase"],
+    ["menuconfig"],
     ["size"],
     ["upload"],
 ]:
@@ -47,6 +49,7 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["erase"],
+    ["menuconfig"],
     ["size"],
 ]:
     tools = Tools.Tools(env)  # type: ignore

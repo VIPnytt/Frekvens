@@ -5,7 +5,6 @@
 #include "config/constants.h"
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/HomeThermometerMode.h"

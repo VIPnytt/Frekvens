@@ -157,9 +157,9 @@ IRAM_ATTR void DisplayService::onTimer()
     *out = outByte;
 #endif // COLUMNS * ROWS % 8
     ++filter;
-    gpio_set_level((gpio_num_t)PIN_CS, 0);
+    gpio_set_level((gpio_num_t)PIN_CS, LOW);
     SPI.transferBytes(data, nullptr, sizeof(data));
-    gpio_set_level((gpio_num_t)PIN_CS, 1);
+    gpio_set_level((gpio_num_t)PIN_CS, HIGH);
 }
 
 void DisplayService::flush()

@@ -4,7 +4,6 @@
 
 #include "extensions/ButtonExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
