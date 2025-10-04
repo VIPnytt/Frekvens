@@ -1,6 +1,6 @@
 # ⏰ Real-Time Clock
 
-A real-time clock (RTC) module keeps accurate time, even without Wi-Fi or power.
+A Real-Time Clock (RTC) module keeps accurate time, even without Wi-Fi or power.
 
 Most common RTC modules will work. Good starting points include the [DS3231](https://www.adafruit.com/product/3013) and the [DS1307](https://www.adafruit.com/product/3296).
 
@@ -15,7 +15,7 @@ Most common RTC modules will work. Good starting points include the [DS3231](htt
 
 > [DS1307](#ds1307) operates at 5 V and is therefore incompatible with [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
-## 📈 Schematics
+## 📌 Schematics
 
 ### DS1302 schema
 
@@ -152,6 +152,8 @@ Most RTC modules are 3.3 V compatible, but some variants use higher logic levels
 
 ### I²C SCL
 
+Serial clock for I²C communication.
+
 Any I²C `SCL` pin can be used.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
@@ -161,6 +163,8 @@ Any I²C `SCL` pin can be used.
 ```
 
 ### I²C SDA
+
+Bidirectional data line for I²C.
 
 Any I²C `SDA` pin can be used.
 
@@ -172,6 +176,8 @@ Any I²C `SDA` pin can be used.
 
 ### SPI SCLK
 
+Serial clock for SPI communication.
+
 Any SPI `SCLK` pin can be used.
 
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
@@ -182,19 +188,9 @@ Any SPI `SCLK` pin can be used.
 #define PIN_SCLK2 3 // SPI SCLK
 ```
 
-### SPI MISO
-
-Any SPI `MISO` pin can be used.
-
-> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define PIN_MISO2 4 // SPI MISO
-```
-
 ### SPI MOSI
+
+Master-out data line for SPI.
 
 Any SPI `MOSI` pin can be used.
 
@@ -203,10 +199,26 @@ Any SPI `MOSI` pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_MOSI2 5 // SPI MOSI
+#define PIN_MOSI2 4 // SPI MOSI
+```
+
+### SPI MISO
+
+Master-in data line for SPI.
+
+Any SPI `MISO` pin can be used.
+
+> On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define PIN_MISO2 5 // SPI MISO
 ```
 
 ### SPI SDIO
+
+Bidirectional data line for SPI.
 
 Any SPI `MISO` pin can be used.
 
@@ -220,9 +232,11 @@ Any SPI `MISO` pin can be used.
 
 ### SPI CS
 
+Chip Select for the RTC module.
+
 Any digital output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -231,6 +245,8 @@ Any digital output pin can be used.
 ```
 
 ### RTC INT
+
+Interrupt signal from the RTC module.
 
 Optional to connect.
 

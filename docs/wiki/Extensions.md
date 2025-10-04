@@ -50,16 +50,16 @@ Buttons allows physical control of the device.
 
 For devices with 2 buttons:
 
-- Button #1:
+- #1: Power button
   - Click: *Power on/off*
   - Hold: *Brightness up/down*
-- Button #2:
+- #2 Mode button
   - Click: *Next [mode](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
   - Hold: *Iterate between [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
 
-For devices with only one button:
+When the *Mode button* is the only button, it serves a dual purpose:
 
-- Button #2:
+- #2: Mode button
   - Click: *Power on/off*
   - Hold: *Iterate between [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
 
@@ -75,7 +75,7 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 #define PIN_SW2 2 // Mode button
 ```
 
-> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-network).
+> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -129,19 +129,26 @@ See also [Home Assistant weather](https://github.com/VIPnytt/Frekvens/wiki/Modes
 
 ## 🔴 Infrared
 
-By adding an IR sensor, you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.
+By adding an [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver), you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.
 
-- Power on/off
-- Brightness
-- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes)
-- [Microphone](#%EF%B8%8F-microphone) on/off
-- [Photocell](#-photocell) on/off
-- [Playlist](#%EF%B8%8F-playlist) start/stop
-
-Currently supported:
-
-- Philips
-- Sony
+- Display brightness: up/down
+  - Philips: Volume ➕➖
+  - Sony: Volume ➕➖
+- Display power: on/off
+  - Philips: Power ⏻
+  - Sony: Power ⏻
+- [Microphone](#%EF%B8%8F-microphone): on/off
+  - Philips: Mute 🔇
+  - Sony: Mute 🔇
+- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes): surfing
+  - Philips: Title ⏮️⏭️ Album ⏪⏩
+  - Sony: Program ➕➖ Previous ⏮️ Next ⏭️ Rewind ⏪ Fast forward ⏩
+- [Photocell](#-photocell): on/off
+  - Philips: `DIM`
+  - Sony: `SCENE`
+- [Playlist](#%EF%B8%8F-playlist): start/stop
+  - Philips: Play/Pause ⏯️ Stop ⏹️
+  - Sony: Play ▶️ Pause ⏸️ Stop ⏹️
 
 Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
 
@@ -156,7 +163,7 @@ API payload example:
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_IR 3 // Data
+#define PIN_IR 3 // Receiver
 ```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
@@ -167,7 +174,7 @@ EXTENSION_INFRARED=true
 
 > Enabled by default when `PIN_IR` is defined.
 
-Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared) wiki for more info.
+Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver) wiki for more info.
 
 ## 📢 Message
 
@@ -199,7 +206,7 @@ See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#ticker).
 
 ## 🎙️ Microphone
 
-Many of the [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) has the ability to react to sounds, eg. syncing animations up with the music.
+If the device isn’t already equipped with a [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone), adding one gives many [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) the ability to react to sounds, eg. syncing animations up with the music.
 
 Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
@@ -211,7 +218,7 @@ API payload example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define PIN_MIC 4 // Amplifier
@@ -244,14 +251,11 @@ API message example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) examples:
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
 #define MQTT_HOST "example.local"
 #define MQTT_PORT 1883 // port #
-```
-
-```h
 #define MQTT_USER "name"
 #define MQTT_KEY "secret"
 ```
@@ -308,7 +312,7 @@ See also [Build](#%EF%B8%8F-build).
 
 ## 🔆 Photocell
 
-Automatic ambient brightness adaption.
+By adding a [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell), you’ll get automatic ambient brightness adaption.
 
 Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
@@ -323,7 +327,7 @@ API payload example:
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_LDR 5 // Sensor
+#define PIN_LDR 5 // Bridge
 ```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
@@ -340,7 +344,15 @@ Check out the [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell) wi
 
 Set up a playlist of [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) that loops with a timer.
 
-Integrated into the [Button](#%EF%B8%8F-button) extension, long-press button #2 to activate. Can also be controlled via the [Home Assistant](#-home-assistant) extension.
+Integrated into the [Web app](#-web-app) and [Home Assistant](#-home-assistant) extensions.
+
+API payload examples:
+
+```json
+{
+    "active": true,
+}
+```
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -381,7 +393,7 @@ See also [Server-Sent Events](#-server-sent-events).
 
 ## ⏰ RTC
 
-Reliable clock, even without Wi-Fi connectivity.
+By adding an [RTC-module](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) you’ll get reliable clock, even without Wi-Fi connectivity.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -389,9 +401,9 @@ Reliable clock, even without Wi-Fi connectivity.
 EXTENSION_RTC=true
 ```
 
-> Enabled by default when a [supported](https://github.com/VIPnytt/Frekvens/wiki/RTC#-supported-types) RTC-module is defined.
+> Enabled by default when a [supported](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock#-supported-types) RTC-module is defined.
 
-Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC) wiki for hardware instructions.
+Check out the [Real-Time Clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) wiki for hardware instructions.
 
 ## 📜 Server-Sent Events
 
@@ -453,7 +465,7 @@ EXTENSION_SIGNAL=true
 
 ## 📱 Web app
 
-Handles the `webapp` user-interface located on the ESP32's *SPIFFS* partition.
+Handles the `webapp` user-interface located on the ESP32’s *SPIFFS* partition.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

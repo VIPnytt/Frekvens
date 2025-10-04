@@ -2,7 +2,7 @@
 
 ## 🚀 Getting Started
 
-If you're new to the project, we recommend starting with the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
+If you’re new to the project, we recommend starting with the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
 
 - [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
 - [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
@@ -34,7 +34,7 @@ API documentation and configuration options.
 
 Optional hardware that adds new capabilities and functionality to the device.
 
-- [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared)
+- [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver)
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
 - [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
-- [RTC](https://github.com/VIPnytt/Frekvens/wiki/RTC)
+- [RTC clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock)

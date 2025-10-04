@@ -1,5 +1,91 @@
 # ⚙️ Services
 
+## 🌐 Connectivity
+
+**DNS:**
+
+While `DNS1` and `DNS2` override any DHCP-provided servers, `DNS3` is only available programmatically.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define DNS1 "1.1.1.1" // IPv4
+#define DNS2 "8.8.8.8" // IPv4
+#define DNS3 "9.9.9.9" // IPv4
+```
+
+**Host:**
+
+Hostname is by default set based on device type.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+HOSTNAME='frekvens'
+DOMAIN='.local'
+```
+
+**Time server:**
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define NTP1 "pool.ntp.org"
+#define NTP2 "time.nist.gov"
+#define NTP3 "time.cloudflare.com"
+```
+
+**Time zone:**
+
+Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
+
+[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+
+```ini
+TIME_ZONE_IANA='Etc/Universal'
+```
+
+It can alternatively be provided in *POSIX* format.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define TIME_ZONE_POSIX "UTC0"
+```
+
+**Wi-Fi client:**
+
+While Wi-Fi can be re-configured at any time, it’s often less hassle to configure everything at once.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define WIFI_SSID "name"
+#define WIFI_KEY "secret"
+```
+
+**Wi-Fi hotspot:**
+
+If no hotspot credentials is configured, an open hotspot will be configured automatically.
+
+The hotspot will be activated automatically if no Wi-Fi credentials is configured, but can also be triggered by pressing and holding any physical button during startup. For security reasons, it won’t activate if the Wi-Fi signal is lost or out of reach.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define WIFI_SSID_HOTSPOT "name"
+#define WIFI_KEY_HOTSPOT "secret"
+```
+
+See also [Button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-button) extension.
+
+## ☁️ Web server
+
+**Host check:**
+
+- Method: `OPTIONS`
+- URL: `http://example.local/canonical`
+
 ## 🖥️ Device
 
 **Identify:**
@@ -131,89 +217,3 @@ A small list of providers also supports location, usually in the form of a city 
 ```h
 #define LOCATION "city"
 ```
-
-## 🌐 Network
-
-**DNS:**
-
-While `DNS1` and `DNS2` override any DHCP-provided servers, `DNS3` is only available programmatically.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define DNS1 "1.1.1.1" // IPv4
-#define DNS2 "8.8.8.8" // IPv4
-#define DNS3 "9.9.9.9" // IPv4
-```
-
-**Host:**
-
-Hostname is by default set based on device type.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-HOSTNAME='frekvens'
-DOMAIN='.local'
-```
-
-**Time server:**
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define NTP1 "pool.ntp.org"
-#define NTP2 "time.nist.gov"
-#define NTP3 "time.cloudflare.com"
-```
-
-**Time zone:**
-
-Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/Istanbul`.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-TIME_ZONE_IANA='Etc/Universal'
-```
-
-It can alternatively be provided in *POSIX* format.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define TIME_ZONE_POSIX "UTC0"
-```
-
-**Wi-Fi client:**
-
-While Wi-Fi can be re-configured at any time, it's often less hassle to configure everything at once.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define WIFI_SSID "name"
-#define WIFI_KEY "secret"
-```
-
-**Wi-Fi hotspot:**
-
-If no hotspot credentials is configured, an open hotspot will be configured automatically.
-
-The hotspot will be activated automatically if no Wi-Fi credentials is configured, but can also be triggered by pressing and holding any physical button during startup. For security reasons, it won't activate if the Wi-Fi signal is lost or out of reach.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define WIFI_SSID_HOTSPOT "name"
-#define WIFI_KEY_HOTSPOT "secret"
-```
-
-See also [Button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-button) extension.
-
-## ☁️ Web server
-
-**Host check:**
-
-- Method: `OPTIONS`
-- URL: `http://example.local/canonical`

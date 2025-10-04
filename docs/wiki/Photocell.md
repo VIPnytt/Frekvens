@@ -4,25 +4,25 @@ Automatic ambient brightness adjustment can be achieved by installing a Light De
 
 Most common LDRs work well when paired with a reasonably sized fixed resistor. They are inexpensive and widely available from hobby and electronics suppliers (e.g. [CdS photoresistor](https://www.adafruit.com/product/161) and [Through-Hole Resistors](https://www.adafruit.com/product/2892)).
 
-A **10 kΩ resistor** is a good starting point, but for best results check the LDR's datasheet and select a value that matches the typical daylight conditions where the device will operate.
+A **10 kΩ resistor** is a good starting point, but for best results check the LDR’s datasheet and select a value that matches the typical daylight conditions where the device will operate.
 
 For a clean installation, the LDR can be placed inside a standard LED cap (e.g. [LC5-8](https://www.toby.co.uk/led-and-light-pipes/led-mounts-and-spacers/lc3-and-lc5-valcon-3mm-and-5mm-led-lens-caps/)) so it mounts neatly in the device chassis and remains visually discreet.
 
-## 📈 Schematics
+## 📌 Schematics
 
 ### LDR schema
 
 ```text
 ┌─┐
 │ ├─ +3.3 V DC
-│ ├─ Signal
+│ ├─ Bridge
 └─┘
 ```
 
 ### Resistor schema
 
 ```text
- ┌── Signal
+ ┌── Bridge
 ┌┴┐
 │ │
 └┬┘
@@ -36,7 +36,7 @@ For a clean installation, the LDR can be placed inside a standard LED cap (e.g. 
 │          3V3 ├─ +3.3 V DC
 │          GND ├─ 0 V DC
 │              │
-│ Analog input ├─ Signal
+│ Analog input ├─ Bridge
 └──────────────┘
 ```
 
@@ -44,14 +44,16 @@ For a clean installation, the LDR can be placed inside a standard LED cap (e.g. 
 
 ### Sensor reading
 
+Analog input from the resistor bridge.
+
 Any analog input pin can be used, but those on the ADC1 channel are preferred.
 
-> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based, original series) boards, the ADC2 channel pins are not supported.
+> Avoid strapping pins as this pin is biased.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_LDR 1 // Signal
+#define PIN_LDR 1 // Bridge
 ```
 
 ## 🧩 Extension

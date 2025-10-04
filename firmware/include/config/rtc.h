@@ -1,6 +1,6 @@
 #pragma once
 /**
- * https://github.com/VIPnytt/Frekvens/wiki/RTC
+ * https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
