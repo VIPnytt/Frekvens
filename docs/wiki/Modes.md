@@ -292,7 +292,7 @@ MODE_FLIES=true
 
 ## 🌱 Game of life
 
-Inspired by Conway's *Game of Life*.
+Inspired by Conway’s *Game of Life*.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 
@@ -306,7 +306,7 @@ See also [Game of life clock](#-game-of-life-clock).
 
 ## 🌳 Game of life clock
 
-Inspired by *Conway's Game of Life*
+Inspired by Conway’s *Game of Life*
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

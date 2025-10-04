@@ -2,32 +2,29 @@
 
 > Article number 005.262.48
 
-## 📈 Schematics
+## 📌 Schematics
 
 ### LED panels schema
 
 ```text
-           ┌──────────────────────── +5 V DC
-           │   ┌──────────────────── SPI CS
-           │   │   ┌──────────────── SPI SCLK
-           │   │   │   ┌──────────── SPI MOSI
-           │   │   │   │   ┌──────── OE
-           │   │   │   │   │   ┌──── 0 V DC
-    ┌──────┼───┼───┼───┼───┼───┼──┐
-    │     VCC CLA CLK DI  EN  GND │
-    │ SW                          │
-    │ SW1   U1 ┌┴─┴─┴─┴─┴─┴─┴─┴┐  │
-┌───┼ DC-      └┬─┬─┬─┬─┬─┬─┬─┬┘  │
-│ ┌─┼ DC+                   └─────┼─ Button
-│ │ │     VCC CLA CLK DO  EN  GND │
-│ │ └──────────────────┼──────────┘
-│ │                    └──────────── SPI MISO
-│ │
-│ └───────────────────────────────── +5 V DC
-└─────────────────────────────────── 0 V DC
+                ┌──────────────────────── +5 V DC
+                │   ┌──────────────────── SPI CS
+                │   │   ┌──────────────── SPI SCLK
+                │   │   │   ┌──────────── SPI MOSI
+                │   │   │   │   ┌──────── OE
+                │   │   │   │   │   ┌──── 0 V DC
+         ┌──────┼───┼───┼───┼───┼───┼──┐
+         │     VCC CLA CLK DI  EN  GND │
+ Button ─┼ SW                          │
+         │ SW1   U1 ┌┴─┴─┴─┴─┴─┴─┴─┴┐  │
+ 0 V DC ─┼ DC-      └┬─┬─┬─┬─┬─┬─┬─┬┘  │
++5 V DC ─┼ DC+                   └─────┼─ Button
+         │     VCC CLA CLK DO  EN  GND │
+         └──────────────────┼──────────┘
+                            └──────────── SPI MISO
 ```
 
-> There's four daisy-chained panels, here shown as one combined unit.
+> There’s four daisy-chained panels, here shown as one combined unit.
 
 ### Button schema
 
@@ -88,27 +85,27 @@ Black ┼─ 0 V DC
 
 Several methods for opening the device have been shared online. Among them, the most *consistently reliable* and *non-destructive* approach appears to involve the careful use of a drill.
 
-By using a sharp 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they're all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, preferably with the help of small pliers.
+By using a sharp 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they’re all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, preferably with the help of small pliers.
 
-For those who desire, it's possible to use 2 mm rivets to close the device afterwards.
+For those who desire, it’s possible to use 2 mm rivets to close the device afterwards.
 
-> There isn't really risk of hitting anything inside when drilling, as it's basically just a empty box. Most of the electronic components is covered up, but make sure to clean up any metal fragments before powering on.
+> There isn’t really risk of hitting anything inside when drilling, as it’s basically just a empty box. Most of the electronic components is covered up, but make sure to clean up any metal fragments before powering on.
 
 ### Removing the `U1` chip
 
-The first thing to do is removing the chip labeled `U1`, as this is the core handling both the button input and display output. It's easy to locate as the device consists of 4 panels where the `U1` chip is only present on one of them.
+The first thing to do is removing the chip labeled `U1`, as this is the core handling both the button input and display output. It’s easy to locate as the device consists of 4 panels where the `U1` chip is only present on one of them.
 
 ### Wiring the LED panels
 
-Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There's two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
 
-> The LED panels are rotated 180° compared to the device's natural orientation.
+> The LED panels are rotated 180° compared to the device’s natural orientation.
 
 ### Connecting the button
 
-The button can be wired in several ways, depending on how much modification is preferred. The most straightforward approach is to connect it directly between the ESP32 and `GND`. This method is recommended because it makes the wiring easy to follow and keeps the setup visually clear.
+The button can be wired in several ways, depending on the desired level of modification. The simplest and most visually clear method is to connect it directly between the ESP32 and `GND`. This keeps the wiring straightforward and self-contained, reducing the chance of confusion from the PCB’s existing circuitry.
 
-For those who prefer to reuse existing connections, the wire connected to `SW` can be re-routed to the ESP32 instead. As an alternative with minimal changes, it is also possible to connect the empty `U1` pad 7 directly to the ESP32.
+If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — internally connected to `SW` — provides another solder point with the same electrical result.
 
 > On the LED panel, `SW1` is already tied to `GND`.
 
@@ -122,7 +119,7 @@ The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.
 
 ## 🛠️ Hardware considerations
 
-The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for those who desire it's easy and straight forward to do something about it.
+The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for those who desire it’s easy and straight forward to do something about it.
 
 ### Wiring
 
@@ -148,24 +145,46 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 
 ## 🔧 Configuration
 
-| Obegränsad | Via                 | ESP32          | Function | Constant   |
-| ---------- | ------------------- | -------------- | -------- | ---------- |
-| `CLK`      | Logic level shifter | SPI SCLK       | SPI SCLK | `PIN_SCLK` |
-| `DO`       | Logic level shifter | SPI MISO       | SPI MISO | `PIN_MISO` |
-| `DI`       | Logic level shifter | SPI MOSI       | SPI MOSI | `PIN_MOSI` |
-| `CLA`      | Logic level shifter | Digital output | SPI CS   | `PIN_CS`   |
-| `EN`       | Logic level shifter | PWM output     | OE       | `PIN_OE`   |
-| `SW`       |                     | Digital input  | Button   | `PIN_SW2`  |
+| Label | Type           | Constant   |
+| ----- | -------------- | ---------- |
+| `CLA` | Digital output | `PIN_CS`   |
+| `CLK` | SPI SCLK       | `PIN_SCLK` |
+| `DI`  | SPI MOSI       | `PIN_MOSI` |
+| `DO`  | SPI MISO       | `PIN_MISO` |
+| `EN`  | PWM output     | `PIN_OE`   |
+| `SW`  | Digital input  | `PIN_SW2`  |
 
 ### Power and ground
+
+Supplies power to both logic and LEDs.
 
 - `DC+` / `DC-` is intended to supply high current to the LEDs.
 - `VCC` / `GND` is intended as outputs for low current components handling the logic.
 - Both are tied together internally on the PCB.
 
-> Do not use the ESP32's USB port while the *IKEA Obegränsad's* USB-cable is connected to a power source!
+The *IKEA Obegränsad* can draw up to 2.0 A at 5 V (10 W) under full load. Use a USB power supply rated for at least this continuous output.
+
+> Do not use the ESP32’s USB port while the *IKEA Obegränsad’s* USB-cable is connected to a power source!
+
+### SPI CS
+
+Chip Select for the LED drivers.
+
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
+Any digital output pin can be used.
+
+> Avoid strapping pins as this pin is pulled *LOW* with an effective resistance of about 25 kΩ. On ESP32 (LX6-based) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define PIN_CS 1 // CLA
+```
 
 ### SPI SCLK
+
+Serial clock for SPI communication.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
@@ -176,24 +195,12 @@ Any SPI `SCLK` pin can be used.
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_SCLK 1 // CLK
-```
-
-### SPI MISO
-
-Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
-Any SPI `MISO` pin can be used.
-
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define PIN_MISO 2 // DO
+#define PIN_SCLK 2 // CLK
 ```
 
 ### SPI MOSI
+
+Master-out data line for SPI.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
@@ -207,27 +214,33 @@ Any SPI `MOSI` pin can be used.
 #define PIN_MOSI 3 // DI
 ```
 
-### SPI CS
+### SPI MISO
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+Master-in data line for SPI (optional).
 
-Any digital output pin can be used.
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a 25 kΩ resistor. On ESP32 (LX6-based, original series) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+Any SPI `MISO` pin can be used.
+
+> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
 ```h
-#define PIN_CS 4 // CLA
+#define PIN_MISO 4 // DO
 ```
 
 ### Output Enable
 
-Optional to connect, [logic level shifter](#%EF%B8%8F-logic-level-shifter) required. If left unconnected, `OE` must be tied to `GND`.
+Enables or disables LED output.
+
+Optional to connect; if unused, tie `EN` to `GND`.
+
+[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
 
 Any PWM output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *HIGH* using a 25 kΩ resistor.
+> Avoid strapping pins as this pin is pulled *HIGH* with an effective resistance of about 25 kΩ.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -237,9 +250,9 @@ Any PWM output pin can be used.
 
 ### Button
 
-Optional to connect.
+Button input for user interaction.
 
-Any digital input pin can be used, but those that are also RTC-capable are preferred.
+Optional to connect. Use an RTC-capable digital input pin for best compatibility.
 
 > Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
@@ -267,9 +280,9 @@ NAME='Obegränsad'
 #pragma once
 
 // GPIO pins
-#define PIN_SCLK 1 // CLK
-#define PIN_MOSI 2 // DI
-#define PIN_CS 3   // CLA
+#define PIN_CS 1   // CLA
+#define PIN_SCLK 2 // CLK
+#define PIN_MOSI 3 // DI
 #define PIN_OE 4   // EN
 #define PIN_SW2 5  // SW
 
@@ -281,3 +294,20 @@ NAME='Obegränsad'
 #define LATITUDE "0.000"
 #define LONGITUDE "0.000"
 ```
+
+## 🔗 Resources
+
+A collection of external links for deeper exploration — including teardowns, hacks, datasheets, and community projects — provided for reference only and with no formal connection to this project.
+
+- [GitHub: a-johanson/rusty-obegraensad](https://github.com/a-johanson/rusty-obegraensad/blob/master/README.md)
+- [GitHub: atesgoral/obegraensad-hack](https://github.com/atesgoral/obegraensad-hack/blob/main/README.md)
+- [GitHub: Drewbi/oberled](https://github.com/Drewbi/oberled/blob/main/README.md)
+- [GitHub: MakeMagazinDE/Obegraensad](https://github.com/MakeMagazinDE/Obegraensad/blob/main/README.md)
+- [GitHub: ph1p/ikea-led-obegraensad](https://github.com/ph1p/ikea-led-obegraensad/blob/main/README.md)
+- [GitHub: unframework/obehack-202301](https://github.com/unframework/obehack-202301/blob/main/README.md)
+- [Hackaday: IKEA OBEGRÄNSAD LED wall lamp + ESP32](https://hackaday.io/project/188987-ikea-obegrnsad-led-wall-lamp-esp32)
+- [Hackaday: Hacking The IKEA OBEGRÄNSAD LED Wall Lamp](https://hackaday.com/2023/05/25/hacking-the-ikea-obegransad-led-wall-lamp/)
+- [Heise magazine: IKEA-Matrix gehackt](https://www.heise.de/select/make/2023/6/2317908271368569840)
+- [IKEA: OBEGRÄNSAD PR-boekje](https://www.ikea.com/nl/nl/files/pdf/3b/ff/3bff5e70/obegransad-pr-boekje-incl-pricing.pdf)
+- [Pixelkönig Blog: X-Clock (IKEA OBEGRÄNSAD Hack)](http://blog.digital-image.de/2023/05/31/x-clock/)
+- [StarChips: SCT2024 DataSheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf)

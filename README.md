@@ -51,10 +51,10 @@ Because board layouts can differ significantly, the documentation references pin
 
 If desired, extra hardware can be added:
 
-- IR sensor — lets you control the device with a standard TV-style remote
+- IR receiver — lets you control the device with a standard TV-style remote
 - Microphone — syncs the display with music
 - Photocell — automatic ambient brightness adaption
-- RTC (real-time clock) — keeps accurate time, even when powered off
+- RTC clock — keeps accurate time, even when powered off
 
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.
 
@@ -62,11 +62,11 @@ If desired, extra hardware can be added:
 
 Each display model has its own hardware setup guide:
 
-- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens#-getting-started)
+- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens)
   - Unsolder the `U2` chip
   - Connect power, SPI and `EN`
   - Microphone input available at `U3` pin 7 or `U2` pin 11
-- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad#getting-started)
+- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad)
   - Unsolder the `U1` chip
   - Connect power, SPI and `EN`
 
@@ -113,7 +113,9 @@ Add one if the following to [`.env`](https://github.com/VIPnytt/Frekvens/blob/ma
 ```ini
 # IKEA Frekvens
 ENV_FREKVENS=''
+```
 
+```ini
 # IKEA Obegränsad
 ENV_OBEGRANSAD=''
 ```
@@ -121,18 +123,23 @@ ENV_OBEGRANSAD=''
 Define pin assignments in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#pragma once
+// IKEA Frekvens
+#define PIN_CS 1   // LAK
+#define PIN_SCLK 2 // CLK
+#define PIN_MOSI 3 // DA
+#define PIN_OE 4   // EN
+#define PIN_SW1 5  // SW1
+#define PIN_SW2 6  // SW
+#define PIN_MIC 7  // U3 pin 7
+```
 
-// GPIO pins
-#define PIN_SCLK 1 // CLK
-#define PIN_MOSI 2 // DA/DI
-#define PIN_CS 3   // LAK/CLA
+```h
+// IKEA Obegränsad
+#define PIN_CS 1   // CLA
+#define PIN_SCLK 2 // CLK
+#define PIN_MOSI 3 // DI
 #define PIN_OE 4   // EN
 #define PIN_SW2 5  // SW
-
-// IKEA Frekvens only
-#define PIN_SW1 6  // SW1
-#define PIN_MIC 7  // U3 pin 7
 ```
 
 ### Wi-Fi

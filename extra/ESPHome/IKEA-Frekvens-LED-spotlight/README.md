@@ -115,7 +115,7 @@ Analog input from the microphone amplifier.
 
 Use an ADC1-channel analog pin for best compatibility.
 
-> Avoid strapping pins as this pin is biased. On ESP32 (LX6-based) boards, the ADC2 channel pins are not supported.
+> Avoid strapping pins as this pin is biased.
 
 ```yaml
 PIN_MIC: 3 # U3

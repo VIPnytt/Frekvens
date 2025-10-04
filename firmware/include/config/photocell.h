@@ -4,4 +4,4 @@
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
-// #define PIN_LDR 1 // Signal
+// #define PIN_LDR 1 // Bridge

@@ -18,6 +18,9 @@ Vulnerabilities will be publicly disclosed **after a fix has been released** and
 
 ## ✅ Supported Versions
 
+Only the latest minor release line receives security updates.
+Earlier releases are no longer supported.
+
 | Version | Supported          |
 |---------|--------------------|
 | 1.1.x   | :white_check_mark: |
