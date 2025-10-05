@@ -1,7 +1,7 @@
 [project]
 name = "frekvens"
 description = "Toolbox for the Frekvens ESP32 project."
-version = "1.1.2-dev"
+version = "1.2.0"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [

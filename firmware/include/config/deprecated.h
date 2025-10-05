@@ -20,16 +20,23 @@
 /**
  * MODE_OPENMETRO
  *
+ * Deprecated since v1.2.0.
+ * Scheduled for removal in v2.0.0.
+ *
  * MODE_OPENMETRO has been replaced by MODE_OPENMETEO.
  * To ensure forward compatibility, update your configuration:
  * Replace MODE_OPENMETRO with MODE_OPENMETEO.
  */
 #ifdef MODE_OPENMETRO
 #define MODE_OPENMETEO MODE_OPENMETRO
+#warning "'MODE_OPENMETRO' is deprecated since v1.2.0 and will be removed in v2.0.0. Use 'MODE_OPENMETEO' instead."
 #endif
 
 /**
  * OPENMETRO_KEY
+ *
+ * Deprecated since v1.2.0.
+ * Scheduled for removal in v2.0.0.
  *
  * OPENMETRO_KEY has been replaced by OPENMETEO_KEY.
  * To ensure forward compatibility, update your configuration:
@@ -37,10 +44,14 @@
  */
 #ifdef OPENMETRO_KEY
 #define OPENMETEO_KEY OPENMETRO_KEY
+#warning "'OPENMETRO_KEY' is deprecated since v1.2.0 and will be removed in v2.0.0. Use 'OPENMETEO_KEY' instead."
 #endif
 
 /**
  * OPENMETRO_PARAMETERS
+ *
+ * Deprecated since v1.2.0.
+ * Scheduled for removal in v2.0.0.
  *
  * OPENMETRO_PARAMETERS has been replaced by OPENMETEO_PARAMETERS.
  * To ensure forward compatibility, update your configuration:
@@ -48,10 +59,14 @@
  */
 #ifdef OPENMETRO_PARAMETERS
 #define OPENMETEO_PARAMETERS OPENMETRO_PARAMETERS
+#warning "'OPENMETRO_PARAMETERS' is deprecated since v1.2.0 and will be removed in v2.0.0. Use 'OPENMETEO_PARAMETERS' instead."
 #endif
 
 /**
  * PIN_EN
+ *
+ * Deprecated since v1.2.0.
+ * Scheduled for removal in v2.0.0.
  *
  * PIN_EN has been replaced by PIN_OE.
  * To ensure forward compatibility, update your configuration:
@@ -59,4 +74,5 @@
  */
 #ifdef PIN_EN
 #define PIN_OE PIN_EN
+#warning "'PIN_EN' is deprecated since v1.2.0 and will be removed in v2.0.0. Use 'PIN_OE' instead."
 #endif
