@@ -24,7 +24,7 @@
         "solid-js": "1.9.9"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "4.1.13",
+        "@tailwindcss/vite": "4.1.14",
         "@types/js-cookie": "3.0.6",
         "@types/node": "24.5.2",
         "@types/offscreencanvas": "2019.7.3",
