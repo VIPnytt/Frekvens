@@ -23,10 +23,7 @@ class Firmware:
             ]:
                 self.env.Append(
                     CPPDEFINES=[
-                        (
-                            option.upper(),
-                            1,
-                        ),
+                        (option.upper()),
                     ]
                 )
             elif option.upper() == "OTA_KEY":
@@ -97,6 +94,7 @@ class Firmware:
             "board",
             "board_build.f_cpu",
             "board_build.f_flash",
+            "board_build.filesystem",
             "board_build.flash_mode",
             "board_build.mcu",
             "board_build.partitions",
@@ -118,6 +116,14 @@ class Firmware:
                         (define.upper(), flag),
                     ]
                 )
+                if option in [
+                    "board_build.filesystem",
+                ]:
+                    self.env.Append(
+                        CPPDEFINES=[
+                            (define.upper() + "__" + str(value).upper()),
+                        ]
+                    )
 
     def upload(self) -> None:
         env_pio = dotenv.dotenv_values(".env")

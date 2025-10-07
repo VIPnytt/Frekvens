@@ -216,6 +216,9 @@ void DeviceService::ready()
 #ifdef BOARD_BUILD__F_FLASH
     (*Build->config)[Config::pio]["board_build.f_flash"] = BOARD_BUILD__F_FLASH;
 #endif
+#ifdef BOARD_BUILD__FILESYSTEM
+    (*Build->config)[Config::pio]["board_build.filesystem"] = BOARD_BUILD__FILESYSTEM;
+#endif
 #ifdef BOARD_BUILD__FLASH_MODE
     (*Build->config)[Config::pio]["board_build.flash_mode"] = BOARD_BUILD__FLASH_MODE;
 #endif

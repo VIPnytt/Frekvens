@@ -36,7 +36,7 @@ void OtaExtension::setup()
 
 #ifdef F_INFO
     Update.onProgress(&onProgress);
-#endif
+#endif // F_INFO
 
     ArduinoOTA.begin();
     ArduinoOTA.onStart(&onStart);
@@ -44,6 +44,9 @@ void OtaExtension::setup()
     ArduinoOTA.onEnd(&onEnd);
 
     JsonDocument doc;
+#ifdef BOARD_BUILD__FILESYSTEM
+    doc["filesystem"] = BOARD_BUILD__FILESYSTEM;
+#endif // BOARD_BUILD__FILESYSTEM
     doc["platformio.ini"]["upload_protocol"] = "espota";
     doc["platformio.ini"]["upload_port"] = Connectivity.domain;
 #if defined(OTA_KEY) || defined(OTA_KEY_HASH)
@@ -101,7 +104,7 @@ void OtaExtension::onProgress(size_t index, size_t len)
 {
     Serial.printf("%s: writing @ 0x%X\n", Ota->name, index);
 }
-#endif
+#endif // F_INFO
 
 #if !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
 void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
@@ -110,7 +113,11 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
     {
         onStart();
     }
+#ifdef BOARD_BUILD__FILESYSTEM
+    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf(BOARD_BUILD__FILESYSTEM) >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
+#else
     if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("spiffs") >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
+#endif // BOARD_BUILD__FILESYSTEM
     {
 #ifdef F_INFO
         Serial.printf("%s: %s\n", Ota->name, Update.errorString());
