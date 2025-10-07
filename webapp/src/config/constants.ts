@@ -15,8 +15,6 @@ export const EXTENSION_PHOTOCELL: boolean = import.meta.env.VITE_EXTENSION_PHOTO
 export const EXTENSION_PLAYLIST: boolean = import.meta.env.VITE_EXTENSION_PLAYLIST !== 'false';
 export const EXTENSION_RESTFUL: boolean = import.meta.env.VITE_EXTENSION_REST !== 'false';
 export const EXTENSION_SIGNAL: boolean = import.meta.env.VITE_EXTENSION_SIGNAL !== 'false';
-export const EXTENSION_WEBAPP: boolean = import.meta.env.VITE_EXTENSION_WEBAPP !== 'false';
-export const EXTENSION_WEBSOCKET: boolean = import.meta.env.VITE_EXTENSION_WEBSOCKET !== 'false';
 
 export const MODE_ANIMATION: boolean = import.meta.env.VITE_MODE_ANIMATION !== 'false';
 export const MODE_ARTNET: boolean = import.meta.env.VITE_MODE_ARTNET !== 'false';

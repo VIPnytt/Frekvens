@@ -38,7 +38,7 @@ export const receiver = (json: any) => {
 export const Footer: Component = () => (
     <>
         {
-            EXTENSION_MESSAGE && ExtensionsList().includes(ExtensionMessageName) && (
+            EXTENSION_MESSAGE && (
                 <ExtensionMessageLink />
             )
         }
@@ -64,7 +64,7 @@ export const SidebarSecondary: Component = () => (
                 )
             }
             {
-                EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
+                EXTENSION_PLAYLIST && (
                     <ExtensionPlaylistActions />
                 )
             }
@@ -108,9 +108,10 @@ export const MainThird: Component = () => (
                     </div>
                 </div>
             </div>
-        }>
+        }
+    >
         {
-            EXTENSION_BUILD && ExtensionsList().includes(ExtensionBuildName) && (
+            EXTENSION_BUILD && (
                 <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionBuildName.toLowerCase()}`}>
                     <ExtensionBuildThird />
                 </Match>
@@ -124,7 +125,7 @@ export const MainThird: Component = () => (
             )
         }
         {
-            EXTENSION_MESSAGE && ExtensionsList().includes(ExtensionMessageName) && (
+            EXTENSION_MESSAGE && (
                 <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionMessageName.toLowerCase()}`}>
                     <ExtensionMessageThird />
                 </Match>
@@ -145,7 +146,7 @@ export const MainThird: Component = () => (
             )
         }
         {
-            EXTENSION_OTA && ExtensionsList().includes(ExtensionOtaName) && (
+            EXTENSION_OTA && (
                 <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionOtaName.toLowerCase()}`}>
                     <ExtensionOtaThird />
                 </Match>
@@ -159,7 +160,7 @@ export const MainThird: Component = () => (
             )
         }
         {
-            EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
+            EXTENSION_PLAYLIST && (
                 <Match when={WebServerPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionPlaylistName.toLowerCase()}`}>
                     <ExtensionPlaylistThird />
                 </Match>
@@ -172,7 +173,7 @@ export const SidebarThird: Component = () => (
     <SidebarSection title={name}>
         <>
             {
-                EXTENSION_BUILD && ExtensionsList().includes(ExtensionBuildName) && (
+                EXTENSION_BUILD && (
                     <ExtensionBuildLink />
                 )
             }
@@ -182,7 +183,7 @@ export const SidebarThird: Component = () => (
                 )
             }
             {
-                EXTENSION_MESSAGE && ExtensionsList().includes(ExtensionMessageName) && (
+                EXTENSION_MESSAGE && (
                     <ExtensionMessageLink />
                 )
             }
@@ -197,7 +198,7 @@ export const SidebarThird: Component = () => (
                 )
             }
             {
-                EXTENSION_OTA && ExtensionsList().includes(ExtensionOtaName) && (
+                EXTENSION_OTA && (
                     <ExtensionOtaLink />
                 )
             }
@@ -207,7 +208,7 @@ export const SidebarThird: Component = () => (
                 )
             }
             {
-                EXTENSION_PLAYLIST && ExtensionsList().includes(ExtensionPlaylistName) && (
+                EXTENSION_PLAYLIST && (
                     <ExtensionPlaylistLink />
                 )
             }
