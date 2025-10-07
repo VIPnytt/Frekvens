@@ -1,7 +1,7 @@
 #include "config/constants.h"
 #include "modes/E131Mode.h"
+#include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
-#include "services/NetworkService.h"
 
 void E131Mode::wake()
 {
@@ -10,7 +10,7 @@ void E131Mode::wake()
     {
         udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-        Serial.printf("%s: listening at %s:5568\n", name, Network.domain.data());
+        Serial.printf("%s: listening at %s:5568\n", name, Connectivity.domain.data());
 #endif
     }
 }

@@ -7,11 +7,11 @@ import { Center } from './components/Center';
 import { ToastProvider } from './components/Toast';
 import { Icon } from './components/Vector';
 import { MessageProvider, WebSocketState } from './extensions/WebSocket';
+import { MainThird as ConnectivityThird, SidebarSecondary as ConnectivitySecondarySidebar, SidebarThird as ConnectivityThirdSidebar, name as ConnectivityName } from './services/Connectivity';
 import { MainSecondary as DeviceSecondary, SidebarSecondary as DeviceSecondarySidebar, DeviceName } from './services/Device';
 import { Main as DisplayMain, Sidebar as DisplaySidebar, SidebarSecondary as DisplaySecondarySidebar, DisplayPower } from './services/Display';
 import { Footer as ExtensionsFooter, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar, name as ExtensionsName } from './services/Extensions';
 import { Main as ModesMain, MainThird as ModesThird, Sidebar as ModesSidebar, SidebarSecondary as ModesSecondarySidebar, SidebarThird as ModesThirdSidebar, name as ModesName } from './services/Modes';
-import { MainThird as NetworkThird, SidebarSecondary as NetworkSecondarySidebar, SidebarThird as NetworkThirdSidebar, name as NetworkName } from './services/Network';
 import { WebServerPath } from './services/WebServer';
 
 import './style.css';
@@ -72,9 +72,10 @@ const Secondary: Component = () => (
             <Switch
                 fallback={
                     <DeviceSecondary />
-                }>
-                <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
-                    <NetworkThird />
+                }
+            >
+                <Match when={WebServerPath().startsWith(`/${ConnectivityName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
+                    <ConnectivityThird />
                 </Match>
                 <Match when={WebServerPath().startsWith(`/${ExtensionsName.toLowerCase()}`)}>
                     <ExtensionsThird />
@@ -89,15 +90,16 @@ const Secondary: Component = () => (
                 <Switch
                     fallback={
                         <>
+                            <ConnectivitySecondarySidebar />
                             <DeviceSecondarySidebar />
                             <DisplaySecondarySidebar />
                             <ExtensionsSecondarySidebar />
                             <ModesSecondarySidebar />
-                            <NetworkSecondarySidebar />
                         </>
-                    }>
-                    <Match when={WebServerPath().startsWith(`/${NetworkName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
-                        <NetworkThirdSidebar />
+                    }
+                >
+                    <Match when={WebServerPath().startsWith(`/${ConnectivityName.toLowerCase()}`) || location.hostname == '192.168.4.1' || location.hostname.startsWith('[fe80::')}>
+                        <ConnectivityThirdSidebar />
                     </Match>
                     <Match when={WebServerPath().startsWith(`/${ExtensionsName.toLowerCase()}`)}>
                         <ExtensionsThirdSidebar />

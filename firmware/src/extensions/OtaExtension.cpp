@@ -8,11 +8,11 @@
 #include "extensions/OtaExtension.h"
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
+#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 #include "services/ModesService.h"
-#include "services/NetworkService.h"
 
 OtaExtension *Ota = nullptr;
 
@@ -45,7 +45,7 @@ void OtaExtension::setup()
 
     JsonDocument doc;
     doc["platformio.ini"]["upload_protocol"] = "espota";
-    doc["platformio.ini"]["upload_port"] = Network.domain;
+    doc["platformio.ini"]["upload_port"] = Connectivity.domain;
 #if defined(OTA_KEY) || defined(OTA_KEY_HASH)
     doc["platformio.ini"]["upload_flags"] = "--auth=REDACTED";
 #endif // defined(OTA_KEY_HASH) || defined(OTA_KEY)

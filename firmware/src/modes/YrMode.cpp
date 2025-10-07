@@ -6,7 +6,7 @@
 
 #include "extensions/BuildExtension.h"
 #include "modes/YrMode.h"
-#include "services/NetworkService.h"
+#include "services/ConnectivityService.h"
 
 #if EXTENSION_BUILD && defined(YR_PARAMETERS)
 void YrMode::setup()
@@ -47,7 +47,7 @@ void YrMode::update()
 
     http.begin(urls.back());
     http.addHeader("Accept", "application/json");
-    http.setUserAgent(Network.userAgent.data());
+    http.setUserAgent(Connectivity.userAgent.data());
 
 #ifdef F_DEBUG
     Serial.printf("%s: %s\n", name, urls.back());

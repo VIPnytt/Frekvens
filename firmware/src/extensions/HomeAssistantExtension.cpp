@@ -8,6 +8,7 @@
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
+#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
@@ -35,7 +36,7 @@ void HomeAssistantExtension::setup()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::brightness_command_template] = "{\"brightness\":{{value-1}}}";
         component[Abbreviations::brightness_command_topic] = topicDisplay + "/set";
-        component[Abbreviations::brightness_scale] = 1U << 8;
+        component[Abbreviations::brightness_scale] = 1 << 8;
         component[Abbreviations::brightness_state_topic] = topicDisplay;
         component[Abbreviations::brightness_value_template] = "{{value_json.brightness+1}}";
         component[Abbreviations::command_topic] = topicDisplay + "/set";
@@ -71,7 +72,7 @@ void HomeAssistantExtension::ready()
     {
         JsonObject device = (*discovery)[Abbreviations::device].to<JsonObject>();
 #if EXTENSION_WEBAPP
-        device[Abbreviations::configuration_url] = std::string("http://").append(Network.domain);
+        device[Abbreviations::configuration_url] = std::string("http://").append(Connectivity.domain);
 #endif // EXTENSION_WEBAPP
         {
             JsonArray _connections = device[Abbreviations::connections].to<JsonArray>();

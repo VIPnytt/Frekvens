@@ -9,9 +9,9 @@ import { ws } from '../extensions/WebSocket';
 import { PageSidebarSet } from '../index'
 import { SidebarSection } from './WebServer';
 
-export const name = 'Network';
+export const name = 'Connectivity';
 
-interface NetworkItem {
+interface ConnectivityItem {
     bssid: string;
     rssi: number;
     ssid?: string | undefined;
@@ -21,13 +21,13 @@ const [getDomain, setDomain] = createSignal<string>(location.hostname);
 const [getHostname, setHostname] = createSignal<string>(location.hostname.split('.')[0]);
 const [getInputConnecting, setInputConnecting] = createSignal<boolean>(false);
 const [getKeyNew, setKeyNew] = createSignal<string>('');
-const [getScan, setScan] = createSignal<NetworkItem[]>([]);
+const [getScan, setScan] = createSignal<ConnectivityItem[]>([]);
 const [getSaved, setSaved] = createSignal<string[]>([]);
 const [getSsid, setSsid] = createSignal<string | undefined>(undefined);
 const [getSsidNew, setSsidNew] = createSignal<string>('');
 
-export const NetworkDomain = getDomain;
-export const NetworkHostname = getHostname;
+export const ConnectivityDomain = getDomain;
+export const ConnectivityHostname = getHostname;
 
 export const receiver = (json: any) => {
     json[name]?.domain !== undefined && setDomain(json[name].domain);
