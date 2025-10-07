@@ -4,7 +4,7 @@ import { Component, createSignal } from 'solid-js';
 import { Center } from '../components/Center';
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
-import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL, EXTENSION_WEBSOCKET } from '../config/constants';
+import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from '../config/constants';
 import { name as ExtensionHomeAssistantName } from '../extensions/HomeAssistant';
 import { name as ExtensionMqttName } from '../extensions/Mqtt';
 import { name as ExtensionRestfulName } from '../extensions/Restful';
@@ -101,7 +101,7 @@ export const MainSecondary: Component = () => {
                         )
                     }
                     {
-                        EXTENSION_RESTFUL && ExtensionsList().includes(ExtensionRestfulName) && (
+                        EXTENSION_RESTFUL && (
                             <>
                                 <div class="border-t border-gray-200" />
                                 <h3 class="font-semibold text-gray-700 tracking-wide">
@@ -116,18 +116,16 @@ export const MainSecondary: Component = () => {
                         )
                     }
                     {
-                        EXTENSION_WEBSOCKET && ExtensionsList().includes(ExtensionWebSocketName) && (
-                            <>
-                                <div class="border-t border-gray-200" />
-                                <h3 class="font-semibold text-gray-700 tracking-wide">
-                                    {ExtensionWebSocketName}
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-700">URL:</span> <span class="font-mono">ws://{location.hostname}/ws</span><br />
-                                    <span class="font-medium text-gray-700">Message:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payloadAlt}</span>
-                                </p>
-                            </>
-                        )
+                        <>
+                            <div class="border-t border-gray-200" />
+                            <h3 class="font-semibold text-gray-700 tracking-wide">
+                                {ExtensionWebSocketName}
+                            </h3>
+                            <p class="text-sm text-gray-500">
+                                <span class="font-medium text-gray-700">URL:</span> <span class="font-mono">ws://{location.hostname}/ws</span><br />
+                                <span class="font-medium text-gray-700">Message:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payloadAlt}</span>
+                            </p>
+                        </>
                     }
                 </div>
             </div>

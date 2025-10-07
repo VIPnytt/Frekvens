@@ -229,7 +229,7 @@ export const SidebarThird: Component = () => (
     <SidebarSection title={name}>
         <>
             {
-                MODE_HOMETHERMOMETER && ModesList().includes(ModeHomeThermometerName) && (
+                MODE_HOMETHERMOMETER && (
                     <ModeHomeThermometerLink />
                 )
             }

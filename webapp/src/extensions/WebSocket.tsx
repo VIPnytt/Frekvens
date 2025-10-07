@@ -2,7 +2,6 @@ import { batch, createEffect, ParentComponent } from 'solid-js';
 import { createEventSignal } from '@solid-primitives/event-listener';
 import { createReconnectingWS, createWSState } from '@solid-primitives/websocket';
 
-import { EXTENSION_WEBAPP } from '../config/constants';
 import { receiver as Connectivity } from '../services/Connectivity';
 import { receiver as Device } from '../services/Device';
 import { receiver as Display } from '../services/Display';
@@ -16,7 +15,7 @@ export const name = 'WebSocket';
 export const ws = createReconnectingWS(`ws://${(!import.meta.env.PROD && import.meta.env.VITE_HOST) || location.hostname}/ws`);
 export const WebSocketState = createWSState(ws);
 
-if (import.meta.env.PROD && EXTENSION_WEBAPP) {
+if (import.meta.env.PROD) {
     createEffect(() => {
         if (WebSocketState() === 3) {
             WebAppCanonical;
