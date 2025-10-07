@@ -1,6 +1,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
+#include "services/ConnectivityService.h"
 #include "services/WebServerService.h"
 
 void WebServerService::setup()
