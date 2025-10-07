@@ -6,7 +6,7 @@
 
 #include "extensions/BuildExtension.h"
 #include "modes/HomeAssistantWeatherMode.h"
-#include "services/NetworkService.h"
+#include "services/ConnectivityService.h"
 
 #if EXTENSION_BUILD
 void HomeAssistantWeatherMode::setup()
@@ -60,7 +60,7 @@ void HomeAssistantWeatherMode::update()
     http.addHeader("Accept", "application/json");
     http.setAuthorizationType("Bearer");
     http.setAuthorization(HOMEASSISTANT_KEY);
-    http.setUserAgent(Network.userAgent.data());
+    http.setUserAgent(Connectivity.userAgent.data());
 
 #ifdef F_DEBUG
     Serial.printf("%s: %s\n", name, urls.back().c_str());

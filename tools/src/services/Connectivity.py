@@ -3,7 +3,7 @@ import zoneinfo
 import importlib.util
 
 
-class Network:
+class Connectivity:
     def tz_lookup(self, tz_name: str) -> str | None:
         search_paths = []
         if zoneinfo.TZPATH:

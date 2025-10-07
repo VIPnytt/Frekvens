@@ -3,12 +3,12 @@ import { createEventSignal } from '@solid-primitives/event-listener';
 import { createReconnectingWS, createWSState } from '@solid-primitives/websocket';
 
 import { EXTENSION_WEBAPP } from '../config/constants';
+import { receiver as Connectivity } from '../services/Connectivity';
 import { receiver as Device } from '../services/Device';
 import { receiver as Display } from '../services/Display';
 import { receiver as Extensions } from '../services/Extensions';
 import { receiver as Fonts } from '../services/Fonts';
 import { receiver as Modes } from '../services/Modes';
-import { receiver as Network } from '../services/Network';
 import { Canonical as WebAppCanonical } from './WebApp';
 
 export const name = 'WebSocket';
@@ -30,10 +30,10 @@ export const MessageProvider: ParentComponent = (props) => {
     createEffect(() => {
         const json = JSON.parse(event()?.data || '{}');
         batch(() => {
+            Connectivity(json);
             Device(json);
             Display(json);
             Fonts(json);
-            Network(json);
             Extensions(json);
             Modes(json);
         });

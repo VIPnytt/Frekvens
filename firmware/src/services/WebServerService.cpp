@@ -1,7 +1,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-#include "services/NetworkService.h"
+#include "services/ConnectivityService.h"
 #include "services/WebServerService.h"
 
 void WebServerService::setup()
@@ -17,7 +17,7 @@ void WebServerService::setup()
 
 void WebServerService::onOptionsCanonical(AsyncWebServerRequest *request)
 {
-    if (std::string_view(request->host().c_str()) == Network.domain)
+    if (std::string_view(request->host().c_str()) == Connectivity.domain)
     {
         AsyncWebServerResponse *response = request->beginResponse(t_http_codes::HTTP_CODE_NO_CONTENT);
         response->addHeader("Access-Control-Allow-Methods", "OPTIONS");
@@ -26,7 +26,7 @@ void WebServerService::onOptionsCanonical(AsyncWebServerRequest *request)
     }
     else
     {
-        request->redirect(std::string("http://").append(Network.domain).append("/canonical").c_str(), t_http_codes::HTTP_CODE_FOUND);
+        request->redirect(std::string("http://").append(Connectivity.domain).append("/canonical").c_str(), t_http_codes::HTTP_CODE_FOUND);
     }
 }
 

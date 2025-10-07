@@ -7,7 +7,6 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 #include "services/ModesService.h"
-#include "services/NetworkService.h"
 
 BuildExtension *Build = nullptr;
 

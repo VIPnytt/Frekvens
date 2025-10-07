@@ -7,8 +7,8 @@
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
+#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
-#include "services/NetworkService.h"
 
 MqttExtension *Mqtt = nullptr;
 

@@ -7,7 +7,7 @@ import os
 import tzlocal
 
 from tools.src.config import ikeaFrekvens, ikeaObegransad
-from tools.src.services import Network
+from tools.src.services import Connectivity
 
 
 class Firmware:
@@ -73,7 +73,7 @@ class Firmware:
                 ]
             )
         if iana:
-            posix = Network.Network().tz_lookup(iana)
+            posix = Connectivity.Connectivity().tz_lookup(iana)
             if posix:
                 self.env.Append(
                     CPPDEFINES=[
