@@ -3,8 +3,8 @@ import { Component, createSignal } from 'solid-js';
 
 import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
+import { ConnectivityHostname } from '../services/Connectivity';
 import { name as ExtensionsName } from '../services/Extensions';
-import { NetworkHostname } from '../services/Network';
 
 export const name = 'MQTT';
 
@@ -57,7 +57,7 @@ export const MainThird: Component = () => (
                         </span>
                         &nbsp;
                         <span class="font-mono">
-                            frekvens/{NetworkHostname()}
+                            frekvens/{ConnectivityHostname()}
                         </span>
                     </>
                 )}

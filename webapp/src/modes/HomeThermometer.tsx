@@ -9,9 +9,9 @@ import { name as ExtensionHomeAssistantName } from '../extensions/HomeAssistant'
 import { name as ExtensionMqttName } from '../extensions/Mqtt';
 import { name as ExtensionRestfulName } from '../extensions/Restful';
 import { name as ExtensionWebSocketName } from '../extensions/WebSocket';
+import { ConnectivityHostname } from '../services/Connectivity';
 import { ExtensionsList } from '../services/Extensions';
 import { name as ModesName } from '../services/Modes';
-import { NetworkHostname } from '../services/Network';
 
 export const name = 'Home thermometer';
 
@@ -94,7 +94,7 @@ export const MainSecondary: Component = () => {
                                     {ExtensionMqttName}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-700">Topic:</span> <span class="font-mono">frekvens/{NetworkHostname()}/{name}/set</span><br />
+                                    <span class="font-medium text-gray-700">Topic:</span> <span class="font-mono">frekvens/{ConnectivityHostname()}/{name}/set</span><br />
                                     <span class="font-medium text-gray-700">Message:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payload}</span>
                                 </p>
                             </>

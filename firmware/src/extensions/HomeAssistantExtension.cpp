@@ -71,7 +71,7 @@ void HomeAssistantExtension::ready()
     {
         JsonObject device = (*discovery)[Abbreviations::device].to<JsonObject>();
 #if EXTENSION_WEBAPP
-        device[Abbreviations::configuration_url] = std::string("http://").append(Network.domain);
+        device[Abbreviations::configuration_url] = std::string("http://").append(Connectivity.domain);
 #endif // EXTENSION_WEBAPP
         {
             JsonArray _connections = device[Abbreviations::connections].to<JsonArray>();

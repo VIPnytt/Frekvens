@@ -1,13 +1,13 @@
 import { createEffect, on } from 'solid-js';
 
 import { ws } from './WebSocket';
-import { NetworkDomain } from '../services/Network';
+import { ConnectivityDomain } from '../services/Connectivity';
 
 export const name = 'WebApp';
 
 export const Canonical = () => {
-    const url = `${location.protocol}//${NetworkDomain()}`;
-    NetworkDomain() !== location.hostname && fetch(url, {
+    const url = `${location.protocol}//${ConnectivityDomain()}`;
+    ConnectivityDomain() !== location.hostname && fetch(url, {
         method: 'HEAD',
     }).then((response) => {
         if (response.status === 200) {
@@ -19,7 +19,7 @@ export const Canonical = () => {
 
 if (import.meta.env.PROD) {
     createEffect(on(
-        NetworkDomain,
+        ConnectivityDomain,
         Canonical,
         {
             defer: true,

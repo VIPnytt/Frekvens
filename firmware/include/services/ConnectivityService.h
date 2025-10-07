@@ -6,12 +6,12 @@
 #include <DNSServer.h>
 #include <WiFiMulti.h>
 
-class NetworkService : public ServiceModule
+class ConnectivityService : public ServiceModule
 {
 private:
-    static constexpr std::string_view _name = "Network";
+    static constexpr std::string_view _name = "Connectivity";
 
-    NetworkService() : ServiceModule(_name.data()) {};
+    ConnectivityService() : ServiceModule(_name.data()) {};
 
     bool
         mDNS = false,
@@ -59,7 +59,7 @@ public:
 
     void receiverHook(const JsonDocument doc) override;
 
-    static NetworkService &getInstance();
+    static ConnectivityService &getInstance();
 };
 
-extern NetworkService &Network;
+extern ConnectivityService &Connectivity;

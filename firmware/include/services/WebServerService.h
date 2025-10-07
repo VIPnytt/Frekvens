@@ -4,7 +4,6 @@
 
 #include "config/constants.h"
 #include "modules/ServiceModule.h"
-#include "services/NetworkService.h"
 
 class WebServerService : public ServiceModule
 {

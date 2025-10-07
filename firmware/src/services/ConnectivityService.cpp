@@ -5,14 +5,13 @@
 
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "handlers/TextHandler.h"
+#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/NetworkService.h"
 #include "services/WebServerService.h"
 
-void NetworkService::setup()
+void ConnectivityService::setup()
 {
 #ifdef PIN_SW1
     pinMode(PIN_SW1, INPUT_PULLUP);
@@ -52,7 +51,7 @@ void NetworkService::setup()
 #endif // defined(TIME_ZONE_POSIX) && defined(NTP1) && defined(NTP2) && defined(NTP3)
 }
 
-void NetworkService::ready()
+void ConnectivityService::ready()
 {
 #if EXTENSION_BUILD
 #ifdef DOMAIN
@@ -115,7 +114,7 @@ void NetworkService::ready()
 #endif // EXTENSION_HOMEASSISTANT
 }
 
-void NetworkService::handle()
+void ConnectivityService::handle()
 {
     if (dnsServer && WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
@@ -134,7 +133,7 @@ void NetworkService::handle()
     }
 }
 
-bool NetworkService::vault()
+bool ConnectivityService::vault()
 {
     JsonDocument doc;
     Preferences Storage;
@@ -183,7 +182,7 @@ bool NetworkService::vault()
     return doc.size();
 }
 
-void NetworkService::hotspot()
+void ConnectivityService::hotspot()
 {
     WiFi.mode(wifi_mode_t::WIFI_MODE_AP);
 #if defined(WIFI_SSID_HOTSPOT) && defined(WIFI_KEY_HOTSPOT)
@@ -219,7 +218,7 @@ void NetworkService::hotspot()
 #endif // F_INFO
 }
 
-void NetworkService::scan()
+void ConnectivityService::scan()
 {
     int16_t n = WiFi.scanComplete();
     if (n == WIFI_SCAN_FAILED)
@@ -239,7 +238,7 @@ void NetworkService::scan()
 #endif // F_VERBOSE
 }
 
-void NetworkService::connect(const char *const ssid, const char *const key)
+void ConnectivityService::connect(const char *const ssid, const char *const key)
 {
     if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
@@ -266,14 +265,14 @@ void NetworkService::connect(const char *const ssid, const char *const key)
     }
 }
 
-void NetworkService::disconnect()
+void ConnectivityService::disconnect()
 {
     lastMillis = millis();
     WiFi.disconnect();
 }
 
 #if defined(PIN_SW1) || defined(PIN_SW2)
-bool NetworkService::buttonCheck()
+bool ConnectivityService::buttonCheck()
 {
     if (esp_sleep_get_wakeup_cause() != esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED)
     {
@@ -290,7 +289,7 @@ bool NetworkService::buttonCheck()
 #endif // defined(PIN_SW1) || defined(PIN_SW2)
 
 #if defined(DNS1) || defined(DNS2) || defined(DNS3)
-void NetworkService::setDns()
+void ConnectivityService::setDns()
 {
     esp_netif_t *netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
 #ifdef DNS1
@@ -343,19 +342,19 @@ void NetworkService::setDns()
 }
 #endif // defined(DNS1) || defined(DNS2) || defined(DNS3)
 
-void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
 #ifdef F_VERBOSE
-    Serial.printf("%s: connected, %d dBm @ %s\n", Network.name, WiFi.RSSI(), WiFi.SSID().c_str());
+    Serial.printf("%s: connected, %d dBm @ %s\n", Connectivity.name, WiFi.RSSI(), WiFi.SSID().c_str());
 #elif defined(F_DEBUG)
-    Serial.printf("%s: connected, %d dBm\n", Network.name, WiFi.RSSI());
+    Serial.printf("%s: connected, %d dBm\n", Connectivity.name, WiFi.RSSI());
 #elif defined(F_INFO)
-    Serial.printf("%s: connected\n", Network.name);
+    Serial.printf("%s: connected\n", Connectivity.name);
 #endif // F_VERBOSE
-    if (!Network.mDNS)
+    if (!Connectivity.mDNS)
     {
-        Network.mDNS = MDNS.begin(HOSTNAME);
-        if (Network.mDNS)
+        Connectivity.mDNS = MDNS.begin(HOSTNAME);
+        if (Connectivity.mDNS)
         {
             MDNS.setInstanceName(NAME);
 #if EXTENSION_WEBAPP
@@ -371,44 +370,44 @@ void NetworkService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
     const String
         _ipv4 = WiFi.localIP().toString(),
         _ipv6 = WiFi.localIPv6().toString();
-    if (Network.IPv4 != _ipv4 || Network.IPv6 != _ipv6)
+    if (Connectivity.IPv4 != _ipv4 || Connectivity.IPv6 != _ipv6)
     {
-        Network.IPv4 = _ipv4;
-        Network.IPv6 = _ipv6;
+        Connectivity.IPv4 = _ipv4;
+        Connectivity.IPv6 = _ipv6;
 #ifdef F_INFO
-        if (Network.IPv4 != IPAddress().toString())
+        if (Connectivity.IPv4 != IPAddress().toString())
         {
-            Serial.printf("%s: IPv4 %s\n", Network.name, Network.IPv4.c_str());
+            Serial.printf("%s: IPv4 %s\n", Connectivity.name, Connectivity.IPv4.c_str());
         }
-        if (Network.IPv6 != IPv6Address().toString())
+        if (Connectivity.IPv6 != IPv6Address().toString())
         {
-            Serial.printf("%s: IPv6 %s\n", Network.name, Network.IPv6.c_str());
+            Serial.printf("%s: IPv6 %s\n", Connectivity.name, Connectivity.IPv6.c_str());
         }
 #endif // F_INFO
 #ifdef F_INFO
-        Serial.printf("%s: domain %s\n", Network.name, domain.data());
+        Serial.printf("%s: domain %s\n", Connectivity.name, domain.data());
 #endif // F_INFO
     }
 #if defined(DNS1) || defined(DNS2) || defined(DNS3)
-    Network.setDns();
+    Connectivity.setDns();
 #endif // defined(DNS1) || defined(DNS2) || defined(DNS3)
     timeval tv;
     sntp_sync_time(&tv);
-    Network.pending = true;
+    Connectivity.pending = true;
 }
 
-void NetworkService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
-    Network.lastMillis = millis();
+    Connectivity.lastMillis = millis();
 #ifdef F_DEBUG
-    Serial.printf("%s: disconnected, %s\n", Network.name, WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
+    Serial.printf("%s: disconnected, %s\n", Connectivity.name, WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 #elif defined(F_INFO)
-    Serial.printf("%s: disconnected\n", Network.name);
+    Serial.printf("%s: disconnected\n", Connectivity.name);
 #endif // F_DEBUG
     WiFi.reconnect();
 }
 
-void NetworkService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
 {
 #ifdef F_VERBOSE
     Serial.printf("%s: scan complete\n", _name.data());
@@ -441,7 +440,7 @@ void NetworkService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
     WiFi.scanDelete();
 }
 
-void NetworkService::transmit()
+void ConnectivityService::transmit()
 {
     JsonDocument doc;
 
@@ -475,13 +474,13 @@ void NetworkService::transmit()
 #endif // F_VERBOSE
 
 #ifdef F_DEBUG
-    if (Network.IPv4 != IPAddress().toString())
+    if (Connectivity.IPv4 != IPAddress().toString())
     {
-        doc["ipv4"] = Network.IPv4;
+        doc["ipv4"] = Connectivity.IPv4;
     }
-    if (Network.IPv6 != IPv6Address().toString())
+    if (Connectivity.IPv6 != IPv6Address().toString())
     {
-        doc["ipv6"] = Network.IPv6;
+        doc["ipv6"] = Connectivity.IPv6;
     }
     doc["hostname"] = HOSTNAME;
 #endif // F_DEBUG
@@ -535,7 +534,7 @@ void NetworkService::transmit()
     Device.transmit(doc, name);
 }
 
-void NetworkService::receiverHook(const JsonDocument doc)
+void ConnectivityService::receiverHook(const JsonDocument doc)
 {
     // Connect
     if (doc["ssid"].is<const char *>())
@@ -549,10 +548,10 @@ void NetworkService::receiverHook(const JsonDocument doc)
     }
 }
 
-NetworkService &NetworkService::getInstance()
+ConnectivityService &ConnectivityService::getInstance()
 {
-    static NetworkService instance;
+    static ConnectivityService instance;
     return instance;
 }
 
-NetworkService &Network = Network.getInstance();
+ConnectivityService &Connectivity = Connectivity.getInstance();

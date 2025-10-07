@@ -1,7 +1,7 @@
 #include "config/constants.h"
 #include "modes/DistributedDisplayProtocolMode.h"
+#include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
-#include "services/NetworkService.h"
 
 void DistributedDisplayProtocolMode::wake()
 {
@@ -10,7 +10,7 @@ void DistributedDisplayProtocolMode::wake()
     {
         udp->onPacket(&onPacket);
 #ifdef F_DEBUG
-        Serial.printf("%s: listening at %s:4048\n", name, Network.domain.data());
+        Serial.printf("%s: listening at %s:4048\n", name, Connectivity.domain.data());
 #endif
     }
 }

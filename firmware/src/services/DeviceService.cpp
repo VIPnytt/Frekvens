@@ -11,12 +11,12 @@
 #include "extensions/WebSocketExtension.h"
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
+#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 #include "services/FontsService.h"
 #include "services/ModesService.h"
-#include "services/NetworkService.h"
 #include "services/WebServerService.h"
 
 void DeviceService::init()
@@ -140,7 +140,7 @@ void DeviceService::init()
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
 
     Display.setup();
-    Network.setup();
+    Connectivity.setup();
     WebServer.setup();
     Extensions.setup();
     Modes.setup();
@@ -379,7 +379,7 @@ void DeviceService::ready()
     }
 #endif // EXTENSION_HOMEASSISTANT
     Display.ready();
-    Network.ready();
+    Connectivity.ready();
     Fonts.ready();
     Extensions.ready();
     Modes.ready();
@@ -392,7 +392,7 @@ void DeviceService::ready()
 
 void DeviceService::run()
 {
-    Network.handle();
+    Connectivity.handle();
     Display.handle();
 #ifdef F_VERBOSE
     Extensions.handle();
@@ -413,7 +413,7 @@ void DeviceService::update()
     HTTPClient http;
     http.begin("https://api.github.com/repos/VIPnytt/Frekvens/releases/latest");
     http.addHeader("Accept", "application/vnd.github+json");
-    http.setUserAgent(Network.userAgent.data());
+    http.setUserAgent(Connectivity.userAgent.data());
     if (http.GET() == t_http_codes::HTTP_CODE_OK)
     {
         JsonDocument doc;
@@ -539,7 +539,7 @@ const std::vector<const char *> DeviceService::getNames() const
         Extensions.name,
         Fonts.name,
         Modes.name,
-        Network.name,
+        Connectivity.name,
         WebServer.name,
     };
     for (const ExtensionModule *extension : Extensions.getAll())
@@ -623,7 +623,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         &Device,
         &Display,
         &Modes,
-        &Network,
+        &Connectivity,
     };
     for (ServiceModule *service : services)
     {
