@@ -7,13 +7,14 @@ import { Tooltip } from '../components/Tooltip';
 import { Icon } from '../components/Vector';
 import { name as ExtensionsName } from '../services/Extensions';
 
-
 export const name = 'OTA';
 
 const [getAuth, setAuth] = createSignal<boolean>(false);
+const [getFilesystem, setFilesystem] = createSignal<string>('spiffs');
 const [getPlatformioIni, setPlatformioIni] = createSignal<Record<string, string>>({});
 
 export const receiver = (json: any) => {
+    json[name]?.filesystem !== undefined && setFilesystem(json[name].filesystem);
     json[name]?.['platformio.ini'] !== undefined && setPlatformioIni(json[name]['platformio.ini']);
     json[name]?.['platformio.ini']?.upload_flags !== undefined && setAuth(json[name]['platformio.ini'].upload_flags.includes('--auth'));
 };
@@ -47,7 +48,7 @@ export const MainThird: Component = () => {
             return;
         }
         upload.disabled = false;
-        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes('spiffs') ? 'Update SPIFFS' : 'Update Firmware';
+        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes(getFilesystem()) ? 'Update Filesystem' : 'Update Firmware';
     };
 
     const handleUpload = () => {
@@ -68,7 +69,7 @@ export const MainThird: Component = () => {
         const upload = document.getElementById('upload') as HTMLInputElement;
         upload.disabled = true;
         upload.classList.add('bg-red-600');
-        upload.textContent = binary.files[0].name.toLowerCase().includes('spiffs') ? 'Updating SPIFFS...' : 'Updating Firmware...';
+        upload.textContent = binary.files[0].name.toLowerCase().includes(getFilesystem()) ? 'Updating Filesystem...' : 'Updating Firmware...';
         toast('System update in progress...', 10e3);
     };
 
@@ -131,23 +132,7 @@ export const MainThird: Component = () => {
                                         Manual
                                     </h3>
                                     <p class="text-sm">
-                                        Got a&nbsp;
-                                        <a
-                                            class="italic"
-                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#-${name.toLocaleLowerCase()}`}
-                                            target="_blank"
-                                        >
-                                            firmware.bin
-                                        </a>
-                                        &nbsp;or&nbsp;
-                                        <a
-                                            class="italic"
-                                            href={`${REPOSITORY}/wiki/${ExtensionsName}#-${name.toLocaleLowerCase()}`}
-                                            target="_blank"
-                                        >
-                                            spiffs.bin
-                                        </a>
-                                        &nbsp;file? Upload it here:
+                                        Got a <span class="italic">firmware.bin</span> or <span class="italic">{getFilesystem()}.bin</span> file? Upload it here:
                                     </p>
                                     <input
                                         class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
