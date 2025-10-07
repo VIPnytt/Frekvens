@@ -35,7 +35,7 @@ void HomeAssistantExtension::setup()
         JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
         component[Abbreviations::brightness_command_template] = "{\"brightness\":{{value-1}}}";
         component[Abbreviations::brightness_command_topic] = topicDisplay + "/set";
-        component[Abbreviations::brightness_scale] = 1U << 8;
+        component[Abbreviations::brightness_scale] = 1 << 8;
         component[Abbreviations::brightness_state_topic] = topicDisplay;
         component[Abbreviations::brightness_value_template] = "{{value_json.brightness+1}}";
         component[Abbreviations::command_topic] = topicDisplay + "/set";
