@@ -1,18 +1,32 @@
 [project]
 name = "frekvens"
-description = "Toolbox for the Frekvens ESP32 project."
+description = "Toolbox for the Frekvens project."
 version = "1.2.1-dev"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     'python-dotenv==1.1.1',
     'tzdata==2025.2.0',
+    'tzlocal==5.3.1',
 ]
+
+[project.optional-dependencies]
+extra-fonts = [
+    'fonttools==4.59.2',
+    'matplotlib==3.10.5',
+    'pillow==11.3.0',
+]
+scripts-upload = [
+    'requests==2.32.5',
+    'requests-toolbelt==1.0.0',
+    'tqdm==4.67.1',
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.urls]
 "Homepage" = "https://github.com/VIPnytt/Frekvens"
 "Wiki" = "https://github.com/VIPnytt/Frekvens/wiki"
 "Bug Reports" = "https://github.com/VIPnytt/Frekvens/issues"
 
-[tool.setuptools.packages.find]
-where = ["src"]

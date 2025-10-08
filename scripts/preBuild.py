@@ -6,10 +6,9 @@ Import("env")  # type: ignore
 sys.path.insert(0, env["PROJECT_DIR"])  # type: ignore
 
 if not env.IsCleanTarget():  # type: ignore
-    env.Execute(f"pip -q install -r scripts/requirements.txt")  # type: ignore
     env.Execute(f"pip -q install tools/")  # type: ignore
 
-from scripts import Firmware, Scripts, Tools, WebApp
+from scripts import Extra, Firmware, Scripts, Tools, WebApp
 
 # Dump CLI targets
 # print(COMMAND_LINE_TARGETS)# type: ignore
@@ -57,6 +56,8 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     tools.environment()
 
 if env.IsCleanTarget():  # type: ignore
+    extra = Extra.Extra(env)  # type: ignore
+    extra.clean()
     tools = Tools.Tools(env)  # type: ignore
     tools.clean()
     webapp = WebApp.WebApp(env)  # type: ignore
