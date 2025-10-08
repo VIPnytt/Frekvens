@@ -11,7 +11,6 @@ import sys
 class WebApp:
     def __init__(self, env) -> None:
         self.env = env
-        self.check()
 
     def build(self) -> None:
         with open("library.json") as pio, open("webapp/package.json") as npm, open(
@@ -37,7 +36,20 @@ class WebApp:
                     gz.writelines(html)
                     print(index)
 
-    def check(self) -> None:
+    def check(self) -> bool:
+        env_pio = dotenv.dotenv_values(".env")
+        if (
+            env_pio.get("EXTENSION_WEBAPP", "false") != "false"
+            and env_pio.get("EXTENSION_WEBSOCKET") == "false"
+        ):
+            print("WebSocket is required by the Web app.")
+            print("Please re-enable 'EXTENSION_WEBSOCKET' in .env")
+            sys.exit(1)
+        elif (
+            env_pio.get("EXTENSION_WEBAPP") == "false"
+            or env_pio.get("EXTENSION_WEBSOCKET") == "false"
+        ):
+            return False
         try:
             subprocess.run(
                 ["node", "--version"],
@@ -49,6 +61,7 @@ class WebApp:
             print("Node.js is required but was not found on your system.")
             print("Please install Node.js from https://nodejs.org/")
             sys.exit(1)
+        return True
 
     def clean(self) -> None:
         for path in [
