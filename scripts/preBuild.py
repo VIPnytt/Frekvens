@@ -41,11 +41,11 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["upload"],
 ]:
     webapp = WebApp.WebApp(env)  # type: ignore
-    webapp.check()
-    webapp.version()
-    webapp.evironment()
-    webapp.environment_dev()
-    webapp.build()
+    if webapp.check():
+        webapp.version()
+        webapp.evironment()
+        webapp.environment_dev()
+        webapp.build()
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["erase"],
