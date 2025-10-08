@@ -16,15 +16,18 @@ export const name = 'Device';
 
 const [getModel, setModel] = createSignal<string>(MODEL || MODEL_FREKVENS);
 const [getName, setName] = createSignal<string>(NAME || MODEL || MODEL_FREKVENS);
+const [getVersion, setVersion] = createSignal<string>(__VERSION__);
 const [getVersionLatest, setVersionLatest] = createSignal<string>(__VERSION__);
 
 export const DeviceModel = getModel;
 export const DeviceName = getName;
+export const DeviceVersion = getVersion;
 
 export const receiver = (json: any) => {
     json[name]?.event !== undefined && event(json[name].event);
     json[name]?.model !== undefined && setModel(json[name].model);
     json[name]?.name !== undefined && setName(json[name].name);
+    json[name]?.version !== undefined && setVersion(json[name].version);
     json[name]?.version_latest !== undefined && setVersionLatest(json[name].version_latest);
 };
 
