@@ -10,24 +10,7 @@ updates:
       - "github_actions"
       - "no-changelog"
     schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "npm"
-    directory: "/webapp"
-    allow:
-      - dependency-name: "@types/*"
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 30
-      semver-patch-days: 7
-    labels:
-      - "chore"
-      - "dependencies"
-      - "no-changelog"
-      - "webapp"
-    schedule:
-      interval: "monthly"
-    versioning-strategy: "increase"
+      interval: "weekly"
 
   - package-ecosystem: "npm"
     directory: "/webapp"
@@ -35,8 +18,6 @@ updates:
       semver-major-days: 90
       semver-minor-days: 7
       semver-patch-days: 1
-    ignore:
-      - dependency-name: "@types/*"
     labels:
       - "chore"
       - "dependencies"
