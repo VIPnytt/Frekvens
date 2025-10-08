@@ -12,7 +12,7 @@ dependencies = [
 
 [project.optional-dependencies]
 extra-fonts = [
-    'fonttools==4.59.2',
+    'fonttools==4.60.1',
     'matplotlib==3.10.6',
     'pillow==11.3.0',
 ]
