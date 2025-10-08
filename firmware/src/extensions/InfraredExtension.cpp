@@ -2,6 +2,7 @@
 
 #if EXTENSION_INFRARED
 
+#include <stdint.h> // bugfix while waiting for https://github.com/Arduino-IRremote/Arduino-IRremote/pull/1322
 #include <IRremote.hpp>
 #include <Preferences.h>
 
