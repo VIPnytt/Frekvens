@@ -31,7 +31,7 @@ class WebApp:
                     self.env.Execute(f"cd webapp && npm install && npm run build")
             prefix = "data/webapp"
             pathlib.Path(prefix).mkdir(parents=True, exist_ok=True)
-            index = f"{prefix}/v{library['version']}.html.gz"
+            index = f"{prefix}/index.html.gz"
             with open("webapp/dist/index.html", "rb") as html:
                 with gzip.open(index, "wb") as gz:
                     gz.writelines(html)

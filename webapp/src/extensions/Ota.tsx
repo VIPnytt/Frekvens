@@ -13,6 +13,8 @@ const [getAuth, setAuth] = createSignal<boolean>(false);
 const [getFilesystem, setFilesystem] = createSignal<string>('spiffs');
 const [getPlatformioIni, setPlatformioIni] = createSignal<Record<string, string>>({});
 
+export const OtaAuth = getAuth;
+
 export const receiver = (json: any) => {
     json[name]?.filesystem !== undefined && setFilesystem(json[name].filesystem);
     json[name]?.['platformio.ini'] !== undefined && setPlatformioIni(json[name]['platformio.ini']);

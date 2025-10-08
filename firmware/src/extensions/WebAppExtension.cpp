@@ -20,14 +20,14 @@ void WebAppExtension::setup()
 {
 #ifdef F_VERBOSE
 #ifdef BOARD_BUILD__FILESYSTEM__LITTLEFS
-    if (LittleFS.begin() && LittleFS.exists("/webapp/v" VERSION ".html.gz"))
+    if (LittleFS.begin() && LittleFS.exists("/webapp/index.html.gz"))
     {
-        WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=60").setDefaultFile("v" VERSION ".html");
+        WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=60").setDefaultFile("index.html");
     }
 #else
-    if (SPIFFS.begin() && SPIFFS.exists("/webapp/v" VERSION ".html.gz"))
+    if (SPIFFS.begin() && SPIFFS.exists("/webapp/index.html.gz"))
     {
-        WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=60").setDefaultFile("v" VERSION ".html");
+        WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=60").setDefaultFile("index.html");
     }
 #endif // BOARD_BUILD__FILESYSTEM__LITTLEFS
     else
@@ -37,10 +37,10 @@ void WebAppExtension::setup()
 #else
 #ifdef BOARD_BUILD__FILESYSTEM__LITTLEFS
     LittleFS.begin();
-    WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("v" VERSION ".html");
+    WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
 #else
     SPIFFS.begin();
-    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=3600").setDefaultFile("v" VERSION ".html");
+    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
 #endif // BOARD_BUILD__FILESYSTEM__LITTLEFS
 #endif // F_VERBOSE
     WebServer.http->on("/", WebRequestMethod::HTTP_HEAD, &onHeadRoot);
