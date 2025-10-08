@@ -3,13 +3,15 @@
 import os
 import subprocess
 
+Import("env")  # type: ignore
+
+env.Execute(f"pip -q install tools/[scripts-upload]")  # type: ignore
+
 print("Enter upload method (number 1-3)")
 print("1: espota (default)")
 print("2: ElegantOTA")
 print("3: WiFiManager")
 method = input()
-
-Import("env")  # type: ignore
 
 match method:
     case 2 | "ElegantOTA":

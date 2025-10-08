@@ -14,20 +14,8 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/webapp"
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 7
-      semver-patch-days: 1
-    labels:
-      - "chore"
-      - "dependencies"
-      - "webapp"
-    schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
-
-  - package-ecosystem: "pip"
-    directory: "/extra/Python"
+    allow:
+      - dependency-name: "@types/*"
     cooldown:
       semver-major-days: 90
       semver-minor-days: 30
@@ -35,23 +23,26 @@ updates:
     labels:
       - "chore"
       - "dependencies"
-      - "extra"
+      - "no-changelog"
+      - "webapp"
     schedule:
-      interval: "quarterly"
+      interval: "monthly"
     versioning-strategy: "increase"
 
-  - package-ecosystem: "pip"
-    directory: "/scripts"
+  - package-ecosystem: "npm"
+    directory: "/webapp"
     cooldown:
       semver-major-days: 90
       semver-minor-days: 7
       semver-patch-days: 1
+    ignore:
+      - dependency-name: "@types/*"
     labels:
       - "chore"
       - "dependencies"
-      - "tools"
+      - "webapp"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
     versioning-strategy: "increase"
 
   - package-ecosystem: "pip"
