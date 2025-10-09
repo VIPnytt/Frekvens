@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_WAVEFORM
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "modes/WaveformMode.h"
@@ -19,3 +22,5 @@ void WaveformMode::handle()
         bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, (ROWS - bitmap.getHeight()) / 2);
     }
 }
+
+#endif // MODE_WAVEFORM

@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_ARROW
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "modes/ArrowMode.h"
@@ -25,3 +28,5 @@ void ArrowMode::handle()
         }
     }
 }
+
+#endif // MODE_ARROW

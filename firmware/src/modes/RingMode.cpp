@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_RING
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "modes/RingMode.h"
@@ -24,3 +27,5 @@ void RingMode::handle()
         }
     }
 }
+
+#endif // MODE_RING

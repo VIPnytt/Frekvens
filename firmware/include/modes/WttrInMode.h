@@ -1,8 +1,11 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_WTTRIN
+
 #include <vector>
 
-#include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
@@ -75,3 +78,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_WTTRIN

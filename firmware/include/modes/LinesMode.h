@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_LINES
+
 #include "modules/ModeModule.h"
 
 class LinesMode : public ModeModule
@@ -14,3 +18,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_LINES

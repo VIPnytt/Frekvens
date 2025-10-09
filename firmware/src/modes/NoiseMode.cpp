@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_NOISE
+
 #include "modes/NoiseMode.h"
 #include "services/DisplayService.h"
 
@@ -16,3 +20,5 @@ void NoiseMode::handle()
         }
     }
 }
+
+#endif // MODE_NOISE

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_ARTNET
+
 #include <AsyncUDP.h>
 #include <bits/unique_ptr.h>
 
@@ -20,3 +24,5 @@ public:
 
     static void onPacket(AsyncUDPPacket packet);
 };
+
+#endif // MODE_ARTNET

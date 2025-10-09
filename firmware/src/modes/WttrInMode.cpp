@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_WTTRIN
+
 #include <HTTPClient.h>
 
 #include "extensions/BuildExtension.h"
@@ -79,3 +83,5 @@ void WttrInMode::update()
 #endif
     }
 }
+
+#endif // MODE_WTTRIN

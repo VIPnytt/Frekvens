@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_EQUALIZER
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/EqualizerMode.h"
 #include "services/DisplayService.h"
@@ -30,3 +33,5 @@ void EqualizerMode::handle()
         }
     }
 }
+
+#endif // MODE_EQUALIZER

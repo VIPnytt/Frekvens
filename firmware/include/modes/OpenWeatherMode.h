@@ -2,7 +2,7 @@
 
 #include "config/constants.h"
 
-#if defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
 
 #include <vector>
 
@@ -69,4 +69,4 @@ public:
     void handle() override;
 };
 
-#endif // defined(LATITUDE) && defined(LONGITUDE) && defined(OPENWEATHER_KEY)
+#endif // MODE_OPENWEATHER && defined(LATITUDE) && defined(LONGITUDE) && defined(OPENWEATHER_KEY)

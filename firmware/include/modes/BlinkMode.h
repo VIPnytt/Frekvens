@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_BLINK
+
 #include "modules/ModeModule.h"
 
 class BlinkMode : public ModeModule
@@ -12,3 +16,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_BLINK

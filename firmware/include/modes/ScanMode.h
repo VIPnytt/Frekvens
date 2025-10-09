@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_SCAN
+
 #include "modules/ModeModule.h"
 
 class ScanMode : public ModeModule
@@ -14,3 +18,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_SCAN

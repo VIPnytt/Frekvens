@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_ANIMATION
+
 #include <vector>
 
 #include "modules/ModeModule.h"
@@ -22,3 +26,5 @@ public:
     void handle() override;
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_ANIMATION

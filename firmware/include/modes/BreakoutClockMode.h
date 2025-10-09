@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_BREAKOUTCLOCK
+
 #include <deque>
 
 #include "config/constants.h"
@@ -32,3 +36,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_BREAKOUTCLOCK

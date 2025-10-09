@@ -1,6 +1,6 @@
 #include "config/constants.h"
 
-#if defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_OPENMETEO && defined(LATITUDE) && defined(LONGITUDE)
 
 #include <HTTPClient.h>
 
@@ -89,4 +89,4 @@ void OpenMeteoMode::update()
     }
 }
 
-#endif // defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_OPENMETEO && defined(LATITUDE) && defined(LONGITUDE)

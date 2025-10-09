@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_GAMEOFLIFECLOCK
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/GameOfLifeClockMode.h"
@@ -71,3 +74,5 @@ void GameOfLifeClockMode::handle()
         }
     }
 }
+
+#endif // MODE_GAMEOFLIFECLOCK

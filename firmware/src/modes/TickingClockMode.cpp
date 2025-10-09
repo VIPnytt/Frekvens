@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_TICKINGCLOCK
+
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/TickingClockMode.h"
@@ -37,3 +40,5 @@ void TickingClockMode::handle()
         }
     }
 }
+
+#endif // MODE_TICKINGCLOCK

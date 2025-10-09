@@ -1,8 +1,11 @@
+#include "config/constants.h"
+
+#if MODE_HOMETHERMOMETER
+
 #include <nvs.h>
 #include <Preferences.h>
 #include <regex>
 
-#include "config/constants.h"
 #include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"
@@ -148,3 +151,5 @@ void HomeThermometerMode::set(const char *const where, const int16_t temperature
     Serial.printf("%s: %s %d\n", name, where, temperature);
 #endif
 }
+
+#endif // MODE_HOMETHERMOMETER

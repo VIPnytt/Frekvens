@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_BLINDS
+
 #include "modules/ModeModule.h"
 
 class BlindsMode : public ModeModule
@@ -18,3 +22,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_BLINDS

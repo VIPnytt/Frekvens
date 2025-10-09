@@ -1,6 +1,6 @@
 #include "config/constants.h"
 
-#if defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
 
 #include <HTTPClient.h>
 
@@ -99,4 +99,4 @@ void OpenWeatherMode::update()
     }
 }
 
-#endif // defined(LATITUDE) && defined(LONGITUDE) && defined(OPENWEATHER_KEY)
+#endif // MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)

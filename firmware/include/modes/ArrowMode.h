@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_ARROW
+
 #include "modules/ModeModule.h"
 
 class ArrowMode : public ModeModule
@@ -86,3 +90,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_ARROW

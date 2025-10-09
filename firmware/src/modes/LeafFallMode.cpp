@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_LEAFFALL
+
 #include "modes/LeafFallMode.h"
 #include "services/DisplayService.h"
 
@@ -48,3 +52,5 @@ void LeafFallMode::handle()
         }
     }
 }
+
+#endif // MODE_LEAFFALL

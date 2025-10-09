@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_CIRCLE
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/CircleMode.h"
 #include "services/DisplayService.h"
@@ -27,3 +31,5 @@ void CircleMode::handle()
         }
     }
 }
+
+#endif // MODE_CIRCLE

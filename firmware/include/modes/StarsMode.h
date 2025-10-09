@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_STARS
+
 #include "modules/ModeModule.h"
 
 class StarsMode : public ModeModule
@@ -25,3 +28,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_STARS

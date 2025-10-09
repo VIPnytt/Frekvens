@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_COUNTDOWN
+
 #include <chrono>
 
 #include "modules/ModeModule.h"
@@ -28,3 +32,5 @@ public:
     void handle() override;
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_COUNTDOWN

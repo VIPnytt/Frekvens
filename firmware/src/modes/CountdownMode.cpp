@@ -1,8 +1,11 @@
+#include "config/constants.h"
+
+#if MODE_COUNTDOWN
+
 #include <iomanip>
 #include <Preferences.h>
 #include <sstream>
 
-#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
@@ -141,3 +144,5 @@ void CountdownMode::save()
     Storage.end();
     transmit();
 }
+
+#endif // MODE_COUNTDOWN

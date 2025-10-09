@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_FIREWORK
+
 #include "modules/ModeModule.h"
 
 class FireworkMode : public ModeModule
@@ -25,3 +29,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_FIREWORK

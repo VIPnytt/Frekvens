@@ -1,6 +1,9 @@
+#include "config/constants.h"
+
+#if MODE_ANIMATION
+
 #include <Preferences.h>
 
-#include "config/constants.h"
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "modes/AnimationMode.h"
@@ -129,3 +132,5 @@ void AnimationMode::receiverHook(const JsonDocument doc)
         Storage.end();
     }
 }
+
+#endif // MODE_ANIMATION

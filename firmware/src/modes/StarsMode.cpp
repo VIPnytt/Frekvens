@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_STARS
+
 #include "modes/StarsMode.h"
 #include "services/DisplayService.h"
 
@@ -37,3 +41,5 @@ void StarsMode::handle()
         }
     }
 }
+
+#endif // MODE_STARS

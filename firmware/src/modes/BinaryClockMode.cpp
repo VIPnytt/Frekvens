@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_BINARYCLOCK
+
 #include "modes/BinaryClockMode.h"
 #include "services/DisplayService.h"
 
@@ -37,3 +41,5 @@ void BinaryClockMode::draw(uint8_t y, uint8_t value)
         Display.drawRectangle(x, y, x + 1, y + 3, true, value & (1U << i) ? UINT8_MAX : 0);
     }
 }
+
+#endif // MODE_BINARYCLOCK

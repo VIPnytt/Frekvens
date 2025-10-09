@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_TICKER
+
 #include <bits/unique_ptr.h>
 
 #include "handlers/TextHandler.h"
@@ -41,3 +45,5 @@ public:
 
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_TICKER

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_RING
+
 #include "modules/ModeModule.h"
 
 class RingMode : public ModeModule
@@ -127,3 +131,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_RING

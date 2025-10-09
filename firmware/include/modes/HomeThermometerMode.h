@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_HOMETHERMOMETER
+
 #include "modules/ModeModule.h"
 
 class HomeThermometerMode : public ModeModule
@@ -19,3 +23,5 @@ public:
     void handle() override;
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_HOMETHERMOMETER

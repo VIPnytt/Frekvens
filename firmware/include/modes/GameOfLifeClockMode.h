@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_GAMEOFLIFECLOCK
+
 #include "modules/ModeModule.h"
 
 class GameOfLifeClockMode : public ModeModule
@@ -22,3 +26,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_GAMEOFLIFECLOCK

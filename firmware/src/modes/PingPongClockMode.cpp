@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_PINGPONGCLOCK
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/PingPongClockMode.h"
@@ -113,3 +117,5 @@ void PingPongClockMode::predict()
     } while (_x > 1 && _x + .5 < COLUMNS - 2);
     targetY = _y + .5;
 }
+
+#endif // MODE_PINGPONGCLOCK

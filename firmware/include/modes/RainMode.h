@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_RAIN
+
 #include "modules/ModeModule.h"
 
 // Ikea Obegränsad stock rain animation:
@@ -27,3 +30,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_RAIN
