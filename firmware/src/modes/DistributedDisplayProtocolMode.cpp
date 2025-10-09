@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_DISTRIBUTEDDISPLAYPROTOCOL
+
 #include "modes/DistributedDisplayProtocolMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
@@ -34,3 +37,5 @@ void DistributedDisplayProtocolMode::sleep()
 {
     udp.reset();
 }
+
+#endif // MODE_DISTRIBUTEDDISPLAYPROTOCOL

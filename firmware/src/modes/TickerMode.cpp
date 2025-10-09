@@ -1,6 +1,9 @@
+#include "config/constants.h"
+
+#if MODE_TICKER
+
 #include <Preferences.h>
 
-#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
@@ -159,3 +162,5 @@ void TickerMode::sleep()
 {
     text.reset();
 }
+
+#endif // MODE_TICKER

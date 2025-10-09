@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_NOISE
+
 #include "modules/ModeModule.h"
 
 class NoiseMode : public ModeModule
@@ -22,3 +25,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_NOISE

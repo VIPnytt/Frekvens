@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_FIREWORK
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/FireworkMode.h"
 #include "services/DisplayService.h"
@@ -89,3 +92,5 @@ void FireworkMode::fading()
         Display.clear();
     }
 }
+
+#endif // MODE_FIREWORK

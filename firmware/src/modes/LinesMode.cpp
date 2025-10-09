@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_LINES
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/LinesMode.h"
 #include "services/DisplayService.h"
@@ -33,3 +36,5 @@ void LinesMode::handle()
         }
     }
 }
+
+#endif // MODE_LINES

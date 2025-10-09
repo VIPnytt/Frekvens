@@ -1,9 +1,12 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_FLIES
+
 #include <unordered_map>
 #include <vector>
 
-#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class FliesMode : public ModeModule
@@ -28,3 +31,5 @@ public:
     void handle() override;
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_FLIES

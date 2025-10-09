@@ -1,6 +1,10 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_CIRCLE
+
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class CircleMode : public ModeModule
@@ -23,3 +27,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_CIRCLE

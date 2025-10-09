@@ -2,7 +2,7 @@
 
 #include "config/constants.h"
 
-#if defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#if MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
 
 #include <vector>
 
@@ -74,4 +74,4 @@ public:
     void handle() override;
 };
 
-#endif // defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#endif // MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))

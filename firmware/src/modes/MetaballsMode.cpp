@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_METABALLS
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/MetaballsMode.h"
 #include "services/DisplayService.h"
@@ -87,3 +91,5 @@ void MetaballsMode::handle()
         }
     }
 }
+
+#endif // MODE_METABALLS

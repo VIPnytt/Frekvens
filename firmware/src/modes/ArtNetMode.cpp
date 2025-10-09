@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_ARTNET
+
 #include "modes/ArtNetMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
@@ -33,3 +36,5 @@ void ArtNetMode::sleep()
 {
     udp.reset();
 }
+
+#endif // MODE_ARTNET

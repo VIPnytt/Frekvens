@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_JAGGEDWAVEFORM
+
 #include "modules/ModeModule.h"
 
 class JaggedWaveformMode : public ModeModule
@@ -72,3 +76,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_JAGGEDWAVEFORM

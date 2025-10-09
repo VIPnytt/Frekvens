@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_BLINDS
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/BlindsMode.h"
 #include "services/DisplayService.h"
@@ -27,3 +30,5 @@ void BlindsMode::handle()
         direction ? ++modulo : --modulo;
     }
 }
+
+#endif // MODE_BLINDS

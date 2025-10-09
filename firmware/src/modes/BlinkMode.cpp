@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_BLINK
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/BlinkMode.h"
 #include "services/DisplayService.h"
@@ -15,3 +18,5 @@ void BlinkMode::handle()
         Display.clear(Display.getPixel(0, 0) ? 0 : UINT8_MAX);
     }
 }
+
+#endif // MODE_BLINK

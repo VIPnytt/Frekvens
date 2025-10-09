@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_EQUALIZER
+
 #include "modules/ModeModule.h"
 
 class EqualizerMode : public ModeModule
@@ -17,3 +21,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_EQUALIZER

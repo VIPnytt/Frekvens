@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_LEAFFALL
+
 #include "modules/ModeModule.h"
 
 class LeafFallMode : public ModeModule
@@ -24,3 +27,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_LEAFFALL

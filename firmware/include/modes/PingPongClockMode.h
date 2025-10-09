@@ -1,8 +1,11 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_PINGPONGCLOCK
+
 #include <deque>
 
-#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class PingPongClockMode : public ModeModule
@@ -41,3 +44,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_PINGPONGCLOCK

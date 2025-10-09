@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_SMALLCLOCK
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/SmallClockMode.h"
@@ -23,3 +27,5 @@ void SmallClockMode::handle()
         pending = false;
     }
 }
+
+#endif // MODE_SMALLCLOCK

@@ -1,7 +1,10 @@
+#include "config/constants.h"
+
+#if MODE_SNAKECLOCK
+
 #include <map>
 #include <queue>
 
-#include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/SnakeClockMode.h"
@@ -210,3 +213,5 @@ bool SnakeClockMode::findPath(Pixel start, Pixel goal, Pixel &next)
     }
     return false;
 }
+
+#endif // MODE_SNAKECLOCK

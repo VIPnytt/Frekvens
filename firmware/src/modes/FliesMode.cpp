@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_FLIES
+
 #include "modes/FliesMode.h"
 #include "services/DisplayService.h"
 
@@ -22,3 +26,5 @@ void FliesMode::receiverHook(const JsonDocument doc)
         pending = true;
     }
 }
+
+#endif // MODE_FLIES

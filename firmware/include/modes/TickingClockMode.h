@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_TICKINGCLOCK
+
 #include "modules/ModeModule.h"
 
 class TickingClockMode : public ModeModule
@@ -20,3 +24,5 @@ public:
     void wake() override;
     void handle() override;
 };
+
+#endif // MODE_TICKINGCLOCK

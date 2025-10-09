@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_PIXELSEQUENCE
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/PixelSequenceMode.h"
 #include "services/DisplayService.h"
@@ -27,3 +31,5 @@ void PixelSequenceMode::handle()
         lastMillis = millis();
     }
 }
+
+#endif // MODE_PIXELSEQUENCE

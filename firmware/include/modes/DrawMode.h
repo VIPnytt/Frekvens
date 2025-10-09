@@ -1,6 +1,9 @@
 #pragma once
 
 #include "config/constants.h"
+
+#if MODE_DRAW
+
 #include "modules/ModeModule.h"
 
 class DrawMode : public ModeModule
@@ -23,3 +26,5 @@ public:
     void sleep() override;
     void receiverHook(const JsonDocument doc) override;
 };
+
+#endif // MODE_DRAW

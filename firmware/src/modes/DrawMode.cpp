@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_DRAW
+
 #include <Preferences.h>
 
 #include "handlers/BitmapHandler.h"
@@ -149,3 +153,5 @@ void DrawMode::save(bool cache)
     }
     transmit();
 }
+
+#endif // MODE_DRAW

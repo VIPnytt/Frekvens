@@ -1,6 +1,6 @@
 #include "config/constants.h"
 
-#if defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
 
 #include <HTTPClient.h>
 
@@ -84,4 +84,4 @@ void YrMode::update()
     }
 }
 
-#endif // defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_YR && defined(LATITUDE) && defined(LONGITUDE)

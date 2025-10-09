@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_RAIN
+
 #include "modes/RainMode.h"
 #include "services/DisplayService.h"
 
@@ -57,3 +61,5 @@ void RainMode::handle()
         }
     }
 }
+
+#endif // MODE_RAIN

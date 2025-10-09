@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_SCAN
+
 #include "extensions/MicrophoneExtension.h"
 #include "modes/ScanMode.h"
 #include "services/DisplayService.h"
@@ -30,3 +33,5 @@ void ScanMode::handle()
         }
     }
 }
+
+#endif // MODE_SCAN

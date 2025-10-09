@@ -2,7 +2,7 @@
 
 #include "config/constants.h"
 
-#if defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
 
 #include <vector>
 
@@ -165,4 +165,4 @@ public:
     void handle();
 };
 
-#endif // defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_YR && defined(LATITUDE) && defined(LONGITUDE)

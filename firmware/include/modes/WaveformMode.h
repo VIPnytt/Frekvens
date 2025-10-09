@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_WAVEFORM
+
 #include "modules/ModeModule.h"
 
 class WaveformMode : public ModeModule
@@ -117,3 +121,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_WAVEFORM

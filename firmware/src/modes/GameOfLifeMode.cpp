@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_GAMEOFLIFE
+
 #include "modes/GameOfLifeMode.h"
 #include "services/DisplayService.h"
 
@@ -52,3 +55,5 @@ void GameOfLifeMode::handle()
         }
     }
 }
+
+#endif // MODE_GAMEOFLIFE

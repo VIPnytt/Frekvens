@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_BREAKOUTCLOCK
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/BreakoutClockMode.h"
@@ -87,3 +91,5 @@ void BreakoutClockMode::handle()
         Display.setPixel(paddle.front(), COLUMNS - 1);
     }
 }
+
+#endif // MODE_BREAKOUTCLOCK

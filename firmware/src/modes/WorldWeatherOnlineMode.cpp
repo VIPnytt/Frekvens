@@ -1,6 +1,6 @@
 #include "config/constants.h"
 
-#if defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#if MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
 
 #include <HTTPClient.h>
 
@@ -100,4 +100,4 @@ void WorldWeatherOnlineMode::update()
     }
 }
 
-#endif // defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#endif // MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))

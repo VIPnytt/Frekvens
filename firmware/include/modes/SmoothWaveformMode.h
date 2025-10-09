@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if MODE_SMOOTHWAVEFORM
+
 #include "modules/ModeModule.h"
 
 class SmoothWaveformMode : public ModeModule
@@ -60,3 +64,5 @@ public:
 
     void handle() override;
 };
+
+#endif // MODE_SMOOTHWAVEFORM

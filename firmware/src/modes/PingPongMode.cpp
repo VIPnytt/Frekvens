@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if MODE_PINGPONG
+
 #include "modes/PingPongMode.h"
 #include "services/DisplayService.h"
 
@@ -98,3 +102,5 @@ void PingPongMode::predict()
     } while (_y > 1 && _y + .5 < ROWS - 2);
     targetX = _x + .5;
 }
+
+#endif // MODE_PINGPONG

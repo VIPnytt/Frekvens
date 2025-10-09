@@ -1,4 +1,7 @@
 #include "config/constants.h"
+
+#if MODE_BOLDCLOCK
+
 #include "fonts/MediumBoldFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/BoldClockMode.h"
@@ -28,3 +31,5 @@ void BoldClockMode::handle()
         pending = false;
     }
 }
+
+#endif // MODE_BOLDCLOCK
