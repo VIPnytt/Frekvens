@@ -4,7 +4,10 @@
 
 #if EXTENSION_INFRARED
 
-#include <IRrecv.h>
+#define USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
+#include <IRremote.hpp>
+#undef USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
+
 #include <vector>
 
 #include "modules/ExtensionModule.h"
@@ -15,7 +18,7 @@ private:
     struct Code
     {
         const decode_type_t protocol;
-        const std::vector<uint32_t>
+        const std::vector<uint16_t>
             displayBrightnessDecrease,
             displayBrightnessIncrease,
             displayPowerToggle,
@@ -33,7 +36,7 @@ private:
     };
 
     const std::vector<Code> codes = {
-#if DECODE_RC5
+#ifdef DECODE_RC5
         {
             decode_type_t::RC5,
             {
@@ -51,7 +54,9 @@ private:
             },
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            {},
+            {
+                0x47, // Philips: Dim
+            },
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             {
@@ -68,27 +73,8 @@ private:
                 0x21, // Philips: Title previous
             },
         },
-        {
-            decode_type_t::RC5X,
-            {},
-            {},
-            {},
-#if EXTENSION_MICROPHONE
-            {},
-#endif // EXTENSION_MICROPHONE
-#if EXTENSION_PHOTOCELL
-            {
-                0x47, // Philips: Dim
-            },
-#endif // EXTENSION_PHOTOCELL
-#if EXTENSION_PLAYLIST
-            {},
-#endif // EXTENSION_PLAYLIST
-            {},
-            {},
-        },
 #endif // DECODE_RC5
-#if DECODE_SONY
+#ifdef DECODE_SONY
         {
             decode_type_t::SONY,
             {
@@ -132,8 +118,6 @@ private:
 #endif // DECODE_SONY
     };
 
-    IRrecv *irrecv;
-
     bool active = false;
 
     unsigned long lastMillis = 0;
@@ -149,7 +133,7 @@ public:
 
     bool get();
     void set(bool enable);
-    bool parse(decode_results results);
+    void parse();
 
     void receiverHook(const JsonDocument doc) override;
 };

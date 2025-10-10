@@ -33,7 +33,11 @@
  */
 #if !defined(EXTENSION_INFRARED) && defined(PIN_IR)
 #define EXTENSION_INFRARED true
-#endif
+#endif // !defined(EXTENSION_INFRARED) && defined(PIN_IR)
+#if EXTENSION_INFRARED && !defined(DECODE_RC5) && !defined(DECODE_SONY)
+#define DECODE_RC5
+#define DECODE_SONY
+#endif // EXTENSION_INFRARED && !defined(DECODE_RC5) && !defined(DECODE_SONY)
 
 /**
  * Message
