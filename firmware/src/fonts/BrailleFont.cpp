@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if FONT_BRAILLE
+
 #include "fonts/BrailleFont.h"
 
 BrailleFont *FontBraille = nullptr;
@@ -19,3 +23,5 @@ FontModule::Symbol BrailleFont::getChar(uint32_t character)
     }
     return {};
 }
+
+#endif // FONT_BRAILLE
