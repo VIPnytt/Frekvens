@@ -1,21 +1,11 @@
 ### Summary
 
-<!-- Briefly explain the changes in this pull request. Why are they needed, and what problem do they solve? -->
+<!-- Briefly describe what this pull request does and why. What problem does it solve, or what improvement does it bring? -->
 
-### How this was tested
+### Key changes
 
-<!-- Describe how you tested your changes. Include any hardware, firmware versions, or steps you took to verify it works as expected. -->
+<!-- List or describe the main updates included in this PR — code changes, documentation updates, new features, bug fixes, etc. -->
 
-### Additional context
+### Impact
 
-<!-- Add any other useful information, such as screenshots, GIFs, or links to related issues. -->
-
----
-
-### Checklist
-
-<!-- Please check off the following items before requesting a review: -->
-
-- [ ] I have tested these changes on a physical device.
-- [ ] I have reviewed the code for any unintended side effects.
-- [ ] My changes are documented where necessary.
+<!-- Explain how these changes affect the project, users, or contributors. Mention anything worth noting, such as compatibility, behavior changes, or maintenance impact. -->
