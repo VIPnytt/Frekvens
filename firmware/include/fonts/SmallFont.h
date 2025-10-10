@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if !defined(FONT_SMALL) || FONT_SMALL
+
 #include "modules/FontModule.h"
 
 //
@@ -1462,3 +1466,5 @@ public:
 };
 
 extern SmallFont *FontSmall;
+
+#endif // !defined(FONT_SMALL) || FONT_SMALL

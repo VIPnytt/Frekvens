@@ -1,5 +1,9 @@
 #pragma once
 
+#include "config/constants.h"
+
+#if FONT_BRAILLE
+
 #include "modules/FontModule.h"
 
 class BrailleFont : public FontModule
@@ -346,3 +350,5 @@ public:
 };
 
 extern BrailleFont *FontBraille;
+
+#endif // FONT_BRAILLE

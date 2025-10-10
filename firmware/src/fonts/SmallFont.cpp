@@ -1,3 +1,7 @@
+#include "config/constants.h"
+
+#if !defined(FONT_SMALL) || FONT_SMALL
+
 #include "fonts/SmallFont.h"
 
 SmallFont *FontSmall = nullptr;
@@ -25,3 +29,5 @@ FontModule::Symbol SmallFont::getChar(uint32_t character)
     }
     return {};
 }
+
+#endif // !defined(FONT_SMALL) || FONT_SMALL
