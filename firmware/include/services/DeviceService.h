@@ -24,6 +24,8 @@ private:
         reset_watchdog = "Watchdog";
 #endif // F_DEBUG
 
+    bool operational = false;
+
     unsigned long lastMillis = 0;
 
 #ifdef F_DEBUG
