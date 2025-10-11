@@ -149,6 +149,11 @@ void DeviceService::init()
 
 void DeviceService::ready()
 {
+    operational = true;
+#ifdef F_VERBOSE
+    Serial.printf("%s: operational\n", name);
+#endif
+
 #if EXTENSION_BUILD
     (*Build->config)[Config::env][ENV] = "";
     (*Build->config)[Config::env][__STRING(NAME)] = NAME;
@@ -604,52 +609,58 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
         doc["_timestamp"] = ts;
     }
 #endif // F_DEBUG
-#ifdef F_VERBOSE
-    Serial.printf("%s: transmitting, %s\n", name, source);
-#endif // F_VERBOSE
     if (retain)
     {
         transmits[source] = doc;
     }
-    for (ExtensionModule *extension : Extensions.getAll())
+    if (operational)
     {
-        extension->transmitterHook(doc, source);
+#ifdef F_VERBOSE
+        Serial.printf("%s: transmitting, %s\n", name, source);
+#endif // F_VERBOSE
+        for (ExtensionModule *extension : Extensions.getAll())
+        {
+            extension->transmitterHook(doc, source);
+        }
     }
 }
 
 void DeviceService::receive(const JsonDocument doc, const char *const source, const char *const destination)
 {
+    if (operational)
+    {
 #ifdef F_VERBOSE
-    Serial.printf("%s: receiving @ %s\n", name, source);
+        Serial.printf("%s: receiving @ %s\n", name, source);
 #endif
-    ServiceModule *services[] = {
-        &Device,
-        &Display,
-        &Modes,
-        &Connectivity,
-    };
-    for (ServiceModule *service : services)
-    {
-        if (!strcmp(service->name, destination))
+        ServiceModule *services[] = {
+            &Connectivity,
+            &Device,
+            &Display,
+            &Modes,
+        };
+        for (ServiceModule *service : services)
         {
-            service->receiverHook(doc);
-            return;
+            if (!strcmp(service->name, destination))
+            {
+                service->receiverHook(doc);
+                return;
+            }
         }
-    }
-    for (ExtensionModule *extension : Extensions.getAll())
-    {
-        if (!strcmp(extension->name, destination))
+        for (ExtensionModule *extension : Extensions.getAll())
         {
-            extension->receiverHook(doc);
-            return;
+            if (!strcmp(extension->name, destination))
+            {
+                extension->receiverHook(doc);
+                return;
+            }
         }
-    }
-    for (ModeModule *mode : Modes.getAll())
-    {
-        if (!strcmp(mode->name, destination))
+        for (ModeModule *mode : Modes.getAll())
         {
-            mode->receiverHook(doc);
-            return;
+            if (!strcmp(mode->name, destination))
+            {
+                mode->receiverHook(doc);
+                return;
+            }
         }
     }
 }
