@@ -179,7 +179,16 @@ bool ConnectivityService::vault()
     {
         multi->addAP(pair.key().c_str(), pair.value().as<const char *>());
     }
+#ifdef F_VERBOSE
+    const bool loaded = doc.size();
+    if (!loaded)
+    {
+        Serial.printf("%s: Wi-Fi config not found\n", name);
+    }
+    return loaded;
+#else
     return doc.size();
+#endif // F_VERBOSE
 }
 
 void ConnectivityService::hotspot()
@@ -274,17 +283,32 @@ void ConnectivityService::disconnect()
 #if defined(PIN_SW1) || defined(PIN_SW2)
 bool ConnectivityService::buttonCheck()
 {
-    if (esp_sleep_get_wakeup_cause() != esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED)
+#ifdef F_VERBOSE
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED)
     {
-        return false;
+#ifdef PIN_SW1
+        if (digitalRead(PIN_SW1) == LOW)
+        {
+            Serial.printf("%s: power button held at startup\n", name);
+            return true;
+        }
+#endif // PIN_SW1
+#ifdef PIN_SW2
+        if (digitalRead(PIN_SW2) == LOW)
+        {
+            Serial.printf("%s: mode button held at startup\n", name);
+            return true;
+        }
+#endif // PIN_SW2
     }
-#if defined(PIN_SW1) && defined(PIN_SW2)
-    return digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW;
+#elif defined(PIN_SW1) && defined(PIN_SW2)
+    return esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW);
 #elif defined(PIN_SW1)
-    return digitalRead(PIN_SW1) == LOW;
+    return esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW1) == LOW;
 #elif defined(PIN_SW2)
-    return digitalRead(PIN_SW2) == LOW;
-#endif // defined(PIN_SW1) && defined(PIN_SW2)
+    return esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW2) == LOW;
+#endif // F_VERBOSE
+    return false;
 }
 #endif // defined(PIN_SW1) || defined(PIN_SW2)
 
