@@ -15,7 +15,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    static inline bool subscribe = true;
+    static inline bool subscribed = false;
 
     static constexpr size_t
         prefixLength = sizeof("frekvens/" HOSTNAME),

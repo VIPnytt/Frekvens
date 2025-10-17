@@ -24,7 +24,7 @@ void MqttExtension::setup()
     client.onDisconnect(&onDisconnect);
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
-    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, reinterpret_cast<const uint8_t *>(""), 0);
+    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
 #ifdef MQTT_PORT
     client.setServer(MQTT_HOST, MQTT_PORT);
 #else
@@ -74,7 +74,7 @@ void MqttExtension::disconnect()
     lastMillis = millis();
     if (client.connected())
     {
-        client.publish("frekvens/" HOSTNAME "/availability", 1, true, reinterpret_cast<const uint8_t *>(""), 0);
+        client.publish("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
         client.loop();
         client.disconnect();
     }
@@ -85,13 +85,13 @@ void MqttExtension::onConnect(bool sessionPresent)
 #ifdef F_DEBUG
     Serial.printf("%s: connected\n", Mqtt->name);
 #endif // F_DEBUG
-    if (!sessionPresent || subscribe)
+    if (!sessionPresent || (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
         for (const char *const _name : Device.getNames())
         {
             Mqtt->client.subscribe(std::string("frekvens/" HOSTNAME "/").append(_name).append("/set").c_str(), 2);
         }
-        subscribe = false;
+        subscribed = true;
     }
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
     Mqtt->pending = true;
