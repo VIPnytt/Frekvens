@@ -2,7 +2,8 @@
 
 #if EXTENSION_INFRARED
 
-#include <locale/defaults.h>
+#include <stdint.h> // temporary bugfix needed for arduino-irremote/IRremote @ 4.5.0
+#include <IRremote.hpp>
 #include <Preferences.h>
 
 #include "extensions/HomeAssistantExtension.h"
@@ -24,7 +25,7 @@ InfraredExtension::InfraredExtension() : ExtensionModule("Infrared")
 void InfraredExtension::setup()
 {
     pinMode(PIN_IR, INPUT);
-    irrecv = new IRrecv(PIN_IR, kRawBuf, kTimeoutMs, true, kDefaultESP32Timer);
+    IrReceiver.setReceivePin(PIN_IR);
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -60,162 +61,107 @@ void InfraredExtension::ready()
 
 void InfraredExtension::handle()
 {
-    decode_results results;
-    if (irrecv->decode(&results))
+    if (IrReceiver.decode())
     {
-#ifdef F_VERBOSE
-        if (!results.repeat && results.decode_type != decode_type_t::UNKNOWN && !parse(results))
-        {
-            switch (results.decode_type)
-            {
-#if DECODE_RC5
-            case decode_type_t::RC5:
-                Serial.printf("%s: " D_STR_RC5 " 0x%X\n", name, results.command);
-                break;
-            case decode_type_t::RC5X:
-                Serial.printf("%s: " D_STR_RC5X " 0x%X\n", name, results.command);
-                break;
-#endif // DECODE_RC5
-#if DECODE_SONY
-            case decode_type_t::SONY:
-                Serial.printf("%s: " D_STR_SONY " 0x%X\n", name, results.command);
-                break;
-#endif // DECODE_SONY
-            default:
-                Serial.printf("%s: protocol %d code 0x%X\n", name, results.decode_type, results.command);
-                break;
-            }
-        }
-#else
-        if (!results.repeat && results.decode_type != decode_type_t::UNKNOWN)
-        {
-            parse(results);
-        }
-#endif // F_VERBOSE
-        irrecv->resume();
+        parse();
+        IrReceiver.resume();
     }
 }
 
-bool InfraredExtension::parse(decode_results results)
+void InfraredExtension::parse()
 {
+    const unsigned long delta = millis() - lastMillis;
     for (const Code &code : codes)
     {
-        if (code.protocol == results.decode_type)
+        if (code.protocol == IrReceiver.decodedIRData.protocol)
         {
-            if (std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), results.command) != code.displayBrightnessDecrease.end())
+            if (delta > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
             {
-                if (millis() - lastMillis > INT8_MAX)
-                {
-                    uint8_t brightness = Display.getGlobalBrightness();
-                    if (brightness > 0)
-                    {
 #ifdef F_INFO
-                        Serial.printf("%s: brightness -\n", name);
+                Serial.printf("%s: brightness -\n", name);
 #endif // F_INFO
-                        Display.setGlobalBrightness(max(0, brightness - 5));
-                        lastMillis = millis();
-                    }
-                }
-                return true;
+                Display.setGlobalBrightness(max(0, Display.getGlobalBrightness() - 5));
+                lastMillis = millis();
+                return;
             }
-            else if (std::find(code.displayBrightnessIncrease.begin(), code.displayBrightnessIncrease.end(), results.command) != code.displayBrightnessIncrease.end())
+            else if (delta > INT8_MAX && std::find(code.displayBrightnessIncrease.begin(), code.displayBrightnessIncrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessIncrease.end())
             {
-                if (millis() - lastMillis > INT8_MAX)
-                {
-                    uint8_t brightness = Display.getGlobalBrightness();
-                    if (brightness < UINT8_MAX)
-                    {
 #ifdef F_INFO
-                        Serial.printf("%s: brightness +\n", name);
+                Serial.printf("%s: brightness +\n", name);
 #endif // F_INFO
-                        Display.setGlobalBrightness(min(UINT8_MAX, brightness + 5));
-                        lastMillis = millis();
-                    }
-                }
-                return true;
+                Display.setGlobalBrightness(min(UINT8_MAX, Display.getGlobalBrightness() + 5));
+                lastMillis = millis();
+                return;
             }
-            else if (std::find(code.displayPowerToggle.begin(), code.displayPowerToggle.end(), results.command) != code.displayPowerToggle.end())
+            else if (delta > (1 << 10) && std::find(code.displayPowerToggle.begin(), code.displayPowerToggle.end(), IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
-                if (millis() - lastMillis > 1000)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: power\n", name);
+                Serial.printf("%s: power\n", name);
 #endif // F_INFO
-                    Display.setPower(!Display.getPower());
-                    lastMillis = millis();
-                }
-                return true;
+                Display.setPower(!Display.getPower());
+                lastMillis = millis();
+                return;
             }
 #if EXTENSION_MICROPHONE
-            else if (std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), results.command) != code.extensionMicrophoneToggle.end())
+            else if (delta > (1 << 10) && std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
             {
-                if (millis() - lastMillis > 1000)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: microphone\n", name);
+                Serial.printf("%s: microphone\n", name);
 #endif // F_INFO
-                    Microphone->set(!Microphone->get());
-                    lastMillis = millis();
-                }
-                return true;
+                Microphone->set(!Microphone->get());
+                lastMillis = millis();
+                return;
             }
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            else if (std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), results.command) != code.extensionPhotocellToggle.end())
+            else if (delta > (1 << 10) && std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
             {
-                if (millis() - lastMillis > 1000)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: photocell\n", name);
+                Serial.printf("%s: photocell\n", name);
 #endif // F_INFO
-                    Photocell->set(!Photocell->get());
-                    lastMillis = millis();
-                }
-                return true;
+                Photocell->set(!Photocell->get());
+                lastMillis = millis();
+                return;
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), results.command) != code.extensionPlaylistToggle.end())
+            else if (delta > (1 << 10) && std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistToggle.end())
             {
-                if (millis() - lastMillis > 1000)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: playlist\n", name);
+                Serial.printf("%s: playlist\n", name);
 #endif // F_INFO
-                    Playlist->set(!Playlist->get());
-                    lastMillis = millis();
-                }
-                return true;
+                Playlist->set(!Playlist->get());
+                lastMillis = millis();
+                return;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (std::find(code.modeNext.begin(), code.modeNext.end(), results.command) != code.modeNext.end())
+            else if (delta > (1 << 9) && std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) != code.modeNext.end())
             {
-                if (millis() - lastMillis > 500)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: mode +\n", name);
+                Serial.printf("%s: mode +\n", name);
 #endif // F_INFO
-                    Modes.next();
-                    lastMillis = millis();
-                }
-                return true;
+                Modes.next();
+                lastMillis = millis();
+                return;
             }
-            else if (std::find(code.modePrevious.begin(), code.modePrevious.end(), results.command) != code.modePrevious.end())
+            else if (delta > (1 << 9) && std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) != code.modePrevious.end())
             {
-                if (millis() - lastMillis > 500)
-                {
 #ifdef F_INFO
-                    Serial.printf("%s: mode -\n", name);
+                Serial.printf("%s: mode -\n", name);
 #endif // F_INFO
-                    Modes.previous();
-                    lastMillis = millis();
-                }
-                return true;
+                Modes.previous();
+                lastMillis = millis();
+                return;
             }
-            return false;
+            break;
         }
     }
-    return false;
+#ifdef F_VERBOSE
+    if (!IrReceiver.decodedIRData.flags)
+    {
+        Serial.printf("%s: %s 0x%X\n", name, ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
+    }
+#endif // F_VERBOSE
 }
 
 bool InfraredExtension::get()
@@ -228,7 +174,7 @@ void InfraredExtension::set(bool enable)
     if ((enable && !active) || (!enable && active))
     {
         active = enable;
-        active ? irrecv->enableIRIn() : irrecv->disableIRIn();
+        active ? IrReceiver.start() : IrReceiver.stop();
 
         Preferences Storage;
         Storage.begin(name);
