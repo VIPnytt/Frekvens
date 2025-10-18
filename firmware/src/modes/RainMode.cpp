@@ -12,7 +12,7 @@ void RainMode::wake()
         drop.x = random(COLUMNS);
         drop.y = random(ROWS);
         drop.length = random(ROWS / 5, ROWS / 3);
-        drop.delay = random(100, UINT8_MAX);
+        drop.delay = random(INT8_MAX, UINT8_MAX);
         drop.lastMillis = millis();
     }
     Display.clear();

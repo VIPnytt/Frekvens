@@ -73,7 +73,7 @@ export const Sidebar: Component = () => {
             <div class="space-y-2">
                 <div class="grid grid-cols-[48px_1fr] gap-3 items-center">
                     <Button
-                        class={`transition-colors ${getPower() ? 'hover:bg-red-600' : 'bg-red-600 hover:bg-green-600'}`}
+                        class={`transition-all ${getPower() ? 'hover:bg-red-600' : 'bg-red-600 hover:bg-green-600'}`}
                         onClick={handlePower}
                     >
                         <Icon path={mdiPower} />

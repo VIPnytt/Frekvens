@@ -38,6 +38,13 @@ export const receiver = (json: any) => {
 export const Footer: Component = () => (
     <>
         {
+            EXTENSION_MESSAGE ? (
+                <div class="mt-auto mb-3 border-t border-gray-200" />
+            ) : (
+                <div class="mt-auto" />
+            )
+        }
+        {
             EXTENSION_MESSAGE && (
                 <ExtensionMessageLink />
             )

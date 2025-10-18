@@ -62,7 +62,7 @@ export const Actions: Component = () => (
         </a>
         <Tooltip text={`${getActive() ? 'Stop' : 'Play'} ${name.toLowerCase()}`}>
             <Button
-                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
+                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
                 disabled={!getPlaylist().length}
                 onClick={handleActive}
             >
@@ -94,7 +94,7 @@ export const MainThird: Component = () => {
                 ...getPlaylist(),
                 {
                     duration: getDuration(),
-                    mode: ModesList()[Math.floor(Math.random() * ModesList().length)],
+                    mode: ModesList()[Math.round(Math.random() * ModesList().length)],
                 },
             ]);
         } while (getPlaylist().length < 2);
@@ -178,7 +178,7 @@ export const MainThird: Component = () => {
                     <div class="grid grid-cols-2 gap-3">
                         <Tooltip text="Add mode">
                             <Button
-                                class="hover:bg-green-600 transition-colors"
+                                class="hover:bg-green-600 transition-all"
                                 disabled={getActive()}
                                 onClick={handleAdd}
                             >
@@ -187,7 +187,7 @@ export const MainThird: Component = () => {
                         </Tooltip>
                         <Tooltip text={`${getActive() ? 'Stop' : 'Play'} ${name.toLowerCase()}`}>
                             <Button
-                                class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
+                                class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
                                 disabled={getPlaylist().length < 2}
                                 onClick={handleActive}
                             >

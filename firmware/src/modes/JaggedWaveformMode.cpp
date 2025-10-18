@@ -10,9 +10,9 @@
 void JaggedWaveformMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > 500 && Microphone->play())
+    if (millis() - lastMillis > (1 << 9) && Microphone->play())
 #else
-    if (millis() - lastMillis > 500)
+    if (millis() - lastMillis > (1 << 9))
 #endif
     {
         lastMillis = millis();

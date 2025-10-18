@@ -213,7 +213,7 @@ private:
 #ifdef TASK_STACK_MODES
     static constexpr uint16_t stackSize = TASK_STACK_MODES;
 #else
-    static constexpr uint16_t stackSize = 8192;
+    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 #endif
 
     void set(ModeModule *mode);

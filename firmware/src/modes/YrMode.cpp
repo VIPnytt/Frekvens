@@ -34,7 +34,7 @@ void YrMode::wake()
 void YrMode::handle()
 {
     // Yr data resolution: down to 5 minutes (depending on location)
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 5 || lastMillis == 0))
+    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 300'000 || lastMillis == 0))
     {
         update();
     }

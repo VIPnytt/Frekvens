@@ -30,7 +30,7 @@ void SignalExtension::ready()
 
 void SignalExtension::handle()
 {
-    if (Display.getPower() && millis() - lastMillis > 1000 * duration)
+    if (Display.getPower() && millis() - lastMillis > 1'000 * duration)
     {
         if (signals.size())
         {

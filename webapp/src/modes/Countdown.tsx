@@ -133,7 +133,7 @@ export const Main: Component = () => {
                         </div>
                     </div>
                     <Button
-                        class="hover:bg-green-600 transition-colors"
+                        class="hover:bg-green-600 transition-all"
                         onClick={handleRelative}
                     >
                         <Icon

@@ -9,6 +9,7 @@
 #include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
+#include "services/DisplayService.h"
 #include "services/ModesService.h"
 
 MessageExtension *Message = nullptr;

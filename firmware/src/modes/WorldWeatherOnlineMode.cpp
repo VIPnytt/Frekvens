@@ -40,7 +40,7 @@ void WorldWeatherOnlineMode::wake()
 void WorldWeatherOnlineMode::handle()
 {
     // World Weather Online update interval: 10-15 minutes
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 10 || lastMillis == 0))
+    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 600'000 || lastMillis == 0))
     {
         update();
     }

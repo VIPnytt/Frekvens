@@ -150,7 +150,7 @@ export const Sidebar: Component = () => {
             <div class="grid grid-cols-2 gap-3">
                 <Tooltip text={`${getPreview() ? 'Stop' : 'Preview'} animation`}>
                     <Button
-                        class={`transition-colors ${getPreview() && ('bg-red-600')}`}
+                        class={`transition-all ${getPreview() && ('bg-red-600')}`}
                         disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0))}
                         onClick={handlePreview}
                     >
@@ -167,7 +167,7 @@ export const Sidebar: Component = () => {
                 </Tooltip>
                 <Tooltip text="Save animation">
                     <Button
-                        class="hover:bg-green-600 transition-colors"
+                        class="hover:bg-green-600 transition-all"
                         disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0)) || getSaved()}
                         onClick={handleSave}
                     >
@@ -185,7 +185,7 @@ export const Sidebar: Component = () => {
                 </Tooltip>
                 <Tooltip text="Download animation">
                     <Button
-                        class="hover:bg-blue-600 transition-colors"
+                        class="hover:bg-blue-600 transition-all"
                         disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0))}
                         onClick={handleDownload}
                     >
@@ -194,7 +194,7 @@ export const Sidebar: Component = () => {
                 </Tooltip>
                 <Tooltip text="Upload animation, drawing or image">
                     <Button
-                        class="hover:bg-blue-600 transition-colors"
+                        class="hover:bg-blue-600 transition-all"
                         disabled={getPreview()}
                         onClick={handleUpload}
                     >
@@ -264,7 +264,7 @@ export const Main: Component = () => {
                                         <div class="flex gap-3">
                                             <Tooltip text={`Clear frame ${index() + 1}`}>
                                                 <Button
-                                                    class="hover:bg-red-600 transition-colors"
+                                                    class="hover:bg-red-600 transition-all"
                                                     disabled={!getFrameSignals()[index()][0]?.().some(pixel => pixel > 0)}
                                                     onClick={() => handleClear(index())}
                                                 >
@@ -273,7 +273,7 @@ export const Main: Component = () => {
                                             </Tooltip>
                                             <Tooltip text={`Remove frame ${index() + 1}`}>
                                                 <Button
-                                                    class="hover:bg-red-600 transition-colors w-auto"
+                                                    class="hover:bg-red-600 transition-all w-auto"
                                                     onClick={() => handleRemove(index())}
                                                     widthAuto
                                                 >

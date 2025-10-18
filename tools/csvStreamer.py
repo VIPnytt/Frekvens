@@ -62,7 +62,7 @@ class csvStreamer:
                 if count < 2:
                     break
                 frame += 1
-                time.sleep(self.duration / 1000)
+                time.sleep(self.duration / 1_000)
         except KeyboardInterrupt:
             pass
 

@@ -111,7 +111,7 @@ export const MainThird: Component = () => {
                     </Tooltip>
                     <Tooltip text={`${DisplayName} ${name.toLowerCase()}`}>
                         <Button
-                            class="hover:bg-green-600 transition-colors"
+                            class="hover:bg-green-600 transition-all"
                             disabled={getMessage().length === 0}
                             onClick={handleSend}
                         >

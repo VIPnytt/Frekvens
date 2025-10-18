@@ -11,7 +11,7 @@ void LeafFallMode::wake()
     {
         leaf.x = random(COLUMNS);
         leaf.y = random(ROWS);
-        leaf.brightness = random(25, 1U << 8);
+        leaf.brightness = random(1 << 4, 1 << 8);
         leaf.delay = random(UINT8_MAX, 600);
         leaf.lastMillis = millis();
     }
@@ -27,7 +27,7 @@ void LeafFallMode::handle()
             Display.setPixel(leaf.x, leaf.y, 0);
             if (leaf.y + 1 >= ROWS)
             {
-                leaf.brightness = random(25, 1U << 8);
+                leaf.brightness = random(1 << 4, 1 << 8);
                 leaf.y = 0;
                 do
                 {

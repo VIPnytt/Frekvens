@@ -39,7 +39,7 @@ void OpenMeteoMode::wake()
 void OpenMeteoMode::handle()
 {
     // Open-Meteo data resolution: down to 15 minutes (depending on location)
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 15 || lastMillis == 0))
+    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 900'000 || lastMillis == 0))
     {
         update();
     }

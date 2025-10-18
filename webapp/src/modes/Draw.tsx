@@ -145,7 +145,7 @@ export const Main: Component = () => {
                 <div class="flex gap-3">
                     <Tooltip text="Clear drawing">
                         <Button
-                            class="hover:bg-red-600 transition-colors"
+                            class="hover:bg-red-600 transition-all"
                             disabled={!getFrame()?.some(pixel => pixel > 0)}
                             onClick={handleClear}
                         >

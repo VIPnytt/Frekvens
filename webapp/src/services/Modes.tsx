@@ -47,10 +47,11 @@ export const Main: Component = () => (
                     <h2 class="text-4xl">{getMode()}</h2>
                 </a>
                 <p class="text-xs mt-2 text-gray-300">
-                    <span class="bold">Tip:</span> There are various <span class="italic">modes</span> to choose from.
+                    <span class="font-semibold">Tip:</span> There are various <span class="italic">modes</span> to choose from.
                 </p>
             </Center>
-        }>
+        }
+    >
         {
             MODE_ANIMATION && (!MODEL || MODEL && DeviceModel() === MODEL) && (
                 <Match when={ModesMode() === ModeAnimationName}>
@@ -214,7 +215,8 @@ export const MainThird: Component = () => (
                     </div>
                 </div>
             </div >
-        }>
+        }
+    >
         {
             MODE_HOMETHERMOMETER && (
                 <Match when={WebServerPath() === `/${name.toLowerCase()}/${ModeHomeThermometerName.toLowerCase().replace(/\s+/g, '-')}`}>
