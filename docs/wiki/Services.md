@@ -79,6 +79,20 @@ The hotspot will be activated automatically if no Wi-Fi credentials is configure
 
 See also [Button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-button) extension.
 
+**Wi-Fi country:**
+
+Specifies the country code used for applying Wi-Fi regulatory restrictions such as channel availability and transmit power limits.
+
+The expected format is an *ISO 3166-1 alpha-2* code. Only a subset of country codes are [supported by Espressif](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html#_CPPv425esp_wifi_set_country_codePKcb).
+
+Default is `01`, which corresponds to *world safe mode*.
+
+[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+
+```h
+#define WIFI_COUNTRY "01"
+```
+
 ## ☁️ Web server
 
 **Host check:**
