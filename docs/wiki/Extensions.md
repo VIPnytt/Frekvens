@@ -97,7 +97,7 @@ Key supported features include:
 - Control over [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) like the microphone and infrared receiver.
 - Access to various statistics, debug data, and advanced settings.
 
-> The [*MQTT*](https://www.home-assistant.io/integrations/mqtt) integration is required.
+> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
 [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
 
@@ -272,7 +272,7 @@ EXTENSION_MQTT=true
 
 Over-the-Air updates, for ESP32.
 
-User-friendly interface for uploading `firmware.bin` and `spiffs.bin` files manually.
+User-friendly interface for uploading `firmware.bin` and `littlefs.bin`/`spiffs.bin` files manually.
 
 URL: `http://example.local/#/extensions/ota`
 
@@ -465,7 +465,7 @@ EXTENSION_SIGNAL=true
 
 ## 📱 Web app
 
-Handles the `webapp` user-interface located on the ESP32’s *SPIFFS* partition.
+Handles the `./webapp` user-interface located in the filesystem partition.
 
 [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
 

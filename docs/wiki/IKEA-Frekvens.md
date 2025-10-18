@@ -65,8 +65,7 @@
 │           MOSI ├─ SPI MOSI
 │                │
 │ Digital output ├─ SPI CS
-│                │
-│     PWM output ├─ OE
+│ Digital output ├─ OE
 │                │
 │  Digital input ├─ Button 1
 │  Digital input ├─ Button 2
@@ -163,7 +162,7 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 | `CLK`       | SPI SCLK       | `PIN_SCLK` |
 | `DA` input  | SPI MOSI       | `PIN_MOSI` |
 | `DA` output | SPI MISO       | `PIN_MISO` |
-| `EN`        | PWM output     | `PIN_OE`   |
+| `EN`        | Digital output | `PIN_OE`   |
 | `SW1`       | Digital input  | `PIN_SW1`  |
 | `SW`        | Digital input  | `PIN_SW2`  |
 | `U3` pin 7  | Analog input   | `PIN_MIC`  |
@@ -250,7 +249,7 @@ Optional to connect; if unused, tie `EN` to `GND`.
 
 [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
 
-Any PWM output pin can be used.
+Any digital output pin can be used.
 
 > Avoid strapping pins as this pin is pulled *HIGH* with an effective resistance of about 25 kΩ.
 

@@ -1,6 +1,6 @@
 # ⏰ Real-Time Clock
 
-A Real-Time Clock (RTC) module keeps accurate time, even without Wi-Fi or power.
+A Real-Time Clock (RTC) module keeps accurate time, even without internet access.
 
 Most common RTC modules will work. Good starting points include the [DS3231](https://www.adafruit.com/product/3013) and the [DS1307](https://www.adafruit.com/product/3296).
 
