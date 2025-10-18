@@ -57,16 +57,16 @@
 ### ESP32 schema
 
 ```text
-┌───────────────┐
-│           VIN ├─ +4 V DC
-│           GND ├─ 0 V DC
-│               │
-│    PWM output ├─ OE
-│               │
-│ Digital input ├─ Button
-│               │
-│  Analog input ├─ Amplifier
-└───────────────┘
+┌────────────────┐
+│            VIN ├─ +4 V DC
+│            GND ├─ 0 V DC
+│                │
+│ Digital output ├─ OE
+│                │
+│  Digital input ├─ Button
+│                │
+│   Analog input ├─ Amplifier
+└────────────────┘
 ```
 
 ## 🚀 Getting started
@@ -89,7 +89,7 @@ The `DC+`/`LED+` and `DC-`/`MIC-` pins are internally connected via traces on th
 
 Enables or disables LED output.
 
-Any PWM output pin can be used.
+Any digital output pin can be used.
 
 > Avoid strapping pins as this pin may be floating.
 

@@ -5,7 +5,7 @@
 If you’re new to the project, we recommend starting with the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
 
 - [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
-- [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-hardware)
+- [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#%EF%B8%8F-hardware)
 - [Getting started](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-getting-started)
 - [Upload to the device](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-upload-to-the-device)
 - [Smart-home integrations](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-smart-home-integrations)

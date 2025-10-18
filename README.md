@@ -8,7 +8,7 @@ The modular firmware is designed for flexibility and can be adapted to third-par
 
 - [Features](#-features)
 - [Hardware](#%EF%B8%8F-hardware)
-- [Getting started](#️-getting-started)
+- [Getting started](#%EF%B8%8F-getting-started)
 - [Upload to the device](#️-upload-to-the-device)
 - [Smart-home integrations](#-smart-home-integrations)
 - [API](#-api)
@@ -45,7 +45,7 @@ Frekvens works with most Wi-Fi enabled ESP32 boards that support the Arduino fra
 
 For new installations, the `ESP32-S3` is recommended due to its performance and broad compatibility. Compact boards (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases.
 
-Because board layouts can differ significantly, the documentation references pin types rather than fixed pin numbers. For board-specific recommendations, first check the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. If you’re still unsure, refer to the [documentation](https://github.com/VIPnytt/Frekvens/wiki) or open a new topic for clarification.
+Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [documentation](https://github.com/VIPnytt/Frekvens/wiki).
 
 ### Optional Accessories
 
@@ -54,7 +54,7 @@ If desired, extra hardware can be added:
 - IR receiver — lets you control the device with a standard TV-style remote
 - Microphone — syncs the display with music
 - Photocell — automatic ambient brightness adaption
-- RTC clock — keeps accurate time, even when powered off
+- RTC clock — keeps accurate time, even without internet
 
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.
 
@@ -63,11 +63,11 @@ If desired, extra hardware can be added:
 Each display model has its own hardware setup guide:
 
 - [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens)
-  - Unsolder the `U2` chip
+  - Desolder the `U2` chip
   - Connect power, SPI and `EN`
   - Microphone input available at `U3` pin 7 or `U2` pin 11
 - [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad)
-  - Unsolder the `U1` chip
+  - Desolder the `U1` chip
   - Connect power, SPI and `EN`
 
 ## 🏗️ Getting started
@@ -168,7 +168,7 @@ Check out the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for more
 
 ## ⬆️ Upload to the device
 
-In the *PlatformIO* menu, there's a *"Upload"* button which uploads the firmware, and a *"Upload Filesystem Image"* button which uploads the Web app. You'll need to upload both.
+In the *PlatformIO* menu, there’s a *"Upload"* button which uploads the firmware, and a *"Upload Filesystem Image"* button which uploads the Web app. You’ll need to upload both.
 
 ### OTA Uploads
 
@@ -186,7 +186,7 @@ upload_port = example.local
 ;upload_flags = --auth=password
 ```
 
-As an alternative, it's also possible to manually upload the `firmware.bin` and `spiffs.bin` files via the Web app.
+As an alternative, it’s also possible to manually upload the `firmware.bin` and `littlefs.bin`/`spiffs.bin` files via the Web app.
 
 ## 🏠 Smart-home integrations
 
@@ -198,7 +198,7 @@ Control power and brightness via Amazon Alexa, using voice, app, or automation.
 
 Home Assistant is deeply integrated and supports full control over power, brightness, modes, extensions, and more.
 
-## 🤝 API
+## 🤖 API
 
 Four API interfaces are supported:
 
@@ -207,7 +207,7 @@ Four API interfaces are supported:
 - [Server-Sent Events](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-server-sent-events)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
-Refer to the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.
+Refer to the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.
 
 ## ❓ FAQ
 
