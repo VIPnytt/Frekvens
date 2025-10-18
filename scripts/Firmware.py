@@ -83,7 +83,7 @@ class Firmware:
         self.env.Append(
             CPPDEFINES=[
                 (
-                    "BOARD_NAME",
+                    "BOARD__NAME",
                     self.env.StringifyMacro(self.env.BoardConfig().get("name")),
                 ),
             ]

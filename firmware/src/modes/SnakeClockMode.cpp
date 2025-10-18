@@ -130,7 +130,7 @@ void SnakeClockMode::setDot()
     {
         dot = {(uint8_t)random(COLUMNS), (uint8_t)random(5, ROWS)};
     } while (std::find(snake.begin(), snake.end(), dot) != snake.end());
-    Display.setPixel(dot.x, dot.y, random(1, 1U << 8));
+    Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
 }
 
 bool SnakeClockMode::findPath(Pixel start, Pixel goal, Pixel &next)

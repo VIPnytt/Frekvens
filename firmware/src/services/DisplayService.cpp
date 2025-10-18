@@ -15,11 +15,11 @@ void DisplayService::setup()
     pinMode(PIN_CS, OUTPUT);
 #ifdef PIN_MISO
     pinMode(PIN_MISO, INPUT);
-#endif
+#endif // PIN_MISO
     pinMode(PIN_MOSI, OUTPUT);
 #ifdef PIN_OE
     pinMode(PIN_OE, OUTPUT);
-#endif
+#endif // PIN_OE
     pinMode(PIN_SCLK, OUTPUT);
 
 #ifdef PIN_MISO
@@ -31,16 +31,16 @@ void DisplayService::setup()
 #ifdef SPI_FREQUENCY
     SPI.beginTransaction(SPISettings(SPI_FREQUENCY, MSBFIRST, SPI_MODE0));
 #else
-    SPI.beginTransaction(SPISettings(10000000, MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(SPISettings(10'000'000, MSBFIRST, SPI_MODE0));
 #endif // SPI_FREQUENCY
 
-    timer = timerBegin(0, rtc_clk_apb_freq_get() / 1000000U, true);
+    timer = timerBegin(0, rtc_clk_apb_freq_get() / 1'000'000, true);
     timerAttachInterrupt(timer, &onTimer, true);
 
 #ifdef FRAME_RATE
-    timerAlarmWrite(timer, 1000000U / (1U << 8) / FRAME_RATE, true);
+    timerAlarmWrite(timer, 1'000'000 / (1 << 8) / FRAME_RATE, true);
 #else
-    timerAlarmWrite(timer, 1000000U / (1U << 8) / 60, true);
+    timerAlarmWrite(timer, 1'000'000 / (1 << 8) / 60, true);
 #endif // FRAME_RATE
 
     timerAlarmEnable(timer);
@@ -77,10 +77,10 @@ void DisplayService::setup()
     flush();
 
 #if defined(F_VERBOSE) && defined(SPI_FREQUENCY)
-    Serial.printf("%s: %.0f fps @ %.1f MHz\n", name, 1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer), SPI_FREQUENCY / (float)1000000);
+    Serial.printf("%s: %.0f fps @ %.1f MHz\n", name, 1'000'000 / (float)(1 << 8) / (float)timerAlarmRead(timer), SPI_FREQUENCY / (float)1'000'000);
 #elif defined(F_DEBUG)
-    Serial.printf("%s: %.0f fps\n", name, 1000000U / (float)(1U << 8) / (float)timerAlarmRead(timer));
-#endif
+    Serial.printf("%s: %.0f fps\n", name, 1'000'000 / (float)(1 << 8) / (float)timerAlarmRead(timer));
+#endif // defined(F_VERBOSE) && defined(SPI_FREQUENCY)
 }
 
 void DisplayService::ready()
@@ -271,7 +271,7 @@ void DisplayService::setGlobalBrightness(uint8_t brightness)
 #ifdef PIN_OE
     globalBrightness = brightness;
     ledcAttachPin(PIN_OE, 0);
-    ledcWrite(0, (1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 1 - max<uint16_t>(globalBrightness, pow(globalBrightness / (double)UINT8_MAX, GAMMA) * ((1U << SOC_LEDC_TIMER_BIT_WIDE_NUM) - 2) + 1));
+    ledcWrite(0, (1U << PWM_DEPTH) - 1 - max<uint16_t>(globalBrightness, pow(globalBrightness / (double)UINT8_MAX, GAMMA) * ((1U << PWM_DEPTH) - 2) + 1));
     Preferences Storage;
     Storage.begin(name);
     Storage.putUShort("brightness", globalBrightness);

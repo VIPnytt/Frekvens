@@ -63,9 +63,7 @@ const Primary: Component = () => (
             <>
                 <DisplaySidebar />
                 <ModesSidebar />
-                <div class="mt-auto mb-3 border-t border-gray-200" />
                 <ExtensionsFooter />
-                <div class="mt-3 border-t border-gray-200" />
                 <Home />
             </>
         }
@@ -114,7 +112,6 @@ const Secondary: Component = () => (
                         <ModesThirdSidebar />
                     </Match>
                 </Switch>
-                <div class="mt-auto border-t border-gray-200" />
                 <Home />
             </>
         }
@@ -144,7 +141,7 @@ const Layout: Component<{
 );
 
 const Home: Component = () => (
-    <div class="pt-6">
+    <div class={`pt-6 border-t border-gray-200 ${WebServerPath() == '/' ? 'mt-3 ' : 'mt-auto'}`}>
         <a
             href={`#/${WebServerPath() == '/' ? 'menu' : ''}`}
             class="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium"
@@ -161,7 +158,7 @@ const Home: Component = () => (
 const Toggle: Component = () => (
     <div class={`absolute ${getSidebar() ? 'left-[320px] top-0' : 'left-6 top-6'}`}>
         <Button
-            class={`transition-colors ${getSidebar() ? 'hover:bg-red-600' : 'bg-red-600 hover:bg-green-600'}`}
+            class={`transition-all ${getSidebar() ? 'hover:bg-red-600' : 'bg-red-600 hover:bg-green-600'}`}
             onClick={() => setSidebar(!getSidebar())}
         >
             <Icon path={mdiMenu} />

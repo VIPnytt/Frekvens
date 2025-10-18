@@ -1,7 +1,4 @@
 #pragma once
-
-#include <soc/soc_caps.h>
-
 /**
  * https://github.com/VIPnytt/Frekvens/wiki/Extensions
  */

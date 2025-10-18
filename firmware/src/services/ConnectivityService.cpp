@@ -15,10 +15,10 @@ void ConnectivityService::setup()
 {
 #ifdef PIN_SW1
     pinMode(PIN_SW1, INPUT_PULLUP);
-#endif
+#endif // PIN_SW1
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
-#endif
+#endif // PIN_SW2
     WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
     WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
@@ -61,18 +61,15 @@ void ConnectivityService::ready()
     (*Build->config)[Config::env][__STRING(DOMAIN)] = DOMAIN;
 #endif // DOMAIN
     (*Build->config)[Config::env][__STRING(HOSTNAME)] = HOSTNAME;
-#ifdef TIME_ZONE_IANA
-    (*Build->config)[Config::env][__STRING(TIME_ZONE_IANA)] = TIME_ZONE_IANA;
-#endif // TIME_ZONE_IANA
 #ifdef DNS1
     (*Build->config)[Config::h][__STRING(DNS1)] = DNS1;
+#endif // DNS1
 #ifdef DNS2
     (*Build->config)[Config::h][__STRING(DNS2)] = DNS2;
 #endif // DNS2
 #ifdef DNS3
     (*Build->config)[Config::h][__STRING(DNS3)] = DNS3;
 #endif // DNS3
-#endif // DNS1
 #ifdef NTP1
     (*Build->config)[Config::h][__STRING(NTP1)] = NTP1;
 #ifdef NTP2
@@ -82,6 +79,9 @@ void ConnectivityService::ready()
 #endif // NTP3
 #endif // NTP2
 #endif // NTP1
+#ifdef TIME_ZONE_IANA
+    (*Build->config)[Config::env][__STRING(TIME_ZONE_IANA)] = TIME_ZONE_IANA;
+#endif // TIME_ZONE_IANA
 #ifdef WIFI_COUNTRY
     (*Build->config)[Config::h][__STRING(WIFI_COUNTRY)] = WIFI_COUNTRY;
 #endif // WIFI_COUNTRY
@@ -523,6 +523,7 @@ void ConnectivityService::transmit()
 #endif // F_VERBOSE
 
     doc["rssi"] = WiFi.RSSI();
+
     {
         Preferences Storage;
         Storage.begin(name, true);

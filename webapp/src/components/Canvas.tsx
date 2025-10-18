@@ -209,7 +209,7 @@ export const Canvas: Component<{
 
     return (
         <div
-            class={`w-full p-4 bg-black shadow-lg relative mx-auto flex-none flex-shrink-0 inline-block transition-opacity duration-300 max-h-[calc((100vh-128px)*0.9)] ${PageSidebar() ? 'max-w-[calc((100vw-320px)*0.9)]' : 'max-w-90'}`}
+            class={`w-full p-4 bg-black shadow-lg relative mx-auto flex-none flex-shrink-0 inline-block transition-all duration-300 max-h-[calc((100vh-128px)*0.9)] ${PageSidebar() ? 'max-w-[calc((100vw-320px)*0.9)]' : 'max-w-90'}`}
             ref={containerRef}
             style={{
                 'aspect-ratio': DisplayRatio(),

@@ -6,12 +6,7 @@
 #include <vector>
 
 #include "extensions/RestfulExtension.h"
-#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
-#include "services/FontsService.h"
-#include "services/ModesService.h"
 #include "services/WebServerService.h"
 
 RestfulExtension *Restful = nullptr;

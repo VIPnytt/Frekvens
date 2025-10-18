@@ -37,7 +37,7 @@ export const Actions: Component = () => (
         </a>
         <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name.toLowerCase()}`}>
             <Button
-                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
+                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
                 onClick={handleActive}
             >
                 <Icon path={getActive() ? mdiBrightnessAuto : mdiBrightnessPercent} />
@@ -74,7 +74,7 @@ export const MainThird: Component = () => (
                 </p>
                 <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name.toLowerCase()}`}>
                     <Button
-                        class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded transition-colors ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
+                        class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
                         onClick={handleActive}
                     >
                         <Icon

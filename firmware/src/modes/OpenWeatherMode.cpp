@@ -37,7 +37,7 @@ void OpenWeatherMode::wake()
 void OpenWeatherMode::handle()
 {
     // OpenWeather's recommended update interval: 10 minutes
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 10 || lastMillis == 0))
+    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 600'000 || lastMillis == 0))
     {
         update();
     }

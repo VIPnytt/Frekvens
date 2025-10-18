@@ -89,7 +89,7 @@ void PlaylistExtension::ready()
 
 void PlaylistExtension::handle()
 {
-    if (active && Display.getPower() && millis() - lastMillis > 1000 * playlist[step].duration)
+    if (active && Display.getPower() && millis() - lastMillis > 1'000 * playlist[step].duration)
     {
         ++step;
         if (step >= playlist.size())

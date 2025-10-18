@@ -108,7 +108,7 @@ export const MainThird: Component = () => {
                         />
                     </div>
                     <Button
-                        class="hover:bg-green-600 transition-colors"
+                        class="hover:bg-green-600 transition-all"
                         disabled={getInputConnecting() || !getSsidNew().length || (getKeyNew().length > 0 && getKeyNew().length < 8)}
                         id="connect"
                         onClick={handleConnect}

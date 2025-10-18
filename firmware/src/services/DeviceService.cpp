@@ -30,7 +30,7 @@ void DeviceService::init()
 #ifdef F_INFO
     Serial.printf("%s: Frekvens " VERSION "\n", name);
     Serial.printf("%s: " MANUFACTURER " " MODEL "\n", name);
-    Serial.printf("%s: " BOARD_NAME "\n", name);
+    Serial.printf("%s: " BOARD__NAME "\n", name);
 #endif
 
 #ifdef F_DEBUG
@@ -205,12 +205,12 @@ void DeviceService::ready()
 #ifdef PIN_SW2
     (*Build->config)[Config::h][__STRING(PIN_SW2)] = PIN_SW2;
 #endif
-#ifdef LOCATION
-    (*Build->config)[Config::h][__STRING(LOCATION)] = LOCATION;
-#endif
 #if defined(LATITUDE) && defined(LONGITUDE)
     (*Build->config)[Config::h][__STRING(LATITUDE)] = LATITUDE;
     (*Build->config)[Config::h][__STRING(LONGITUDE)] = LONGITUDE;
+#endif
+#ifdef LOCATION
+    (*Build->config)[Config::h][__STRING(LOCATION)] = LOCATION;
 #endif
 #ifdef BOARD
     (*Build->config)[Config::pio]["board"] = BOARD;
@@ -569,8 +569,8 @@ const JsonDocument DeviceService::getTransmits() const
 void DeviceService::transmit()
 {
     JsonDocument doc;
-#ifdef BOARD_NAME
-    doc["board"] = BOARD_NAME;
+#ifdef BOARD__NAME
+    doc["board"] = BOARD__NAME;
 #endif
 #ifdef F_VERBOSE
     doc["heap"] = ESP.getHeapSize() - ESP.getFreeHeap();

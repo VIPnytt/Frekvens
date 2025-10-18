@@ -135,7 +135,7 @@ void ButtonExtension::handle()
         event("mode", "short");
         modeShort = false;
     }
-    else if (modeState && millis() - modeMillis > 1000)
+    else if (modeState && millis() - modeMillis > (1 << 10))
     {
         modeMillis = millis();
         if (!modeLong)

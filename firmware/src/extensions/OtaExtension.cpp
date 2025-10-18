@@ -11,7 +11,6 @@
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 #include "services/ModesService.h"
 
 OtaExtension *Ota = nullptr;
@@ -80,7 +79,7 @@ void OtaExtension::onStart()
     TextHandler("U", FontLarge).draw();
     Display.flush();
     Display.setPower(true);
-    timerAlarmWrite(Display.timer, 1000000U / (1U << 8), true); // 1 fps
+    timerAlarmWrite(Display.timer, 1'000'000 / (1 << 8), true); // 1 fps
 }
 
 void OtaExtension::onEnd()

@@ -88,7 +88,7 @@ private:
 #ifdef TASK_STACK_EXTENSIONS
     static constexpr uint16_t stackSize = TASK_STACK_EXTENSIONS;
 #else
-    static constexpr uint16_t stackSize = 4096;
+    static constexpr uint16_t stackSize = 1 << 12; // 4 kB
 #endif // TASK_STACK_EXTENSIONS
 
     void transmit();

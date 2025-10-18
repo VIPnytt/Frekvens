@@ -87,9 +87,9 @@ void HomeAssistantExtension::ready()
                 _wifi.add(WiFi.softAPmacAddress());
             }
         }
-#ifdef BOARD_NAME
-        device[Abbreviations::hw_version] = BOARD_NAME;
-#endif // BOARD_NAME
+#ifdef BOARD__NAME
+        device[Abbreviations::hw_version] = BOARD__NAME;
+#endif // BOARD__NAME
         device[Abbreviations::identifiers].to<JsonArray>().add(String(ESP.getEfuseMac(), HEX));
         device[Abbreviations::manufacturer] = MANUFACTURER;
         device[Abbreviations::model] = MODEL;

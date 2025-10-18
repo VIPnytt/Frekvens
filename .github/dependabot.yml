@@ -5,9 +5,7 @@ updates:
     cooldown:
       default-days: 90
     labels:
-      - "chore"
       - "dependencies"
-      - "github_actions"
       - "no-changelog"
     schedule:
       interval: "weekly"
@@ -16,10 +14,9 @@ updates:
     directory: "/webapp"
     cooldown:
       semver-major-days: 90
-      semver-minor-days: 7
-      semver-patch-days: 1
+      semver-minor-days: 21
+      semver-patch-days: 3
     labels:
-      - "chore"
       - "dependencies"
       - "webapp"
     schedule:
@@ -30,12 +27,11 @@ updates:
     directory: "/tools"
     cooldown:
       semver-major-days: 90
-      semver-minor-days: 7
-      semver-patch-days: 1
+      semver-minor-days: 21
+      semver-patch-days: 3
       exclude:
         - "tzdata"
     labels:
-      - "chore"
       - "dependencies"
       - "tools"
     schedule:

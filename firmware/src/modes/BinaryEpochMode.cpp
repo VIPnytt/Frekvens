@@ -16,7 +16,7 @@ void BinaryEpochMode::handle()
             const uint8_t
                 x = COLUMNS - 2 - i % (COLUMNS / 2) * 2,
                 y = ROWS - 4 - i / (COLUMNS / 2) * 4;
-            Display.drawRectangle(x, y, x + 1, y + 3, true, epoch & (1U << i) ? UINT8_MAX : 0);
+            Display.drawRectangle(x, y, x + 1, y + 3, true, epoch & (1 << i) ? UINT8_MAX : 0);
         }
     }
 }

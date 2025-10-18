@@ -34,7 +34,7 @@ void WttrInMode::wake()
 void WttrInMode::handle()
 {
     // Wttr.in recommended update interval: 1 hour
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 1000 * 60 * 60 * 1 || lastMillis == 0))
+    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 3'600'000 || lastMillis == 0))
     {
         update();
     }
