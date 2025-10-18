@@ -229,9 +229,9 @@ void ConnectivityService::hotspot()
 
 void ConnectivityService::scan()
 {
-    int16_t n = WiFi.scanComplete();
-    if (n == WIFI_SCAN_FAILED)
+    if (WiFi.scanComplete() == WIFI_SCAN_FAILED)
     {
+        scanning = true;
 #ifdef F_DEBUG
         Serial.printf("%s: scanning for Wi-Fi networks...\n", name);
         WiFi.scanNetworks(true, true);
@@ -239,12 +239,6 @@ void ConnectivityService::scan()
         WiFi.scanNetworks(true);
 #endif // F_DEBUG
     }
-#ifdef F_VERBOSE
-    else if (n == WIFI_SCAN_RUNNING)
-    {
-        Serial.printf("%s: scan already ongoing...\n", name);
-    }
-#endif // F_VERBOSE
 }
 
 void ConnectivityService::connect(const char *const ssid, const char *const key)
@@ -436,7 +430,7 @@ void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
 #ifdef F_VERBOSE
     Serial.printf("%s: scan complete\n", _name.data());
 #endif // F_VERBOSE
-    int16_t n = WiFi.scanComplete();
+    const int16_t n = WiFi.scanComplete();
     if (n > 0)
     {
         JsonDocument doc;
@@ -450,18 +444,22 @@ void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
 #endif // F_DEBUG
             _scan["encrypted"] = (bool)WiFi.encryptionType(i);
             _scan["rssi"] = WiFi.RSSI(i);
-#ifdef F_VERBOSE
+#ifdef F_DEBUG
             if (WiFi.SSID(i).length())
             {
                 _scan["ssid"] = WiFi.SSID(i);
             }
 #else
             _scan["ssid"] = WiFi.SSID(i);
-#endif // F_VERBOSE
+#endif // F_DEBUG
         }
         Device.transmit(doc, _name.data(), false);
     }
-    WiFi.scanDelete();
+    if (scanning)
+    {
+        WiFi.scanDelete();
+        scanning = false;
+    }
 }
 
 void ConnectivityService::transmit()

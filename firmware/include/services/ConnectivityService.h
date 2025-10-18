@@ -28,6 +28,8 @@ private:
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<WiFiMulti> multi;
 
+    static inline bool scanning = false;
+
     bool vault();
     void hotspot();
     void scan();
