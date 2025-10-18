@@ -4,4 +4,4 @@
  */
 #include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
-#define VERSION "1.2.1-dev"
+#define VERSION "1.3.0"
