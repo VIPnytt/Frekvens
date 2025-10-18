@@ -24,6 +24,9 @@ void ConnectivityService::setup()
     WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
+#ifdef WIFI_COUNTRY
+    esp_wifi_set_country_code(WIFI_COUNTRY, true);
+#endif // WIFI_COUNTRY
     WiFi.enableIpV6();
 #if defined(PIN_SW1) || defined(PIN_SW2)
     if (!vault() || buttonCheck())
@@ -79,6 +82,9 @@ void ConnectivityService::ready()
 #endif // NTP3
 #endif // NTP2
 #endif // NTP1
+#ifdef WIFI_COUNTRY
+    (*Build->config)[Config::h][__STRING(WIFI_COUNTRY)] = WIFI_COUNTRY;
+#endif // WIFI_COUNTRY
 #ifdef WIFI_SSID
     (*Build->config)[Config::h][__STRING(WIFI_SSID)] = WIFI_SSID;
 #ifdef WIFI_KEY

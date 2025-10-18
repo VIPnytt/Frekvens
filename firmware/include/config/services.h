@@ -71,3 +71,4 @@
 // #define WIFI_KEY "secret"
 // #define WIFI_SSID_HOTSPOT "name"
 // #define WIFI_KEY_HOTSPOT "secret"
+// #define WIFI_COUNTRY "01"
