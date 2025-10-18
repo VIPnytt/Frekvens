@@ -94,7 +94,7 @@ export const MainThird: Component = () => {
                 ...getPlaylist(),
                 {
                     duration: getDuration(),
-                    mode: ModesList()[Math.round(Math.random() * ModesList().length)],
+                    mode: ModesList()[Math.round(Math.random() * (ModesList().length - 1))],
                 },
             ]);
         } while (getPlaylist().length < 2);
