@@ -7,6 +7,7 @@ updates:
     labels:
       - "dependencies"
       - "no-changelog"
+    milestone: 6
     schedule:
       interval: "weekly"
 
@@ -19,6 +20,7 @@ updates:
     labels:
       - "dependencies"
       - "webapp"
+    milestone: 6
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
@@ -34,6 +36,7 @@ updates:
     labels:
       - "dependencies"
       - "tools"
+    milestone: 6
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
