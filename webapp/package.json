@@ -31,7 +31,7 @@
         "vite": "7.1.12",
         "vite-plugin-html": "3.2.2",
         "vite-plugin-singlefile": "2.3.0",
-        "vite-plugin-solid": "2.11.9"
+        "vite-plugin-solid": "2.11.10"
     },
     "private": true
 }
