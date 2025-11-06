@@ -17,7 +17,7 @@ private:
         radius,
         rocketX,
         rocketY,
-        stage;
+        stage=0;
 
     void pad();
     void launching();
