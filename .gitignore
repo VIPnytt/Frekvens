@@ -13,7 +13,3 @@ webapp/dist
 webapp/node_modules
 !.vscode/README.md
 !sdkconfig.defaults*
-webapp/package-lock.json
-webapp/.env
-tools/.env
-.vscode/extensions.json
