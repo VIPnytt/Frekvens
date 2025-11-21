@@ -54,9 +54,9 @@ void FireworkMode::launching()
         {
             radius = 0;
 #if defined(CELL_HEIGHT) && defined(CELL_WIDTH)
-            maxRadius = random(min(COLUMNS * CELL_WIDTH / (float)CELL_HEIGHT, ROWS / (float)CELL_WIDTH * CELL_HEIGHT) / 2);
+            maxRadius = random(1, min(COLUMNS * CELL_WIDTH / (float)CELL_HEIGHT, ROWS / (float)CELL_WIDTH * CELL_HEIGHT) / 2);
 #else
-            maxRadius = random(min(COLUMNS, ROWS) / 2);
+            maxRadius = random(1, min(COLUMNS, ROWS) / 2);
 #endif
             stage = 2;
         }
