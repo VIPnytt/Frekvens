@@ -37,9 +37,7 @@ export const Footer: Component = () => (
             (EXTENSION_MESSAGE) &&
             <div class="mx-3">
                 {
-                    EXTENSION_MESSAGE && (
-                        <ExtensionMessageLink />
-                    )
+                    <ExtensionMessageLink />
                 }
             </div>
         }
