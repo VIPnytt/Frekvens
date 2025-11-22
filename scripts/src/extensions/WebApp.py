@@ -6,6 +6,7 @@ import pathlib
 import shutil
 import subprocess
 import typing
+import warnings
 
 from ..config.version import VERSION
 from .WebSocket import WebSocket
@@ -96,15 +97,17 @@ class WebApp:
                 self.ENV_OPTION in self.project.dotenv
                 and self.project.dotenv[self.ENV_OPTION] == "true"
             ):
-                UserWarning(
-                    f"{self.ENV_OPTION}: Partition table has no filesystem support."
+                warnings.warn(
+                    f"{self.ENV_OPTION}: Partition table has no filesystem support.",
+                    UserWarning
                 )
         elif (
             WebSocket.ENV_OPTION not in self.project.dotenv
             or self.project.dotenv[WebSocket.ENV_OPTION] == "false"
         ):
-            UserWarning(
-                f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}."
+            warnings.warn(
+                f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
+                UserWarning
             )
         elif not self._node():
             raise Exception(
