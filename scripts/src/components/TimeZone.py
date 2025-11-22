@@ -25,6 +25,7 @@ class TimeZone:
         system = self._get_iana_system()
         if system is not None:
             return self._lookup_posix(system)
+        return None
 
     @staticmethod
     def _get_iana_system() -> str | None:
