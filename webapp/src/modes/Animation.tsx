@@ -1,4 +1,4 @@
-import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiPresentation, mdiPresentationPlay, mdiStop, mdiUpload } from '@mdi/js';
+import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiPresentation, mdiPresentationPlay, mdiUpload } from '@mdi/js';
 import { Component, createEffect, createSignal, For, Show } from 'solid-js';
 
 import { Strength, Canvas } from '../components/Canvas';
