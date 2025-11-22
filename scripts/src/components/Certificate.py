@@ -207,3 +207,4 @@ class Certificate:
         )
         if org and isinstance(org[0].value, str):
             return org[0].value
+        return None
