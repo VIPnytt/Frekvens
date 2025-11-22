@@ -1,57 +1,47 @@
 import { mdiPower, mdiRotate3dVariant, mdiRotateLeftVariant, mdiRotateRightVariant, mdiSleep, mdiTelevision } from '@mdi/js';
 import { Component, createSignal } from 'solid-js';
 
-import { Button } from '../components/Button';
-import { Center } from '../components/Center';
+import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { MODEL } from '../config/constants';
-import { ws } from '../extensions/WebSocket';
-import { SidebarSection } from './WebServer';
+import { Device } from '../config/devices';
+import { SidebarSection } from '../extensions/WebApp';
+import { WebSocketWS } from '../extensions/WebSocket';
 
 export const name = 'Display';
 
 const [getBrightness, setBrightness] = createSignal<number>(0);
-const [getColumns, setColumns] = createSignal<number>(0);
 const [getOrientation, setOrientation] = createSignal<number>(0);
-const [getPixelRatio, setPixelRatio] = createSignal<number>(1);
 const [getPower, setPower] = createSignal<boolean>(false);
-const [getRatio, setRatio] = createSignal<number>(1);
-const [getRows, setRows] = createSignal<number>(0);
 
 export const DisplayBrightness = getBrightness;
-export const DisplayColumns = getColumns;
-export const DisplayPixelRatio = getPixelRatio;
+export const DisplayOrientation = getOrientation;
 export const DisplayPower = getPower;
-export const DisplayRatio = getRatio;
-export const DisplayRows = getRows;
+export const DisplayPowerSet = setPower;
 
 export const receiver = (json: any) => {
     json[name]?.brightness !== undefined && setBrightness(json[name].brightness);
     json[name]?.orientation !== undefined && setOrientation(json[name].orientation);
-    json[name]?.pixel?.columns !== undefined && setColumns(json[name].pixel.columns);
-    json[name]?.pixel?.ratio !== undefined && setPixelRatio(json[name].pixel?.ratio);
-    json[name]?.pixel?.rows !== undefined && setRows(json[name].pixel.rows);
     json[name]?.power !== undefined && setPower(json[name].power);
-    json[name]?.ratio !== undefined && setRatio(json[name].ratio);
-}
+};
 
 export const Main: Component = () => (
-    <Center>
-        <h2 class="text-4xl">
-            <Icon path={mdiSleep} />
-        </h2>
-        <p class="text-xl mt-2 text-gray-300">
-            Sleeping
-        </p>
-    </Center>
+    <div class="main">
+        <div class="text-center">
+            <h1>
+                <Icon path={mdiSleep} />
+            </h1>
+            <div class="mode-title">
+                Sleeping
+            </div>
+        </div>
+    </div>
 );
 
 export const Sidebar: Component = () => {
     const handleBrightness = (value: number, send: boolean = true) => {
         setBrightness(value);
         if (send) {
-            ws.send(JSON.stringify({
+            WebSocketWS.send(JSON.stringify({
                 [name]: {
                     brightness: getBrightness(),
                 }
@@ -61,7 +51,7 @@ export const Sidebar: Component = () => {
 
     const handlePower = () => {
         setPower(!getPower());
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 power: getPower(),
             }
@@ -70,14 +60,14 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection title={name}>
-            <div class="space-y-2">
-                <div class="grid grid-cols-[48px_1fr] gap-3 items-center">
-                    <Button
-                        class={`transition-all ${getPower() ? 'hover:bg-red-600' : 'bg-red-600 hover:bg-green-600'}`}
-                        onClick={handlePower}
+            <div class="space-y-3">
+                <div class="grid grid-cols-[--spacing(12)_1fr] gap-3 items-center">
+                    <button
+                        class={`text-interactive-light dark:text-content-dark ${getPower() ? 'bg-positive-light dark:bg-positive-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark' : 'bg-negative-light dark:bg-negative-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark'}`}
+                        onclick={handlePower}
                     >
                         <Icon path={mdiPower} />
-                    </Button>
+                    </button>
                     <Tooltip text={`Brightness ${Math.ceil((getBrightness() + 1) / (Math.pow(2, 8)) * 100)} %`}>
                         <input
                             class="w-full"
@@ -102,10 +92,10 @@ export const Sidebar: Component = () => {
     );
 };
 
-export const SidebarSecondary: Component = () => {
+export const SidebarSecondaryComponent: Component = () => {
     const handleRotate = (clockwise = true) => {
-        setOrientation((getOrientation() + (MODEL || getColumns() === getRows() ? (clockwise ? 90 : 270) : 180)) % 360);
-        ws.send(JSON.stringify({
+        setOrientation((getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? (clockwise ? 90 : 270) : 180)) % 360);
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 orientation: getOrientation(),
             }
@@ -113,46 +103,40 @@ export const SidebarSecondary: Component = () => {
     };
 
     return (
-        <SidebarSection title={name}>
-            <div class="space-y-2">
-                <div class={`grid ${MODEL || getColumns() === getRows() ? 'grid-cols-[1fr_48px_48px]' : 'grid-cols-[1fr_48px]'} gap-3 items-center font-medium text-gray-700 hover:text-gray-900`}>
-                    <div>
-                        <Icon
-                            class="mr-2"
-                            path={mdiTelevision}
-                        />
-                        Orientation
-                    </div>
-                    {(MODEL || getColumns() === getRows()) && (
-                        <Tooltip text={`${getOrientation()}° to ${(getOrientation() + 270) % 360}°`}>
-                            <Button
-                                class={`w-full bg-blue-600 hover:bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded`}
-                                disabled={!getPower()}
-                                onClick={() => handleRotate(false)}
-                            >
-                                <Icon
-                                    class={`${getOrientation() === 0 ? '-rotate-90' : getOrientation() === 180 ? 'rotate-90' : getOrientation() === 270 ? 'rotate-180' : ''}`}
-                                    path={mdiRotateLeftVariant}
-                                />
-                            </Button>
-                        </Tooltip>
-                    )}
-                    <Tooltip text={`${getOrientation()}° to ${(getOrientation() + (MODEL || getColumns() === getRows() ? 90 : 180)) % 360}°`}>
-                        <Button
-                            class="w-full bg-blue-600 hover:bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
-                            disabled={!getPower()}
-                            onClick={() => handleRotate()}
-                        >
-                            <Icon
-                                class={`${(MODEL || getColumns() === getRows()) && getOrientation() === 0 ? 'rotate-90' : (MODEL || getColumns() === getRows()) && getOrientation() === 90 ? 'rotate-180' : getOrientation() === 180 ? `${!MODEL && getColumns() !== getRows() ? 'rotate-180' : '-rotate-90'}` : ''}`}
-                                path={MODEL || getColumns() === getRows() ? mdiRotateRightVariant : mdiRotate3dVariant}
-                            />
-                        </Button>
-                    </Tooltip>
-                </div>
+        <div class={`action ${Device.GRID_COLUMNS === Device.GRID_ROWS && 'grid-cols-[1fr_--spacing(12)_--spacing(12)]'}`}>
+            <div>
+                <Icon
+                    class="mr-2"
+                    path={mdiTelevision}
+                />
+                Orientation
             </div>
-        </SidebarSection>
+            {Device.GRID_COLUMNS === Device.GRID_ROWS && (
+                <Tooltip text={`${getOrientation()}° to ${(getOrientation() + 270) % 360}°`}>
+                    <button
+                        class="action-neutral"
+                        disabled={!getPower()}
+                        onclick={() => handleRotate(false)}
+                    >
+                        <Icon
+                            class={`${getOrientation() === 0 ? '-rotate-90' : getOrientation() === 180 ? 'rotate-90' : getOrientation() === 270 ? 'rotate-180' : ''}`}
+                            path={mdiRotateLeftVariant}
+                        />
+                    </button>
+                </Tooltip>
+            )}
+            <Tooltip text={`${getOrientation()}° to ${(getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? 90 : 180)) % 360}°`}>
+                <button
+                    class="action-neutral"
+                    disabled={!getPower()}
+                    onclick={() => handleRotate()}
+                >
+                    <Icon
+                        class={`${Device.GRID_COLUMNS === Device.GRID_ROWS && getOrientation() === 0 ? 'rotate-90' : Device.GRID_COLUMNS === Device.GRID_ROWS && getOrientation() === 90 ? 'rotate-180' : getOrientation() === 180 ? `${Device.GRID_COLUMNS === Device.GRID_ROWS ? 'rotate-90' : '-rotate-180'}` : ''}`}
+                        path={Device.GRID_COLUMNS === Device.GRID_ROWS ? mdiRotateRightVariant : mdiRotate3dVariant}
+                    />
+                </button>
+            </Tooltip>
+        </div>
     );
 };
-
-export default Main;

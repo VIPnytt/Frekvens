@@ -18,16 +18,16 @@ RestfulExtension::RestfulExtension() : ExtensionModule("RESTful")
 
 void RestfulExtension::ready()
 {
-    WebServer.http->on("/api/", WebRequestMethod::HTTP_GET, &onGetApi);
+    WebServer.http->on("/restful/", WebRequestMethod::HTTP_GET, &onGet);
     for (const char *const _name : Device.getNames())
     {
-        const std::string _endpoint = std::string("/api/").append(_name);
-        WebServer.http->on(_endpoint.c_str(), WebRequestMethod::HTTP_GET, &onGetApiModule);
-        WebServer.http->on(_endpoint.c_str(), WebRequestMethod::HTTP_PATCH, [](AsyncWebServerRequest *request) {}, nullptr, &onSetApiModule);
+        const std::string endpoint = std::string("/restful/").append(_name);
+        WebServer.http->on(endpoint.c_str(), WebRequestMethod::HTTP_GET, &onGetModule);
+        WebServer.http->on(endpoint.c_str(), WebRequestMethod::HTTP_PATCH, [](AsyncWebServerRequest *request) {}, nullptr, &onPatchModule);
     }
 }
 
-void RestfulExtension::onGetApi(AsyncWebServerRequest *request)
+void RestfulExtension::onGet(AsyncWebServerRequest *request)
 {
     const JsonDocument doc = Device.getTransmits();
     const size_t length = measureJson(doc);
@@ -37,15 +37,15 @@ void RestfulExtension::onGetApi(AsyncWebServerRequest *request)
     delete[] payload;
 }
 
-void RestfulExtension::onGetApiModule(AsyncWebServerRequest *request)
+void RestfulExtension::onGetModule(AsyncWebServerRequest *request)
 {
     const JsonDocument doc = Device.getTransmits();
-    const String module = request->url().substring(prefixLength);
+    const String module = request->url().substring(9);
     if (doc[module].is<JsonVariantConst>())
     {
-        const size_t length = measureJson(doc);
+        const size_t length = measureJson(doc[module]);
         char *payload = new char[length + 1];
-        serializeJson(doc, payload, length + 1);
+        serializeJson(doc[module], payload, length + 1);
         request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload);
         delete[] payload;
     }
@@ -55,7 +55,7 @@ void RestfulExtension::onGetApiModule(AsyncWebServerRequest *request)
     }
 }
 
-void RestfulExtension::onSetApiModule(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void RestfulExtension::onPatchModule(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
     JsonDocument doc;
     if (request->contentType() == "application/json" && !deserializeJson(doc, data))

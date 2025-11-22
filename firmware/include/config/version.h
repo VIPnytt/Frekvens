@@ -1,7 +1,9 @@
 #pragma once
+
 /**
  * https://github.com/VIPnytt/Frekvens/wiki
  */
-#include "secrets.h" // please put your custom definitions in the "secrets.h" file
 
-#define VERSION "1.3.1"
+#include "secrets.h"
+
+#define VERSION "2.0.0-dev0"

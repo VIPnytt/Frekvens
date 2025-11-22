@@ -146,7 +146,7 @@ private:
 public:
     LargeFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern LargeFont *FontLarge;

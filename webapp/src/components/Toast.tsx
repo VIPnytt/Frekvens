@@ -1,7 +1,7 @@
 import { mdiInformation } from '@mdi/js';
 import { createContext, createSignal, ParentComponent, useContext } from 'solid-js';
 
-import { Icon } from './Vector';
+import { Icon } from './Icon';
 
 type ToastItem = {
     id: number;
@@ -31,9 +31,9 @@ export const ToastProvider: ParentComponent = (props) => {
     const Toast = (props: { item: ToastItem }) => {
         return (
             <div
-                class="fixed left-4 bottom-4 px-4 py-3 bg-gray-800 text-white shadow-lg border border-gray-700 flex items-center space-x-2 z-50 rounded-md"
-                style="animation: toastSlideUp 0.2s ease-out forwards;"
-                onClick={() => setToast(null)}
+                class="border bottom-4 bg-base-light dark:bg-base-dark fixed flex items-center left-4 px-4 py-3 rounded-md shadow-lg space-x-2 z-50"
+                style="animation: toast 0.15s ease-out forwards;"
+                onclick={() => setToast(null)}
             >
                 <Icon
                     class="mr-2"

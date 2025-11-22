@@ -11,22 +11,22 @@
 class PingPongMode : public ModeModule
 {
 private:
-    static constexpr float speed = 5e-4 * ROWS;
+    static constexpr float speed = 1e-3 * GRID_ROWS;
 
-    double
-        xDec,
-        yDec;
+    float
+        xDec = GRID_COLUMNS / 2,
+        yDec = GRID_ROWS - 2;
 
     std::deque<uint8_t>
         paddleT,
         paddleB;
 
     uint8_t
-        targetX,
-        x,
-        y;
+        targetX = GRID_COLUMNS / 2,
+        x = GRID_COLUMNS / 2,
+        y = GRID_ROWS - 2;
 
-    uint16_t deg;
+    uint16_t deg = 90;
 
     unsigned long lastMillis = 0;
 

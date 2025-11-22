@@ -13,6 +13,7 @@ Most common RTC modules will work. Good starting points include the [DS3231](htt
 - [DS3234](https://www.sparkfun.com/sparkfun-deadon-rtc-breakout-ds3234.html)
 - [PCF8563](https://www.waveshare.com/PCF8563-RTC-Board.htm)
 
+> [!WARNING]
 > [DS1307](#ds1307) operates at 5 V and is therefore incompatible with [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens). For usage with other devices, an [logic level shifter](#%EF%B8%8F-logic-level-shifter) is required.
 
 ## 📌 Schematics
@@ -156,7 +157,7 @@ Serial clock for I²C communication.
 
 Any I²C `SCL` pin can be used.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SCL 1 // I²C SCL
@@ -168,7 +169,7 @@ Bidirectional data line for I²C.
 
 Any I²C `SDA` pin can be used.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SDA 2 // I²C SDA
@@ -180,9 +181,10 @@ Serial clock for SPI communication.
 
 Any SPI `SCLK` pin can be used.
 
+> [!NOTE]
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SCLK2 3 // SPI SCLK
@@ -194,9 +196,10 @@ Master-out data line for SPI.
 
 Any SPI `MOSI` pin can be used.
 
+> [!NOTE]
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MOSI2 4 // SPI MOSI
@@ -208,9 +211,10 @@ Master-in data line for SPI.
 
 Any SPI `MISO` pin can be used.
 
+> [!NOTE]
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MISO2 5 // SPI MISO
@@ -222,9 +226,10 @@ Bidirectional data line for SPI.
 
 Any SPI `MISO` pin can be used.
 
+> [!NOTE]
 > On boards with two SPI interfaces, either the `HSPI` or `VSPI` bus can be used. However, you must choose the one that is not connected to the display, as these devices cannot share the same SPI bus.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SDIO2 6 // SPI SDIO
@@ -236,9 +241,10 @@ Chip Select for the RTC module.
 
 Any digital output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 (LX6-based) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *LOW* using a resistor. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_CS2 7 // SPI CS
@@ -252,7 +258,7 @@ Optional to connect.
 
 Any digital input pin that are also RTC-capable can be used.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_INT 8 // RTC INT
@@ -268,7 +274,7 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 
 ### DS1302
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_DS1302
@@ -278,13 +284,15 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 #define PIN_CS2 3   // SPI CS
 ```
 
+> [!NOTE]
 > Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
 
 ### DS1307
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_DS1307
@@ -293,11 +301,12 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 #define PIN_SDA 2 // I²C SDA
 ```
 
+> [!WARNING]
 > Incompatible with [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) due to the lack of a 5 V power supply.
 
 ### DS3231
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_DS3231
@@ -309,7 +318,7 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 
 ### DS3232
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_DS3232
@@ -321,7 +330,7 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 
 ### DS3234
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_DS3234
@@ -333,11 +342,12 @@ Check out the [RTC](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-rtc) ex
 #define PIN_INT 5   // RTC INT
 ```
 
+> [!NOTE]
 > Make sure the ESP32 of choice supports both *HSPI* and *VSPI*, as one of them needs to be dedicated to the display.
 
 ### PCF8563
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define RTC_PCF8563

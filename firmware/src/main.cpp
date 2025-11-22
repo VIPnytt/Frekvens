@@ -9,5 +9,5 @@ void setup()
 void loop()
 {
     Device.run();
-    delay(1);
+    vTaskDelay(1);
 }

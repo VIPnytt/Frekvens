@@ -9,8 +9,6 @@
 class PhotocellExtension : public ExtensionModule
 {
 private:
-    static constexpr int16_t threshold = 1 << 10;
-
     bool
         active = false,
         direction = false,
@@ -39,10 +37,10 @@ public:
     void ready() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
+    bool getActive() const;
+    void setActive(bool active, const char *const source);
 
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
     void transmitterHook(const JsonDocument &doc, const char *const source) override;
 };
 

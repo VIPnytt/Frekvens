@@ -2,7 +2,7 @@
 
 ## 🚨 Reporting a Vulnerability
 
-If you discover a security vulnerability in this project, please report it **privately** via via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new) to prevent potential abuse.
+If you discover a security vulnerability, please report it **privately** through GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new) to prevent potential abuse.
 
 Please include:
 
@@ -14,7 +14,7 @@ If confirmed, a patch or mitigation will be prioritized and released as appropri
 
 ## 🛡️ Disclosure Policy
 
-Vulnerabilities will be publicly disclosed **after a fix has been released** and affected users have had reasonable time to update. Coordinated disclosure is preferred where possible.
+Vulnerabilities will be disclosed **after a fix or mitigation is available** and users have had reasonable time to update. Coordinated disclosure is preferred where possible.
 
 ## ✅ Supported Versions
 
@@ -22,8 +22,6 @@ Only the latest minor release line receives security updates.
 Earlier releases are no longer supported.
 
 | Version | Supported          |
-|---------|--------------------|
-| 1.3.x   | :white_check_mark: |
-| 1.2.x   | :x:                |
-| 1.1.x   | :x:                |
-| 1.0.x   | :x:                |
+| ------- | ------------------ |
+| 2.0.x   | :white_check_mark: |
+| 1.x     | :x:                |

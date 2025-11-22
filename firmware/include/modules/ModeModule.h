@@ -18,5 +18,5 @@ public:
     virtual void handle();
     virtual void sleep();
 
-    virtual void receiverHook(const JsonDocument doc);
+    virtual void receiverHook(const JsonDocument doc, const char *source);
 };

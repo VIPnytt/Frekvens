@@ -1,15 +1,14 @@
 import { mdiBackupRestore, mdiContentSave, mdiDownload, mdiEraser, mdiUpload } from '@mdi/js';
 import { Component, createSignal } from 'solid-js';
 
-import { Button } from '../components/Button';
-import { Brush, Canvas } from '../components/Canvas';
+import { Strength, Canvas } from '../components/Canvas';
 import { csvExport, fileImport } from '../components/File';
+import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { ws } from '../extensions/WebSocket';
-import { DisplayColumns, DisplayRows } from '../services/Display';
-import { SidebarSection } from '../services/WebServer';
+import { Device } from '../config/devices';
+import { SidebarSection } from '../extensions/WebApp';
+import { WebSocketWS } from '../extensions/WebSocket';
 
 export const name = 'Draw';
 
@@ -24,19 +23,20 @@ export const Sidebar: Component = () => {
     const { toast } = Toast();
 
     const handleDownload = () => {
-        csvExport(name, [getFrame() || new Array(DisplayColumns() * DisplayRows()).fill(0)]);
+        csvExport(name, [getFrame() || new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)]);
     };
 
     const handleLoad = () => {
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 action: 'load',
             },
         }));
+        setSaved(true);
     };
 
     const handleSave = () => {
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 action: 'save',
             },
@@ -47,7 +47,8 @@ export const Sidebar: Component = () => {
 
     const handleUpload = () => {
         fileImport((frames) => {
-            ws.send(JSON.stringify({
+            setFrame(frames[0])
+            WebSocketWS.send(JSON.stringify({
                 [name]: {
                     frame: frames[0],
                 },
@@ -57,52 +58,52 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection title={name}>
-            <Brush />
             <div class="grid grid-cols-2 gap-3">
                 <Tooltip text="Save drawing">
-                    <Button
-                        class="w-full hover:bg-green-600 text-white border-0 px-4 py-3 uppercase text-sm leading-6 tracking-wider cursor-pointer font-bold hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
+                    <button
+                        class="action-positive w-full"
                         disabled={!getFrame()?.some(pixel => pixel > 0) || getSaved()}
-                        onClick={handleSave}
+                        onclick={handleSave}
                     >
                         <Icon path={mdiContentSave} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Restore drawing">
-                    <Button
-                        class="w-full bg-blue-600 text-white border-0 px-4 py-3 uppercase text-sm leading-6 tracking-wider cursor-pointer font-bold hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
-                        disabled={!getFrame()?.some(pixel => pixel > 0)}
-                        onClick={handleLoad}
+                    <button
+                        class="action-neutral w-full"
+                        disabled={getSaved()}
+                        onclick={handleLoad}
                     >
                         <Icon path={mdiBackupRestore} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Download drawing">
-                    <Button
-                        class="w-full bg-blue-600 text-white border-0 px-4 py-3 uppercase text-sm leading-6 tracking-wider cursor-pointer font-bold hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
+                    <button
+                        class="w-full"
                         disabled={!getFrame()?.some(pixel => pixel > 0)}
-                        onClick={handleDownload}
+                        onclick={handleDownload}
                     >
                         <Icon path={mdiDownload} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Upload drawing or image">
-                    <Button
-                        class="w-full bg-blue-600 text-white border-0 px-4 py-3 uppercase text-sm leading-6 tracking-wider cursor-pointer font-bold hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
-                        onClick={handleUpload}
+                    <button
+                        class="w-full"
+                        onclick={handleUpload}
                     >
                         <Icon path={mdiUpload} />
-                    </Button>
+                    </button>
                 </Tooltip>
             </div>
+            <Strength />
         </SidebarSection>
     );
 };
 
 export const Main: Component = () => {
     const handleClear = () => {
-        setFrame([...new Array(DisplayColumns() * DisplayRows()).fill(0)]);
-        ws.send(JSON.stringify({
+        setFrame([...new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)]);
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 action: 'clear',
             },
@@ -114,15 +115,15 @@ export const Main: Component = () => {
         setFrame([...data]);
     };
 
-    const handlePixel = (_x: number, _y: number, _value: number) => {
+    const handlePixel = (x: number, y: number, brightness: number) => {
         setSaved(false);
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 pixels: [
                     {
-                        x: _x,
-                        y: _y,
-                        value: _value
+                        x: x,
+                        y: y,
+                        brightness: brightness,
                     }
                 ]
             },
@@ -130,7 +131,7 @@ export const Main: Component = () => {
     };
 
     const handlePull = () => {
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 action: 'pull',
             },
@@ -140,29 +141,29 @@ export const Main: Component = () => {
     handlePull();
 
     return (
-        <div class="snap-center flex-shrink-0">
-            <header class="flex justify-between items-center mb-4">
-                <div class="flex gap-3">
-                    <Tooltip text="Clear drawing">
-                        <Button
-                            class="hover:bg-red-600 transition-all"
-                            disabled={!getFrame()?.some(pixel => pixel > 0)}
-                            onClick={handleClear}
-                        >
-                            <Icon path={mdiEraser} />
-                        </Button>
-                    </Tooltip>
+        <div class="bg-contrast-light dark:bg-contrast-dark main">
+            <div class="snap-center flex-shrink-0">
+                <header class="flex justify-between items-center mb-4">
+                    <div class="flex gap-3">
+                        <Tooltip text="Clear drawing">
+                            <button
+                                class="canvas-action-negative"
+                                disabled={!getFrame()?.some(pixel => pixel > 0)}
+                                onclick={handleClear}
+                            >
+                                <Icon path={mdiEraser} />
+                            </button>
+                        </Tooltip>
+                    </div>
+                </header>
+                <div>
+                    <Canvas
+                        onFrame={handleFrame}
+                        onPixel={handlePixel}
+                        pixels={getFrame() || new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)}
+                    />
                 </div>
-            </header>
-            <div>
-                <Canvas
-                    onFrame={handleFrame}
-                    onPixel={handlePixel}
-                    pixels={getFrame() || new Array(DisplayColumns() * DisplayRows()).fill(0)}
-                />
             </div>
         </div>
     );
 };
-
-export default Main;

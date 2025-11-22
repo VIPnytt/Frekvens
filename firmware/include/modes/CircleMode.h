@@ -11,10 +11,10 @@ class CircleMode : public ModeModule
 {
 private:
     static constexpr float
-        x = (COLUMNS - 1) / 2.0,
-        y = (ROWS - 1) / 2.0;
+        x = (GRID_COLUMNS - 1) / 2.0f,
+        y = (GRID_ROWS - 1) / 2.0f;
 
-    const uint8_t maxRadius = ceil(max(COLUMNS * CELL_WIDTH / (float)CELL_HEIGHT, ROWS / (float)CELL_WIDTH * CELL_HEIGHT) / M_SQRT2 + M_SQRT1_2);
+    const uint8_t maxRadius = 3 + ceil((max(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS / (float)PITCH_HORIZONTAL * PITCH_VERTICAL) / M_SQRT2 + M_SQRT1_2) / 2.0f);
 
     bool lit = true;
 

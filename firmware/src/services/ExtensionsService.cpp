@@ -9,84 +9,11 @@ void ExtensionsService::setup()
     {
         extension->setup();
     }
-#ifdef F_VERBOSE
-    Serial.printf("%s: setup complete\n", name);
-#endif
+    ESP_LOGV(name, "setup complete");
 }
 
 void ExtensionsService::ready()
 {
-#if EXTENSION_BUILD && defined(TASK_STACK_EXTENSIONS)
-    (*Build->config)[Config::h][__STRING(TASK_STACK_EXTENSIONS)] = TASK_STACK_EXTENSIONS;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_ALEXA) && !(EXTENSION_ALEXA)
-    (*Build->config)[Config::h][__STRING(EXTENSION_ALEXA)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_BUTTON) && !(EXTENSION_BUTTON)
-    (*Build->config)[Config::h][__STRING(EXTENSION_BUTTON)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_HOMEASSISTANT) && !(EXTENSION_HOMEASSISTANT)
-    (*Build->config)[Config::h][__STRING(EXTENSION_HOMEASSISTANT)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_INFRARED) && !(EXTENSION_INFRARED)
-    (*Build->config)[Config::h][__STRING(EXTENSION_INFRARED)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_MESSAGE) && !(EXTENSION_MESSAGE)
-    (*Build->config)[Config::h][__STRING(EXTENSION_MESSAGE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_MICROPHONE) && !(EXTENSION_MICROPHONE)
-    (*Build->config)[Config::h][__STRING(EXTENSION_MICROPHONE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_MQTT) && !(EXTENSION_MQTT)
-    (*Build->config)[Config::h][__STRING(EXTENSION_MQTT)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_OTA) && !(EXTENSION_OTA)
-    (*Build->config)[Config::h][__STRING(EXTENSION_OTA)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_PHOTOCELL) && !(EXTENSION_PHOTOCELL)
-    (*Build->config)[Config::h][__STRING(EXTENSION_PHOTOCELL)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_PLAYLIST) && !(EXTENSION_PLAYLIST)
-    (*Build->config)[Config::h][__STRING(EXTENSION_PLAYLIST)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_RESTFUL) && !(EXTENSION_RESTFUL)
-    (*Build->config)[Config::h][__STRING(EXTENSION_RESTFUL)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_RTC) && !(EXTENSION_RTC)
-    (*Build->config)[Config::h][__STRING(EXTENSION_RTC)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_SERVERSENTEVENTS) && !(EXTENSION_SERVERSENTEVENTS)
-    (*Build->config)[Config::h][__STRING(EXTENSION_SERVERSENTEVENTS)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_SIGNAL) && !(EXTENSION_SIGNAL)
-    (*Build->config)[Config::h][__STRING(EXTENSION_SIGNAL)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_WEBAPP) && !(EXTENSION_WEBAPP)
-    (*Build->config)[Config::h][__STRING(EXTENSION_WEBAPP)] = false;
-#endif
-#if EXTENSION_BUILD && defined(EXTENSION_WEBSOCKET) && !(EXTENSION_WEBSOCKET)
-    (*Build->config)[Config::h][__STRING(EXTENSION_WEBSOCKET)] = false;
-#endif
-
-#if EXTENSION_HOMEASSISTANT && defined(F_VERBOSE)
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
-    {
-        const std::string id = std::string(name).append("_stack");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::device_class] = "data_size";
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::icon] = "mdi:memory";
-        component[Abbreviations::name] = std::string(name).append(" stack");
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "sensor";
-        component[Abbreviations::state_class] = "measurement";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::unit_of_measurement] = "kB";
-        component[Abbreviations::value_template] = "{{value_json.stack/2**10 }}";
-    }
-#endif // EXTENSION_HOMEASSISTANT && defined(F_VERBOSE)
     for (ExtensionModule *extension : modules)
     {
         extension->ready();
@@ -94,16 +21,6 @@ void ExtensionsService::ready()
     xTaskCreate(&onTask, name, stackSize, nullptr, 1, &taskHandle);
     transmit();
 }
-
-#ifdef F_VERBOSE
-void ExtensionsService::handle()
-{
-    if (millis() - lastMillis > UINT16_MAX)
-    {
-        transmit();
-    }
-}
-#endif // F_VERBOSE
 
 const std::vector<ExtensionModule *> &ExtensionsService::getAll() const
 {
@@ -119,9 +36,6 @@ void ExtensionsService::transmit()
         list.add(extension->name);
     }
     lastMillis = millis();
-#ifdef F_VERBOSE
-    doc["stack"] = stackSize - uxTaskGetStackHighWaterMark(taskHandle);
-#endif
     Device.transmit(doc, name);
 }
 

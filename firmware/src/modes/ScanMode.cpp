@@ -9,15 +9,15 @@
 void ScanMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > 100 && Microphone->play())
+    if (millis() - lastMillis > INT8_MAX && Microphone->isPlay())
 #else
-    if (millis() - lastMillis > 100)
-#endif
+    if (millis() - lastMillis > INT8_MAX)
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        for (uint8_t y = 0; y < ROWS; ++y)
+        for (uint8_t y = 0; y < GRID_ROWS; ++y)
         {
-            if (x < COLUMNS)
+            if (x < GRID_COLUMNS)
             {
                 Display.setPixel(x, y);
             }
@@ -27,7 +27,7 @@ void ScanMode::handle()
             }
         }
         ++x;
-        if (x - 2 >= COLUMNS)
+        if (x - 2 >= GRID_COLUMNS)
         {
             x = 0;
         }

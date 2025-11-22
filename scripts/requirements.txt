@@ -1,0 +1,6 @@
+cryptography==46.0.3
+httpx==0.28.1
+packaging==25.0.0
+python-dotenv==1.2.1
+tzdata==2025.2.0
+tzlocal==5.3.1

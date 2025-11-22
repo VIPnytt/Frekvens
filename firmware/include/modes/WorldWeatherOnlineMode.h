@@ -2,7 +2,7 @@
 
 #include "config/constants.h"
 
-#if MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#if MODE_WORLDWEATHERONLINE
 
 #include <vector>
 
@@ -12,6 +12,8 @@
 class WorldWeatherOnlineMode : public ModeModule
 {
 private:
+    static constexpr uint32_t interval = 600'000; // Recommended update interval: 10-15 minutes
+
     unsigned long lastMillis = 0;
 
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
@@ -19,14 +21,8 @@ private:
 #ifdef LOCATION
         "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
 #endif
-#if defined(LOCATION) && defined(WORLDWEATHERONLINE_PARAMETERS)
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY "&" WORLDWEATHERONLINE_PARAMETERS,
-#endif
 #if defined(LATITUDE) && defined(LONGITUDE)
         "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LATITUDE "," LONGITUDE "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE) && defined(WORLDWEATHERONLINE_PARAMETERS)
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LATITUDE "," LONGITUDE "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY "&" WORLDWEATHERONLINE_PARAMETERS,
 #endif
     };
 
@@ -67,11 +63,8 @@ private:
 public:
     WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
 
-#if EXTENSION_BUILD
-    void setup() override;
-#endif
     void wake() override;
     void handle() override;
 };
 
-#endif // MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#endif // MODE_WORLDWEATHERONLINE

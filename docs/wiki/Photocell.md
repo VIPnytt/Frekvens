@@ -48,9 +48,10 @@ Analog input from the resistor bridge.
 
 Any analog input pin can be used, but those on the ADC1 channel are preferred.
 
+> [!WARNING]
 > Avoid strapping pins as this pin is biased.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_LDR 1 // Bridge

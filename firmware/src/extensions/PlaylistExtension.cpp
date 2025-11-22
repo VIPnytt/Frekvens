@@ -19,43 +19,50 @@ PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist")
 
 void PlaylistExtension::setup()
 {
+    JsonDocument doc;
     Preferences Storage;
     Storage.begin(name, true);
-    uint8_t i = 0;
-    while (Storage.isKey(std::string("mode" + std::to_string(i)).c_str()) && Storage.isKey(std::string("duration" + std::to_string(i)).c_str()))
+    if (Storage.isKey("modes"))
     {
-        PlaylistExtension::Item queued;
-        queued.mode = Storage.getString(std::string("mode" + std::to_string(i)).c_str());
-        queued.duration = Storage.getUShort(std::string("duration" + std::to_string(i)).c_str());
-        playlist.push_back(queued);
-        if (i >= UINT8_MAX)
+        const size_t length = Storage.getBytesLength("modes");
+        uint8_t *buffer = new uint8_t[length];
+        Storage.getBytes("modes", buffer, length);
+        Storage.end();
+        deserializeJson(doc, buffer, length);
+        delete[] buffer;
+        for (JsonVariantConst item : doc.as<JsonArrayConst>())
         {
-            break;
+            PlaylistExtension::Mode mode;
+            mode.duration = item["duration"].as<uint16_t>();
+            mode.mode = item["mode"].as<std::string>();
+            playlist.push_back(mode);
         }
-        ++i;
     }
-    Storage.end();
+    else
+    {
+        Storage.end();
+    }
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"active\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::icon] = "mdi:format-list-bulleted";
-        component[Abbreviations::json_attributes_template] = "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}";
-        component[Abbreviations::json_attributes_topic] = topic;
-        component[Abbreviations::name] = name;
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::payload_off] = "false";
-        component[Abbreviations::payload_on] = "true";
-        component[Abbreviations::platform] = "switch";
-        component[Abbreviations::state_off] = "False";
-        component[Abbreviations::state_on] = "True";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.active}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
+        component[HomeAssistantAbbreviations::json_attributes_template] = "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}";
+        component[HomeAssistantAbbreviations::json_attributes_topic] = topic;
+        component[HomeAssistantAbbreviations::name] = name;
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::payload_off] = "false";
+        component[HomeAssistantAbbreviations::payload_on] = "true";
+        component[HomeAssistantAbbreviations::platform] = "switch";
+        component[HomeAssistantAbbreviations::state_off] = "False";
+        component[HomeAssistantAbbreviations::state_on] = "True";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -84,7 +91,7 @@ void PlaylistExtension::ready()
         }
     }
     Storage.end();
-    _active ? set(true) : transmit();
+    _active ? setActive(true, name) : transmit();
 }
 
 void PlaylistExtension::handle()
@@ -96,56 +103,63 @@ void PlaylistExtension::handle()
         {
             step = 0;
         }
-#ifdef F_INFO
-        Serial.printf("%s: next mode\n", name);
-#endif
-        Modes.set(playlist[step].mode.c_str());
+        Modes.setMode(playlist[step].mode.c_str(), name);
         lastMillis = millis();
     }
 }
 
-bool PlaylistExtension::get()
+bool PlaylistExtension::getActive() const
 {
     return active;
 }
 
-void PlaylistExtension::set(bool enable)
+void PlaylistExtension::setActive(bool active, const char *const source)
 {
-    if ((enable && !active && !playlist.empty()) || (!enable && active))
+    if ((active && !this->active && !playlist.empty()) || (!active && this->active))
     {
         step = 0;
-        active = enable;
+        this->active = active;
 
         Preferences Storage;
         Storage.begin(name);
-        Storage.putBool("active", active);
+        Storage.putBool("active", this->active);
         Storage.end();
 
         transmit();
 
-#ifdef F_INFO
-        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
-#endif
+        if (this->active)
+        {
+            ESP_LOGI(source, "active");
+        }
+        else
+        {
+            ESP_LOGI(source, "inactive");
+        }
     }
 }
 
-void PlaylistExtension::load(std::vector<PlaylistExtension::Item> modes)
+void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
 {
-    set(false);
+    setActive(false, name);
     playlist.clear();
-
+    JsonDocument doc;
+    JsonArray items = doc.to<JsonArray>();
+    for (const Mode mode : modes)
+    {
+        JsonObject item;
+        item["duration"] = mode.duration;
+        item["mode"] = mode.mode;
+        items.add(item);
+        playlist.push_back(mode);
+    }
+    const size_t length = measureJson(doc);
+    uint8_t *buffer = new uint8_t[length + 1];
+    serializeJson(doc, reinterpret_cast<char *>(buffer), length + 1);
     Preferences Storage;
     Storage.begin(name);
-    Storage.clear();
-    uint8_t i = 0;
-    for (const Item mode : modes)
-    {
-        Storage.putUShort(std::string("duration" + std::to_string(i)).c_str(), mode.duration);
-        Storage.putString(std::string("mode" + std::to_string(i)).c_str(), mode.mode);
-        playlist.push_back(mode);
-        ++i;
-    }
+    Storage.putBytes("modes", buffer, length + 1);
     Storage.end();
+    delete[] buffer;
 
     transmit();
 }
@@ -155,7 +169,7 @@ void PlaylistExtension::transmit()
     JsonDocument doc;
     doc["active"] = active;
     JsonArray _playlist = doc["playlist"].to<JsonArray>();
-    for (const PlaylistExtension::Item &mode : playlist)
+    for (const PlaylistExtension::Mode &mode : playlist)
     {
         JsonObject _item = _playlist.add<JsonObject>();
         _item["duration"] = mode.duration;
@@ -167,34 +181,34 @@ void PlaylistExtension::transmit()
 void PlaylistExtension::transmitterHook(const JsonDocument &doc, const char *const source)
 {
     // Modes: Mode
-    if (active && !strcmp(source, Modes.name) && doc["mode"].is<String>() && !doc["mode"].as<String>().equals(playlist[step].mode))
+    if (active && !strcmp(source, Modes.name) && doc["mode"].is<std::string>() && doc["mode"].as<std::string>() != playlist[step].mode)
     {
-        set(false);
+        setActive(false, source);
     }
 }
 
-void PlaylistExtension::receiverHook(const JsonDocument doc)
+void PlaylistExtension::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Playlist
     if (doc["playlist"].is<JsonArrayConst>())
     {
-        std::vector<Item> _playlist;
-        for (const JsonVariantConst queued : doc["playlist"].as<JsonArrayConst>())
+        std::vector<Mode> _playlist;
+        for (const JsonVariantConst item : doc["playlist"].as<JsonArrayConst>())
         {
-            if (queued["mode"].is<String>() && queued["duration"].is<uint16_t>())
+            if (item["mode"].is<std::string>() && item["duration"].is<uint16_t>())
             {
-                Item item;
-                item.duration = queued["duration"].as<uint16_t>();
-                item.mode = queued["mode"].as<String>();
-                _playlist.push_back(item);
+                Mode mode;
+                mode.duration = item["duration"].as<uint16_t>();
+                mode.mode = item["mode"].as<std::string>();
+                _playlist.push_back(mode);
             }
         }
-        load(_playlist);
+        setPlaylist(_playlist);
     }
     // Active
     if (doc["active"].is<bool>())
     {
-        set(doc["active"].as<bool>());
+        setActive(doc["active"].as<bool>(), source);
     }
 }
 

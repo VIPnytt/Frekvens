@@ -9,9 +9,9 @@
 class PixelSequenceMode : public ModeModule
 {
 private:
-    static constexpr uint8_t pixelOrder[COLUMNS * ROWS] = PIXEL_ORDER;
+    static constexpr uint8_t pixelOrder[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
 
-    uint8_t brightness = UINT8_MAX;
+    bool lit = true;
 
     uint16_t address = 0;
 

@@ -9,39 +9,29 @@ void GameOfLifeMode::handle()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        if (active < 10)
+        bool seeds[GRID_COLUMNS * GRID_ROWS] = {false};
+        for (uint8_t i = active; i < GRID_COLUMNS * GRID_ROWS / (1 << 4); ++i)
         {
-            uint8_t
-                _x,
-                _y;
-            for (uint8_t i = 0; i < 8 - active; ++i)
-            {
-                do
-                {
-                    _x = random(COLUMNS);
-                    _y = random(5, ROWS);
-                } while (Display.getPixel(_x, _y));
-                Display.setPixel(_x, _y, 1);
-            }
+            seeds[random(1, GRID_COLUMNS - 1) + random(1, GRID_ROWS - 1) * GRID_COLUMNS] = true;
         }
         lastMillis = millis();
         active = 0;
-        for (uint8_t x = 0; x < COLUMNS; ++x)
+        for (uint8_t x = 0; x < GRID_COLUMNS; ++x)
         {
-            for (uint8_t y = 0; y < ROWS; ++y)
+            for (uint8_t y = 0; y < GRID_ROWS; ++y)
             {
                 uint8_t n = 0;
-                for (uint8_t _x = x <= 0 ? 0 : x - 1; _x <= x + 1 && _x < COLUMNS; ++_x)
+                for (uint8_t _x = x <= 0 ? 0 : x - 1; _x <= x + 1 && _x < GRID_COLUMNS; ++_x)
                 {
-                    for (uint8_t _y = y <= 0 ? 0 : y - 1; _y <= y + 1 && _y < ROWS; ++_y)
+                    for (uint8_t _y = y <= 0 ? 0 : y - 1; _y <= y + 1 && _y < GRID_ROWS; ++_y)
                     {
-                        if ((_x != x || _y != y) && Display.getPixel(_x, _y))
+                        if ((_x != x || _y != y) && (seeds[_x + _y * GRID_COLUMNS] || Display.getPixel(_x, _y)))
                         {
                             ++n;
                         }
                     }
                 }
-                const bool lit = Display.getPixel(x, y);
+                const bool lit = seeds[x + y * GRID_COLUMNS] || Display.getPixel(x, y);
                 if (lit && (n < 2 || n > 3))
                 {
                     Display.setPixel(x, y, 0);

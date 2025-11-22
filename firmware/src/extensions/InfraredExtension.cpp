@@ -2,7 +2,7 @@
 
 #if EXTENSION_INFRARED
 
-#include <stdint.h> // temporary bugfix needed for arduino-irremote/IRremote @ 4.5.0
+#include <stdint.h> // temporary bugfix for arduino-irremote/IRremote @ 4.5.0
 #include <IRremote.hpp>
 #include <Preferences.h>
 
@@ -31,21 +31,21 @@ void InfraredExtension::setup()
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"active\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::entity_category] = "config";
-        component[Abbreviations::icon] = "mdi:remote-tv";
-        component[Abbreviations::name] = name;
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::payload_off] = "false";
-        component[Abbreviations::payload_on] = "true";
-        component[Abbreviations::platform] = "switch";
-        component[Abbreviations::state_off] = "False";
-        component[Abbreviations::state_on] = "True";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.active}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:remote-tv";
+        component[HomeAssistantAbbreviations::name] = name;
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::payload_off] = "false";
+        component[HomeAssistantAbbreviations::payload_on] = "true";
+        component[HomeAssistantAbbreviations::platform] = "switch";
+        component[HomeAssistantAbbreviations::state_off] = "False";
+        component[HomeAssistantAbbreviations::state_on] = "True";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -56,7 +56,7 @@ void InfraredExtension::ready()
     Storage.begin(name, true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
     Storage.end();
-    _active ? set(true) : transmit();
+    _active ? setActive(true, name) : transmit();
 }
 
 void InfraredExtension::handle()
@@ -70,122 +70,101 @@ void InfraredExtension::handle()
 
 void InfraredExtension::parse()
 {
-    const unsigned long delta = millis() - lastMillis;
+    const unsigned long t = millis() - lastMillis;
     for (const Code &code : codes)
     {
         if (code.protocol == IrReceiver.decodedIRData.protocol)
         {
-            if (delta > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
+            if (t > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: brightness -\n", name);
-#endif // F_INFO
-                Display.setGlobalBrightness(max(0, Display.getGlobalBrightness() - 5));
+                Display.setBrightness(max(0, Display.getBrightness() - 5), name);
                 lastMillis = millis();
                 return;
             }
-            else if (delta > INT8_MAX && std::find(code.displayBrightnessIncrease.begin(), code.displayBrightnessIncrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessIncrease.end())
+            else if (t > INT8_MAX && std::find(code.displayBrightnessIncrease.begin(), code.displayBrightnessIncrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessIncrease.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: brightness +\n", name);
-#endif // F_INFO
-                Display.setGlobalBrightness(min(UINT8_MAX, Display.getGlobalBrightness() + 5));
+                Display.setBrightness(min(UINT8_MAX, Display.getBrightness() + 5), name);
                 lastMillis = millis();
                 return;
             }
-            else if (delta > (1 << 10) && std::find(code.displayPowerToggle.begin(), code.displayPowerToggle.end(), IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
+            else if (t > (1 << 10) && std::find(code.displayPowerToggle.begin(), code.displayPowerToggle.end(), IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: power\n", name);
-#endif // F_INFO
-                Display.setPower(!Display.getPower());
+                Display.setPower(!Display.getPower(), name);
                 lastMillis = millis();
                 return;
             }
 #if EXTENSION_MICROPHONE
-            else if (delta > (1 << 10) && std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
+            else if (t > (1 << 10) && std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: microphone\n", name);
-#endif // F_INFO
-                Microphone->set(!Microphone->get());
+                Microphone->setActive(!Microphone->getActive(), name);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            else if (delta > (1 << 10) && std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
+            else if (t > (1 << 10) && std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: photocell\n", name);
-#endif // F_INFO
-                Photocell->set(!Photocell->get());
+                Photocell->setActive(!Photocell->getActive(), name);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (delta > (1 << 10) && std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistToggle.end())
+            else if (t > (1 << 10) && std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistToggle.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: playlist\n", name);
-#endif // F_INFO
-                Playlist->set(!Playlist->get());
+                Playlist->setActive(!Playlist->getActive(), name);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (delta > (1 << 9) && std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) != code.modeNext.end())
+            else if (t > (1 << 9) && std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) != code.modeNext.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: mode +\n", name);
-#endif // F_INFO
-                Modes.next();
+                Modes.setModeNext(name);
                 lastMillis = millis();
                 return;
             }
-            else if (delta > (1 << 9) && std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) != code.modePrevious.end())
+            else if (t > (1 << 9) && std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) != code.modePrevious.end())
             {
-#ifdef F_INFO
-                Serial.printf("%s: mode -\n", name);
-#endif // F_INFO
-                Modes.previous();
+                Modes.setModePrevious(name);
                 lastMillis = millis();
                 return;
             }
             break;
         }
     }
-#ifdef F_VERBOSE
     if (!IrReceiver.decodedIRData.flags)
     {
-        Serial.printf("%s: %s 0x%X\n", name, ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
+        ESP_LOGV(name, "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
     }
-#endif // F_VERBOSE
 }
 
-bool InfraredExtension::get()
+bool InfraredExtension::getActive()
 {
     return active;
 }
 
-void InfraredExtension::set(bool enable)
+void InfraredExtension::setActive(bool active, const char *const source)
 {
-    if ((enable && !active) || (!enable && active))
+    if ((active && !this->active) || (!active && this->active))
     {
-        active = enable;
-        active ? IrReceiver.start() : IrReceiver.stop();
+        this->active = active;
+        this->active ? IrReceiver.start() : IrReceiver.stop();
 
         Preferences Storage;
         Storage.begin(name);
-        Storage.putBool("active", active);
+        Storage.putBool("active", this->active);
         Storage.end();
 
         transmit();
 
-#ifdef F_INFO
-        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
-#endif
+        if (this->active)
+        {
+            ESP_LOGI(source, "active");
+        }
+        else
+        {
+            ESP_LOGI(source, "inactive");
+        }
     }
 }
 
@@ -196,12 +175,12 @@ void InfraredExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void InfraredExtension::receiverHook(const JsonDocument doc)
+void InfraredExtension::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Active
     if (doc["active"].is<bool>())
     {
-        set(doc["active"].as<bool>());
+        setActive(doc["active"].as<bool>(), source);
     }
 }
 

@@ -9,13 +9,13 @@ void RainMode::wake()
 {
     for (Drop &drop : drops)
     {
-        drop.x = random(COLUMNS);
-        drop.y = random(ROWS);
-        drop.length = random(ROWS / 5, ROWS / 3);
+        drop.x = random(GRID_COLUMNS);
+        drop.y = random(GRID_ROWS);
+        drop.length = random(GRID_ROWS / 5, GRID_ROWS / 3);
         drop.delay = random(INT8_MAX, UINT8_MAX);
         drop.lastMillis = millis();
     }
-    Display.clear();
+    Display.clearFrame();
 }
 
 void RainMode::handle()
@@ -24,14 +24,14 @@ void RainMode::handle()
     {
         if (millis() - drop.lastMillis > drop.delay)
         {
-            if (drop.y - drop.length >= ROWS)
+            if (drop.y - drop.length >= GRID_ROWS)
             {
                 uint8_t newX;
                 bool isUsedX = false;
                 do
                 {
                     isUsedX = false;
-                    newX = random(COLUMNS);
+                    newX = random(GRID_COLUMNS);
                     for (const Drop &_drop : drops)
                     {
                         if (_drop.x == newX)
@@ -43,7 +43,7 @@ void RainMode::handle()
                 } while (isUsedX);
                 drop.x = newX;
                 drop.y = 0;
-                drop.length = random(ROWS / 5, ROWS / 3);
+                drop.length = random(GRID_ROWS / 5, GRID_ROWS / 3);
                 drop.delay = random(100, UINT8_MAX);
             }
             else
@@ -52,7 +52,7 @@ void RainMode::handle()
             }
             for (uint8_t n = 0; n <= drop.length; ++n)
             {
-                if (drop.y - drop.length + n >= 0 && drop.y - drop.length + n < ROWS)
+                if (drop.y - drop.length + n >= 0 && drop.y - drop.length + n < GRID_ROWS)
                 {
                     Display.setPixel(drop.x, drop.y - drop.length + n, UINT8_MAX / drop.length * n);
                 }

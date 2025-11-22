@@ -12,24 +12,20 @@ void E131Mode::wake()
     if (udp->listen(5568))
     {
         udp->onPacket(&onPacket);
-#ifdef F_DEBUG
-        Serial.printf("%s: listening at %s:5568\n", name, Connectivity.domain.data());
-#endif
+        ESP_LOGD(name, "listening at " HOSTNAME ".local:5568");
     }
 }
 
 void E131Mode::onPacket(AsyncUDPPacket packet)
 {
-    if (packet.length() == 126 + COLUMNS * ROWS)
+    if (packet.length() == 126 + GRID_COLUMNS * GRID_ROWS)
     {
         Display.setFrame(packet.data() + 126);
     }
-#ifdef F_DEBUG
     else
     {
-        Serial.printf("%s: : malformed packet received\n", _name.data());
+        ESP_LOGV(_name.data(), "malformed packet received");
     }
-#endif
 }
 
 void E131Mode::sleep()

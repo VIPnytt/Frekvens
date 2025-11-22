@@ -4,7 +4,7 @@ Thank you for using this project! If you need help or have questions, please ref
 
 ## 📖 Documentation
 
-Extensive documentation is available in the GitHub [Wiki](https://github.com/VIPnytt/Frekvens/wiki).
+Extensive documentation is available in the [Wiki](https://github.com/VIPnytt/Frekvens/wiki).
 Please start there before opening a discussion or issue.
 
 ## 💬 Discussions

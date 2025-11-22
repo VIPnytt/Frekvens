@@ -14,8 +14,8 @@ class AlexaExtension : public ExtensionModule
 private:
     fauxmoESP fauxmo = fauxmoESP();
 
-    static void onGetApi(AsyncWebServerRequest *request);
-    static void onSetApi(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
+    static void onGet(AsyncWebServerRequest *request);
+    static void onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     static void onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value);
 
 public:

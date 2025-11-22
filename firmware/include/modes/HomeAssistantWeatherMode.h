@@ -12,6 +12,8 @@
 class HomeAssistantWeatherMode : public ModeModule
 {
 private:
+    static constexpr uint16_t interval = UINT16_MAX;
+
 #ifdef HOMEASSISTANT_PROTOCOL
     static constexpr std::string_view protocol = HOMEASSISTANT_PROTOCOL;
 #else
@@ -108,9 +110,6 @@ private:
 public:
     HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
 
-#if EXTENSION_BUILD
-    void setup() override;
-#endif
     void wake() override;
     void handle() override;
 };

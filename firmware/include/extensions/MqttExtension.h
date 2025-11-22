@@ -11,8 +11,6 @@
 class MqttExtension : public ExtensionModule
 {
 private:
-    bool pending = false;
-
     unsigned long lastMillis = 0;
 
     static inline bool subscribed = false;
@@ -20,8 +18,6 @@ private:
     static constexpr size_t
         prefixLength = sizeof("frekvens/" HOSTNAME),
         suffixLength = sizeof("set");
-
-    void transmit();
 
     static void onConnect(bool sessionPresent);
     static void onDisconnect(espMqttClientTypes::DisconnectReason reason);

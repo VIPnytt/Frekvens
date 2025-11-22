@@ -7,7 +7,7 @@
 
 void StarsMode::wake()
 {
-    Display.clear();
+    Display.clearFrame();
 }
 
 void StarsMode::handle()
@@ -29,12 +29,12 @@ void StarsMode::handle()
             {
                 do
                 {
-                    star.x = random(COLUMNS);
-                    star.y = random(ROWS);
+                    star.x = random(GRID_COLUMNS);
+                    star.y = random(GRID_ROWS);
                 } while (Display.getPixel(star.x, star.y) > 0);
                 ++star.brightness;
                 star.direction = true;
-                star.delay = random(15);
+                star.delay = random(1 << 4);
             }
             Display.setPixel(star.x, star.y, star.brightness);
             star.lastMillis = millis();

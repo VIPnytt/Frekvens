@@ -18,8 +18,8 @@ ServerSentEventsExtension::ServerSentEventsExtension() : ExtensionModule("Server
 
 void ServerSentEventsExtension::ready()
 {
-    sse->onConnect(&onConnect);
-    WebServer.http->addHandler(sse);
+    client->onConnect(&onConnect);
+    WebServer.http->addHandler(client);
 }
 
 void ServerSentEventsExtension::transmitterHook(const JsonDocument &doc, const char *const source)
@@ -27,7 +27,7 @@ void ServerSentEventsExtension::transmitterHook(const JsonDocument &doc, const c
     const size_t length = measureJson(doc);
     char *payload = new char[length + 1];
     serializeJson(doc, payload, length + 1);
-    sse->send(payload, source);
+    client->send(payload, source);
     delete[] payload;
 }
 

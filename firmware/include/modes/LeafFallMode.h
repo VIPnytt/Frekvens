@@ -19,7 +19,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Leaf leaves[COLUMNS * ROWS / 20];
+    Leaf leaves[GRID_COLUMNS * GRID_ROWS / 20];
 
 public:
     LeafFallMode() : ModeModule("Leaf fall") {};

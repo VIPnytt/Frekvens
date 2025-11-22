@@ -22,7 +22,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 ### Key Highlights
 
 - **Web app**
-- **47 display modes**:
+- **48 display modes**:
   - Animations
   - Clocks
   - Interactive tools
@@ -41,9 +41,10 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### ESP32 board
 
-Frekvens works with most Wi-Fi enabled ESP32 boards that support the Arduino framework, as listed in [PlatformIO's board registry](https://registry.platformio.org/platforms/platformio/espressif32/boards).
+Frekvens runs on most commonly available Wi-Fi enabled ESP32 boars.
 
-For new installations, the `ESP32-S3` is recommended due to its performance and broad compatibility. Compact boards (such as [this](https://www.adafruit.com/product/5426) or [this](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html)) are sufficient for most use cases.
+> [!NOTE]
+> If a new board is required, the `ESP32-S3` chip is recommended — for example [this board](https://www.adafruit.com/product/5426) or [this board](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html). It offers excellent performance, and variants with 8 MB flash memory provide plenty of room for features and future expansion. Boards with 4 MB flash works fine too, for basic setups.
 
 Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [documentation](https://github.com/VIPnytt/Frekvens/wiki).
 
@@ -56,6 +57,7 @@ If desired, extra hardware can be added:
 - Photocell — automatic ambient brightness adaption
 - RTC clock — keeps accurate time, even without internet
 
+> [!NOTE]
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.
 
 ### Wiring
@@ -72,36 +74,36 @@ Each display model has its own hardware setup guide:
 
 ## 🏗️ Getting started
 
-For the smoothest setup, we recommend [PlatformIO IDE](https://platformio.org/platformio-ide) for [VS Code](https://code.visualstudio.com). PlatformIO also provides [integrations](https://platformio.org/install/integration) for a wide range of other editors and IDEs — use whichever environment you are most comfortable with.
+[PlatformIO IDE](https://platformio.org/platformio-ide) is required. It provides [integrations](https://platformio.org/install/integration) for a wide range of IDEs — use whichever editor you are most comfortable with.
 
 ### Download the source code
 
-- **Via Git (recommended)** – In your IDE, select *Clone Git Repository* and enter:
+- **Via Git (recommended)** – In your IDE/editor, select *Clone Git Repository* and enter:
 
   `https://github.com/vipnytt/frekvens.git`
 
-- **From the Releases page** – If you prefer a direct download, grab the latest stable `.zip` or `.tar.gz` archive from the [Releases page](https://github.com/vipnytt/frekvens/releases).
+- **From the Releases page** – If you prefer a direct download, grab an `zip` or `tar.gz` archive from the [releases page](https://github.com/vipnytt/frekvens/releases/latest).
 
 ### Dependencies
 
-To build the Web UI, [Node.js](https://nodejs.org) is required. The LTS version is recommended, but any recent version will work.
+To build the Web UI, also [Node.js](https://nodejs.org/en/download) is required. The latest *LTS* version is recommended, but any newer version will work.
 
 ### PlatformIO
 
-Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://registry.platformio.org/platforms/platformio/espressif32/boards) reference.
+Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://registry.platformio.org/platforms/platformio/espressif32/boards) reference or the [pioarduino boards](https://github.com/pioarduino/platform-espressc6if32/tree/main/boards) database.
 
-[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
+Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
 [env:seeed_xiao_esp32s3]
-board = seeed_xiao_esp32s3
+board = seeed_xiao_esp32s3 ; Board ID
 ```
 
 ### File Structure
 
 Configuration is split into shared and firmware-specific settings:
 
-- **Shared variables** (used by the firmware, web app, and tools) are defined in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
+- **Shared variables** (used by the firmware and web app) are defined in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
 - **Firmware-only** settings go in [`firmware/include/config/secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h)
 
 This separation keeps common parameters in one place, while allowing firmware builds to have their own purpose-specific configuration.
@@ -111,13 +113,11 @@ This separation keeps common parameters in one place, while allowing firmware bu
 Add one if the following to [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-# IKEA Frekvens
-ENV_FREKVENS=''
+IKEA_FREKVENS='true' # IKEA Frekvens
 ```
 
 ```ini
-# IKEA Obegränsad
-ENV_OBEGRANSAD=''
+IKEA_OBEGRANSAD='true' # IKEA Obegränsad
 ```
 
 Define pin assignments in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
@@ -144,18 +144,19 @@ Define pin assignments in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob
 
 ### Wi-Fi
 
-Wi-Fi credentials can be defined in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) or configured through the web UI.
+Define the Wi-Fi credentials in [`secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h).
 
 ```h
 #define WIFI_SSID "name"
 #define WIFI_KEY "secret"
 ```
 
-If no credentials are set, the device enters access point mode on first startup. Holding any button during startup also activates AP mode.
+> [!TIP]
+> Additional networks can be configured later in the web UI, optionally via the hotspot if no known networks are available.
 
 ### Weather
 
-Coordinates are required for weather services:
+Coordinates are required for most weather services:
 
 ```h
 #define LATITUDE "0.000"
@@ -164,29 +165,24 @@ Coordinates are required for weather services:
 
 ### Additional options
 
-Check out the [Documentation](https://github.com/VIPnytt/Frekvens/wiki) for more configuration options.
+Check out the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for more configuration options.
 
 ## ⬆️ Upload to the device
 
-In the *PlatformIO* menu, there’s a *"Upload"* button which uploads the firmware, and a *"Upload Filesystem Image"* button which uploads the Web app. You’ll need to upload both.
+Via PlatformIO, there’s an *Upload* option which uploads the firmware, and a *Upload Filesystem Image* option which uploads the Web app. You’ll need to upload both.
 
-### OTA Uploads
+### Over-the-Air updates
 
-To update *Over-the-Air*, extend your environment:
-
-```ini
-extends = env:upload_ota
-```
-
-Specify upload details:
+Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
-upload_protocol = espota
-upload_port = example.local
-;upload_flags = --auth=password
+[env:seeed_xiao_esp32s3]
+board = seeed_xiao_esp32s3
+upload_protocol = espota ; Wireless upload
 ```
 
-As an alternative, it’s also possible to manually upload the `firmware.bin` and `littlefs.bin`/`spiffs.bin` files via the Web app.
+> [!NOTE]
+> Migration from v1.x to v2.x requires wired flashing.
 
 ## 🏠 Smart-home integrations
 
@@ -213,22 +209,22 @@ Refer to the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for supported endp
 
 ### How do I change Wi-Fi network?
 
-Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with your phone or computer, and a configuration portal will open. From there, you can configure new network credentials, and the device will remember multiple networks.
+Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with your phone or computer, and a configuration portal will open. From there, you can configure new network credentials. The device can remember multiple networks.
 
 ## 🚧 Troubleshooting
 
+### Build fails
+
+Frekvens includes a wide range of animations, weather providers, smart-home extensions and streaming protocols — but most users only use a subset of these.
+
+If the build fails due to memory limits, try disabling features you don’t plan to use in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is the largest one, and therefore a good first candidate to remove
+
 ### Where is the web UI?
 
-First, ensure that the Web app has been uploaded to the device using the *"Upload Filesystem Image"* button in the PlatformIO menu. After a successful upload, the device will log its IP address and domain name to the terminal at boot. You can then access the web UI by entering this address into your browser.
-
-### The display is flickering
-
-Flicker or "snow" usually indicates EMI or poor wiring. Avoid jumper wires and breadboards. Refer to wiring recommendations in the device-specific setup guides.
-
-If display content is otherwise intact, try lowering the [frame rate](https://github.com/VIPnytt/Frekvens/wiki/Services#-display).
+First, ensure that the Web app has been uploaded to the device using the *Upload Filesystem Image* option via PlatformIO. Then enter `frekvens.local` or your custom `HOSTNAME.local` in the browser. If this isn't working, try entering the IP address logged to the terminal at startup.
 
 ### Unexpected Reboots
 
-If the device is rebooting unexpectedly, this can be a symptom of a software or hardware issue. The ESP32’s USB port is suitable for firmware uploads and testing, but it is not designed to supply the high current levels that a display might draw during continuous operation.
+If the device is rebooting unexpectedly, this can be a symptom of a software or hardware issue. The ESP32’s USB port is suitable for flashing and testing, but it is not designed to supply the high current levels that a display might draw during continuous operation.
 
 If terminal logs include error messages, please [report an issue](https://github.com/VIPnytt/Frekvens/issues).

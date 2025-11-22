@@ -5,9 +5,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import solidPlugin from 'vite-plugin-solid';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 
-import { IconUri } from './src/components/Vector';
-import libraryJson from '../library.json';
-import packageJson from './package-lock.json';
+import { IconUri } from './src/components/Icon';
 
 export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
     const env = loadEnv(mode, process.cwd(), '');
@@ -20,7 +18,7 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
                     attrs: {
                         rel: 'icon',
                         type: 'image/svg+xml',
-                        href: IconUri(mdiDotsGrid),
+                        href: IconUri({ path: mdiDotsGrid, fill: 'white' }),
                     },
                 },
                 {
@@ -28,7 +26,7 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
                     tag: 'link',
                     attrs: {
                         rel: 'license',
-                        href: `${libraryJson.homepage}/blob/main/LICENSE`,
+                        href: `https://github.com/VIPnytt/Frekvens/blob/main/LICENSE`,
                     },
                 },
                 {
@@ -51,8 +49,6 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
             'MODE': JSON.stringify(mode),
             'SSR': JSON.stringify(isSsrBuild),
             'PREVIEW': JSON.stringify(isPreview),
-            'REPOSITORY': JSON.stringify(libraryJson.homepage),
-            '__VERSION__': JSON.stringify(packageJson.version),
         },
         plugins: [
             solidPlugin(),

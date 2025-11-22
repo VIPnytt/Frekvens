@@ -11,11 +11,11 @@ void BinaryEpochMode::handle()
     if (epoch != _epoch)
     {
         epoch = _epoch;
-        for (uint8_t i = 0; i < COLUMNS / 2 * ROWS / 4; ++i)
+        for (uint8_t i = 0; i < GRID_COLUMNS / 2 * GRID_ROWS / 4; ++i)
         {
             const uint8_t
-                x = COLUMNS - 2 - i % (COLUMNS / 2) * 2,
-                y = ROWS - 4 - i / (COLUMNS / 2) * 4;
+                x = GRID_COLUMNS - 2 - i % (GRID_COLUMNS / 2) * 2,
+                y = GRID_ROWS - 4 - i / (GRID_COLUMNS / 2) * 4;
             Display.drawRectangle(x, y, x + 1, y + 3, true, epoch & (1 << i) ? UINT8_MAX : 0);
         }
     }

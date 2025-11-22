@@ -32,49 +32,49 @@ void MicrophoneExtension::setup()
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"active\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::icon] = "mdi:microphone";
-        component[Abbreviations::name] = name;
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::payload_off] = "false";
-        component[Abbreviations::payload_on] = "true";
-        component[Abbreviations::platform] = "switch";
-        component[Abbreviations::state_off] = "False";
-        component[Abbreviations::state_on] = "True";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.active}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
+        component[HomeAssistantAbbreviations::name] = name;
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::payload_off] = "false";
+        component[HomeAssistantAbbreviations::payload_on] = "true";
+        component[HomeAssistantAbbreviations::platform] = "switch";
+        component[HomeAssistantAbbreviations::state_off] = "False";
+        component[HomeAssistantAbbreviations::state_on] = "True";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
     }
     {
         const std::string id = std::string(name).append("_sound");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::automation_type] = "trigger";
-        component[Abbreviations::payload] = "sound";
-        component[Abbreviations::platform] = "device_automation";
-        component[Abbreviations::subtype] = name;
-        component[Abbreviations::topic] = topic;
-        component[Abbreviations::type] = "sound detected";
-        component[Abbreviations::value_template] = "{{value_json.event}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::automation_type] = "trigger";
+        component[HomeAssistantAbbreviations::payload] = "sound";
+        component[HomeAssistantAbbreviations::platform] = "device_automation";
+        component[HomeAssistantAbbreviations::subtype] = name;
+        component[HomeAssistantAbbreviations::topic] = topic;
+        component[HomeAssistantAbbreviations::type] = "sound detected";
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.event}}";
     }
     {
         const std::string id = std::string(name).append("_threshold");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"threshold\":{{value}}}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "config";
-        component[Abbreviations::icon] = "mdi:microphone";
-        component[Abbreviations::max] = levelMax;
-        component[Abbreviations::min] = 1;
-        component[Abbreviations::mode] = "slider";
-        component[Abbreviations::name] = "Threshold";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "number";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.threshold}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"threshold\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::enabled_by_default] = false;
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
+        component[HomeAssistantAbbreviations::max] = levelMax;
+        component[HomeAssistantAbbreviations::min] = 1;
+        component[HomeAssistantAbbreviations::mode] = "slider";
+        component[HomeAssistantAbbreviations::name] = "Threshold";
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::platform] = "number";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.threshold}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -89,7 +89,7 @@ void MicrophoneExtension::ready()
         threshold = Storage.getUShort("threshold");
     }
     Storage.end();
-    _active ? set(true) : transmit();
+    _active ? setActive(true, name) : transmit();
 }
 
 void MicrophoneExtension::handle()
@@ -102,7 +102,7 @@ void MicrophoneExtension::handle()
     else if (active && Display.getPower())
     {
         const uint16_t lastMic = mic;
-        mic = analogReadRaw(PIN_MIC);
+        mic = analogRead(PIN_MIC);
         const uint16_t level = abs(mic - lastMic);
         if (level >= threshold)
         {
@@ -117,9 +117,7 @@ void MicrophoneExtension::handle()
                     Device.transmit(doc, name, false);
                     _lastMillis = lastMillis;
                 }
-#ifdef F_VERBOSE
-                Serial.printf("%s: sound, level %d\n", name, level);
-#endif
+                ESP_LOGV(name, "sound, level %d", level);
             }
             else if (level > levelMax)
             {
@@ -134,44 +132,46 @@ void MicrophoneExtension::handle()
         else if (detected && millis() - lastMillis > INT8_MAX)
         {
             detected = false;
-#ifdef F_VERBOSE
-            Serial.printf("%s: silence, level %d\n", name, level);
-#endif
+            ESP_LOGV(name, "silence, level %d", level);
         }
     }
 }
 
-bool MicrophoneExtension::get()
+bool MicrophoneExtension::getActive()
 {
     return active;
 }
 
-void MicrophoneExtension::set(bool enable)
+void MicrophoneExtension::setActive(bool active, const char *const source)
 {
-    if ((enable && !active) || (!enable && active))
+    if ((active && !this->active) || (!active && this->active))
     {
-        if (enable)
+        if (active)
         {
-            mic = analogReadRaw(PIN_MIC);
+            mic = analogRead(PIN_MIC);
         }
-        active = enable;
+        this->active = active;
         Preferences Storage;
         Storage.begin(name);
-        Storage.putBool("active", active);
+        Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-
-#ifdef F_INFO
-        Serial.printf(active ? "%s: active\n" : "%s: inactive\n", name);
-#endif
+        if (this->active)
+        {
+            ESP_LOGI(source, "active");
+        }
+        else
+        {
+            ESP_LOGI(source, "inactive");
+        }
     }
 }
 
-void MicrophoneExtension::set(uint16_t floor)
+void MicrophoneExtension::setThreshold(uint16_t _threshold)
 {
-    if (floor != threshold)
+    if (_threshold != threshold)
     {
-        threshold = floor;
+        threshold = _threshold;
         Preferences Storage;
         Storage.begin(name);
         Storage.putUShort("threshold", threshold);
@@ -180,7 +180,7 @@ void MicrophoneExtension::set(uint16_t floor)
     }
 }
 
-bool MicrophoneExtension::play()
+bool MicrophoneExtension::isPlay() const
 {
     return detected || !active;
 }
@@ -194,17 +194,17 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MicrophoneExtension::receiverHook(const JsonDocument doc)
+void MicrophoneExtension::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Active
     if (doc["active"].is<bool>())
     {
-        set(doc["active"].as<bool>());
+        setActive(doc["active"].as<bool>(), source);
     }
     // Threshold
     if (doc["threshold"].is<uint16_t>())
     {
-        set(doc["threshold"].as<uint16_t>());
+        setThreshold(doc["threshold"].as<uint16_t>());
     }
 }
 

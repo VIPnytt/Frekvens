@@ -12,25 +12,21 @@ void DistributedDisplayProtocolMode::wake()
     if (udp->listen(4048))
     {
         udp->onPacket(&onPacket);
-#ifdef F_DEBUG
-        Serial.printf("%s: listening at %s:4048\n", name, Connectivity.domain.data());
-#endif
+        ESP_LOGD(name, "listening at " HOSTNAME ".local:4048");
     }
 }
 
 void DistributedDisplayProtocolMode::onPacket(AsyncUDPPacket packet)
 {
     const size_t len = packet.length();
-    if (len == 10 + COLUMNS * ROWS || len == 14 + COLUMNS * ROWS)
+    if (len == 10 + GRID_COLUMNS * GRID_ROWS || len == 14 + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(packet.data() + len - COLUMNS * ROWS);
+        Display.setFrame(packet.data() + len - GRID_COLUMNS * GRID_ROWS);
     }
-#ifdef F_DEBUG
     else
     {
-        Serial.printf("%s: malformed packet received\n", _name.data());
+        ESP_LOGV(_name.data(), "malformed packet received");
     }
-#endif
 }
 
 void DistributedDisplayProtocolMode::sleep()

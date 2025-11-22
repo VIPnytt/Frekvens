@@ -26,7 +26,10 @@ updates:
     versioning-strategy: "increase"
 
   - package-ecosystem: "pip"
-    directory: "/tools"
+    directories: [
+      "/scripts",
+      "/tools",
+    ]
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21

@@ -5,7 +5,6 @@
 #include <Preferences.h>
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
 #include "modes/TickerMode.h"
 #include "services/DeviceService.h"
@@ -17,16 +16,16 @@ void TickerMode::setup()
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_message");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"message\":\"{{value}}\"}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::icon] = "mdi:message";
-        component[Abbreviations::name] = name;
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "text";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.message}}";
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::icon] = "mdi:message";
+        component[HomeAssistantAbbreviations::name] = name;
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::platform] = "text";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.message}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 
@@ -35,7 +34,7 @@ void TickerMode::setup()
     Storage.begin(name, true);
     if (Storage.isKey("message"))
     {
-        message = Storage.getString("message");
+        message = Storage.getString("message").c_str();
         _transmit = true;
     }
     if (Storage.isKey("font"))
@@ -48,14 +47,7 @@ void TickerMode::setup()
     else
     {
         Storage.end();
-    }
-    if (!font)
-    {
-#if defined(FONT_SMALL) && !FONT_SMALL
-        font = FontMini;
-#else
-        font = FontSmall;
-#endif // defined(FONT_SMALL) && !FONT_SMALL
+        setFont(FontSmall->name);
     }
     if (_transmit)
     {
@@ -70,30 +62,22 @@ void TickerMode::wake()
 
 void TickerMode::handle()
 {
-    if (pending)
+    if (pending && message.length())
     {
-        if (message.length())
-        {
-            text = std::make_unique<TextHandler>(message, font);
-            offsetX = COLUMNS;
-            offsetY = (ROWS - text->getHeight()) / 2;
-            textWidth = text->getWidth();
-        }
-        else if (text)
-        {
-            text.reset();
-            Display.clear();
-        }
+        text = std::make_unique<TextHandler>(message, font);
+        offsetX = GRID_COLUMNS;
+        offsetY = (GRID_ROWS - text->getHeight()) / 2;
+        width = text->getWidth();
         transmit();
         pending = false;
     }
     else if (text && millis() - lastMillis > INT8_MAX)
     {
-        if (textWidth + offsetX < 0)
+        if (width + offsetX < 0)
         {
-            offsetX = COLUMNS;
+            offsetX = GRID_COLUMNS;
         }
-        Display.clear();
+        Display.clearFrame();
         text->draw(offsetX, offsetY);
         --offsetX;
         lastMillis = millis();
@@ -115,19 +99,17 @@ void TickerMode::setFont(const char *const fontName)
             return;
         }
     }
-#ifdef F_DEBUG
-    Serial.printf("%s: unknown font %s\n", name, fontName);
-#endif
+    ESP_LOGD(name, "unknown font %s", fontName);
 }
 
-void TickerMode::setMessage(String textMessage)
+void TickerMode::setMessage(std::string _message)
 {
-    if (!textMessage.equals(message))
+    if (_message != message)
     {
-        message = textMessage;
+        message = _message;
         Preferences Storage;
         Storage.begin(name);
-        Storage.putString("message", message);
+        Storage.putString("message", message.c_str());
         Storage.end();
         pending = true;
     }
@@ -141,7 +123,7 @@ void TickerMode::transmit()
     Device.transmit(doc, name);
 }
 
-void TickerMode::receiverHook(const JsonDocument doc)
+void TickerMode::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Font
     if (doc["font"].is<const char *>())
@@ -149,12 +131,10 @@ void TickerMode::receiverHook(const JsonDocument doc)
         setFont(doc["font"].as<const char *>());
     }
     //  Message
-    if (doc["message"].is<String>())
+    if (doc["message"].is<std::string>())
     {
-        setMessage(doc["message"].as<String>());
-#ifdef F_DEBUG
-        Serial.printf("%s: received\n", name);
-#endif
+        setMessage(doc["message"].as<std::string>());
+        ESP_LOGD(source, "received");
     }
 }
 

@@ -22,7 +22,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Drop drops[COLUMNS / 3];
+    Drop drops[GRID_COLUMNS / 3];
 
 public:
     RainMode() : ModeModule("Rain") {};

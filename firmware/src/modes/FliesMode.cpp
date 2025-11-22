@@ -9,7 +9,7 @@ void FliesMode::handle()
 {
     if (pending)
     {
-        Display.clear();
+        Display.clearFrame();
         for (const auto &[id, pixel] : flies)
         {
             Display.setPixel(pixel.x, pixel.y);
@@ -18,7 +18,7 @@ void FliesMode::handle()
     }
 }
 
-void FliesMode::receiverHook(const JsonDocument doc)
+void FliesMode::receiverHook(const JsonDocument doc, const char *const source)
 {
     if (doc["id"].is<uint8_t>() && doc["x"].is<uint8_t>() && doc["y"].is<uint8_t>())
     {

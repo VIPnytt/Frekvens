@@ -1,10 +1,10 @@
 # 🐍 Python
 
-> Optional utilities that are not part of the core functionality but may be useful to advanced users or contributors.
+Optional utilities that are not part of the core functionality but may be useful to contributors and developers.
 
 ## 🅱️ Font generator
 
-Script to generate fonts.
+Converts `.ttf` or `.otf` font files into C++ source files that can easily be added to the project or used as templates for adding missing characters to existing fonts.
 
 Installation of dependency packages:
 
@@ -14,4 +14,4 @@ pip install tools/[extra-fonts]
 
 ## 🏭 Mode generator
 
-Script to convert [animations](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) and [drawings](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) into reusable modes.
+Converts `.csv` files from the [Animation](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) or [Draw](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) modes into C++ source files that can easily be used as templates for new project modes.

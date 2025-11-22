@@ -7,7 +7,7 @@
 
 void GlitterMode::handle()
 {
-    Display.setPixel(random(COLUMNS), random(ROWS), random(1, 1 << 8));
+    Display.setPixel(random(GRID_COLUMNS), random(GRID_ROWS), random(1, 1 << 8));
 }
 
 #endif // MODE_GLITTER

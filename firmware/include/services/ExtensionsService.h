@@ -4,9 +4,8 @@
 
 #include "config/constants.h"
 #include "extensions/AlexaExtension.h"
-#include "extensions/BuildExtension.h"
 #include "extensions/ButtonExtension.h"
-
+#include "extensions/HeapExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/InfraredExtension.h"
 #include "extensions/MessageExtension.h"
@@ -33,11 +32,11 @@ private:
 #if EXTENSION_ALEXA
         new AlexaExtension(),
 #endif
-#if EXTENSION_BUILD
-        new BuildExtension(),
-#endif
 #if EXTENSION_BUTTON
         new ButtonExtension(),
+#endif
+#if EXTENSION_HEAP
+        new HeapExtension(),
 #endif
 #if EXTENSION_HOMEASSISTANT
         new HomeAssistantExtension(),
@@ -85,12 +84,6 @@ private:
 
     unsigned long lastMillis = 0;
 
-#ifdef TASK_STACK_EXTENSIONS
-    static constexpr uint16_t stackSize = TASK_STACK_EXTENSIONS;
-#else
-    static constexpr uint16_t stackSize = 1 << 12; // 4 kB
-#endif // TASK_STACK_EXTENSIONS
-
     void transmit();
 
     static void onTask(void *parameter = nullptr);
@@ -98,12 +91,10 @@ private:
 public:
     TaskHandle_t taskHandle = nullptr;
 
+    static constexpr uint16_t stackSize = 1 << 12; // 4 kB
+
     void setup();
     void ready();
-
-#ifdef F_VERBOSE
-    void handle();
-#endif
 
     const std::vector<ExtensionModule *> &getAll() const;
 

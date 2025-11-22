@@ -4,7 +4,6 @@
 
 #include <HTTPClient.h>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/OtaExtension.h"
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
@@ -25,43 +24,16 @@ void OtaExtension::setup()
     ArduinoOTA.setHostname(HOSTNAME);
     ArduinoOTA.setMdnsEnabled(false);
 
-#ifdef OTA_KEY_HASH
-    ArduinoOTA.setPasswordHash(OTA_KEY_HASH);
-#elif defined(OTA_KEY)
-    ArduinoOTA.setPassword(OTA_KEY);
+#ifdef OTA_KEY
+    ArduinoOTA.setPasswordHash(OTA_KEY);
 #else
-    WebServer.http->on("/api/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
-#endif // OTA_KEY_HASH
-
-#ifdef F_INFO
-    Update.onProgress(&onProgress);
-#endif // F_INFO
+    WebServer.http->on("/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
+#endif // OTA_KEY
 
     ArduinoOTA.begin();
     ArduinoOTA.onStart(&onStart);
     ArduinoOTA.onError(&onError);
     ArduinoOTA.onEnd(&onEnd);
-
-    JsonDocument doc;
-#ifdef BOARD_BUILD__FILESYSTEM
-    doc["filesystem"] = BOARD_BUILD__FILESYSTEM;
-#endif // BOARD_BUILD__FILESYSTEM
-    doc["platformio.ini"]["upload_protocol"] = "espota";
-    doc["platformio.ini"]["upload_port"] = Connectivity.domain;
-#if defined(OTA_KEY) || defined(OTA_KEY_HASH)
-    doc["platformio.ini"]["upload_flags"] = "--auth=REDACTED";
-#endif // defined(OTA_KEY_HASH) || defined(OTA_KEY)
-
-#if EXTENSION_BUILD
-    (*Build->config)[Config::pio]["upload_protocol"] = "espota";
-#ifdef OTA_KEY
-    (*Build->config)[Config::env][__STRING(OTA_KEY)] = "REDACTED";
-#elif defined(OTA_KEY_HASH)
-    (*Build->config)[Config::h][__STRING(OTA_KEY_HASH)] = "REDACTED";
-#endif // OTA_KEY
-#endif // EXTENSION_BUILD
-
-    Device.transmit(doc, name);
 }
 
 void OtaExtension::handle()
@@ -71,58 +43,39 @@ void OtaExtension::handle()
 
 void OtaExtension::onStart()
 {
-    Modes.set(false, Ota->name);
-#ifdef F_INFO
-    Serial.printf("%s: updating\n", Ota->name);
-#endif
-    Display.clear();
+    ESP_LOGI(Ota->name, "updating");
+    Modes.setActive(false);
+    Display.clearFrame();
     TextHandler("U", FontLarge).draw();
     Display.flush();
-    Display.setPower(true);
-    timerAlarmWrite(Display.timer, 1'000'000 / (1 << 8), true); // 1 fps
+    Display.setPower(true, Ota->name);
+    timerWrite(Display.timer, 1'000'000 / (1 << 8)); // 1 fps
 }
 
 void OtaExtension::onEnd()
 {
-#ifdef F_INFO
-    Serial.printf("%s: complete\n", Ota->name);
-#endif
-    Device.power(true);
+    ESP_LOGI(Ota->name, "complete");
+    Device.setPower(true, Ota->name);
 }
 
 void OtaExtension::onError(ota_error_t error)
 {
-#ifdef F_INFO
-    Serial.printf("%s: %s\n", Ota->name, Update.errorString());
-#endif
-    Device.power(true);
+    ESP_LOGE(Ota->name, "%s", Update.errorString());
+    Device.setPower(true, Ota->name);
 }
 
-#ifdef F_INFO
-void OtaExtension::onProgress(size_t index, size_t len)
-{
-    Serial.printf("%s: writing @ 0x%X\n", Ota->name, index);
-}
-#endif // F_INFO
-
-#if !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
+#ifndef OTA_KEY
 void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
 {
     if (!index)
     {
         onStart();
     }
-#ifdef BOARD_BUILD__FILESYSTEM
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf(BOARD_BUILD__FILESYSTEM) >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
-#else
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("spiffs") >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
-#endif // BOARD_BUILD__FILESYSTEM
+    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
     {
-#ifdef F_INFO
-        Serial.printf("%s: %s\n", Ota->name, Update.errorString());
-#endif
+        ESP_LOGE(Ota->name, "%s", Update.errorString());
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
-        Device.power(true);
+        Device.setPower(true, Ota->name);
     }
     else if (final)
     {
@@ -130,6 +83,6 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
         onEnd();
     }
 }
-#endif // !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
+#endif // OTA_KEY
 
 #endif // EXTENSION_OTA

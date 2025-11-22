@@ -1,40 +1,28 @@
 #include "config/constants.h"
 
-#if MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_YR
 
 #include <HTTPClient.h>
+#include <NetworkClientSecure.h>
 
-#include "extensions/BuildExtension.h"
 #include "modes/YrMode.h"
 #include "services/ConnectivityService.h"
 
-#if EXTENSION_BUILD && defined(YR_PARAMETERS)
-void YrMode::setup()
-{
-    (*Build->config)[Config::h][__STRING(YR_PARAMETERS)] = YR_PARAMETERS;
-}
-#endif // EXTENSION_BUILD && defined(YR_PARAMETERS)
-
 void YrMode::wake()
 {
-#ifdef F_INFO
     if (urls.empty())
     {
-        Serial.printf("%s: unable to fetch weather\n", name);
+        ESP_LOGW(name, "unable to fetch weather");
     }
     else
     {
-        lastMillis = 0;
+        lastMillis = millis() - interval;
     }
-#else
-    lastMillis = 0;
-#endif // F_INFO
 }
 
 void YrMode::handle()
 {
-    // Yr data resolution: down to 5 minutes (depending on location)
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 300'000 || lastMillis == 0))
+    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -43,27 +31,32 @@ void YrMode::handle()
 void YrMode::update()
 {
     lastMillis = millis();
+    NetworkClientSecure client;
+    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
-
-    http.begin(urls.back());
+    http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
-#ifdef F_DEBUG
-    Serial.printf("%s: %s\n", name, urls.back());
-#endif
 
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
+        NetworkClient &stream = http.getStream();
+        const int contentLength = http.getSize();
+        const unsigned long _lastMillis = millis();
+        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        {
+            vTaskDelay(1);
+        }
+        JsonDocument filter;
+        filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"] = true;
+        filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, http.getString()) || !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() || !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) || !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() || !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = 0;
-#ifdef F_DEBUG
-            Serial.printf("%s: unprocessable data\n", name);
-#endif
+            lastMillis = millis() - interval + (1 << 14);
+            ESP_LOGD(name, "unprocessable data");
             return;
         }
         WeatherHandler weather = WeatherHandler();
@@ -71,17 +64,19 @@ void YrMode::update()
         weather.parse(doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].as<std::string>(), codesets);
         weather.draw();
     }
-    else if (code < 0 || (code >= 400 && code < 500))
+    else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = 0;
-#ifdef F_INFO
+        lastMillis = millis() - interval + (1 << 12);
         if (urls.empty())
         {
-            Serial.printf("%s: unable to fetch weather\n", name);
+            ESP_LOGE(name, "unable to fetch weather");
         }
-#endif
+    }
+    else if (code < 0)
+    {
+        lastMillis = millis() - interval + (1 << 15);
     }
 }
 
-#endif // MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_YR

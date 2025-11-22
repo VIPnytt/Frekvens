@@ -14,6 +14,10 @@ void BinaryClockMode::handle()
 {
     if (getLocalTime(&local))
     {
+        if (pending)
+        {
+            Display.clearFrame();
+        }
         if (second != local.tm_sec || pending)
         {
             second = local.tm_sec;

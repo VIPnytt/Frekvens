@@ -19,29 +19,29 @@ void CountdownMode::setup()
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
-        const std::string id = std::string(name).append("_target");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"target\":\"{{value}}\"}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::entity_category] = "config";
-        component[Abbreviations::icon] = "mdi:timer-sand-full";
-        component[Abbreviations::name] = name;
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::pattern] = R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)";
-        component[Abbreviations::platform] = "text";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.target}}";
+        const std::string id = std::string(name).append("_timestamp");
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"timestamp\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:timer-sand-full";
+        component[HomeAssistantAbbreviations::name] = name;
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::pattern] = R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)";
+        component[HomeAssistantAbbreviations::platform] = "text";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.timestamp}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
 
     Preferences Storage;
     Storage.begin(name, true);
-    if (Storage.isKey("target"))
+    if (Storage.isKey("epoch"))
     {
-        const int64_t epoch = Storage.getLong64("target");
+        const int64_t _epoch = Storage.getLong64("epoch");
         Storage.end();
-        target = std::chrono::system_clock::time_point{std::chrono::seconds{epoch}};
+        epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
         transmit();
     }
     else
@@ -58,39 +58,27 @@ void CountdownMode::wake()
 void CountdownMode::handle()
 {
     const std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-    const auto hours = std::chrono::duration_cast<std::chrono::hours>(target - now);
-    const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(target - now - hours);
-    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(target - now - hours - minutes);
-    if (hours.count() > 99)
-    {
-        _upper = 99;
-        _lower = 99;
-    }
-    if (hours.count() > 0)
-    {
-        _upper = hours.count() % 100;
-        _lower = minutes.count();
-    }
-    else
-    {
-        _upper = minutes.count();
-        _lower = seconds.count();
-    }
+    const auto hours = std::chrono::duration_cast<std::chrono::hours>(epoch - now);
+    const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(epoch - now - hours);
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(epoch - now - hours - minutes);
+    const uint8_t
+        _upper = hours.count() > 99 ? 99 : (hours.count() > 0 ? hours.count() % 100 : minutes.count()),
+        _lower = hours.count() > 99 ? 99 : (hours.count() > 0 ? minutes.count() : seconds.count());
     if (_lower != lower || _upper != upper)
     {
         upper = _upper;
         lower = _lower;
         if (seconds.count() >= 0 && minutes.count() >= 0 && hours.count() >= 0)
         {
-            Display.clear();
-            TextHandler _tl = TextHandler(String(upper / 10), FontMedium);
-            _tl.draw(COLUMNS / 2 - 1 - _tl.getWidth(), 0);
-            TextHandler _tr = TextHandler(String(upper % 10), FontMedium);
-            _tr.draw(COLUMNS / 2 + 1, 0);
-            TextHandler _bl = TextHandler(String(lower / 10), FontMedium);
-            _bl.draw(COLUMNS / 2 - 1 - _bl.getWidth(), ROWS - _bl.getHeight());
-            TextHandler _br = TextHandler(String(lower % 10), FontMedium);
-            _br.draw(COLUMNS / 2 + 1, ROWS - _br.getHeight());
+            Display.clearFrame();
+            TextHandler _tl = TextHandler(std::to_string(upper / 10), FontMedium);
+            _tl.draw(GRID_COLUMNS / 2 - 1 - _tl.getWidth(), 0);
+            TextHandler _tr = TextHandler(std::to_string(upper % 10), FontMedium);
+            _tr.draw(GRID_COLUMNS / 2 + 1, 0);
+            TextHandler _bl = TextHandler(std::to_string(lower / 10), FontMedium);
+            _bl.draw(GRID_COLUMNS / 2 - 1 - _bl.getWidth(), GRID_ROWS - _bl.getHeight());
+            TextHandler _br = TextHandler(std::to_string(lower % 10), FontMedium);
+            _br.draw(GRID_COLUMNS / 2 + 1, GRID_ROWS - _br.getHeight());
             if (seconds.count() == 0 && minutes.count() == 0 && hours.count() == 0)
             {
                 done = true;
@@ -101,37 +89,37 @@ void CountdownMode::handle()
         }
         else if (done)
         {
-            Display.invert();
+            Display.invertFrame();
         }
     }
 }
 
 void CountdownMode::transmit()
 {
-    time_t timer = std::chrono::system_clock::to_time_t(target);
+    time_t timer = std::chrono::system_clock::to_time_t(epoch);
     tm local = *std::localtime(&timer);
     std::ostringstream iso8601;
     iso8601 << std::put_time(&local, "%Y-%m-%dT%H:%M:%S");
     iso8601.str();
 
     JsonDocument doc;
-    doc["target"] = iso8601.str();
+    doc["timestamp"] = iso8601.str();
     Device.transmit(doc, name);
 }
 
-void CountdownMode::receiverHook(const JsonDocument doc)
+void CountdownMode::receiverHook(const JsonDocument doc, const char *const source)
 {
-    if (doc["seconds"].is<uint32_t>())
+    if (doc["time"].is<uint32_t>())
     {
-        target = std::chrono::system_clock::now() + std::chrono::seconds(doc["seconds"].as<uint32_t>());
+        epoch = std::chrono::system_clock::now() + std::chrono::seconds(doc["time"].as<uint32_t>());
         save();
     }
-    else if (doc["target"].is<const char *>())
+    else if (doc["timestamp"].is<const char *>())
     {
         tm local;
-        strptime(doc["target"].as<const char *>(), "%FT%T", &local);
+        strptime(doc["timestamp"].as<const char *>(), "%FT%T", &local);
         local.tm_isdst = -1;
-        target = std::chrono::system_clock::from_time_t(mktime(&local));
+        epoch = std::chrono::system_clock::from_time_t(mktime(&local));
         save();
     }
 }
@@ -140,7 +128,7 @@ void CountdownMode::save()
 {
     Preferences Storage;
     Storage.begin(name);
-    Storage.putLong64("target", std::chrono::duration_cast<std::chrono::seconds>(target.time_since_epoch()).count());
+    Storage.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
     Storage.end();
     transmit();
 }

@@ -16,9 +16,7 @@ void WeatherHandler::parse(const std::string code, const std::vector<Codeset> co
             return;
         }
     }
-#ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %s\n", _name.data(), code.c_str());
-#endif
+    ESP_LOGD(_name.data(), "unknown condition code %s", code.c_str());
 }
 
 void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codesets)
@@ -31,9 +29,7 @@ void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codes
             return;
         }
     }
-#ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %d\n", _name.data(), code);
-#endif
+    ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
 void WeatherHandler::parse(const uint16_t code, const std::vector<Codeset16> codesets)
@@ -46,9 +42,7 @@ void WeatherHandler::parse(const uint16_t code, const std::vector<Codeset16> cod
             return;
         }
     }
-#ifdef F_VERBOSE
-    Serial.printf("%s: unknown condition code %d\n", _name.data(), code);
-#endif
+    ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
 void WeatherHandler::setSign(Conditions condition)
@@ -56,11 +50,11 @@ void WeatherHandler::setSign(Conditions condition)
     switch (condition)
     {
     case Conditions::CLEAR:
-#if CELL_WIDTH == CELL_HEIGHT
-        sign = conditionClear; // Square
+#if PITCH_HORIZONTAL == PITCH_VERTICAL
+        sign = conditionClear;
 #else
-        sign = Display.getCellRatio() > 1 ? conditionClearTall : conditionClearWide; // Rectangular
-#endif
+        sign = Display.getRatio() > 1 ? conditionClearTall : conditionClearWide;
+#endif // PITCH_HORIZONTAL == PITCH_VERTICAL
         return;
     case Conditions::CLOUDY:
         sign = conditionCloudy;
@@ -91,14 +85,14 @@ void WeatherHandler::setSign(Conditions condition)
 
 void WeatherHandler::draw()
 {
-    TextHandler text = TextHandler((String)temperature + "°", FontMini);
+    TextHandler text = TextHandler(std::to_string(temperature) + "°", FontMini);
     BitmapHandler bitmap = BitmapHandler(sign);
 
     const uint8_t
         textHeight = text.getHeight(),
-        marginsY = max(0, ROWS - bitmap.getHeight() - textHeight) / 3;
+        marginsY = max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
 
-    Display.clear();
-    bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, marginsY);
-    text.draw((COLUMNS - text.getWidth()) / 2, ROWS - marginsY - textHeight);
+    Display.clearFrame();
+    bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
+    text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
 }

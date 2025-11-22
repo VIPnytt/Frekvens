@@ -12,11 +12,11 @@ private:
     unsigned long lastMillis = 0;
 
     uint8_t
-        brightness,
-        maxRadius,
-        radius,
-        rocketX,
-        rocketY,
+        brightness = UINT8_MAX,
+        maxRadius = 1,
+        radius = 0,
+        rocketX = 0,
+        rocketY = GRID_ROWS,
         stage = 0;
 
     void pad();
@@ -25,7 +25,7 @@ private:
     void fading();
 
 public:
-    FireworkMode() : ModeModule("Fireworks") {};
+    FireworkMode() : ModeModule("Firework") {};
 
     void handle() override;
 };

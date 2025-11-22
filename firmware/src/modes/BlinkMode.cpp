@@ -9,13 +9,13 @@
 void BlinkMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 10) && Microphone->play())
+    if (millis() - lastMillis > (1 << 10) && Microphone->isPlay())
 #else
     if (millis() - lastMillis > (1 << 10))
-#endif
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        Display.clear(Display.getPixel(0, 0) ? 0 : UINT8_MAX);
+        Display.clearFrame(Display.getPixel(0, 0) ? 0 : UINT8_MAX);
     }
 }
 

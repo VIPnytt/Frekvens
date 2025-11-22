@@ -8,11 +8,9 @@
 class WebServerService : public ServiceModule
 {
 private:
-    static void onOptionsCanonical(AsyncWebServerRequest *request);
-
-#if EXTENSION_WEBAPP || defined(F_VERBOSE)
+#if EXTENSION_WEBAPP
     static void onNotFound(AsyncWebServerRequest *request);
-#endif // EXTENSION_WEBAPP || defined(F_VERBOSE)
+#endif
 
 public:
     WebServerService() : ServiceModule("WebServer") {};

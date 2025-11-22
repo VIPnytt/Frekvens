@@ -12,7 +12,7 @@ private:
     bool pending = false;
 
     void update();
-    void set(const char *const where, const int16_t temperature);
+    void setTemperature(const char *const where, const int16_t temperature);
     void transmit();
 
 public:
@@ -21,7 +21,7 @@ public:
     void setup() override;
     void wake() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_HOMETHERMOMETER

@@ -1,15 +1,15 @@
 # 🔗 Extra
 
-> Optional tools, scripts, and resources that serve as non-essential, supplemental, or auxiliary content.
+Optional tools, scripts, and resources that serve as non-essential, supplemental, or auxiliary content.
 
-## 🏠 ESPHome
+## 💡 IKEA Frekvens LED spotlight
 
-Side-projects, primarily for other devices in the [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad) collections.
+Turn the spotlight into a fully customizable smart-device using ESPHome.
 
-[Browse ESPHome configurations](https://github.com/VIPnytt/Frekvens/tree/main/extra/ESPHome)
+[View instructions](https://github.com/VIPnytt/Frekvens/tree/main/extra/IKEA-Frekvens-LED-spotlight)
 
 ## 🐍 Python
 
-Utilities that are not part of the core functionality but may be useful to advanced users or contributors.
+Utilities that are not part of the core functionality but may be useful to contributors and developers.
 
 [View Python utilities](https://github.com/VIPnytt/Frekvens/tree/main/extra/Python)

@@ -9,24 +9,24 @@
 void PixelSequenceMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > INT8_MAX && Microphone->play())
+    if (millis() - lastMillis > INT8_MAX && Microphone->isPlay())
 #else
     if (millis() - lastMillis > INT8_MAX)
-#endif
+#endif // EXTENSION_MICROPHONE
     {
-        for (uint16_t i = 0; i < COLUMNS * ROWS; ++i)
+        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
         {
             if (pixelOrder[i] == address)
             {
-                Display.setPixel(i % COLUMNS, i / ROWS, brightness);
+                Display.setPixel(i % GRID_COLUMNS, i / GRID_ROWS, lit ? UINT8_MAX : 0);
                 break;
             }
         }
         ++address;
-        if (address >= COLUMNS * ROWS)
+        if (address >= GRID_COLUMNS * GRID_ROWS)
         {
             address = 0;
-            brightness = brightness ? 0 : UINT8_MAX;
+            lit = !lit;
         }
         lastMillis = millis();
     }

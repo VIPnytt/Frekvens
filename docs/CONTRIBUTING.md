@@ -79,7 +79,8 @@ When collecting information:
 
 ### Submitting a Bug Report
 
-> **Important:** Do not report security vulnerabilities publicly. Submit them via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new).
+> [!CAUTION]
+> Do not report security vulnerabilities publicly. Submit them via GitHub [Security Advisory](https://github.com/VIPnytt/Frekvens/security/advisories/new).
 
 To report a bug:
 
@@ -107,6 +108,7 @@ We welcome ideas to improve the project, whether they involve new features or sm
 - Search existing [issues](https://github.com/VIPnytt/Frekvens/issues).
 - Consider whether the suggestion aligns with the project’s goals.
 
+> [!NOTE]
 > For highly specialized features, consider developing an external plugin or fork.
 
 ### Making a Suggestion

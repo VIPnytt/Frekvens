@@ -14,7 +14,7 @@ private:
     bool pending = false;
 
     uint8_t
-        active,
+        active = 0,
         hour,
         minute;
 

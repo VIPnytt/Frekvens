@@ -34,11 +34,11 @@ void SignalExtension::handle()
     {
         if (signals.size())
         {
-            Modes.set(false, name);
+            Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
 
-            Display.clear();
+            Display.clearFrame();
             BitmapHandler(signals.front()).draw();
             signals.erase(signals.begin());
             lastMillis = millis();
@@ -50,7 +50,7 @@ void SignalExtension::handle()
         else if (active)
         {
             Display.setFrame(frame);
-            Modes.set(true, name);
+            Modes.setActive(true);
             active = false;
         }
     }
@@ -76,7 +76,7 @@ void SignalExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void SignalExtension::receiverHook(const JsonDocument doc)
+void SignalExtension::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Duration
     if (doc["duration"].is<uint8_t>())
@@ -103,9 +103,7 @@ void SignalExtension::receiverHook(const JsonDocument doc)
             }
         }
         signals.push_back(sign);
-#ifdef F_DEBUG
-        Serial.printf("%s: received\n", name);
-#endif
+        ESP_LOGD(source, "received");
     }
 }
 

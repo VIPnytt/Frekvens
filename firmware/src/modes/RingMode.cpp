@@ -10,16 +10,16 @@
 void RingMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > INT8_MAX && Microphone->play())
+    if (millis() - lastMillis > INT8_MAX && Microphone->isPlay())
 #else
     if (millis() - lastMillis > INT8_MAX)
-#endif
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
 
-        Display.clear();
+        Display.clearFrame();
         BitmapHandler bitmap = BitmapHandler(ring[frame]);
-        bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, (ROWS - bitmap.getHeight()) / 2);
+        bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, (GRID_ROWS - bitmap.getHeight()) / 2);
         direction ? frame++ : frame--;
         if (frame <= 0 || frame >= ring.size() - 1)
         {

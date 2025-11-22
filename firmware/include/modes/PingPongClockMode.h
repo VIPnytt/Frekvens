@@ -11,11 +11,11 @@
 class PingPongClockMode : public ModeModule
 {
 private:
-    static constexpr float speed = 6e-4 * COLUMNS;
+    static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
     bool pending = false;
 
-    double
+    float
         xDec,
         yDec;
 
@@ -28,11 +28,11 @@ private:
     uint8_t
         hour,
         minute,
-        targetY,
-        x,
-        y;
+        targetY = GRID_ROWS / 2,
+        x = GRID_COLUMNS - 2,
+        y = GRID_ROWS / 2;
 
-    uint16_t deg;
+    uint16_t deg = 180;
 
     unsigned long lastMillis = 0;
 

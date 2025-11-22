@@ -20,7 +20,7 @@ private:
         bool direction = true;
     };
 
-    Star stars[COLUMNS * ROWS / 15];
+    Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
 
 public:
     StarsMode() : ModeModule("Stars") {};

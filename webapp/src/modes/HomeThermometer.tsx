@@ -1,22 +1,19 @@
 import { mdiHomeThermometer } from '@mdi/js';
 import { Component, createSignal } from 'solid-js';
 
-import { Center } from '../components/Center';
+import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from '../config/constants';
+import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from '../config/modules';
 import { name as ExtensionHomeAssistantName } from '../extensions/HomeAssistant';
-import { name as ExtensionMqttName } from '../extensions/Mqtt';
-import { name as ExtensionRestfulName } from '../extensions/Restful';
-import { name as ExtensionWebSocketName } from '../extensions/WebSocket';
-import { ConnectivityHostname } from '../services/Connectivity';
-import { ExtensionsList } from '../services/Extensions';
-import { name as ModesName } from '../services/Modes';
+import { MqttTopic, name as ExtensionMqttName } from '../extensions/Mqtt';
+import { RestfulUrl, name as ExtensionRestfulName } from '../extensions/Restful';
+import { WebSocketUrl, name as ExtensionWebSocketName } from '../extensions/WebSocket';
+import { MainComponent as ModesMainComponent, name as ModesName } from '../services/Modes';
 
 export const name = 'Home thermometer';
 
-const [getIndoor, setIndoor] = createSignal<number>(21);
-const [getOutdoor, setOutdoor] = createSignal<number>(9);
+const [getIndoor, setIndoor] = createSignal<number>(0);
+const [getOutdoor, setOutdoor] = createSignal<number>(0);
 
 export const receiver = (json: any) => {
     json[name]?.indoor !== undefined && setIndoor(json[name].indoor);
@@ -24,27 +21,17 @@ export const receiver = (json: any) => {
 };
 
 export const Main: Component = () => (
-    <Center>
-        <h2 class="text-4xl">
-            <Icon
-                path={mdiHomeThermometer}
-            />
-        </h2>
-        <a href={`#/${ModesName.toLowerCase()}/${name.toLowerCase().replace(/\s+/g, '-')}`}>
-            <p class="text-xl mt-2 text-gray-300">
-                {name}
-            </p>
-            <p class="text-sm mt-2 text-gray-300">
-                Smart-home integration
-            </p>
-        </a>
-    </Center>
+    <ModesMainComponent
+        icon={mdiHomeThermometer}
+        internal={true}
+        text="Smart-home integration"
+    />
 );
 
 export const Link: Component = () => (
     <Tooltip text="Smart-home thermometer">
         <a
-            class="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium min-h-[48px]"
+            class="link"
             href={`#/${ModesName.toLowerCase()}/${name.toLowerCase().replace(/\s+/g, '-')}`}
         >
             <Icon
@@ -61,76 +48,78 @@ export const MainSecondary: Component = () => {
     const payloadAlt = `{"${name}": ${payload}}`;
 
     return (
-        <div class="space-y-3 p-5">
-            <h3 class="text-4xl text-white tracking-wide">{name}</h3>
-            <div class="bg-white p-6 rounded-md">
-                <div class="space-y-2">
-                    <p class="text-sm text-gray-700 mb-3">
-                        <a
-                            href={`${REPOSITORY}/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, '-')}`}
-                            target="_blank"
-                        >
-                            Get started by configuring your <span class="italic">smart-home system</span> to send temperature readings.
-                        </a>
-                    </p>
-                    {
-                        EXTENSION_HOMEASSISTANT && ExtensionsList().includes(ExtensionHomeAssistantName) && (
-                            <>
-                                <div class="border-t border-gray-200" />
-                                <h3 class="font-semibold text-gray-700 tracking-wide">
-                                    {ExtensionHomeAssistantName}
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-700">Automation:</span> <span class="whitespace-nowrap">Set up via the user-interface.</span>
-                                </p>
-                            </>
-                        )
-                    }
-                    {
-                        EXTENSION_MQTT && ExtensionsList().includes(ExtensionMqttName) && (
-                            <>
-                                <div class="border-t border-gray-200" />
-                                <h3 class="font-semibold text-gray-700 tracking-wide">
-                                    {ExtensionMqttName}
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-700">Topic:</span> <span class="font-mono">frekvens/{ConnectivityHostname()}/{name}/set</span><br />
-                                    <span class="font-medium text-gray-700">Message:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payload}</span>
-                                </p>
-                            </>
-                        )
-                    }
-                    {
-                        EXTENSION_RESTFUL && (
-                            <>
-                                <div class="border-t border-gray-200" />
-                                <h3 class="font-semibold text-gray-700 tracking-wide">
-                                    {ExtensionRestfulName}
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    <span class="font-medium text-gray-700">Method:</span> <span class="font-mono">PATCH</span><br />
-                                    <span class="font-medium text-gray-700">URL:</span> <span class="font-mono">{location.protocol}//{location.hostname}/api/{encodeURIComponent(name)}</span><br />
-                                    <span class="font-medium text-gray-700">Body:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payload}</span>
-                                </p>
-                            </>
-                        )
-                    }
-                    {
-                        <>
-                            <div class="border-t border-gray-200" />
-                            <h3 class="font-semibold text-gray-700 tracking-wide">
-                                {ExtensionWebSocketName}
-                            </h3>
-                            <p class="text-sm text-gray-500">
-                                <span class="font-medium text-gray-700">URL:</span> <span class="font-mono">ws://{location.hostname}/ws</span><br />
-                                <span class="font-medium text-gray-700">Message:</span> <span class="font-mono text-gray-500 whitespace-nowrap">{payloadAlt}</span>
-                            </p>
-                        </>
-                    }
+        <div class="main">
+            <div class="space-y-3 p-5">
+                <h2>
+                    {name}
+                </h2>
+                <div class="box">
+                    <div class="space-y-3">
+                        <div class="text-sm mb-3">
+                            <a
+                                href={`https://github.com/VIPnytt/Frekvens/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, '-')}`}
+                                target="_blank"
+                            >
+                                Get started by configuring your <span class="italic">smart-home system</span> to send temperature readings.
+                            </a>
+                        </div>
+                        {
+                            EXTENSION_HOMEASSISTANT && (
+                                <>
+                                    <div class="border-t" />
+                                    <h3>
+                                        {ExtensionHomeAssistantName}
+                                    </h3>
+                                    <div class="text-sm">
+                                        <span class="font-medium ">Automation:</span> <span class="text-content-alt-light dark:text-content-alt-dark">Set up in the user-interface.</span>
+                                    </div>
+                                </>
+                            )
+                        }
+                        {
+                            EXTENSION_MQTT && (
+                                <>
+                                    <div class="border-t" />
+                                    <h3>
+                                        {ExtensionMqttName}
+                                    </h3>
+                                    <div class="text-sm">
+                                        <span class="font-medium ">Topic:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{MqttTopic}/set</span>
+                                        <br />
+                                        <span class="font-medium ">Message:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payload}</span>
+                                    </div>
+                                </>
+                            )
+                        }
+                        {
+                            EXTENSION_RESTFUL && (
+                                <>
+                                    <div class="border-t" />
+                                    <h3>
+                                        {ExtensionRestfulName}
+                                    </h3>
+                                    <div class="text-sm">
+                                        <span class="font-medium ">Method:</span> <span class="font-mono">PATCH</span>
+                                        <br />
+                                        <span class="font-medium ">URL:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono">{RestfulUrl + encodeURIComponent(name)}</span>
+                                        <br />
+                                        <span class="font-medium ">Body:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payload}</span>
+                                    </div>
+                                </>
+                            )
+                        }
+                        <div class="border-t" />
+                        <h3>
+                            {ExtensionWebSocketName}
+                        </h3>
+                        <div class="text-sm">
+                            <span class="font-medium ">URL:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono">{WebSocketUrl}</span>
+                            <br />
+                            <span class="font-medium ">Message:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payloadAlt}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
-
-export default Main;

@@ -13,7 +13,7 @@ class ServerSentEventsExtension : public ExtensionModule
 public:
     ServerSentEventsExtension();
 
-    AsyncEventSource *sse = new AsyncEventSource("/api/events");
+    AsyncEventSource *client = new AsyncEventSource("/server-sent%20events");
 
     void ready() override;
 

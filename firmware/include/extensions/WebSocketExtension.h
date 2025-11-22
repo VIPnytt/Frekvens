@@ -16,7 +16,7 @@ private:
 public:
     WebSocketExtension();
 
-    AsyncWebSocket *ws = new AsyncWebSocket("/ws");
+    AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 
     void ready() override;
     void handle() override;

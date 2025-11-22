@@ -22,13 +22,13 @@ void AlexaExtension::ready()
     fauxmo.addDevice(NAME);
     fauxmo.onSetState(&onSetState);
 
-    WebServer.http->on("/api", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, nullptr, &onSetApi);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights", WebRequestMethod::HTTP_GET, &onGetApi);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1", WebRequestMethod::HTTP_GET, &onGetApi);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state", WebRequestMethod::HTTP_PUT, [](AsyncWebServerRequest *request) {}, nullptr, &onSetApi);
-    WebServer.http->on("/description.xml", WebRequestMethod::HTTP_GET, &onGetApi);
+    WebServer.http->on("/api", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, nullptr, &onSet);
+    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights", WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1", WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state", WebRequestMethod::HTTP_PUT, [](AsyncWebServerRequest *request) {}, nullptr, &onSet);
+    WebServer.http->on("/description.xml", WebRequestMethod::HTTP_GET, &onGet);
 
-    fauxmo.setState(NAME, Display.getPower(), static_cast<unsigned char>(Display.getGlobalBrightness()));
+    fauxmo.setState(NAME, Display.getPower(), static_cast<unsigned char>(Display.getBrightness()));
     fauxmo.enable(true);
 }
 
@@ -41,15 +41,12 @@ void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, 
 {
     if (!strcmp(deviceName, NAME))
     {
-#ifdef F_INFO
-        Serial.printf(state == Display.getPower() ? "%s: brightness\n" : "%s: power\n", Alexa->name);
-#endif
-        Display.setGlobalBrightness(static_cast<uint8_t>(value));
-        Display.setPower(state);
+        Display.setBrightness(static_cast<uint8_t>(value), Alexa->name);
+        Display.setPower(state, Alexa->name);
     }
 }
 
-void AlexaExtension::onGetApi(AsyncWebServerRequest *request)
+void AlexaExtension::onGet(AsyncWebServerRequest *request)
 {
     if (!Alexa->fauxmo.process(request->client(), true, request->url(), ""))
     {
@@ -57,7 +54,7 @@ void AlexaExtension::onGetApi(AsyncWebServerRequest *request)
     }
 }
 
-void AlexaExtension::onSetApi(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
     if (!Alexa->fauxmo.process(request->client(), false, request->url(), (char *)data))
     {
@@ -71,7 +68,7 @@ void AlexaExtension::transmitterHook(const JsonDocument &doc, const char *const 
     // Display: Power
     if (!strcmp(source, Display.name) && (doc["brightness"].is<uint8_t>() || doc["power"].is<bool>()))
     {
-        fauxmo.setState(NAME, doc["power"].is<bool>() ? doc["power"].as<bool>() : Display.getPower(), static_cast<unsigned char>(doc["brightness"].is<uint8_t>() ? doc["brightness"].as<uint8_t>() : Display.getGlobalBrightness()));
+        fauxmo.setState(NAME, doc["power"].is<bool>() ? doc["power"].as<bool>() : Display.getPower(), static_cast<unsigned char>(doc["brightness"].is<uint8_t>() ? doc["brightness"].as<uint8_t>() : Display.getBrightness()));
     }
 }
 

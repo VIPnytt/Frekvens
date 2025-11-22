@@ -2,8 +2,6 @@
 
 #include "config/constants.h"
 
-#if !defined(FONT_SMALL) || FONT_SMALL
-
 #include "modules/FontModule.h"
 
 //
@@ -1462,9 +1460,7 @@ private:
 public:
     SmallFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern SmallFont *FontSmall;
-
-#endif // !defined(FONT_SMALL) || FONT_SMALL

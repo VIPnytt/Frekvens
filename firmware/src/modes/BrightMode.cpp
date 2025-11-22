@@ -7,7 +7,7 @@
 
 void BrightMode::wake()
 {
-    Display.clear(UINT8_MAX);
+    Display.clearFrame(UINT8_MAX);
 }
 
 #endif // MODE_BRIGHT

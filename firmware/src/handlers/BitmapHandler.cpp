@@ -26,7 +26,7 @@ BitmapHandler::BitmapHandler(std::vector<uint16_t> bitmap) : bitmap(bitmap)
 
 void BitmapHandler::draw(uint8_t brightness)
 {
-    draw((COLUMNS - width) / 2, (ROWS - height) / 2, brightness);
+    draw((GRID_COLUMNS - width) / 2, (GRID_ROWS - height) / 2, brightness);
 }
 
 void BitmapHandler::draw(uint8_t x, uint8_t y, uint8_t brightness)

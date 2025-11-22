@@ -4,6 +4,8 @@
 
 #if EXTENSION_HOMEASSISTANT
 
+#include <format>
+
 #include "modules/ExtensionModule.h"
 
 class HomeAssistantExtension : public ExtensionModule
@@ -11,11 +13,7 @@ class HomeAssistantExtension : public ExtensionModule
 private:
     bool pending = false;
 
-#ifdef HOMEASSISTANT_TOPIC
-    const std::string discoveryTopic = std::string(HOMEASSISTANT_TOPIC "/device/").append(String(ESP.getEfuseMac(), HEX).c_str()).append("/config");
-#else
-    const std::string discoveryTopic = std::string("homeassistant/device/").append(String(ESP.getEfuseMac(), HEX).c_str()).append("/config");
-#endif // HOMEASSISTANT_TOPIC
+    const std::string discoveryTopic = std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
 
     static constexpr std::string_view
         payloadOff = "{\"power\":false}",
@@ -26,7 +24,7 @@ private:
 public:
     HomeAssistantExtension();
 
-    const std::string uniquePrefix = std::string(String(ESP.getEfuseMac(), HEX).c_str()).append("_");
+    const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 
     JsonDocument *discovery = new JsonDocument();
 
@@ -41,7 +39,7 @@ public:
 
 extern HomeAssistantExtension *HomeAssistant;
 
-namespace Abbreviations
+namespace HomeAssistantAbbreviations
 {
     static constexpr std::string_view
         action_template = "act_tpl",

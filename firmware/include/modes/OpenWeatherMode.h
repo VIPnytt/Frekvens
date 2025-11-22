@@ -2,7 +2,7 @@
 
 #include "config/constants.h"
 
-#if MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_OPENWEATHER
 
 #include <vector>
 
@@ -12,6 +12,8 @@
 class OpenWeatherMode : public ModeModule
 {
 private:
+    static constexpr uint32_t interval = 600'000; // Recommended update interval: 10 minutes
+
     unsigned long lastMillis = 0;
 
     // https://openweathermap.org/api/one-call-3#current
@@ -19,10 +21,16 @@ private:
     std::vector<const char *> urls = {
         "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
         "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
-#ifdef OPENWEATHER_PARAMETERS
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY "&" OPENWEATHER_PARAMETERS,
-        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY "&" OPENWEATHER_PARAMETERS,
-#endif
+#if TEMPERATURE_KELVIN
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=standard&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
+#elif TEMPERATURE_CELSIUS
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=metric&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=metric&appid=" OPENWEATHER_KEY,
+#elif TEMPERATURE_FAHRENHEIT
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=imperial&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=imperial&appid=" OPENWEATHER_KEY,
+#endif // TEMPERATURE_KELVIN
     };
 
     // https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
@@ -62,11 +70,8 @@ private:
 public:
     OpenWeatherMode() : ModeModule("OpenWeather") {};
 
-#if EXTENSION_BUILD
-    void setup() override;
-#endif
     void wake() override;
     void handle() override;
 };
 
-#endif // MODE_OPENWEATHER && defined(LATITUDE) && defined(LONGITUDE) && defined(OPENWEATHER_KEY)
+#endif // MODE_OPENWEATHER

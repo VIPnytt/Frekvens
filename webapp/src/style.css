@@ -1,46 +1,6 @@
-/**
- * Copyright (c) 2025 Jan-Petter Gundersen
- *
- * This file is part of the Frekvens project.
- *
- * Original code by Philip Stapelfeldt, 2022, licensed under the MIT License.
- * Source: https://github.com/ph1p/ikea-led-obegraensad
- *
- * All other code by Jan-Petter Gundersen, 2025, licensed under the MIT License.
- * Source: https://github.com/VIPnytt/Frekvens
- *
- * SPDX-License-Identifier: MIT
- */
-
 @import "tailwindcss";
 
-@layer base {
-    :root {
-        --multiplier: 1.5;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    html,
-    body,
-    #app {
-        @apply h-full w-full m-0 p-0;
-    }
-
-    body {
-        @apply font-sans text-base font-normal bg-[#9b8d82];
-        font-synthesis: none;
-        text-rendering: optimizeLegibility;
-    }
-
-    select {
-        @apply px-2.5 py-2.5 text-base;
-    }
-}
-
-@keyframes toastSlideUp {
+@keyframes toast {
     0% {
         opacity: 0;
         transform: translateY(1rem);
@@ -50,4 +10,145 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@layer base {
+    * {
+        @apply box-border border-contrast-light dark:border-contrast-dark rounded-lg;
+    }
+
+    body {
+        @apply bg-base-light dark:bg-base-dark text-content-light dark:text-content-dark scheme-light dark:scheme-dark duration-150 font-normal font-sans h-full text-base transition-all w-full;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+    }
+
+    button {
+        @apply active:-translate-y-px bg-interactive-light dark:bg-interactive-dark border cursor-pointer border-contrast-light dark:border-contrast-dark hover:enabled:bg-interactive-alt-light dark:hover:enabled:bg-interactive-alt-dark disabled:cursor-not-allowed font-bold leading-6 min-h-12 min-w-12 rounded-lg text-sm tracking-wider uppercase;
+    }
+
+    canvas {
+        @apply h-full self-center touch-none w-full;
+    }
+
+    h1 {
+        @apply text-5xl tracking-wide;
+    }
+
+    h2 {
+        @apply text-4xl tracking-wide;
+    }
+
+    h3 {
+        @apply font-semibold text-sm tracking-wide uppercase;
+    }
+
+    html {
+        @apply h-full w-full;
+    }
+
+    input {
+        @apply accent-highlight-light dark:accent-highlight-dark bg-interactive-light dark:bg-interactive-dark border-contrast-light dark:border-contrast-dark border focus:border-highlight-light dark:focus:border-highlight-dark focus:ring-highlight-light dark:focus:ring-highlight-dark hover:enabled:bg-interactive-alt-light dark:hover:enabled:bg-interactive-alt-dark focus:ring outline-none rounded-lg;
+    }
+
+    input[type="datetime-local"],
+    input[type="file"],
+    input[type="number"],
+    input[type="text"],
+    input[type="password"] {
+        @apply min-h-12 px-3;
+    }
+
+    select {
+        @apply border bg-interactive-light dark:bg-interactive-dark focus:border-highlight-light dark:focus:border-highlight-dark focus:ring-highlight-light dark:focus:ring-highlight-dark hover:enabled:bg-interactive-alt-light dark:hover:enabled:bg-interactive-alt-dark focus:ring min-h-12 outline-none px-3 rounded-lg text-base;
+    }
+
+    .action {
+        @apply hover:bg-interactive-alt-light dark:hover:bg-interactive-alt-dark font-medium gap-3 grid grid-cols-[1fr_--spacing(12)] items-center px-3;
+    }
+
+    .action-activated {
+        @apply bg-neutral-light dark:bg-neutral-dark hover:enabled:bg-negative-alt-light dark:hover:enabled:bg-negative-alt-dark text-interactive-light dark:text-content-dark;
+    }
+
+    .action-deactivated {
+        @apply hover:enabled:bg-positive-alt-light dark:hover:enabled:bg-positive-alt-dark hover:enabled:text-interactive-light dark:enabled:hover:text-content-dark;
+    }
+
+    .action-neutral {
+        @apply hover:enabled:bg-neutral-light dark:hover:enabled:bg-neutral-dark hover:enabled:text-interactive-light dark:enabled:hover:text-content-dark;
+    }
+
+    .action-negative {
+        @apply hover:enabled:bg-negative-alt-light dark:hover:enabled:bg-negative-alt-dark hover:enabled:text-interactive-light dark:enabled:hover:text-content-dark;
+    }
+
+    .action-positive {
+        @apply enabled:bg-positive-light dark:enabled:bg-positive-dark hover:enabled:bg-positive-alt-light dark:hover:enabled:bg-positive-alt-dark enabled:text-interactive-light dark:enabled:text-content-dark;
+    }
+
+    .box {
+        @apply bg-menu-light dark:bg-menu-dark p-6 border;
+    }
+
+    .canvas-action-negative {
+        @apply bg-interactive-light dark:bg-interactive-dark hover:enabled:bg-negative-alt-light dark:hover:enabled:bg-negative-alt-dark hover:enabled:text-interactive-light dark:hover:enabled:text-content-dark;
+    }
+
+    .canvas-action-neutral {
+        @apply bg-interactive-light dark:bg-interactive-dark hover:enabled:bg-neutral-light dark:hover:enabled:bg-neutral-dark hover:enabled:text-interactive-light dark:hover:enabled:text-content-dark;
+    }
+
+    .hr {
+        @apply border-t mx-2 rounded-none;
+    }
+
+    .link {
+        @apply hover:bg-interactive-alt-light dark:hover:bg-interactive-alt-dark font-medium inline-flex items-center h-12 px-3 rounded-lg w-full;
+    }
+
+    .main {
+        @apply flex flex-col h-full items-center justify-center-safe rounded-none;
+    }
+
+    .mode-title {
+        @apply mt-2 text-xl;
+    }
+
+    .mode-subtitle {
+        @apply text-content-alt-light dark:text-content-alt-dark mt-2 text-sm;
+    }
+
+    #webapp {
+        @apply h-full w-full m-0 p-0;
+    }
+}
+
+@theme {
+    --color-base-dark: #151b23;
+    --color-base-light: #ffffff;
+    --color-content-alt-dark: #9198a1;
+    --color-content-alt-light: #59636e;
+    --color-content-dark: #d1e0d7;
+    --color-content-light: #1f2328;
+    --color-contrast-dark: #3d444d;
+    --color-contrast-light: #d1d9e0;
+    --color-highlight-dark: #316dca;
+    --color-highlight-light: #0969da;
+    --color-interactive-alt-dark: #333a45;
+    --color-interactive-alt-light: #f2f3f4;
+    --color-interactive-dark: #2a313c;
+    --color-interactive-light: #ffffff;
+    --color-menu-dark: #212830;
+    --color-menu-light: #f6f8fa;
+    --color-negative-alt-dark: #c93c37;
+    --color-negative-alt-light: #cf222e;
+    --color-negative-dark: #e5534b;
+    --color-negative-light: #d1242f;
+    --color-neutral-dark: #986ee2;
+    --color-neutral-light: #8250df;
+    --color-positive-alt-dark: #3b8640;
+    --color-positive-alt-light: #1c8139;
+    --color-positive-dark: #347d39;
+    --color-positive-light: #1f883d;
 }

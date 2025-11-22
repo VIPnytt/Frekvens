@@ -10,16 +10,16 @@
 void ArrowMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > 150 && Microphone->play())
+    if (millis() - lastMillis > INT8_MAX && Microphone->isPlay())
 #else
-    if (millis() - lastMillis > 150)
-#endif
+    if (millis() - lastMillis > INT8_MAX)
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
 
-        Display.clear();
+        Display.clearFrame();
         BitmapHandler bitmap = BitmapHandler(arrow[index]);
-        bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, ROWS - bitmap.getHeight());
+        bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, GRID_ROWS - bitmap.getHeight());
 
         direction ? ++index : --index;
         if (index <= 0 || index >= arrow.size() - 1)

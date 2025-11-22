@@ -9,7 +9,10 @@
 class MetaballsMode : public ModeModule
 {
 protected:
-    static constexpr float speed = 5e-5 * COLUMNS * ROWS;
+    static constexpr float
+        radius = min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) / PI,
+        radiusSq = radius * radius,
+        speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
 
     static constexpr uint8_t multiplier = 1 << 3;
 
@@ -22,19 +25,14 @@ protected:
             yVelocity;
     };
 
-    float
-        radius,
-        radiusSq;
-
     uint8_t contributions[1 << 8];
 
-    Ball balls[COLUMNS * ROWS / 50];
+    Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)];
 
 public:
     MetaballsMode() : ModeModule("Metaballs") {};
 
     void setup() override;
-    void wake() override;
     void handle() override;
 };
 

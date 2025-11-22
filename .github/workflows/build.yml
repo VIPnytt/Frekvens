@@ -47,71 +47,123 @@ jobs:
 
       - run: |
           cat <<EOL > .env
-          DOMAIN='.home.arpa'
+          EXTENSION_ALEXA='true'
+          EXTENSION_BUTTON='true'
+          EXTENSION_HEAP='true'
+          EXTENSION_HOMEASSISTANT='true'
+          EXTENSION_INFRARED='true'
+          EXTENSION_MESSAGE='true'
+          EXTENSION_MICROPHONE='true'
+          EXTENSION_MQTT='true'
+          EXTENSION_PHOTOCELL='true'
+          EXTENSION_PLAYLIST='true'
+          EXTENSION_RESTFUL='true'
+          EXTENSION_RTC='true'
+          EXTENSION_SERVERSENTEVENTS='true'
+          EXTENSION_SIGNAL='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          FONT_BRAILLE='true'
           HOSTNAME='custom'
+          IKEA_FREKVENS='true'
+          IKEA_OBEGRANSAD='false'
+          MODE_ANIMATION='true'
+          MODE_ARROW='true'
+          MODE_ARTNET='true'
+          MODE_BINARYCLOCK='true'
+          MODE_BINARYEPOCH='true'
+          MODE_BLINDS='true'
+          MODE_BLINK='true'
+          MODE_BOLDCLOCK='true'
+          MODE_BREAKOUTCLOCK='true'
+          MODE_BRIGHT='true'
+          MODE_CIRCLE='true'
+          MODE_COUNTDOWN='true'
+          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
+          MODE_DRAW='true'
+          MODE_E131='true'
+          MODE_EQUALIZER='true'
+          MODE_FIREWORK='true'
+          MODE_FLIES='true'
+          MODE_GAMEOFLIFE='true'
+          MODE_GAMEOFLIFECLOCK='true'
+          MODE_GLITTER='true'
+          MODE_HOMEASSISTANTWEATHER='true'
+          MODE_HOMETHERMOMETER='true'
+          MODE_JAGGEDWAVEFORM='true'
+          MODE_LARGETICKINGCLOCK='true'
+          MODE_LEAFFALL='true'
+          MODE_LINES='true'
+          MODE_METABALLS='true'
+          MODE_NOISE='true'
+          MODE_OPENMETEO='true'
+          MODE_OPENWEATHER='true'
+          MODE_PINGPONG='true'
+          MODE_PINGPONGCLOCK='true'
+          MODE_PIXELSEQUENCE='true'
+          MODE_RAIN='true'
+          MODE_RING='true'
+          MODE_SCAN='true'
+          MODE_SMALLCLOCK='true'
+          MODE_SMALLTICKINGCLOCK='true'
+          MODE_SMOOTHWAVEFORM='true'
+          MODE_SNAKE='true'
+          MODE_SNAKECLOCK='true'
+          MODE_STARS='true'
+          MODE_TICKER='true'
+          MODE_WAVEFORM='true'
+          MODE_WORLDWEATHERONLINE='true'
+          MODE_WTTRIN='true'
+          MODE_YR='true'
           NAME='Custom'
           OTA_KEY='secret'
-          TIME_ZONE_IANA='Etc/Universal'
+          TIME_ZONE='Etc/Universal'
           EOL
 
       - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
-          #define DNS1 "1.1.1.1"
-          #define DNS2 "8.8.8.8"
-          #define DNS3 "9.9.9.9"
-          #define F_VERBOSE
+          #define DNS4 "1.1.1.1"
           #define FRAME_RATE 60
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
           #define HOMEASSISTANT_HOST "homeassistant.local"
-          #define HOMEASSISTANT_KEY "secret"
+          #define HOMEASSISTANT_KEY "redacted"
           #define HOMEASSISTANT_PORT 8123
-          #define HOMEASSISTANT_TOPIC "homeassistant"
-          #define HOMETHERMOMETER_UNIT "°C"
           #define LATITUDE "0.000"
-          #define LOCATION "city"
+          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define MQTT_HOST "mqtt.local"
           #define MQTT_PORT 1883
-          #define MQTT_USER "user"
-          #define MQTT_KEY "secret"
-          #define NTP1 "pool.ntp.org"
-          #define NTP2 "time.nist.gov"
-          #define NTP3 "time.cloudflare.com"
-          #define OPENMETEO_KEY "secret"
-          #define OPENMETEO_PARAMETERS "temperature_unit=celsius"
-          #define OPENWEATHER_KEY "secret"
-          #define OPENWEATHER_PARAMETERS "units=metric"
+          #define MQTT_USER "redacted"
+          #define MQTT_KEY "redacted"
+          #define OPENMETEO_KEY "redacted"
+          #define OPENWEATHER_KEY "redacted"
           #define PIN_CS 1
           #define PIN_CS2 2
           #define PIN_INT 3
           #define PIN_IR 4
           #define PIN_LDR 5
-          #define PIN_MISO 6
-          #define PIN_MISO2 7
-          #define PIN_MOSI 8
-          #define PIN_MOSI2 9
-          #define PIN_OE 10
-          #define PIN_SCL 11
-          #define PIN_SCLK 12
-          #define PIN_SCLK2 13
-          #define PIN_SDA 14
-          #define PIN_SDIO2 15
-          #define PIN_SW1 16
-          #define PIN_SW2 17
+          #define PIN_MIC 6
+          #define PIN_MISO 7
+          #define PIN_MISO2 8
+          #define PIN_MOSI 9
+          #define PIN_MOSI2 10
+          #define PIN_OE 11
+          #define PIN_SCL 12
+          #define PIN_SCLK 13
+          #define PIN_SCLK2 14
+          #define PIN_SDA 15
+          #define PIN_SDIO2 16
+          #define PIN_SW1 17
+          #define PIN_SW2 18
           #define RTC_DS3232
-          #define SPI_FREQUENCY 10000000
-          #define TASK_STACK_EXTENSIONS 8192
-          #define TASK_STACK_MODES 8192
+          #define TEMPERATURE_CELSIUS false
+          #define TEMPERATURE_FAHRENHEIT false
+          #define TEMPERATURE_KELVIN true
           #define WIFI_COUNTRY "01"
-          #define WIFI_KEY "secret"
-          #define WIFI_KEY_HOTSPOT "secret"
-          #define WIFI_SSID "name"
-          #define WIFI_SSID_HOTSPOT "name"
-          #define WORLDWEATHERONLINE_KEY "secret"
-          #define WORLDWEATHERONLINE_PARAMETERS "foo=bar"
-          #define WTTRIN_PARAMETERS "m"
-          #define YR_PARAMETERS "altitude=123"
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
       - run: npm ci
@@ -120,7 +172,7 @@ jobs:
       - run: pio run
 
   esphome:
-    name: ESPHome build
+    name: ESPHome template build
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -128,8 +180,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - run: |
-          cat <<EOL > extra/ESPHome/IKEA-Frekvens-LED-spotlight/secrets.yaml
-          ap_password: "redacted"
+          cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
           api_key: "redacted"
           ota_password: "redacted"
           wifi_password: "redacted"
@@ -138,10 +189,10 @@ jobs:
 
       - uses: esphome/build-action@v7
         with:
-          yaml-file: extra/ESPHome/IKEA-Frekvens-LED-spotlight/esphome.yaml
+          yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
 
   frekvens:
-    name: Frekvens build
+    name: Frekvens basic build
     runs-on: ubuntu-latest
 
     steps:
@@ -168,7 +219,20 @@ jobs:
 
       - run: |
           cat <<EOL > .env
-          ENV_FREKVENS=''
+          EXTENSION_BUTTON='true'
+          EXTENSION_MICROPHONE='true'
+          EXTENSION_OTA='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          HOSTNAME='frekvens'
+          IKEA_FREKVENS='true'
+          MODE_ARROW='true'
+          MODE_BLINDS='true'
+          MODE_EQUALIZER='true'
+          MODE_JAGGEDWAVEFORM='true'
+          MODE_RING='true'
+          MODE_SMOOTHWAVEFORM='true'
+          NAME='Frekvens'
           EOL
 
       - run: |
@@ -181,6 +245,8 @@ jobs:
           #define PIN_SCLK 5
           #define PIN_SW1 6
           #define PIN_SW2 7
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
           EOL
 
       - run: npm ci
@@ -189,7 +255,7 @@ jobs:
       - run: pio run
 
   obegransad:
-    name: Obegränsad build
+    name: Obegränsad basic build
     runs-on: ubuntu-latest
 
     steps:
@@ -216,7 +282,20 @@ jobs:
 
       - run: |
           cat <<EOL > .env
-          ENV_OBEGRANSAD=''
+          EXTENSION_BUTTON='true'
+          EXTENSION_OTA='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          HOSTNAME='obegransad'
+          IKEA_OBEGRANSAD='true'
+          MODE_BRIGHT='true'
+          MODE_CIRCLE='true'
+          MODE_LINES='true'
+          MODE_NOISE='true'
+          MODE_RAIN='true'
+          MODE_SCAN='true'
+          MODE_STARS='true'
+          NAME='Obegränsad'
           EOL
 
       - run: |
@@ -227,6 +306,8 @@ jobs:
           #define PIN_OE 3
           #define PIN_SCLK 4
           #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
           EOL
 
       - run: npm ci

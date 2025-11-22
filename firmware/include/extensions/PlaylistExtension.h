@@ -13,28 +13,31 @@ class PlaylistExtension : public ExtensionModule
 public:
     PlaylistExtension();
 
-    struct Item
+    struct Mode
     {
-        String mode;
+        std::string mode;
         uint16_t duration;
     };
 
     void setup() override;
     void ready() override;
     void handle() override;
-    bool get();
-    void set(bool enable);
+    bool getActive() const;
+    void setActive(bool active, const char *const source);
 
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
     void transmitterHook(const JsonDocument &doc, const char *const source) override;
 
 private:
     bool active = false;
-    std::vector<Item> playlist = {};
-    unsigned long lastMillis = 0;
+
     uint8_t step = 0;
 
-    void load(std::vector<Item> modes);
+    unsigned long lastMillis = 0;
+
+    std::vector<Mode> playlist = {};
+
+    void setPlaylist(std::vector<Mode> modes);
     void transmit();
 };
 

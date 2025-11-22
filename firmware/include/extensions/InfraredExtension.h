@@ -131,11 +131,11 @@ public:
     void ready() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
+    bool getActive();
+    void setActive(bool active, const char *const source);
     void parse();
 
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 };
 
 extern InfraredExtension *Infrared;

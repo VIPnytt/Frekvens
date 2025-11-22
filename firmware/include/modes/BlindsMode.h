@@ -9,7 +9,7 @@
 class BlindsMode : public ModeModule
 {
 protected:
-    static constexpr uint8_t moduloMax = ROWS / 3;
+    static constexpr uint8_t moduloMax = GRID_ROWS / 3;
 
     bool direction = true;
 

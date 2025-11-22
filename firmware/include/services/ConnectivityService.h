@@ -15,53 +15,48 @@ private:
 
     bool
         mDNS = false,
-        pending = false;
+        pending = false,
+        routable = false;
 
-    unsigned long
-        lastMillis = 0,
-        _lastMillis = 0;
-
-    String
-        IPv4,
-        IPv6;
+    unsigned long lastMillis = 0;
 
     std::unique_ptr<DNSServer> dnsServer;
     std::unique_ptr<WiFiMulti> multi;
 
-    static inline bool scanning = false;
-
-    bool vault();
+    void vault();
     void hotspot();
-    void scan();
     void connect(const char *const ssid, const char *const key);
     void transmit();
 #if defined(PIN_SW1) || defined(PIN_SW2)
-    bool buttonCheck();
+    bool buttonCheck() const;
 #endif
-#if defined(DNS1) || defined(DNS2) || defined(DNS3)
+#ifdef DNS4
     void setDns();
 #endif
 
     static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
     static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onIPv4(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onIPv6(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onRoutable();
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 public:
-#ifdef DOMAIN
-    static constexpr std::string_view domain = HOSTNAME DOMAIN;
-#else
-    static constexpr std::string_view domain = HOSTNAME ".local";
-#endif // DOMAIN
     static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
 
     void setup();
     void ready();
     void handle();
-    void disconnect();
 
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 
     static ConnectivityService &getInstance();
 };
 
 extern ConnectivityService &Connectivity;
+
+namespace Certificates
+{
+    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+}

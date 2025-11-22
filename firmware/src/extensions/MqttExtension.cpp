@@ -4,7 +4,6 @@
 
 #include <WiFi.h>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
@@ -30,41 +29,22 @@ void MqttExtension::setup()
 #else
     client.setServer(MQTT_HOST, 1883);
 #endif // MQTT_PORT
-#if defined(MQTT_USER) && defined(MQTT_KEY)
     client.setCredentials(MQTT_USER, MQTT_KEY);
-#endif // defined(MQTT_USER) && defined(MQTT_KEY)
     if (WiFi.isConnected())
     {
         client.connect();
     }
-#if EXTENSION_BUILD
-    (*Build->config)[Config::h][__STRING(MQTT_HOST)] = MQTT_HOST;
-#ifdef MQTT_PORT
-    (*Build->config)[Config::h][__STRING(MQTT_PORT)] = MQTT_PORT;
-#endif // MQTT_PORT
-#if defined(MQTT_USER) && defined(MQTT_KEY)
-    (*Build->config)[Config::h][__STRING(MQTT_USER)] = MQTT_USER;
-    (*Build->config)[Config::h][__STRING(MQTT_KEY)] = "REDACTED";
-#endif // defined(MQTT_USER) && defined(MQTT_KEY)
-#endif // EXTENSION_BUILD
 }
 
 void MqttExtension::handle()
 {
-    if (pending)
-    {
-        pending = false;
-        transmit();
-    }
-    else if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT16_MAX)
+    if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT16_MAX)
     {
         lastMillis = millis();
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();
-#ifdef F_DEBUG
-            Serial.printf("%s: queue dropped\n", Mqtt->name);
-#endif // F_DEBUG
+            ESP_LOGD(Mqtt->name, "queue dropped");
         }
     }
 }
@@ -82,9 +62,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent)
 {
-#ifdef F_DEBUG
-    Serial.printf("%s: connected\n", Mqtt->name);
-#endif // F_DEBUG
+    ESP_LOGD(Mqtt->name, "connected");
     if (!sessionPresent || (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
         for (const char *const _name : Device.getNames())
@@ -94,18 +72,10 @@ void MqttExtension::onConnect(bool sessionPresent)
         subscribed = true;
     }
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
-    Mqtt->pending = true;
 }
 
 void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic, const uint8_t *payload, size_t len, size_t index, size_t total)
 {
-#ifdef F_DEBUG
-    if (len < total)
-    {
-        Serial.printf("%s: chunked messages is currently not supported\n", Mqtt->name);
-        return;
-    }
-#endif // F_DEBUG
     JsonDocument doc;
     if (deserializeJson(doc, payload, len))
     {
@@ -116,19 +86,8 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
-#ifdef F_VERBOSE
-    Serial.printf("%s: disconnected, %s\n", Mqtt->name, espMqttClientTypes::disconnectReasonToString(reason));
-#elif defined(F_DEBUG)
-    Serial.printf("%s: disconnected\n", Mqtt->name);
-#endif // F_DEBUG
-    Mqtt->pending = true;
-}
-
-void MqttExtension::transmit()
-{
-    JsonDocument doc;
-    doc["host"] = client.connected() ? MQTT_HOST : nullptr;
-    Device.transmit(doc, name);
+    ESP_LOGD(Mqtt->name, "disconnected");
+    ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
 void MqttExtension::transmitterHook(const JsonDocument &doc, const char *const source)

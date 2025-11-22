@@ -17,23 +17,25 @@ private:
         active = false,
         pending = false;
 
-    int8_t offsetY;
+    int8_t offsetY = 0;
 
     int16_t
-        offsetX,
-        textWidth;
+        offsetX = GRID_COLUMNS,
+        width = 0;
 
     uint8_t
-        frame[COLUMNS * ROWS],
+        frame[GRID_COLUMNS * GRID_ROWS],
         repeat = 3;
 
     unsigned long lastMillis = 0;
 
     FontModule *font = nullptr;
 
-    std::vector<String> messages;
+    std::vector<std::string> messages;
 
     std::unique_ptr<TextHandler> text;
+
+    void addMessage(std::string message, const char *const source);
 
     void setFont(const char *const fontName);
     void setRepeat(uint8_t count);
@@ -49,7 +51,7 @@ public:
 
     void ready() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 };
 
 extern MessageExtension *Message;

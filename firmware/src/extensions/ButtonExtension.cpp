@@ -42,27 +42,27 @@ void ButtonExtension::setup()
 #ifdef PIN_SW1
             {
                 const std::string id = std::string(name).append("_power_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-                component[Abbreviations::automation_type] = "trigger";
-                component[Abbreviations::payload] = payload;
-                component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "Power button";
-                component[Abbreviations::topic] = topic;
-                component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
-                component[Abbreviations::value_template] = "{{value_json.event.power}}";
+                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                component[HomeAssistantAbbreviations::automation_type] = "trigger";
+                component[HomeAssistantAbbreviations::payload] = payload;
+                component[HomeAssistantAbbreviations::platform] = "device_automation";
+                component[HomeAssistantAbbreviations::subtype] = "Power button";
+                component[HomeAssistantAbbreviations::topic] = topic;
+                component[HomeAssistantAbbreviations::type] = std::string("button_").append(payload).append("_press");
+                component[HomeAssistantAbbreviations::value_template] = "{{value_json.event.power}}";
             }
 #endif // PIN_SW1
 #ifdef PIN_SW2
             {
                 const std::string id = std::string(name).append("_mode_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-                component[Abbreviations::automation_type] = "trigger";
-                component[Abbreviations::payload] = payload;
-                component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "Mode button";
-                component[Abbreviations::topic] = topic;
-                component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
-                component[Abbreviations::value_template] = "{{value_json.event.mode}}";
+                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                component[HomeAssistantAbbreviations::automation_type] = "trigger";
+                component[HomeAssistantAbbreviations::payload] = payload;
+                component[HomeAssistantAbbreviations::platform] = "device_automation";
+                component[HomeAssistantAbbreviations::subtype] = "Mode button";
+                component[HomeAssistantAbbreviations::topic] = topic;
+                component[HomeAssistantAbbreviations::type] = std::string("button_").append(payload).append("_press");
+                component[HomeAssistantAbbreviations::value_template] = "{{value_json.event.mode}}";
             }
 #endif // PIN_SW2
         }
@@ -75,16 +75,13 @@ void ButtonExtension::handle()
 #ifdef PIN_SW1
     if (powerShort)
     {
-#ifdef F_INFO
-        Serial.printf("%s: power\n", Button->name);
-#endif // F_INFO
-        Display.setPower(!Display.getPower());
+        Display.setPower(!Display.getPower(), name);
         event("power", "short");
         powerShort = false;
     }
     else if (powerState && millis() - powerMillis > UINT8_MAX)
     {
-        const uint8_t brightness = Display.getGlobalBrightness();
+        const uint8_t brightness = Display.getBrightness();
         if (!powerLong)
         {
             powerLong = true;
@@ -103,17 +100,11 @@ void ButtonExtension::handle()
         }
         if (brightnessIncrease && brightness < UINT8_MAX)
         {
-#ifdef F_INFO
-            Serial.printf("%s: brightness +\n", Button->name);
-#endif // F_INFO
-            Display.setGlobalBrightness(brightness + 1);
+            Display.setBrightness(brightness + 1, name);
         }
         else if (!brightnessIncrease && brightness > 0)
         {
-#ifdef F_INFO
-            Serial.printf("%s: brightness -\n", Button->name);
-#endif // F_INFO
-            Display.setGlobalBrightness(brightness - 1);
+            Display.setBrightness(brightness - 1, name);
         }
     }
 #endif // PIN_SW1
@@ -122,15 +113,10 @@ void ButtonExtension::handle()
     if (modeShort)
     {
 #ifdef PIN_SW1
-#ifdef F_INFO
-        Serial.printf("%s: mode\n", Button->name);
-#endif // F_INFO
-        Modes.next();
+        Modes.setModeNext(name);
 #else
-#ifdef F_INFO
-        Serial.printf("%s: power\n", Button->name);
-#endif // F_INFO
-        Display.setPower(!Display.getPower());
+        ESP_LOGI(name, "power");
+        Display.setPower(!Display.getPower(), name);
 #endif // PIN_SW1
         event("mode", "short");
         modeShort = false;
@@ -143,12 +129,8 @@ void ButtonExtension::handle()
             modeLong = true;
             event("mode", "long");
         }
-#ifdef F_INFO
-        Serial.printf("%s: mode\n", Button->name);
-#endif // F_INFO
-        Modes.next();
+        Modes.setModeNext(name);
     }
-
 #endif // PIN_SW2
 }
 

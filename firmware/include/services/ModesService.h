@@ -27,6 +27,7 @@
 #include "modes/HomeAssistantWeatherMode.h"
 #include "modes/HomeThermometerMode.h"
 #include "modes/JaggedWaveformMode.h"
+#include "modes/LargeTickingClockMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
@@ -40,12 +41,12 @@
 #include "modes/RingMode.h"
 #include "modes/ScanMode.h"
 #include "modes/SmallClockMode.h"
+#include "modes/SmallTickingClockMode.h"
 #include "modes/SmoothWaveformMode.h"
 #include "modes/SnakeClockMode.h"
 #include "modes/SnakeMode.h"
 #include "modes/StarsMode.h"
 #include "modes/TickerMode.h"
-#include "modes/TickingClockMode.h"
 #include "modes/WaveformMode.h"
 #include "modes/WorldWeatherOnlineMode.h"
 #include "modes/WttrInMode.h"
@@ -74,11 +75,11 @@ private:
 #if MODE_BINARYEPOCH
         new BinaryEpochMode(),
 #endif
-#if MODE_BLINK
-        new BlinkMode(),
-#endif
 #if MODE_BLINDS
         new BlindsMode(),
+#endif
+#if MODE_BLINK
+        new BlinkMode(),
 #endif
 #if MODE_BOLDCLOCK
         new BoldClockMode(),
@@ -131,6 +132,9 @@ private:
 #if MODE_JAGGEDWAVEFORM
         new JaggedWaveformMode(),
 #endif
+#if MODE_LARGETICKINGCLOCK
+        new LargeTickingClockMode(),
+#endif
 #if MODE_LEAFFALL
         new LeafFallMode(),
 #endif
@@ -170,6 +174,9 @@ private:
 #if MODE_SMALLCLOCK
         new SmallClockMode(),
 #endif
+#if MODE_SMALLTICKINGCLOCK
+        new SmallTickingClockMode(),
+#endif
 #if MODE_SMOOTHWAVEFORM
         new SmoothWaveformMode(),
 #endif
@@ -185,9 +192,6 @@ private:
 #if MODE_TICKER
         new TickerMode(),
 #endif
-#if MODE_TICKINGCLOCK
-        new TickingClockMode(),
-#endif
 #if MODE_WAVEFORM
         new WaveformMode(),
 #endif
@@ -202,40 +206,31 @@ private:
 #endif
     };
 
-    bool pending = false;
+    bool scheduled = false;
 
     unsigned long lastMillis = 0;
 
-#ifdef F_VERBOSE
-    unsigned long _lastMillis = 0;
-#endif
-
-#ifdef TASK_STACK_MODES
-    static constexpr uint16_t stackSize = TASK_STACK_MODES;
-#else
-    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
-#endif
-
-    void set(ModeModule *mode);
+    void setMode(ModeModule *mode, const char *const source);
     void splash();
-    void teardown();
     void transmit();
 
     static void onTask(void *parameter = nullptr);
 
 public:
+    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
+
     TaskHandle_t taskHandle = nullptr;
     ModeModule *active = nullptr;
 
     void setup();
     void ready();
     void handle();
-    void set(bool enable, const char *const source);
-    void set(const char *const name);
-    void next();
-    void previous();
+    void setActive(bool active);
+    void setMode(const char *const name, const char *const source);
+    void setModeNext(const char *const source);
+    void setModePrevious(const char *const source);
     const std::vector<ModeModule *> &getAll() const;
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 
     static ModesService &getInstance();
 };

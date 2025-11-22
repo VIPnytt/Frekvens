@@ -10,16 +10,16 @@
 void WaveformMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 9) && Microphone->play())
+    if (millis() - lastMillis > (1 << 9) && Microphone->isPlay())
 #else
     if (millis() - lastMillis > (1 << 9))
-#endif
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
 
-        Display.clear();
+        Display.clearFrame();
         BitmapHandler bitmap = BitmapHandler(wave[random(wave.size())]);
-        bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, (ROWS - bitmap.getHeight()) / 2);
+        bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, (GRID_ROWS - bitmap.getHeight()) / 2);
     }
 }
 

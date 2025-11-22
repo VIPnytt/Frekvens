@@ -1,6 +1,5 @@
 #include <Preferences.h>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MicroFont.h"
 #include "handlers/TextHandler.h"
@@ -11,355 +10,180 @@
 
 void ModesService::setup()
 {
-#if EXTENSION_BUILD && defined(TASK_STACK_MODES)
-    (*Build->config)[Config::h][__STRING(TASK_STACK_MODES)] = TASK_STACK_MODES;
-#endif
-#if EXTENSION_BUILD && defined(MODE_ANIMATION) && !(MODE_ANIMATION)
-    (*Build->config)[Config::h][__STRING(MODE_ANIMATION)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_ARROW) && !(MODE_ARROW)
-    (*Build->config)[Config::h][__STRING(MODE_ARROW)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_ARTNET) && !(MODE_ARTNET)
-    (*Build->config)[Config::h][__STRING(MODE_ARTNET)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BINARYCLOCK) && !(MODE_BINARYCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_BINARYCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BINARYEPOCH) && !(MODE_BINARYEPOCH)
-    (*Build->config)[Config::h][__STRING(MODE_BINARYEPOCH)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BLINK) && !(MODE_BLINK)
-    (*Build->config)[Config::h][__STRING(MODE_BLINK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BLINDS) && !(MODE_BLINDS)
-    (*Build->config)[Config::h][__STRING(MODE_BLINDS)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BOLDCLOCK) && !(MODE_BOLDCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_BOLDCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BREAKOUTCLOCK) && !(MODE_BREAKOUTCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_BREAKOUTCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_BRIGHT) && !(MODE_BRIGHT)
-    (*Build->config)[Config::h][__STRING(MODE_BRIGHT)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_CIRCLE) && !(MODE_CIRCLE)
-    (*Build->config)[Config::h][__STRING(MODE_CIRCLE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_COUNTDOWN) && !(MODE_COUNTDOWN)
-    (*Build->config)[Config::h][__STRING(MODE_COUNTDOWN)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_DISTRIBUTEDDISPLAYPROTOCOL) && !(MODE_DISTRIBUTEDDISPLAYPROTOCOL)
-    (*Build->config)[Config::h][__STRING(MODE_DISTRIBUTEDDISPLAYPROTOCOL)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_DRAW) && !(MODE_DRAW)
-    (*Build->config)[Config::h][__STRING(MODE_DRAW)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_E131) && !(MODE_E131)
-    (*Build->config)[Config::h][__STRING(MODE_E131)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_EQUALIZER) && !(MODE_EQUALIZER)
-    (*Build->config)[Config::h][__STRING(MODE_EQUALIZER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_FIREWORK) && !(MODE_FIREWORK)
-    (*Build->config)[Config::h][__STRING(MODE_FIREWORK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_FLIES) && !(MODE_FLIES)
-    (*Build->config)[Config::h][__STRING(MODE_FLIES)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_GAMEOFLIFE) && !(MODE_GAMEOFLIFE)
-    (*Build->config)[Config::h][__STRING(MODE_GAMEOFLIFE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_GAMEOFLIFECLOCK) && !(MODE_GAMEOFLIFECLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_GAMEOFLIFECLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_GLITTER) && !(MODE_GLITTER)
-    (*Build->config)[Config::h][__STRING(MODE_GLITTER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_HOMEASSISTANTWEATHER) && !(MODE_HOMEASSISTANTWEATHER)
-    (*Build->config)[Config::h][__STRING(MODE_HOMEASSISTANTWEATHER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_HOMETHERMOMETER) && !(MODE_HOMETHERMOMETER)
-    (*Build->config)[Config::h][__STRING(MODE_HOMETHERMOMETER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_JAGGEDWAVEFORM) && !(MODE_JAGGEDWAVEFORM)
-    (*Build->config)[Config::h][__STRING(MODE_JAGGEDWAVEFORM)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_LEAFFALL) && !(MODE_LEAFFALL)
-    (*Build->config)[Config::h][__STRING(MODE_LEAFFALL)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_LINES) && !(MODE_LINES)
-    (*Build->config)[Config::h][__STRING(MODE_LINES)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_NOISE) && !(MODE_NOISE)
-    (*Build->config)[Config::h][__STRING(MODE_NOISE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_OPENMETEO) && !(MODE_OPENMETEO)
-    (*Build->config)[Config::h][__STRING(MODE_OPENMETEO)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_OPENWEATHER) && !(MODE_OPENWEATHER)
-    (*Build->config)[Config::h][__STRING(MODE_OPENWEATHER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_PINGPONG) && !(MODE_PINGPONG)
-    (*Build->config)[Config::h][__STRING(MODE_PINGPONG)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_PINGPONGCLOCK) && !(MODE_PINGPONGCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_PINGPONGCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_PIXELSEQUENCE) && !(MODE_PIXELSEQUENCE)
-    (*Build->config)[Config::h][__STRING(MODE_PIXELSEQUENCE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_RAIN) && !(MODE_RAIN)
-    (*Build->config)[Config::h][__STRING(MODE_RAIN)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_RING) && !(MODE_RING)
-    (*Build->config)[Config::h][__STRING(MODE_RING)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_SMALLCLOCK) && !(MODE_SMALLCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_SMALLCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_SMOOTHWAVEFORM) && !(MODE_SMOOTHWAVEFORM)
-    (*Build->config)[Config::h][__STRING(MODE_SMOOTHWAVEFORM)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_SNAKE) && !(MODE_SNAKE)
-    (*Build->config)[Config::h][__STRING(MODE_SNAKE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_SNAKECLOCK) && !(MODE_SNAKECLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_SNAKECLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_STARS) && !(MODE_STARS)
-    (*Build->config)[Config::h][__STRING(MODE_STARS)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_TICKER) && !(MODE_TICKER)
-    (*Build->config)[Config::h][__STRING(MODE_TICKER)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_TICKINGCLOCK) && !(MODE_TICKINGCLOCK)
-    (*Build->config)[Config::h][__STRING(MODE_TICKINGCLOCK)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_WAVEFORM) && !(MODE_WAVEFORM)
-    (*Build->config)[Config::h][__STRING(MODE_WAVEFORM)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_WORLDWEATHERONLINE) && !(MODE_WORLDWEATHERONLINE)
-    (*Build->config)[Config::h][__STRING(MODE_WORLDWEATHERONLINE)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_WTTRIN) && !(MODE_WTTRIN)
-    (*Build->config)[Config::h][__STRING(MODE_WTTRIN)] = false;
-#endif
-#if EXTENSION_BUILD && defined(MODE_YR) && !(MODE_YR)
-    (*Build->config)[Config::h][__STRING(MODE_YR)] = false;
-#endif
-
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_mode");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"mode\":\"{{value}}\"}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::icon] = "mdi:format-list-bulleted";
-        component[Abbreviations::name] = "Mode";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        JsonArray options = component[Abbreviations::options].to<JsonArray>();
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
+        component[HomeAssistantAbbreviations::name] = "Mode";
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
         for (const ModeModule *mode : modules)
         {
             options.add(mode->name);
         }
-        component[Abbreviations::platform] = "select";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::value_template] = "{{value_json.mode}}";
+        component[HomeAssistantAbbreviations::platform] = "select";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.mode}}";
     }
-#ifdef F_VERBOSE
-    {
-        const std::string id = std::string(name).append("_stack");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::device_class] = "data_size";
-        component[Abbreviations::enabled_by_default] = false;
-        component[Abbreviations::entity_category] = "diagnostic";
-        component[Abbreviations::icon] = "mdi:memory";
-        component[Abbreviations::name] = std::string(name).append(" stack");
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "sensor";
-        component[Abbreviations::state_class] = "measurement";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[Abbreviations::unit_of_measurement] = "kB";
-        component[Abbreviations::value_template] = "{{value_json.stack/2**10}}";
-    }
-#endif // F_VERBOSE
 #endif // EXTENSION_HOMEASSISTANT
 
     for (ModeModule *mode : modules)
     {
         mode->setup();
     }
-#ifdef F_VERBOSE
-    Serial.printf("%s: setup complete\n", name);
-#endif
+    ESP_LOGV(name, "setup complete");
 }
 
 void ModesService::ready()
 {
-    xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
-    if (!active)
+    switch (esp_reset_reason())
     {
-        switch (esp_reset_reason())
+    case esp_reset_reason_t::ESP_RST_BROWNOUT:
+    case esp_reset_reason_t::ESP_RST_INT_WDT:
+    case esp_reset_reason_t::ESP_RST_PANIC:
+    case esp_reset_reason_t::ESP_RST_TASK_WDT:
+    case esp_reset_reason_t::ESP_RST_WDT:
+        setMode(modules[random(modules.size())]->name, name);
+        Display.setPower(false, name);
+        break;
+    default:
+        Preferences Storage;
+        Storage.begin(name, true);
+        if (Storage.isKey("active"))
         {
-        case esp_reset_reason_t::ESP_RST_BROWNOUT:
-        case esp_reset_reason_t::ESP_RST_INT_WDT:
-        case esp_reset_reason_t::ESP_RST_PANIC:
-        case esp_reset_reason_t::ESP_RST_TASK_WDT:
-        case esp_reset_reason_t::ESP_RST_WDT:
-            break;
-        default:
-            Preferences Storage;
-            Storage.begin(name, true);
-            if (Storage.isKey("active"))
-            {
-                const String _active = Storage.getString("active");
-                Storage.end();
-                set(_active.c_str());
-            }
-            else
-            {
-                Storage.end();
-            }
+            const String _active = Storage.getString("active");
+            Storage.end();
+            setMode(_active.c_str(), name);
         }
-        if (!active)
+        else
         {
-            set(modules[random(0, modules.size())]->name);
+            Storage.end();
+            setMode(modules[random(modules.size())]->name, name);
         }
     }
 }
 
 void ModesService::handle()
 {
-    if (pending && millis() - lastMillis > 2048)
+    if (scheduled && millis() - lastMillis > (1 << 11))
     {
-        if (active)
-        {
-            active->wake();
-            set(true, name);
-        }
-        pending = false;
-    }
-#ifdef F_VERBOSE
-    else if (active && Display.getPower() && millis() - _lastMillis > UINT16_MAX)
-    {
+        active->wake();
+        setActive(true);
         transmit();
+        scheduled = false;
     }
-#endif // F_VERBOSE
 }
 
-void ModesService::set(bool enable, const char *const source)
+void ModesService::onTask(void *parameter)
 {
-    if (enable && taskHandle && eTaskGetState(taskHandle) == eTaskState::eSuspended)
+    for (;;)
     {
-#ifdef F_DEBUG
-        Serial.printf("%s: resuming mode\n", source);
-#endif
+        if (Display.getPower())
+        {
+            Modes.active->handle();
+            Display.flush();
+        }
+        vTaskDelay(1);
+    }
+}
+
+void ModesService::setActive(bool active)
+{
+    if (taskHandle && active && eTaskGetState(taskHandle) == eTaskState::eSuspended)
+    {
         vTaskResume(taskHandle);
     }
-    else if (!enable && taskHandle && eTaskGetState(taskHandle) != eTaskState::eSuspended)
+    else if (taskHandle && !active && eTaskGetState(taskHandle) != eTaskState::eSuspended)
     {
-#ifdef F_DEBUG
-        Serial.printf("%s: suspending mode\n", source);
-#endif
         vTaskSuspend(taskHandle);
+    }
+    else if (!taskHandle && active && this->active)
+    {
+        xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
     }
 }
 
-void ModesService::set(const char *const name)
+void ModesService::setMode(const char *const name, const char *const source)
 {
-    if (active && !strcmp(active->name, name))
+    if (!active || strcmp(active->name, name))
     {
-        return;
-    }
-    for (ModeModule *mode : modules)
-    {
-        if (!strcmp(mode->name, name))
+        for (ModeModule *mode : modules)
         {
-            set(mode);
-            return;
+            if (!strcmp(mode->name, name))
+            {
+                setMode(mode, source);
+                return;
+            }
         }
     }
 }
 
-void ModesService::set(ModeModule *mode)
+void ModesService::setMode(ModeModule *mode, const char *const source)
 {
-    set(false, name);
-    teardown();
+    if (taskHandle && active)
+    {
+        vTaskDelete(taskHandle);
+        taskHandle = nullptr;
+        active->sleep();
+    }
     active = mode;
-#ifdef F_INFO
-    Serial.printf("%s: %s\n", name, active->name);
-#endif
+    ESP_LOGI(source, "%s", active->name);
 
     Preferences Storage;
     Storage.begin(name);
     Storage.putString("active", active->name);
     Storage.end();
 
-    splash();
     lastMillis = millis();
-    pending = true;
-    transmit();
+    scheduled = true;
+    splash();
+    Display.setPower(true, source);
 }
 
 void ModesService::splash()
 {
-    const String _name = active->name;
-    std::vector<String> chunks = {""};
-    uint8_t line = 0;
-    for (uint8_t i = 0; i < _name.length(); ++i)
+    const std::string _name = active->name;
+    std::vector<std::string> lines = {""};
+    uint8_t _line = 0;
+    for (std::size_t i = 0; i < _name.length(); ++i)
     {
         switch (_name[i])
         {
         case 0x20: //   Space
         case 0x2D: // - Hyphen-minus
-            chunks.push_back("");
-            ++line;
+            lines.push_back("");
+            ++_line;
             break;
         default:
-            chunks[line] += _name[i];
+            lines[_line].push_back(_name[i]);
         }
     }
     uint8_t height = 0;
     std::vector<TextHandler> texts;
-    for (const String &chunk : chunks)
+    for (const std::string &line : lines)
     {
-        texts.push_back(TextHandler(chunk, FontMicro));
-        height += texts.back().getHeight();
-        if (height >= ROWS)
+        TextHandler text(line, FontMicro);
+        height += text.getHeight();
+        texts.push_back(text);
+        if (height >= GRID_ROWS)
         {
             break;
         }
     }
-    const uint8_t margin = (ROWS - min<uint8_t>(ROWS, height)) / (chunks.size() + 1);
-    uint8_t y = margin;
-    Display.clear();
+    const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
+    uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
+    Display.clearFrame();
     for (TextHandler &text : texts)
     {
-        text.draw((COLUMNS - min<uint8_t>(COLUMNS, text.getWidth())) / 2, y);
-        y += text.getHeight() + max<uint8_t>(1, margin);
+        text.draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, text.getWidth())) / 2, y);
+        y += text.getHeight() + margin;
     }
     Display.flush();
-    if (!Display.getPower())
-    {
-#ifdef F_INFO
-        Serial.printf("%s: power\n", name);
-#endif
-        Display.setPower(true);
-    }
-}
-
-void ModesService::teardown()
-{
-    if (active)
-    {
-        active->sleep();
-    }
-    Display.clear();
 }
 
 const std::vector<ModeModule *> &ModesService::getAll() const
@@ -367,7 +191,7 @@ const std::vector<ModeModule *> &ModesService::getAll() const
     return modules;
 }
 
-void ModesService::next()
+void ModesService::setModeNext(const char *const source)
 {
     if (active)
     {
@@ -376,33 +200,33 @@ void ModesService::next()
                                                                           { return !strcmp(_mode->name, _name); });
         if (_modules == modules.end())
         {
-            set((*modules.begin())->name);
+            setMode((*modules.begin())->name, source);
         }
         else if (!Display.getPower())
         {
-            Display.setPower(true);
+            Display.setPower(true, name);
         }
         else
         {
             ++_modules;
             if (_modules == modules.end())
             {
-                set((*modules.begin())->name);
-                Display.setPower(false);
+                setMode((*modules.begin())->name, source);
+                Display.setPower(false, name);
             }
             else
             {
-                set((*_modules)->name);
+                setMode((*_modules)->name, source);
             }
         }
     }
     else
     {
-        set((*modules.begin())->name);
+        setMode((*modules.begin())->name, source);
     }
 }
 
-void ModesService::previous()
+void ModesService::setModePrevious(const char *const source)
 {
     if (active)
     {
@@ -411,21 +235,21 @@ void ModesService::previous()
                                                                           { return !strcmp(_mode->name, _name); });
         if (_modules == modules.begin())
         {
-            set((*(modules.end() - 1))->name);
-            Display.setPower(false);
+            setMode((*(modules.end() - 1))->name, source);
+            Display.setPower(false, name);
         }
         else if (!Display.getPower())
         {
-            Display.setPower(true);
+            Display.setPower(true, source);
         }
         else
         {
-            set((*(_modules - 1))->name);
+            setMode((*(_modules - 1))->name, source);
         }
     }
     else
     {
-        set((*(modules.end() - 1))->name);
+        setMode((*(modules.end() - 1))->name, source);
     }
 }
 
@@ -441,32 +265,15 @@ void ModesService::transmit()
     {
         doc["mode"] = active->name;
     }
-#ifdef F_VERBOSE
-    doc["stack"] = stackSize - uxTaskGetStackHighWaterMark(taskHandle);
-    _lastMillis = millis();
-#endif
     Device.transmit(doc, name);
 }
 
-void ModesService::receiverHook(const JsonDocument doc)
+void ModesService::receiverHook(const JsonDocument doc, const char *const source)
 {
     // Mode
     if (doc["mode"].is<const char *>())
     {
-        set(doc["mode"].as<const char *>());
-    }
-}
-
-void ModesService::onTask(void *parameter)
-{
-    for (;;)
-    {
-        if (Modes.active && Display.getPower())
-        {
-            Modes.active->handle();
-            Display.flush();
-        }
-        vTaskDelay(1);
+        setMode(doc["mode"].as<const char *>(), source);
     }
 }
 

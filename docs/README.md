@@ -2,6 +2,7 @@
 
 Welcome to the `docs/` directory of the Frekvens project.
 
+> [!TIP]
 > If you're new to the project, we recommend starting with the [main README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
 
 ## 📖 Project Wiki

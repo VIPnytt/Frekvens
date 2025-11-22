@@ -1,6 +1,6 @@
 # 💡 IKEA Obegränsad LED wall lamp
 
-> Article number 005.262.48
+Article number: `005.262.48`
 
 ## 📌 Schematics
 
@@ -24,6 +24,7 @@
                             └──────────── SPI MISO
 ```
 
+> [!NOTE]
 > There’s four daisy-chained panels, here shown as one combined unit.
 
 ### Button schema
@@ -70,10 +71,10 @@ Black ┼─ 0 V DC
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
- SPI SCLK ─┤     ──►     ├─ SPI SCLK
- SPI MISO ─┤     ◄──     ├─ SPI MISO
- SPI MOSI ─┤     ──►     ├─ SPI MOSI
    SPI CS ─┤     ──►     ├─ SPI CS
+ SPI SCLK ─┤     ──►     ├─ SPI SCLK
+ SPI MOSI ─┤     ──►     ├─ SPI MOSI
+ SPI MISO ─┤     ◄──     ├─ SPI MISO
        OE ─┤     ──►     ├─ OE
            └─────────────┘
 ```
@@ -88,6 +89,7 @@ By using a sharp 3 mm drill bit and drillilg *slowly*, the aluminium rivets will
 
 For those who desire, it’s possible to use 2 mm rivets to close the device afterwards.
 
+> [!TIP]
 > There isn’t really risk of hitting anything inside when drilling, as it’s basically just a empty box. Most of the electronic components is covered up, but make sure to clean up any metal fragments before powering on.
 
 ### Removing the `U1` chip
@@ -98,6 +100,7 @@ The first thing to do is removing the chip labeled `U1`, as this is the core han
 
 Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
 
+> [!NOTE]
 > The LED panels are rotated 180° compared to the device’s natural orientation.
 
 ### Connecting the button
@@ -106,6 +109,7 @@ The button can be wired in several ways, depending on the desired level of modif
 
 If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — internally connected to `SW` — provides another solder point with the same electrical result.
 
+> [!TIP]
 > On the LED panel, `SW1` is already tied to `GND`.
 
 ## ↔️ Logic level shifter
@@ -114,6 +118,7 @@ For safe and reliable communication between the ESP32 and the LED panels, a suit
 
 The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs signals at 5 V and uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
 
+> [!CAUTION]
 > Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to misread signals, unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
@@ -140,6 +145,7 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 - 3x `C2` SMD pads — one at each panel, the fourth is already populated
 - 4x `C7` SMD pads — one at each panel
 
+> [!NOTE]
 > Capacitors are optional — consider adding them if you already have some available, or if you notice flicker or instability.
 
 ## 🔧 Configuration
@@ -163,19 +169,22 @@ Supplies power to both logic and LEDs.
 
 The *IKEA Obegränsad* can draw up to 2.0 A at 5 V (10 W) under full load. Use a USB power supply rated for at least this continuous output.
 
+> [!CAUTION]
 > Do not use the ESP32’s USB port while the *IKEA Obegränsad’s* USB-cable is connected to a power source!
 
 ### SPI CS
 
 Chip Select for the LED drivers.
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Any digital output pin can be used.
 
-> Avoid strapping pins as this pin is pulled *LOW* with an effective resistance of about 25 kΩ. On ESP32 (LX6-based) boards, it is recommended to use specialized pins, such as `CS` (often labeled `SS` on older boards).
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *LOW* with an effective resistance of about 25 kΩ. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_CS 1 // CLA
@@ -185,13 +194,15 @@ Any digital output pin can be used.
 
 Serial clock for SPI communication.
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Any SPI `SCLK` pin can be used.
 
+> [!NOTE]
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SCLK 2 // CLK
@@ -201,13 +212,15 @@ Any SPI `SCLK` pin can be used.
 
 Master-out data line for SPI.
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Any SPI `MOSI` pin can be used.
 
+> [!NOTE]
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MOSI 3 // DI
@@ -217,13 +230,15 @@ Any SPI `MOSI` pin can be used.
 
 Master-in data line for SPI (optional).
 
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
 
 Any SPI `MISO` pin can be used.
 
+> [!NOTE]
 > The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MISO 4 // DO
@@ -233,15 +248,15 @@ Any SPI `MISO` pin can be used.
 
 Enables or disables LED output.
 
-Optional to connect; if unused, tie `EN` to `GND`.
-
-[Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
 Any digital output pin can be used.
 
+> [!WARNING]
 > Avoid strapping pins as this pin is pulled *HIGH* with an effective resistance of about 25 kΩ.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_OE 5 // EN
@@ -253,9 +268,10 @@ Button input for user interaction.
 
 Optional to connect. Use an RTC-capable digital input pin for best compatibility.
 
+> [!IMPORTANT]
 > Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SW2 6 // SW
@@ -263,17 +279,17 @@ Optional to connect. Use an RTC-capable digital input pin for best compatibility
 
 ## 📝 Template
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 # Device type
-ENV_OBEGRANSAD=''
+IKEA_OBEGRANSAD=''
 
 # Custom device name (optional)
 NAME='Obegränsad'
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #pragma once
@@ -285,7 +301,7 @@ NAME='Obegränsad'
 #define PIN_OE 4   // EN
 #define PIN_SW2 5  // SW
 
-// Wi-Fi credentials (optional)
+// Wi-Fi credentials
 #define WIFI_SSID "name"
 #define WIFI_KEY "secret"
 
@@ -296,7 +312,7 @@ NAME='Obegränsad'
 
 ## 🔗 Resources
 
-A collection of external links for deeper exploration — including teardowns, hacks, datasheets, and community projects — provided for reference only and with no formal connection to this project.
+A collection of external links for deeper exploration — including teardowns, mods, datasheets, and community projects — provided for reference only and with no formal connection to this project.
 
 - [GitHub: a-johanson/rusty-obegraensad](https://github.com/a-johanson/rusty-obegraensad/blob/master/README.md)
 - [GitHub: atesgoral/obegraensad-hack](https://github.com/atesgoral/obegraensad-hack/blob/main/README.md)

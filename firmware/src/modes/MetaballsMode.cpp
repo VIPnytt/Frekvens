@@ -8,38 +8,36 @@
 
 void MetaballsMode::setup()
 {
-    for (int16_t i = 0; i < sizeof(contributions); ++i)
+    for (uint16_t i = 0; i < sizeof(contributions); ++i)
     {
         contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1 << 6)) >> 16;
     }
     for (Ball &ball : balls)
     {
-        ball.x = random(COLUMNS);
-        ball.y = random(ROWS);
+        ball.x = random(GRID_COLUMNS);
+        ball.y = random(GRID_ROWS);
         ball.xVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
         ball.yVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
     }
 }
 
-void MetaballsMode::wake()
-{
-    radius = min<float>(COLUMNS * Display.getCellRatio(), ROWS) / 5.0f;
-    radiusSq = radius * radius;
-}
-
 void MetaballsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->play())
-#endif
+    if (Microphone->isPlay())
+#endif // EXTENSION_MICROPHONE
     {
+        const bool rotated = Display.getOrientation() % 2;
+        const float
+            xRatio = 2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL),
+            yRatio = 2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL);
         for (const Ball &ball : balls)
         {
             const uint8_t
                 xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0),
                 yMin = max<int8_t>(ball.y - radius - max<float>(ball.yVelocity, 0), 0),
-                xMax = min<int8_t>(ceil(ball.x + radius - min<float>(ball.xVelocity, 0)), COLUMNS - 1),
-                yMax = min<int8_t>(ceil(ball.y + radius - min<float>(ball.yVelocity, 0)), ROWS - 1);
+                xMax = min<int8_t>(ceil(ball.x + radius - min<float>(ball.xVelocity, 0)), GRID_COLUMNS - 1),
+                yMax = min<int8_t>(ceil(ball.y + radius - min<float>(ball.yVelocity, 0)), GRID_ROWS - 1);
             for (uint8_t x = xMin; x <= xMax; ++x)
             {
                 for (uint8_t y = yMin; y <= yMax; ++y)
@@ -48,12 +46,12 @@ void MetaballsMode::handle()
                     for (const Ball &ball : balls)
                     {
                         const float
-                            xDist = (ball.x - x) * Display.getCellRatio(),
-                            yDist = ball.y - y,
-                            distSq = xDist * xDist + yDist * yDist;
-                        if (distSq < radiusSq)
+                            xDistance = (ball.x - x) * xRatio,
+                            yDistance = (ball.y - y) * yRatio,
+                            distanceSq = xDistance * xDistance + yDistance * yDistance;
+                        if (distanceSq < radiusSq)
                         {
-                            brightness = min<uint8_t>(brightness + contributions[(uint8_t)(distSq * UINT8_MAX / radiusSq)], UINT8_MAX);
+                            brightness = min<uint8_t>(brightness + contributions[(uint8_t)(distanceSq * UINT8_MAX / radiusSq)], UINT8_MAX);
                             if (brightness >= UINT8_MAX)
                             {
                                 break;
@@ -73,9 +71,9 @@ void MetaballsMode::handle()
                 ball.x = 0;
                 ball.xVelocity = random(1, multiplier) * speed;
             }
-            else if (ball.x > COLUMNS - 1)
+            else if (ball.x > GRID_COLUMNS - 1)
             {
-                ball.x = COLUMNS - 1;
+                ball.x = GRID_COLUMNS - 1;
                 ball.xVelocity = random(1, multiplier) * -speed;
             }
             if (ball.y < 0)
@@ -83,9 +81,9 @@ void MetaballsMode::handle()
                 ball.y = 0;
                 ball.yVelocity = random(1, multiplier) * speed;
             }
-            else if (ball.y > ROWS - 1)
+            else if (ball.y > GRID_ROWS - 1)
             {
-                ball.y = ROWS - 1;
+                ball.y = GRID_ROWS - 1;
                 ball.yVelocity = random(1, multiplier) * -speed;
             }
         }

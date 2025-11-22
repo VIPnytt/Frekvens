@@ -18,7 +18,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Dot dots[COLUMNS * ROWS / 9];
+    Dot dots[GRID_COLUMNS * GRID_ROWS / 9];
 
 public:
     NoiseMode() : ModeModule("Noise") {};

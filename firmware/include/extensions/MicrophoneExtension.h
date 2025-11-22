@@ -16,7 +16,7 @@ private:
 
     uint16_t
         levelMax = UINT8_MAX,
-        mic,
+        mic = 0,
         threshold = INT8_MAX;
 
     unsigned long
@@ -32,12 +32,12 @@ public:
     void ready() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
-    void set(uint16_t floor);
-    bool play();
+    bool getActive();
+    void setActive(bool active, const char *const source);
+    void setThreshold(uint16_t _threshold);
+    bool isPlay() const;
 
-    void receiverHook(const JsonDocument doc) override;
+    void receiverHook(const JsonDocument doc, const char *const source) override;
 };
 
 extern MicrophoneExtension *Microphone;
