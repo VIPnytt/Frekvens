@@ -1,5 +1,6 @@
 import hashlib
 import typing
+import warnings
 
 if typing.TYPE_CHECKING:
     from ..Project import Project
@@ -30,7 +31,7 @@ class Ota:
                 self.ENV_OPTION in self.project.dotenv
                 and self.project.dotenv[self.ENV_OPTION] != "false"
             ):
-                UserWarning(f"{self.ENV_OPTION}: Partition table does not support OTA.")
+                warnings.warn(f"{self.ENV_OPTION}: Partition table does not support OTA.", UserWarning)
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None
