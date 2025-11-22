@@ -8,7 +8,7 @@ import { MainThird as ExtensionMessageThird, Link as ExtensionMessageLink, recei
 import { MainThird as ExtensionMicThird, Link as ExtensionMicLink, Actions as ExtensionMicActions, receiver as ExtensionMic, name as ExtensionMicName } from '../extensions/Microphone';
 import { MainThird as ExtensionOtaThird, Link as ExtensionOtaLink, name as ExtensionOtaName } from '../extensions/Ota';
 import { MainThird as ExtensionPhotocellThird, Link as ExtensionPhotocellLink, Actions as ExtensionPhotocellActions, receiver as ExtensionPhotocell, name as ExtensionPhotocellName } from '../extensions/Photocell';
-import { MainThird as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, Actions as ExtensionPlaylistActions, PlaylistActive, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
+import { MainThird as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, Actions as ExtensionPlaylistActions, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
 import { receiver as ExtensionSignal } from '../extensions/Signal';
 import { Main as WebAppMain, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
 import { name as ExtensionsName } from './Extensions';
