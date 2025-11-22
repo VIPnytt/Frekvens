@@ -54,3 +54,4 @@ class Partition:
             "32MB",
         ]:
             return f"partitions/{flash_size}.csv"
+        return None
