@@ -54,13 +54,11 @@ const handleNew = (initialData?: Frame): FrameSignal => {
 
 const scrollToEnd = () => {
     setTimeout(() => {
-        if (ref) {
-            ref.scrollTo({
-                top: 0,
-                left: ref.scrollWidth - ref.clientWidth,
-                behavior: 'smooth',
-            });
-        }
+        ref.scrollTo({
+            top: 0,
+            left: ref.scrollWidth - ref.clientWidth,
+            behavior: 'smooth',
+        });
     }, 150);
 };
 
