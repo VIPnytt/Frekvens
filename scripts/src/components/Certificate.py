@@ -3,6 +3,7 @@ import cryptography.hazmat.primitives.hashes
 import cryptography.hazmat.primitives.serialization
 import cryptography.x509
 import cryptography.x509.oid
+import logging
 import os
 import pathlib
 import socket
@@ -179,8 +180,8 @@ class Certificate:
             ):
                 if value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2":
                     return urllib.request.urlopen(value.access_location.value).read()
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("Failed to fetch issuer certificate: %s", e)
         return None
 
     def _is_self_signed(self, pem: str) -> bool:
@@ -189,8 +190,8 @@ class Certificate:
                 pem.encode("utf8"), cryptography.hazmat.backends.default_backend()
             )
             return cert.issuer == cert.subject
-        except Exception:
-            pass
+        except Exception as e:
+            logging.warning("Failed to load issuer certificate: %s", e)
         return False
 
     def _get_name(self, pem: str) -> str | None:
