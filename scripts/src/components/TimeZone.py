@@ -2,6 +2,7 @@ import importlib.util
 import os
 import typing
 import tzlocal
+import warnings
 import zoneinfo
 
 if typing.TYPE_CHECKING:
@@ -52,4 +53,5 @@ class TimeZone:
                     ]
                     if len(lines) >= 2:
                         return lines[-1]
-        UserWarning(f"Unknown timezone: {iana}")
+        warnings.warn(f"Unknown timezone: {iana}", UserWarning)
+        return None

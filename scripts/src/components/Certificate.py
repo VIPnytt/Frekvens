@@ -36,11 +36,7 @@ class Certificate:
             WttrIn.ENV_OPTION: WttrIn.HOST_WHITELIST,
             Yr.ENV_OPTION: Yr.HOST_WHITELIST,
         }.items():
-            if (
-                option in self.project.dotenv
-                and self.project.dotenv[option]
-                == "true"
-            ):
+            if option in self.project.dotenv and self.project.dotenv[option] == "true":
                 for host in hosts:
                     self._add_host(host)
         bundle_path = pathlib.Path("firmware/certs/bundle")
@@ -73,9 +69,9 @@ class Certificate:
 
     def _add_host(self, hostname: str, port: int = 443) -> bool:
         with socket.create_connection((hostname, port)) as sock:
-            with ssl.create_default_context().wrap_socket(
-                sock, server_hostname=hostname
-            ) as ssock:
+            ctx = ssl.create_default_context()
+            ctx.minimum_version = ssl.TLSVersion.TLSv1_2
+            with ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
                 der = ssock.getpeercert(binary_form=True)
                 if der is not None:
                     for pem in self._fetch_chain(der):
@@ -184,7 +180,8 @@ class Certificate:
                 if value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2":
                     return urllib.request.urlopen(value.access_location.value).read()
         except Exception:
-            return None
+            pass
+        return None
 
     def _is_self_signed(self, pem: str) -> bool:
         try:
@@ -193,7 +190,8 @@ class Certificate:
             )
             return cert.issuer == cert.subject
         except Exception:
-            return False
+            pass
+        return False
 
     def _get_name(self, pem: str) -> str | None:
         subject = cryptography.x509.load_pem_x509_certificate(
