@@ -255,7 +255,7 @@ const Footer: Component = () => (
 );
 
 const Toggle: Component = () => (
-    <div class={`absolute ${getSidebar() ? 'left-[271px] top-0' : 'left-6 top-6'}`}>
+    <div class={`absolute ${getSidebar() ? 'left-[calc(--spacing(68)-1px)] top-0' : 'left-6 top-6'}`}>
         <button
             class={`action-activated ${getSidebar() && 'border-0 not-hover:bg-menu-light dark:not-hover:bg-menu-dark not-hover:text-content-light dark:not-hover:text-content-dark'}`}
             onclick={() => setSidebar(!getSidebar())}
@@ -305,7 +305,7 @@ const Layout: Component<{
     main: JSX.Element;
     sidebar: JSX.Element;
 }> = (props) => (
-    <div class={`h-full ${getSidebar() ? `grid grid-cols-[320px_1fr]` : ''}`}>
+    <div class={`h-full ${getSidebar() ? `grid grid-cols-[--spacing(80)_1fr]` : ''}`}>
         {getSidebar() && (
             <aside class="bg-menu-light dark:bg-menu-dark border-r flex flex-col h-full p-2 pt-4 rounded-none">
                 {props.sidebar}

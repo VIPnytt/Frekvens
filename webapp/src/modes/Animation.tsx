@@ -29,7 +29,7 @@ export const receiver = (json: any) => {
     json[name]?.frame !== undefined && json[name]?.index !== undefined && setFrames(f => (f = [...f], f[json[name].index] = json[name].frame, f)) && getSaved() && handleLoad();
 };
 
-let ref!: HTMLDivElement;
+let ref: HTMLDivElement | undefined;
 
 const empty = new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0);
 
@@ -53,7 +53,13 @@ const handleNew = (initialData?: Frame): FrameSignal => {
 };
 
 const scrollToEnd = () => {
+    if (!ref) {
+        return;
+    }
     setTimeout(() => {
+        if (!ref) {
+            return;
+        }
         ref.scrollTo({
             top: 0,
             left: ref.scrollWidth - ref.clientWidth,
@@ -282,8 +288,8 @@ export const Main: Component = () => {
         >
             <div class="bg-contrast-light dark:bg-contrast-dark h-full relative rounded-none">
                 <div
-                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw-320px)*0.05)] ${getPreview() ? 'justify-center-safe' : 'justify-start'}`}
-                    ref={ref!}
+                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw---spacing(80))*0.05)] ${getPreview() ? 'justify-center-safe' : 'justify-start'}`}
+                    ref={element => ref = element}
                 >
                     {getPreview() ? (
                         <div class="animate-fade-in">
@@ -292,7 +298,7 @@ export const Main: Component = () => {
                     ) : (
                         <For each={getFramesDraft()}>
                             {([getFrame, setFrame], index) => (
-                                <div class={`snap-center flex-shrink-0 max-h-[calc(100vh-128px)] ${WebAppSidebar() ? 'max-w-[calc((100vw-320px)*0.8)]' : 'max-w-[80vw]'}`}>
+                                <div class={`snap-center max-h-[calc(100vh---spacing(32))] shrink-0 ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.8)]' : 'max-w-[80vw]'}`}>
                                     <header class="flex justify-between items-center mb-4">
                                         <div class="flex gap-3">
                                             <Tooltip text={index() ? `Insert frame between #${index()} and #${index() + 1}` : `Insert frame before #${index() + 1}`}>

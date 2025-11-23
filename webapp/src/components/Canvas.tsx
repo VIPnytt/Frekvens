@@ -190,7 +190,7 @@ export const Canvas: Component<{
 
     return (
         <div
-            class={`bg-black duration-300 flex-none inline-block max-h-[calc((100vh-128px)*0.9)] mx-auto p-2.5 relative shadow-lg shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw-320px)*0.9)]' : 'max-w-[90vw]'}`}
+            class={`bg-black duration-300 flex-none inline-block max-h-[calc((100vh---spacing(32))*0.9)] mx-auto p-2.5 relative shadow-lg shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.9)]' : 'max-w-[90vw]'}`}
             ref={containerRef}
             style={{
                 'aspect-ratio': rotated ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}` : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
