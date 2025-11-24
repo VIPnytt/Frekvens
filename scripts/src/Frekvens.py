@@ -16,7 +16,7 @@ from .Firmware import Firmware
 from .Tools import Tools
 
 
-class Project:
+class Frekvens:
     certificate: Certificate | None = None
     dotenv: dict[str, str]
     extra: Extra

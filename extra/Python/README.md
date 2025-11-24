@@ -9,7 +9,7 @@ Converts `.ttf` or `.otf` font files into C++ source files that can easily be ad
 Installation of dependency packages:
 
 ```bash
-pip install tools/[extra-fonts]
+pip install -r extra/requirements.txt
 ```
 
 ## 🏭 Mode generator

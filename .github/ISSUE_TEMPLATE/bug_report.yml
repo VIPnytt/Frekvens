@@ -1,5 +1,5 @@
-name: 🐛 Bug Report
-description: Tell us about something that isn't working as it should.
+name: 🐛 Bug
+description: An unexpected problem or behavior.
 type: Bug
 body:
   - type: markdown

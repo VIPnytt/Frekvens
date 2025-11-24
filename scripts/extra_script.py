@@ -1,4 +1,4 @@
-# PlatformIO pre-build script
+# PlatformIO pre-build extra script
 
 import sys
 
@@ -9,7 +9,7 @@ if not env.IsCleanTarget():  # type: ignore
 
 sys.path.append(env["PROJECT_DIR"])  # type: ignore
 
-from scripts.src.Project import Project
+from scripts.src.Frekvens import Frekvens
 
 # Dump CLI targets
 # print(COMMAND_LINE_TARGETS)# type: ignore
@@ -25,10 +25,10 @@ if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
     ["menuconfig"],
     ["size"],
 ]:
-    Project(env, COMMAND_LINE_TARGETS).run()  # type: ignore
+    Frekvens(env, COMMAND_LINE_TARGETS).run()  # type: ignore
 
 if env.IsCleanTarget():  # type: ignore
-    Project.clean()
+    Frekvens.clean()
 
 # Dump environment variables
 # print(env.Dump())  # type: ignore

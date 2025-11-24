@@ -8,13 +8,6 @@ dependencies = [
     'httpx==0.28.1',
 ]
 
-[project.optional-dependencies]
-extra-fonts = [
-    'fonttools==4.60.1',
-    'matplotlib==3.10.7',
-    'pillow==11.3.0',
-]
-
 [tool.setuptools.packages.find]
 where = ["src"]
 

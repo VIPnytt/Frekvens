@@ -2,6 +2,7 @@
 
 # Generate font source files from .ttf or .otf files.
 
+import argparse
 import fontTools.ttLib
 import matplotlib.font_manager
 import os
@@ -15,7 +16,7 @@ class FontGenerator:
     path: str
     size: int
 
-    def __init__(self, path: str = "Font.ttf", size: int = 8) -> None:
+    def __init__(self, path: str = "font.ttf", size: int = 8) -> None:
         self.path = path
         self.size = size
 
@@ -239,15 +240,22 @@ class FontGenerator:
 
 
 if __name__ == "__main__":
-    path = input("Path: ")
-    size = int(input("Size: "))
-    if os.path.isfile(path) and size > 1:
-        FontGenerator(path, size).source()
+    parser = argparse.ArgumentParser(
+        description="Generate font source files from .ttf or .otf files."
+    )
+    parser.add_argument("-i", "--input", help="Font path", type=str)
+    parser.add_argument("--size", help="Font size", type=int)
+    args = parser.parse_args()
+    if args.input is None:
+        args.input = input("Font file path: ") or "font.ttf"
+    if args.size is None:
+        args.size = int(input("Font size: ") or 8)
+    if os.path.isfile(args.input):
+        FontGenerator(args.input, args.size).source()
     else:
-        print(f"File not found")
-        fonts = FontGenerator.search(path)
+        fonts = FontGenerator.search(args.input)
         if fonts:
             print("Alternative fonts to try:")
             for font in fonts:
                 print(font)
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(args.input)

@@ -6,13 +6,13 @@ import warnings
 import zoneinfo
 
 if typing.TYPE_CHECKING:
-    from ..Project import Project
+    from ..Frekvens import Frekvens
 
 
 class TimeZone:
-    project: "Project"
+    project: "Frekvens"
 
-    def __init__(self, project: "Project") -> None:
+    def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
     def configure(self) -> None:

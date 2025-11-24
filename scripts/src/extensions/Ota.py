@@ -3,16 +3,16 @@ import typing
 import warnings
 
 if typing.TYPE_CHECKING:
-    from ..Project import Project
+    from ..Frekvens import Frekvens
 
 
 class Ota:
     ENV_OPTION: str = "EXTENSION_OTA"
     NAME: str = "OTA"
-    project: "Project"
+    project: "Frekvens"
     _auth: str | None
 
-    def __init__(self, project: "Project") -> None:
+    def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
     def configure(self) -> None:

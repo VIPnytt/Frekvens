@@ -2,6 +2,7 @@
 
 # Stream .csv files provided by the Animation or Draw modes via Art-Net.
 
+import argparse
 import csv
 import os
 import socket
@@ -12,15 +13,15 @@ class ArtNetStreamer:
     frames: list[bytearray] = []
     header: bytearray = bytearray(18)
     host: str
-    interval: float
+    interval: float | int
     port: int = 6454
     rows: int
 
     def __init__(
-        self, host: str = "frekvens.local", interval: int = 500, rows: int = 16
+        self, host: str = "frekvens.local", interval: float | int = 0.5, rows: int = 16
     ) -> None:
         self.host = host
-        self.interval = interval / 1_000
+        self.interval = interval
         self.rows = rows
 
     def append(self, path: str = "Animation.csv") -> None:
@@ -54,12 +55,23 @@ class ArtNetStreamer:
 
 
 if __name__ == "__main__":
-    host = input("Host: ")
-    path = input("Path: ")
-    if os.path.isfile(path):
-        stream = ArtNetStreamer(host)
-        stream.append(path)
+    parser = argparse.ArgumentParser(
+        description="Stream .csv files provided by the Animation or Draw modes via Art-Net."
+    )
+    parser.add_argument("--host", help="Host or IP address", type=str)
+    parser.add_argument(
+        "--interval", default=0.5, help="Frame interval (seconds)", type=float
+    )
+    parser.add_argument("-i", "--input", help=".csv file path", type=str)
+    parser.add_argument("--rows", default=16, help="Grid rows", type=int)
+    args = parser.parse_args()
+    if args.host is None:
+        args.host = input("Host or IP address: ") or "frekvens.local"
+    if args.input is None:
+        args.input = input(".csv file path: ") or "Animation.csv"
+    if os.path.isfile(args.input):
+        stream = ArtNetStreamer(args.host, args.interval, args.rows)
+        stream.append(args.input)
         stream.begin()
     else:
-        print(f"File not found")
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(args.input)

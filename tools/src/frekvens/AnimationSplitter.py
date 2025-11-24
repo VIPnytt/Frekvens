@@ -2,6 +2,7 @@
 
 # Split .csv files from the Animation mode into individual frames or drawings.
 
+import argparse
 import os
 
 
@@ -20,17 +21,22 @@ class AnimationSplitter:
                 [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)],
                 start=1,
             ):
-                _path = os.path.join(directory, f"{name}-frame{i}{extension}")
+                _path = os.path.join(directory, f"{name}-frame-{i}{extension}")
                 with open(_path, "w", encoding="utf-8", newline="") as drawing:
                     drawing.writelines(frame)
                 print(f"#{i}: {_path}")
 
 
 if __name__ == "__main__":
-    path = input("Path: ")
-    if os.path.isfile(path):
-        splitter = AnimationSplitter()
-        splitter.split(path)
+    parser = argparse.ArgumentParser(
+        description="Split .csv files from the Animation mode into individual frames or drawings."
+    )
+    parser.add_argument("-i", "--input", help=".csv file path", type=str)
+    parser.add_argument("--rows", default=16, help="Grid rows", type=int)
+    args = parser.parse_args()
+    if args.input is None:
+        args.input = input(".csv file path: ") or "Animation.csv"
+    if os.path.isfile(args.input):
+        AnimationSplitter(args.rows).split(args.input)
     else:
-        print(f"File not found")
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(args.input)

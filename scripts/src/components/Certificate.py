@@ -18,14 +18,14 @@ from ..modes.WttrIn import WttrIn
 from ..modes.Yr import Yr
 
 if typing.TYPE_CHECKING:
-    from ..Project import Project
+    from ..Frekvens import Frekvens
 
 
 class Certificate:
     certificates: list[cryptography.x509.Certificate]
-    project: "Project"
+    project: "Frekvens"
 
-    def __init__(self, project: "Project") -> None:
+    def __init__(self, project: "Frekvens") -> None:
         self.certificates = []
         self.project = project
 
@@ -39,7 +39,15 @@ class Certificate:
         }.items():
             if option in self.project.dotenv and self.project.dotenv[option] == "true":
                 for host in hosts:
-                    self._add_host(host)
+                    try:
+                        self._add_host(host)
+                    except TimeoutError as e:
+                        logging.warning(
+                            "Timeout when fetching certificate for %s, doing one last attempt: %s",
+                            host,
+                            e,
+                        )
+                        self._add_host(host)
         bundle_path = pathlib.Path("firmware/certs/bundle")
         bundle_path.mkdir(parents=True, exist_ok=True)
         ca_roots = "ca_roots.pem"

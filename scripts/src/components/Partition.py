@@ -3,14 +3,14 @@ import typing
 from ..extensions.Ota import Ota
 
 if typing.TYPE_CHECKING:
-    from ..Project import Project
+    from ..Frekvens import Frekvens
 
 
 class Partition:
-    project: "Project"
+    project: "Frekvens"
     table: str
 
-    def __init__(self, project: "Project") -> None:
+    def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
     def initialize(self) -> None:

@@ -2,6 +2,7 @@
 
 # Demo script for setting the Home thermometer temperatures.
 
+import argparse
 import httpx
 
 
@@ -26,10 +27,23 @@ class HomeThermometerDemo:
 
 
 if __name__ == "__main__":
-    host = input("Host: ")
-    indoor = float(input("Indoor: "))
-    outdoor = float(input("Outdoor: "))
-    thermometer = HomeThermometerDemo(host)
-    thermometer.indoor(indoor)
-    thermometer.outdoor(outdoor)
-    thermometer.push()
+    parser = argparse.ArgumentParser(
+        description="Demo script for setting the Home thermometer temperatures."
+    )
+    parser.add_argument("--host", help="Host or IP address", type=str)
+    parser.add_argument("--indoor", help="Indoor temperature", type=float)
+    parser.add_argument("--outdoor", help="Outdoor temperature", type=float)
+    args = parser.parse_args()
+    if args.host is None:
+        args.host = input("Host or IP address: ") or "frekvens.local"
+    if args.indoor is None:
+        args.indoor = input("Indoor temperature: ") or None
+    if args.outdoor is None:
+        args.outdoor = input("Outdoor temperature: ") or None
+    thermometer = HomeThermometerDemo(args.host)
+    if args.indoor is not None:
+        thermometer.indoor(float(args.indoor))
+    if args.outdoor is not None:
+        thermometer.outdoor(float(args.outdoor))
+    if args.indoor is not None or args.outdoor is not None:
+        thermometer.push()

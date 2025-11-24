@@ -2,6 +2,7 @@
 
 # Generate mode source files from .csv files provided by the Animation or Draw modes.
 
+import argparse
 import csv
 import os
 
@@ -12,9 +13,9 @@ class ModeGenerator:
     rows: int
 
     def __init__(self, path: str = "Animation.csv", rows: int = 16) -> None:
-        self.name = os.path.splitext(os.path.basename(self.path))[0]
         self.path = path
         self.rows = rows
+        self.name = os.path.splitext(os.path.basename(self.path))[0]
 
     def source(self) -> None:
         with open(self.path, "r", encoding="utf-8") as animation:
@@ -180,9 +181,15 @@ class ModeGenerator:
 
 
 if __name__ == "__main__":
-    path = input("Path: ")
-    if os.path.isfile(path):
-        ModeGenerator(path).source()
+    parser = argparse.ArgumentParser(
+        description="Generate mode source files from .csv files provided by the Animation or Draw modes."
+    )
+    parser.add_argument("-i", "--input", help=".csv file path", type=str)
+    parser.add_argument("--rows", default=16, help="Grid rows", type=int)
+    args = parser.parse_args()
+    if args.input is None:
+        args.input = input(".csv file path: ")
+    if os.path.isfile(args.input):
+        ModeGenerator(args.input, args.rows).source()
     else:
-        print(f"File not found")
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(args.input)

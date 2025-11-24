@@ -1,0 +1,42 @@
+name: 📋 Task
+description: A specific piece of work.
+type: Task
+body:
+  - type: input
+    id: task-title
+    attributes:
+      label: Summary
+      description: One-line description of the task.
+      placeholder: e.g. Update build flags for ESP32-C3
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be achieved when this task is complete?
+      placeholder: Describe the intended outcome, not the implementation.
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: Optional implementation steps or checklist items.
+      placeholder: |
+        - Adjust platformio.ini
+        - Validate build output
+        - Update documentation
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Other issues, PRs, or external constraints that must be resolved first.
+      placeholder: e.g. Blocks release 2.0.0; depends on #123
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      placeholder: Additional context or considerations.

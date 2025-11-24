@@ -12,15 +12,15 @@ from ..config.version import VERSION
 from .WebSocket import WebSocket
 
 if typing.TYPE_CHECKING:
-    from ..Project import Project
+    from ..Frekvens import Frekvens
 
 
 class WebApp:
     ENV_OPTION: str = "EXTENSION_WEBAPP"
     NAME: str = "Web app"
-    project: "Project"
+    project: "Frekvens"
 
-    def __init__(self, project: "Project") -> None:
+    def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
     def initialize(self) -> None:
