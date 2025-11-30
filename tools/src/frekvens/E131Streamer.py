@@ -41,7 +41,6 @@ class E131Streamer:
         with open(path, encoding="utf-8", newline="") as graphic:
             rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
             return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
-        return []
 
     def stream(
         self, frames: list[list[list[int]]], interval: float | int = 0.5
