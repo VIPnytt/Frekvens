@@ -73,7 +73,7 @@ jobs:
       - uses: andstor/file-existence-action@v3
         with:
           fail: true
-          files: "Animation-frame-1.csv, Animation-frame-2.csv"
+          files: "Animation-1.csv, Animation-2.csv"
 
   art-net-streamer:
     name: Art-Net streamer
@@ -109,7 +109,17 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python -m frekvens.ArtNetStreamer --host localhost --input Drawing.csv
+      - run: |
+          set +e
+          OUTPUT=$(python -m frekvens.ArtNetStreamer --host localhost --input Drawing.csv 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
+            echo "Expected ConnectError occurred."
+            exit 0
+          fi
+          echo "Unexpected error or no error."
+          exit $STATUS
 
   distributed-display-protocol-streamer:
     name: Distributed Display Protocol streamer
@@ -144,7 +154,17 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python -m frekvens.DistributedDisplayProtocolStreamer --host localhost --input Drawing.csv
+      - run: |
+          set +e
+          OUTPUT=$(python -m frekvens.DistributedDisplayProtocolStreamer --host localhost --input Drawing.csv 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
+            echo "Expected ConnectError occurred."
+            exit 0
+          fi
+          echo "Unexpected error or no error."
+          exit $STATUS
 
   e131-streamer:
     name: E1.31 streamer
@@ -180,7 +200,17 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python -m frekvens.E131Streamer --host localhost --input Drawing.csv
+      - run: |
+          set +e
+          OUTPUT=$(python -m frekvens.E131Streamer --host localhost --input Drawing.csv 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
+            echo "Expected ConnectError occurred."
+            exit 0
+          fi
+          echo "Unexpected error or no error."
+          exit $STATUS
 
   font-generator:
     name: Font generator

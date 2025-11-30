@@ -267,7 +267,7 @@ if __name__ == "__main__":
         args.size = int(input("Font size: ") or 8)
     try:
         FontGenerator(args.input, args.size).source()
-    except:
+    except FileNotFoundError:
         match = False
         fonts = FontGenerator.find(args.input)
         for font in fonts:
