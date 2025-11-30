@@ -19,7 +19,7 @@
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
 
-void DeviceService::init()
+void DeviceService::begin()
 {
     Serial.begin(MONITOR_SPEED);
     vTaskDelay(UINT8_MAX);
@@ -90,16 +90,12 @@ void DeviceService::init()
 
     taskHandle = xTaskGetCurrentTaskHandle();
 
-    Display.setup();
-    Connectivity.setup();
-    WebServer.setup();
-    Extensions.setup();
-    Modes.setup();
-    ready();
-}
+    Display.configure();
+    Connectivity.configure();
+    WebServer.configure();
+    Extensions.configure();
+    Modes.configure();
 
-void DeviceService::ready()
-{
     operational = true;
     ESP_LOGV(name, "operational");
 
@@ -150,16 +146,20 @@ void DeviceService::ready()
         component[HomeAssistantAbbreviations::value_template] = "{{value_json.temperature}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
-    Display.ready();
-    Connectivity.ready();
-    Fonts.ready();
-    Extensions.ready();
-    Modes.ready();
+
+    Display.begin();
+    Connectivity.begin();
+    WebServer.begin();
+    Fonts.begin();
+    Extensions.begin();
+    Modes.begin();
+
     transmit();
+
     ESP_LOGD(name, "ready");
 }
 
-void DeviceService::run()
+void DeviceService::handle()
 {
     Connectivity.handle();
     Display.handle();
@@ -170,25 +170,21 @@ void DeviceService::run()
     }
 }
 
-void DeviceService::setPower(bool power, const char *const source)
+void DeviceService::setPower(bool power)
 {
     if (power)
     {
-        ESP_LOGI(source, "rebooting...");
+        ESP_LOGI(name, "rebooting...");
     }
     else
     {
-        ESP_LOGW(source, "powering off...");
+        ESP_LOGW(name, "powering off...");
     }
     JsonDocument doc;
     doc["event"] = power ? "reboot" : "power";
     Device.transmit(doc, name, false);
-    if (Modes.active && eTaskGetState(Modes.taskHandle) != eTaskState::eSuspended)
-    {
-        Modes.active->sleep();
-        Modes.setActive(false);
-    }
-    Display.setPower(false, source);
+    Modes.setActive(false);
+    Display.setPower(false);
     Display.clearFrame();
     Display.flush();
 #if EXTENSION_MQTT
@@ -207,11 +203,8 @@ void DeviceService::setPower(bool power, const char *const source)
 void DeviceService::restore()
 {
     ESP_LOGW(name, "restoring...");
-    if (Modes.active && eTaskGetState(Modes.taskHandle) != eTaskState::eSuspended)
-    {
-        Modes.setActive(false);
-    }
-    Display.setPower(false, name);
+    Modes.setActive(false);
+    Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
     HomeAssistant->undiscover();
 #endif
@@ -267,7 +260,7 @@ void DeviceService::transmit()
     doc["board"] = BOARD__NAME;
     doc["model"] = MODEL;
     doc["name"] = NAME;
-    doc["project"] = "https://github.com/VIPnytt/Frekvens";
+    doc["repository"] = "https://github.com/VIPnytt/Frekvens";
     doc["temperature"] = temperatureRead();
     doc["version"] = VERSION;
     lastMillis = millis();
@@ -285,7 +278,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
         ESP_LOGV(source, "transmitting");
         for (ExtensionModule *extension : Extensions.getAll())
         {
-            extension->transmitterHook(doc, source);
+            extension->onTransmit(doc, source);
         }
     }
 }
@@ -305,7 +298,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(service->name, destination))
             {
-                service->receiverHook(doc, source);
+                service->onReceive(doc, source);
                 return;
             }
         }
@@ -313,7 +306,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(extension->name, destination))
             {
-                extension->receiverHook(doc, source);
+                extension->onReceive(doc, source);
                 return;
             }
         }
@@ -321,14 +314,14 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(mode->name, destination))
             {
-                mode->receiverHook(doc, source);
+                mode->onReceive(doc, source);
                 return;
             }
         }
     }
 }
 
-void DeviceService::receiverHook(const JsonDocument doc, const char *const source)
+void DeviceService::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["action"].is<const char *>())
     {
@@ -336,12 +329,12 @@ void DeviceService::receiverHook(const JsonDocument doc, const char *const sourc
         // Power off
         if (!strcmp(action, "power"))
         {
-            setPower(false, source);
+            setPower(false);
         }
         // Reboot
         else if (!strcmp(action, "reboot"))
         {
-            setPower(true, source);
+            setPower(true);
         }
         // Restore
         else if (!strcmp(action, "restore"))

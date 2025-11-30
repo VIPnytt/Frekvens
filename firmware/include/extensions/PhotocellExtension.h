@@ -33,15 +33,15 @@ private:
 public:
     PhotocellExtension();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
     bool getActive() const;
-    void setActive(bool active, const char *const source);
+    void setActive(bool active);
 
-    void receiverHook(const JsonDocument doc, const char *const source) override;
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern PhotocellExtension *Photocell;

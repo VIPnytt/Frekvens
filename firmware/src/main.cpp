@@ -3,11 +3,11 @@
 
 void setup()
 {
-    Device.init();
+    Device.begin();
 }
 
 void loop()
 {
-    Device.run();
+    Device.handle();
     vTaskDelay(1);
 }

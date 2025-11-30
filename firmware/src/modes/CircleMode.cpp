@@ -9,7 +9,7 @@
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 6) && Microphone->isPlay())
+    if (millis() - lastMillis > (1 << 6) && Microphone->isTriggered())
 #else
     if (millis() - lastMillis > (1 << 6))
 #endif // EXTENSION_MICROPHONE

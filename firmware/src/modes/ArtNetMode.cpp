@@ -2,11 +2,13 @@
 
 #if MODE_ARTNET
 
+#include <ESPmDNS.h>
+
 #include "modes/ArtNetMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
 
-void ArtNetMode::wake()
+void ArtNetMode::begin()
 {
     udp = std::make_unique<AsyncUDP>();
     if (udp->listen(6454))
@@ -22,13 +24,9 @@ void ArtNetMode::onPacket(AsyncUDPPacket packet)
     {
         Display.setFrame(packet.data() + 18);
     }
-    else
-    {
-        ESP_LOGV(_name.data(), "malformed packet received");
-    }
 }
 
-void ArtNetMode::sleep()
+void ArtNetMode::end()
 {
     udp.reset();
 }

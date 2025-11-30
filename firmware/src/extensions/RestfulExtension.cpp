@@ -16,7 +16,7 @@ RestfulExtension::RestfulExtension() : ExtensionModule("RESTful")
     Restful = this;
 }
 
-void RestfulExtension::ready()
+void RestfulExtension::begin()
 {
     WebServer.http->on("/restful/", WebRequestMethod::HTTP_GET, &onGet);
     for (const char *const _name : Device.getNames())

@@ -1,5 +1,6 @@
 # PlatformIO pre-build extra script
 
+import logging
 import sys
 
 Import("env")  # type: ignore
@@ -17,7 +18,7 @@ from scripts.src.Frekvens import Frekvens
 if env["PIOENV"] in [  # type: ignore
     "upload_ota",
 ]:
-    print(f"Skipping environment: {env['PIOENV']}")  # type: ignore
+    logging.info(f"Skipping environment: {env['PIOENV']}")  # type: ignore
     env.Exit(0)  # type: ignore
 
 if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore

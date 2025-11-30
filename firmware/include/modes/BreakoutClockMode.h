@@ -33,7 +33,7 @@ private:
 public:
     BreakoutClockMode() : ModeModule("Breakout clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

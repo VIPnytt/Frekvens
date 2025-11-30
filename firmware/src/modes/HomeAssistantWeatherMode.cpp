@@ -8,7 +8,7 @@
 #include "modes/HomeAssistantWeatherMode.h"
 #include "services/ConnectivityService.h"
 
-void HomeAssistantWeatherMode::wake()
+void HomeAssistantWeatherMode::begin()
 {
     if (urls.empty())
     {

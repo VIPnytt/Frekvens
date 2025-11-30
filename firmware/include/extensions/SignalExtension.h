@@ -26,9 +26,10 @@ private:
 public:
     SignalExtension();
 
-    void ready() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern SignalExtension *Signal;

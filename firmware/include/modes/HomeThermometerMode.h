@@ -18,10 +18,10 @@ private:
 public:
     HomeThermometerMode() : ModeModule("Home thermometer") {};
 
-    void setup() override;
-    void wake() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_HOMETHERMOMETER

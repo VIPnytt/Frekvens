@@ -1,4 +1,4 @@
-import { mdiCog, mdiDotsGrid, mdiHome, mdiMenu, mdiWindowClose } from '@mdi/js';
+import { mdiDockLeft, mdiDotsGrid, mdiHome, mdiMenu, mdiWindowClose } from '@mdi/js';
 import { Component, createEffect, createSignal, JSX, Match, onCleanup, onMount, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
@@ -216,9 +216,9 @@ const Home: Component = () => (
             >
                 <Icon
                     class="mr-2"
-                    path={WebAppPath() == '/' ? mdiCog : mdiHome}
+                    path={WebAppPath() == '/' ? mdiMenu : mdiHome}
                 />
-                {WebAppPath() == '/' ? 'Settings' : 'Home'}
+                {WebAppPath() == '/' ? 'Menu' : 'Home'}
             </a>
         </div>
     </>
@@ -257,10 +257,10 @@ const Footer: Component = () => (
 const Toggle: Component = () => (
     <div class={`absolute ${getSidebar() ? 'left-[calc(--spacing(68)-1px)] top-0' : 'left-6 top-6'}`}>
         <button
-            class={`action-activated ${getSidebar() && 'border-0 not-hover:bg-menu-light dark:not-hover:bg-menu-dark not-hover:text-content-light dark:not-hover:text-content-dark'}`}
+            class={`text-interactive-light dark:text-content-dark ${getSidebar() ? 'border-0 bg-menu-light dark:bg-menu-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark' : 'bg-neutral-light dark:bg-neutral-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark'}`}
             onclick={() => setSidebar(!getSidebar())}
         >
-            <Icon path={getSidebar() ? mdiWindowClose : mdiMenu} />
+            <Icon path={getSidebar() ? mdiWindowClose : mdiDockLeft} />
         </button>
     </div>
 );

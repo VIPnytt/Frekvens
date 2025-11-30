@@ -1,77 +1,77 @@
 #!/usr/bin/env python3
 
-# Stream .csv files provided by the Animation or Draw modes via E1.31.
+# Stream .csv graphic files provided by the Animation or Draw modes via E1.31.
 
 import argparse
 import csv
-import os
+import httpx
+import logging
 import socket
 import time
 
 
 class E131Streamer:
-    frames: list[bytearray] = []
-    header: bytearray = bytearray(126)
     host: str
-    interval: float | int
-    port: int = 5568
+    mode: str = "E1.31"
     rows: int
+    sock: socket.socket = socket.socket(type=socket.SOCK_DGRAM)
 
     def __init__(
-        self, host: str = "frekvens.local", interval: float | int = 0.5, rows: int = 16
+        self,
+        host: str,
+        rows: int = 16,
     ) -> None:
         self.host = host
-        self.interval = interval
         self.rows = rows
 
-    def append(self, path: str = "Animation.csv") -> None:
-        with open(path, newline="", encoding="utf-8") as animation:
-            frame = self.header
-            i = 0
-            for row in csv.reader(animation):
-                for column in row:
-                    frame.append(int(column.strip()))
-                i += 1
-                if i % self.rows == 0:
-                    self.frames.append(frame)
-                    frame = self.header
+    def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
+        self.sock.connect((self.host, 5568))
+        return self
 
-    def begin(self) -> None:
-        frames = len(self.frames)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        if frames > 1:
-            print(f"Stream started. Press Ctrl+C to terminate.")
-        i = 0
+    def __exit__(self, exc_type, exc, tb):
+        self.sock.close()
+
+    def display(self, frame: list[list[int]]) -> None:
+        packet = bytearray(126)
+        packet.extend([pixel for row in frame for pixel in row])
+        self.sock.send(packet)
+
+    def parse(self, path: str) -> list[list[list[int]]]:
+        with open(path, encoding="utf-8", newline="") as graphic:
+            rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
+            return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
+        return []
+
+    def stream(
+        self, frames: list[list[list[int]]], interval: float | int = 0.5
+    ) -> None:
         try:
+            print(f"{self.mode} stream started. Press Ctrl+C to terminate.")
             while True:
-                sock.sendto(self.frames[i % frames], (self.host, self.port))
-                i += 1
-                if frames < 2:
-                    break
-                time.sleep(self.interval)
+                for frame in frames:
+                    self.display(frame)
+                    time.sleep(interval)
         except KeyboardInterrupt:
-            sock.close()
-            print(f"Stream ended gracefully.")
+            logging.info(f"Stream ended gracefully.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Stream .csv files provided by the Animation or Draw modes via E1.31."
+        description=f"Stream .csv graphic files via {E131Streamer.mode}."
     )
-    parser.add_argument("--host", help="Host or IP address", type=str)
-    parser.add_argument(
-        "--interval", default=0.5, help="Frame interval (seconds)", type=float
-    )
+    parser.add_argument("--host", help="Host", type=str)
+    parser.add_argument("--interval", default=0.5, help="Frame interval", type=float)
     parser.add_argument("-i", "--input", help=".csv file path", type=str)
     parser.add_argument("--rows", default=16, help="Grid rows", type=int)
     args = parser.parse_args()
     if args.host is None:
-        args.host = input("Host or IP address: ") or "frekvens.local"
+        args.host = input("Host: ")
     if args.input is None:
-        args.input = input(".csv file path: ") or "Animation.csv"
-    if os.path.isfile(args.input):
-        stream = E131Streamer(args.host, args.interval, args.rows)
-        stream.append(args.input)
-        stream.begin()
-    else:
-        raise FileNotFoundError(args.input)
+        args.input = input(".csv file path: ")
+    with E131Streamer(args.host, args.rows) as streamer:
+        frames: list[list[list[int]]] = streamer.parse(args.input)
+        if len(frames) > 1:
+            streamer.stream(frames, args.interval)
+        else:
+            streamer.display(frames[0])

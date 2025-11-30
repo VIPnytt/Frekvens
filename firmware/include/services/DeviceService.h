@@ -16,18 +16,16 @@ private:
 
     JsonDocument transmits;
 
-    void ready();
-
     void transmit();
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 
 public:
     TaskHandle_t taskHandle = nullptr;
 
-    void init();
-    void run();
+    void begin();
+    void handle();
 
-    void setPower(bool power, const char *const source);
+    void setPower(bool power);
     void restore();
 
     void transmit(JsonDocument doc, const char *const source, bool retain = true);

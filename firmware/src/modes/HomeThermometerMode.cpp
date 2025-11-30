@@ -14,7 +14,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void HomeThermometerMode::setup()
+void HomeThermometerMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -64,7 +64,7 @@ void HomeThermometerMode::setup()
     transmit();
 }
 
-void HomeThermometerMode::wake()
+void HomeThermometerMode::begin()
 {
     pending = true;
 }
@@ -124,7 +124,7 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::receiverHook(const JsonDocument doc, const char *const source)
+void HomeThermometerMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["indoor"].is<float>())
     {

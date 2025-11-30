@@ -2,11 +2,13 @@
 
 #if MODE_DISTRIBUTEDDISPLAYPROTOCOL
 
+#include <ESPmDNS.h>
+
 #include "modes/DistributedDisplayProtocolMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
 
-void DistributedDisplayProtocolMode::wake()
+void DistributedDisplayProtocolMode::begin()
 {
     udp = std::make_unique<AsyncUDP>();
     if (udp->listen(4048))
@@ -23,13 +25,9 @@ void DistributedDisplayProtocolMode::onPacket(AsyncUDPPacket packet)
     {
         Display.setFrame(packet.data() + len - GRID_COLUMNS * GRID_ROWS);
     }
-    else
-    {
-        ESP_LOGV(_name.data(), "malformed packet received");
-    }
 }
 
-void DistributedDisplayProtocolMode::sleep()
+void DistributedDisplayProtocolMode::end()
 {
     udp.reset();
 }

@@ -38,12 +38,12 @@ private:
 public:
     TickerMode() : ModeModule("Ticker") {};
 
-    void setup() override;
-    void wake() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
-    void sleep() override;
+    void end() override;
 
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_TICKER

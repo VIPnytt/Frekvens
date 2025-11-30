@@ -17,22 +17,13 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
                     tag: 'link',
                     attrs: {
                         rel: 'icon',
-                        type: 'image/svg+xml',
-                        href: IconUri({ path: mdiDotsGrid, fill: 'white' }),
-                    },
-                },
-                {
-                    injectTo: 'head' as const,
-                    tag: 'link',
-                    attrs: {
-                        rel: 'license',
-                        href: `https://github.com/VIPnytt/Frekvens/blob/main/LICENSE`,
+                        href: IconUri({ path: mdiDotsGrid }),
                     },
                 },
                 {
                     injectTo: 'head' as const,
                     tag: 'title',
-                    children: env.NAME || "",
+                    children: env.NAME,
                 },
             ],
         },

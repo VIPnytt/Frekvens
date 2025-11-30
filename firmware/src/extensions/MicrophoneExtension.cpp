@@ -16,7 +16,7 @@ MicrophoneExtension::MicrophoneExtension() : ExtensionModule("Microphone")
     Microphone = this;
 }
 
-void MicrophoneExtension::setup()
+void MicrophoneExtension::configure()
 {
     pinMode(PIN_MIC, ANALOG);
 
@@ -79,7 +79,7 @@ void MicrophoneExtension::setup()
 #endif // EXTENSION_HOMEASSISTANT
 }
 
-void MicrophoneExtension::ready()
+void MicrophoneExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -89,7 +89,7 @@ void MicrophoneExtension::ready()
         threshold = Storage.getUShort("threshold");
     }
     Storage.end();
-    _active ? setActive(true, name) : transmit();
+    _active ? setActive(true) : transmit();
 }
 
 void MicrophoneExtension::handle()
@@ -142,7 +142,7 @@ bool MicrophoneExtension::getActive()
     return active;
 }
 
-void MicrophoneExtension::setActive(bool active, const char *const source)
+void MicrophoneExtension::setActive(bool active)
 {
     if ((active && !this->active) || (!active && this->active))
     {
@@ -158,11 +158,11 @@ void MicrophoneExtension::setActive(bool active, const char *const source)
         pending = true;
         if (this->active)
         {
-            ESP_LOGI(source, "active");
+            ESP_LOGI(name, "active");
         }
         else
         {
-            ESP_LOGI(source, "inactive");
+            ESP_LOGI(name, "inactive");
         }
     }
 }
@@ -180,7 +180,7 @@ void MicrophoneExtension::setThreshold(uint16_t _threshold)
     }
 }
 
-bool MicrophoneExtension::isPlay() const
+bool MicrophoneExtension::isTriggered() const
 {
     return detected || !active;
 }
@@ -194,12 +194,12 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MicrophoneExtension::receiverHook(const JsonDocument doc, const char *const source)
+void MicrophoneExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Active
     if (doc["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>(), source);
+        setActive(doc["active"].as<bool>());
     }
     // Threshold
     if (doc["threshold"].is<uint16_t>())

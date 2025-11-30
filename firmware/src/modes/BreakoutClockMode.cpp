@@ -8,7 +8,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void BreakoutClockMode::wake()
+void BreakoutClockMode::begin()
 {
     Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 5 - 1);
     paddle.clear();

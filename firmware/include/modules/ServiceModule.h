@@ -13,5 +13,5 @@ public:
 
     const char *const name;
 
-    virtual void receiverHook(const JsonDocument doc, const char *const source);
+    virtual void onReceive(const JsonDocument doc, const char *const source);
 };

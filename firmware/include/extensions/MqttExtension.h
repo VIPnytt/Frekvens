@@ -28,12 +28,12 @@ public:
 
     espMqttClient client;
 
-    void setup() override;
+    void configure() override;
     void handle() override;
 
     void disconnect();
 
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern MqttExtension *Mqtt;

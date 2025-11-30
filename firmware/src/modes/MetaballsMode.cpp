@@ -6,7 +6,7 @@
 #include "modes/MetaballsMode.h"
 #include "services/DisplayService.h"
 
-void MetaballsMode::setup()
+void MetaballsMode::configure()
 {
     for (uint16_t i = 0; i < sizeof(contributions); ++i)
     {
@@ -24,7 +24,7 @@ void MetaballsMode::setup()
 void MetaballsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->isPlay())
+    if (Microphone->isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
         const bool rotated = Display.getOrientation() % 2;

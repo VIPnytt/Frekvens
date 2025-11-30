@@ -23,7 +23,7 @@ private:
 public:
     BinaryClockMode() : ModeModule("Binary clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

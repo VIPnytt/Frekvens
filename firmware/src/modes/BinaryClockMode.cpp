@@ -5,7 +5,7 @@
 #include "modes/BinaryClockMode.h"
 #include "services/DisplayService.h"
 
-void BinaryClockMode::wake()
+void BinaryClockMode::begin()
 {
     pending = true;
 }

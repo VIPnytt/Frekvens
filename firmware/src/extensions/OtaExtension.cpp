@@ -2,6 +2,7 @@
 
 #if EXTENSION_OTA
 
+#include <ESPmDNS.h>
 #include <HTTPClient.h>
 
 #include "extensions/OtaExtension.h"
@@ -19,21 +20,26 @@ OtaExtension::OtaExtension() : ExtensionModule("OTA")
     Ota = this;
 }
 
-void OtaExtension::setup()
+void OtaExtension::configure()
 {
     ArduinoOTA.setHostname(HOSTNAME);
     ArduinoOTA.setMdnsEnabled(false);
-
 #ifdef OTA_KEY
     ArduinoOTA.setPasswordHash(OTA_KEY);
-#else
-    WebServer.http->on("/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
 #endif // OTA_KEY
-
-    ArduinoOTA.begin();
     ArduinoOTA.onStart(&onStart);
-    ArduinoOTA.onError(&onError);
     ArduinoOTA.onEnd(&onEnd);
+}
+
+void OtaExtension::begin()
+{
+    ArduinoOTA.begin();
+#ifdef OTA_KEY
+    MDNS.enableArduino(3232, true);
+#else
+    MDNS.enableArduino(3232, false);
+    WebServer.http->on("/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onPost);
+#endif // OTA_KEY
 }
 
 void OtaExtension::handle()
@@ -48,24 +54,17 @@ void OtaExtension::onStart()
     Display.clearFrame();
     TextHandler("U", FontLarge).draw();
     Display.flush();
-    Display.setPower(true, Ota->name);
+    Display.setPower(true);
     timerWrite(Display.timer, 1'000'000 / (1 << 8)); // 1 fps
 }
 
 void OtaExtension::onEnd()
 {
     ESP_LOGI(Ota->name, "complete");
-    Device.setPower(true, Ota->name);
-}
-
-void OtaExtension::onError(ota_error_t error)
-{
-    ESP_LOGE(Ota->name, "%s", Update.errorString());
-    Device.setPower(true, Ota->name);
 }
 
 #ifndef OTA_KEY
-void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
 {
     if (!index)
     {
@@ -75,7 +74,6 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
     {
         ESP_LOGE(Ota->name, "%s", Update.errorString());
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
-        Device.setPower(true, Ota->name);
     }
     else if (final)
     {

@@ -22,10 +22,10 @@ private:
 public:
     DrawMode() : ModeModule("Draw") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
-    void sleep() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void end() override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_DRAW

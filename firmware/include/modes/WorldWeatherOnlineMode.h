@@ -63,7 +63,7 @@ private:
 public:
     WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

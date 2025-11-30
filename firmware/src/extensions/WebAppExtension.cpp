@@ -15,14 +15,17 @@ WebAppExtension::WebAppExtension() : ExtensionModule("Web app")
     WebApp = this;
 }
 
-void WebAppExtension::setup()
+void WebAppExtension::configure()
 {
-    LittleFS.begin(false, "/littlefs", 1, "littlefs");
-    if (!LittleFS.exists("/webapp/index.html.gz"))
+    if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))
     {
-        ESP_LOGE(name, "front page not found");
+        ESP_LOGE(name, "Filesystem Image not found");
     }
     WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
+}
+
+void WebAppExtension::begin()
+{
     WebServer.http->on("/", WebRequestMethod::HTTP_HEAD, &onHeadRoot);
 }
 

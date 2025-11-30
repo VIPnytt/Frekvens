@@ -3,7 +3,7 @@
 #include "services/FontsService.h"
 #include "services/ModesService.h"
 
-void FontsService::ready()
+void FontsService::begin()
 {
     transmit();
 }

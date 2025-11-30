@@ -10,7 +10,7 @@
 #include "services/DeviceService.h"
 #include "services/ModesService.h"
 
-void TickerMode::setup()
+void TickerMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -55,7 +55,7 @@ void TickerMode::setup()
     }
 }
 
-void TickerMode::wake()
+void TickerMode::begin()
 {
     pending = true;
 }
@@ -123,7 +123,7 @@ void TickerMode::transmit()
     Device.transmit(doc, name);
 }
 
-void TickerMode::receiverHook(const JsonDocument doc, const char *const source)
+void TickerMode::onReceive(const JsonDocument doc, const char *const source)
 {
     // Font
     if (doc["font"].is<const char *>())
@@ -134,11 +134,11 @@ void TickerMode::receiverHook(const JsonDocument doc, const char *const source)
     if (doc["message"].is<std::string>())
     {
         setMessage(doc["message"].as<std::string>());
-        ESP_LOGD(source, "received");
+        ESP_LOGD(name, "received");
     }
 }
 
-void TickerMode::sleep()
+void TickerMode::end()
 {
     text.reset();
 }

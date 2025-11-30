@@ -24,7 +24,7 @@ private:
         deg270,
     };
 
-    const uint8_t pwmDepth = min<uint8_t>(log2(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
+    const uint8_t depth = min<uint8_t>(log2(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
     const std::vector<uint16_t> hi = {
         0b1000001001,
@@ -64,8 +64,8 @@ private:
 public:
     hw_timer_t *timer;
 
-    void setup();
-    void ready();
+    void configure();
+    void begin();
 
     void handle();
 
@@ -75,10 +75,10 @@ public:
     void setOrientation(Orientation _orientation);
 
     bool getPower() const;
-    void setPower(bool power, const char *const source);
+    void setPower(bool power);
 
     uint8_t getBrightness() const;
-    void setBrightness(uint8_t brightness, const char *const source);
+    void setBrightness(uint8_t brightness);
 
     void getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
     void setFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
@@ -94,7 +94,7 @@ public:
 
     void flush();
 
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 
     static DisplayService &getInstance();
 };

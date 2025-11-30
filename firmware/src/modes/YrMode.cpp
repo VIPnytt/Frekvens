@@ -8,7 +8,7 @@
 #include "modes/YrMode.h"
 #include "services/ConnectivityService.h"
 
-void YrMode::wake()
+void YrMode::begin()
 {
     if (urls.empty())
     {

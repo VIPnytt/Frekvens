@@ -9,16 +9,23 @@
 class EqualizerMode : public ModeModule
 {
 private:
-    static constexpr uint8_t width = 3;
+    static constexpr uint8_t width = GRID_ROWS / 5;
 
-    uint16_t interval = UINT8_MAX;
+    struct Bar
+    {
+        uint8_t
+            level = GRID_ROWS - 1,
+            target = GRID_ROWS - 1;
+    };
+
+    Bar bars[GRID_COLUMNS / (width + 1)];
 
     unsigned long lastMillis = 0;
 
 public:
     EqualizerMode() : ModeModule("Equalizer") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

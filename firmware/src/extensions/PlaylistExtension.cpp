@@ -17,7 +17,7 @@ PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist")
     Playlist = this;
 }
 
-void PlaylistExtension::setup()
+void PlaylistExtension::configure()
 {
     JsonDocument doc;
     Preferences Storage;
@@ -67,7 +67,7 @@ void PlaylistExtension::setup()
 #endif // EXTENSION_HOMEASSISTANT
 }
 
-void PlaylistExtension::ready()
+void PlaylistExtension::begin()
 {
     bool _active = false;
     Preferences Storage;
@@ -91,7 +91,7 @@ void PlaylistExtension::ready()
         }
     }
     Storage.end();
-    _active ? setActive(true, name) : transmit();
+    _active ? setActive(true) : transmit();
 }
 
 void PlaylistExtension::handle()
@@ -103,7 +103,7 @@ void PlaylistExtension::handle()
         {
             step = 0;
         }
-        Modes.setMode(playlist[step].mode.c_str(), name);
+        Modes.setMode(playlist[step].mode.c_str());
         lastMillis = millis();
     }
 }
@@ -113,7 +113,7 @@ bool PlaylistExtension::getActive() const
     return active;
 }
 
-void PlaylistExtension::setActive(bool active, const char *const source)
+void PlaylistExtension::setActive(bool active)
 {
     if ((active && !this->active && !playlist.empty()) || (!active && this->active))
     {
@@ -129,18 +129,18 @@ void PlaylistExtension::setActive(bool active, const char *const source)
 
         if (this->active)
         {
-            ESP_LOGI(source, "active");
+            ESP_LOGI(name, "active");
         }
         else
         {
-            ESP_LOGI(source, "inactive");
+            ESP_LOGI(name, "inactive");
         }
     }
 }
 
 void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
 {
-    setActive(false, name);
+    setActive(false);
     playlist.clear();
     JsonDocument doc;
     JsonArray items = doc.to<JsonArray>();
@@ -178,16 +178,16 @@ void PlaylistExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void PlaylistExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void PlaylistExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Modes: Mode
     if (active && !strcmp(source, Modes.name) && doc["mode"].is<std::string>() && doc["mode"].as<std::string>() != playlist[step].mode)
     {
-        setActive(false, source);
+        setActive(false);
     }
 }
 
-void PlaylistExtension::receiverHook(const JsonDocument doc, const char *const source)
+void PlaylistExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Playlist
     if (doc["playlist"].is<JsonArrayConst>())
@@ -208,7 +208,7 @@ void PlaylistExtension::receiverHook(const JsonDocument doc, const char *const s
     // Active
     if (doc["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>(), source);
+        setActive(doc["active"].as<bool>());
     }
 }
 

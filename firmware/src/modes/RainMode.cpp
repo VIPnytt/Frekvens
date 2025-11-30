@@ -5,7 +5,7 @@
 #include "modes/RainMode.h"
 #include "services/DisplayService.h"
 
-void RainMode::wake()
+void RainMode::begin()
 {
     for (Drop &drop : drops)
     {

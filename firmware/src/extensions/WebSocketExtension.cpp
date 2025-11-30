@@ -13,7 +13,7 @@ WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket")
     WebSocket = this;
 }
 
-void WebSocketExtension::ready()
+void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
     WebServer.http->addHandler(server);
@@ -24,7 +24,7 @@ void WebSocketExtension::handle()
     server->cleanupClients();
 }
 
-void WebSocketExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     JsonDocument _doc;
     _doc[source] = doc;

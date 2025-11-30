@@ -35,7 +35,7 @@ private:
 
     std::unique_ptr<TextHandler> text;
 
-    void addMessage(std::string message, const char *const source);
+    void addMessage(std::string message);
 
     void setFont(const char *const fontName);
     void setRepeat(uint8_t count);
@@ -46,12 +46,12 @@ public:
     MessageExtension();
 
 #if EXTENSION_HOMEASSISTANT
-    void setup() override;
+    void configure() override;
 #endif
 
-    void ready() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern MessageExtension *Message;

@@ -15,7 +15,7 @@ private:
 
     uint8_t index = 0;
 
-    uint16_t duration = 500;
+    uint16_t interval = 500;
 
     unsigned long lastMillis = 0;
 
@@ -24,9 +24,9 @@ private:
 public:
     AnimationMode() : ModeModule("Animation") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_ANIMATION

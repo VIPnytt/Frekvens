@@ -93,8 +93,8 @@ public:
 
     static constexpr uint16_t stackSize = 1 << 12; // 4 kB
 
-    void setup();
-    void ready();
+    void configure();
+    void begin();
 
     const std::vector<ExtensionModule *> &getAll() const;
 

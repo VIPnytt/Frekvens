@@ -72,7 +72,7 @@ private:
 public:
     OpenMeteoMode() : ModeModule("Open-Meteo") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

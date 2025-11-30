@@ -10,7 +10,7 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
-void DrawMode::wake()
+void DrawMode::begin()
 {
     load(true);
     if (!render)
@@ -41,7 +41,7 @@ void DrawMode::handle()
     }
 }
 
-void DrawMode::sleep()
+void DrawMode::end()
 {
     save(true);
 }
@@ -97,7 +97,7 @@ void DrawMode::transmit()
     Device.transmit(doc, name, false);
 }
 
-void DrawMode::receiverHook(const JsonDocument doc, const char *const source)
+void DrawMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["action"].is<const char *>())
     {

@@ -16,7 +16,7 @@ RtcExtension::RtcExtension() : ExtensionModule("RTC")
     Rtc = this;
 }
 
-void RtcExtension::setup()
+void RtcExtension::configure()
 {
 #ifdef PIN_CS2
     pinMode(PIN_CS2, OUTPUT);
@@ -45,14 +45,18 @@ void RtcExtension::setup()
 
     if (rtc.IsDateTimeValid())
     {
-        struct timeval tv;
-        tv.tv_sec = rtc.GetDateTime().Unix64Time();
-        settimeofday(&tv, nullptr);
-        ESP_LOGV(name, "sync");
+        tm local;
+        if (!getLocalTime(&local))
+        {
+            struct timeval tv;
+            tv.tv_sec = rtc.GetDateTime().Unix64Time();
+            settimeofday(&tv, nullptr);
+            ESP_LOGD(name, "sync");
+        }
     }
     else
     {
-        ESP_LOGD(name, "out of sync");
+        ESP_LOGW(name, "out of sync");
     }
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
 
@@ -97,7 +101,7 @@ void RtcExtension::handle()
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
             if (!Display.getPower())
             {
-                Display.setPower(true, name);
+                Display.setPower(true);
             }
         }
         pending = false;
@@ -133,7 +137,7 @@ void RtcExtension::transmit()
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
     time_t timer = tv->tv_sec;
-    tm *local = localtime(&timer);
+    tm *local = gmtime(&timer);
     RtcDateTime dt = RtcDateTime(local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
     Rtc->rtc.SetDateTime(dt);
     ESP_LOGV(Rtc->name, "NTP sync");

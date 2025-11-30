@@ -21,7 +21,6 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### Key Highlights
 
-- **Web app**
 - **48 display modes**:
   - Animations
   - Clocks
@@ -29,11 +28,13 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Text scroller
   - Streaming content
   - Weather displays
-- **17 extensions**, including:
+- **17 extensions**:
+  - Web app
   - Smart-home integrations
   - Notifications
   - Accessories
   - API interfaces
+  - Miscellaneous
 - **7 fonts**
 - Extensive [documentation](https://github.com/VIPnytt/Frekvens/wiki)
 
@@ -55,7 +56,7 @@ If desired, extra hardware can be added:
 - IR receiver — lets you control the device with a standard TV-style remote
 - Microphone — syncs the display with music
 - Photocell — automatic ambient brightness adaption
-- RTC clock — keeps accurate time, even without internet
+- RTC clock — keeps accurate time, even without internet access
 
 > [!NOTE]
 > [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) already has a built-in microphone.

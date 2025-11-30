@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  core-frekvens-basic:
-    name: Core - IKEA Frekvens LED multi-use light - basic build
+  frekvens-basic:
+    name: IKEA Frekvens LED multi-use light - basic
     runs-on: ubuntu-latest
 
     steps:
@@ -82,8 +82,9 @@ jobs:
 
       - run: pio run
 
-  core-frekvens-custom:
-    name: Core - IKEA Frekvens LED multi-use light - custom build
+  frekvens-custom:
+    name: IKEA Frekvens LED multi-use light - custom
+    needs: [frekvens-basic, obegransad-basic]
     runs-on: ubuntu-latest
 
     steps:
@@ -186,7 +187,6 @@ jobs:
       - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
-          #define DNS4 "1.1.1.1"
           #define FRAME_RATE 60
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
           #define HOMEASSISTANT_HOST "homeassistant.local"
@@ -234,8 +234,28 @@ jobs:
 
       - run: pio run
 
-  core-obegransad-basic:
-    name: Core - IKEA Obegränsad LED wall lamp - basic build
+  frekvens-spotlight:
+    name: Extra / IKEA Frekvens LED spotlight - ESPHome
+    needs: frekvens-custom
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - run: |
+          cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
+          api_key: "redacted"
+          ota_password: "redacted"
+          wifi_password: "redacted"
+          wifi_ssid: "redacted"
+          EOL
+
+      - uses: esphome/build-action@v7
+        with:
+          yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
+
+  obegransad-basic:
+    name: IKEA Obegränsad LED wall lamp - basic
     runs-on: ubuntu-latest
 
     steps:
@@ -294,290 +314,3 @@ jobs:
         working-directory: webapp
 
       - run: pio run
-
-  extra-font-generator:
-    name: Extra - Font generator
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install -r extra/Python/requirements.txt
-
-      - run: python extra/Python/FontGenerator.py --input /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf --size 8
-
-      - uses: andstor/file-existence-action@v3
-        with:
-          fail: true
-          files: "DejaVuSansFont.h, DejaVuSansFont.cpp"
-
-  extra-frekvens-spotlight:
-    name: Extra - IKEA Frekvens LED spotlight - ESPHome build
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - run: |
-          cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
-          api_key: "redacted"
-          ota_password: "redacted"
-          wifi_password: "redacted"
-          wifi_ssid: "redacted"
-          EOL
-
-      - uses: esphome/build-action@v7
-        with:
-          yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
-
-  extra-mode-generator:
-    name: Extra - Mode generator
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: |
-          cat <<EOL > Sketch.csv
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
-          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,0,255,255,255,255,255,255,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          EOL
-
-      - run: python extra/Python/ModeGenerator.py --input Sketch.csv
-
-      - uses: andstor/file-existence-action@v3
-        with:
-          fail: true
-          files: "SketchMode.h, SketchMode.cpp"
-
-  extra-animation-splitter:
-    name: Tools - Animation splitter
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install tools/
-
-      - run: |
-          cat <<EOL > Sketch.csv
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
-          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
-          0,0,0,0,0,255,255,255,255,255,255,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          EOL
-
-      - run: python -m frekvens.AnimationSplitter --input Sketch.csv
-
-      - uses: andstor/file-existence-action@v3
-        with:
-          fail: true
-          files: "Sketch-frame-1.csv, Sketch-frame-2.csv"
-
-  extra-art-net-streamer:
-    name: Tools - Art-Net streamer
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install tools/
-
-      - run: |
-          cat <<EOL > Sketch.csv
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
-          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          EOL
-
-      - run: python -m frekvens.ArtNetStreamer --host localhost --input Sketch.csv
-
-  extra-distributed-display-protocol-streamer:
-    name: Tools - Distributed Display Protocol streamer
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install tools/
-
-      - run: |
-          cat <<EOL > Sketch.csv
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
-          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          EOL
-
-      - run: python -m frekvens.DistributedDisplayProtocolStreamer --host localhost --input Sketch.csv
-
-  extra-e131-streamer:
-    name: Tools - E1.31 streamer
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install tools/
-
-      - run: |
-          cat <<EOL > Sketch.csv
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
-          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
-          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-          EOL
-
-      - run: python -m frekvens.E131Streamer --host localhost --input Sketch.csv
-
-  extra-home-thermometer-demo:
-    name: Tools - Home thermometer demo
-    runs-on: ubuntu-latest
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.13
-
-      - run: pip install tools/
-
-      - run: |
-          set +e
-          OUTPUT=$(python -m frekvens.HomeThermometerDemo --host localhost --indoor=22 --outdoor=8 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
-            echo "Expected ConnectError occurred."
-            exit 0
-          fi
-          echo "Unexpected error or no error."
-          exit $STATUS

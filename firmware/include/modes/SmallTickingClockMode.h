@@ -21,7 +21,7 @@ private:
 public:
     SmallTickingClockMode() : ModeModule("Small ticking clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

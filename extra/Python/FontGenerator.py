@@ -4,6 +4,7 @@
 
 import argparse
 import fontTools.ttLib
+import logging
 import matplotlib.font_manager
 import os
 import PIL.Image
@@ -16,17 +17,23 @@ class FontGenerator:
     path: str
     size: int
 
-    def __init__(self, path: str = "font.ttf", size: int = 8) -> None:
+    def __init__(self, path: str, size: int = 8) -> None:
         self.path = path
         self.size = size
 
     def _character_to_description(self, character: str) -> str | None:
-        if character.isprintable() and not character.strip() and ord(character) != 0x5C:
+        if character.isprintable() and character.strip() and ord(character) != 0x5C:
+            if ord(character) >= 0x80:
+                try:
+                    return f"{character} {unicodedata.name(character)}"
+                except ValueError as e:
+                    logging.debug("Character name not found: %s", e)
             return character
         else:
             try:
                 return unicodedata.name(character)
-            except ValueError:
+            except ValueError as e:
+                logging.debug("Character name not found: %s", e)
                 return None
 
     def _characters_to_bitmaps(
@@ -44,13 +51,10 @@ class FontGenerator:
             PIL.ImageDraw.Draw(img).text(
                 (-bbox[0], -bbox[1]), character, fill=1, font=font
             )
-            bitmap = []
-            for y in range(img.height):
-                row = ""
-                for x in range(img.width):
-                    row += "1" if img.getpixel((x, y)) else "0"
-                bitmap.append(row)
-            bitmaps[character] = bitmap
+            bitmaps[character] = [
+                "".join("1" if img.getpixel((x, y)) else "0" for x in range(img.width))
+                for y in range(img.height)
+            ]
         return bitmaps
 
     def _crop(self, bitmap: list[str]) -> tuple[list[str], int, int]:
@@ -101,7 +105,7 @@ class FontGenerator:
                 unique = record.toUnicode()
         font.close()
         self._source_h(unique)
-        self._source_cpp(unique, f"{name} {self.size}")
+        self._source_cpp(unique, name)
 
     def _source_h(self, unique: str) -> None:
         bitmaps = self._characters_to_bitmaps(self._font_to_characters())
@@ -110,7 +114,9 @@ class FontGenerator:
             "",
             '#include "modules/FontModule.h"',
             "",
-            "// This file was automatically generated",
+            "//",
+            "// @warning Automatically generated file",
+            "//",
             "",
             f"class {unique}Font : public FontModule",
             "{",
@@ -133,6 +139,8 @@ class FontGenerator:
                     font.append("            },")
                 else:
                     font.append("            {},")
+                    if cp == 0x20:
+                        offsetX = round(self.size / 2)
                 font.extend(
                     [
                         f"            {offsetX},",
@@ -145,6 +153,7 @@ class FontGenerator:
         font.extend(
             [
                 "    };",
+                "",
                 "    const std::vector<SymbolExtended> unicode = {",
             ]
         )
@@ -188,7 +197,7 @@ class FontGenerator:
                     "",
                 ]
             )
-            h.write("".join(font))
+            h.write("\n".join(font))
         print(f"{unique}Font.h")
 
     def _source_cpp(self, unique: str, name: str) -> None:
@@ -198,7 +207,9 @@ class FontGenerator:
                     [
                         f'#include "fonts/{unique}Font.h"',
                         "",
-                        "// This file was automatically generated",
+                        "//",
+                        "// @warning Automatically generated file",
+                        "//",
                         "",
                         f"{unique}Font *Font{unique} = nullptr;",
                         "",
@@ -218,6 +229,7 @@ class FontGenerator:
                         "        for (const SymbolExtended &extended : unicode)",
                         "        {",
                         "            if (extended.hex == character)",
+                        "            {",
                         "                return extended.symbol;",
                         "            }",
                         "        }",
@@ -231,11 +243,14 @@ class FontGenerator:
         print(f"{unique}Font.cpp")
 
     @staticmethod
-    def search(query: str) -> list[str]:
+    def find(query: str) -> list[str]:
         fonts = matplotlib.font_manager.findSystemFonts()
-        fonts.sort()
         if query:
-            return [font for font in fonts if query.lower() in font.lower()]
+            return [
+                font
+                for font in fonts
+                if query.lower() in os.path.basename(font).lower()
+            ]
         return fonts
 
 
@@ -247,15 +262,18 @@ if __name__ == "__main__":
     parser.add_argument("--size", help="Font size", type=int)
     args = parser.parse_args()
     if args.input is None:
-        args.input = input("Font file path: ") or "font.ttf"
+        args.input = input("Font file path: ")
     if args.size is None:
         args.size = int(input("Font size: ") or 8)
-    if os.path.isfile(args.input):
+    try:
         FontGenerator(args.input, args.size).source()
-    else:
-        fonts = FontGenerator.search(args.input)
-        if fonts:
-            print("Alternative fonts to try:")
-            for font in fonts:
-                print(font)
-        raise FileNotFoundError(args.input)
+    except:
+        match = False
+        fonts = FontGenerator.find(args.input)
+        for font in fonts:
+            if os.path.splitext(os.path.basename(font))[0] == args.input:
+                FontGenerator(font, args.size).source()
+                match = True
+                break
+        if not match:
+            raise

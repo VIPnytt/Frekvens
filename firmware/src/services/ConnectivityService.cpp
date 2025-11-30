@@ -11,7 +11,7 @@
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
 
-void ConnectivityService::setup()
+void ConnectivityService::configure()
 {
 #ifdef PIN_SW1
     pinMode(PIN_SW1, INPUT_PULLUP);
@@ -20,13 +20,14 @@ void ConnectivityService::setup()
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
     esp_crt_bundle_set(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    WiFi.enableIPv6();
+    WiFi.setHostname(HOSTNAME);
+    WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
     WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     WiFi.onEvent(&onIPv4, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
     WiFi.onEvent(&onIPv6, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP6);
     WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
-    WiFi.setHostname(HOSTNAME);
-    WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
 #ifdef WIFI_COUNTRY
     esp_wifi_set_country_code(WIFI_COUNTRY, false);
 #else
@@ -44,22 +45,26 @@ void ConnectivityService::setup()
         Storage.end();
     }
 #endif // WIFI_COUNTRY
-    WiFi.enableIPv6();
-    vault();
 #if defined(PIN_SW1) || defined(PIN_SW2)
-    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && buttonCheck())
+#if defined(PIN_SW1) && defined(PIN_SW2)
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW))
+#elif defined(PIN_SW1)
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW1) == LOW)
+#elif defined(PIN_SW2)
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW2) == LOW)
+#endif // defined(PIN_SW1) && defined(PIN_SW2)
     {
-        hotspot();
+        initHotspot();
     }
     else
 #endif // defined(PIN_SW1) || defined(PIN_SW2)
     {
-        multi->run();
+        initStation();
     }
     configTzTime(TIME_ZONE, "pool.ntp.org", "time.cloudflare.com", "time.nist.gov");
 }
 
-void ConnectivityService::ready()
+void ConnectivityService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -84,9 +89,9 @@ void ConnectivityService::ready()
 
 void ConnectivityService::handle()
 {
-    if (dnsServer && WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
+    if (dns && WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
-        dnsServer->processNextRequest();
+        dns->processNextRequest();
     }
     else if (millis() - lastMillis > UINT16_MAX)
     {
@@ -95,14 +100,14 @@ void ConnectivityService::handle()
         {
             transmit();
         }
-        else
+        else if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_STA)
         {
-            multi->run();
+            multi.run();
         }
     }
 }
 
-void ConnectivityService::vault()
+void ConnectivityService::initStation()
 {
     JsonDocument doc;
     Preferences Storage;
@@ -137,27 +142,27 @@ void ConnectivityService::vault()
     Storage.putBytes("Wi-Fi", buffer, length + 1);
     Storage.end();
     delete[] buffer;
-    multi = std::make_unique<WiFiMulti>();
-    for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
+    for (const JsonPairConst &credentials : doc.as<JsonObjectConst>())
     {
-        multi->addAP(pair.key().c_str(), pair.value().as<const char *>());
+        multi.addAP(credentials.key().c_str(), credentials.value().as<const char *>());
     }
+    multi.run();
 }
 
-void ConnectivityService::hotspot()
+void ConnectivityService::initHotspot()
 {
     ESP_LOGV(name, "initializing Wi-Fi hotspot");
     WiFi.mode(wifi_mode_t::WIFI_MODE_AP);
     WiFi.softAP(NAME);
-    if (!dnsServer)
+    if (!dns)
     {
-        dnsServer = std::make_unique<DNSServer>();
-        dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
-        dnsServer->start(53, "*", WiFi.softAPIP());
+        dns = std::make_unique<DNSServer>();
+        dns->setErrorReplyCode(DNSReplyCode::NoError);
+        dns->start(53, "*", WiFi.softAPIP());
     }
 #if EXTENSION_WEBAPP
-    ESP_LOGD(name, "user interface @ http://%s", WiFi.softAPIP().toString());
-    ESP_LOGI(name, "awaiting Wi-Fi config, please connect to the Wi-Fi hotspot...");
+    ESP_LOGD(name, "web interface @ http://%s", WiFi.softAPIP().toString());
+    ESP_LOGI(name, "awaiting Wi-Fi configuration, please connect to the Wi-Fi hotspot...");
 #endif // EXTENSION_WEBAPP
 }
 
@@ -167,60 +172,11 @@ void ConnectivityService::connect(const char *const ssid, const char *const key)
     {
         WiFi.mode(wifi_mode_t::WIFI_MODE_APSTA);
     }
-    multi = std::make_unique<WiFiMulti>();
-    multi->addAP(ssid, key);
-    WiFi.disconnect();
-    multi->run();
-    if (WiFi.waitForConnectResult() == wl_status_t::WL_CONNECTED)
-    {
-        JsonDocument doc;
-        doc["event"] = "connected";
-        Device.transmit(doc, name, false);
-        if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
-        {
-            ESP_LOGD(name, "terminating Wi-Fi hotspot");
-            dnsServer.reset();
-            WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
-        }
-    }
+    multi.setStrictMode(true);
+    multi.APlistClean();
+    multi.addAP(ssid, key);
+    multi.run();
 }
-
-#if defined(PIN_SW1) || defined(PIN_SW2)
-bool ConnectivityService::buttonCheck() const
-{
-#ifdef PIN_SW1
-    if (digitalRead(PIN_SW1) == LOW)
-    {
-        ESP_LOGV(name, "power button held at startup");
-        return true;
-    }
-#endif // PIN_SW1
-#ifdef PIN_SW2
-    if (digitalRead(PIN_SW2) == LOW)
-    {
-        ESP_LOGV(name, "mode button held at startup");
-        return true;
-    }
-#endif // PIN_SW2
-    return false;
-}
-#endif // defined(PIN_SW1) || defined(PIN_SW2)
-
-#ifdef DNS4
-void ConnectivityService::setDns()
-{
-    esp_netif_t *netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
-    {
-        esp_netif_dns_info_t dns;
-        dns.ip.type = ESP_IPADDR_TYPE_V4;
-        dns.ip.u_addr.ip4.addr = ipaddr_addr(DNS4);
-        if (!esp_netif_set_dns_info(netif, esp_netif_dns_type_t::ESP_NETIF_DNS_FALLBACK, &dns))
-        {
-            ESP_LOGD(name, "DNS " DNS4);
-        }
-    }
-}
-#endif // DNS4
 
 void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -249,6 +205,11 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
 {
     Connectivity.routable = false;
+    if (Connectivity.mDNS)
+    {
+        MDNS.end();
+        Connectivity.mDNS = false;
+    }
     ESP_LOGI(Connectivity.name, "disconnected");
     ESP_LOGD(Connectivity.name, "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
@@ -278,18 +239,25 @@ void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info)
 void ConnectivityService::onRoutable()
 {
     Connectivity.routable = true;
+    if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
+    {
+        JsonDocument doc;
+        doc["event"] = "connected";
+        Device.transmit(doc, Connectivity.name, false);
+        ESP_LOGD(Connectivity.name, "terminating Wi-Fi hotspot");
+        Connectivity.dns.reset();
+        WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
+    }
     if (!Connectivity.mDNS && MDNS.begin(HOSTNAME))
     {
         Connectivity.mDNS = true;
         MDNS.setInstanceName(NAME);
-#if EXTENSION_WEBAPP
+#if EXTENSION_ALEXA || (EXTENSION_OTA && !defined(OTA_KEY)) || EXTENSION_RESTFUL || EXTENSION_WEBAPP
         MDNS.addService("http", "tcp", 80);
-#endif // EXTENSION_WEBAPP
-#if EXTENSION_OTA && defined(OTA_KEY)
-        MDNS.enableArduino(3232, true);
-#elif EXTENSION_OTA
-        MDNS.enableArduino(3232);
-#endif // EXTENSION_OTA && defined(OTA_KEY)
+#endif
+#if EXTENSION_WEBSOCKET
+        MDNS.addService("ws", "tcp", 80);
+#endif // EXTENSION_WEBSOCKET
     }
     timeval tv;
     sntp_sync_time(&tv);
@@ -331,9 +299,9 @@ void ConnectivityService::transmit()
             if (!deserializeJson(_saved, buf, len))
             {
                 JsonArray saved = doc["saved"].to<JsonArray>();
-                for (const JsonPairConst &pair : _saved.as<JsonObjectConst>())
+                for (const JsonPairConst &credentials : _saved.as<JsonObjectConst>())
                 {
-                    saved.add(pair.key());
+                    saved.add(credentials.key());
                 }
             }
             delete[] buf;
@@ -347,7 +315,7 @@ void ConnectivityService::transmit()
     Device.transmit(doc, name);
 }
 
-void ConnectivityService::receiverHook(const JsonDocument doc, const char *const source)
+void ConnectivityService::onReceive(const JsonDocument doc, const char *const source)
 {
     // Connect
     if (doc["ssid"].is<const char *>())

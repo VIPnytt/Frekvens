@@ -20,7 +20,7 @@ HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assista
     HomeAssistant = this;
 }
 
-void HomeAssistantExtension::setup()
+void HomeAssistantExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -56,7 +56,7 @@ void HomeAssistantExtension::setup()
     }
 }
 
-void HomeAssistantExtension::ready()
+void HomeAssistantExtension::begin()
 {
     {
         JsonObject availability = (*discovery)[HomeAssistantAbbreviations::availability].to<JsonObject>();
@@ -120,7 +120,7 @@ void HomeAssistantExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void HomeAssistantExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void HomeAssistantExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Display: Power
     if (!strcmp(source, Display.name) && doc["power"].is<bool>())

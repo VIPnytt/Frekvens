@@ -15,7 +15,7 @@ AlexaExtension::AlexaExtension() : ExtensionModule("Alexa")
     Alexa = this;
 }
 
-void AlexaExtension::ready()
+void AlexaExtension::begin()
 {
     fauxmo.createServer(false);
     fauxmo.setPort(80);
@@ -41,8 +41,8 @@ void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, 
 {
     if (!strcmp(deviceName, NAME))
     {
-        Display.setBrightness(static_cast<uint8_t>(value), Alexa->name);
-        Display.setPower(state, Alexa->name);
+        Display.setBrightness(static_cast<uint8_t>(value));
+        Display.setPower(state);
     }
 }
 
@@ -62,7 +62,7 @@ void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t
     }
 }
 
-void AlexaExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void AlexaExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Display: Brightness
     // Display: Power

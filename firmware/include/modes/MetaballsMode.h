@@ -32,7 +32,7 @@ protected:
 public:
     MetaballsMode() : ModeModule("Metaballs") {};
 
-    void setup() override;
+    void configure() override;
     void handle() override;
 };
 

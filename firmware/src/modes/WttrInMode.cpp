@@ -8,7 +8,7 @@
 #include "modes/WttrInMode.h"
 #include "services/ConnectivityService.h"
 
-void WttrInMode::wake()
+void WttrInMode::begin()
 {
     if (urls.empty())
     {

@@ -1234,7 +1234,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xB0, // °
+            0xB0, // ° DEGREE SIGN
             {
                 {
                     0b11,
@@ -1245,7 +1245,7 @@ private:
             },
         },
         {
-            0xC4, // Ä
+            0xC4, // Ä LATIN CAPITAL LETTER A WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1261,7 +1261,7 @@ private:
             },
         },
         {
-            0xC5, // Å
+            0xC5, // Å LATIN CAPITAL LETTER A WITH RING ABOVE
             {
                 {
                     0b01110,
@@ -1277,7 +1277,7 @@ private:
             },
         },
         {
-            0xC6, // Æ
+            0xC6, // Æ LATIN CAPITAL LETTER AE
             {
                 {
                     0b011111,
@@ -1291,7 +1291,7 @@ private:
             },
         },
         {
-            0xD6, // Ö
+            0xD6, // Ö LATIN CAPITAL LETTER O WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1307,7 +1307,7 @@ private:
             },
         },
         {
-            0xD8, // Ø
+            0xD8, // Ø LATIN CAPITAL LETTER O WITH STROKE
             {
                 {
                     0b01111,
@@ -1321,7 +1321,7 @@ private:
             },
         },
         {
-            0xDC, // Ü
+            0xDC, // Ü LATIN CAPITAL LETTER U WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1337,7 +1337,7 @@ private:
             },
         },
         {
-            0xDF, // ß
+            0xDF, // ß LATIN SMALL LETTER SHARP S
             {
                 {
                     0b01110,
@@ -1353,7 +1353,7 @@ private:
             },
         },
         {
-            0xE4, // ä
+            0xE4, // ä LATIN SMALL LETTER A WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1368,7 +1368,7 @@ private:
             },
         },
         {
-            0xE5, // å
+            0xE5, // å LATIN SMALL LETTER A WITH RING ABOVE
             {
                 {
                     0b01110,
@@ -1384,7 +1384,7 @@ private:
             },
         },
         {
-            0xE6, // æ
+            0xE6, // æ LATIN SMALL LETTER AE
             {
                 {
                     0b1111110,
@@ -1398,7 +1398,7 @@ private:
             },
         },
         {
-            0xF6, // ö
+            0xF6, // ö LATIN SMALL LETTER O WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1413,7 +1413,7 @@ private:
             },
         },
         {
-            0xF8, // ø
+            0xF8, // ø LATIN SMALL LETTER O WITH STROKE
             {
                 {
                     0b01110,
@@ -1427,7 +1427,7 @@ private:
             },
         },
         {
-            0xFC, // ü
+            0xFC, // ü LATIN SMALL LETTER U WITH DIAERESIS
             {
                 {
                     0b10001,
@@ -1442,7 +1442,7 @@ private:
             },
         },
         {
-            0x3C0, // π
+            0x3C0, // π GREEK SMALL LETTER PI
             {
                 {
                     0b11111,

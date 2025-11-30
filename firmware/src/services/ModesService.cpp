@@ -8,7 +8,7 @@
 #include "services/FontsService.h"
 #include "services/ModesService.h"
 
-void ModesService::setup()
+void ModesService::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -21,7 +21,7 @@ void ModesService::setup()
         component[HomeAssistantAbbreviations::name] = "Mode";
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
         JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
-        for (const ModeModule *mode : modules)
+        for (const ModeModule *mode : modes)
         {
             options.add(mode->name);
         }
@@ -32,14 +32,13 @@ void ModesService::setup()
     }
 #endif // EXTENSION_HOMEASSISTANT
 
-    for (ModeModule *mode : modules)
+    for (ModeModule *mode : modes)
     {
-        mode->setup();
+        mode->configure();
     }
-    ESP_LOGV(name, "setup complete");
 }
 
-void ModesService::ready()
+void ModesService::begin()
 {
     switch (esp_reset_reason())
     {
@@ -48,23 +47,25 @@ void ModesService::ready()
     case esp_reset_reason_t::ESP_RST_PANIC:
     case esp_reset_reason_t::ESP_RST_TASK_WDT:
     case esp_reset_reason_t::ESP_RST_WDT:
-        setMode(modules[random(modules.size())]->name, name);
-        Display.setPower(false, name);
+        setMode(modes[random(modes.size())], false);
         break;
     default:
         Preferences Storage;
         Storage.begin(name, true);
-        if (Storage.isKey("active"))
+        if (Storage.isKey("mode"))
         {
-            const String _active = Storage.getString("active");
+            const String _mode = Storage.getString("mode");
             Storage.end();
-            setMode(_active.c_str(), name);
+            setMode(_mode.c_str());
         }
         else
         {
             Storage.end();
-            setMode(modules[random(modules.size())]->name, name);
         }
+    }
+    if (!mode)
+    {
+        setMode(modes[random(modes.size())]);
     }
 }
 
@@ -72,10 +73,16 @@ void ModesService::handle()
 {
     if (scheduled && millis() - lastMillis > (1 << 11))
     {
-        active->wake();
+        mode = scheduled;
+        scheduled = nullptr;
+        ESP_LOGI(name, "%s", mode->name);
+        mode->begin();
         setActive(true);
         transmit();
-        scheduled = false;
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putString("mode", mode->name);
+        Storage.end();
     }
 }
 
@@ -83,11 +90,8 @@ void ModesService::onTask(void *parameter)
 {
     for (;;)
     {
-        if (Display.getPower())
-        {
-            Modes.active->handle();
-            Display.flush();
-        }
+        Modes.mode->handle();
+        Display.flush();
         vTaskDelay(1);
     }
 }
@@ -102,154 +106,142 @@ void ModesService::setActive(bool active)
     {
         vTaskSuspend(taskHandle);
     }
-    else if (!taskHandle && active && this->active)
+    else if (!taskHandle && active && mode)
     {
         xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
     }
 }
 
-void ModesService::setMode(const char *const name, const char *const source)
+void ModesService::setMode(const char *const name)
 {
-    if (!active || strcmp(active->name, name))
+    if (!mode || strcmp(mode->name, name))
     {
-        for (ModeModule *mode : modules)
+        for (ModeModule *_mode : modes)
         {
-            if (!strcmp(mode->name, name))
+            if (!strcmp(_mode->name, name))
             {
-                setMode(mode, source);
+                setMode(_mode);
                 return;
             }
         }
     }
 }
 
-void ModesService::setMode(ModeModule *mode, const char *const source)
+void ModesService::setMode(ModeModule *mode, bool power)
 {
-    if (taskHandle && active)
+    if (taskHandle && this->mode)
     {
         vTaskDelete(taskHandle);
         taskHandle = nullptr;
-        active->sleep();
+        this->mode->end();
+        this->mode = nullptr;
     }
-    active = mode;
-    ESP_LOGI(source, "%s", active->name);
-
-    Preferences Storage;
-    Storage.begin(name);
-    Storage.putString("active", active->name);
-    Storage.end();
-
     lastMillis = millis();
-    scheduled = true;
-    splash();
-    Display.setPower(true, source);
-}
-
-void ModesService::splash()
-{
-    const std::string _name = active->name;
-    std::vector<std::string> lines = {""};
+    scheduled = mode;
+    const std::string _name = mode->name;
+    std::vector<std::string> words = {""};
     uint8_t _line = 0;
     for (std::size_t i = 0; i < _name.length(); ++i)
     {
         switch (_name[i])
         {
-        case 0x20: //   Space
-        case 0x2D: // - Hyphen-minus
-            lines.push_back("");
+        case 0x20: // Space
+        case 0x2D: // Hyphen-minus
+            words.push_back("");
             ++_line;
             break;
         default:
-            lines[_line].push_back(_name[i]);
+            words[_line].push_back(_name[i]);
         }
     }
     uint8_t height = 0;
-    std::vector<TextHandler> texts;
-    for (const std::string &line : lines)
+    std::vector<TextHandler> lines;
+    for (const std::string &word : words)
     {
-        TextHandler text(line, FontMicro);
-        height += text.getHeight();
-        texts.push_back(text);
+        TextHandler line = TextHandler(word, FontMicro);
+        height += line.getHeight();
+        lines.push_back(line);
         if (height >= GRID_ROWS)
         {
             break;
         }
     }
-    const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
-    uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
+    const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (words.size() + 1));
+    uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (words.size() - 1) * margin) / 2);
     Display.clearFrame();
-    for (TextHandler &text : texts)
+    for (TextHandler &line : lines)
     {
-        text.draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, text.getWidth())) / 2, y);
-        y += text.getHeight() + margin;
+        line.draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line.getWidth())) / 2, y);
+        y += line.getHeight() + margin;
     }
     Display.flush();
+    Display.setPower(power);
 }
 
 const std::vector<ModeModule *> &ModesService::getAll() const
 {
-    return modules;
+    return modes;
 }
 
-void ModesService::setModeNext(const char *const source)
+void ModesService::setModeNext()
 {
-    if (active)
+    if (mode)
     {
-        const char *const _name = active->name;
-        std::vector<ModeModule *>::const_iterator _modules = std::find_if(modules.begin(), modules.end(), [_name](const ModeModule *_mode)
-                                                                          { return !strcmp(_mode->name, _name); });
-        if (_modules == modules.end())
+        const char *const _name = mode->name;
+        std::vector<ModeModule *>::const_iterator _modes = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
+                                                                        { return !strcmp(_mode->name, _name); });
+        if (_modes == modes.end())
         {
-            setMode((*modules.begin())->name, source);
+            setMode(*modes.begin());
         }
         else if (!Display.getPower())
         {
-            Display.setPower(true, name);
+            Display.setPower(true);
         }
         else
         {
-            ++_modules;
-            if (_modules == modules.end())
+            ++_modes;
+            if (_modes == modes.end())
             {
-                setMode((*modules.begin())->name, source);
-                Display.setPower(false, name);
+                setMode(*modes.begin());
+                Display.setPower(false);
             }
             else
             {
-                setMode((*_modules)->name, source);
+                setMode(*_modes);
             }
         }
     }
     else
     {
-        setMode((*modules.begin())->name, source);
+        setMode(*modes.begin());
     }
 }
 
-void ModesService::setModePrevious(const char *const source)
+void ModesService::setModePrevious()
 {
-    if (active)
+    if (mode)
     {
-        const char *const _name = active->name;
-        std::vector<ModeModule *>::const_iterator _modules = std::find_if(modules.begin(), modules.end(), [_name](const ModeModule *_mode)
-                                                                          { return !strcmp(_mode->name, _name); });
-        if (_modules == modules.begin())
+        const char *const _name = mode->name;
+        std::vector<ModeModule *>::const_iterator _modes = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
+                                                                        { return !strcmp(_mode->name, _name); });
+        if (_modes == modes.begin())
         {
-            setMode((*(modules.end() - 1))->name, source);
-            Display.setPower(false, name);
+            setMode(*(modes.end() - 1));
+            Display.setPower(false);
         }
         else if (!Display.getPower())
         {
-            Display.setPower(true, source);
+            Display.setPower(true);
         }
         else
         {
-            setMode((*(_modules - 1))->name, source);
+            setMode(*(_modes - 1));
         }
     }
     else
     {
-        setMode((*(modules.end() - 1))->name, source);
+        setMode(*(modes.end() - 1));
     }
 }
 
@@ -257,23 +249,23 @@ void ModesService::transmit()
 {
     JsonDocument doc;
     JsonArray list = doc["list"].to<JsonArray>();
-    for (const ModeModule *mode : modules)
+    for (const ModeModule *_mode : modes)
     {
-        list.add(mode->name);
+        list.add(_mode->name);
     }
-    if (active)
+    if (mode)
     {
-        doc["mode"] = active->name;
+        doc["mode"] = mode->name;
     }
     Device.transmit(doc, name);
 }
 
-void ModesService::receiverHook(const JsonDocument doc, const char *const source)
+void ModesService::onReceive(const JsonDocument doc, const char *const source)
 {
     // Mode
     if (doc["mode"].is<const char *>())
     {
-        setMode(doc["mode"].as<const char *>(), source);
+        setMode(doc["mode"].as<const char *>());
     }
 }
 

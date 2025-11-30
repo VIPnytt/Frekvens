@@ -53,6 +53,7 @@ export const Sidebar: Component = () => {
                     frame: frames[0],
                 },
             }));
+            setSaved(false);
         });
     };
 
@@ -142,7 +143,7 @@ export const Main: Component = () => {
 
     return (
         <div class="bg-contrast-light dark:bg-contrast-dark main">
-            <div class="snap-center flex-shrink-0">
+            <div class="shrink-0 snap-center">
                 <header class="flex justify-between items-center mb-4">
                     <div class="flex gap-3">
                         <Tooltip text="Clear drawing">

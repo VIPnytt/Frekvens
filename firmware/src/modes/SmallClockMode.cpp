@@ -8,7 +8,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void SmallClockMode::wake()
+void SmallClockMode::begin()
 {
     pending = true;
 }

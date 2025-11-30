@@ -28,16 +28,16 @@ private:
 public:
     MicrophoneExtension();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
     bool getActive();
-    void setActive(bool active, const char *const source);
+    void setActive(bool active);
     void setThreshold(uint16_t _threshold);
-    bool isPlay() const;
+    bool isTriggered() const;
 
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern MicrophoneExtension *Microphone;

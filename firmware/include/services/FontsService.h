@@ -29,7 +29,7 @@ private:
     void transmit();
 
 public:
-    void ready();
+    void begin();
     const std::vector<FontModule *> &getAll() const;
 
     static FontsService &getInstance();

@@ -16,13 +16,13 @@ ServerSentEventsExtension::ServerSentEventsExtension() : ExtensionModule("Server
     ServerSentEvents = this;
 }
 
-void ServerSentEventsExtension::ready()
+void ServerSentEventsExtension::begin()
 {
     client->onConnect(&onConnect);
     WebServer.http->addHandler(client);
 }
 
-void ServerSentEventsExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void ServerSentEventsExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     const size_t length = measureJson(doc);
     char *payload = new char[length + 1];

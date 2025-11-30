@@ -59,7 +59,7 @@ class ModesService : public ServiceModule
 private:
     ModesService() : ServiceModule("Modes") {};
 
-    const std::vector<ModeModule *> modules = {
+    const std::vector<ModeModule *> modes = {
 #if MODE_ANIMATION
         new AnimationMode(),
 #endif
@@ -206,12 +206,11 @@ private:
 #endif
     };
 
-    bool scheduled = false;
-
     unsigned long lastMillis = 0;
 
-    void setMode(ModeModule *mode, const char *const source);
-    void splash();
+    ModeModule *scheduled = nullptr;
+
+    void setMode(ModeModule *mode, bool power = true);
     void transmit();
 
     static void onTask(void *parameter = nullptr);
@@ -219,18 +218,19 @@ private:
 public:
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 
-    TaskHandle_t taskHandle = nullptr;
-    ModeModule *active = nullptr;
+    ModeModule *mode = nullptr;
 
-    void setup();
-    void ready();
+    TaskHandle_t taskHandle = nullptr;
+
+    void configure();
+    void begin();
     void handle();
     void setActive(bool active);
-    void setMode(const char *const name, const char *const source);
-    void setModeNext(const char *const source);
-    void setModePrevious(const char *const source);
+    void setMode(const char *const name);
+    void setModeNext();
+    void setModePrevious();
     const std::vector<ModeModule *> &getAll() const;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 
     static ModesService &getInstance();
 };

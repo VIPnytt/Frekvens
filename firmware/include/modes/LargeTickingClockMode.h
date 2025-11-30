@@ -21,7 +21,7 @@ private:
 public:
     LargeTickingClockMode() : ModeModule("Large ticking clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

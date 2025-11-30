@@ -23,11 +23,11 @@ Use one of the predefined layouts below to match your board’s flash size:
 - :x: — not available
 
 > [!TIP]
-> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit your selected partition table.
+> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit the partitions.
 
 ## 2️⃣ 2 MB flash boards
 
-The `2MB_no_ota.csv` layout provides almost the same feature capacity as `4MB.csv`, at the cost of [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) support.
+The `2MB_no_ota.csv` layout provides almost the same firmware capacity as `4MB.csv`, at the cost of [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) support.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -35,16 +35,13 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 board_build.partitions = partitions/2MB_no_ota_fs.csv
 ```
 
-> [!NOTE]
-> Similar to `minimal.csv`, stripped and adjusted for a larger feature capacity.
-
 ## 4️⃣ 4 MB flash boards
 
 Depending on configuration, there’s two alternatives.
 
 ### No OTA
 
-The `4MB_no_ota.csv` layout  provides the same feature capacity as `8MB.csv`, at the cost of the [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) ability.
+The `4MB_no_ota.csv` layout  provides the same firmware capacity as `8MB.csv`, at the cost of the [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) ability.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -52,12 +49,9 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 board_build.partitions = partitions/4MB_no_ota.csv
 ```
 
-> [!NOTE]
-> Similar to `no_ota.csv`, adjusted for a larger feature capacity.
-
 ### With OTA
 
-The `4MB.csv` layout provides a flexible configuration with [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) updates, [web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) access, and a limited feature capacity.
+The `4MB.csv` layout provides a flexible configuration with [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) updates, [web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) access, and a limited firmware capacity.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -65,14 +59,11 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 board_build.partitions = partitions/4MB.csv
 ```
 
-> [!NOTE]
-> Based on `min_spiffs.csv`.
-
 ## 8️⃣ 8 MB, 16 MB, and 32 MB flash boards
 
-For boards with 8 MB or more flash, the defaults usually work fine.
+These provides a comfortable and flexible configuration without any compromises.
 
-To override, specify one of the following in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
+Configure in  [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
 board_build.partitions = partitions/8MB.csv
@@ -85,6 +76,3 @@ board_build.partitions = partitions/16MB.csv
 ```ini
 board_build.partitions = partitions/32MB.csv
 ```
-
-> [!NOTE]
-> Based on `default_8MB.csv`, `default_16MB.csv`, and `default_32MB.csv`.

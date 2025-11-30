@@ -46,7 +46,7 @@ private:
 public:
     SnakeMode() : ModeModule("Snake") {}
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

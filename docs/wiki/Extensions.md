@@ -125,16 +125,16 @@ By adding an [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-rec
 - Display brightness: up/down
   - Philips: Volume ➕➖
   - Sony: Volume ➕➖
-- Display power: on/off
+- Display power: toggle
   - Philips: Power ⏻
   - Sony: Power ⏻
-- [Microphone](#%EF%B8%8F-microphone): on/off
+- [Microphone](#%EF%B8%8F-microphone): toggle
   - Philips: Mute 🔇
   - Sony: Mute 🔇
-- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes): surfing
+- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes): next/previous
   - Philips: Title ⏮️⏭️ Album ⏪⏩
   - Sony: Program ➕➖ Previous ⏮️ Next ⏭️ Rewind ⏪ Fast forward ⏩
-- [Photocell](#-photocell): on/off
+- [Photocell](#-photocell): toggle
   - Philips: `DIM`
   - Sony: `SCENE`
 - [Playlist](#%EF%B8%8F-playlist): start/stop

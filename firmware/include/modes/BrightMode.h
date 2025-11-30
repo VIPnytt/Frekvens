@@ -11,7 +11,7 @@ class BrightMode : public ModeModule
 public:
     BrightMode() : ModeModule("Bright") {};
 
-    void wake() override;
+    void begin() override;
 };
 
 #endif // MODE_BRIGHT

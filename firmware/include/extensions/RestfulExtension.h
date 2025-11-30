@@ -11,7 +11,7 @@
 class RestfulExtension : public ExtensionModule
 {
 private:
-    static constexpr size_t prefixLength = sizeof("/RESTful/");
+    static constexpr size_t prefixLength = sizeof("/restful/") - 1;
 
     static void onGet(AsyncWebServerRequest *request);
     static void onGetModule(AsyncWebServerRequest *request);
@@ -20,7 +20,7 @@ private:
 public:
     RestfulExtension();
 
-    void ready() override;
+    void begin() override;
 };
 
 extern RestfulExtension *Restful;

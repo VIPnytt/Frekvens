@@ -18,7 +18,7 @@ void FliesMode::handle()
     }
 }
 
-void FliesMode::receiverHook(const JsonDocument doc, const char *const source)
+void FliesMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["id"].is<uint8_t>() && doc["x"].is<uint8_t>() && doc["y"].is<uint8_t>())
     {

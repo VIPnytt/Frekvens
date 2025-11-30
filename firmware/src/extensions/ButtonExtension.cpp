@@ -15,7 +15,7 @@ ButtonExtension::ButtonExtension() : ExtensionModule("Button")
     Button = this;
 }
 
-void ButtonExtension::setup()
+void ButtonExtension::configure()
 {
 #ifdef PIN_SW1
     pinMode(PIN_SW1, INPUT_PULLUP);
@@ -75,7 +75,7 @@ void ButtonExtension::handle()
 #ifdef PIN_SW1
     if (powerShort)
     {
-        Display.setPower(!Display.getPower(), name);
+        Display.setPower(!Display.getPower());
         event("power", "short");
         powerShort = false;
     }
@@ -100,11 +100,11 @@ void ButtonExtension::handle()
         }
         if (brightnessIncrease && brightness < UINT8_MAX)
         {
-            Display.setBrightness(brightness + 1, name);
+            Display.setBrightness(brightness + 1);
         }
         else if (!brightnessIncrease && brightness > 0)
         {
-            Display.setBrightness(brightness - 1, name);
+            Display.setBrightness(brightness - 1);
         }
     }
 #endif // PIN_SW1
@@ -113,10 +113,10 @@ void ButtonExtension::handle()
     if (modeShort)
     {
 #ifdef PIN_SW1
-        Modes.setModeNext(name);
+        Modes.setModeNext();
 #else
         ESP_LOGI(name, "power");
-        Display.setPower(!Display.getPower(), name);
+        Display.setPower(!Display.getPower());
 #endif // PIN_SW1
         event("mode", "short");
         modeShort = false;
@@ -129,7 +129,7 @@ void ButtonExtension::handle()
             modeLong = true;
             event("mode", "long");
         }
-        Modes.setModeNext(name);
+        Modes.setModeNext();
     }
 #endif // PIN_SW2
 }

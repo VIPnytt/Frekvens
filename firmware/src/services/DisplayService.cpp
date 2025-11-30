@@ -7,7 +7,7 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
-void DisplayService::setup()
+void DisplayService::configure()
 {
     pinMode(PIN_CS, OUTPUT);
 #ifdef PIN_MISO
@@ -29,7 +29,7 @@ void DisplayService::setup()
     timerAlarm(timer, 1'000'000 / (1 << 8) / frameRate, true, 0);
     timerStart(timer);
 
-    ledcAttach(PIN_OE, 1 / PWM_WIDTH / (float)(1 << pwmDepth), pwmDepth);
+    ledcAttach(PIN_OE, 1 / PWM_WIDTH / (float)(1 << depth), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -42,13 +42,13 @@ void DisplayService::setup()
     const Orientation _orientation = Storage.isKey("orientation") ? (Orientation)Storage.getUShort("orientation") : orientation;
     Storage.end();
     setOrientation(_orientation);
-    setBrightness(_brightness, name);
+    setBrightness(_brightness);
 
     BitmapHandler(hi).draw();
     flush();
 }
 
-void DisplayService::ready()
+void DisplayService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -166,6 +166,7 @@ void DisplayService::setOrientation(Orientation orientation)
     default:
         return;
     }
+    ESP_LOGI(name, "orientation %d°", orientation * 90);
     memcpy(pixel, _pixel, sizeof(_pixel));
     this->orientation = orientation;
 #if GRID_COLUMNS == GRID_ROWS
@@ -178,10 +179,6 @@ void DisplayService::setOrientation(Orientation orientation)
     Storage.putUShort("orientation", this->orientation);
     Storage.end();
     pending = true;
-    if (Modes.active)
-    {
-        Modes.active->wake();
-    }
 }
 
 bool DisplayService::getPower() const
@@ -189,29 +186,30 @@ bool DisplayService::getPower() const
     return power;
 }
 
-void DisplayService::setPower(bool power, const char *const source)
+void DisplayService::setPower(bool power)
 {
     if (power == this->power)
     {
         return;
     }
-    ESP_LOGI(source, "power");
+    ESP_LOGI(name, "power");
     if (power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGamma(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 5) * brightness);
 #else
-        ledcFade(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 5) * brightness);
+        ledcFade(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         this->power = true;
         pending = true;
+        Modes.setActive(true);
     }
     else
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGammaWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
 #else
-        ledcFadeWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
+        ledcFadeWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
 }
@@ -220,6 +218,7 @@ void DisplayService::onPowerOff()
 {
     Display.power = false;
     Display.pending = true;
+    Modes.setActive(false);
     memset(Display.frame, 0, sizeof(Display.frame));
 }
 
@@ -228,19 +227,23 @@ uint8_t DisplayService::getBrightness() const
     return brightness;
 }
 
-void DisplayService::setBrightness(uint8_t brightness, const char *const source)
+void DisplayService::setBrightness(uint8_t brightness)
 {
     if (power && brightness == this->brightness)
     {
         return;
     }
-    ESP_LOGI(source, "brightness");
+    ESP_LOGI(name, "brightness");
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness));
 #else
-    ledcFade(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness));
+    ledcFade(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness));
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    power = true;
+    if (!power)
+    {
+        power = true;
+        Modes.setActive(true);
+    }
     this->brightness = brightness;
     Preferences Storage;
     Storage.begin(name);
@@ -357,12 +360,12 @@ void DisplayService::transmit()
     Device.transmit(doc, name);
 }
 
-void DisplayService::receiverHook(const JsonDocument doc, const char *const source)
+void DisplayService::onReceive(const JsonDocument doc, const char *const source)
 {
     // Brightness
     if (doc["brightness"].is<uint8_t>())
     {
-        setBrightness(doc["brightness"].as<uint8_t>(), source);
+        setBrightness(doc["brightness"].as<uint8_t>());
     }
     // Orientation
     if (doc["orientation"].is<uint16_t>())
@@ -372,7 +375,7 @@ void DisplayService::receiverHook(const JsonDocument doc, const char *const sour
     // Power
     if (doc["power"].is<bool>())
     {
-        setPower(doc["power"].as<bool>(), source);
+        setPower(doc["power"].as<bool>());
     }
 }
 

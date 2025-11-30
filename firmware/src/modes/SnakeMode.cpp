@@ -8,7 +8,7 @@
 #include "modes/SnakeMode.h"
 #include "services/DisplayService.h"
 
-void SnakeMode::wake()
+void SnakeMode::begin()
 {
     Display.clearFrame();
     stage = 0;

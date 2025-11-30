@@ -16,7 +16,7 @@ HeapExtension::HeapExtension() : ExtensionModule("Heap")
 }
 
 #if EXTENSION_HOMEASSISTANT
-void HeapExtension::setup()
+void HeapExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {

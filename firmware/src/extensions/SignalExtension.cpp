@@ -16,7 +16,7 @@ SignalExtension::SignalExtension() : ExtensionModule("Signal")
     Signal = this;
 }
 
-void SignalExtension::ready()
+void SignalExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -76,7 +76,7 @@ void SignalExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void SignalExtension::receiverHook(const JsonDocument doc, const char *const source)
+void SignalExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Duration
     if (doc["duration"].is<uint8_t>())
@@ -103,7 +103,7 @@ void SignalExtension::receiverHook(const JsonDocument doc, const char *const sou
             }
         }
         signals.push_back(sign);
-        ESP_LOGD(source, "received");
+        ESP_LOGD(name, "received");
     }
 }
 

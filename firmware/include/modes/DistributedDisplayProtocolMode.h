@@ -19,8 +19,8 @@ private:
 public:
     DistributedDisplayProtocolMode() : ModeModule(_name.data()) {};
 
-    void wake() override;
-    void sleep() override;
+    void begin() override;
+    void end() override;
 
     static void onPacket(AsyncUDPPacket packet);
 };

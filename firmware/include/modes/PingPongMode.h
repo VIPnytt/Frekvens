@@ -35,7 +35,7 @@ private:
 public:
     PingPongMode() : ModeModule("Ping-Pong") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

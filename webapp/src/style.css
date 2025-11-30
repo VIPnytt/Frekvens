@@ -18,7 +18,7 @@
     }
 
     body {
-        @apply bg-base-light dark:bg-base-dark text-content-light dark:text-content-dark scheme-light dark:scheme-dark duration-150 font-normal font-sans h-full text-base transition-all w-full;
+        @apply bg-base-light dark:bg-base-dark text-content-light dark:text-content-dark scheme-light dark:scheme-dark duration-150 font-normal font-sans h-full text-base w-full;
         font-synthesis: none;
         text-rendering: optimizeLegibility;
     }

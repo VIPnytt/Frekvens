@@ -21,10 +21,10 @@ private:
 public:
     AlexaExtension();
 
-    void ready() override;
+    void begin() override;
     void handle() override;
 
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern AlexaExtension *Alexa;

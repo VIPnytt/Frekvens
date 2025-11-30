@@ -8,7 +8,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void GameOfLifeClockMode::wake()
+void GameOfLifeClockMode::begin()
 {
     pending = true;
 }

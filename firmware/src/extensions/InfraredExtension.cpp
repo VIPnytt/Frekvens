@@ -22,7 +22,7 @@ InfraredExtension::InfraredExtension() : ExtensionModule("Infrared")
     Infrared = this;
 }
 
-void InfraredExtension::setup()
+void InfraredExtension::configure()
 {
     pinMode(PIN_IR, INPUT);
     IrReceiver.setReceivePin(PIN_IR);
@@ -50,13 +50,13 @@ void InfraredExtension::setup()
 #endif // EXTENSION_HOMEASSISTANT
 }
 
-void InfraredExtension::ready()
+void InfraredExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
     Storage.end();
-    _active ? setActive(true, name) : transmit();
+    _active ? setActive(true) : transmit();
 }
 
 void InfraredExtension::handle()
@@ -77,26 +77,26 @@ void InfraredExtension::parse()
         {
             if (t > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
             {
-                Display.setBrightness(max(0, Display.getBrightness() - 5), name);
+                Display.setBrightness(max(0, Display.getBrightness() - 5));
                 lastMillis = millis();
                 return;
             }
             else if (t > INT8_MAX && std::find(code.displayBrightnessIncrease.begin(), code.displayBrightnessIncrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessIncrease.end())
             {
-                Display.setBrightness(min(UINT8_MAX, Display.getBrightness() + 5), name);
+                Display.setBrightness(min(UINT8_MAX, Display.getBrightness() + 5));
                 lastMillis = millis();
                 return;
             }
             else if (t > (1 << 10) && std::find(code.displayPowerToggle.begin(), code.displayPowerToggle.end(), IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
-                Display.setPower(!Display.getPower(), name);
+                Display.setPower(!Display.getPower());
                 lastMillis = millis();
                 return;
             }
 #if EXTENSION_MICROPHONE
             else if (t > (1 << 10) && std::find(code.extensionMicrophoneToggle.begin(), code.extensionMicrophoneToggle.end(), IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
             {
-                Microphone->setActive(!Microphone->getActive(), name);
+                Microphone->setActive(!Microphone->getActive());
                 lastMillis = millis();
                 return;
             }
@@ -104,28 +104,34 @@ void InfraredExtension::parse()
 #if EXTENSION_PHOTOCELL
             else if (t > (1 << 10) && std::find(code.extensionPhotocellToggle.begin(), code.extensionPhotocellToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
             {
-                Photocell->setActive(!Photocell->getActive(), name);
+                Photocell->setActive(!Photocell->getActive());
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (t > (1 << 10) && std::find(code.extensionPlaylistToggle.begin(), code.extensionPlaylistToggle.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistToggle.end())
+            else if (t > (1 << 10) && std::find(code.extensionPlaylistStart.begin(), code.extensionPlaylistStart.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
             {
-                Playlist->setActive(!Playlist->getActive(), name);
+                Playlist->setActive(true);
+                lastMillis = millis();
+                return;
+            }
+            else if (t > (1 << 10) && std::find(code.extensionPlaylistStop.begin(), code.extensionPlaylistStop.end(), IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
+            {
+                Playlist->setActive(false);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PLAYLIST
             else if (t > (1 << 9) && std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) != code.modeNext.end())
             {
-                Modes.setModeNext(name);
+                Modes.setModeNext();
                 lastMillis = millis();
                 return;
             }
             else if (t > (1 << 9) && std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) != code.modePrevious.end())
             {
-                Modes.setModePrevious(name);
+                Modes.setModePrevious();
                 lastMillis = millis();
                 return;
             }
@@ -143,7 +149,7 @@ bool InfraredExtension::getActive()
     return active;
 }
 
-void InfraredExtension::setActive(bool active, const char *const source)
+void InfraredExtension::setActive(bool active)
 {
     if ((active && !this->active) || (!active && this->active))
     {
@@ -159,11 +165,11 @@ void InfraredExtension::setActive(bool active, const char *const source)
 
         if (this->active)
         {
-            ESP_LOGI(source, "active");
+            ESP_LOGI(name, "active");
         }
         else
         {
-            ESP_LOGI(source, "inactive");
+            ESP_LOGI(name, "inactive");
         }
     }
 }
@@ -175,12 +181,12 @@ void InfraredExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void InfraredExtension::receiverHook(const JsonDocument doc, const char *const source)
+void InfraredExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Active
     if (doc["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>(), source);
+        setActive(doc["active"].as<bool>());
     }
 }
 

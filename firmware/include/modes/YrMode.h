@@ -156,7 +156,7 @@ private:
 public:
     YrMode() : ModeModule("Yr") {};
 
-    void wake();
+    void begin();
     void handle();
 };
 

@@ -42,7 +42,7 @@ private:
 public:
     ButtonExtension();
 
-    void setup() override;
+    void configure() override;
     void handle() override;
 };
 

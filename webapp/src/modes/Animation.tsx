@@ -16,7 +16,7 @@ export const name = 'Animation';
 type Frame = number[];
 type FrameSignal = [() => Frame, (v: Frame) => void];
 
-const [getFrameDuration, setFrameDuration] = createSignal<number>(500);
+const [getFrameInterval, setFrameInterval] = createSignal<number>(500);
 const [getFrames, setFrames] = createSignal<Frame[]>([]);
 const [getFramesDraft, setFramesDraft] = createSignal<FrameSignal[]>([]);
 const [getPreview, setPreview] = createSignal<boolean>(false);
@@ -25,13 +25,13 @@ const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | undefin
 const [getSaved, setSaved] = createSignal<boolean>(true);
 
 export const receiver = (json: any) => {
-    json[name]?.duration !== undefined && setFrameDuration(json[name].duration);
+    json[name]?.interval !== undefined && setFrameInterval(json[name].interval);
     json[name]?.frame !== undefined && json[name]?.index !== undefined && setFrames(f => (f = [...f], f[json[name].index] = json[name].frame, f)) && getSaved() && handleLoad();
 };
 
-let ref: HTMLDivElement | undefined;
+let divRef: HTMLDivElement | undefined;
 
-const empty = new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0);
+const template = new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0);
 
 const handleLoad = () => {
     if (!getFrames().length) {
@@ -45,27 +45,25 @@ const handleLoad = () => {
     setSaved(true);
 };
 
-const handleNew = (initialData?: Frame): FrameSignal => {
-    const [frame, setFrame] = createSignal<Frame>(
-        initialData ?? empty,
+const handleNew = (frame?: Frame): FrameSignal => {
+    const [getFrame, setFrame] = createSignal<Frame>(
+        frame ?? template,
     );
-    return [frame, setFrame];
+    return [getFrame, setFrame];
 };
 
 const scrollToEnd = () => {
-    if (!ref) {
-        return;
+    if (divRef) {
+        setTimeout(() => {
+            if (divRef) {
+                divRef.scrollTo({
+                    behavior: 'smooth',
+                    left: divRef.scrollWidth,
+                    top: 0,
+                });
+            }
+        }, 150 * 2);
     }
-    setTimeout(() => {
-        if (!ref) {
-            return;
-        }
-        ref.scrollTo({
-            top: 0,
-            left: ref.scrollWidth - ref.clientWidth,
-            behavior: 'smooth',
-        });
-    }, 150);
 };
 
 createEffect(() => {
@@ -86,7 +84,7 @@ createEffect(() => {
     };
 
     cycle();
-    const nodeTimeout = setInterval(cycle, getFrameDuration());
+    const nodeTimeout = setInterval(cycle, getFrameInterval());
     setPreviewTimer(nodeTimeout);
 
     return () => {
@@ -112,11 +110,11 @@ export const Sidebar: Component = () => {
         csvExport(name, getFramesDraft().map(([getFrame]) => getFrame()));
     };
 
-    const handleDuration = (time: number) => {
-        setFrameDuration(time);
+    const handleInterval = (time: number) => {
+        setFrameInterval(time);
         WebSocketWS.send(JSON.stringify({
             [name]: {
-                duration: getFrameDuration(),
+                interval: getFrameInterval(),
             },
         }));
     };
@@ -126,26 +124,23 @@ export const Sidebar: Component = () => {
     };
 
     const handleSave = async () => {
-        const delay = (ms: number): Promise<void> => {
-            return new Promise<void>(resolve => setTimeout(resolve, ms));
-        }
-
         const frames = getFramesDraft().map(([frame]) => frame());
         for (let i = 0; i < frames.length; ++i) {
-            if (i > 0) {
-                await delay(Device.GRID_COLUMNS * Device.GRID_ROWS);
-            }
-            WebSocketWS.send(JSON.stringify({
-                [name]: {
-                    frame: frames[i],
-                    frames: frames.length,
-                    index: i,
-                    duration: getFrameDuration(),
-                },
-            }));
+            setTimeout(() => {
+                WebSocketWS.send(JSON.stringify({
+                    [name]: {
+                        frame: frames[i],
+                        frames: frames.length,
+                        index: i,
+                        interval: getFrameInterval(),
+                    },
+                }));
+            }, Device.GRID_COLUMNS * Device.GRID_ROWS * i);
         }
+        setTimeout(() => {
+            toast(`${name} saved`);
+        }, Device.GRID_COLUMNS * Device.GRID_ROWS * frames.length);
         setSaved(true);
-        toast(`${name} saved`);
     };
 
     const handleUpload = () => {
@@ -156,6 +151,7 @@ export const Sidebar: Component = () => {
                     handleNew(frame) as unknown as ReturnType<typeof createSignal<number[]>>,
                 ]);
             });
+            setSaved(false);
         });
     };
 
@@ -164,7 +160,7 @@ export const Sidebar: Component = () => {
             <div class="grid grid-cols-2 gap-3">
                 <Tooltip text={`${getPreview() ? 'Stop' : 'Preview'} animation`}>
                     <button
-                        class={`w-full ${getPreview() && 'action-negative not-hover:bg-neutral-light dark:not-hover:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark'}`}
+                        class={`w-full ${getPreview() ? 'action-negative not-hover:bg-neutral-light dark:not-hover:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0))}
                         onclick={handlePreview}
                     >
@@ -173,7 +169,7 @@ export const Sidebar: Component = () => {
                 </Tooltip>
                 <Tooltip text={`Add frame #${getFramesDraft().length + 1}`}>
                     <button
-                        class={`action-neutral w-full ${!getFramesDraft().length && 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark'}`}
+                        class={`action-neutral w-full ${getFramesDraft().length < 2 ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={getPreview()}
                         onclick={handleAdd}
                     >
@@ -191,7 +187,7 @@ export const Sidebar: Component = () => {
                 </Tooltip>
                 <Tooltip text="Restore animation">
                     <button
-                        class={`action-neutral w-full ${!getFramesDraft().length && 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark'}`}
+                        class={`action-neutral w-full ${!getFramesDraft().length ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={!getFrames().length || getSaved()}
                         onclick={handleLoad}
                     >
@@ -217,24 +213,24 @@ export const Sidebar: Component = () => {
                     </button>
                 </Tooltip>
             </div>
-            <Tooltip text={`${(1_000 / getFrameDuration()).toFixed(1)} fps`}>
+            <Tooltip text={`${(1_000 / getFrameInterval()).toFixed(1)} fps`}>
                 <div class="mt-3 relative">
                     <span class="absolute text-content-alt-light dark:text-content-alt-dark left-3 top-1/2 -translate-y-1/2 text-sm">
-                        Frame duration:
+                        Frame interval:
                     </span>
                     <input
-                        class="text-right pr-14 w-full"
+                        class="text-right pr-6 w-full"
                         disabled={getPreview()}
-                        max={Math.pow(2, 16) - 1}
-                        name="Duration"
-                        min="50"
-                        onChange={(e) => handleDuration(parseInt(e.currentTarget.value))}
-                        step="10"
+                        max={(Math.pow(2, 16) - 1) / 1_000}
+                        name="Interval"
+                        min="0.05"
+                        onChange={(e) => handleInterval(Math.round(parseFloat(e.currentTarget.value) * 1_000))}
+                        step="0.05"
                         type="number"
-                        value={getFrameDuration()}
+                        value={getFrameInterval() / 1_000}
                     />
                     <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
-                        ms
+                        s
                     </span>
                 </div>
             </Tooltip>
@@ -247,7 +243,7 @@ export const Main: Component = () => {
     const handleClear = (index: number) => {
         setFramesDraft((signals) => {
             const [, setFrame] = signals[index];
-            setFrame(empty);
+            setFrame(template);
             return signals;
         });
         setSaved(false);
@@ -289,11 +285,11 @@ export const Main: Component = () => {
             <div class="bg-contrast-light dark:bg-contrast-dark h-full relative rounded-none">
                 <div
                     class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw---spacing(80))*0.05)] ${getPreview() ? 'justify-center-safe' : 'justify-start'}`}
-                    ref={element => ref = element}
+                    ref={div => divRef = div}
                 >
                     {getPreview() ? (
                         <div class="animate-fade-in">
-                            <Canvas pixels={getFramesDraft()[getPreviewIndex()]?.[0]() ?? empty} />
+                            <Canvas pixels={getFramesDraft()[getPreviewIndex()]?.[0]() ?? template} />
                         </div>
                     ) : (
                         <For each={getFramesDraft()}>

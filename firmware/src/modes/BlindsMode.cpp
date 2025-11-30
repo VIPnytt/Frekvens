@@ -9,7 +9,7 @@
 void BlindsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > UINT8_MAX && Microphone->isPlay())
+    if (millis() - lastMillis > UINT8_MAX && Microphone->isTriggered())
 #else
     if (millis() - lastMillis > UINT8_MAX)
 #endif // EXTENSION_MICROPHONE

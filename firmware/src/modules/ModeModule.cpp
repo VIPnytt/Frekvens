@@ -1,8 +1,8 @@
 #include "modules/ModeModule.h"
 
-void ModeModule::setup() {}
-void ModeModule::wake() {}
+void ModeModule::configure() {}
+void ModeModule::begin() {}
 void ModeModule::handle() {}
-void ModeModule::sleep() {}
+void ModeModule::end() {}
 
-void ModeModule::receiverHook(const JsonDocument doc, const char *const source) {}
+void ModeModule::onReceive(const JsonDocument doc, const char *const source) {}

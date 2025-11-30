@@ -2,11 +2,13 @@
 
 #if MODE_E131
 
+#include <ESPmDNS.h>
+
 #include "modes/E131Mode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
 
-void E131Mode::wake()
+void E131Mode::begin()
 {
     udp = std::make_unique<AsyncUDP>();
     if (udp->listen(5568))
@@ -22,13 +24,9 @@ void E131Mode::onPacket(AsyncUDPPacket packet)
     {
         Display.setFrame(packet.data() + 126);
     }
-    else
-    {
-        ESP_LOGV(_name.data(), "malformed packet received");
-    }
 }
 
-void E131Mode::sleep()
+void E131Mode::end()
 {
     udp.reset();
 }

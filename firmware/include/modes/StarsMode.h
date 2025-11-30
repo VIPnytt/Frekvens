@@ -25,7 +25,7 @@ private:
 public:
     StarsMode() : ModeModule("Stars") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

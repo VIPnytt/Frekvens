@@ -632,7 +632,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xB0, // °
+            0xB0, // ° DEGREE SIGN
             {
                 {
                     0b1,

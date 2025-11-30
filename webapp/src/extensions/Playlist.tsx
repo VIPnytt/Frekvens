@@ -167,7 +167,7 @@ export const MainThird: Component = () => {
                         <div class="grid grid-cols-2 gap-3 mt-3">
                             <Tooltip text="Add mode">
                                 <button
-                                    class={`action-neutral w-full ${getPlaylist().length < 2 && `bg-neutral-light dark:enabled:bg-neutral-dark text-interactive-light dark:text-content-dark`}`}
+                                    class={`action-neutral w-full ${getPlaylist().length < 2 ? `bg-neutral-light dark:enabled:bg-neutral-dark text-interactive-light dark:text-content-dark` : ''}`}
                                     disabled={getActive()}
                                     onclick={handleAdd}
                                 >

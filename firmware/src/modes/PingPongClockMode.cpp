@@ -8,7 +8,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void PingPongClockMode::wake()
+void PingPongClockMode::begin()
 {
     pending = true;
     Display.clearFrame();

@@ -10,7 +10,7 @@
 #include "modes/SnakeClockMode.h"
 #include "services/DisplayService.h"
 
-void SnakeClockMode::wake()
+void SnakeClockMode::begin()
 {
     Display.clearFrame();
     pending = true;

@@ -70,7 +70,7 @@ private:
 public:
     OpenWeatherMode() : ModeModule("OpenWeather") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

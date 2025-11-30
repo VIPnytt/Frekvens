@@ -844,7 +844,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xB0, // °
+            0xB0, // ° DEGREE SIGN
             {
                 {
                     0b11,
@@ -855,7 +855,7 @@ private:
             },
         },
         {
-            0x3C0, // π
+            0x3C0, // π GREEK SMALL LETTER PI
             {
                 {
                     0b11111,

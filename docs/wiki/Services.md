@@ -4,14 +4,6 @@
 
 ## 🌐 Connectivity
 
-**DNS:**
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define DNS4 "1.1.1.1" // IPv4
-```
-
 **Hostname:**
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
@@ -40,7 +32,7 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 ```
 
 > [!TIP]
-> Additional Wi-Fi credentials can later be added via the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app).
+> Additional Wi-Fi credentials can be added later via the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app).
 
 **Wi-Fi hotspot:**
 
@@ -52,8 +44,6 @@ Country code for regulatory restrictions.
 
 > [!NOTE]
 > The expected format is an *ISO 3166-1 alpha-2* code. Only a subset of country codes are [supported by Espressif](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html#_CPPv425esp_wifi_set_country_codePKcb).
-
-Default is `01`, which corresponds to *world safe* mode.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 

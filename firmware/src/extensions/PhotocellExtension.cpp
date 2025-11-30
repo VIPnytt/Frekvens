@@ -16,7 +16,7 @@ PhotocellExtension::PhotocellExtension() : ExtensionModule("Photocell")
     Photocell = this;
 }
 
-void PhotocellExtension::setup()
+void PhotocellExtension::configure()
 {
     pinMode(PIN_LDR, ANALOG);
 #if EXTENSION_HOMEASSISTANT
@@ -55,7 +55,7 @@ void PhotocellExtension::setup()
 #endif // EXTENSION_HOMEASSISTANT
 }
 
-void PhotocellExtension::ready()
+void PhotocellExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -65,7 +65,7 @@ void PhotocellExtension::ready()
         gamma = Storage.getFloat("gamma");
     }
     Storage.end();
-    _active ? setActive(true, name) : transmit();
+    _active ? setActive(true) : transmit();
 }
 
 void PhotocellExtension::handle()
@@ -94,7 +94,7 @@ void PhotocellExtension::handle()
         {
             brightness = _brightness;
             counter = 0;
-            Display.setBrightness(brightness, name);
+            Display.setBrightness(brightness);
         }
     }
 }
@@ -104,7 +104,7 @@ bool PhotocellExtension::getActive() const
     return active;
 }
 
-void PhotocellExtension::setActive(bool active, const char *const source)
+void PhotocellExtension::setActive(bool active)
 {
     if ((active && !this->active) || (!active && this->active))
     {
@@ -121,11 +121,11 @@ void PhotocellExtension::setActive(bool active, const char *const source)
         pending = true;
         if (this->active)
         {
-            ESP_LOGI(source, "active");
+            ESP_LOGI(name, "active");
         }
         else
         {
-            ESP_LOGI(source, "inactive");
+            ESP_LOGI(name, "inactive");
         }
     }
 }
@@ -151,16 +151,16 @@ void PhotocellExtension::transmit()
     lastMillis = millis();
 }
 
-void PhotocellExtension::receiverHook(const JsonDocument doc, const char *const source)
+void PhotocellExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Active
     if (doc["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>(), source);
+        setActive(doc["active"].as<bool>());
     }
 }
 
-void PhotocellExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void PhotocellExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Display: Brightness
     if (active && !strcmp(source, Display.name) && doc["brightness"].is<uint8_t>())

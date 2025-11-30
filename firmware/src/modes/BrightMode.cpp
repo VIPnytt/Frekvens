@@ -5,7 +5,7 @@
 #include "modes/BrightMode.h"
 #include "services/DisplayService.h"
 
-void BrightMode::wake()
+void BrightMode::begin()
 {
     Display.clearFrame(UINT8_MAX);
 }

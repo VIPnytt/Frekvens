@@ -8,16 +8,15 @@
 class WebServerService : public ServiceModule
 {
 private:
-#if EXTENSION_WEBAPP
     static void onNotFound(AsyncWebServerRequest *request);
-#endif
 
 public:
     WebServerService() : ServiceModule("WebServer") {};
 
     AsyncWebServer *http = new AsyncWebServer(80);
 
-    void setup();
+    void configure();
+    void begin();
 
     static WebServerService &getInstance();
 };

@@ -54,7 +54,7 @@ private:
 public:
     SnakeClockMode() : ModeModule("Snake clock") {}
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

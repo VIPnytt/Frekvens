@@ -12,11 +12,6 @@
 // #define FRAME_RATE 60 // fps
 
 /**
- * Network
- */
-// #define DNS4 "1.1.1.1"
-
-/**
  * Weather
  */
 // #define LATITUDE "0.000" // °

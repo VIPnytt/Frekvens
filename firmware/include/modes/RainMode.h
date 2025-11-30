@@ -27,7 +27,7 @@ private:
 public:
     RainMode() : ModeModule("Rain") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

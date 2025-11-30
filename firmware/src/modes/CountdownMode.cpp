@@ -14,7 +14,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void CountdownMode::setup()
+void CountdownMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -50,7 +50,7 @@ void CountdownMode::setup()
     }
 }
 
-void CountdownMode::wake()
+void CountdownMode::begin()
 {
     done = false;
 }
@@ -107,7 +107,7 @@ void CountdownMode::transmit()
     Device.transmit(doc, name);
 }
 
-void CountdownMode::receiverHook(const JsonDocument doc, const char *const source)
+void CountdownMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["time"].is<uint32_t>())
     {

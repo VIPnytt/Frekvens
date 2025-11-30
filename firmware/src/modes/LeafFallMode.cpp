@@ -5,7 +5,7 @@
 #include "modes/LeafFallMode.h"
 #include "services/DisplayService.h"
 
-void LeafFallMode::wake()
+void LeafFallMode::begin()
 {
     for (Leaf &leaf : leaves)
     {

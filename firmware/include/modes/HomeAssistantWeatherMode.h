@@ -110,7 +110,7 @@ private:
 public:
     HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

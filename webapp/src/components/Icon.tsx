@@ -30,4 +30,4 @@ export const IconUri = (props: {
     path: string;
     viewBox?: string;
     xmlns?: string
-}): string => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="${props.xmlns || xmlns}" viewBox="${props.viewBox || viewBox}" fill="${props.fill || fill}"><path d="${props.path}"/></svg>`)}`;
+}): string => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="${props.xmlns || xmlns}" viewBox="${props.viewBox || viewBox}" fill="${props.fill || fill}"><path d="${props.path}"/>${props.fill ? '' : '<style>:root{color:white}@media(prefers-color-scheme:light){:root{color:black}}</style>'}</svg>`)}`;

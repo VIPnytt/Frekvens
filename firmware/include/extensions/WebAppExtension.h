@@ -15,7 +15,8 @@ private:
 public:
     WebAppExtension();
 
-    void setup() override;
+    void configure() override;
+    void begin() override;
 };
 
 extern WebAppExtension *WebApp;

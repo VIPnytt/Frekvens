@@ -100,7 +100,7 @@ export const MainThird: Component = () => {
                             />
                         </div>
                         <button
-                            class={`action-deactivated mt-3 w-full ${getCredentialKey().length >= 8 && 'action-positive'}`}
+                            class={`action-deactivated mt-3 w-full ${getCredentialKey().length >= 8 ? 'action-positive' : ''}`}
                             disabled={getConnecting() || !getCredentialSsid().length || (getCredentialKey().length > 0 && getCredentialKey().length < 8)}
                             id="connect"
                             onclick={handleConnect}

@@ -54,7 +54,7 @@ public:
     RtcPCF8563<TwoWire> rtc = RtcPCF8563(Wire);
 #endif
 
-    void setup() override;
+    void configure() override;
 #if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234) || defined(RTC_PCF8563)
     void handle() override;
 #endif

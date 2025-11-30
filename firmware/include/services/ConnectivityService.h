@@ -20,19 +20,14 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::unique_ptr<DNSServer> dnsServer;
-    std::unique_ptr<WiFiMulti> multi;
+    std::unique_ptr<DNSServer> dns;
 
-    void vault();
-    void hotspot();
+    WiFiMulti multi;
+
+    void initStation();
+    void initHotspot();
     void connect(const char *const ssid, const char *const key);
     void transmit();
-#if defined(PIN_SW1) || defined(PIN_SW2)
-    bool buttonCheck() const;
-#endif
-#ifdef DNS4
-    void setDns();
-#endif
 
     static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
     static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -44,11 +39,11 @@ private:
 public:
     static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
 
-    void setup();
-    void ready();
+    void configure();
+    void begin();
     void handle();
 
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 
     static ConnectivityService &getInstance();
 };

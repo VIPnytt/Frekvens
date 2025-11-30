@@ -10,7 +10,7 @@
 void SmoothWaveformMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 9) && Microphone->isPlay())
+    if (millis() - lastMillis > (1 << 9) && Microphone->isTriggered())
 #else
     if (millis() - lastMillis > (1 << 9))
 #endif // EXTENSION_MICROPHONE
@@ -18,8 +18,7 @@ void SmoothWaveformMode::handle()
         lastMillis = millis();
 
         Display.clearFrame();
-        BitmapHandler bitmap = BitmapHandler(smooth[random(smooth.size())]);
-        bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, (GRID_ROWS - bitmap.getHeight()) / 2);
+        BitmapHandler(smooth[random(smooth.size())]).draw();
     }
 }
 

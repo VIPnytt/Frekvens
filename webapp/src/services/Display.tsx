@@ -103,7 +103,7 @@ export const SidebarSecondaryComponent: Component = () => {
     };
 
     return (
-        <div class={`action ${Device.GRID_COLUMNS === Device.GRID_ROWS && 'grid-cols-[1fr_--spacing(12)_--spacing(12)]'}`}>
+        <div class={`action ${Device.GRID_COLUMNS === Device.GRID_ROWS ? 'grid-cols-[1fr_--spacing(12)_--spacing(12)]' : ''}`}>
             <div>
                 <Icon
                     class="mr-2"

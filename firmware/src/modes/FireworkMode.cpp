@@ -28,15 +28,13 @@ void FireworkMode::handle()
 void FireworkMode::pad()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->isPlay())
-    {
+    if (Microphone->isTriggered())
 #endif // EXTENSION_MICROPHONE
+    {
         rocketX = random(GRID_COLUMNS);
         rocketY = GRID_ROWS;
         stage = 1;
-#if EXTENSION_MICROPHONE
     }
-#endif // EXTENSION_MICROPHONE
 }
 
 void FireworkMode::launching()
@@ -48,7 +46,7 @@ void FireworkMode::launching()
             Display.setPixel(rocketX, rocketY, 0);
         }
         --rocketY;
-        Display.setPixel(rocketX, rocketY, rocketY + 1);
+        Display.setPixel(rocketX, rocketY, 1);
         lastMillis = millis();
         if (rocketY <= random(GRID_ROWS / 2))
         {
@@ -57,7 +55,7 @@ void FireworkMode::launching()
             maxRadius = random(1, min(GRID_COLUMNS, GRID_ROWS) / 2);
 #else
             maxRadius = random(2, min(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS / (float)PITCH_HORIZONTAL * PITCH_VERTICAL) / 2);
-#endif
+#endif // PITCH_VERTICAL == PITCH_HORIZONTAL
             stage = 2;
         }
     }

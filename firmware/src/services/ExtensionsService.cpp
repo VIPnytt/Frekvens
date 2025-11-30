@@ -3,20 +3,19 @@
 #include "services/ExtensionsService.h"
 #include "services/ModesService.h"
 
-void ExtensionsService::setup()
+void ExtensionsService::configure()
 {
     for (ExtensionModule *extension : modules)
     {
-        extension->setup();
+        extension->configure();
     }
-    ESP_LOGV(name, "setup complete");
 }
 
-void ExtensionsService::ready()
+void ExtensionsService::begin()
 {
     for (ExtensionModule *extension : modules)
     {
-        extension->ready();
+        extension->begin();
     }
     xTaskCreate(&onTask, name, stackSize, nullptr, 1, &taskHandle);
     transmit();

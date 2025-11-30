@@ -8,7 +8,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void SmallTickingClockMode::wake()
+void SmallTickingClockMode::begin()
 {
     pending = true;
 }
@@ -36,17 +36,17 @@ void SmallTickingClockMode::handle()
                 Display.setPixel(GRID_COLUMNS / 2 - 1 + secound, GRID_ROWS / 2 - 8, 0);
                 Display.setPixel(GRID_COLUMNS / 2 + secound, GRID_ROWS / 2 - 8, INT8_MAX);
             }
-            else if (secound < 23)
+            else if (secound < 8 + 15)
             {
                 Display.setPixel(GRID_COLUMNS / 2 + 7, GRID_ROWS / 2 - 16 + secound, 0);
                 Display.setPixel(GRID_COLUMNS / 2 + 7, GRID_ROWS / 2 - 15 + secound, INT8_MAX);
             }
-            else if (secound < 38)
+            else if (secound < 8 + 15 * 2)
             {
                 Display.setPixel(GRID_COLUMNS / 2 + 30 - secound, GRID_ROWS / 2 + 7, 0);
                 Display.setPixel(GRID_COLUMNS / 2 + 29 - secound, GRID_ROWS / 2 + 7, INT8_MAX);
             }
-            else if (secound < 53)
+            else if (secound < 8 + 15 * 3)
             {
                 Display.setPixel(GRID_COLUMNS / 2 - 8, GRID_ROWS / 2 + 45 - secound, 0);
                 Display.setPixel(GRID_COLUMNS / 2 - 8, GRID_ROWS / 2 + 44 - secound, INT8_MAX);

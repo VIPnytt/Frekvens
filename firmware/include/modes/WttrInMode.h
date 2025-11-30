@@ -65,7 +65,7 @@ private:
 public:
     WttrInMode() : ModeModule("Wttr.in") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

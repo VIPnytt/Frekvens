@@ -5,7 +5,7 @@
 #include "modes/StarsMode.h"
 #include "services/DisplayService.h"
 
-void StarsMode::wake()
+void StarsMode::begin()
 {
     Display.clearFrame();
 }

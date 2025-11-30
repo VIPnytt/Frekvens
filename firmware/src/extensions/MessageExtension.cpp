@@ -19,7 +19,7 @@ MessageExtension::MessageExtension() : ExtensionModule("Message")
 }
 
 #if EXTENSION_HOMEASSISTANT
-void MessageExtension::setup()
+void MessageExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -35,7 +35,7 @@ void MessageExtension::setup()
 }
 #endif // EXTENSION_HOMEASSISTANT
 
-void MessageExtension::ready()
+void MessageExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -105,13 +105,13 @@ void MessageExtension::handle()
     }
 }
 
-void MessageExtension::addMessage(std::string message, const char *const source)
+void MessageExtension::addMessage(std::string message)
 {
     for (uint8_t i = 0; i <= repeat; ++i)
     {
         messages.push_back(message);
     }
-    ESP_LOGD(source, "received");
+    ESP_LOGD(name, "received");
 }
 
 void MessageExtension::setFont(const char *const fontName)
@@ -156,7 +156,7 @@ void MessageExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MessageExtension::receiverHook(const JsonDocument doc, const char *const source)
+void MessageExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Font
     if (doc["font"].is<const char *>())
@@ -171,7 +171,7 @@ void MessageExtension::receiverHook(const JsonDocument doc, const char *const so
     //  Message
     if (doc["message"].is<std::string>())
     {
-        addMessage(doc["message"].as<std::string>(), source);
+        addMessage(doc["message"].as<std::string>());
     }
 }
 

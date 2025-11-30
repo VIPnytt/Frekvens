@@ -16,16 +16,16 @@ private:
 
     static void onStart();
     static void onEnd();
-    static void onError(ota_error_t error);
 
 #ifndef OTA_KEY
-    static void onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
+    static void onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 #endif
 
 public:
     OtaExtension();
 
-    void setup() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 };
 

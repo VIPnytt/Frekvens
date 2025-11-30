@@ -16,7 +16,7 @@ MqttExtension::MqttExtension() : ExtensionModule("MQTT")
     Mqtt = this;
 }
 
-void MqttExtension::setup()
+void MqttExtension::configure()
 {
     client.onConnect(&onConnect);
     client.onMessage(&onMessage);
@@ -90,7 +90,7 @@ void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
-void MqttExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void MqttExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     const size_t length = measureJson(doc);
     uint8_t *payload = new uint8_t[length + 1];

@@ -29,7 +29,7 @@ public:
     FliesMode() : ModeModule("Flies") {};
 
     void handle() override;
-    void receiverHook(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_FLIES

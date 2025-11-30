@@ -8,7 +8,7 @@
 #include "modes/WorldWeatherOnlineMode.h"
 #include "services/ConnectivityService.h"
 
-void WorldWeatherOnlineMode::wake()
+void WorldWeatherOnlineMode::begin()
 {
     if (urls.empty())
     {

@@ -39,4 +39,3 @@
 // #define LOCATION "city"
 // #define TEMPERATURE_CELSIUS true    // °C
 // #define TEMPERATURE_FAHRENHEIT true // °F
-// #define TEMPERATURE_KELVIN true     // °K

@@ -15,7 +15,7 @@ public:
     HeapExtension();
 
 #if EXTENSION_HOMEASSISTANT
-    void setup() override;
+    void configure() override;
 #endif // EXTENSION_HOMEASSISTANT
 
     void handle() override;

@@ -20,7 +20,7 @@ private:
 public:
     SmallClockMode() : ModeModule("Small clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

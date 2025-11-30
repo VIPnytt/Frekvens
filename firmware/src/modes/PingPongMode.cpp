@@ -5,7 +5,7 @@
 #include "modes/PingPongMode.h"
 #include "services/DisplayService.h"
 
-void PingPongMode::wake()
+void PingPongMode::begin()
 {
     Display.clearFrame();
     paddleT.clear();

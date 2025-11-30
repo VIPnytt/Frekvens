@@ -69,9 +69,6 @@ class Frekvens:
                 print(
                     f"{yellow}[notice] A new release of Frekvens is available: {current.public} -> {latest.public}{reset}"
                 )
-                print(
-                    f"{yellow}[notice] Release notes: https://github.com/VIPnytt/Frekvens/releases{reset}"
-                )
         print(f"Building Frekvens {VERSION}")
         pathlib.Path("data").mkdir(parents=True, exist_ok=True)
         self.initialize()

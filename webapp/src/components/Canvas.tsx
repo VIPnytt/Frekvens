@@ -16,7 +16,7 @@ export const Strength: Component = () => (
             class="mr-2"
             path={mdiBrightness6}
         />
-        <Tooltip text={`Pixel brightness ${Math.ceil(getStrength() / (Math.pow(2, 8) - 1) * 100)} %`}>
+        <Tooltip text={`Brush brightness ${Math.ceil(getStrength() / (Math.pow(2, 8) - 1) * 100)} %`}>
             <input
                 class="w-full"
                 max={Math.pow(2, 8) - 1}
@@ -38,24 +38,26 @@ export const Canvas: Component<{
     onPixel?: (x: number, y: number, value: number) => void;
 }> = (props) => {
     let canvasRef: HTMLCanvasElement | undefined;
-    let containerRef: HTMLDivElement | undefined;
-    let brushBrightness: number;
+    let divRef: HTMLDivElement | undefined;
     let isDrawing: boolean = false;
+    let strength: number = getStrength();
 
     const rotated = DisplayOrientation() % 180;
     const useVisibilityObserver = createVisibilityObserver({ threshold: 0.8 });
-    const visible = useVisibilityObserver(() => containerRef);
+    const visible = useVisibilityObserver(() => divRef);
 
     onMount(() => {
-        canvasRef?.addEventListener('pointerdown', handleDown);
-        canvasRef?.addEventListener('pointerleave', handleUp);
-        canvasRef?.addEventListener('pointermove', handleMove);
-        canvasRef?.addEventListener('pointerup', handleUp);
-        if (containerRef) {
+        if (canvasRef) {
+            canvasRef.addEventListener('pointerdown', handleDown);
+            canvasRef.addEventListener('pointerleave', handleUp);
+            canvasRef.addEventListener('pointermove', handleMove);
+            canvasRef.addEventListener('pointerup', handleUp);
+        }
+        if (divRef) {
             const resizeObserver = new ResizeObserver(() => {
                 draw();
             });
-            resizeObserver.observe(containerRef);
+            resizeObserver.observe(divRef);
             onCleanup(() => {
                 resizeObserver.disconnect();
             });
@@ -75,11 +77,11 @@ export const Canvas: Component<{
     });
 
     const draw = () => {
-        if (!canvasRef || !containerRef) {
+        if (!canvasRef || !divRef) {
             return;
         }
-        canvasRef.width = containerRef.clientWidth;
-        canvasRef.height = containerRef.clientHeight;
+        canvasRef.width = divRef.clientWidth;
+        canvasRef.height = divRef.clientHeight;
         const columnWidth = canvasRef.width / Device.GRID_COLUMNS;
         const rowHeight = canvasRef.height / Device.GRID_ROWS;
         const pixelHeight = rowHeight * (rotated ? Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL : Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL);
@@ -130,14 +132,13 @@ export const Canvas: Component<{
     };
 
     const handleEvent = (e: PointerEvent) => {
-        if (!canvasRef || props.disabled) {
-            return null;
-        }
-        const rect = canvasRef.getBoundingClientRect();
-        const x = Math.floor(((e.clientX - rect.left) * canvasRef.width / rect.width) / (canvasRef.width / Device.GRID_COLUMNS));
-        const y = Math.floor(((e.clientY - rect.top) * canvasRef.height / rect.height) / (canvasRef.height / Device.GRID_ROWS));
-        if (x >= 0 && x < Device.GRID_COLUMNS && y >= 0 && y < Device.GRID_ROWS) {
-            return { x, y };
+        if (canvasRef && !props.disabled) {
+            const rect = canvasRef.getBoundingClientRect();
+            const x = Math.floor(((e.clientX - rect.left) * canvasRef.width / rect.width) / (canvasRef.width / Device.GRID_COLUMNS));
+            const y = Math.floor(((e.clientY - rect.top) * canvasRef.height / rect.height) / (canvasRef.height / Device.GRID_ROWS));
+            if (x >= 0 && x < Device.GRID_COLUMNS && y >= 0 && y < Device.GRID_ROWS) {
+                return { x, y };
+            }
         }
         return null;
     };
@@ -153,10 +154,10 @@ export const Canvas: Component<{
         }
         isDrawing = true;
         const i = position.x + position.y * Device.GRID_COLUMNS;
-        brushBrightness = props.pixels[i] === 0 ? getStrength() : 0;
-        props.onPixel?.(position.x, position.y, brushBrightness);
+        strength = props.pixels[i] === 0 ? getStrength() : 0;
+        props.onPixel?.(position.x, position.y, strength);
         const newState = props.pixels.map((value, index) =>
-            index === i ? brushBrightness : value,
+            index === i ? strength : value,
         );
         props.onFrame?.(newState);
     };
@@ -171,11 +172,11 @@ export const Canvas: Component<{
             return;
         }
         const i = position.x + position.y * Device.GRID_COLUMNS;
-        if (props.pixels[i] !== brushBrightness) {
-            props.onPixel?.(position.x, position.y, brushBrightness);
+        if (props.pixels[i] !== strength) {
+            props.onPixel?.(position.x, position.y, strength);
 
             const newState = props.pixels.map((value, index) =>
-                index === i ? brushBrightness : value,
+                index === i ? strength : value,
             );
             props.onFrame?.(newState);
         }
@@ -190,13 +191,13 @@ export const Canvas: Component<{
 
     return (
         <div
-            class={`bg-black duration-300 flex-none inline-block max-h-[calc((100vh---spacing(32))*0.9)] mx-auto p-2.5 relative shadow-lg shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.9)]' : 'max-w-[90vw]'}`}
-            ref={containerRef}
+            class={`bg-black flex-none inline-block max-h-[calc((100vh---spacing(32))*0.9)] mx-auto p-2.5 relative shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.9)]' : 'max-w-[90vw]'}`}
+            ref={div => divRef = div}
             style={{
                 'aspect-ratio': rotated ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}` : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
             }}
         >
-            <canvas ref={canvasRef} />
+            <canvas ref={canvas => canvasRef = canvas} />
         </div>
     );
 };

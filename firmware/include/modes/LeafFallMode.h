@@ -24,7 +24,7 @@ private:
 public:
     LeafFallMode() : ModeModule("Leaf fall") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

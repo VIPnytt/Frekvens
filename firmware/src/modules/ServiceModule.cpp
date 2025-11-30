@@ -1,3 +1,3 @@
 #include "modules/ServiceModule.h"
 
-void ServiceModule::receiverHook(const JsonDocument doc, const char *const source) {}
+void ServiceModule::onReceive(const JsonDocument doc, const char *const source) {}

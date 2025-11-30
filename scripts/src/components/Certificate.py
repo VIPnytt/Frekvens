@@ -39,15 +39,19 @@ class Certificate:
         }.items():
             if option in self.project.dotenv and self.project.dotenv[option] == "true":
                 for host in hosts:
-                    try:
-                        self._add_host(host)
-                    except TimeoutError as e:
-                        logging.warning(
-                            "Timeout when fetching certificate for %s, doing one last attempt: %s",
-                            host,
-                            e,
-                        )
-                        self._add_host(host)
+                    for attempt in range(1, 4):
+                        try:
+                            self._add_host(host)
+                            break
+                        except TimeoutError as e:
+                            if attempt >= 3:
+                                raise
+                            logging.warning(
+                                "Timeout fetching certificate for %s (attempt #%d): %s",
+                                host,
+                                attempt,
+                                e,
+                            )
         bundle_path = pathlib.Path("firmware/certs/bundle")
         bundle_path.mkdir(parents=True, exist_ok=True)
         ca_roots = "ca_roots.pem"

@@ -28,13 +28,13 @@ public:
 
     JsonDocument *discovery = new JsonDocument();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
     void undiscover();
 
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern HomeAssistantExtension *HomeAssistant;
