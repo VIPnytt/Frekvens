@@ -29,7 +29,6 @@ class AnimationSplitter:
         with open(path, encoding="utf-8", newline="") as graphic:
             rows = [[int(cell) for cell in row] for row in csv.reader(graphic)]
             return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
-        return []
 
 
 if __name__ == "__main__":
