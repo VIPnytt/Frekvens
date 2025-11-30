@@ -196,7 +196,7 @@ void DisplayService::setPower(bool power)
     if (power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGamma(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 5) * brightness);
+        ledcFadeGamma(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness);
 #else
         ledcFade(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -207,7 +207,7 @@ void DisplayService::setPower(bool power)
     else
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGammaWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
+        ledcFadeGammaWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
 #else
         ledcFadeWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
