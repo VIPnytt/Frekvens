@@ -23,11 +23,7 @@ void AnimationMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         Preferences Storage;
-        if (!Storage.begin(name, true))
-        {
-            lastMillis = millis() + UINT16_MAX;
-            return;
-        }
+        Storage.begin(name, true);
         if (Storage.isKey(std::to_string(index).c_str()))
         {
             lastMillis = millis();
@@ -50,6 +46,43 @@ void AnimationMode::handle()
     }
 }
 
+void AnimationMode::setFrame(uint8_t index, uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+{
+    lastMillis = millis() + GRID_COLUMNS * GRID_ROWS * 2;
+    Preferences Storage;
+    Storage.begin(name);
+    Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
+    Storage.end();
+    this->index = 0;
+    pending = true;
+    ESP_LOGV(name, "frame #%d saved", index + 1);
+}
+
+void AnimationMode::setFrames(uint8_t count)
+{
+    Preferences Storage;
+    Storage.begin(name);
+    uint8_t i = count;
+    while (i > 1 && Storage.isKey(std::to_string(i).c_str()))
+    {
+        Storage.remove(std::to_string(i).c_str());
+        ++i;
+    }
+    Storage.end();
+}
+
+void AnimationMode::setInterval(uint16_t interval)
+{
+    if (interval != this->interval)
+    {
+        this->interval = interval;
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putUShort("interval", this->interval);
+        Storage.end();
+    }
+}
+
 void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
     JsonDocument doc;
@@ -68,6 +101,7 @@ void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
     // Action: pull
     if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "pull"))
     {
+        lastMillis = millis() + GRID_COLUMNS * GRID_ROWS;
         index = 0;
         pending = true;
     }
@@ -88,36 +122,17 @@ void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
             }
             ++i;
         }
-        lastMillis = millis() + GRID_COLUMNS * GRID_ROWS + UINT8_MAX;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putBytes(doc["index"].as<std::string>().c_str(), frame, sizeof(frame));
-        Storage.end();
-        index = 0;
-        pending = true;
-        ESP_LOGV(name, "frame #%d saved", doc["index"].as<uint8_t>() + 1);
+        setFrame(doc["index"].as<uint8_t>(), frame);
     }
     // Frames
     if (doc["frames"].is<uint8_t>())
     {
-        Preferences Storage;
-        Storage.begin(name);
-        uint8_t i = doc["frames"].as<uint8_t>();
-        while (i > 1 && Storage.isKey(std::to_string(i).c_str()))
-        {
-            Storage.remove(std::to_string(i).c_str());
-            ++i;
-        }
-        Storage.end();
+        setFrames(doc["frames"].as<uint8_t>());
     }
     // Interval
     if (doc["interval"].is<uint16_t>() && interval != doc["interval"].as<uint16_t>())
     {
-        interval = doc["interval"].as<uint16_t>();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("interval", interval);
-        Storage.end();
+        setInterval(doc["interval"].as<uint16_t>());
     }
 }
 

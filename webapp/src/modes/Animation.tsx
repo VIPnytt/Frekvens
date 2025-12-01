@@ -58,11 +58,11 @@ const scrollToEnd = () => {
             if (divRef) {
                 divRef.scrollTo({
                     behavior: 'smooth',
-                    left: divRef.scrollWidth,
+                    left: divRef.scrollWidth - divRef.clientWidth,
                     top: 0,
                 });
             }
-        }, 150 * 2);
+        }, 150 * 3);
     }
 };
 
@@ -99,11 +99,10 @@ export const Sidebar: Component = () => {
 
     const handleAdd = () => {
         setFramesDraft(list => {
-            const lastFrame = list.length ? list[list.length - 1][0]() : undefined;
-            const next = handleNew(lastFrame ? [...lastFrame] : undefined);
-            scrollToEnd();
-            return [...list, next];
+            const lastFrame = list.length ? list[list.length - 1][0]() : template;
+            return [...list, handleNew([...lastFrame])];
         });
+        scrollToEnd();
     };
 
     const handleDownload = () => {
@@ -124,23 +123,27 @@ export const Sidebar: Component = () => {
     };
 
     const handleSave = async () => {
-        const frames = getFramesDraft().map(([frame]) => frame());
+        const frames = getFramesDraft().map(([getFrame]) => getFrame());
         for (let i = 0; i < frames.length; ++i) {
             setTimeout(() => {
                 WebSocketWS.send(JSON.stringify({
                     [name]: {
                         frame: frames[i],
-                        frames: frames.length,
                         index: i,
-                        interval: getFrameInterval(),
                     },
                 }));
             }, Device.GRID_COLUMNS * Device.GRID_ROWS * i);
         }
         setTimeout(() => {
+            WebSocketWS.send(JSON.stringify({
+                [name]: {
+                    frames: frames.length,
+                    interval: getFrameInterval(),
+                },
+            }));
+            setSaved(true);
             toast(`${name} saved`);
         }, Device.GRID_COLUMNS * Device.GRID_ROWS * frames.length);
-        setSaved(true);
     };
 
     const handleUpload = () => {
@@ -252,15 +255,13 @@ export const Main: Component = () => {
     const handleInsert = (index: number) => {
         setFramesDraft((signals) => {
             const [getFrame] = signals[index ? index - 1 : 0];
-            const cloned = handleNew([...getFrame()]);
-            const updated = [
+            return [
                 ...signals.slice(0, index),
-                cloned,
+                handleNew([...getFrame()]),
                 ...signals.slice(index),
             ];
-            setSaved(false);
-            return updated;
         });
+        setSaved(false);
     };
 
     const handleRemove = (index: number) => {

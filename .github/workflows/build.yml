@@ -235,7 +235,7 @@ jobs:
       - run: pio run
 
   frekvens-spotlight:
-    name: Extra / IKEA Frekvens LED spotlight - ESPHome
+    name: IKEA Frekvens LED spotlight - ESPHome
     runs-on: ubuntu-latest
 
     steps:
