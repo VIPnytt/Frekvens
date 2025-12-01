@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_GAMEOFLIFE
 
+#include "config/constants.h"
 #include "modes/GameOfLifeMode.h"
 #include "services/DisplayService.h"
 

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_PIXELSEQUENCE
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class PixelSequenceMode : public ModeModule

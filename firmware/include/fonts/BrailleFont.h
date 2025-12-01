@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if FONT_BRAILLE
 
 #include "modules/FontModule.h"

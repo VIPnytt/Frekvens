@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_BINARYCLOCK
 
 #include "modules/ModeModule.h"

@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_RTC
 
 #include <esp_sntp.h>
@@ -61,7 +59,7 @@ void RtcExtension::configure()
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
 
 #ifdef PIN_INT
-    attachInterrupt(digitalPinToInterrupt(PIN_INT), onInterrupt, CHANGE);
+    attachInterrupt(PIN_INT, onInterrupt, CHANGE);
 #endif
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234))

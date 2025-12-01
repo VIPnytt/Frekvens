@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_BUTTON
 
+#include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
 class ButtonExtension : public ExtensionModule

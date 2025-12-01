@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_LARGETICKINGCLOCK
 
+#include "config/constants.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/LargeTickingClockMode.h"

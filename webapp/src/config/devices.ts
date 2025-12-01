@@ -8,7 +8,8 @@ interface Parameters {
     LED_GEOMETRY: Geometry;
     LED_SIZE_HORIZONTAL: number;
     LED_SIZE_VERTICAL: number;
-    NAME: string,
+    MANUFACTURER: string,
+    MODEL: string,
     PITCH_HORIZONTAL: number;
     PITCH_VERTICAL: number;
 }
@@ -21,7 +22,8 @@ const IkeaFrekvensParameters: Parameters = {
     LED_GEOMETRY: 'circular',
     LED_SIZE_HORIZONTAL: 4, // mm
     LED_SIZE_VERTICAL: 4,   // mm
-    NAME: "IKEA Frekvens",
+    MANUFACTURER: "IKEA",
+    MODEL: "Frekvens",
     PITCH_HORIZONTAL: 6,    // mm
     PITCH_VERTICAL: 6,      // mm
 }
@@ -34,12 +36,13 @@ const IkeaObegransadParameters: Parameters = {
     LED_GEOMETRY: 'rectangular',
     LED_SIZE_HORIZONTAL: 12.5, // mm
     LED_SIZE_VERTICAL: 12.5,   // mm
-    NAME: "IKEA Obegränsad",
+    MANUFACTURER: "IKEA",
+    MODEL: "Obegränsad",
     PITCH_HORIZONTAL: 20, // mm
     PITCH_VERTICAL: 30,   // mm
 }
 
 export const Device: Parameters = import.meta.env.VITE_IKEA_FREKVENS === 'true' ? IkeaFrekvensParameters : import.meta.env.VITE_IKEA_OBEGRANSAD === 'true' ? IkeaObegransadParameters : {} as Parameters;
 
-export const IkeaFrekvens: string = IkeaFrekvensParameters.NAME;
-export const IkeaObegransad: string = IkeaObegransadParameters.NAME;
+export const IkeaFrekvens: string = `${IkeaFrekvensParameters.MANUFACTURER} ${IkeaFrekvensParameters.MODEL}`;
+export const IkeaObegransad: string = `${IkeaObegransadParameters.MANUFACTURER} ${IkeaObegransadParameters.MODEL}`;

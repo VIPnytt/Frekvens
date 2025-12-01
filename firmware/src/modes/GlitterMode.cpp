@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_GLITTER
 
+#include "config/constants.h"
 #include "modes/GlitterMode.h"
 #include "services/DisplayService.h"
 

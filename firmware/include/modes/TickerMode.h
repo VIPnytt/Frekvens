@@ -1,11 +1,10 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_TICKER
 
 #include <bits/unique_ptr.h>
 
+#include "config/constants.h"
 #include "handlers/TextHandler.h"
 #include "modules/ModeModule.h"
 #include "services/DisplayService.h"

@@ -185,63 +185,41 @@ const std::vector<ModeModule *> &ModesService::getAll() const
 
 void ModesService::setModeNext()
 {
-    if (mode)
+    const char *const _name = mode ? mode->name : scheduled->name;
+    std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
+                                                                   { return !strcmp(_mode->name, _name); });
+    if (!Display.getPower())
     {
-        const char *const _name = mode->name;
-        std::vector<ModeModule *>::const_iterator _modes = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                        { return !strcmp(_mode->name, _name); });
-        if (_modes == modes.end())
-        {
-            setMode(*modes.begin());
-        }
-        else if (!Display.getPower())
-        {
-            Display.setPower(true);
-        }
-        else
-        {
-            ++_modes;
-            if (_modes == modes.end())
-            {
-                setMode(*modes.begin());
-                Display.setPower(false);
-            }
-            else
-            {
-                setMode(*_modes);
-            }
-        }
+        Display.setPower(true);
+    }
+    else if (_mode == modes.end() - 1)
+    {
+        setMode(*modes.begin());
+        Display.setPower(false);
     }
     else
     {
-        setMode(*modes.begin());
+        setMode(*(_mode + 1));
     }
 }
 
 void ModesService::setModePrevious()
 {
-    if (mode)
+    const char *const _name = mode ? mode->name : scheduled->name;
+    std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
+                                                                    { return !strcmp(_mode->name, _name); });
+    if (!Display.getPower())
     {
-        const char *const _name = mode->name;
-        std::vector<ModeModule *>::const_iterator _modes = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                        { return !strcmp(_mode->name, _name); });
-        if (_modes == modes.begin())
-        {
-            setMode(*(modes.end() - 1));
-            Display.setPower(false);
-        }
-        else if (!Display.getPower())
-        {
-            Display.setPower(true);
-        }
-        else
-        {
-            setMode(*(_modes - 1));
-        }
+        Display.setPower(true);
+    }
+    else if (_mode == modes.begin())
+    {
+        setMode(*(modes.end() - 1));
+        Display.setPower(false);
     }
     else
     {
-        setMode(*(modes.end() - 1));
+        setMode(*(_mode - 1));
     }
 }
 

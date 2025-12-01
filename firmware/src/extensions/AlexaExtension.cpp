@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if EXTENSION_ALEXA
 
 #include <HTTPClient.h>
 
+#include "config/constants.h"
 #include "extensions/AlexaExtension.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"

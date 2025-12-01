@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_WEBSOCKET
 
 #include "extensions/WebSocketExtension.h"

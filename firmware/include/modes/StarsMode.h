@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_STARS
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class StarsMode : public ModeModule

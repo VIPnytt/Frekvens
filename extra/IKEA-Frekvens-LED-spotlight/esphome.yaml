@@ -7,7 +7,7 @@ esphome:
   min_version: "2025.7.0"
   project:
     name: "IKEA.Frekvens"
-    version: "2025.11.0"
+    version: "2025.12.0"
 
 esp32: # https://registry.platformio.org/platforms/platformio/espressif32/boards
   board: seeed_xiao_esp32c3 # Replace with the board you are using

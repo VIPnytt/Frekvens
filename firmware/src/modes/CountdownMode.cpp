@@ -1,11 +1,10 @@
-#include "config/constants.h"
-
 #if MODE_COUNTDOWN
 
 #include <iomanip>
 #include <Preferences.h>
 #include <sstream>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
@@ -57,18 +56,21 @@ void CountdownMode::begin()
 
 void CountdownMode::handle()
 {
-    const std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-    const auto hours = std::chrono::duration_cast<std::chrono::hours>(epoch - now);
-    const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(epoch - now - hours);
-    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(epoch - now - hours - minutes);
+    const std::chrono::nanoseconds _nanoseconds = epoch - std::chrono::system_clock::now();
+    const std::chrono::hours _hours = std::chrono::duration_cast<std::chrono::hours>(_nanoseconds);
+    const std::chrono::minutes _minutes = std::chrono::duration_cast<std::chrono::minutes>(_nanoseconds - _hours);
+    const int64_t
+        hours = _hours.count(),
+        minutes = _minutes.count(),
+        seconds = std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count();
     const uint8_t
-        _upper = hours.count() > 99 ? 99 : (hours.count() > 0 ? hours.count() % 100 : minutes.count()),
-        _lower = hours.count() > 99 ? 99 : (hours.count() > 0 ? minutes.count() : seconds.count());
+        _upper = hours > 99 ? 99 : (hours > 0 ? hours % 100 : minutes),
+        _lower = hours > 99 ? 99 : (hours > 0 ? minutes : seconds);
     if (_lower != lower || _upper != upper)
     {
         upper = _upper;
         lower = _lower;
-        if (seconds.count() >= 0 && minutes.count() >= 0 && hours.count() >= 0)
+        if (seconds >= 0 && minutes >= 0 && hours >= 0)
         {
             Display.clearFrame();
             TextHandler _tl = TextHandler(std::to_string(upper / 10), FontMedium);
@@ -79,7 +81,7 @@ void CountdownMode::handle()
             _bl.draw(GRID_COLUMNS / 2 - 1 - _bl.getWidth(), GRID_ROWS - _bl.getHeight());
             TextHandler _br = TextHandler(std::to_string(lower % 10), FontMedium);
             _br.draw(GRID_COLUMNS / 2 + 1, GRID_ROWS - _br.getHeight());
-            if (seconds.count() == 0 && minutes.count() == 0 && hours.count() == 0)
+            if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 done = true;
                 JsonDocument doc;
@@ -96,14 +98,12 @@ void CountdownMode::handle()
 
 void CountdownMode::transmit()
 {
+    char timestamp[32];
     time_t timer = std::chrono::system_clock::to_time_t(epoch);
     tm local = *std::localtime(&timer);
-    std::ostringstream iso8601;
-    iso8601 << std::put_time(&local, "%Y-%m-%dT%H:%M:%S");
-    iso8601.str();
-
+    std::strftime(timestamp, sizeof(timestamp), "%FT%T", &local);
     JsonDocument doc;
-    doc["timestamp"] = iso8601.str();
+    doc["timestamp"] = timestamp;
     Device.transmit(doc, name);
 }
 

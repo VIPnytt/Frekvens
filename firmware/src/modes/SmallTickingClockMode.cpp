@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_SMALLTICKINGCLOCK
 
+#include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/SmallTickingClockMode.h"

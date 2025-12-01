@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if EXTENSION_MQTT
 
 #include <WiFi.h>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"

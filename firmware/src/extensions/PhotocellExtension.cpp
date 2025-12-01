@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if EXTENSION_PHOTOCELL
 
 #include <Preferences.h>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/PhotocellExtension.h"
 #include "services/DeviceService.h"

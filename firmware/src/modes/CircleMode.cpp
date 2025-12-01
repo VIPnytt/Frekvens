@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_CIRCLE
 
 #include "extensions/MicrophoneExtension.h"

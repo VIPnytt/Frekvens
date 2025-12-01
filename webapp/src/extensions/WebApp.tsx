@@ -5,6 +5,7 @@ import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
 import { ToastProvider } from '../components/Toast';
 import { HOSTNAME, NAME } from '../config/constants';
+import { Device } from '../config/devices';
 import { EXTENSION_OTA } from '../config/modules';
 import { VERSION } from '../config/version';
 import { MainComponent as ExtensionOtaComponent } from './Ota';
@@ -122,7 +123,7 @@ const Secondary: Component = () => (
                 <Switch
                     fallback={
                         <>
-                            <SidebarSectionSecondary title={NAME}>
+                            <SidebarSectionSecondary title={Device.MODEL}>
                                 <div class="space-y-3">
                                     <ConnectivitySecondarySidebarComponent />
                                     <DeviceSecondarySidebarComponent />

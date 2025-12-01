@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_FLIES
 
 #include "modes/FliesMode.h"
@@ -22,7 +20,7 @@ void FliesMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["id"].is<uint8_t>() && doc["x"].is<uint8_t>() && doc["y"].is<uint8_t>())
     {
-        flies[doc["id"].as<uint8_t>()] = Pixel{doc["x"].as<uint8_t>(), doc["y"].as<uint8_t>()};
+        flies[doc["id"].as<uint8_t>()] = Dot{doc["x"].as<uint8_t>(), doc["y"].as<uint8_t>()};
         pending = true;
     }
 }

@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if EXTENSION_HEAP
 
+#include "config/constants.h"
 #include "extensions/HeapExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"

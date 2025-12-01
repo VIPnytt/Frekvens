@@ -1,10 +1,9 @@
-#include "config/constants.h"
-
 #if MODE_SNAKE
 
 #include <map>
 #include <queue>
 
+#include "config/constants.h"
 #include "modes/SnakeMode.h"
 #include "services/DisplayService.h"
 

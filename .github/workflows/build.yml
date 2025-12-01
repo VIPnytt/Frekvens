@@ -82,8 +82,8 @@ jobs:
 
       - run: pio run
 
-  frekvens-custom:
-    name: IKEA Frekvens LED multi-use light - custom
+  frekvens-extensive:
+    name: IKEA Frekvens LED multi-use light - extensive
     needs: [frekvens-basic, obegransad-basic]
     runs-on: ubuntu-latest
 

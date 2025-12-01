@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if MODE_E131
 
 #include <ESPmDNS.h>
 
+#include "config/constants.h"
 #include "modes/E131Mode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"

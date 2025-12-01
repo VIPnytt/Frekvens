@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_NOISE
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class NoiseMode : public ModeModule

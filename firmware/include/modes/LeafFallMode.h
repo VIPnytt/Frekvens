@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_LEAFFALL
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class LeafFallMode : public ModeModule

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_BRIGHT
 
 #include "modules/ModeModule.h"

@@ -1,15 +1,14 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_EQUALIZER
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class EqualizerMode : public ModeModule
 {
 private:
-    static constexpr uint8_t width = GRID_ROWS / 5;
+    static constexpr uint8_t width = 3;
 
     struct Bar
     {

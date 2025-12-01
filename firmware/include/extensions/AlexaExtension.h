@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_ALEXA
 
 #include <ESPAsyncWebServer.h>

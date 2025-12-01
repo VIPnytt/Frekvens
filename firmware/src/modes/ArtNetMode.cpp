@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if MODE_ARTNET
 
 #include <ESPmDNS.h>
 
+#include "config/constants.h"
 #include "modes/ArtNetMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"

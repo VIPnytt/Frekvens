@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_PLAYLIST
 
 #include <Preferences.h>
@@ -42,7 +40,6 @@ void PlaylistExtension::configure()
     {
         Storage.end();
     }
-
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -119,14 +116,11 @@ void PlaylistExtension::setActive(bool active)
     {
         step = 0;
         this->active = active;
-
         Preferences Storage;
         Storage.begin(name);
         Storage.putBool("active", this->active);
         Storage.end();
-
         transmit();
-
         if (this->active)
         {
             ESP_LOGI(name, "active");
@@ -160,7 +154,6 @@ void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
     Storage.putBytes("modes", buffer, length + 1);
     Storage.end();
     delete[] buffer;
-
     transmit();
 }
 

@@ -58,16 +58,6 @@ class Firmware:
 
     def _define_pio(self) -> None:
         config = self.project.env.GetProjectConfig()
-        self.project.env.Append(
-            CPPDEFINES=[
-                (
-                    "BOARD__NAME",
-                    self.project.env.StringifyMacro(
-                        self.project.env.BoardConfig().get("name")
-                    ),
-                ),
-            ]
-        )
         for option in [
             "board",
             "monitor_speed",

@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if MODE_DISTRIBUTEDDISPLAYPROTOCOL
 
 #include <ESPmDNS.h>
 
+#include "config/constants.h"
 #include "modes/DistributedDisplayProtocolMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"

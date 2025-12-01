@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_HEAP
 
 #include "modules/ExtensionModule.h"

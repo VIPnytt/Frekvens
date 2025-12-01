@@ -1,9 +1,8 @@
-#include "config/constants.h"
-
 #if EXTENSION_MICROPHONE
 
 #include <Preferences.h>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MicrophoneExtension.h"
 #include "services/DeviceService.h"

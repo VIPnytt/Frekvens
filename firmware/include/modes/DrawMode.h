@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_DRAW
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class DrawMode : public ModeModule

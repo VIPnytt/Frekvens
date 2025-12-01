@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "config/constants.h"
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
 #include "modes/ArtNetMode.h"

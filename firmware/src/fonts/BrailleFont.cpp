@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if FONT_BRAILLE
 
 #include "fonts/BrailleFont.h"

@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_BUTTON
 
 #include "extensions/ButtonExtension.h"
@@ -25,10 +23,10 @@ void ButtonExtension::configure()
 #endif
 
 #ifdef PIN_SW1
-    attachInterrupt(digitalPinToInterrupt(PIN_SW1), &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW1, &onInterrupt, CHANGE);
 #endif
 #ifdef PIN_SW2
-    attachInterrupt(digitalPinToInterrupt(PIN_SW2), &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW2, &onInterrupt, CHANGE);
 #endif
 
 #if EXTENSION_HOMEASSISTANT

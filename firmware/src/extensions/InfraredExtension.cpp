@@ -1,11 +1,10 @@
-#include "config/constants.h"
-
 #if EXTENSION_INFRARED
 
 #include <stdint.h> // temporary bugfix for arduino-irremote/IRremote @ 4.5.0
 #include <IRremote.hpp>
 #include <Preferences.h>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/InfraredExtension.h"
 #include "extensions/MicrophoneExtension.h"

@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if EXTENSION_OTA
 
+#include <esp_arduino_version.h> // temporary bugfix mitigation due to ledcFade bug in Arduino 3.3.2 and higher
 #include <ESPmDNS.h>
 #include <HTTPClient.h>
 
@@ -12,6 +11,11 @@
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#if ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 2)
+// Temporary mitigation measure due to ledcFade bug in Arduino 3.3.2 and higher
+#warning "Arduino 3.3.1 and lower: OTA may fail to compile or update. Disable OTA if you need this version."
+#endif
 
 OtaExtension *Ota = nullptr;
 

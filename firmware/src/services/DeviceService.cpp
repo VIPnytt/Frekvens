@@ -257,7 +257,7 @@ const JsonDocument DeviceService::getTransmits() const
 void DeviceService::transmit()
 {
     JsonDocument doc;
-    doc["board"] = BOARD__NAME;
+    doc["board"] = ARDUINO_BOARD;
     doc["model"] = MODEL;
     doc["name"] = NAME;
     doc["repository"] = "https://github.com/VIPnytt/Frekvens";

@@ -1,3 +1,4 @@
+#include <esp_arduino_version.h> // temporary bugfix mitigation due to ledcFade bug in Arduino 3.3.2 and higher
 #include <Preferences.h>
 #include <SPI.h>
 
@@ -196,9 +197,13 @@ void DisplayService::setPower(bool power)
     if (power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGamma(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness);
+        ledcFadeGamma(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness); // offset -3 instead of -1 due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+#elif CONFIG_IDF_TARGET_ESP32 && ESP_ARDUINO_VERSION > ESP_ARDUINO_VERSION_VAL(3, 3, 1) && ESP_ARDUINO_VERSION <= ESP_ARDUINO_VERSION_VAL(3, 3, 4)
+        // Temporary Arduino bugfix mitigation
+#warning "ESP32 classic users: Arduino has a ledcFade crash bug. Downgrade to Arduino 3.3.1 or fading will be disabled."
+        ledcWrite(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 1) + 1));
 #else
-        ledcFade(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness);
+        ledcFade(PIN_OE, 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 5) * brightness); // offset -3 instead of -1 due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         this->power = true;
         pending = true;
@@ -207,9 +212,14 @@ void DisplayService::setPower(bool power)
     else
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGammaWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
+        ledcFadeGammaWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff); // offset -3 instead of -1 due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
+#elif CONFIG_IDF_TARGET_ESP32 && ESP_ARDUINO_VERSION > ESP_ARDUINO_VERSION_VAL(3, 3, 1) && ESP_ARDUINO_VERSION <= ESP_ARDUINO_VERSION_VAL(3, 3, 4)
+        // Temporary Arduino bugfix mitigation
+#warning "ESP32 classic users: Arduino has a ledcFade crash bug. Downgrade to Arduino 3.3.1 or fading will be disabled."
+        ledcWrite(PIN_OE, 0);
+        onPowerOff();
 #else
-        ledcFadeWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff);
+        ledcFadeWithInterrupt(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), 0, (1 << 3) * brightness, &onPowerOff); // offset -3 instead of -1 due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
 }
@@ -235,9 +245,13 @@ void DisplayService::setBrightness(uint8_t brightness)
     }
     ESP_LOGI(name, "brightness");
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    ledcFadeGamma(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << pwmDepth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness));
+    ledcFadeGamma(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness)); // offset -3 instead of -1 due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+#elif CONFIG_IDF_TARGET_ESP32 && ESP_ARDUINO_VERSION > ESP_ARDUINO_VERSION_VAL(3, 3, 1) && ESP_ARDUINO_VERSION <= ESP_ARDUINO_VERSION_VAL(3, 3, 4)
+    // Temporary Arduino bugfix mitigation
+#warning "ESP32 classic users: Arduino has a ledcFade crash bug. Downgrade to Arduino 3.3.1 or fading will be disabled."
+    ledcWrite(PIN_OE, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 1) + 1));
 #else
-    ledcFade(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness));
+    ledcFade(PIN_OE, power ? max<uint16_t>(this->brightness, pow(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1) : 0, max<uint16_t>(brightness, pow(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 3) + 1), (1 << 4) * abs(this->brightness - brightness)); // offset -3 instead of -1 due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {

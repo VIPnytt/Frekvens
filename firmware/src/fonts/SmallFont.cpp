@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #include "fonts/SmallFont.h"
 
 SmallFont *FontSmall = nullptr;

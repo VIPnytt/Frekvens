@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_BOLDCLOCK
 
+#include "config/constants.h"
 #include "fonts/MediumBoldFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/BoldClockMode.h"

@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_SCAN
 
+#include "config/constants.h"
 #include "extensions/MicrophoneExtension.h"
 #include "modes/ScanMode.h"
 #include "services/DisplayService.h"

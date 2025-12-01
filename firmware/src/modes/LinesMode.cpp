@@ -1,7 +1,6 @@
-#include "config/constants.h"
-
 #if MODE_LINES
 
+#include "config/constants.h"
 #include "extensions/MicrophoneExtension.h"
 #include "modes/LinesMode.h"
 #include "services/DisplayService.h"

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_METABALLS
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class MetaballsMode : public ModeModule
 {
-protected:
+private:
     static constexpr float
         radius = min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) / PI,
         radiusSq = radius * radius,

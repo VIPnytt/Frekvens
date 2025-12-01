@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_FIREWORK
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class FireworkMode : public ModeModule

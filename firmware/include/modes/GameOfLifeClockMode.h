@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_GAMEOFLIFECLOCK
 
 #include "modules/ModeModule.h"

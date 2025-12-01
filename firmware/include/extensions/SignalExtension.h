@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_SIGNAL
 
+#include "config/constants.h"
 #include "handlers/BitmapHandler.h"
 #include "modules/ExtensionModule.h"
 

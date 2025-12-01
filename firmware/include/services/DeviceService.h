@@ -17,6 +17,7 @@ private:
     JsonDocument transmits;
 
     void transmit();
+
     void onReceive(const JsonDocument doc, const char *const source) override;
 
 public:

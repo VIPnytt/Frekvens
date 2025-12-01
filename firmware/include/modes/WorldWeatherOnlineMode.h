@@ -1,11 +1,10 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_WORLDWEATHERONLINE
 
 #include <vector>
 
+#include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 

@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_SIGNAL
 
 #include <Preferences.h>

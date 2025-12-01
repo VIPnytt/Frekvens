@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_RTC
 
 #include <RtcDS1302.h>
@@ -13,6 +11,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
+#include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
 class RtcExtension : public ExtensionModule

@@ -1,15 +1,14 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_INFRARED
+
+#include <vector>
 
 #define USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
 #include <IRremote.hpp>
 #undef USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
 
-#include <vector>
-
+#include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
 class InfraredExtension : public ExtensionModule

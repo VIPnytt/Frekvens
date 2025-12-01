@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "config/constants.h"
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
 #include "extensions/HeapExtension.h"

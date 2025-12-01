@@ -1,10 +1,9 @@
-#include "config/constants.h"
-
 #if EXTENSION_HOMEASSISTANT
 
 #include <regex>
 #include <WiFi.h>
 
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
@@ -76,7 +75,7 @@ void HomeAssistantExtension::begin()
                 _wifi.add(WiFi.macAddress());
             }
         }
-        device[HomeAssistantAbbreviations::hw_version] = BOARD__NAME;
+        device[HomeAssistantAbbreviations::hw_version] = ARDUINO_BOARD;
         device[HomeAssistantAbbreviations::identifiers].to<JsonArray>().add(std::format("0x{:x}", ESP.getEfuseMac()));
         device[HomeAssistantAbbreviations::manufacturer] = MANUFACTURER;
         device[HomeAssistantAbbreviations::model] = MODEL;
