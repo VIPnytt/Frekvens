@@ -391,30 +391,6 @@ jobs:
 
       - run: |
           set +e
-          OUTPUT=$(python -m frekvens.HomeThermometerDemo --host localhost --indoor=22 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
-            echo "Expected ConnectError occurred."
-            exit 0
-          fi
-          echo "Unexpected error or no error."
-          exit $STATUS
-
-      - run: |
-          set +e
-          OUTPUT=$(python -m frekvens.HomeThermometerDemo --host localhost --outdoor=8 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
-            echo "Expected ConnectError occurred."
-            exit 0
-          fi
-          echo "Unexpected error or no error."
-          exit $STATUS
-
-      - run: |
-          set +e
           OUTPUT=$(python -m frekvens.HomeThermometerDemo --host localhost --indoor=22 --outdoor=8 2>&1)
           STATUS=$?
           echo "$OUTPUT"
