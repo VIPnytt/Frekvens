@@ -45,9 +45,9 @@ if __name__ == "__main__":
     if args.host is None:
         args.host = input("Host: ")
     if args.indoor is None:
-        indoor = input("Indoor temperature: ")
-        args.indoor = None if not len(indoor) else float(indoor)
+        indoor = input("Indoor temperature: ") or None
+        args.indoor = None if indoor is None or not len(indoor) else float(indoor)
     if args.outdoor is None:
-        outdoor = input("Outdoor temperature: ")
-        args.outdoor = None if not len(outdoor) else float(outdoor)
+        outdoor = input("Outdoor temperature: ") or None
+        args.outdoor = None if outdoor is None or not len(outdoor) else float(outdoor)
     HomeThermometerDemo(args.host).set(args.indoor, args.outdoor, True)
