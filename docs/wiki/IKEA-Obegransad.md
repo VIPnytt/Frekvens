@@ -104,7 +104,7 @@ Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-l
 
 The button can be wired in several ways, depending on the desired level of modification. The simplest and most visually clear method is to connect it directly between the ESP32 and `GND`. This keeps the wiring straightforward and self-contained, reducing the chance of confusion from the PCB’s existing circuitry.
 
-If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — internally connected to `SW` — provides another solder point with the same electrical result.
+If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — provides another solder point with the same electrical result.
 
 > [!NOTE]
 > On the LED panel, `SW1` is internally tied to `GND`.

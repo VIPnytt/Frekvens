@@ -129,7 +129,7 @@ jobs:
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           FONT_BRAILLE='true'
-          HOSTNAME='custom'
+          HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
           IKEA_OBEGRANSAD='false'
           MODE_ANIMATION='true'
@@ -180,7 +180,7 @@ jobs:
           MODE_WORLDWEATHERONLINE='true'
           MODE_WTTRIN='true'
           MODE_YR='true'
-          NAME='Custom'
+          NAME='Frekvens'
           OTA_KEY='secret'
           TIME_ZONE='Etc/Universal'
           EOL
@@ -215,8 +215,6 @@ jobs:
           #define PIN_SW1 11
           #define PIN_SW2 12
           #define RTC_DS3232
-          #define TEMPERATURE_CELSIUS false
-          #define TEMPERATURE_FAHRENHEIT false
           #define TEMPERATURE_KELVIN true
           #define WIFI_COUNTRY "01"
           #define WIFI_KEY "redacted"

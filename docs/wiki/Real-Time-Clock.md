@@ -199,3 +199,12 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_SDA 2 // I²C SDA
 #define PIN_INT 3 // RTC INT
 ```
+
+## 🔗 Resources
+
+External links for deeper exploration — provided for reference only and with no formal connection to this project.
+
+- [Adafruit: Adafruit DS3231 Precision RTC Breakout](https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout?view=all)
+- [Last Minute Engineers: Interface DS1307 RTC Module with Arduino](https://lastminuteengineers.com/ds1307-rtc-arduino-tutorial/)
+- [Last Minute Engineers: Interface DS3231 Precision RTC Module with Arduino](https://lastminuteengineers.com/ds3231-rtc-arduino-tutorial/)
+- [Tonixstuff: Tutorial – Arduino and PCF8563 real time clock IC](https://tronixstuff.com/2013/08/13/tutorial-arduino-and-pcf8563-real-time-clock-ic/)

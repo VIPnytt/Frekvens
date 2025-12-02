@@ -210,15 +210,13 @@ Refer to the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for supported endp
 
 ### How do I change Wi-Fi network?
 
-Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with your phone or computer, and a configuration portal will open. From there, you can configure new network credentials. The device can remember multiple networks.
+Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with your phone or computer, and a configuration portal will open. From there, you can configure new network credentials. Multiple networks can be saved.
 
 ## 🚧 Troubleshooting
 
 ### Build fails
 
-Frekvens includes a wide range of animations, weather providers, smart-home extensions and streaming protocols — most users only use a subset of these.
-
-If the build fails due to memory limits, try disabling features you don’t plan to use in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is by far the largest one, and therefore a good first candidate to remove in order to free up memory for other stuff.
+If the build fails due to memory limits, try disabling features you don’t plan to use in the [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is by far the largest one, and therefore a good first candidate to remove in order to free up memory for other stuff.
 
 ### Where is the web UI?
 

@@ -98,17 +98,17 @@ The next step is to disconnect the buttons from the green PCB, `SW1`, `SW2` and 
 
 ### Removing the `U2` chip
 
-This step can be a bit challanging: removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is responsible for handling the integrated microphone, button inputs and display output.
+This step can be a bit challanging; removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB.
 
 > [!TIP]
-> If the integrated microphone is not needed, the entire green PCB can be removed from the LED panel. This makes the modification easier, while still allowing the board to be re-soldered back on later if microphone support is desired.
+> If the integrated microphone is not needed, the entire green PCB can be desoldered from the LED panel. This makes the modification easier, while still allowing the board to be re-soldered back on later if desired.
 
 ### Wiring the microphone
 
 For the microphone to be functional, connect a wire from the [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier labeled `U3` pin 7 to an *analog input* on the ESP32.
 
 > [!TIP]
-> Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip should be desoldered, it might be easier to connect from `U2` pad 11 instead. It’s internally connected to `U3` pin 7 via traces on the PCB.
+> Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip must be desoldered, it might be easier to connect from `U2` pad 11 instead.
 
 ### The Missing IR sensor
 
