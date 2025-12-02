@@ -26,10 +26,9 @@ Article number: `504.203.53`
 │ │ MIC           └─┘           │ │
 │ └──┬──────────────────────────┘ │
 │ GND LAK CLK DA  EN  VCC DC- DC+ │
-└──────────────┼───────────┼───┼──┘
-               │           │   └──── +4 V DC
-               │           └──────── 0 V DC
-               └──────────────────── SPI MISO
+└──────────────────────────┼───┼──┘
+                           │   └──── +4 V DC
+                           └──────── 0 V DC
 ```
 
 ### Buttons schema
@@ -61,7 +60,6 @@ Article number: `504.203.53`
 │            GND ├─ 0 V DC
 │                │
 │           SCLK ├─ SPI SCLK
-│           MISO ├─ SPI MISO
 │           MOSI ├─ SPI MOSI
 │                │
 │ Digital output ├─ SPI CS
@@ -84,7 +82,6 @@ Article number: `504.203.53`
    SPI CS ─┤     ──►     ├─ SPI CS
  SPI SCLK ─┤     ──►     ├─ SPI SCLK
  SPI MOSI ─┤     ──►     ├─ SPI MOSI
- SPI MISO ─┤     ◄──     ├─ SPI MISO
        OE ─┤     ──►     ├─ OE
            └─────────────┘
 ```
@@ -121,10 +118,10 @@ The hole next to `C10` was reserved for this purpose and can still be used to mo
 
 ### Wiring the LED panel
 
-Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left. There’s no difference between them except for `DA`, where the labeled one on top is input and the unlabeled at bottom is output.
 
 > [!CAUTION]
-> The two left-most pads will be blocked by the chassis.
+> The two left-most unlabeled pads will be blocked by the chassis.
 
 ### Connecting the button
 
@@ -162,16 +159,15 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 
 ## 🔧 Configuration
 
-| Label       | Type           | Constant   |
-| ----------- | -------------- | -----------|
-| `LAK`       | Digital output | `PIN_CS`   |
-| `CLK`       | SPI SCLK       | `PIN_SCLK` |
-| `DA` input  | SPI MOSI       | `PIN_MOSI` |
-| `DA` output | SPI MISO       | `PIN_MISO` |
-| `EN`        | Digital output | `PIN_OE`   |
-| `SW1`       | Digital input  | `PIN_SW1`  |
-| `SW`        | Digital input  | `PIN_SW2`  |
-| `U3` pin 7  | Analog input   | `PIN_MIC`  |
+| Label      | Type           | Constant   |
+| ---------- | -------------- | -----------|
+| `LAK`      | Digital output | `PIN_CS`   |
+| `CLK`      | SPI SCLK       | `PIN_SCLK` |
+| `DA`       | SPI MOSI       | `PIN_MOSI` |
+| `EN`       | Digital output | `PIN_OE`   |
+| `SW1`      | Digital input  | `PIN_SW1`  |
+| `SW`       | Digital input  | `PIN_SW2`  |
+| `U3` pin 7 | Analog input   | `PIN_MIC`  |
 
 ### Power and ground
 
@@ -226,26 +222,11 @@ Any SPI `MOSI` pin can be used.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_MOSI 3 // DA (labeled)
+#define PIN_MOSI 3 // DA
 ```
 
 > [!NOTE]
 > [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
-
-### SPI MISO
-
-Master-in data line for SPI (optional).
-
-Any SPI `MISO` pin can be used.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define PIN_MISO 4 // DA (unlabeled)
-```
-
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
 
 ### Output Enable
 
@@ -256,7 +237,7 @@ Any digital output pin can be used.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_OE 5 // EN
+#define PIN_OE 4 // EN
 ```
 
 > [!IMPORTANT]
@@ -274,8 +255,8 @@ Optional to connect. Use RTC-capable digital input pins for best compatibility.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_SW1 6 // SW1
-#define PIN_SW2 7 // SW
+#define PIN_SW1 5 // SW1
+#define PIN_SW2 6 // SW
 ```
 
 > [!IMPORTANT]
@@ -290,7 +271,7 @@ Optional to connect. Use an ADC1-channel analog pin for best compatibility.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_MIC 8 // U3 pin 7
+#define PIN_MIC 7 // U3 pin 7
 ```
 
 > [!WARNING]

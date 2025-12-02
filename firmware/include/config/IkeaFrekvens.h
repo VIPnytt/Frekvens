@@ -37,10 +37,8 @@
 #error "Configuration error: Output Enable pin (PIN_OE, PCB label 'EN') is not defined."
 #endif
 
-// #define PIN_MISO 5
+// #define PIN_SW1 5 // SW1
 
-// #define PIN_SW1 6 // SW1
+// #define PIN_SW2 6 // SW
 
-// #define PIN_SW2 7 // SW
-
-// #define PIN_MIC 8 // U3 pin 7
+// #define PIN_MIC 7 // U3 pin 7

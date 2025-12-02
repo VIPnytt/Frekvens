@@ -20,8 +20,7 @@ Article number: `005.262.48`
  0 V DC ─┼ DC-      └┬─┬─┬─┬─┬─┬─┬─┬┘  │
 +5 V DC ─┼ DC+                   └─────┼─ Button
          │     VCC CLA CLK DO  EN  GND │
-         └──────────────────┼──────────┘
-                            └──────────── SPI MISO
+         └─────────────────────────────┘
 ```
 
 > [!NOTE]
@@ -54,7 +53,6 @@ Black ┼─ 0 V DC
 │            GND ├─ 0 V DC
 │                │
 │           SCLK ├─ SPI SCLK
-│           MISO ├─ SPI MISO
 │           MOSI ├─ SPI MOSI
 │                │
 │ Digital output ├─ SPI CS
@@ -74,7 +72,6 @@ Black ┼─ 0 V DC
    SPI CS ─┤     ──►     ├─ SPI CS
  SPI SCLK ─┤     ──►     ├─ SPI SCLK
  SPI MOSI ─┤     ──►     ├─ SPI MOSI
- SPI MISO ─┤     ◄──     ├─ SPI MISO
        OE ─┤     ──►     ├─ OE
            └─────────────┘
 ```
@@ -98,7 +95,7 @@ The first thing to do is removing the chip labeled `U1`, as this is the core han
 
 ### Wiring the LED panels
 
-Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two empty pads, one in the top, and the other at the bottom, labeled `IN` and `OUT`. Connect all 6 wires as shown at the top of the schema. When it comes to the bottom pad, the `DO` is optional to connect.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, one in the top labeled `IN`, and the other at the bottom labeled `OUT`. There’s no difference between input and output, except for `DI` and `DO`.
 
 > [!NOTE]
 > The LED panels are rotated 180° compared to the device’s natural orientation.
@@ -155,7 +152,6 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 | `CLA` | Digital output | `PIN_CS`   |
 | `CLK` | SPI SCLK       | `PIN_SCLK` |
 | `DI`  | SPI MOSI       | `PIN_MOSI` |
-| `DO`  | SPI MISO       | `PIN_MISO` |
 | `EN`  | Digital output | `PIN_OE`   |
 | `SW`  | Digital input  | `PIN_SW2`  |
 
@@ -220,21 +216,6 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 > [!IMPORTANT]
 > [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
 
-### SPI MISO
-
-Master-in data line for SPI (optional).
-
-Any SPI `MISO` pin can be used.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define PIN_MISO 4 // DO
-```
-
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
-
 ### Output Enable
 
 Enables or disables LED output.
@@ -244,7 +225,7 @@ Any digital output pin can be used.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_OE 5 // EN
+#define PIN_OE 4 // EN
 ```
 
 > [!IMPORTANT]
@@ -262,7 +243,7 @@ Optional to connect. Use an RTC-capable digital input pin for best compatibility
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define PIN_SW2 6 // SW
+#define PIN_SW2 5 // SW
 ```
 
 > [!IMPORTANT]
