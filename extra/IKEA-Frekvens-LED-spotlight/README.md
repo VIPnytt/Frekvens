@@ -96,14 +96,14 @@ Enables or disables LED output.
 
 Any digital output pin can be used.
 
-> [!IMPORTANT]
-> Avoid strapping pins as this pin may be floating.
-
-Configure under `substitutions` in the YAML:
+Configure under `substitutions` in the ESPHome YAML:
 
 ```yaml
 PIN_OE: 1 # U6/U7
 ```
+
+> [!IMPORTANT]
+> Avoid strapping pins as this pin may be floating.
 
 ### Button
 
@@ -111,14 +111,14 @@ Button inputs for user interaction.
 
 Use digital input pins, preferably RTC-capable.
 
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
-
-Configure under `substitutions` in the YAML:
+Configure under `substitutions` in the ESPHome YAML:
 
 ```yaml
 PIN_SW: 2 # K3
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
 
 ### Microphone amplifier
 
@@ -126,14 +126,14 @@ Analog input from the microphone amplifier.
 
 Use an ADC1-channel analog pin for best compatibility.
 
-> [!WARNING]
-> Avoid strapping pins as this pin is biased.
-
-Configure under `substitutions` in the YAML:
+Configure under `substitutions` in the ESPHome YAML:
 
 ```yaml
 PIN_MIC: 3 # U3
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is biased.
 
 ## 🔗 Resources
 

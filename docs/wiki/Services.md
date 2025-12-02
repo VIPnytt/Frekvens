@@ -40,16 +40,16 @@ Long press *any* [button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%E
 
 **Wi-Fi country:**
 
-Country code for regulatory restrictions.
-
-> [!NOTE]
-> The expected format is an *ISO 3166-1 alpha-2* code. Only a subset of country codes are [supported by Espressif](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html#_CPPv425esp_wifi_set_country_codePKcb).
+Regulatory country code in *ISO 3166-1 alpha-2* format.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define WIFI_COUNTRY "01"
 ```
+
+> [!NOTE]
+> Only a subset of country codes are [supported by Espressif](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html#_CPPv425esp_wifi_set_country_codePKcb).
 
 ## 🖥️ Device
 
@@ -83,10 +83,8 @@ API payload example:
 
 **Restore:**
 
-Performs a full reset of the device’s non-volatile storage (NVS), clearing all user preferences, settings, and eventual extra Wi-Fi credentials.
-This is functionally equivalent to a "factory reset".
-
-After the NVS partition is erased, the device will shut down automatically.
+Performs a full reset of the device’s non-volatile storage (NVS), clearing all user preferences, settings, and extra Wi-Fi credentials.
+This is functionally equivalent to a *factory reset*.
 
 API payload example:
 
@@ -97,7 +95,7 @@ API payload example:
 ```
 
 > [!NOTE]
-> A manual power cycle is required to restart the device.
+> The device will shut down automatically. A manual power cycle is required to power it back on again.
 
 ## 📺 Display
 
@@ -113,15 +111,15 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 
 **Weather:**
 
-> [!NOTE]
-> Some providers have resolution grid sizes down to 250 m (820 ft), which means 3-4 decimals should be provided for the most accurate weather reports.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define LATITUDE "0.000"  // coordinate
 #define LONGITUDE "0.000" // coordinate
 ```
+
+> [!NOTE]
+> Some providers have resolution grid sizes down to 250 m (820 ft), which means 3-4 decimals should be provided for the most accurate weather reports.
 
 A small list of providers also supports location, usually in the form of a city or village.
 

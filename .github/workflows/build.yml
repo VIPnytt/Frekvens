@@ -21,6 +21,7 @@ permissions:
 jobs:
   frekvens-basic:
     name: IKEA Frekvens LED multi-use light - basic
+    needs: obegransad-basic
     runs-on: ubuntu-latest
 
     steps:
@@ -202,23 +203,18 @@ jobs:
           #define OPENMETEO_KEY "redacted"
           #define OPENWEATHER_KEY "redacted"
           #define PIN_CS 1
-          #define PIN_CS2 2
-          #define PIN_INT 3
-          #define PIN_IR 4
-          #define PIN_LDR 5
-          #define PIN_MIC 6
-          #define PIN_MISO 7
-          #define PIN_MISO2 8
-          #define PIN_MOSI 9
-          #define PIN_MOSI2 10
-          #define PIN_OE 11
-          #define PIN_SCL 12
-          #define PIN_SCLK 13
-          #define PIN_SCLK2 14
-          #define PIN_SDA 15
-          #define PIN_SDIO2 16
-          #define PIN_SW1 17
-          #define PIN_SW2 18
+          #define PIN_INT 2
+          #define PIN_IR 3
+          #define PIN_LDR 4
+          #define PIN_MIC 5
+          #define PIN_MISO 6
+          #define PIN_MOSI 7
+          #define PIN_OE 8
+          #define PIN_SCL 9
+          #define PIN_SCLK 10
+          #define PIN_SDA 11
+          #define PIN_SW1 12
+          #define PIN_SW2 13
           #define RTC_DS3232
           #define TEMPERATURE_CELSIUS false
           #define TEMPERATURE_FAHRENHEIT false

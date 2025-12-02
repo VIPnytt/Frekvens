@@ -1,9 +1,9 @@
 # 💾 Partition tables
 
-This directory contains predefined partition tables for different ESP32 flash memory sizes.
+This directory contains predefined partition tables for different ESP32 flash sizes.
 
 > [!NOTE]
-> ESP32 boards come with varying flash sizes. Most older boards have 4 MB, while newer models often include 8 MB. Boards with 2 MB, 16 MB, or 32 MB flash also exist.
+> ESP32 boards come with varying flash memory sizes. Newer models often include 8 MB, while most older boards have 4 MB. Boards with 2 MB, 16 MB, or 32 MB flash also exist.
 
 Use one of the predefined layouts below to match your board’s flash size:
 
@@ -23,7 +23,7 @@ Use one of the predefined layouts below to match your board’s flash size:
 - :x: — not available
 
 > [!TIP]
-> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit the partitions.
+> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit the selected partition.
 
 ## 2️⃣ 2 MB flash boards
 

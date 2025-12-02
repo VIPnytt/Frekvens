@@ -96,6 +96,15 @@ void CountdownMode::handle()
     }
 }
 
+void CountdownMode::save()
+{
+    Preferences Storage;
+    Storage.begin(name);
+    Storage.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
+    Storage.end();
+    transmit();
+}
+
 void CountdownMode::transmit()
 {
     char timestamp[32];
@@ -122,15 +131,6 @@ void CountdownMode::onReceive(const JsonDocument doc, const char *const source)
         epoch = std::chrono::system_clock::from_time_t(mktime(&local));
         save();
     }
-}
-
-void CountdownMode::save()
-{
-    Preferences Storage;
-    Storage.begin(name);
-    Storage.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
-    Storage.end();
-    transmit();
 }
 
 #endif // MODE_COUNTDOWN

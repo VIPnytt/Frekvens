@@ -175,18 +175,18 @@ API payload examples:
 
 ```json
 {
-    "seconds": 600
+    "time": 600
 }
 ```
 
 ```json
 {
-    "timestamp": "2025-07-10T13:09:00"
+    "timestamp": "2025-12-02T18:39:00"
 }
 ```
 
 > [!NOTE]
-> The expected timestamp format is ISO 8601, without timezone suffix.
+> The expected timestamp format is an ISO 8601 string without timezone suffix.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 

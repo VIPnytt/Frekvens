@@ -26,7 +26,7 @@ In the *Alexa app*, navigate to:
 3. Other
 4. Wi-Fi
 
-> [!IMPORTANT]
+> [!NOTE]
 > An [*Amazon Alexa*](https://www.amazon.com/smart-home-devices/b?node=9818047011) device is required.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
@@ -58,6 +58,9 @@ When the *Mode button* is the only button, it serves a dual purpose:
 
 Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
 
+> [!TIP]
+> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
+
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
@@ -68,17 +71,11 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_SW2 2 // Mode button
 ```
 
-> [!TIP]
-> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
-
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 EXTENSION_BUTTON='true'
 ```
-
-> [!IMPORTANT]
-> At least one button is required. Power button `PIN_SW1` and/or mode button `PIN_SW2`.
 
 See also [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad).
 
@@ -104,17 +101,14 @@ Key supported features include:
 - Control over [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) like the microphone and infrared receiver.
 - Access to various statistics, debug data, and advanced settings.
 
-> [!IMPORTANT]
-> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
-
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 EXTENSION_HOMEASSISTANT='true'
 ```
 
-> [!NOTE]
-> Requires [MQTT](#%EF%B8%8F-mqtt).
+> [!IMPORTANT]
+> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
 See also [Home Assistant weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#home-assistant-weather) mode.
 
@@ -163,9 +157,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 EXTENSION_INFRARED='true'
 ```
-
-> [!IMPORTANT]
-> An IR receiver sensor `PIN_IR` is required.
 
 Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver) wiki for more info.
 
@@ -222,9 +213,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 EXTENSION_MICROPHONE='true'
 ```
 
-> [!IMPORTANT]
-> An analog microphone `PIN_MIC` is required.
-
 Check out the [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone) wiki for hardware instructions.
 
 ## ✉️ MQTT
@@ -267,7 +255,7 @@ User-friendly interface for uploading `firmware.bin` and `littlefs.bin` files ma
 
 Another option is directly from the IDE/editor via Wi-Fi using `espota`.
 
-[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) example:
+Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
 upload_protocol = espota
@@ -287,9 +275,6 @@ OTA_KEY='secret'
 ```ini
 EXTENSION_OTA='true'
 ```
-
-> [!NOTE]
-> Only available for boards with a minimum of 4 MB flash memory.
 
 ## 🔆 Photocell
 
@@ -317,9 +302,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 EXTENSION_PHOTOCELL='true'
 ```
-
-> [!IMPORTANT]
-> An Light Dependent Resistor `PIN_LDR` is required.
 
 Check out the [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell) wiki for hardware instructions.
 
@@ -379,9 +361,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 EXTENSION_RTC='true'
 ```
-
-> [!NOTE]
-> An [supported](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock#-supported-types) RTC-module is required.
 
 Check out the [Real-Time Clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) wiki for hardware instructions.
 

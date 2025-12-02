@@ -104,7 +104,7 @@ The next step is to disconnect the buttons from the green PCB, `SW1`, `SW2` and 
 This step can be a bit challanging: removing the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip labeled `U2` from the green PCB. This chip is responsible for handling the integrated microphone, button inputs and display output.
 
 > [!TIP]
-> If the integrated microphone is not needed, the entire green PCB can be removed from the LED panel. This makes the modification easier, while still allowing the board to be re-soldered later if microphone support is desired.
+> If the integrated microphone is not needed, the entire green PCB can be removed from the LED panel. This makes the modification easier, while still allowing the board to be re-soldered back on later if microphone support is desired.
 
 ### Wiring the microphone
 
@@ -123,7 +123,7 @@ The hole next to `C10` was reserved for this purpose and can still be used to mo
 
 Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, the first one is on top of the green PCB, and the second one is the six unlabeled pads at bottom left.
 
-> [!IMPORTANT]
+> [!CAUTION]
 > The two left-most pads will be blocked by the chassis.
 
 ### Connecting the button
@@ -131,7 +131,7 @@ Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-l
 The last step is to connect the buttons: `SW` and `SW1` each connect to separate pins on the ESP32, while `COM` connects to `GND`.
 
 > [!TIP]
-> On the stock wiring harness, the red *power* button `SW1` uses the black wire, the yellow *mode* button `SW` uses the white wire, and both share a red wire for `COM`.
+> On the stock wiring harness, the red power button `SW1` uses the *black* wire, and the yellow mode button `SW` uses the *white* wire. They both share a *red* wire for `COM`.
 
 ## ↔️ Logic level shifter
 
@@ -139,7 +139,7 @@ For safe and reliable communication between the ESP32 and the LED panel, a suita
 
 The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs 4 V signals and also uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines should go through a level shifter*, not just those that are at risk.
 
-> [!CAUTION]
+> [!WARNING]
 > Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
@@ -188,13 +188,7 @@ Supplies power to both logic and LEDs.
 
 Chip Select for the LED drivers.
 
-> [!NOTE]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
-
 Any digital output pin can be used.
-
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *LOW* with an effective resistance of about 25 kΩ. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -202,17 +196,17 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_CS 1 // LAK
 ```
 
+> [!NOTE]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *LOW* with 25 kΩ resistance. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
+
 ### SPI SCLK
 
 Serial clock for SPI communication.
 
-> [!NOTE]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
-
 Any SPI `SCLK` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -220,17 +214,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_SCLK 2 // CLK
 ```
 
+> [!NOTE]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
+
 ### SPI MOSI
 
 Master-out data line for SPI.
 
-> [!NOTE]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
-
 Any SPI `MOSI` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -238,17 +229,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_MOSI 3 // DA (labeled)
 ```
 
+> [!NOTE]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) recommended.
+
 ### SPI MISO
 
 Master-in data line for SPI (optional).
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
-
 Any SPI `MISO` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -256,17 +244,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_MISO 4 // DA (unlabeled)
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
+
 ### Output Enable
 
 Enables or disables LED output.
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
 Any digital output pin can be used.
-
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *HIGH* with an effective resistance of about 25 kΩ.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -274,14 +259,17 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_OE 5 // EN
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *HIGH* with 25 kΩ resistance.
+
 ### Buttons
 
 Button inputs for user interaction.
 
 Optional to connect. Use RTC-capable digital input pins for best compatibility.
-
-> [!IMPORTANT]
-> Avoid strapping pins as these is pulled *LOW* when pressed.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -290,20 +278,23 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_SW2 7 // SW
 ```
 
+> [!IMPORTANT]
+> Avoid strapping pins as these is pulled *LOW* when pressed.
+
 ### Microphone amplifier
 
 Analog input from the microphone amplifier.
 
 Optional to connect. Use an ADC1-channel analog pin for best compatibility.
 
-> [!WARNING]
-> Avoid strapping pins as this pin is biased.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MIC 8 // U3 pin 7
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is biased.
 
 ## 📝 Template
 

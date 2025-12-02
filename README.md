@@ -42,12 +42,12 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### ESP32 board
 
-Frekvens runs on most commonly available Wi-Fi enabled ESP32 boars.
+Frekvens runs on any commonly available ESP32 boars with Wi-Fi.
 
-> [!NOTE]
+Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [wiki](https://github.com/VIPnytt/Frekvens/wiki).
+
+> [!TIP]
 > If a new board is required, the `ESP32-S3` chip is recommended — for example [this board](https://www.adafruit.com/product/5426) or [this board](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html). It offers excellent performance, and variants with 8 MB flash memory provide plenty of room for features and future expansion. Boards with 4 MB flash works fine too, for basic setups.
-
-Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [documentation](https://github.com/VIPnytt/Frekvens/wiki).
 
 ### Optional Accessories
 
@@ -104,7 +104,7 @@ board = seeed_xiao_esp32s3 ; Board ID
 
 Configuration is split into shared and firmware-specific settings:
 
-- **Shared variables** (used by the firmware and web app) are defined in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
+- **Shared variables** used by the firmware and web app are defined in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
 - **Firmware-only** settings go in [`firmware/include/config/secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h)
 
 This separation keeps common parameters in one place, while allowing firmware builds to have their own purpose-specific configuration.
@@ -153,7 +153,7 @@ Define the Wi-Fi credentials in [`secrets.h`](https://github.com/VIPnytt/Frekven
 ```
 
 > [!TIP]
-> Additional networks can be configured later in the web UI, optionally via the hotspot if no known networks are available.
+> Additional networks can be configured later in the web UI, optionally via Wi-Fi hotspot if needed.
 
 ### Weather
 
@@ -179,11 +179,11 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 ```ini
 [env:seeed_xiao_esp32s3]
 board = seeed_xiao_esp32s3
-upload_protocol = espota ; Wireless upload
+upload_protocol = espota ; Update via Wi-Fi
 ```
 
 > [!NOTE]
-> Migration from v1.x to v2.x requires wired flashing.
+> Migration from Frekvens v1 to v2 requires wired flashing.
 
 ## 🏠 Smart-home integrations
 
@@ -216,9 +216,9 @@ Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with
 
 ### Build fails
 
-Frekvens includes a wide range of animations, weather providers, smart-home extensions and streaming protocols — but most users only use a subset of these.
+Frekvens includes a wide range of animations, weather providers, smart-home extensions and streaming protocols — most users only use a subset of these.
 
-If the build fails due to memory limits, try disabling features you don’t plan to use in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is the largest one, and therefore a good first candidate to remove
+If the build fails due to memory limits, try disabling features you don’t plan to use in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is by far the largest one, and therefore a good first candidate to remove in order to free up memory for other stuff.
 
 ### Where is the web UI?
 

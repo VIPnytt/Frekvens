@@ -14,9 +14,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 FONT_BRAILLE='true'
 ```
 
-> [!NOTE]
-> Disabled by default.
-
 ## 🔬 Micro
 
 Extremely small 3×3 pixel font, offering basic legibility in tight layouts.

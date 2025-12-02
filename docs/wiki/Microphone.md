@@ -2,7 +2,7 @@
 
 Some [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) can react to sound — for example, syncing animations with music.
 
-Most analog microphone modules with a built-in amplifier will work. A good starting point is a electret microphone (e.g. [BOB-12758](https://www.sparkfun.com/sparkfun-electret-microphone-breakout.html)) or an MEMS microphone (e.g. [SPW2430](https://www.adafruit.com/product/2716)).
+Most analog microphone modules with a built-in amplifier will work. A good starting point is a electret microphone (e.g. [this](https://www.sparkfun.com/sparkfun-electret-microphone-breakout.html)) or an MEMS microphone (e.g. [this](https://www.adafruit.com/product/2716)).
 
 ## 📌 Schematics
 
@@ -36,14 +36,14 @@ Analog input from the microphone amplifier.
 
 Any analog input pin can be used, but those on the ADC1 channel are preferred.
 
-> [!WARNING]
-> Avoid strapping pins as this pin is biased.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MIC 1 // Amplifier
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is biased.
 
 ## 🧩 Extension
 

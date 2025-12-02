@@ -2,7 +2,7 @@
 
 By adding an IR receiver, you can control the device with almost any common remote — such as a TV remote you already own.
 
-Most remotes operate around the 38 kHz frequency band. While many IR sensors and modules will work, a good starting point is the TSOP382 series (e.g. [TSOP38238](https://www.adafruit.com/product/157)).
+Most remotes operate around the 38 kHz frequency band. While many IR sensors and modules will work, a good starting point is the TSOP382 series (e.g. [this](https://www.adafruit.com/product/157)).
 
 ## 📌 Schematics
 
@@ -52,14 +52,14 @@ Data-line for received signals.
 
 Any digital input pin can be used.
 
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *HIGH* when idle.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_IR 1 // Receiver
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *HIGH* when idle.
 
 ## 🧩 Extension
 

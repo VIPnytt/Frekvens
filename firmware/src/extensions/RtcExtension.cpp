@@ -16,31 +16,12 @@ RtcExtension::RtcExtension() : ExtensionModule("RTC")
 
 void RtcExtension::configure()
 {
-#ifdef PIN_CS2
-    pinMode(PIN_CS2, OUTPUT);
-#endif
 #ifdef PIN_INT
     pinMode(PIN_INT, INPUT_PULLUP);
 #endif
-#ifdef PIN_MISO2
-    pinMode(PIN_MISO2, INPUT);
-#endif
-#ifdef PIN_MOSI2
-    pinMode(PIN_MOSI2, OUTPUT);
-#endif
-#ifdef PIN_SCLK2
-    pinMode(PIN_MISO2, OUTPUT);
-#endif
-
-#if defined(PIN_SCLK2) && defined(PIN_MISO2) && defined(PIN_MOSI2) && defined(PIN_CS2) && defined(RTC_DS3234)
-    SPI.begin(PIN_SCLK2, PIN_MISO2, PIN_MOSI2, PIN_CS2);
-#endif
-#if defined(PIN_SCL) && defined(PIN_SDA) && (defined(RTC_DS1307) || defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563))
+#if defined(RTC_DS1307) || defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
     rtc.Begin(PIN_SDA, PIN_SCL);
-#else
-    rtc.Begin();
-#endif // defined(PIN_SCL) && defined(PIN_SDA) && (defined(RTC_DS1307) || defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563))
-
+#endif
     if (rtc.IsDateTimeValid())
     {
         tm local;
@@ -62,7 +43,7 @@ void RtcExtension::configure()
     attachInterrupt(PIN_INT, onInterrupt, CHANGE);
 #endif
 
-#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234))
+#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_temperature");
@@ -80,10 +61,10 @@ void RtcExtension::configure()
         component[HomeAssistantAbbreviations::unit_of_measurement] = "°C";
         component[HomeAssistantAbbreviations::value_template] = "{{value_json.temperature}}";
     }
-#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234))
+#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 }
 
-#if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234) || defined(RTC_PCF8563)
+#if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
 void RtcExtension::handle()
 {
 #ifdef PIN_INT
@@ -91,30 +72,26 @@ void RtcExtension::handle()
     {
         if (digitalRead(PIN_INT) == LOW)
         {
-#if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#if defined(RTC_DS3231) || defined(RTC_DS3232)
             rtc.LatchAlarmsTriggeredFlags();
 #elif defined(RTC_PCF8563)
             rtc.LatchAlarmTriggeredFlag();
             rtc.LatchTimerTriggeredFlag();
-#endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
-            if (!Display.getPower())
-            {
-                Display.setPower(true);
-            }
+#endif // defined(RTC_DS3231) || defined(RTC_DS3232)
+            Display.setPower(true);
         }
         pending = false;
     }
 #endif // PIN_INT
-
-#if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#if defined(RTC_DS3231) || defined(RTC_DS3232)
     if (millis() - lastMillis > UINT16_MAX)
     {
         transmit();
         lastMillis = millis();
     }
-#endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#endif // defined(RTC_DS3231) || defined(RTC_DS3232)
 }
-#endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234) || defined(RTC_PCF8563)
+#endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
 
 #ifdef PIN_INT
 IRAM_ATTR void RtcExtension::onInterrupt()
@@ -123,14 +100,14 @@ IRAM_ATTR void RtcExtension::onInterrupt()
 }
 #endif // PIN_INT
 
-#if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#if defined(RTC_DS3231) || defined(RTC_DS3232)
 void RtcExtension::transmit()
 {
     JsonDocument doc;
     doc["temperature"] = rtc.GetTemperature().AsFloatDegC();
     Device.transmit(doc, name);
 }
-#endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_DS3234)
+#endif // defined(RTC_DS3231) || defined(RTC_DS3232)
 
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {

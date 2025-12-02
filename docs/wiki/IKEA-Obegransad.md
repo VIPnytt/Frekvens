@@ -85,9 +85,9 @@ Black ┼─ 0 V DC
 
 Several methods for opening the device have been shared online. Among them, the most *consistently reliable* and *non-destructive* approach appears to involve the careful use of a drill.
 
-By using a sharp 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they’re all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, preferably with the help of small pliers.
+By using a 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they’re all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, optionally with the help of small pliers.
 
-For those who desire, it’s possible to use 2 mm rivets to close the device afterwards.
+For those who desire, it’s possible to use 2 mm rivets to re-seal the device afterwards.
 
 > [!TIP]
 > There isn’t really risk of hitting anything inside when drilling, as it’s basically just a empty box. Most of the electronic components is covered up, but make sure to clean up any metal fragments before powering on.
@@ -109,8 +109,8 @@ The button can be wired in several ways, depending on the desired level of modif
 
 If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — internally connected to `SW` — provides another solder point with the same electrical result.
 
-> [!TIP]
-> On the LED panel, `SW1` is already tied to `GND`.
+> [!NOTE]
+> On the LED panel, `SW1` is internally tied to `GND`.
 
 ## ↔️ Logic level shifter
 
@@ -118,7 +118,7 @@ For safe and reliable communication between the ESP32 and the LED panels, a suit
 
 The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs signals at 5 V and uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
 
-> [!CAUTION]
+> [!WARNING]
 > Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to misread signals, unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
@@ -176,13 +176,7 @@ The *IKEA Obegränsad* can draw up to 2.0 A at 5 V (10 W) under full load. Use a
 
 Chip Select for the LED drivers.
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
 Any digital output pin can be used.
-
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *LOW* with an effective resistance of about 25 kΩ. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -190,17 +184,17 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_CS 1 // CLA
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *LOW* with 25 kΩ resistance. On ESP32 classic it is recommended to use specialized pins, such as `CS` (sometimes labeled `SS` on older boards).
+
 ### SPI SCLK
 
 Serial clock for SPI communication.
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
 Any SPI `SCLK` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -208,17 +202,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_SCLK 2 // CLK
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
 ### SPI MOSI
 
 Master-out data line for SPI.
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
 Any SPI `MOSI` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -226,17 +217,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_MOSI 3 // DI
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
 ### SPI MISO
 
 Master-in data line for SPI (optional).
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
-
 Any SPI `MISO` pin can be used.
-
-> [!NOTE]
-> The use of either the `HSPI` or `VSPI` bus is required for consistency on boards with two SPI interfaces.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -244,17 +232,14 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_MISO 4 // DO
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required if connected.
+
 ### Output Enable
 
 Enables or disables LED output.
 
-> [!IMPORTANT]
-> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
-
 Any digital output pin can be used.
-
-> [!WARNING]
-> Avoid strapping pins as this pin is pulled *HIGH* with an effective resistance of about 25 kΩ.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -262,20 +247,26 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 #define PIN_OE 5 // EN
 ```
 
+> [!IMPORTANT]
+> [Logic level shifter](#%EF%B8%8F-logic-level-shifter) required.
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *HIGH* with 25 kΩ resistance.
+
 ### Button
 
 Button input for user interaction.
 
 Optional to connect. Use an RTC-capable digital input pin for best compatibility.
 
-> [!IMPORTANT]
-> Avoid strapping pins as this pin is pulled *LOW* when pressed.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SW2 6 // SW
 ```
+
+> [!IMPORTANT]
+> Avoid strapping pins as this pin is pulled *LOW* when pressed.
 
 ## 📝 Template
 
