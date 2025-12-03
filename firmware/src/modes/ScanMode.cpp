@@ -16,19 +16,19 @@ void ScanMode::handle()
         lastMillis = millis();
         for (uint8_t y = 0; y < GRID_ROWS; ++y)
         {
-            if (x < GRID_COLUMNS)
+            if (column < GRID_COLUMNS)
             {
-                Display.setPixel(x, y);
+                Display.setPixel(column, y);
             }
-            if (x - 2 >= 0)
+            if (column - 2 >= 0)
             {
-                Display.setPixel(x - 2, y, 0);
+                Display.setPixel(column - 2, y, 0);
             }
         }
-        ++x;
-        if (x - 2 >= GRID_COLUMNS)
+        ++column;
+        if (column - 2 >= GRID_COLUMNS)
         {
-            x = 0;
+            column = 0;
         }
     }
 }

@@ -20,7 +20,7 @@ private:
         tracking = 1,
         width = 0;
 
-    uint8_t calcMsbMax(const FontModule::Symbol &character);
+    uint8_t calcMsbMax(const FontModule::Symbol &character) const;
 
     bool nextCodepoint(uint32_t &out);
 
