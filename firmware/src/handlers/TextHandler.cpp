@@ -61,16 +61,17 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
     for (uint32_t codepoint; nextCodepoint(codepoint);)
     {
         FontModule::Symbol character = font->getChar(codepoint);
-        if (!character.bitmap.empty())
+        const uint8_t _height = character.bitmap.size();
+        if (_height)
         {
             const uint8_t msbMax = calcMsbMax(character);
             for (uint8_t _x = 0; _x <= msbMax; ++_x)
             {
-                for (uint8_t _y = 0; _y < character.bitmap.size(); ++_y)
+                for (uint8_t _y = 0; _y < _height; ++_y)
                 {
-                    if ((x + character.offsetX + _x) >= 0 && (x + character.offsetX + _x) < GRID_COLUMNS && (int16_t)(y + height - character.bitmap.size() - character.offsetY + _y) >= 0 && (int16_t)(y + height - character.bitmap.size() - character.offsetY + _y) < GRID_ROWS && (character.bitmap[_y] >> (msbMax - _x)) & 1)
+                    if ((x + character.offsetX + _x) >= 0 && (x + character.offsetX + _x) < GRID_COLUMNS && (int16_t)(y + height - _height - character.offsetY + _y) >= 0 && (int16_t)(y + height - _height - character.offsetY + _y) < GRID_ROWS && (character.bitmap[_y] >> (msbMax - _x)) & 1)
                     {
-                        Display.setPixel(x + character.offsetX + _x, y + height - character.bitmap.size() - character.offsetY + _y, brightness);
+                        Display.setPixel(x + character.offsetX + _x, y + height - _height - character.offsetY + _y, brightness);
                     }
                 }
             }
@@ -139,7 +140,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     return true;
 }
 
-uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character)
+uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character) const
 {
     uint8_t msbMax = 0;
     for (uint8_t bitset : character.bitmap)

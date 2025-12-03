@@ -17,7 +17,11 @@ class Tools:
 
     def initialize(self) -> None:
         with open("tools/pyproject.toml", "r", encoding="utf-8") as toml:
-            if not f'version = "{VERSION}"' in toml.read():
+            contents = toml.read()
+            if (
+                not f'version = "{VERSION}"' in contents
+                and not f'version = "{VERSION.replace("-", ".")}"' in contents
+            ):
                 raise ValueError(f"{self.NAME} version mismatch")
 
     @staticmethod
