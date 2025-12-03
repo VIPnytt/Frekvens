@@ -1,14 +1,13 @@
 import { mdiRemoteTv, mdiRemoteTvOff } from '@mdi/js';
 import { Component, createSignal } from 'solid-js';
 
-import { Button } from '../components/Button';
+import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { EXTENSION_MICROPHONE, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST } from '../config/constants';
+import { EXTENSION_MICROPHONE, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST } from '../config/modules';
 import { name as PhotocellName } from './Photocell';
 import { name as PlaylistName } from './Playlist';
 import { name as MicName } from './Microphone';
-import { ws } from './WebSocket';
+import { WebSocketWS } from './WebSocket';
 import { name as ExtensionsName } from '../services/Extensions';
 
 export const name = 'Infrared';
@@ -23,7 +22,7 @@ export const receiver = (json: any) => {
 
 const handleActive = () => {
     setActive(!getActive());
-    ws.send(JSON.stringify({
+    WebSocketWS.send(JSON.stringify({
         [name]: {
             active: getActive(),
         },
@@ -31,22 +30,20 @@ const handleActive = () => {
 };
 
 export const Link: Component = () => (
-    <Tooltip text="Remote control">
-        <a
-            href={`#/${ExtensionsName.toLowerCase()}/${name.toLowerCase()}`}
-            class="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium min-h-[48px]"
-        >
-            <Icon
-                class="mr-2"
-                path={mdiRemoteTv}
-            />
-            {name}
-        </a>
-    </Tooltip>
+    <a
+        class="link"
+        href={`#/${ExtensionsName.toLowerCase()}/${name.toLowerCase()}`}
+    >
+        <Icon
+            class="mr-2"
+            path={mdiRemoteTv}
+        />
+        {name}
+    </a>
 );
 
 export const Actions: Component = () => (
-    <div class="grid grid-cols-[1fr_48px] gap-3 items-center font-medium text-gray-700 hover:text-gray-900">
+    <div class="action">
         <a href={`#/${ExtensionsName.toLowerCase()}/${name.toLowerCase()}`}>
             <Icon
                 class="mr-2"
@@ -54,66 +51,66 @@ export const Actions: Component = () => (
             />
             {name}
         </a>
-        <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name}`}>
-            <Button
-                class={`w-full bg-blue-600 border-0 px-4 py-3 leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'hover:bg-red-600' : 'hover:bg-green-600'}`}
-                onClick={handleActive}
+        <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name.toLowerCase()}`}>
+            <button
+                class={`w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
+                onclick={handleActive}
             >
                 <Icon path={getActive() ? mdiRemoteTv : mdiRemoteTvOff} />
-            </Button>
+            </button>
         </Tooltip>
     </div>
 );
 
 export const MainThird: Component = () => (
-    <div class="space-y-3 p-5">
-        <h3 class="text-4xl text-white tracking-wide">{name}</h3>
-        <div class="bg-white p-6 rounded-md">
-            <div class="space-y-2">
-                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                    Remote control
-                </h3>
-                <p class="text-sm">
-                    - Power<br />
-                    - Brightness<br />
-                    - Mode<br />
-                    {
-                        EXTENSION_MICROPHONE && (
-                            <>
-                                - {MicName}<br />
-                            </>
-                        )
-                    }
-                    {
-                        EXTENSION_PHOTOCELL && (
-                            <>
-                                - {PhotocellName}<br />
-                            </>
-                        )
-                    }
-                    {
-                        EXTENSION_PLAYLIST && (
-                            <>
-                                - {PlaylistName}<br />
-                            </>
-                        )
-                    }
-                </p>
-                <Tooltip text={`${getActive() ? 'Deactivate' : 'Activate'} ${name.toLowerCase()}`}>
-                    <Button
-                        class={`border-0 px-4 py-3 uppercase leading-6 tracking-wider cursor-pointer hover:opacity-80 active:translate-y-[-1px] transition-all rounded ${getActive() ? 'bg-red-600' : 'hover:bg-green-600'}`}
-                        onClick={handleActive}
+    <div class="main">
+        <div class="space-y-3 p-5">
+            <h2>
+                {name}
+            </h2>
+            <div class="box">
+                <div class="space-y-3">
+                    <h3>
+                        Remote control
+                    </h3>
+                    <div class="text-sm">
+                        - Power<br />
+                        - Brightness<br />
+                        - Mode<br />
+                        {
+                            EXTENSION_MICROPHONE && (
+                                <>
+                                    - {MicName}<br />
+                                </>
+                            )
+                        }
+                        {
+                            EXTENSION_PHOTOCELL && (
+                                <>
+                                    - {PhotocellName}<br />
+                                </>
+                            )
+                        }
+                        {
+                            EXTENSION_PLAYLIST && (
+                                <>
+                                    - {PlaylistName}<br />
+                                </>
+                            )
+                        }
+                    </div>
+                    <button
+                        class={`mt-3 w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
+                        onclick={handleActive}
                     >
                         <Icon
                             class="mr-2"
                             path={getActive() ? mdiRemoteTv : mdiRemoteTvOff}
                         />
                         {getActive() ? 'activated' : 'disabled'}
-                    </Button>
-                </Tooltip>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 );
-
-export default MainThird;

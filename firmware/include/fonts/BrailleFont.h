@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if FONT_BRAILLE
 
 #include "modules/FontModule.h"
@@ -346,7 +344,7 @@ private:
 public:
     BrailleFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern BrailleFont *FontBraille;

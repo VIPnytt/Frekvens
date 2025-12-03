@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_GAMEOFLIFECLOCK
 
 #include "modules/ModeModule.h"
@@ -14,7 +12,7 @@ private:
     bool pending = false;
 
     uint8_t
-        active,
+        active = 0,
         hour,
         minute;
 
@@ -23,7 +21,7 @@ private:
 public:
     GameOfLifeClockMode() : ModeModule("Game of Life clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

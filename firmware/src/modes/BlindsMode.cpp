@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_BLINDS
 
 #include "extensions/MicrophoneExtension.h"
@@ -9,16 +7,16 @@
 void BlindsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > 160 && Microphone->play())
+    if (millis() - lastMillis > UINT8_MAX && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > 160)
-#endif
+    if (millis() - lastMillis > UINT8_MAX)
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        Display.clear();
-        for (uint8_t y = modulo / 2; y < COLUMNS; y += modulo)
+        Display.clearFrame();
+        for (uint8_t y = modulo / 2; y < GRID_COLUMNS; y += modulo)
         {
-            for (uint8_t x = 0; x < COLUMNS; ++x)
+            for (uint8_t x = 0; x < GRID_COLUMNS; ++x)
             {
                 Display.setPixel(x, y);
             }

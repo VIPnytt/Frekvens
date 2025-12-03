@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_BINARYCLOCK
 
 #include "modules/ModeModule.h"
@@ -23,7 +21,7 @@ private:
 public:
     BinaryClockMode() : ModeModule("Binary clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

@@ -38,3 +38,13 @@ Optional hardware that adds new capabilities and functionality to the device.
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
 - [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
 - [RTC clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock)
+
+## 🗃️ Miscellaneous
+
+Supplementary files and developer resources.
+
+- [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
+- [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
+- [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
+- [Tools](https://github.com/VIPnytt/Frekvens/tree/main/tools)
+- [VS Code](https://github.com/VIPnytt/Frekvens/tree/main/.vscode)

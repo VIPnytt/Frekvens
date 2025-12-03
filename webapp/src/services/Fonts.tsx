@@ -9,5 +9,3 @@ export const FontsList = getFonts;
 export const receiver = (json: any) => {
     json[name]?.list !== undefined && setFonts(json[name].list);
 };
-
-export default FontsList;

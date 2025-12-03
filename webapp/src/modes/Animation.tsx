@@ -1,58 +1,68 @@
-import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiStop, mdiUpload } from '@mdi/js';
+import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiPresentation, mdiPresentationPlay, mdiUpload } from '@mdi/js';
 import { Component, createEffect, createSignal, For, Show } from 'solid-js';
 
-import { Button } from '../components/Button';
-import { Brush, Canvas } from '../components/Canvas';
-import { Center } from '../components/Center';
+import { Strength, Canvas } from '../components/Canvas';
 import { csvExport, fileImport } from '../components/File';
+import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { ws } from '../extensions/WebSocket';
-import { DisplayColumns, DisplayRows } from '../services/Display';
-import { SidebarSection } from '../services/WebServer';
-import { PageSidebar } from '../index';
+import { Device } from '../config/devices';
+import { SidebarSection, WebAppSidebar } from '../extensions/WebApp';
+import { WebSocketWS } from '../extensions/WebSocket';
+import { MainComponent as ModesMainComponent } from '../services/Modes';
 
 export const name = 'Animation';
 
-const [getFrameDuration, setFrameDuration] = createSignal<number>(500);
-const [getFrames, setFrames] = createSignal<[number[]]>();
-const [getFrameSignals, setFrameSignals] = createSignal<ReturnType<typeof createSignal<number[]>>[]>([]);
+type Frame = number[];
+type FrameSignal = [() => Frame, (v: Frame) => void];
+
+const [getFrameInterval, setFrameInterval] = createSignal<number>(500);
+const [getFrames, setFrames] = createSignal<Frame[]>([]);
+const [getFramesDraft, setFramesDraft] = createSignal<FrameSignal[]>([]);
 const [getPreview, setPreview] = createSignal<boolean>(false);
-const [getPreviewFrame, setPreviewFrame] = createSignal<number[]>();
-const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | string | number | undefined>(undefined);
-const [getSaved, setSaved] = createSignal<boolean>(false);
+const [getPreviewIndex, setPreviewIndex] = createSignal<number>(0);
+const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | undefined>(undefined);
+const [getSaved, setSaved] = createSignal<boolean>(true);
 
 export const receiver = (json: any) => {
-    json[name]?.duration !== undefined && setFrameDuration(json[name].duration);
-    json[name]?.frames !== undefined && setFrames(json[name].frames);
+    json[name]?.interval !== undefined && setFrameInterval(json[name].interval);
+    json[name]?.frame !== undefined && json[name]?.index !== undefined && setFrames(f => (f = [...f], f[json[name].index] = json[name].frame, f)) && getSaved() && handleLoad();
 };
 
-let ref!: HTMLDivElement;
+let divRef: HTMLDivElement | undefined;
+
+const template = new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0);
 
 const handleLoad = () => {
-    const frames = getFrames();
-    if (frames) {
-        setFrameSignals(frames.map((frame) =>
-            handleNew(frame) as ReturnType<typeof createSignal<number[]>>
-        ));
+    if (!getFrames().length) {
+        WebSocketWS.send(JSON.stringify({
+            [name]: {
+                action: 'pull',
+            },
+        }));
     }
+    setFramesDraft(getFrames().map(frame => handleNew(frame)));
+    setSaved(true);
 };
 
-const handleNew = (initialData?: number[]) => {
-    const [frames, setFrame] = createSignal(initialData || new Array(DisplayColumns() * DisplayRows()).fill(0));
-    return [frames, setFrame] as const;
+const handleNew = (frame?: Frame): FrameSignal => {
+    const [getFrame, setFrame] = createSignal<Frame>(
+        frame ?? template,
+    );
+    return [getFrame, setFrame];
 };
 
 const scrollToEnd = () => {
-    if (ref) {
+    if (divRef) {
         setTimeout(() => {
-            ref?.scrollTo({
-                top: 0,
-                left: ref?.scrollWidth,
-                behavior: 'smooth',
-            });
-        }, 20);
+            if (divRef) {
+                divRef.scrollTo({
+                    behavior: 'smooth',
+                    left: divRef.scrollWidth - divRef.clientWidth,
+                    top: 0,
+                });
+            }
+        }, 150 * 3);
     }
 };
 
@@ -65,15 +75,16 @@ createEffect(() => {
     }
 
     let i = 0;
-    const preview = () => {
-        setPreviewFrame(getFrameSignals()[i][0]());
-        ++i;
-        if (i >= getFrameSignals().length) {
+    const cycle = () => {
+        setPreviewIndex(i);
+        i++;
+        if (i >= getFramesDraft().length) {
             i = 0;
         }
     };
-    preview();
-    const nodeTimeout: NodeJS.Timeout | string | number | undefined = setInterval(preview, getFrameDuration());
+
+    cycle();
+    const nodeTimeout = setInterval(cycle, getFrameInterval());
     setPreviewTimer(nodeTimeout);
 
     return () => {
@@ -87,26 +98,22 @@ export const Sidebar: Component = () => {
     const { toast } = Toast();
 
     const handleAdd = () => {
-        setFrameSignals((signals): ReturnType<typeof setFrameSignals> => {
-            const lastFrame = signals.length > 0 ? signals[signals.length - 1][0]() : undefined;
-            const newSignal = handleNew(lastFrame ? [...lastFrame] : undefined);
-            scrollToEnd();
-            return [
-                ...signals,
-                newSignal as unknown as ReturnType<typeof createSignal<number[]>>,
-            ];
+        setFramesDraft(list => {
+            const lastFrame = list.length ? list[list.length - 1][0]() : template;
+            return [...list, handleNew([...lastFrame])];
         });
+        scrollToEnd();
     };
 
     const handleDownload = () => {
-        csvExport(name, getFrameSignals().map(([frames]) => frames()));
+        csvExport(name, getFramesDraft().map(([getFrame]) => getFrame()));
     };
 
-    const handleDuration = (time: number) => {
-        setFrameDuration(time);
-        ws.send(JSON.stringify({
+    const handleInterval = (time: number) => {
+        setFrameInterval(time);
+        WebSocketWS.send(JSON.stringify({
             [name]: {
-                duration: getFrameDuration(),
+                interval: getFrameInterval(),
             },
         }));
     };
@@ -115,175 +122,215 @@ export const Sidebar: Component = () => {
         setPreview(!getPreview());
     };
 
-    const handleSave = () => {
-        const frames = getFrameSignals().map(([frame]) => frame());
+    const handleSave = async () => {
+        const frames = getFramesDraft().map(([getFrame]) => getFrame());
         for (let i = 0; i < frames.length; ++i) {
-            ws.send(JSON.stringify({
+            setTimeout(() => {
+                WebSocketWS.send(JSON.stringify({
+                    [name]: {
+                        frame: frames[i],
+                        index: i,
+                    },
+                }));
+            }, Device.GRID_COLUMNS * Device.GRID_ROWS * i);
+        }
+        setTimeout(() => {
+            WebSocketWS.send(JSON.stringify({
                 [name]: {
-                    frame: frames[i],
-                    index: i,
-                    duration: getFrameDuration(),
-                    length: frames.length,
+                    frames: frames.length,
+                    interval: getFrameInterval(),
                 },
             }));
-        }
-        setSaved(true);
-        toast(`${name} saved`);
+            setSaved(true);
+            toast(`${name} saved`);
+        }, Device.GRID_COLUMNS * Device.GRID_ROWS * frames.length);
     };
 
     const handleUpload = () => {
         fileImport((frames) => {
-            frames.forEach(function (frame) {
-                setFrameSignals((signals): ReturnType<typeof setFrameSignals> => {
-                    return [
-                        ...signals,
-                        handleNew(frame) as unknown as ReturnType<typeof createSignal<number[]>>,
-                    ];
-                });
+            frames.forEach(frame => {
+                setFramesDraft((signals) => [
+                    ...signals,
+                    handleNew(frame) as unknown as ReturnType<typeof createSignal<number[]>>,
+                ]);
             });
+            setSaved(false);
         });
     };
 
     return (
         <SidebarSection title={name}>
-            <Brush />
             <div class="grid grid-cols-2 gap-3">
                 <Tooltip text={`${getPreview() ? 'Stop' : 'Preview'} animation`}>
-                    <Button
-                        class={`transition-all ${getPreview() && ('bg-red-600')}`}
-                        disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0))}
-                        onClick={handlePreview}
+                    <button
+                        class={`w-full ${getPreview() ? 'action-negative not-hover:bg-neutral-light dark:not-hover:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
+                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0))}
+                        onclick={handlePreview}
                     >
-                        <Icon path={getPreview() ? mdiStop : mdiAnimationPlay} />
-                    </Button>
+                        <Icon path={getPreview() ? mdiPresentationPlay : mdiPresentation} />
+                    </button>
                 </Tooltip>
-                <Tooltip text={`Add frame #${getFrameSignals().length + 1}`}>
-                    <Button
+                <Tooltip text={`Add frame #${getFramesDraft().length + 1}`}>
+                    <button
+                        class={`action-neutral w-full ${getFramesDraft().length < 2 ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={getPreview()}
-                        onClick={handleAdd}
+                        onclick={handleAdd}
                     >
                         <Icon path={mdiPlus} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Save animation">
-                    <Button
-                        class="hover:bg-green-600 transition-all"
-                        disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0)) || getSaved()}
-                        onClick={handleSave}
+                    <button
+                        class="action-neutral w-full"
+                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0)) || getSaved()}
+                        onclick={handleSave}
                     >
                         <Icon path={mdiContentSave} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Restore animation">
-                    <Button
-                        class="w-full bg-blue-600 text-white border-0 px-4 py-3 uppercase text-sm leading-6 tracking-wider cursor-pointer font-bold hover:opacity-80 active:translate-y-[-1px] transition-all rounded"
-                        disabled={getFrames() === undefined}
-                        onClick={handleLoad}
+                    <button
+                        class={`action-neutral w-full ${!getFramesDraft().length ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
+                        disabled={!getFrames().length || getSaved()}
+                        onclick={handleLoad}
                     >
                         <Icon path={mdiBackupRestore} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Download animation">
-                    <Button
-                        class="hover:bg-blue-600 transition-all"
-                        disabled={getFrameSignals().length < 2 || !getFrameSignals().some(([frame]) => frame().some(pixel => pixel > 0))}
-                        onClick={handleDownload}
+                    <button
+                        class="w-full"
+                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0))}
+                        onclick={handleDownload}
                     >
                         <Icon path={mdiDownload} />
-                    </Button>
+                    </button>
                 </Tooltip>
                 <Tooltip text="Upload animation, drawing or image">
-                    <Button
-                        class="hover:bg-blue-600 transition-all"
+                    <button
+                        class="w-full"
                         disabled={getPreview()}
-                        onClick={handleUpload}
+                        onclick={handleUpload}
                     >
                         <Icon path={mdiUpload} />
-                    </Button>
+                    </button>
                 </Tooltip>
             </div>
-            <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                    Frame duration:
-                </span>
-                <input
-                    class="text-right pl-3 pr-14 py-2 my-1 w-full bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
-                    disabled={getPreview()}
-                    max={Math.pow(2, 16) - 1}
-                    min="100"
-                    onChange={(e) =>
-                        handleDuration(parseInt(e.currentTarget.value))
-                    }
-                    step="10"
-                    type="number"
-                    value={getFrameDuration()}
-                />
-                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                    ms
-                </span>
-            </div>
+            <Tooltip text={`${(1_000 / getFrameInterval()).toFixed(1)} fps`}>
+                <div class="mt-3 relative">
+                    <span class="absolute text-content-alt-light dark:text-content-alt-dark left-3 top-1/2 -translate-y-1/2 text-sm">
+                        Frame interval:
+                    </span>
+                    <input
+                        class="text-right pr-6 w-full"
+                        disabled={getPreview()}
+                        max={(Math.pow(2, 16) - 1) / 1_000}
+                        name="Interval"
+                        min="0.05"
+                        onChange={(e) => handleInterval(Math.round(parseFloat(e.currentTarget.value) * 1_000))}
+                        step="0.05"
+                        type="number"
+                        value={getFrameInterval() / 1_000}
+                    />
+                    <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                        s
+                    </span>
+                </div>
+            </Tooltip>
+            <Strength />
         </SidebarSection>
     );
 };
 
 export const Main: Component = () => {
     const handleClear = (index: number) => {
-        setFrameSignals((signals) => {
-            if (index !== -1) {
-                const [_, setFrame] = signals[index];
-                setFrame(new Array(DisplayColumns() * DisplayRows()).fill(0));
-            }
+        setFramesDraft((signals) => {
+            const [, setFrame] = signals[index];
+            setFrame(template);
             return signals;
         });
+        setSaved(false);
+    };
+
+    const handleInsert = (index: number) => {
+        setFramesDraft((signals) => {
+            const [getFrame] = signals[index ? index - 1 : 0];
+            return [
+                ...signals.slice(0, index),
+                handleNew([...getFrame()]),
+                ...signals.slice(index),
+            ];
+        });
+        setSaved(false);
     };
 
     const handleRemove = (index: number) => {
-        setFrameSignals((signals) => signals.filter((_, i) => i !== index));
+        setFramesDraft((signals) => signals.filter((_, i) => i !== index));
+        setSaved(false);
     };
 
-    if (getFrameSignals().length === 0) {
+    if (!getFramesDraft().length) {
         handleLoad();
     }
 
     return (
-        <div class="h-full relative">
-            {getFrameSignals().length ? (
+        <Show
+            fallback={
+                <ModesMainComponent
+                    icon={mdiAnimationPlay}
+                    text="Add a few frames to get started"
+                />
+            }
+            when={getFramesDraft().length}
+        >
+            <div class="bg-contrast-light dark:bg-contrast-dark h-full relative rounded-none">
                 <div
-                    ref={ref!}
-                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw-320px)*0.05)] ${getPreview() ? 'justify-center' : 'justify-start'}`}
+                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw---spacing(80))*0.05)] ${getPreview() ? 'justify-center-safe' : 'justify-start'}`}
+                    ref={div => divRef = div}
                 >
                     {getPreview() ? (
                         <div class="animate-fade-in">
-                            <Canvas pixels={getPreviewFrame() || new Array(DisplayColumns() * DisplayRows()).fill(0)} />
+                            <Canvas pixels={getFramesDraft()[getPreviewIndex()]?.[0]() ?? template} />
                         </div>
                     ) : (
-                        <For each={getFrameSignals()}>
-                            {([frames, setFrame], index) => (
-                                <div class={`snap-center flex-shrink-0 max-h-[calc(100vh-128px)] ${PageSidebar() ? 'max-w-[calc((100vw-320px)*0.5)]' : 'max-w-[50vw]'}`}>
+                        <For each={getFramesDraft()}>
+                            {([getFrame, setFrame], index) => (
+                                <div class={`snap-center max-h-[calc(100vh---spacing(32))] shrink-0 ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.8)]' : 'max-w-[80vw]'}`}>
                                     <header class="flex justify-between items-center mb-4">
                                         <div class="flex gap-3">
-                                            <Tooltip text={`Clear frame ${index() + 1}`}>
-                                                <Button
-                                                    class="hover:bg-red-600 transition-all"
-                                                    disabled={!getFrameSignals()[index()][0]?.().some(pixel => pixel > 0)}
-                                                    onClick={() => handleClear(index())}
+                                            <Tooltip text={index() ? `Insert frame between #${index()} and #${index() + 1}` : `Insert frame before #${index() + 1}`}>
+                                                <button
+                                                    class="canvas-action-neutral"
+                                                    onclick={() => handleInsert(index())}
+                                                >
+                                                    <Icon path={mdiPlus} />
+                                                </button>
+                                            </Tooltip>
+                                            <Tooltip text={`Clear frame #${index() + 1}`}>
+                                                <button
+                                                    class="canvas-action-negative"
+                                                    disabled={!getFramesDraft()[index()][0]?.().some(pixel => pixel > 0)}
+                                                    onclick={() => handleClear(index())}
                                                 >
                                                     <Icon path={mdiEraser} />
-                                                </Button>
+                                                </button>
                                             </Tooltip>
-                                            <Tooltip text={`Remove frame ${index() + 1}`}>
-                                                <Button
-                                                    class="hover:bg-red-600 transition-all w-auto"
-                                                    onClick={() => handleRemove(index())}
-                                                    widthAuto
+                                            <Tooltip text={`Remove frame #${index() + 1}`}>
+                                                <button
+                                                    class="canvas-action-negative"
+                                                    onclick={() => handleRemove(index())}
                                                 >
                                                     <Icon path={mdiDelete} />
-                                                </Button>
+                                                </button>
                                             </Tooltip>
                                         </div>
-                                        <div class="text-center text-2xl text-white flex items-center">
-                                            <span class="font-bold">{index() + 1}</span>
-                                            <span class="opacity-50">/{getFrameSignals().length}</span>
+                                        <div class="text-center text-2xl flex items-center">
+                                            <span class="font-bold">
+                                                {index() + 1}
+                                            </span>
+                                            <span class="text-content-alt-light dark:text-content-alt-dark">
+                                                /{getFramesDraft().length}
+                                            </span>
                                         </div>
                                     </header>
                                     <Canvas
@@ -293,32 +340,18 @@ export const Main: Component = () => {
                                         }}
                                         onPixel={(x, y, value) => {
                                             setSaved(false);
-                                            const currentFrame = [...frames()];
-                                            currentFrame[x + y * DisplayColumns()] = value;
+                                            const currentFrame = [...getFrame()];
+                                            currentFrame[x + y * Device.GRID_COLUMNS] = value;
                                             setFrame(currentFrame);
                                         }}
-                                        pixels={frames()}
+                                        pixels={getFrame()}
                                     />
                                 </div>
                             )}
                         </For>
                     )}
                 </div>
-            ) : (
-                <Center>
-                    <h2 class="text-4xl">
-                        <Icon path={mdiAnimationPlay} />
-                    </h2>
-                    <p class="text-xl mt-2 text-gray-300">
-                        {name}
-                    </p>
-                    <p class="text-sm mt-2 text-gray-300">
-                        Add the first frame to get started
-                    </p>
-                </Center>
-            )}
-        </div>
+            </div>
+        </Show>
     );
 };
-
-export default Main;

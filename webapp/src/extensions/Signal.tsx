@@ -15,5 +15,3 @@ const event = (action: string) => {
             break;
     }
 };
-
-export default name;

@@ -20,9 +20,7 @@ private:
 #endif
         new MicroFont(),
         new MiniFont(),
-#if !defined(FONT_SMALL) || FONT_SMALL
         new SmallFont(),
-#endif
         new MediumFont(),
         new MediumBoldFont(),
         new LargeFont(),
@@ -31,7 +29,7 @@ private:
     void transmit();
 
 public:
-    void ready();
+    void begin();
     const std::vector<FontModule *> &getAll() const;
 
     static FontsService &getInstance();

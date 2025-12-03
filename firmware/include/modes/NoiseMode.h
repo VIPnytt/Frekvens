@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_NOISE
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class NoiseMode : public ModeModule
@@ -18,7 +17,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Dot dots[COLUMNS * ROWS / 9];
+    Dot dots[GRID_COLUMNS * GRID_ROWS / 9];
 
 public:
     NoiseMode() : ModeModule("Noise") {};

@@ -1,5 +1,15 @@
 # 🧩 Extensions
 
+**Accessories:** [Button](#️-button) | [Infrared](#-infrared) | [Microphone](#️-microphone) | [Photocell](#-photocell) | [RTC](#-rtc)
+
+**APIs:** [MQTT](#️-mqtt) | [RESTful](#️-restful) | [Server-Sent Events](#-server-sent-events) | [WebSocket](#-websocket)
+
+**Interactive:** [Button](#️-button) | [Message](#-message) | [Playlist](#️-playlist) | [Signal](#️-signal) | [Web app](#-web-app)
+
+**Smart-home:** [Alexa](#-alexa) | [Home Assistant](#-home-assistant) | [MQTT](#️-mqtt)
+
+**Tools:** [Heap](#-heap) | [OTA](#️-ota)
+
 ## 🎤 Alexa
 
 Smart-home integration.
@@ -16,33 +26,16 @@ In the *Alexa app*, navigate to:
 3. Other
 4. Wi-Fi
 
+> [!NOTE]
 > An [*Amazon Alexa*](https://www.amazon.com/smart-home-devices/b?node=9818047011) device is required.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_ALEXA=true
+EXTENSION_ALEXA='true'
 ```
-
-> Enabled by default.
 
 See also [Home Assistant](#-home-assistant).
-
-## 🏗️ Build
-
-Firmware updates can be a hassle, the *Build* extension was *built* to change that.
-
-Providing a nice user-interface with details about every variable in the config files, as well as copy/paste options just in case the previous configuration files got lost in the past.
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
-```ini
-EXTENSION_BUILD=true
-```
-
-> Enabled by default.
-
-See also [OTA](#%EF%B8%8F-ota).
 
 ## ⏺️ Button
 
@@ -65,7 +58,10 @@ When the *Mode button* is the only button, it serves a dual purpose:
 
 Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+> [!TIP]
+> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
+
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_SW1 1 // Power button
@@ -75,17 +71,25 @@ Events such as `short` and `long` press is also implemented in [Home Assistant](
 #define PIN_SW2 2 // Mode button
 ```
 
-> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_BUTTON=true
+EXTENSION_BUTTON='true'
 ```
 
-> Enabled by default when at least one of `PIN_SW1` and `PIN_SW2` is defined.
-
 See also [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad).
+
+## 💾 Heap
+
+Reports memory usage.
+
+Integrated into the [Home Assistant](#-home-assistant) extensions.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+EXTENSION_HEAP='true'
+```
 
 ## 🧬 Home Assistant
 
@@ -97,33 +101,14 @@ Key supported features include:
 - Control over [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) like the microphone and infrared receiver.
 - Access to various statistics, debug data, and advanced settings.
 
-> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define HOMEASSISTANT_TOPIC "homeassistant"
-```
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_HOMEASSISTANT=true
+EXTENSION_HOMEASSISTANT='true'
 ```
 
-> Enabled by default when the *[MQTT](#%EF%B8%8F-mqtt) extension* is enabled.
-
-**Remove:**
-
-Removes the *MQTT discovery packet*.
-
-API payload example:
-
-```json
-{
-    "action": "remove"
-}
-```
+> [!IMPORTANT]
+> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
 See also [Home Assistant weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#home-assistant-weather) mode.
 
@@ -134,23 +119,24 @@ By adding an [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-rec
 - Display brightness: up/down
   - Philips: Volume ➕➖
   - Sony: Volume ➕➖
-- Display power: on/off
+- Display power: toggle
   - Philips: Power ⏻
   - Sony: Power ⏻
-- [Microphone](#%EF%B8%8F-microphone): on/off
+- [Microphone](#%EF%B8%8F-microphone): toggle
   - Philips: Mute 🔇
   - Sony: Mute 🔇
-- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes): surfing
+- [Mode](https://github.com/VIPnytt/Frekvens/wiki/Modes): next/previous
   - Philips: Title ⏮️⏭️ Album ⏪⏩
   - Sony: Program ➕➖ Previous ⏮️ Next ⏭️ Rewind ⏪ Fast forward ⏩
-- [Photocell](#-photocell): on/off
+- [Photocell](#-photocell): toggle
   - Philips: `DIM`
   - Sony: `SCENE`
 - [Playlist](#%EF%B8%8F-playlist): start/stop
   - Philips: Play/Pause ⏯️ Stop ⏹️
   - Sony: Play ▶️ Pause ⏸️ Stop ⏹️
 
-Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
+> [!TIP]
+> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
 
 API payload example:
 
@@ -160,19 +146,17 @@ API payload example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_IR 3 // Receiver
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_INFRARED=true
+EXTENSION_INFRARED='true'
 ```
-
-> Enabled by default when `PIN_IR` is defined.
 
 Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver) wiki for more info.
 
@@ -194,13 +178,11 @@ API payload example:
 
 The `font` and `repeat` parameters is optional, if omitted, the last known value will be used.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_MESSAGE=true
+EXTENSION_MESSAGE='true'
 ```
-
-> Enabled by default.
 
 See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#ticker).
 
@@ -208,7 +190,8 @@ See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#ticker).
 
 If the device isn’t already equipped with a [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone), adding one gives many [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) the ability to react to sounds, eg. syncing animations up with the music.
 
-Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
+> [!TIP]
+> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
 API payload example:
 
@@ -218,19 +201,17 @@ API payload example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MIC 4 // Amplifier
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_MICROPHONE=true
+EXTENSION_MICROPHONE='true'
 ```
-
-> Enabled by default.
 
 Check out the [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone) wiki for hardware instructions.
 
@@ -240,8 +221,8 @@ API-endpoint.
 
 Topic:
 
-- Publishes: `frekvens/example/+`
-- Subscribed: `frekvens/example/+/set`
+- Publishes: `frekvens/hostname/+`
+- Subscribed: `frekvens/hostname/+/set`
 
 API message example:
 
@@ -251,70 +232,56 @@ API message example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define MQTT_HOST "example.local"
-#define MQTT_PORT 1883 // port #
+#define MQTT_HOST "mqtt.local"
+#define MQTT_PORT 1883
 #define MQTT_USER "name"
-#define MQTT_KEY "secret"
+#define MQTT_KEY "password"
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_MQTT=true
+EXTENSION_MQTT='true'
 ```
-
-> Enabled by default when `MQTT_HOST` is defined.
 
 ## ✈️ OTA
 
 Over-the-Air updates, for ESP32.
 
-User-friendly interface for uploading `firmware.bin` and `littlefs.bin`/`spiffs.bin` files manually.
-
-URL: `http://example.local/#/extensions/ota`
+User-friendly interface for uploading `firmware.bin` and `littlefs.bin` files manually.
 
 Another option is directly from the IDE/editor via Wi-Fi using `espota`.
 
-[platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) examples:
+Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
 upload_protocol = espota
-upload_port = example.local
+upload_port = frekvens.local
 ;upload_flags = --auth=secret
 ```
 
-The optional password protection removes the ability to upload manually via the [Web app](#-web-app) user-interface.
+> [!NOTE]
+> The optional password protection removes the ability to upload manually via the [Web app](#-web-app) user-interface.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 OTA_KEY='secret'
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
-
-```h
-#define OTA_KEY_HASH "0123456789abcdef0123456789abcdef"
-```
-
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
-
 ```ini
-EXTENSION_OTA=true
+EXTENSION_OTA='true'
 ```
-
-> Enabled by default.
-
-See also [Build](#%EF%B8%8F-build).
 
 ## 🔆 Photocell
 
 By adding a [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell), you’ll get automatic ambient brightness adaption.
 
-Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
+> [!TIP]
+> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
 API payload example:
 
@@ -324,19 +291,17 @@ API payload example:
 }
 ```
 
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_LDR 5 // Bridge
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_PHOTOCELL=true
+EXTENSION_PHOTOCELL='true'
 ```
-
-> Enabled by default.
 
 Check out the [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell) wiki for hardware instructions.
 
@@ -354,13 +319,11 @@ API payload examples:
 }
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_PLAYLIST=true
+EXTENSION_PLAYLIST='true'
 ```
-
-> Enabled by default.
 
 ## ↔️ RESTful
 
@@ -368,10 +331,10 @@ Provides a *RESTful* API.
 
 - Full:
   - Method: `GET`
-  - URL: `http://example.local/api/`
+  - URL: `http://frekvens.local/restful/`
 - Module:
   - Method: `GET` or `PATCH`
-  - URL prefix: `http://example.local/api/`
+  - URL: `http://frekvens.local/restful/module`
 
 API payload example:
 
@@ -381,13 +344,11 @@ API payload example:
 }
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_RESTFUL=true
+EXTENSION_RESTFUL='true'
 ```
-
-> Enabled by default.
 
 See also [Server-Sent Events](#-server-sent-events).
 
@@ -395,13 +356,11 @@ See also [Server-Sent Events](#-server-sent-events).
 
 By adding an [RTC-module](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) you’ll get reliable clock, even without Wi-Fi connectivity.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_RTC=true
+EXTENSION_RTC='true'
 ```
-
-> Enabled by default when a [supported](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock#-supported-types) RTC-module is defined.
 
 Check out the [Real-Time Clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) wiki for hardware instructions.
 
@@ -409,15 +368,13 @@ Check out the [Real-Time Clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Ti
 
 Real-time event stream API.
 
-Endpoint: `http://example.local/api/events`
+Endpoint: `http://frekvens.local/server-sent%20events`
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_SERVERSENTEVENTS=true
+EXTENSION_SERVERSENTEVENTS='true'
 ```
-
-> Enabled by default.
 
 See also [RESTful](#️-restful).
 
@@ -455,31 +412,30 @@ API payload examples:
 
 The `duration` parameters is optional, if omitted, the last known value will be used.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_SIGNAL=true
+EXTENSION_SIGNAL='true'
 ```
-
-> Enabled by default.
 
 ## 📱 Web app
 
 Handles the `./webapp` user-interface located in the filesystem partition.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_WEBAPP=true
+EXTENSION_WEBAPP='true'
 ```
 
-> Enabled by default when the *[WebSocket](#-websocket) extension* is enabled.
+> [!NOTE]
+> Requires [WebSocket](#-websocket).
 
 ## 📞 WebSocket
 
 Handles the WebSocket protocol.
 
-Endpoint: `ws://example.local/ws`
+Endpoint: `ws://frekvens.local/websocket`
 
 API message example:
 
@@ -491,10 +447,8 @@ API message example:
 }
 ```
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-EXTENSION_WEBSOCKET=true
+EXTENSION_WEBSOCKET='true'
 ```
-
-> Enabled by default.

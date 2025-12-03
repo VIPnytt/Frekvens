@@ -1,0 +1,14 @@
+import { mdiEqualizer } from '@mdi/js';
+import { Component } from 'solid-js';
+
+import { IkeaFrekvens } from '../config/devices';
+import { MainComponent as ModesMainComponent } from '../services/Modes';
+
+export const name = 'Equalizer';
+
+export const Main: Component = () => (
+    <ModesMainComponent
+        icon={mdiEqualizer}
+        text={IkeaFrekvens}
+    />
+);

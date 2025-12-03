@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_GAMEOFLIFE
 
 #include "modules/ModeModule.h"
@@ -11,7 +9,7 @@ class GameOfLifeMode : public ModeModule
 private:
     unsigned long lastMillis = 0;
 
-    uint8_t active;
+    uint8_t active = 0;
 
 public:
     GameOfLifeMode() : ModeModule("Game of Life") {};

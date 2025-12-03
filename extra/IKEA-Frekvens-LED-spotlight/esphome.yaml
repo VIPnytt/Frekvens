@@ -1,0 +1,239 @@
+# Source: https://github.com/VIPnytt/Frekvens/tree/main/extra/IKEA-Frekvens-LED-spotlight
+
+esphome:
+  name: frekvens-spotlight
+  friendly_name: "Frekvens spotlight"
+  comment: "IKEA Frekvens LED spotlight"
+  min_version: "2025.7.0"
+  project:
+    name: "IKEA.Frekvens"
+    version: "2025.12.0"
+
+esp32: # https://registry.platformio.org/platforms/platformio/espressif32/boards
+  board: seeed_xiao_esp32c3 # Replace with the board you are using
+
+substitutions:
+  PIN_OE: 3 # Digital output to the LED drivers (U6/U7)
+  PIN_SW: 5 # Digital input from the button (K3)
+  PIN_MIC: 4 # Analog input from the amplifier (U3)
+
+api:
+  # Optional: enable encryption if desired
+  #encryption:
+    #key: !secret api_key
+  # Optional: disable automatic reboot on API disconnect
+  #reboot_timeout: 0s
+
+logger: # Enables logging to aid in debugging
+
+ota:
+  - platform: esphome
+    # Optional: secure OTA with a password
+    #password: !secret ota_password
+
+web_server: # Optional: enable a basic web interface
+
+wifi:
+  ssid: !secret wifi_ssid # Wi-Fi network name
+  password: !secret wifi_password # Wi-Fi password
+
+binary_sensor:
+  - platform: gpio
+    id: sw
+    name: "Button"
+    icon: "mdi:power"
+    disabled_by_default: True # Hidden from Home Assistant UI
+    internal: True # Optional
+    pin:
+      number: ${PIN_SW}
+      allow_other_uses: true
+    filters:
+      - invert
+    on_click:
+      - max_length: 499ms # Short press: toggle light
+        then:
+          - light.toggle: led
+    on_multi_click:
+      - timing:
+          - ON for at least 500ms # Long press: enter dimming mode
+        then:
+          - while:
+              condition:
+                binary_sensor.is_on: sw
+              then:
+                - if:
+                    condition:
+                      lambda: !lambda 'return id(dim_up);'
+                    then:
+                      - light.dim_relative:
+                          id: led
+                          relative_brightness: 1%
+                          transition_length: 0s
+                    else:
+                      - light.dim_relative:
+                          id: led
+                          relative_brightness: -1%
+                          transition_length: 0s
+                - delay: 20ms
+          - globals.set:
+              id: dim_up
+              value: !lambda 'return !id(dim_up);'
+
+button:
+  - platform: template
+    name: "Power off"
+    icon: "mdi:power"
+    entity_category: config
+    on_press:
+      then:
+        - deep_sleep.enter # Enter deep sleep to save power
+
+  - platform: restart
+    id: reboot
+    name: "Reboot"
+    disabled_by_default: True # Hidden from UI unless disabled
+
+deep_sleep:
+  wakeup_pin:
+    number: ${PIN_SW}
+    inverted: True
+    allow_other_uses: True
+
+globals:
+  - type: bool
+    id: dim_up
+    restore_value: True # Remembers dimming direction between restarts
+
+  - type: float
+    id: mic_peak
+    initial_value: "0" # Temporary peak value, resets every interval
+    restore_value: False
+
+  - type: int
+    id: mic_last # Stores last microphone reading for diff calc
+    restore_value: True
+
+  - type: int
+    id: mic_threshold
+    initial_value: "512" # Threshold for triggering sound response
+    restore_value: True
+
+interval:
+  - interval: 60s
+    then:
+      - sensor.template.publish:
+          id: mic_level
+          state: !lambda 'return id(mic_peak);'
+      - lambda: !lambda |-
+          id(mic_peak) = 0;
+
+light:
+  - platform: monochromatic
+    id: led
+    name: None
+    icon: "mdi:spotlight"
+    restore_mode: RESTORE_DEFAULT_OFF
+    output: oe
+    effects: # Optional light effects
+      - flicker:
+      - pulse:
+      - random:
+
+number:
+  - platform: template
+    id: threshold
+    name: "Threshold"
+    icon: "mdi:microphone"
+    entity_category: config
+    disabled_by_default: True
+    step: 1
+    max_value: ${2**12 - 1}
+    min_value: 1
+    lambda: !lambda 'return id(mic_threshold);'
+    set_action:
+      - lambda: |-
+          id(mic_threshold) = (int)x;
+          id(threshold).publish_state(id(mic_threshold));
+
+output:
+  - platform: ledc
+    id: oe
+    pin: ${PIN_OE}
+    frequency: ${(80000000 / (2**16 - 1)) | int} # Max resolution (16-bit)
+    min_power: ${1 / (2**8 - 1)}
+    zero_means_zero: True # Ensures 0% is fully off
+
+script:
+  - id: on_sound
+    then: # Response to detected sound event
+      - light.toggle:
+          id: led
+          transition_length: 750ms
+      - delay: 750ms
+      - light.toggle:
+          id: led
+          transition_length: 750ms
+      - delay: 750ms
+
+sensor:
+  - platform: adc
+    id: mic_raw
+    pin: ${PIN_MIC}
+    raw: True
+    attenuation: 12db
+    samples: 10
+    update_interval: 10ms
+    unit_of_measurement: ""
+    accuracy_decimals: 0
+    filters:
+      - max:
+          send_every: 10
+          window_size: 10
+      - lambda: !lambda |-
+          if (id(mic).state)
+          {
+            int diff = abs((int)x - id(mic_last));
+            id(mic_last) = (int)x;
+            return diff;
+          } else {
+            return 0;
+          }
+      - delta: 1.0
+    on_value:
+      then:
+        - if:
+            condition:
+              lambda: !lambda 'return x >= (int)id(threshold).state;'
+            then:
+              - script.execute: on_sound
+        - lambda: !lambda |-
+            if (x > id(mic_peak)) {
+              id(mic_peak) = x;
+            }
+
+  - platform: internal_temperature
+    name: "Internal temperature"
+    disabled_by_default: True
+
+  - platform: template
+    id: mic_level
+    name: "Sound level"
+    icon: "mdi:microphone"
+    entity_category: diagnostic
+    state_class: measurement
+    accuracy_decimals: 0
+    update_interval: never
+    lambda: !lambda |-
+      return id(mic_peak);
+
+  - platform: wifi_signal
+    name: "Wi-Fi signal"
+
+switch:
+  - platform: template
+    id: mic
+    name: "Microphone"
+    icon: "mdi:microphone"
+    entity_category: config
+    restore_mode: RESTORE_DEFAULT_OFF
+    optimistic: True

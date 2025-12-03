@@ -2,17 +2,17 @@
 
 Character support may vary, but additional fonts and characters can be added easily — either by hand or through auto-generation.
 
+[Braille](#️-braille) | [Micro](#-micro) | [Mini](#-mini) | [Small](#️-small) | [Medium](#️-medium) | [Medium bold](#🅱%EF%B8%8F-medium-bold) | [Large](#️-large)
+
 ## 👁️ Braille
 
 Ultra-compact 2×3 pixel font, ideal for minimal space constraints.
 
-[.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) example:
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-FONT_BRAILLE=true
+FONT_BRAILLE='true'
 ```
-
-> Enabled by default.
 
 ## 🔬 Micro
 
@@ -25,8 +25,6 @@ Balanced 4×5 pixel font providing improved readability without taking up much s
 ## ⬇️ Small
 
 Small yet clear font suitable for most general-purpose display needs.
-
-> Enabled by default.
 
 ## ➡️ Medium
 

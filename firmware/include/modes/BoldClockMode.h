@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_BOLDCLOCK
 
 #include "modules/ModeModule.h"
@@ -20,7 +18,7 @@ private:
 public:
     BoldClockMode() : ModeModule("Bold clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

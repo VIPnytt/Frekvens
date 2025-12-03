@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_WEBSOCKET
 
 #include "extensions/WebSocketExtension.h"
@@ -13,25 +11,25 @@ WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket")
     WebSocket = this;
 }
 
-void WebSocketExtension::ready()
+void WebSocketExtension::begin()
 {
-    ws->onEvent(&onEvent);
-    WebServer.http->addHandler(ws);
+    server->onEvent(&onEvent);
+    WebServer.http->addHandler(server);
 }
 
 void WebSocketExtension::handle()
 {
-    ws->cleanupClients();
+    server->cleanupClients();
 }
 
-void WebSocketExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     JsonDocument _doc;
     _doc[source] = doc;
     const size_t length = measureJson(_doc);
     char *payload = new char[length + 1];
     serializeJson(_doc, payload, length + 1);
-    ws->textAll(payload, length);
+    server->textAll(payload, length);
     delete[] payload;
 }
 
@@ -54,13 +52,6 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
         AwsFrameInfo *info = (AwsFrameInfo *)arg;
         if (info->opcode == AwsFrameType::WS_TEXT)
         {
-#ifdef F_DEBUG
-            if (len < info->len)
-            {
-                Serial.printf("%s: chunked messages is currently not supported\n", WebSocket->name);
-                return;
-            }
-#endif
             JsonDocument doc;
             if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
             {

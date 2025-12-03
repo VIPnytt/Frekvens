@@ -1,21 +1,19 @@
-#include "config/constants.h"
-
 #if MODE_LEAFFALL
 
 #include "modes/LeafFallMode.h"
 #include "services/DisplayService.h"
 
-void LeafFallMode::wake()
+void LeafFallMode::begin()
 {
     for (Leaf &leaf : leaves)
     {
-        leaf.x = random(COLUMNS);
-        leaf.y = random(ROWS);
+        leaf.x = random(GRID_COLUMNS);
+        leaf.y = random(GRID_ROWS);
         leaf.brightness = random(1 << 4, 1 << 8);
         leaf.delay = random(UINT8_MAX, 600);
         leaf.lastMillis = millis();
     }
-    Display.clear();
+    Display.clearFrame();
 }
 
 void LeafFallMode::handle()
@@ -25,20 +23,20 @@ void LeafFallMode::handle()
         if (millis() - leaf.lastMillis > leaf.delay)
         {
             Display.setPixel(leaf.x, leaf.y, 0);
-            if (leaf.y + 1 >= ROWS)
+            if (leaf.y + 1 >= GRID_ROWS)
             {
                 leaf.brightness = random(1 << 4, 1 << 8);
                 leaf.y = 0;
                 do
                 {
-                    leaf.x = random(COLUMNS);
+                    leaf.x = random(GRID_COLUMNS);
                 } while (Display.getPixel(leaf.x, leaf.y));
             }
             else if (leaf.x > 0 && random(4) == 0)
             {
                 --leaf.x;
             }
-            else if (leaf.x < COLUMNS - 1 && random(4) == 0)
+            else if (leaf.x < GRID_COLUMNS - 1 && random(4) == 0)
             {
                 ++leaf.x;
             }

@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if FONT_BRAILLE
 
 #include "fonts/BrailleFont.h"
@@ -11,7 +9,7 @@ BrailleFont::BrailleFont() : FontModule("Braille")
     FontBraille = this;
 }
 
-FontModule::Symbol BrailleFont::getChar(uint32_t character)
+FontModule::Symbol BrailleFont::getChar(uint32_t character) const
 {
     if (character >= 0x20 && character <= 0x5A)
     {

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_BUTTON
 
+#include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
 class ButtonExtension : public ExtensionModule
@@ -42,7 +41,7 @@ private:
 public:
     ButtonExtension();
 
-    void setup() override;
+    void configure() override;
     void handle() override;
 };
 

@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_RING
 
 #include "extensions/MicrophoneExtension.h"
@@ -10,18 +8,17 @@
 void RingMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > INT8_MAX && Microphone->play())
+    if (millis() - lastMillis > INT8_MAX && Microphone->isTriggered())
 #else
     if (millis() - lastMillis > INT8_MAX)
-#endif
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
 
-        Display.clear();
-        BitmapHandler bitmap = BitmapHandler(ring[frame]);
-        bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, (ROWS - bitmap.getHeight()) / 2);
-        direction ? frame++ : frame--;
-        if (frame <= 0 || frame >= ring.size() - 1)
+        Display.clearFrame();
+        BitmapHandler(ring[index]).draw();
+        direction ? index++ : index--;
+        if (index <= 0 || index >= ring.size() - 1)
         {
             direction = !direction;
         }

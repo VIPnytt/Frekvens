@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_BREAKOUTCLOCK
 
 #include <deque>
@@ -12,11 +10,11 @@
 class BreakoutClockMode : public ModeModule
 {
 private:
-    static constexpr float speed = 7e-4 * ROWS;
+    static constexpr float speed = 7e-4 * GRID_ROWS;
 
-    double
-        xDec,
-        yDec;
+    float
+        xDec = GRID_COLUMNS / 2,
+        yDec = GRID_ROWS - 2;
 
     std::deque<uint8_t> paddle;
 
@@ -25,15 +23,15 @@ private:
     uint8_t
         hour,
         minute,
-        x,
-        y;
+        x = GRID_COLUMNS / 2,
+        y = GRID_ROWS - 2;
 
-    uint16_t deg;
+    uint16_t deg = 90;
 
 public:
     BreakoutClockMode() : ModeModule("Breakout clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

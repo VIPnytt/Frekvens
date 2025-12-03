@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_BREAKOUTCLOCK
 
 #include "fonts/MiniFont.h"
@@ -8,49 +6,49 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void BreakoutClockMode::wake()
+void BreakoutClockMode::begin()
 {
-    Display.drawRectangle(0, 0, COLUMNS - 1, 5 - 1);
+    Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 5 - 1);
     paddle.clear();
-    const uint8_t paddleX = random(COLUMNS - 1 - 3);
+    const uint8_t paddleX = random(GRID_COLUMNS - 1 - 3);
     for (uint8_t _x = 0; _x < 3; ++_x)
     {
         paddle.push_back(paddleX + _x);
-        Display.setPixel(paddleX + _x, ROWS - 1);
+        Display.setPixel(paddleX + _x, GRID_ROWS - 1);
     }
-    deg = random(60, 120); // ±30°
+    deg = random(60, 121); // ±30°
     xDec = x = paddleX + 1;
-    yDec = y = ROWS - 2;
+    yDec = y = GRID_ROWS - 2;
     Display.setPixel(x, y);
 }
 
 void BreakoutClockMode::handle()
 {
     const uint8_t
-        nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5,
-        nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5;
+        nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5f,
+        nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5f;
     if (y <= 0 && deg < 180)
     {
         // Top
         deg = 360 - deg; // Invert Y
     }
-    if ((x <= 0 && deg >= 90 && deg < 270) || (x >= COLUMNS - 1 && (deg < 90 || deg > 270)))
+    if ((x <= 0 && deg >= 90 && deg < 270) || (x >= GRID_COLUMNS - 1 && (deg < 90 || deg > 270)))
     {
         // Wall
         deg = deg >= 180 ? 540 - deg : 180 - deg; // Invert X
     }
-    if (nextY >= ROWS - 1 && deg > 180)
+    if (nextY >= GRID_ROWS - 1 && deg > 180)
     {
         // Bottom
-        deg = random(30, 150); // ±60°
+        deg = random(30, 151); // ±60°
         if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
         {
             hour = local.tm_hour;
             minute = local.tm_min;
-            TextHandler((String)(hour / 10), FontMini).draw(0, 0);
-            TextHandler((String)(hour % 10), FontMini).draw(4, 0);
-            TextHandler((String)(minute / 10), FontMini).draw(9, 0);
-            TextHandler((String)(minute % 10), FontMini).draw(13, 0);
+            TextHandler(std::to_string(hour / 10), FontMini).draw(GRID_COLUMNS / 2 - 8, 0);
+            TextHandler(std::to_string(hour % 10), FontMini).draw(GRID_COLUMNS / 2 - 4, 0);
+            TextHandler(std::to_string(minute / 10), FontMini).draw(GRID_COLUMNS / 2 + 1, 0);
+            TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
         }
     }
     else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY))
@@ -69,26 +67,26 @@ void BreakoutClockMode::handle()
     Display.setPixel(x, y, 0);
     xDec += cos(deg * DEG_TO_RAD) * speed;
     yDec -= sin(deg * DEG_TO_RAD) * speed;
-    x = xDec + .5;
-    y = yDec + .5;
+    x = xDec + .5f;
+    y = yDec + .5f;
     Display.setPixel(x, y);
 
-    const double angle = atan((ROWS - 2 - yDec) / abs(paddle[1] - xDec)) * RAD_TO_DEG;
-    if (xDec > paddle.back() && angle < 67.5 && paddle.back() < COLUMNS - 1)
+    const float angle = atanf((GRID_ROWS - 2 - yDec) / abs(paddle[1] - xDec)) * RAD_TO_DEG;
+    if (xDec > paddle.back() && angle < 67.5f && paddle.back() < GRID_COLUMNS - 1)
     {
         // Right
-        Display.setPixel(paddle.front(), COLUMNS - 1, 0);
+        Display.setPixel(paddle.front(), GRID_COLUMNS - 1, 0);
         paddle.pop_front();
         paddle.push_back(paddle.back() + 1);
-        Display.setPixel(paddle.back(), COLUMNS - 1);
+        Display.setPixel(paddle.back(), GRID_COLUMNS - 1);
     }
-    else if (xDec < paddle.front() && angle < 67.5 && paddle.front() > 0)
+    else if (xDec < paddle.front() && angle < 67.5f && paddle.front() > 0)
     {
         // Left
-        Display.setPixel(paddle.back(), COLUMNS - 1, 0);
+        Display.setPixel(paddle.back(), GRID_COLUMNS - 1, 0);
         paddle.pop_back();
         paddle.push_front(paddle.front() - 1);
-        Display.setPixel(paddle.front(), COLUMNS - 1);
+        Display.setPixel(paddle.front(), GRID_COLUMNS - 1);
     }
 }
 

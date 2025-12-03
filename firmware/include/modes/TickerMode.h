@@ -1,11 +1,10 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_TICKER
 
 #include <bits/unique_ptr.h>
 
+#include "config/constants.h"
 #include "handlers/TextHandler.h"
 #include "modules/ModeModule.h"
 #include "services/DisplayService.h"
@@ -16,34 +15,34 @@ class TickerMode : public ModeModule
 private:
     bool pending = false;
 
-    int8_t offsetY;
+    int8_t offsetY = GRID_ROWS / 2;
 
     int16_t
-        offsetX,
-        textWidth;
+        offsetX = GRID_COLUMNS,
+        width = 0;
 
     unsigned long lastMillis = 0;
 
     FontModule *font = nullptr;
 
-    String message;
+    std::string message = NAME;
 
     std::unique_ptr<TextHandler> text;
 
     void setFont(const char *const fontName);
-    void setMessage(String textMessage);
+    void setMessage(std::string _message);
 
     void transmit();
 
 public:
     TickerMode() : ModeModule("Ticker") {};
 
-    void setup() override;
-    void wake() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
-    void sleep() override;
+    void end() override;
 
-    void receiverHook(const JsonDocument doc) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_TICKER

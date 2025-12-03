@@ -125,7 +125,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0x3C0, // π
+            0x3C0, // π GREEK SMALL LETTER PI
             {
                 {
                     0b11111111,
@@ -146,7 +146,7 @@ private:
 public:
     LargeFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern LargeFont *FontLarge;

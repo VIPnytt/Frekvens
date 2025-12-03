@@ -1,43 +1,26 @@
-#include "config/constants.h"
-
-#if MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_OPENWEATHER
 
 #include <HTTPClient.h>
+#include <NetworkClientSecure.h>
 
-#include "extensions/BuildExtension.h"
 #include "modes/OpenWeatherMode.h"
 #include "services/ConnectivityService.h"
 
-#if EXTENSION_BUILD
-void OpenWeatherMode::setup()
+void OpenWeatherMode::begin()
 {
-    (*Build->config)[Config::h][__STRING(OPENWEATHER_KEY)] = "REDACTED";
-#ifdef OPENWEATHER_PARAMETERS
-    (*Build->config)[Config::h][__STRING(OPENWEATHER_PARAMETERS)] = OPENWEATHER_PARAMETERS;
-#endif
-}
-#endif // EXTENSION_BUILD
-
-void OpenWeatherMode::wake()
-{
-#ifdef F_INFO
     if (urls.empty())
     {
-        Serial.printf("%s: unable to fetch weather\n", name);
+        ESP_LOGW(name, "unable to fetch weather");
     }
     else
     {
-        lastMillis = 0;
+        lastMillis = millis() - interval;
     }
-#else
-    lastMillis = 0;
-#endif // F_INFO
 }
 
 void OpenWeatherMode::handle()
 {
-    // OpenWeather's recommended update interval: 10 minutes
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 600'000 || lastMillis == 0))
+    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -46,21 +29,30 @@ void OpenWeatherMode::handle()
 void OpenWeatherMode::update()
 {
     lastMillis = millis();
+    NetworkClientSecure client;
+    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
-
-    http.begin(urls.back());
+    http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
-#ifdef F_DEBUG
-    Serial.printf("%s: %s\n", name, urls.back());
-#endif
 
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
+        NetworkClient &stream = http.getStream();
+        const int contentLength = http.getSize();
+        const unsigned long _lastMillis = millis();
+        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        {
+            vTaskDelay(1);
+        }
+        JsonDocument filter;
+        filter["current"]["temp"] = true;
+        filter["current"]["weather"]["id"] = true;
+        filter["main"]["temp"] = true;
+        filter["weather"][0]["id"] = true;
         JsonDocument doc;
-        const bool isError = (bool)deserializeJson(doc, http.getString());
+        const bool isError = (bool)deserializeJson(doc, stream, DeserializationOption::Filter(filter));
         if (!isError && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
         {
             // API 3.0
@@ -80,23 +72,23 @@ void OpenWeatherMode::update()
         else
         {
             urls.pop_back();
-            lastMillis = 0;
-#ifdef F_DEBUG
-            Serial.printf("%s: unprocessable data\n", name);
-#endif
+            lastMillis = millis() - interval + (1 << 14);
+            ESP_LOGD(name, "unprocessable data");
         }
     }
-    else if (code < 0 || (code >= 400 && code < 500))
+    else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = 0;
-#ifdef F_INFO
+        lastMillis = millis() - interval + (1 << 12);
         if (urls.empty())
         {
-            Serial.printf("%s: unable to fetch weather\n", name);
+            ESP_LOGE(name, "unable to fetch weather");
         }
-#endif
+    }
+    else if (code < 0)
+    {
+        lastMillis = millis() - interval + (1 << 15);
     }
 }
 
-#endif // MODE_OPENWEATHER && defined(OPENWEATHER_KEY) && defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_OPENWEATHER

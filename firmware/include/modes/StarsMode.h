@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_STARS
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class StarsMode : public ModeModule
@@ -20,12 +19,12 @@ private:
         bool direction = true;
     };
 
-    Star stars[COLUMNS * ROWS / 15];
+    Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
 
 public:
     StarsMode() : ModeModule("Stars") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

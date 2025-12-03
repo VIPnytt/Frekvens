@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_WEBAPP
 
 #include "modules/ExtensionModule.h"
@@ -15,7 +13,8 @@ private:
 public:
     WebAppExtension();
 
-    void setup() override;
+    void configure() override;
+    void begin() override;
 };
 
 extern WebAppExtension *WebApp;

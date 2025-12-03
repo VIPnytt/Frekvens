@@ -1,7 +1,6 @@
-name: 🐛 Bug Report
-description: Tell us about something that isn't working as it should.
+name: 🐛 Bug
+description: An unexpected problem or behavior.
 type: Bug
-labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -30,7 +29,6 @@ body:
     attributes:
       label: Steps to Reproduce
       description: Please list the steps you took to make the bug happen.
-                   Number them so it's easy to follow.
       placeholder: |
         1. Turn on the device.
         2. Press and hold the mode button for 5 seconds.
@@ -54,7 +52,7 @@ body:
     id: relevant-logs
     attributes:
       label: Relevant Logs or Error Messages
-      description: Paste any error messages or logs here. Use code blocks if possible.
+      description: Paste any error messages or logs here.
       render: shell
 
   - type: textarea

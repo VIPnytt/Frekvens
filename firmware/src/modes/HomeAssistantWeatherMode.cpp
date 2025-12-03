@@ -1,51 +1,26 @@
-#include "config/constants.h"
-
 #if MODE_HOMEASSISTANTWEATHER
 
 #include <HTTPClient.h>
+#include <NetworkClientSecure.h>
 
-#include "extensions/BuildExtension.h"
 #include "modes/HomeAssistantWeatherMode.h"
 #include "services/ConnectivityService.h"
 
-#if EXTENSION_BUILD
-void HomeAssistantWeatherMode::setup()
+void HomeAssistantWeatherMode::begin()
 {
-#ifdef HOMEASSISTANT_ENTITY
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_ENTITY)] = HOMEASSISTANT_ENTITY;
-#endif // HOMEASSISTANT_ENTITY
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_KEY)] = "REDACTED";
-#ifdef HOMEASSISTANT_HOST
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_HOST)] = HOMEASSISTANT_HOST;
-#endif // HOMEASSISTANT_HOST
-#ifdef HOMEASSISTANT_PORT
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_PORT)] = HOMEASSISTANT_PORT;
-#endif // HOMEASSISTANT_PORT
-#ifdef HOMEASSISTANT_PROTOCOL
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_PROTOCOL)] = HOMEASSISTANT_PROTOCOL;
-#endif // HOMEASSISTANT_PROTOCOL
-}
-#endif // EXTENSION_BUILD
-
-void HomeAssistantWeatherMode::wake()
-{
-#ifdef F_INFO
     if (urls.empty())
     {
-        Serial.printf("%s: unable to fetch weather\n", name);
+        ESP_LOGW(name, "unable to fetch weather");
     }
     else
     {
-        lastMillis = 0;
+        lastMillis = millis() - interval;
     }
-#else
-    lastMillis = 0;
-#endif // F_INFO
 }
 
 void HomeAssistantWeatherMode::handle()
 {
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > UINT16_MAX || lastMillis == 0))
+    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -54,29 +29,39 @@ void HomeAssistantWeatherMode::handle()
 void HomeAssistantWeatherMode::update()
 {
     lastMillis = millis();
+#ifdef HOMEASSISTANT_PROTOCOL
+    NetworkClientSecure client;
+    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
-
+    http.begin(client, urls.back().c_str());
+#else
+    HTTPClient http;
     http.begin(urls.back().c_str());
+#endif // HOMEASSISTANT_PROTOCOL
     http.addHeader("Accept", "application/json");
     http.setAuthorizationType("Bearer");
     http.setAuthorization(HOMEASSISTANT_KEY);
     http.setUserAgent(Connectivity.userAgent.data());
 
-#ifdef F_DEBUG
-    Serial.printf("%s: %s\n", name, urls.back().c_str());
-#endif
-
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
+        NetworkClient &stream = http.getStream();
+        const int contentLength = http.getSize();
+        const unsigned long _lastMillis = millis();
+        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        {
+            vTaskDelay(1);
+        }
+        JsonDocument filter;
+        filter["attributes"]["temperature"] = true;
+        filter["state"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, http.getString()) || !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) || !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = 0;
-#ifdef F_DEBUG
-            Serial.printf("%s: unprocessable data\n", name);
-#endif
+            lastMillis = millis() - interval + (1 << 14);
+            ESP_LOGD(name, "unprocessable data");
             return;
         }
         WeatherHandler weather = WeatherHandler();
@@ -84,16 +69,18 @@ void HomeAssistantWeatherMode::update()
         weather.parse(doc["state"].as<std::string>(), codesets);
         weather.draw();
     }
-    else if (code < 0 || (code >= 400 && code < 500))
+    else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = 0;
-#ifdef F_INFO
+        lastMillis = millis() - interval + (1 << 12);
         if (urls.empty())
         {
-            Serial.printf("%s: unable to fetch weather\n", name);
+            ESP_LOGE(name, "unable to fetch weather");
         }
-#endif
+    }
+    else if (code < 0)
+    {
+        lastMillis = millis() - interval + (1 << 15);
     }
 }
 

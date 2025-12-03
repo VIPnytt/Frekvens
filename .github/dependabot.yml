@@ -11,15 +11,30 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "npm"
-    directory: "/webapp"
+  - package-ecosystem: "pip"
+    directory: "/extra"
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
     labels:
       - "dependencies"
-      - "webapp"
+      - "extra"
+    milestone: 7
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "pip"
+    directory: "/scripts"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+      exclude:
+        - "tzdata"
+    labels:
+      - "dependencies"
     milestone: 7
     schedule:
       interval: "weekly"
@@ -31,11 +46,23 @@ updates:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
-      exclude:
-        - "tzdata"
     labels:
       - "dependencies"
       - "tools"
+    milestone: 7
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "npm"
+    directory: "/webapp"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+    labels:
+      - "dependencies"
+      - "webapp"
     milestone: 7
     schedule:
       interval: "weekly"

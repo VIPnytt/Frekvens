@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_RING
 
 #include "modules/ModeModule.h"
@@ -13,7 +11,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    uint8_t frame = 0;
+    uint8_t index = 0;
 
     const std::vector<std::vector<uint16_t>> ring = {
         {

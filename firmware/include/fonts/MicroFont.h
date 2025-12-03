@@ -632,7 +632,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xB0, // °
+            0xB0, // ° DEGREE SIGN
             {
                 {
                     0b1,
@@ -646,7 +646,7 @@ private:
 public:
     MicroFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern MicroFont *FontMicro;

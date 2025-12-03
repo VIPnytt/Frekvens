@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_MICROPHONE
 
 #include "modules/ExtensionModule.h"
@@ -16,7 +14,7 @@ private:
 
     uint16_t
         levelMax = UINT8_MAX,
-        mic,
+        mic = 0,
         threshold = INT8_MAX;
 
     unsigned long
@@ -28,16 +26,16 @@ private:
 public:
     MicrophoneExtension();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
-    void set(uint16_t floor);
-    bool play();
+    bool getActive();
+    void setActive(bool active);
+    void setThreshold(uint16_t _threshold);
+    bool isTriggered() const;
 
-    void receiverHook(const JsonDocument doc) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern MicrophoneExtension *Microphone;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_WEBSOCKET
 
 #include <ESPAsyncWebServer.h>
@@ -16,12 +14,12 @@ private:
 public:
     WebSocketExtension();
 
-    AsyncWebSocket *ws = new AsyncWebSocket("/ws");
+    AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 
-    void ready() override;
+    void begin() override;
     void handle() override;
 
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern WebSocketExtension *WebSocket;

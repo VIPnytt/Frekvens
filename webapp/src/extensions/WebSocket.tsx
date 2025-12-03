@@ -2,6 +2,7 @@ import { batch, createEffect, ParentComponent } from 'solid-js';
 import { createEventSignal } from '@solid-primitives/event-listener';
 import { createReconnectingWS, createWSState } from '@solid-primitives/websocket';
 
+import { HOSTNAME } from '../config/constants';
 import { receiver as Connectivity } from '../services/Connectivity';
 import { receiver as Device } from '../services/Device';
 import { receiver as Display } from '../services/Display';
@@ -11,21 +12,19 @@ import { receiver as Modes } from '../services/Modes';
 import { Canonical as WebAppCanonical } from './WebApp';
 
 export const name = 'WebSocket';
+export const WebSocketUrl = `ws://${HOSTNAME}.local/${name.toLowerCase()}`
 
-export const ws = createReconnectingWS(`ws://${(!import.meta.env.PROD && import.meta.env.VITE_HOST) || location.hostname}/ws`);
-export const WebSocketState = createWSState(ws);
+export const WebSocketWS = createReconnectingWS(`ws://${import.meta.env.PROD ? location.hostname : `${HOSTNAME}.local`}/${name.toLowerCase()}`);
+export const WebSocketState = createWSState(WebSocketWS);
 
-if (import.meta.env.PROD) {
-    createEffect(() => {
-        if (WebSocketState() === 3) {
-            WebAppCanonical;
-        }
-    });
-};
+createEffect(() => {
+    if (WebSocketState() === WebSocketWS.OPEN) {
+        WebAppCanonical();
+    }
+});
 
-export const MessageProvider: ParentComponent = (props) => {
-    const event = createEventSignal<{ message: MessageEvent }>(ws, 'message');
-
+export const WebSocketmessages: ParentComponent = (props) => {
+    const event = createEventSignal<{ message: MessageEvent }>(WebSocketWS, 'message');
     createEffect(() => {
         const json = JSON.parse(event()?.data || '{}');
         batch(() => {
@@ -39,5 +38,3 @@ export const MessageProvider: ParentComponent = (props) => {
     });
     return (props.children);
 };
-
-export default ws;

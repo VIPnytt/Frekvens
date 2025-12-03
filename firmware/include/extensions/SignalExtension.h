@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_SIGNAL
 
+#include "config/constants.h"
 #include "handlers/BitmapHandler.h"
 #include "modules/ExtensionModule.h"
 
@@ -16,7 +15,7 @@ private:
 
     uint8_t
         duration = 30,
-        frame[COLUMNS * ROWS];
+        frame[GRID_COLUMNS * GRID_ROWS] = {0};
 
     std::vector<std::vector<uint16_t>> signals;
 
@@ -26,9 +25,10 @@ private:
 public:
     SignalExtension();
 
-    void ready() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc) override;
+
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern SignalExtension *Signal;

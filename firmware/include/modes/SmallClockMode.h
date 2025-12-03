@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_SMALLCLOCK
 
 #include "modules/ModeModule.h"
@@ -20,7 +18,7 @@ private:
 public:
     SmallClockMode() : ModeModule("Small clock") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

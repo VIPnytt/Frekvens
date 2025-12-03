@@ -1,23 +1,32 @@
 ### 📌 Getting Started
 
-* [Home](https://github.com/VIPnytt/Frekvens/wiki)
+- [Home](https://github.com/VIPnytt/Frekvens)
+- [Wiki](https://github.com/VIPnytt/Frekvens/wiki)
 
 ### 💡 Devices
 
-* [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens)
-* [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad)
-* [Custom devices](https://github.com/VIPnytt/Frekvens/wiki/Custom-devices)
+- [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens)
+- [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad)
+- [Custom devices](https://github.com/VIPnytt/Frekvens/wiki/Custom-devices)
 
 ### 📦 Modules
 
-* [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
-* [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
-* [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
-* [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
+- [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
+- [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
+- [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
+- [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
 
 ### ➕ Accessories
 
-* [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver)
-* [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
-* [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
-* [RTC clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock)
+- [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver)
+- [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
+- [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
+- [RTC clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock)
+
+### 🗃️ Miscellaneous
+
+- [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
+- [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
+- [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
+- [Tools](https://github.com/VIPnytt/Frekvens/tree/main/tools)
+- [VS Code](https://github.com/VIPnytt/Frekvens/tree/main/.vscode)

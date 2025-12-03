@@ -844,7 +844,7 @@ private:
 
     const std::vector<SymbolExtended> unicode = {
         {
-            0xB0, // °
+            0xB0, // ° DEGREE SIGN
             {
                 {
                     0b11,
@@ -855,7 +855,7 @@ private:
             },
         },
         {
-            0x3C0, // π
+            0x3C0, // π GREEK SMALL LETTER PI
             {
                 {
                     0b11111,
@@ -872,7 +872,7 @@ private:
 public:
     MiniFont();
 
-    Symbol getChar(uint32_t character) override;
+    Symbol getChar(uint32_t character) const override;
 };
 
 extern MiniFont *FontMini;

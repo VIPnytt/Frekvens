@@ -2,7 +2,7 @@
 
 Some [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) can react to sound — for example, syncing animations with music.
 
-Most analog microphone modules with a built-in amplifier will work. A good starting point is a electret microphone (e.g. [BOB-12758](https://www.sparkfun.com/sparkfun-electret-microphone-breakout.html)) or an MEMS microphone (e.g. [SPW2430](https://www.adafruit.com/product/2716)).
+Most analog microphone modules with a built-in amplifier will work. A good starting point is a electret microphone (e.g. [this](https://www.sparkfun.com/sparkfun-electret-microphone-breakout.html)) or an MEMS microphone (e.g. [this](https://www.adafruit.com/product/2716)).
 
 ## 📌 Schematics
 
@@ -36,13 +36,14 @@ Analog input from the microphone amplifier.
 
 Any analog input pin can be used, but those on the ADC1 channel are preferred.
 
-> Avoid strapping pins as this pin is biased.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_MIC 1 // Amplifier
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is biased.
 
 ## 🧩 Extension
 
@@ -53,7 +54,7 @@ The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#️-microph
 [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens#wiring-the-microphone) has an microphone built-in.
 
 On the green PCB there’s an [LM358](https://www.onsemi.com/download/data-sheet/pdf/lm358-d.pdf) amplifier, simply connect `U3` pin 7 to an analog input on the ESP32 board.
-Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip should be desoldered, it might be easier to connect from `U2` pad 11 instead.
+Since the [89F112](https://lceda.cn/components/89F112_aeaaa99e4cd44677a24b9884cee22ff3) chip must be desoldered, it might be easier to connect from `U2` pad 11 instead.
 
 ## 🔗 Resources
 

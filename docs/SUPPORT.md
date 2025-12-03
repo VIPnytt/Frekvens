@@ -4,7 +4,7 @@ Thank you for using this project! If you need help or have questions, please ref
 
 ## 📖 Documentation
 
-Extensive documentation is available in the GitHub [Wiki](https://github.com/VIPnytt/Frekvens/wiki).
+Extensive documentation is available in the [Wiki](https://github.com/VIPnytt/Frekvens/wiki).
 Please start there before opening a discussion or issue.
 
 ## 💬 Discussions
@@ -14,7 +14,7 @@ This is the preferred place for community support and open-ended conversations.
 
 ## 🐛 Issues
 
-If you believe you've found a bug or have a specific technical problem that isn't answered in the documentation or discussions:
+If you believe you’ve found a bug or have a specific technical problem that isn’t answered in the documentation or discussions:
 
 1. First, check existing [issues](https://github.com/VIPnytt/Frekvens/issues) to avoid duplicates.
 2. If your issue is not listed, feel free to create a new [issue](https://github.com/VIPnytt/Frekvens/issues/new/choose).

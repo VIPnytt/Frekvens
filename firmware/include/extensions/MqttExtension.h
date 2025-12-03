@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_MQTT
 
 #include <espMqttClient.h>
@@ -11,8 +9,6 @@
 class MqttExtension : public ExtensionModule
 {
 private:
-    bool pending = false;
-
     unsigned long lastMillis = 0;
 
     static inline bool subscribed = false;
@@ -20,8 +16,6 @@ private:
     static constexpr size_t
         prefixLength = sizeof("frekvens/" HOSTNAME),
         suffixLength = sizeof("set");
-
-    void transmit();
 
     static void onConnect(bool sessionPresent);
     static void onDisconnect(espMqttClientTypes::DisconnectReason reason);
@@ -32,12 +26,12 @@ public:
 
     espMqttClient client;
 
-    void setup() override;
+    void configure() override;
     void handle() override;
 
     void disconnect();
 
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern MqttExtension *Mqtt;

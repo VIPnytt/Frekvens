@@ -1,17 +1,18 @@
 #pragma once
 
-#include "config/constants.h"
-
-#if MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
+#if MODE_YR
 
 #include <vector>
 
+#include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
 class YrMode : public ModeModule
 {
 private:
+    static constexpr uint32_t interval = 300'000; // Data resolution: down to 5 minutes (depending on location)
+
     unsigned long lastMillis = 0;
 
     // https://api.met.no/weatherapi/locationforecast/2.0/documentation
@@ -19,10 +20,6 @@ private:
     std::vector<const char *> urls = {
         "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE,
         "https://api.met.no/weatherapi/nowcast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE,
-#ifdef YR_PARAMETERS
-        "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE "&" YR_PARAMETERS,
-        "https://api.met.no/weatherapi/nowcast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE "&" YR_PARAMETERS,
-#endif
     };
 
     // https://github.com/metno/weathericons/tree/main/weather
@@ -158,11 +155,8 @@ private:
 public:
     YrMode() : ModeModule("Yr") {};
 
-#if EXTENSION_BUILD && defined(YR_PARAMETERS)
-    void setup();
-#endif
-    void wake();
+    void begin();
     void handle();
 };
 
-#endif // MODE_YR && defined(LATITUDE) && defined(LONGITUDE)
+#endif // MODE_YR

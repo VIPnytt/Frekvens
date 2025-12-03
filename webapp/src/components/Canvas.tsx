@@ -1,29 +1,34 @@
+import { mdiBrightness6 } from '@mdi/js';
 import { Component, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 import { createVisibilityObserver } from '@solid-primitives/intersection-observer';
 
+import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
-import { MODEL } from '../config/constants';
-import { MODEL as MODEL_FREKVENS } from '../config/ikeaFrekvens';
-import { MODEL as MODEL_OBEGRANSAD } from '../config/ikeaObegransad';
-import { DeviceModel } from '../services/Device';
-import { DisplayBrightness, DisplayColumns, DisplayRatio, DisplayPixelRatio, DisplayRows } from '../services/Display';
-import { PageSidebar } from '../index';
+import { Device } from '../config/devices';
+import { DisplayBrightness, DisplayOrientation } from '../services/Display';
+import { WebAppSidebar } from '../extensions/WebApp';
 
-const [getBrush, setBruh] = createSignal<number>(Math.pow(2, 8) - 1);
+const [getStrength, setStrength] = createSignal<number>(Math.pow(2, 8) - 1);
 
-export const Brush: Component = () => (
-    <Tooltip text={`Brush ${Math.ceil(getBrush() / (Math.pow(2, 8) - 1) * 100)} %`}>
-        <input
-            class="w-full my-1"
-            max={Math.pow(2, 8) - 1}
-            min="1"
-            onInput={(e) =>
-                setBruh(parseFloat(e.currentTarget.value))
-            }
-            type="range"
-            value={getBrush()}
+export const Strength: Component = () => (
+    <div class="flex items-center mt-3">
+        <Icon
+            class="mr-2"
+            path={mdiBrightness6}
         />
-    </Tooltip>
+        <Tooltip text={`Brush brightness ${Math.ceil(getStrength() / (Math.pow(2, 8) - 1) * 100)} %`}>
+            <input
+                class="w-full"
+                max={Math.pow(2, 8) - 1}
+                min="1"
+                onInput={(e) =>
+                    setStrength(parseFloat(e.currentTarget.value))
+                }
+                type="range"
+                value={getStrength()}
+            />
+        </Tooltip>
+    </div >
 );
 
 export const Canvas: Component<{
@@ -33,24 +38,26 @@ export const Canvas: Component<{
     onPixel?: (x: number, y: number, value: number) => void;
 }> = (props) => {
     let canvasRef: HTMLCanvasElement | undefined;
-    let containerRef: HTMLDivElement | undefined;
-    let brushBrightness: number;
+    let divRef: HTMLDivElement | undefined;
     let isDrawing: boolean = false;
+    let strength: number = getStrength();
 
-    const useVisibilityObserver = createVisibilityObserver({ threshold: 0.9 });
-    const visible = useVisibilityObserver(() => containerRef);
+    const rotated = DisplayOrientation() % 180;
+    const useVisibilityObserver = createVisibilityObserver({ threshold: 0.8 });
+    const visible = useVisibilityObserver(() => divRef);
 
     onMount(() => {
-        canvasRef?.addEventListener('pointerdown', handleDown);
-        canvasRef?.addEventListener('pointerleave', handleUp);
-        canvasRef?.addEventListener('pointermove', handleMove);
-        canvasRef?.addEventListener('pointerup', handleUp);
-        if (containerRef) {
+        if (canvasRef) {
+            canvasRef.addEventListener('pointerdown', handleDown);
+            canvasRef.addEventListener('pointerleave', handleUp);
+            canvasRef.addEventListener('pointermove', handleMove);
+            canvasRef.addEventListener('pointerup', handleUp);
+        }
+        if (divRef) {
             const resizeObserver = new ResizeObserver(() => {
                 draw();
             });
-            resizeObserver.observe(containerRef);
-
+            resizeObserver.observe(divRef);
             onCleanup(() => {
                 resizeObserver.disconnect();
             });
@@ -70,91 +77,68 @@ export const Canvas: Component<{
     });
 
     const draw = () => {
-        if (!canvasRef || !containerRef) {
+        if (!canvasRef || !divRef) {
             return;
         }
-        canvasRef.width = containerRef.clientWidth;
-        canvasRef.height = containerRef.clientHeight;
-
-        const pixelWidth = canvasRef.width / DisplayColumns();
-        const pixelHeight = canvasRef.height / DisplayRows();
-        const pixelSize = Math.min(pixelWidth, pixelHeight) - Math.min(pixelWidth, pixelHeight) * (1 - DisplayPixelRatio());
+        canvasRef.width = divRef.clientWidth;
+        canvasRef.height = divRef.clientHeight;
+        const columnWidth = canvasRef.width / Device.GRID_COLUMNS;
+        const rowHeight = canvasRef.height / Device.GRID_ROWS;
+        const pixelHeight = rowHeight * (rotated ? Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL : Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL);
+        const pixelWidth = columnWidth * (rotated ? Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL : Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL);
+        const offsetX = (columnWidth - pixelWidth) / 2;
+        const offsetY = (rowHeight - pixelHeight) / 2;
         const ctx = canvasRef.getContext('2d')!;
-
-        const shapeEllipse = () => {
-            const offsetX = (pixelWidth - pixelSize) / 2;
-            const offsetY = (pixelHeight - pixelSize) / 2;
-            for (let x = 0; x < DisplayColumns(); ++x) {
-                for (let y = 0; y < DisplayRows(); ++y) {
-                    ctx.fillStyle = toColor(props.pixels[x + y * DisplayColumns()]);
+        ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+        ctx.globalAlpha = (0.5 + 0.5 * DisplayBrightness() / (Math.pow(2, 8) - 1)) * (visible() ? 1 : 0.5);
+        if (Device.LED_GEOMETRY === 'circular') {
+            for (let x = 0; x < Device.GRID_COLUMNS; ++x) {
+                for (let y = 0; y < Device.GRID_ROWS; ++y) {
+                    ctx.fillStyle = toColor(props.pixels[x + y * Device.GRID_COLUMNS]);
                     ctx.beginPath();
                     ctx.arc(
-                        x * pixelWidth + offsetX + pixelSize / 2,
-                        y * pixelHeight + offsetY + pixelSize / 2,
-                        pixelSize / 2,
+                        offsetX + x * columnWidth + pixelWidth / 2,
+                        offsetY + y * rowHeight + pixelHeight / 2,
+                        Math.min(pixelHeight, pixelWidth) / 2,
                         0,
                         2 * Math.PI
                     );
                     ctx.fill();
                 }
             }
-        }
-
-        const shapeRectangle = () => {
-            const offsetX = (pixelWidth - pixelSize) / 2;
-            const offsetY = (pixelHeight - pixelSize) / 2;
-            for (let x = 0; x < DisplayColumns(); ++x) {
-                for (let y = 0; y < DisplayRows(); ++y) {
-                    ctx.fillStyle = toColor(props.pixels[x + y * DisplayColumns()]);
+        } else if (Device.LED_GEOMETRY === 'rectangular') {
+            for (let x = 0; x < Device.GRID_COLUMNS; ++x) {
+                for (let y = 0; y < Device.GRID_ROWS; ++y) {
+                    ctx.fillStyle = toColor(props.pixels[x + y * Device.GRID_COLUMNS]);
                     ctx.fillRect(
-                        x * pixelWidth + offsetX,
-                        y * pixelHeight + offsetY,
-                        pixelSize,
-                        pixelSize
+                        offsetX + x * columnWidth,
+                        offsetY + y * rowHeight,
+                        pixelWidth,
+                        pixelHeight
                     );
                 }
             }
-        }
-
-        ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-        ctx.save();
-
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
-
-        ctx.globalAlpha = (visible() ? 0.9 : 0.5) * DisplayBrightness() / (Math.pow(2, 8) - 1) + 0.1;
-
-        if (MODEL === MODEL_OBEGRANSAD || (!MODEL && DeviceModel() === MODEL_OBEGRANSAD)) {
-            shapeRectangle();
-        } else {
-            shapeEllipse();
         }
         ctx.restore();
     };
 
     const toColor = (brightness: number) => {
-        let base: number = 0;
-        if (MODEL === MODEL_FREKVENS || (!MODEL && DeviceModel() === MODEL_FREKVENS)) {
-            base = 0.27 * (Math.pow(2, 8) - 1);
-        } else if (MODEL === MODEL_OBEGRANSAD || (!MODEL && DeviceModel() === MODEL_OBEGRANSAD)) {
-            base = 0.14 * (Math.pow(2, 8) - 1);
-        }
-        const value = brightness === 0 ? 1 : (brightness - 1) / (Math.pow(2, 8) - 2) * (Math.pow(2, 8) - 2 - base) + 1 + base;
+        const value = brightness === 0 ? Device.LED_BASE_TONE : (brightness - 1) / (Math.pow(2, 8) - 2) * (Math.pow(2, 8) - 2 - Device.LED_BASE_BRIGHTNESS) + 1 + Device.LED_BASE_BRIGHTNESS;
         return `rgb(${value},${value},${value})`;
     };
 
     const handleEvent = (e: PointerEvent) => {
-        if (!canvasRef || props.disabled) {
-            return null;
-        }
-
-        const rect = canvasRef.getBoundingClientRect();
-        const x = Math.floor(((e.clientX - rect.left) * canvasRef.width / rect.width) / (canvasRef.width / DisplayColumns()));
-        const y = Math.floor(((e.clientY - rect.top) * canvasRef.height / rect.height) / (canvasRef.height / DisplayRows()));
-
-        if (x >= 0 && x < DisplayColumns() && y >= 0 && y < DisplayRows()) {
-            return { x, y };
+        if (canvasRef && !props.disabled) {
+            const rect = canvasRef.getBoundingClientRect();
+            const x = Math.floor(((e.clientX - rect.left) * canvasRef.width / rect.width) / (canvasRef.width / Device.GRID_COLUMNS));
+            const y = Math.floor(((e.clientY - rect.top) * canvasRef.height / rect.height) / (canvasRef.height / Device.GRID_ROWS));
+            if (x >= 0 && x < Device.GRID_COLUMNS && y >= 0 && y < Device.GRID_ROWS) {
+                return { x, y };
+            }
         }
         return null;
     };
@@ -169,12 +153,11 @@ export const Canvas: Component<{
             return;
         }
         isDrawing = true;
-        const i = position.x + position.y * DisplayColumns();
-        brushBrightness = props.pixels[i] === 0 ? getBrush() : 0;
-        props.onPixel?.(position.x, position.y, brushBrightness);
-
+        const i = position.x + position.y * Device.GRID_COLUMNS;
+        strength = props.pixels[i] === 0 ? getStrength() : 0;
+        props.onPixel?.(position.x, position.y, strength);
         const newState = props.pixels.map((value, index) =>
-            index === i ? brushBrightness : value,
+            index === i ? strength : value,
         );
         props.onFrame?.(newState);
     };
@@ -184,17 +167,16 @@ export const Canvas: Component<{
             return;
         }
         e.preventDefault();
-
         const position = handleEvent(e);
         if (!position) {
             return;
         }
-        const i = position.x + position.y * DisplayColumns();
-        if (props.pixels[i] !== brushBrightness) {
-            props.onPixel?.(position.x, position.y, brushBrightness);
+        const i = position.x + position.y * Device.GRID_COLUMNS;
+        if (props.pixels[i] !== strength) {
+            props.onPixel?.(position.x, position.y, strength);
 
             const newState = props.pixels.map((value, index) =>
-                index === i ? brushBrightness : value,
+                index === i ? strength : value,
             );
             props.onFrame?.(newState);
         }
@@ -209,21 +191,13 @@ export const Canvas: Component<{
 
     return (
         <div
-            class={`w-full p-4 bg-black shadow-lg relative mx-auto flex-none flex-shrink-0 inline-block transition-all duration-300 max-h-[calc((100vh-128px)*0.9)] ${PageSidebar() ? 'max-w-[calc((100vw-320px)*0.9)]' : 'max-w-90'}`}
-            ref={containerRef}
+            class={`bg-black flex-none inline-block max-h-[calc((100vh---spacing(32))*0.9)] mx-auto p-2.5 relative shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.9)]' : 'max-w-[90vw]'}`}
+            ref={div => divRef = div}
             style={{
-                'aspect-ratio': DisplayRatio(),
+                'aspect-ratio': rotated ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}` : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
             }}
         >
-            <canvas
-                class="h-full w-full self-center"
-                ref={canvasRef}
-                style={{
-                    'image-rendering': 'pixelated',
-                }}
-            />
+            <canvas ref={canvas => canvasRef = canvas} />
         </div>
     );
 };
-
-export default Canvas;

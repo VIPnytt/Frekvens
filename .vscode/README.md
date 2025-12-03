@@ -1,4 +1,4 @@
-# 💻 VSCode
+# 💻 VS Code
 
 List of Visual Studio Code extensions from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode) that improve the workflow for this project.
 
@@ -8,7 +8,7 @@ While there are many great general-purpose extensions, this list focuses on proj
 
 ### PlatformIO IDE
 
-[PlatformIO IDE](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) is required for building, uploading, and monitoring firmware.
+[PlatformIO IDE](https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide) is required for building, uploading, and monitoring.
 
 All relevant tasks are available in the PlatformIO panel in the left sidebar.
 

@@ -1,31 +1,19 @@
 import { mdiProgressUpload } from '@mdi/js';
-import { Component, createSignal, For } from 'solid-js';
+import { Component } from 'solid-js';
 
-import { Button } from '../components/Button';
+import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
+import { BOARD, HOSTNAME, OTA_KEY } from '../config/constants';
 import { name as ExtensionsName } from '../services/Extensions';
 
 export const name = 'OTA';
 
-const [getAuth, setAuth] = createSignal<boolean>(false);
-const [getFilesystem, setFilesystem] = createSignal<string>('spiffs');
-const [getPlatformioIni, setPlatformioIni] = createSignal<Record<string, string>>({});
-
-export const OtaAuth = getAuth;
-
-export const receiver = (json: any) => {
-    json[name]?.filesystem !== undefined && setFilesystem(json[name].filesystem);
-    json[name]?.['platformio.ini'] !== undefined && setPlatformioIni(json[name]['platformio.ini']);
-    json[name]?.['platformio.ini']?.upload_flags !== undefined && setAuth(json[name]['platformio.ini'].upload_flags.includes('--auth'));
-};
-
 export const Link: Component = () => (
     <Tooltip text="Over The Air updates">
         <a
+            class="link"
             href={`#/${ExtensionsName.toLowerCase()}/${name.toLowerCase()}`}
-            class="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium min-h-[48px]"
         >
             <Icon
                 class="mr-2"
@@ -36,7 +24,13 @@ export const Link: Component = () => (
     </Tooltip>
 );
 
-export const MainThird: Component = () => {
+export const MainThird: Component = () => (
+    <div class="main">
+        <MainComponent />
+    </div>
+);
+
+export const MainComponent: Component = () => {
     const { toast } = Toast();
 
     const handleFile = (e: Event & {
@@ -50,7 +44,7 @@ export const MainThird: Component = () => {
             return;
         }
         upload.disabled = false;
-        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes(getFilesystem()) ? 'Update Filesystem' : 'Update Firmware';
+        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes('littlefs') ? 'Update Filesystem' : 'Update Firmware';
     };
 
     const handleUpload = () => {
@@ -61,7 +55,7 @@ export const MainThird: Component = () => {
         binary.disabled = true;
         const form = new FormData();
         form.append('binary', binary.files[0]);
-        fetch('/api/ota', {
+        fetch(`/${name.toLowerCase()}`, {
             method: 'POST',
             body: form,
         }).finally(() => {
@@ -70,87 +64,79 @@ export const MainThird: Component = () => {
         });
         const upload = document.getElementById('upload') as HTMLInputElement;
         upload.disabled = true;
-        upload.classList.add('bg-red-600');
-        upload.textContent = binary.files[0].name.toLowerCase().includes(getFilesystem()) ? 'Updating Filesystem...' : 'Updating Firmware...';
+        upload.classList.add('disabled:bg-negative-alt-light dark:disabled:bg-negative-alt-dark');
+        upload.textContent = binary.files[0].name.toLowerCase().includes('littlefs') ? 'Updating Filesystem...' : 'Updating Firmware...';
         toast('System update in progress...', 10e3);
     };
 
     return (
         <div class="space-y-3 p-5">
-            <h3 class="text-4xl text-white tracking-wide">{name}</h3>
-            <div class="bg-white p-6 rounded-md">
-                <div class="space-y-2">
+            <h2>
+                {name}
+            </h2>
+            <div class="box">
+                <div class="space-y-3">
                     <div class="grid gap-3">
                         {
-                            !getAuth() && (
-                                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                                    Automatic
+                            !OTA_KEY && (
+                                <h3>
+                                    Automatic updates
                                 </h3>
                             )
                         }
-                        <p class="text-sm">
-                            Update <span class="italic">over the air</span> by adding the following lines to your&nbsp;
+                        <div class="text-sm">
+                            Configure your&nbsp;
                             <a
                                 class="italic"
-                                href={`${REPOSITORY}/blob/main/platformio.ini`}
+                                href={`https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini`}
                                 target="_blank"
                             >
                                 platformio.ini
                             </a>
-                            &nbsp;file:
-                        </p>
-                        <p class="font-mono text-sm text-gray-700 whitespace-nowrap">
-                            <For each={Object.entries(getPlatformioIni()).sort()}>
-                                {([key, value]) => {
-                                    return (
-                                        <>
-                                            <a
-                                                href={`https://github.com/search?q=${encodeURIComponent(`repo:${URL.parse(REPOSITORY)?.pathname.slice(1)}`)}+${encodeURIComponent(`/\\b${key}\\b/`)}`}
-                                                target="_blank"
-                                            >
-                                                <span class="lowercase">
-                                                    {key}
-                                                </span>
-                                                &nbsp;
-                                                <span class="text-gray-300">
-                                                    =
-                                                </span>
-                                                &nbsp;
-                                                <span class="text-gray-500">
-                                                    {key == 'upload_port' ? location.hostname : value}
-                                                </span>
-                                            </a>
-                                            <br />
-                                        </>
-                                    );
-                                }}
-                            </For>
-                        </p>
+                            &nbsp;for <span class="italic">over the air</span> updates:
+                        </div>
+                        <div class="font-mono text-sm  whitespace-nowrap">
+                            [env:{BOARD}]
+                            <br />
+                            board = {BOARD}
+                            <br />
+                            upload_protocol = espota
+                            <br />
+                            upload_port = {HOSTNAME}.local
+                            {
+                                OTA_KEY && (
+                                    <>
+                                        <br />
+                                        upload_flags = --auth=password
+                                    </>
+                                )
+                            }
+                        </div>
                         {
-                            !getAuth() && (
+                            !OTA_KEY && (
                                 <>
-                                    <div class="mt-auto border-t border-gray-200" />
-                                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                                        Manual
+                                    <div class="mt-auto border-t" />
+                                    <h3>
+                                        Manual update
                                     </h3>
-                                    <p class="text-sm">
-                                        Got a <span class="italic">firmware.bin</span> or <span class="italic">{getFilesystem()}.bin</span> file? Upload it here:
-                                    </p>
+                                    <div class="text-sm">
+                                        Got a pair of <span class="italic">firmware.bin</span> and <span class="italic">littlefs.bin</span> files?
+                                    </div>
                                     <input
-                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
+                                        class="w-full"
                                         id="binary"
                                         type="file"
                                         accept=".bin"
                                         onchange={handleFile}
                                     />
-                                    <Button
-                                        class="p-2 hover:bg-red-600 rounded-lg transition-all duration-200"
+                                    <button
+                                        class="hover:enabled:bg-negative-alt-light dark:hover:enabled:bg-negative-alt-dark mt-3"
                                         id="upload"
                                         disabled
-                                        onClick={handleUpload}
+                                        onclick={handleUpload}
                                     >
                                         Update
-                                    </Button>
+                                    </button>
                                 </>
                             )
                         }
@@ -160,5 +146,3 @@ export const MainThird: Component = () => {
         </div >
     );
 };
-
-export default MainThird;

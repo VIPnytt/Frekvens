@@ -1,37 +1,29 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_WTTRIN
 
 #include <vector>
 
+#include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
 class WttrInMode : public ModeModule
 {
 private:
+    static constexpr uint32_t interval = 3'600'000; // Recommended update interval: 1 hour (due to heavy caching)
+
     unsigned long lastMillis = 0;
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
     std::vector<const char *> urls = {
         "https://wttr.in/?format=j2",
-#ifdef WTTRIN_PARAMETERS
-        "https://wttr.in/?format=j2&" WTTRIN_PARAMETERS,
-#endif
 #ifdef LOCATION
         "https://wttr.in/" LOCATION "?format=j2",
 #endif
-#if defined(LOCATION) && defined(WTTRIN_PARAMETERS)
-        "https://wttr.in/" LOCATION "?format=j2&" WTTRIN_PARAMETERS,
-#endif
 #if defined(LATITUDE) && defined(LONGITUDE)
         "https://wttr.in/" LATITUDE "," LONGITUDE "?format=j2",
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE) && defined(WTTRIN_PARAMETERS)
-        "https://wttr.in/" LATITUDE "," LONGITUDE "?format=j2&" WTTRIN_PARAMETERS,
 #endif
     };
 
@@ -72,10 +64,7 @@ private:
 public:
     WttrInMode() : ModeModule("Wttr.in") {};
 
-#if EXTENSION_BUILD && defined(WTTRIN_PARAMETERS)
-    void setup();
-#endif
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

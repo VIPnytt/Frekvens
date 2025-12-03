@@ -1,46 +1,26 @@
-#include "config/constants.h"
-
-#if MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#if MODE_WORLDWEATHERONLINE
 
 #include <HTTPClient.h>
+#include <NetworkClientSecure.h>
 
-#include "extensions/BuildExtension.h"
 #include "modes/WorldWeatherOnlineMode.h"
 #include "services/ConnectivityService.h"
 
-#if EXTENSION_BUILD
-void WorldWeatherOnlineMode::setup()
+void WorldWeatherOnlineMode::begin()
 {
-    (*Build->config)[Config::h][__STRING(WORLDWEATHERONLINE_KEY)] = "REDACTED";
-#ifdef WORLDWEATHERONLINE_UNIT
-    (*Build->config)[Config::h][__STRING(WORLDWEATHERONLINE_UNIT)] = WORLDWEATHERONLINE_UNIT;
-#endif
-#ifdef WORLDWEATHERONLINE_PARAMETERS
-    (*Build->config)[Config::h][__STRING(WORLDWEATHERONLINE_PARAMETERS)] = WORLDWEATHERONLINE_PARAMETERS;
-#endif
-}
-#endif // EXTENSION_BUILD
-
-void WorldWeatherOnlineMode::wake()
-{
-#ifdef F_INFO
     if (urls.empty())
     {
-        Serial.printf("%s: unable to fetch weather\n", name);
+        ESP_LOGW(name, "unable to fetch weather");
     }
     else
     {
-        lastMillis = 0;
+        lastMillis = millis() - interval;
     }
-#else
-    lastMillis = 0;
-#endif // F_INFO
 }
 
 void WorldWeatherOnlineMode::handle()
 {
-    // World Weather Online update interval: 10-15 minutes
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 600'000 || lastMillis == 0))
+    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -49,55 +29,66 @@ void WorldWeatherOnlineMode::handle()
 void WorldWeatherOnlineMode::update()
 {
     lastMillis = millis();
+    NetworkClientSecure client;
+    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
-
-    http.begin(urls.back());
+    http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
-#ifdef F_DEBUG
-    Serial.printf("%s: %s\n", name, urls.back());
-#endif
 
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
-        JsonDocument doc;
-        if (deserializeJson(doc, http.getString()) ||
-#ifdef WORLDWEATHERONLINE_UNIT
-            !(doc["data"]["current_condition"][0]["temp_" WORLDWEATHERONLINE_UNIT].is<float>() || doc["data"]["current_condition"][0]["temp_" WORLDWEATHERONLINE_UNIT].is<String>()) ||
+        NetworkClient &stream = http.getStream();
+        const int contentLength = http.getSize();
+        const unsigned long _lastMillis = millis();
+        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        {
+            vTaskDelay(1);
+        }
+        JsonDocument filter;
+#if TEMPERATURE_FAHRENHEIT
+        filter["data"]["current_condition"][0]["temp_F"] = true;
 #else
-            !(doc["data"]["current_condition"][0]["temp_C"].is<float>() || doc["data"]["current_condition"][0]["temp_C"].is<String>()) ||
+        filter["data"]["current_condition"][0]["temp_C"] = true;
 #endif
-            !(doc["data"]["current_condition"][0]["weatherCode"].is<uint16_t>() || doc["data"]["current_condition"][0]["weatherCode"].is<String>()))
+        filter["data"]["current_condition"][0]["weatherCode"] = true;
+        JsonDocument doc;
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+#if TEMPERATURE_FAHRENHEIT
+            !(doc["data"]["current_condition"][0]["temp_F"].is<float>() || doc["data"]["current_condition"][0]["temp_F"].is<std::string>()) ||
+#else
+            !(doc["data"]["current_condition"][0]["temp_C"].is<float>() || doc["data"]["current_condition"][0]["temp_C"].is<std::string>()) ||
+#endif
+            !(doc["data"]["current_condition"][0]["weatherCode"].is<uint16_t>() || doc["data"]["current_condition"][0]["weatherCode"].is<std::string>()))
         {
             urls.pop_back();
-            lastMillis = 0;
-#ifdef F_DEBUG
-            Serial.printf("%s: unprocessable data\n", name);
-#endif
+            lastMillis = millis() - interval + (1 << 14);
+            ESP_LOGD(name, "unprocessable data");
             return;
         }
         WeatherHandler weather = WeatherHandler();
-#ifdef WORLDWEATHERONLINE_UNIT
-        weather.temperature = round(doc["data"]["current_condition"][0]["temp_" WORLDWEATHERONLINE_UNIT].as<float>());
+#if TEMPERATURE_FAHRENHEIT
+        weather.temperature = round(doc["data"]["current_condition"][0]["temp_F"].as<float>());
 #else
         weather.temperature = round(doc["data"]["current_condition"][0]["temp_C"].as<float>());
 #endif
         weather.parse(doc["data"]["current_condition"][0]["weatherCode"].as<uint16_t>(), codesets);
         weather.draw();
     }
-    else if (code < 0 || (code >= 400 && code < 500))
+    else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = 0;
-#ifdef F_INFO
+        lastMillis = millis() - interval + (1 << 12);
         if (urls.empty())
         {
-            Serial.printf("%s: unable to fetch weather\n", name);
+            ESP_LOGE(name, "unable to fetch weather");
         }
-#endif
+    }
+    else if (code < 0)
+    {
+        lastMillis = millis() - interval + (1 << 15);
     }
 }
 
-#endif // MODE_WORLDWEATHERONLINE && defined(WORLDWEATHERONLINE_KEY) && ((defined(LATITUDE) && defined(LONGITUDE)) || defined(LOCATION))
+#endif // MODE_WORLDWEATHERONLINE

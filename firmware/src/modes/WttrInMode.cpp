@@ -1,40 +1,26 @@
-#include "config/constants.h"
-
 #if MODE_WTTRIN
 
 #include <HTTPClient.h>
+#include <NetworkClientSecure.h>
 
-#include "extensions/BuildExtension.h"
 #include "modes/WttrInMode.h"
 #include "services/ConnectivityService.h"
 
-#if EXTENSION_BUILD && defined(WTTRIN_PARAMETERS)
-void WttrInMode::setup()
+void WttrInMode::begin()
 {
-    (*Build->config)[Config::h][__STRING(WTTRIN_PARAMETERS)] = WTTRIN_PARAMETERS;
-}
-#endif
-
-void WttrInMode::wake()
-{
-#ifdef F_INFO
     if (urls.empty())
     {
-        Serial.printf("%s: unable to fetch weather\n", name);
+        ESP_LOGW(name, "unable to fetch weather");
     }
     else
     {
-        lastMillis = 0;
+        lastMillis = millis() - interval;
     }
-#else
-    lastMillis = 0;
-#endif // F_INFO
 }
 
 void WttrInMode::handle()
 {
-    // Wttr.in recommended update interval: 1 hour
-    if (WiFi.isConnected() && urls.size() && (millis() - lastMillis > 3'600'000 || lastMillis == 0))
+    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -43,44 +29,65 @@ void WttrInMode::handle()
 void WttrInMode::update()
 {
     lastMillis = millis();
+    NetworkClientSecure client;
+    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
-
-    http.begin(urls.back());
+    http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
-#ifdef F_DEBUG
-    Serial.printf("%s: %s\n", name, urls.back());
-#endif
 
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
+        NetworkClient &stream = http.getStream();
+        const int contentLength = http.getSize();
+        const unsigned long _lastMillis = millis();
+        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        {
+            vTaskDelay(1);
+        }
+        JsonDocument filter;
+#if TEMPERATURE_FAHRENHEIT
+        filter["current_condition"][0]["temp_F"] = true;
+#else
+        filter["current_condition"][0]["temp_C"] = true;
+#endif // TEMPERATURE_FAHRENHEIT
+        filter["current_condition"][0]["weatherCode"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, http.getString()) || !(doc["current_condition"][0]["temp_C"].is<float>() || doc["current_condition"][0]["temp_C"].is<String>()) || !(doc["current_condition"][0]["weatherCode"].is<uint16_t>() || doc["current_condition"][0]["weatherCode"].is<String>()))
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+#if TEMPERATURE_FAHRENHEIT
+            !(doc["current_condition"][0]["temp_F"].is<float>() || doc["current_condition"][0]["temp_F"].is<std::string>()) ||
+#else
+            !(doc["current_condition"][0]["temp_C"].is<float>() || doc["current_condition"][0]["temp_C"].is<std::string>()) ||
+#endif // TEMPERATURE_FAHRENHEIT
+            !(doc["current_condition"][0]["weatherCode"].is<uint16_t>() || doc["current_condition"][0]["weatherCode"].is<std::string>()))
         {
             urls.pop_back();
-            lastMillis = 0;
-#ifdef F_DEBUG
-            Serial.printf("%s: unprocessable data\n", name);
-#endif
+            lastMillis = millis() - interval + (1 << 14);
+            ESP_LOGD(name, "unprocessable data");
             return;
         }
-        WeatherHandler weather = WeatherHandler();
+        WeatherHandler weather;
+#if TEMPERATURE_FAHRENHEIT
+        weather.temperature = round(doc["current_condition"][0]["temp_F"].as<float>());
+#else
         weather.temperature = round(doc["current_condition"][0]["temp_C"].as<float>());
+#endif // TEMPERATURE_FAHRENHEIT
         weather.parse(doc["current_condition"][0]["weatherCode"].as<uint16_t>(), codesets);
         weather.draw();
     }
-    else if (code < 0 || (code >= 400 && code < 500))
+    else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = 0;
-#ifdef F_INFO
+        lastMillis = millis() - interval + (1 << 12);
         if (urls.empty())
         {
-            Serial.printf("%s: unable to fetch weather\n", name);
+            ESP_LOGE(name, "unable to fetch weather");
         }
-#endif
+    }
+    else if (code < 0)
+    {
+        lastMillis = millis() - interval + (1 << 15);
     }
 }
 

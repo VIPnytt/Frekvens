@@ -1,11 +1,10 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_MESSAGE
 
 #include <bits/unique_ptr.h>
 
+#include "config/constants.h"
 #include "handlers/TextHandler.h"
 #include "modules/ExtensionModule.h"
 #include "services/FontsService.h"
@@ -17,23 +16,25 @@ private:
         active = false,
         pending = false;
 
-    int8_t offsetY;
+    int8_t offsetY = 0;
 
     int16_t
-        offsetX,
-        textWidth;
+        offsetX = GRID_COLUMNS,
+        width = 0;
 
     uint8_t
-        frame[COLUMNS * ROWS],
+        frame[GRID_COLUMNS * GRID_ROWS],
         repeat = 3;
 
     unsigned long lastMillis = 0;
 
     FontModule *font = nullptr;
 
-    std::vector<String> messages;
+    std::vector<std::string> messages;
 
     std::unique_ptr<TextHandler> text;
+
+    void addMessage(std::string message);
 
     void setFont(const char *const fontName);
     void setRepeat(uint8_t count);
@@ -44,12 +45,12 @@ public:
     MessageExtension();
 
 #if EXTENSION_HOMEASSISTANT
-    void setup() override;
+    void configure() override;
 #endif
 
-    void ready() override;
+    void begin() override;
     void handle() override;
-    void receiverHook(const JsonDocument doc) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern MessageExtension *Message;

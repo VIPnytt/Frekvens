@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_E131
 
 #include <AsyncUDP.h>
@@ -19,8 +17,8 @@ private:
 public:
     E131Mode() : ModeModule(_name.data()) {};
 
-    void wake() override;
-    void sleep() override;
+    void begin() override;
+    void end() override;
 
     static void onPacket(AsyncUDPPacket packet);
 };

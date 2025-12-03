@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_ANIMATION
 
 #include <Preferences.h>
@@ -10,86 +8,112 @@
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
-void AnimationMode::setup()
+void AnimationMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("duration"))
-    {
-        duration = Storage.getUShort("duration");
-    }
-    if (Storage.isKey("frame0"))
-    {
-        Storage.end();
-        transmit();
-    }
-    else
-    {
-        Storage.end();
-    }
+    index = 0;
+    pending = true;
 }
 
 void AnimationMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > duration && Microphone->play())
+    if (millis() - lastMillis >= interval && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > duration)
-#endif
+    if (millis() - lastMillis >= interval)
+#endif // EXTENSION_MICROPHONE
     {
-        lastMillis = millis();
-        ++index;
         Preferences Storage;
         Storage.begin(name, true);
-        if (!Storage.isKey(std::string("frame" + std::to_string(index)).c_str()))
+        if (Storage.isKey(std::to_string(index).c_str()))
         {
-            index = 0;
-        }
-        if (Storage.isKey(std::string("frame" + std::to_string(index)).c_str()))
-        {
-            uint8_t frame[COLUMNS * ROWS];
-            Storage.getBytes(std::string("frame" + std::to_string(index)).c_str(), frame, COLUMNS * ROWS);
+            lastMillis = millis();
+            uint8_t frame[GRID_COLUMNS * GRID_ROWS];
+            Storage.getBytes(std::to_string(index).c_str(), frame, sizeof(frame));
+            Storage.end();
             Display.setFrame(frame);
+            if (pending)
+            {
+                transmit(index, frame);
+            }
+            ++index;
         }
+        else
+        {
+            Storage.end();
+            index = 0;
+            pending = false;
+        }
+    }
+}
+
+void AnimationMode::setFrame(uint8_t index, uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+{
+    lastMillis = millis() + GRID_COLUMNS * GRID_ROWS * 2;
+    Preferences Storage;
+    Storage.begin(name);
+    Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
+    Storage.end();
+    this->index = 0;
+    pending = true;
+    ESP_LOGV(name, "frame #%d saved", index + 1);
+}
+
+void AnimationMode::setFrames(uint8_t count)
+{
+    Preferences Storage;
+    Storage.begin(name);
+    uint8_t i = count;
+    while (i > 1 && Storage.isKey(std::to_string(i).c_str()))
+    {
+        Storage.remove(std::to_string(i).c_str());
+        ++i;
+    }
+    Storage.end();
+}
+
+void AnimationMode::setInterval(uint16_t interval)
+{
+    if (interval != this->interval)
+    {
+        this->interval = interval;
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putUShort("interval", this->interval);
         Storage.end();
     }
 }
 
-void AnimationMode::transmit()
+void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
     JsonDocument doc;
-
-    Preferences Storage;
-    Storage.begin(name, true);
-    JsonArray frames = doc["frames"].to<JsonArray>();
-    uint8_t i = 0;
-    while (Storage.isKey(std::string("frame" + std::to_string(i)).c_str()))
+    doc["interval"] = interval;
+    JsonArray _frame = doc["frame"].to<JsonArray>();
+    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        uint8_t frame[COLUMNS * ROWS];
-        Storage.getBytes(std::string("frame" + std::to_string(i)).c_str(), frame, COLUMNS * ROWS);
-        for (const uint8_t pixel : frame)
-        {
-            frames[i].add(pixel);
-        }
-        if (i == UINT8_MAX)
-        {
-            break;
-        }
-        ++i;
+        _frame.add(frame[i]);
     }
-    Storage.end();
-
-    doc["duration"] = duration;
-
-    Device.transmit(doc, name);
+    doc["index"] = index;
+    Device.transmit(doc, name, false);
 }
 
-void AnimationMode::receiverHook(const JsonDocument doc)
+void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
 {
-    if (doc["frame"].is<JsonArrayConst>() && doc["frame"].size() == COLUMNS * ROWS && doc["index"].is<uint8_t>())
+    // Action: pull
+    if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "pull"))
     {
-        uint8_t frame[COLUMNS * ROWS];
+        lastMillis = millis() + GRID_COLUMNS * GRID_ROWS;
+        index = 0;
+        pending = true;
+    }
+    // Frame
+    if (doc["frame"].is<JsonArrayConst>() && doc["frame"].size() == GRID_COLUMNS * GRID_ROWS && doc["index"].is<uint8_t>())
+    {
+        uint8_t frame[GRID_COLUMNS * GRID_ROWS];
+#if GRID_COLUMNS * GRID_ROWS > (1 << 8)
+        uint16_t i = 0;
+#else
         uint8_t i = 0;
+#endif // GRID_COLUMNS * GRID_ROWS > (1 << 8)
         for (const JsonVariantConst pixel : doc["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())
@@ -98,38 +122,17 @@ void AnimationMode::receiverHook(const JsonDocument doc)
             }
             ++i;
         }
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putBytes(std::string("frame" + doc["index"].as<std::string>()).c_str(), frame, COLUMNS * ROWS);
-        Storage.end();
-        transmit();
-#ifdef F_VERBOSE
-        Serial.printf("%s: frame saved\n", name);
-#endif
+        setFrame(doc["index"].as<uint8_t>(), frame);
     }
-    if (doc["duration"].is<uint16_t>())
+    // Frames
+    if (doc["frames"].is<uint8_t>())
     {
-        duration = doc["duration"].as<uint16_t>();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("duration", duration);
-        Storage.end();
+        setFrames(doc["frames"].as<uint8_t>());
     }
-    if (doc["length"].is<uint8_t>())
+    // Interval
+    if (doc["interval"].is<uint16_t>() && interval != doc["interval"].as<uint16_t>())
     {
-        uint8_t i = doc["length"].as<uint8_t>();
-        Preferences Storage;
-        Storage.begin(name);
-        while (Storage.isKey(std::string("frame" + std::to_string(i)).c_str()))
-        {
-            Storage.remove(std::string("frame" + std::to_string(i)).c_str());
-            if (i == UINT8_MAX)
-            {
-                break;
-            }
-            ++i;
-        }
-        Storage.end();
+        setInterval(doc["interval"].as<uint16_t>());
     }
 }
 

@@ -1,10 +1,8 @@
 #pragma once
 
 /**
- * https://github.com/VIPnytt/Frekvens/wiki
- *
  * Definitions for the firmware section of the Frekvens project.
- * Updating? Go to Menu->Extensions->Build in the web interface to see recommended values for your setup.
+ * https://github.com/VIPnytt/Frekvens/wiki
  */
 
 /**
@@ -28,13 +26,16 @@
 // #define PIN_SW2 5  // SW
 
 /**
- * Wi-Fi credentials (optional)
+ * Wi-Fi credentials
  */
 // #define WIFI_SSID "name"
 // #define WIFI_KEY "secret"
 
 /**
- * Weather location (optional)
+ * Weather (optional)
  */
-// #define LATITUDE "0.000"
-// #define LONGITUDE "0.000"
+// #define LATITUDE "0.000"  // °
+// #define LONGITUDE "0.000" // °
+// #define LOCATION "city"
+// #define TEMPERATURE_CELSIUS true    // °C
+// #define TEMPERATURE_FAHRENHEIT true // °F

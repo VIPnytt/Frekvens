@@ -1,38 +1,27 @@
 import { mdiContentSave, mdiWifi, mdiWifiRefresh, mdiWifiStrength1, mdiWifiStrength1Lock, mdiWifiStrength2, mdiWifiStrength2Lock, mdiWifiStrength3, mdiWifiStrength3Lock, mdiWifiStrength4, mdiWifiStrength4Lock, mdiWifiStrengthLockOutline, mdiWifiStrengthOutline } from '@mdi/js';
 import { Component, createSignal, For, Index } from 'solid-js';
 
-import { Button } from '../components/Button';
+import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
-import { Tooltip } from '../components/Tooltip';
-import { Icon } from '../components/Vector';
-import { ws } from '../extensions/WebSocket';
-import { PageSidebarSet } from '../index'
-import { SidebarSection } from './WebServer';
+import { SidebarSectionSecondary, WebAppSidebarSet } from '../extensions/WebApp';
+import { WebSocketWS } from '../extensions/WebSocket';
 
 export const name = 'Connectivity';
 
-interface ConnectivityItem {
-    bssid: string;
+interface WiFi {
     rssi: number;
-    ssid?: string | undefined;
+    ssid: string;
 }
 
-const [getDomain, setDomain] = createSignal<string>(location.hostname);
-const [getHostname, setHostname] = createSignal<string>(location.hostname.split('.')[0]);
-const [getInputConnecting, setInputConnecting] = createSignal<boolean>(false);
-const [getKeyNew, setKeyNew] = createSignal<string>('');
-const [getScan, setScan] = createSignal<ConnectivityItem[]>([]);
+const [getConnecting, setConnecting] = createSignal<boolean>(false);
+const [getCredentialKey, setCredentialKey] = createSignal<string>('');
+const [getCredentialSsid, setCredentialSsid] = createSignal<string>('');
+const [getScan, setScan] = createSignal<WiFi[]>([]);
 const [getSaved, setSaved] = createSignal<string[]>([]);
 const [getSsid, setSsid] = createSignal<string | undefined>(undefined);
-const [getSsidNew, setSsidNew] = createSignal<string>('');
-
-export const ConnectivityDomain = getDomain;
-export const ConnectivityHostname = getHostname;
 
 export const receiver = (json: any) => {
-    json[name]?.domain !== undefined && setDomain(json[name].domain);
     json[name]?.event !== undefined && event(json[name].event);
-    json[name]?.hostname !== undefined && setHostname(json[name].hostname);
     json[name]?.saved !== undefined && setSaved(json[name].saved);
     json[name]?.scan !== undefined && setScan(json[name].scan);
     json[name]?.ssid !== undefined && setSsid(json[name].ssid);
@@ -50,75 +39,79 @@ const event = (action: string) => {
 
 export const MainThird: Component = () => {
     const handleConnect = () => {
-        ws.send(JSON.stringify({
-            [name]: getKeyNew().length ? {
-                key: getKeyNew(),
-                ssid: getSsidNew(),
+        WebSocketWS.send(JSON.stringify({
+            [name]: getCredentialKey().length ? {
+                key: getCredentialKey(),
+                ssid: getCredentialSsid(),
             } : {
-                ssid: getSsidNew(),
+                ssid: getCredentialSsid(),
             },
         }));
         toast('Connecting to Wi-Fi...', 60e3);
-        setInputConnecting(true);
+        setConnecting(true);
     };
 
     return (
-        <div class="space-y-3 p-5">
-            <h3 class="text-4xl text-white tracking-wide">Wi-Fi</h3>
-            <div class="bg-white p-6 rounded-md">
-                <div class="space-y-2">
-                    <div class="grid gap-3">
-                        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                            SSID
-                        </h3>
-                        <input
-                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
-                            autofocus
-                            autocomplete="username"
-                            disabled={getInputConnecting()}
-                            id="ssid"
-                            list="scan"
-                            oninput={(e) =>
-                                setSsidNew(e.currentTarget.value)
-                            }
-                            placeholder={getSsid() ?? 'Name'}
-                            type="text"
-                            value={getSsidNew()}
-                        />
-                        <datalist id="scan">
-                            <For each={getScan().filter((scan) => scan.ssid?.length)}>
-                                {
-                                    (scan) => <option value={scan.ssid}></option>
+        <div class="main">
+            <div class="space-y-3 p-5">
+                <h2>
+                    Wi-Fi
+                </h2>
+                <div class="box">
+                    <div class="space-y-2">
+                        <div class="grid gap-3">
+                            <h3>
+                                SSID
+                            </h3>
+                            <input
+                                class="w-full"
+                                autofocus
+                                autocomplete="username"
+                                disabled={getConnecting()}
+                                id="ssid"
+                                list="scan"
+                                oninput={(e) =>
+                                    setCredentialSsid(e.currentTarget.value)
                                 }
-                            </For>
-                        </datalist>
-                        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                            Encryption key
-                        </h3>
-                        <input
-                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
-                            autocomplete="current-password"
-                            disabled={getInputConnecting()}
-                            id="key"
-                            oninput={(e) =>
-                                setKeyNew(e.currentTarget.value)
-                            }
-                            placeholder={!getSsidNew() && getSsid() ? '********' : 'Password'}
-                            type="password"
-                        />
+                                placeholder={getSsid() ?? 'Name'}
+                                type="text"
+                                value={getCredentialSsid()}
+                            />
+                            <datalist id="scan">
+                                <For each={getScan().filter((scan) => scan.ssid?.length)}>
+                                    {
+                                        (scan) => <option value={scan.ssid}></option>
+                                    }
+                                </For>
+                            </datalist>
+                            <h3>
+                                Encryption key
+                            </h3>
+                            <input
+                                class="w-full"
+                                autocomplete="current-password"
+                                disabled={getConnecting()}
+                                id="key"
+                                oninput={(e) =>
+                                    setCredentialKey(e.currentTarget.value)
+                                }
+                                placeholder={!getCredentialSsid() && getSsid() ? '********' : 'Password'}
+                                type="password"
+                            />
+                        </div>
+                        <button
+                            class={`action-deactivated mt-3 w-full ${getCredentialKey().length >= 8 ? 'action-positive' : ''}`}
+                            disabled={getConnecting() || !getCredentialSsid().length || (getCredentialKey().length > 0 && getCredentialKey().length < 8)}
+                            id="connect"
+                            onclick={handleConnect}
+                        >
+                            <Icon
+                                class="mr-2"
+                                path={mdiContentSave}
+                            />
+                            {getConnecting() ? 'Connecting' : 'Connect'}
+                        </button>
                     </div>
-                    <Button
-                        class="hover:bg-green-600 transition-all"
-                        disabled={getInputConnecting() || !getSsidNew().length || (getKeyNew().length > 0 && getKeyNew().length < 8)}
-                        id="connect"
-                        onClick={handleConnect}
-                    >
-                        <Icon
-                            class="mr-2"
-                            path={mdiContentSave}
-                        />
-                        {getInputConnecting() ? 'Connecting' : 'Connect'}
-                    </Button>
                 </div>
             </div>
         </div>
@@ -126,18 +119,16 @@ export const MainThird: Component = () => {
 };
 
 export const SidebarThird: Component = () => {
-    const handleSelect = (ssid: string | undefined) => {
-        if (window.innerWidth < 640) {
-            PageSidebarSet(false)
+    const handleSelect = (ssid: string) => {
+        if (window.innerWidth < 800) {
+            WebAppSidebarSet(false)
         }
-        if (ssid !== undefined) {
-            setSsidNew(ssid);
-        }
-        (document.getElementById(ssid === undefined ? 'ssid' : 'key') as HTMLInputElement).focus();
+        setCredentialSsid(ssid);
+        (document.getElementById('key') as HTMLInputElement).focus();
     };
 
     if (!getScan.length) {
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 action: "scan",
             },
@@ -145,9 +136,9 @@ export const SidebarThird: Component = () => {
     }
 
     return (
-        <SidebarSection title="Networks">
+        <SidebarSectionSecondary title="Networks">
             {getScan().length === 0 ? (
-                <div class="py-3 inline-flex items-center text-gray-700 hover:text-gray-900 font-medium">
+                <div class="link">
                     <Icon
                         class="mr-2"
                         path={mdiWifiRefresh}
@@ -157,45 +148,32 @@ export const SidebarThird: Component = () => {
             ) : (
                 <Index each={getScan()}>
                     {(item) => (
-                        <div class="py-3">
-                            <div
-                                class="inline-flex items-center text-gray-700 hover:text-gray-900 font-medium cursor-pointer"
-                                onClick={() => handleSelect(item().ssid)}
-                            >
-                                <Icon
-                                    class="mr-2"
-                                    path={item().rssi >= -45 ? (getSaved().includes(item().ssid ?? '') ? mdiWifiStrength4 : mdiWifiStrength4Lock) : item().rssi >= -55 ? (getSaved().includes(item().ssid ?? '') ? mdiWifiStrength3 : mdiWifiStrength3Lock) : item().rssi >= -65 ? (getSaved().includes(item().ssid ?? '') ? mdiWifiStrength2 : mdiWifiStrength2Lock) : item().rssi >= -75 ? (getSaved().includes(item().ssid ?? '') ? mdiWifiStrength1 : mdiWifiStrength1Lock) : (getSaved().includes(item().ssid ?? '') ? mdiWifiStrengthOutline : mdiWifiStrengthLockOutline)}
-                                />
-                                {item().ssid ?? (
-                                    <span class="text-gray-300 italic">
-                                        hidden
-                                    </span>
-                                )}
-                            </div>
+                        <div
+                            class="cursor-pointer link space-y-2"
+                            onclick={() => handleSelect(item().ssid)}
+                        >
+                            <Icon
+                                class="mr-2"
+                                path={item().rssi >= -45 ? (getSaved().includes(item().ssid) ? mdiWifiStrength4 : mdiWifiStrength4Lock) : item().rssi >= -55 ? (getSaved().includes(item().ssid) ? mdiWifiStrength3 : mdiWifiStrength3Lock) : item().rssi >= -65 ? (getSaved().includes(item().ssid) ? mdiWifiStrength2 : mdiWifiStrength2Lock) : item().rssi >= -75 ? (getSaved().includes(item().ssid) ? mdiWifiStrength1 : mdiWifiStrength1Lock) : (getSaved().includes(item().ssid) ? mdiWifiStrengthOutline : mdiWifiStrengthLockOutline)}
+                            />
+                            {item().ssid}
                         </div>
                     )}
                 </Index>
             )}
-        </SidebarSection>
+        </SidebarSectionSecondary>
     );
 };
 
-export const SidebarSecondary: Component = () => (
-    <SidebarSection title={name}>
-        <div class="space-y-2">
-            <Tooltip text="Connect to Wi-Fi">
-                <div class="grid gap-3 items-center font-medium text-gray-700 hover:text-gray-900 min-h-[48px]">
-                    <a href={`#/${name.toLowerCase()}`}>
-                        <Icon
-                            class="mr-2"
-                            path={mdiWifi}
-                        />
-                        {getSsid() ?? 'Wi-Fi'}
-                    </a>
-                </div>
-            </Tooltip>
-        </div>
-    </SidebarSection>
+export const SidebarSecondaryComponent: Component = () => (
+    <a
+        class="link"
+        href={`#/${name.toLowerCase()}`}
+    >
+        <Icon
+            class="mr-2"
+            path={mdiWifi}
+        />
+        {getSsid() ?? 'Wi-Fi'}
+    </a>
 );
-
-export default MainThird;

@@ -1,14 +1,13 @@
-#include "config/constants.h"
-
 #if MODE_SMALLCLOCK
 
+#include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/SmallClockMode.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void SmallClockMode::wake()
+void SmallClockMode::begin()
 {
     pending = true;
 }
@@ -19,11 +18,11 @@ void SmallClockMode::handle()
     {
         hour = local.tm_hour;
         minute = local.tm_min;
-        Display.clear();
-        TextHandler((String)(hour / 10), FontMini).draw(4, 2);
-        TextHandler((String)(hour % 10), FontMini).draw(9, 2);
-        TextHandler((String)(minute / 10), FontMini).draw(4, 8);
-        TextHandler((String)(minute % 10), FontMini).draw(9, 8);
+        Display.clearFrame();
+        TextHandler(std::to_string(hour / 10), FontMini).draw(GRID_COLUMNS / 2 - 4, GRID_ROWS / 2 - 6);
+        TextHandler(std::to_string(hour % 10), FontMini).draw(GRID_COLUMNS / 2 + 1, GRID_ROWS / 2 - 6);
+        TextHandler(std::to_string(minute / 10), FontMini).draw(GRID_COLUMNS / 2 - 4, GRID_ROWS / 2);
+        TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 1, GRID_ROWS / 2);
         pending = false;
     }
 }

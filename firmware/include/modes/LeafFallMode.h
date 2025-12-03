@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_LEAFFALL
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
 
 class LeafFallMode : public ModeModule
@@ -19,12 +18,12 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Leaf leaves[COLUMNS * ROWS / 20];
+    Leaf leaves[GRID_COLUMNS * GRID_ROWS / 20];
 
 public:
     LeafFallMode() : ModeModule("Leaf fall") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

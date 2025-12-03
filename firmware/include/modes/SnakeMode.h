@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_SNAKE
 
 #include "modules/ModeModule.h"
@@ -46,7 +44,7 @@ private:
 public:
     SnakeMode() : ModeModule("Snake") {}
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

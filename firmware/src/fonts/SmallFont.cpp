@@ -1,7 +1,3 @@
-#include "config/constants.h"
-
-#if !defined(FONT_SMALL) || FONT_SMALL
-
 #include "fonts/SmallFont.h"
 
 SmallFont *FontSmall = nullptr;
@@ -11,7 +7,7 @@ SmallFont::SmallFont() : FontModule("Small")
     FontSmall = this;
 }
 
-FontModule::Symbol SmallFont::getChar(uint32_t character)
+FontModule::Symbol SmallFont::getChar(uint32_t character) const
 {
     if (character >= 0x20 && character <= 0x7F && character < ascii.size() + 0x20)
     {
@@ -29,5 +25,3 @@ FontModule::Symbol SmallFont::getChar(uint32_t character)
     }
     return {};
 }
-
-#endif // !defined(FONT_SMALL) || FONT_SMALL

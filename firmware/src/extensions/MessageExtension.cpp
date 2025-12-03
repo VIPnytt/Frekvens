@@ -1,12 +1,9 @@
-#include "config/constants.h"
-
 #if EXTENSION_MESSAGE
 
 #include <Preferences.h>
 
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MessageExtension.h"
-#include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -20,23 +17,23 @@ MessageExtension::MessageExtension() : ExtensionModule("Message")
 }
 
 #if EXTENSION_HOMEASSISTANT
-void MessageExtension::setup()
+void MessageExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string id = std::string(name).append("_notify");
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::command_template] = "{\"message\":\"{{value}}\"}";
-        component[Abbreviations::command_topic] = topic + "/set";
-        component[Abbreviations::name] = "";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::platform] = "notify";
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::name] = "";
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::platform] = "notify";
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
     }
 }
 #endif // EXTENSION_HOMEASSISTANT
 
-void MessageExtension::ready()
+void MessageExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -53,14 +50,7 @@ void MessageExtension::ready()
     else
     {
         Storage.end();
-    }
-    if (!font)
-    {
-#if defined(FONT_SMALL) && !FONT_SMALL
-        font = FontMini;
-#else
-        font = FontSmall;
-#endif // defined(FONT_SMALL) && !FONT_SMALL
+        setFont(FontSmall->name);
     }
     pending = true;
 }
@@ -74,14 +64,14 @@ void MessageExtension::handle()
     }
     else if (Display.getPower() && millis() - lastMillis > INT8_MAX)
     {
-        if (text && textWidth + offsetX < 0)
+        if (text && width < -offsetX)
         {
             text.reset();
             messages.erase(messages.begin());
         }
         else if (text)
         {
-            Display.clear();
+            Display.clearFrame();
             text->draw(offsetX, offsetY);
             --offsetX;
             lastMillis = millis();
@@ -90,12 +80,12 @@ void MessageExtension::handle()
         else if (messages.size())
         {
             text = std::make_unique<TextHandler>(messages.front(), font);
-            offsetX = COLUMNS;
-            offsetY = (ROWS - text->getHeight()) / 2;
-            textWidth = text->getWidth();
+            offsetX = GRID_COLUMNS;
+            offsetY = (GRID_ROWS - text->getHeight()) / 2;
+            width = text->getWidth();
             if (!active)
             {
-                Modes.set(false, name);
+                Modes.setActive(false);
                 Display.getFrame(frame);
                 active = true;
             }
@@ -107,10 +97,19 @@ void MessageExtension::handle()
         else if (active)
         {
             Display.setFrame(frame);
-            Modes.set(true, name);
+            Modes.setActive(true);
             active = false;
         }
     }
+}
+
+void MessageExtension::addMessage(std::string message)
+{
+    for (uint8_t i = 0; i <= repeat; ++i)
+    {
+        messages.push_back(message);
+    }
+    ESP_LOGD(name, "received");
 }
 
 void MessageExtension::setFont(const char *const fontName)
@@ -130,9 +129,7 @@ void MessageExtension::setFont(const char *const fontName)
                 return;
             }
         }
-#ifdef F_DEBUG
-        Serial.printf("%s: unknown font %s\n", name, fontName);
-#endif
+        ESP_LOGD(name, "unknown font %s", fontName);
     }
 }
 
@@ -157,7 +154,7 @@ void MessageExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MessageExtension::receiverHook(const JsonDocument doc)
+void MessageExtension::onReceive(const JsonDocument doc, const char *const source)
 {
     // Font
     if (doc["font"].is<const char *>())
@@ -170,19 +167,9 @@ void MessageExtension::receiverHook(const JsonDocument doc)
         setRepeat(doc["repeat"].as<uint8_t>());
     }
     //  Message
-    if (doc["message"].is<String>())
+    if (doc["message"].is<std::string>())
     {
-        for (uint8_t _repeat = 0;; ++_repeat)
-        {
-            messages.push_back(doc["message"].as<String>());
-            if (_repeat == repeat || _repeat == UINT8_MAX)
-            {
-                break;
-            }
-        }
-#ifdef F_DEBUG
-        Serial.printf("%s: received\n", name);
-#endif
+        addMessage(doc["message"].as<std::string>());
     }
 }
 

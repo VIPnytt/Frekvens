@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if EXTENSION_BUTTON
 
 #include "extensions/ButtonExtension.h"
@@ -15,7 +13,7 @@ ButtonExtension::ButtonExtension() : ExtensionModule("Button")
     Button = this;
 }
 
-void ButtonExtension::setup()
+void ButtonExtension::configure()
 {
 #ifdef PIN_SW1
     pinMode(PIN_SW1, INPUT_PULLUP);
@@ -25,10 +23,10 @@ void ButtonExtension::setup()
 #endif
 
 #ifdef PIN_SW1
-    attachInterrupt(digitalPinToInterrupt(PIN_SW1), &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW1, &onInterrupt, CHANGE);
 #endif
 #ifdef PIN_SW2
-    attachInterrupt(digitalPinToInterrupt(PIN_SW2), &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW2, &onInterrupt, CHANGE);
 #endif
 
 #if EXTENSION_HOMEASSISTANT
@@ -42,27 +40,27 @@ void ButtonExtension::setup()
 #ifdef PIN_SW1
             {
                 const std::string id = std::string(name).append("_power_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-                component[Abbreviations::automation_type] = "trigger";
-                component[Abbreviations::payload] = payload;
-                component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "Power button";
-                component[Abbreviations::topic] = topic;
-                component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
-                component[Abbreviations::value_template] = "{{value_json.event.power}}";
+                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                component[HomeAssistantAbbreviations::automation_type] = "trigger";
+                component[HomeAssistantAbbreviations::payload] = payload;
+                component[HomeAssistantAbbreviations::platform] = "device_automation";
+                component[HomeAssistantAbbreviations::subtype] = "Power button";
+                component[HomeAssistantAbbreviations::topic] = topic;
+                component[HomeAssistantAbbreviations::type] = std::string("button_").append(payload).append("_press");
+                component[HomeAssistantAbbreviations::value_template] = "{{value_json.event.power}}";
             }
 #endif // PIN_SW1
 #ifdef PIN_SW2
             {
                 const std::string id = std::string(name).append("_mode_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-                component[Abbreviations::automation_type] = "trigger";
-                component[Abbreviations::payload] = payload;
-                component[Abbreviations::platform] = "device_automation";
-                component[Abbreviations::subtype] = "Mode button";
-                component[Abbreviations::topic] = topic;
-                component[Abbreviations::type] = std::string("button_").append(payload).append("_press");
-                component[Abbreviations::value_template] = "{{value_json.event.mode}}";
+                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                component[HomeAssistantAbbreviations::automation_type] = "trigger";
+                component[HomeAssistantAbbreviations::payload] = payload;
+                component[HomeAssistantAbbreviations::platform] = "device_automation";
+                component[HomeAssistantAbbreviations::subtype] = "Mode button";
+                component[HomeAssistantAbbreviations::topic] = topic;
+                component[HomeAssistantAbbreviations::type] = std::string("button_").append(payload).append("_press");
+                component[HomeAssistantAbbreviations::value_template] = "{{value_json.event.mode}}";
             }
 #endif // PIN_SW2
         }
@@ -75,16 +73,13 @@ void ButtonExtension::handle()
 #ifdef PIN_SW1
     if (powerShort)
     {
-#ifdef F_INFO
-        Serial.printf("%s: power\n", Button->name);
-#endif // F_INFO
         Display.setPower(!Display.getPower());
         event("power", "short");
         powerShort = false;
     }
     else if (powerState && millis() - powerMillis > UINT8_MAX)
     {
-        const uint8_t brightness = Display.getGlobalBrightness();
+        const uint8_t brightness = Display.getBrightness();
         if (!powerLong)
         {
             powerLong = true;
@@ -103,17 +98,11 @@ void ButtonExtension::handle()
         }
         if (brightnessIncrease && brightness < UINT8_MAX)
         {
-#ifdef F_INFO
-            Serial.printf("%s: brightness +\n", Button->name);
-#endif // F_INFO
-            Display.setGlobalBrightness(brightness + 1);
+            Display.setBrightness(brightness + 1);
         }
         else if (!brightnessIncrease && brightness > 0)
         {
-#ifdef F_INFO
-            Serial.printf("%s: brightness -\n", Button->name);
-#endif // F_INFO
-            Display.setGlobalBrightness(brightness - 1);
+            Display.setBrightness(brightness - 1);
         }
     }
 #endif // PIN_SW1
@@ -122,14 +111,9 @@ void ButtonExtension::handle()
     if (modeShort)
     {
 #ifdef PIN_SW1
-#ifdef F_INFO
-        Serial.printf("%s: mode\n", Button->name);
-#endif // F_INFO
-        Modes.next();
+        Modes.setModeNext();
 #else
-#ifdef F_INFO
-        Serial.printf("%s: power\n", Button->name);
-#endif // F_INFO
+        ESP_LOGI(name, "power");
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
         event("mode", "short");
@@ -143,12 +127,8 @@ void ButtonExtension::handle()
             modeLong = true;
             event("mode", "long");
         }
-#ifdef F_INFO
-        Serial.printf("%s: mode\n", Button->name);
-#endif // F_INFO
-        Modes.next();
+        Modes.setModeNext();
     }
-
 #endif // PIN_SW2
 }
 

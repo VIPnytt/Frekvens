@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_OTA
 
 #include <ArduinoOTA.h>
@@ -16,20 +14,16 @@ private:
 
     static void onStart();
     static void onEnd();
-    static void onError(ota_error_t error);
 
-#ifdef F_INFO
-    static void onProgress(size_t index, size_t len);
-#endif
-
-#if !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
-    static void onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
+#ifndef OTA_KEY
+    static void onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 #endif
 
 public:
     OtaExtension();
 
-    void setup() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 };
 

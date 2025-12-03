@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_SNAKECLOCK
 
 #include <deque>
@@ -54,7 +52,7 @@ private:
 public:
     SnakeClockMode() : ModeModule("Snake clock") {}
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

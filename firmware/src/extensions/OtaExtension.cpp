@@ -1,10 +1,9 @@
-#include "config/constants.h"
-
 #if EXTENSION_OTA
 
+#include <esp_arduino_version.h> // temporary bugfix mitigation due to ledcFade bug in Arduino 3.3.2 and higher
+#include <ESPmDNS.h>
 #include <HTTPClient.h>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/OtaExtension.h"
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
@@ -13,6 +12,11 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
+#if ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 2)
+// Temporary mitigation measure due to ledcFade bug in Arduino 3.3.2 and higher
+#warning "Arduino 3.3.1 and lower: OTA may fail to compile or update. Disable OTA if you need this version."
+#endif
+
 OtaExtension *Ota = nullptr;
 
 OtaExtension::OtaExtension() : ExtensionModule("OTA")
@@ -20,48 +24,26 @@ OtaExtension::OtaExtension() : ExtensionModule("OTA")
     Ota = this;
 }
 
-void OtaExtension::setup()
+void OtaExtension::configure()
 {
     ArduinoOTA.setHostname(HOSTNAME);
     ArduinoOTA.setMdnsEnabled(false);
-
-#ifdef OTA_KEY_HASH
-    ArduinoOTA.setPasswordHash(OTA_KEY_HASH);
-#elif defined(OTA_KEY)
-    ArduinoOTA.setPassword(OTA_KEY);
-#else
-    WebServer.http->on("/api/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onUpload);
-#endif // OTA_KEY_HASH
-
-#ifdef F_INFO
-    Update.onProgress(&onProgress);
-#endif // F_INFO
-
-    ArduinoOTA.begin();
-    ArduinoOTA.onStart(&onStart);
-    ArduinoOTA.onError(&onError);
-    ArduinoOTA.onEnd(&onEnd);
-
-    JsonDocument doc;
-#ifdef BOARD_BUILD__FILESYSTEM
-    doc["filesystem"] = BOARD_BUILD__FILESYSTEM;
-#endif // BOARD_BUILD__FILESYSTEM
-    doc["platformio.ini"]["upload_protocol"] = "espota";
-    doc["platformio.ini"]["upload_port"] = Connectivity.domain;
-#if defined(OTA_KEY) || defined(OTA_KEY_HASH)
-    doc["platformio.ini"]["upload_flags"] = "--auth=REDACTED";
-#endif // defined(OTA_KEY_HASH) || defined(OTA_KEY)
-
-#if EXTENSION_BUILD
-    (*Build->config)[Config::pio]["upload_protocol"] = "espota";
 #ifdef OTA_KEY
-    (*Build->config)[Config::env][__STRING(OTA_KEY)] = "REDACTED";
-#elif defined(OTA_KEY_HASH)
-    (*Build->config)[Config::h][__STRING(OTA_KEY_HASH)] = "REDACTED";
+    ArduinoOTA.setPasswordHash(OTA_KEY);
 #endif // OTA_KEY
-#endif // EXTENSION_BUILD
+    ArduinoOTA.onStart(&onStart);
+    ArduinoOTA.onEnd(&onEnd);
+}
 
-    Device.transmit(doc, name);
+void OtaExtension::begin()
+{
+    ArduinoOTA.begin();
+#ifdef OTA_KEY
+    MDNS.enableArduino(3232, true);
+#else
+    MDNS.enableArduino(3232, false);
+    WebServer.http->on("/ota", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, &onPost);
+#endif // OTA_KEY
 }
 
 void OtaExtension::handle()
@@ -71,58 +53,31 @@ void OtaExtension::handle()
 
 void OtaExtension::onStart()
 {
-    Modes.set(false, Ota->name);
-#ifdef F_INFO
-    Serial.printf("%s: updating\n", Ota->name);
-#endif
-    Display.clear();
+    ESP_LOGI(Ota->name, "updating");
+    Modes.setActive(false);
+    Display.clearFrame();
     TextHandler("U", FontLarge).draw();
     Display.flush();
     Display.setPower(true);
-    timerAlarmWrite(Display.timer, 1'000'000 / (1 << 8), true); // 1 fps
+    timerWrite(Display.timer, 1'000'000 / (1 << 8)); // 1 fps
 }
 
 void OtaExtension::onEnd()
 {
-#ifdef F_INFO
-    Serial.printf("%s: complete\n", Ota->name);
-#endif
-    Device.power(true);
+    ESP_LOGI(Ota->name, "complete");
 }
 
-void OtaExtension::onError(ota_error_t error)
-{
-#ifdef F_INFO
-    Serial.printf("%s: %s\n", Ota->name, Update.errorString());
-#endif
-    Device.power(true);
-}
-
-#ifdef F_INFO
-void OtaExtension::onProgress(size_t index, size_t len)
-{
-    Serial.printf("%s: writing @ 0x%X\n", Ota->name, index);
-}
-#endif // F_INFO
-
-#if !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
-void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+#ifndef OTA_KEY
+void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
 {
     if (!index)
     {
         onStart();
     }
-#ifdef BOARD_BUILD__FILESYSTEM
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf(BOARD_BUILD__FILESYSTEM) >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
-#else
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("spiffs") >= 0 ? U_SPIFFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
-#endif // BOARD_BUILD__FILESYSTEM
+    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
     {
-#ifdef F_INFO
-        Serial.printf("%s: %s\n", Ota->name, Update.errorString());
-#endif
+        ESP_LOGE(Ota->name, "%s", Update.errorString());
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
-        Device.power(true);
     }
     else if (final)
     {
@@ -130,6 +85,6 @@ void OtaExtension::onUpload(AsyncWebServerRequest *request, const String &filena
         onEnd();
     }
 }
-#endif // !defined(OTA_KEY) && !defined(OTA_KEY_HASH)
+#endif // OTA_KEY
 
 #endif // EXTENSION_OTA

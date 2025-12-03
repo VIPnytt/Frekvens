@@ -1,17 +1,18 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_HOMEASSISTANTWEATHER
 
 #include <vector>
 
+#include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
 class HomeAssistantWeatherMode : public ModeModule
 {
 private:
+    static constexpr uint16_t interval = UINT16_MAX;
+
 #ifdef HOMEASSISTANT_PROTOCOL
     static constexpr std::string_view protocol = HOMEASSISTANT_PROTOCOL;
 #else
@@ -108,10 +109,7 @@ private:
 public:
     HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
 
-#if EXTENSION_BUILD
-    void setup() override;
-#endif
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 

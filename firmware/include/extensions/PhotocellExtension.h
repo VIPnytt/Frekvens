@@ -1,7 +1,5 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_PHOTOCELL
 
 #include "modules/ExtensionModule.h"
@@ -9,8 +7,6 @@
 class PhotocellExtension : public ExtensionModule
 {
 private:
-    static constexpr int16_t threshold = 1 << 10;
-
     bool
         active = false,
         direction = false,
@@ -35,15 +31,15 @@ private:
 public:
     PhotocellExtension();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
+    bool getActive() const;
+    void setActive(bool active);
 
-    void receiverHook(const JsonDocument doc) override;
-    void transmitterHook(const JsonDocument &doc, const char *const source) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *const source) override;
 };
 
 extern PhotocellExtension *Photocell;

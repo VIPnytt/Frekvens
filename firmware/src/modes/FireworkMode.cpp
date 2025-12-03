@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_FIREWORK
 
 #include "extensions/MicrophoneExtension.h"
@@ -28,36 +26,34 @@ void FireworkMode::handle()
 void FireworkMode::pad()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->play())
+    if (Microphone->isTriggered())
+#endif // EXTENSION_MICROPHONE
     {
-#endif
-        rocketX = random(COLUMNS - 1);
-        rocketY = ROWS;
+        rocketX = random(GRID_COLUMNS);
+        rocketY = GRID_ROWS;
         stage = 1;
-#if EXTENSION_MICROPHONE
     }
-#endif
 }
 
 void FireworkMode::launching()
 {
-    if (millis() - lastMillis > 90)
+    if (millis() - lastMillis > (1 << 6))
     {
-        if (rocketY < ROWS)
+        if (rocketY < GRID_ROWS)
         {
             Display.setPixel(rocketX, rocketY, 0);
         }
         --rocketY;
-        Display.setPixel(rocketX, rocketY, rocketY + 1);
+        Display.setPixel(rocketX, rocketY, 1);
         lastMillis = millis();
-        if (rocketY <= random(ROWS / 2))
+        if (rocketY <= random(GRID_ROWS / 2))
         {
             radius = 0;
-#if defined(CELL_HEIGHT) && defined(CELL_WIDTH)
-            maxRadius = random(1, min(COLUMNS * CELL_WIDTH / (float)CELL_HEIGHT, ROWS / (float)CELL_WIDTH * CELL_HEIGHT) / 2);
+#if PITCH_VERTICAL == PITCH_HORIZONTAL
+            maxRadius = random(1, min(GRID_COLUMNS, GRID_ROWS) / 2);
 #else
-            maxRadius = random(1, min(COLUMNS, ROWS) / 2);
-#endif
+            maxRadius = random(2, min(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS / (float)PITCH_HORIZONTAL * PITCH_VERTICAL) / 2);
+#endif // PITCH_VERTICAL == PITCH_HORIZONTAL
             stage = 2;
         }
     }
@@ -89,7 +85,7 @@ void FireworkMode::fading()
     if (brightness <= 0)
     {
         stage = 0;
-        Display.clear();
+        Display.clearFrame();
     }
 }
 

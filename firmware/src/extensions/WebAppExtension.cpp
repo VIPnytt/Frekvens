@@ -1,10 +1,7 @@
-#include "config/constants.h"
-
 #if EXTENSION_WEBAPP
 
 #include <HTTPClient.h>
 #include <LittleFS.h>
-#include <SPIFFS.h>
 
 #include "extensions/WebAppExtension.h"
 #include "services/DeviceService.h"
@@ -16,33 +13,17 @@ WebAppExtension::WebAppExtension() : ExtensionModule("Web app")
     WebApp = this;
 }
 
-void WebAppExtension::setup()
+void WebAppExtension::configure()
 {
-#ifdef F_VERBOSE
-#ifdef BOARD_BUILD__FILESYSTEM__LITTLEFS
-    if (LittleFS.begin() && LittleFS.exists("/webapp/index.html.gz"))
+    if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))
     {
-        WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=60").setDefaultFile("index.html");
+        ESP_LOGE(name, "Filesystem Image not found");
     }
-#else
-    if (SPIFFS.begin() && SPIFFS.exists("/webapp/index.html.gz"))
-    {
-        WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=60").setDefaultFile("index.html");
-    }
-#endif // BOARD_BUILD__FILESYSTEM__LITTLEFS
-    else
-    {
-        Serial.printf("%s: not found\n", name);
-    }
-#else
-#ifdef BOARD_BUILD__FILESYSTEM__LITTLEFS
-    LittleFS.begin();
     WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
-#else
-    SPIFFS.begin();
-    WebServer.http->serveStatic("/", SPIFFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
-#endif // BOARD_BUILD__FILESYSTEM__LITTLEFS
-#endif // F_VERBOSE
+}
+
+void WebAppExtension::begin()
+{
     WebServer.http->on("/", WebRequestMethod::HTTP_HEAD, &onHeadRoot);
 }
 

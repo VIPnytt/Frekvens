@@ -1,0 +1,12 @@
+import { mdiPokeball } from '@mdi/js';
+import { Component } from 'solid-js';
+
+import { MainComponent as ModesMainComponent } from '../services/Modes';
+
+export const name = 'Metaballs';
+
+export const Main: Component = () => (
+    <ModesMainComponent
+        icon={mdiPokeball}
+    />
+);

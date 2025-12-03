@@ -1,15 +1,14 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if EXTENSION_INFRARED
+
+#include <vector>
 
 #define USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
 #include <IRremote.hpp>
 #undef USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
 
-#include <vector>
-
+#include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
 class InfraredExtension : public ExtensionModule
@@ -29,7 +28,8 @@ private:
             extensionPhotocellToggle,
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            extensionPlaylistToggle,
+            extensionPlaylistStart,
+            extensionPlaylistStop,
 #endif // EXTENSION_PLAYLIST
             modeNext,
             modePrevious;
@@ -61,6 +61,8 @@ private:
 #if EXTENSION_PLAYLIST
             {
                 0x35, // Philips: Play/pause
+            },
+            {
                 0x36, // Philips: Stop
             },
 #endif // EXTENSION_PLAYLIST
@@ -99,9 +101,11 @@ private:
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
             {
+                0x711A, // Sony: Play
+            },
+            {
                 0x7118, // Sony: Stop
                 0x7119, // Sony: Pause
-                0x711A, // Sony: Play
             },
 #endif // EXTENSION_PLAYLIST
             {
@@ -127,15 +131,15 @@ private:
 public:
     InfraredExtension();
 
-    void setup() override;
-    void ready() override;
+    void configure() override;
+    void begin() override;
     void handle() override;
 
-    bool get();
-    void set(bool enable);
+    bool getActive();
+    void setActive(bool active);
     void parse();
 
-    void receiverHook(const JsonDocument doc) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 extern InfraredExtension *Infrared;

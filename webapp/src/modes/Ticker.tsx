@@ -1,10 +1,12 @@
+import { mdiFormatText } from '@mdi/js';
 import { Component, createSignal, For } from 'solid-js';
 
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
-import { ws } from '../extensions/WebSocket';
+import { SidebarSection } from '../extensions/WebApp';
+import { WebSocketWS } from '../extensions/WebSocket';
 import { FontsList } from '../services/Fonts';
-import { SidebarSection } from '../services/WebServer';
+import { MainComponent as ModesMainComponent } from '../services/Modes';
 
 export const name = 'Ticker';
 
@@ -18,10 +20,16 @@ export const receiver = (json: any) => {
 
 const { toast } = Toast();
 
+export const Main: Component = () => (
+    <ModesMainComponent
+        icon={mdiFormatText}
+    />
+);
+
 export const Sidebar: Component = () => {
     const handleFont = (font: string) => {
         setFont(font);
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]:
             {
                 'font': getFont(),
@@ -32,7 +40,7 @@ export const Sidebar: Component = () => {
 
     const handleMessage = (message: string) => {
         setMessage(message);
-        ws.send(JSON.stringify({
+        WebSocketWS.send(JSON.stringify({
             [name]:
             {
                 'message': getMessage(),
@@ -44,7 +52,7 @@ export const Sidebar: Component = () => {
     return (
         <SidebarSection title={name}>
             <input
-                class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 disabled:border-0"
+                class="w-full"
                 maxlength="255"
                 onchange={(e) =>
                     handleMessage(e.currentTarget.value)
@@ -56,7 +64,7 @@ export const Sidebar: Component = () => {
             />
             <Tooltip text="Character availability may vary">
                 <select
-                    class="w-full px-2.5 py-2.5 bg-gray-50 border border-gray-200 rounded"
+                    class="mt-3 w-full"
                     value={getFont()}
                     onchange={(e) =>
                         handleFont(e.currentTarget.value)
@@ -72,5 +80,3 @@ export const Sidebar: Component = () => {
         </SidebarSection>
     );
 };
-
-export default Sidebar;

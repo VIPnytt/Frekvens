@@ -10,6 +10,12 @@ class DisplayService : public ServiceModule
 private:
     DisplayService() : ServiceModule("Display") {};
 
+#ifdef FRAME_RATE
+    static constexpr uint8_t frameRate = FRAME_RATE;
+#else
+    static constexpr uint8_t frameRate = 60;
+#endif // FRAME_RATE
+
     enum Orientation
     {
         deg0,
@@ -18,7 +24,8 @@ private:
         deg270,
     };
 
-    // https://www.hackster.io/news/philip-stapelfeldt-s-ikea-hack-turns-your-obegransad-wall-lamp-into-a-smart-display-and-more-15d20d2463d2
+    const uint8_t depth = min<uint8_t>(log2(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
+
     const std::vector<uint16_t> hi = {
         0b1000001001,
         0b1000000001,
@@ -38,60 +45,56 @@ private:
         pending = false,
         power = false;
 
-#if COLUMNS == ROWS
-    float
-#else
-    static constexpr float
-#endif
-        cellRatio = CELL_WIDTH / (float)CELL_HEIGHT,
-        globalRatio = COLUMNS * CELL_WIDTH / (float)ROWS / (float)CELL_HEIGHT;
+    float ratio = PITCH_HORIZONTAL / (float)PITCH_VERTICAL;
 
     uint8_t
-        globalBrightness = UINT8_MAX,
-        frameDraft[COLUMNS * ROWS] = {0},
-        frameReady[COLUMNS * ROWS] = {0},
-        pixelBitOrder[COLUMNS * ROWS] = PIXEL_ORDER;
+        brightness = 0,
+        _frame[GRID_COLUMNS * GRID_ROWS] = {0},
+        frame[GRID_COLUMNS * GRID_ROWS] = {0},
+        pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
 
-    Orientation globalOrientation = Orientation::deg0;
+    Orientation orientation = Orientation::deg0;
 
     void transmit();
+
+    static void onPowerOff();
 
     static IRAM_ATTR void onTimer();
 
 public:
     hw_timer_t *timer;
 
-    void setup();
-    void ready();
+    void configure();
+    void begin();
 
     void handle();
 
-    double getCellRatio() const;
+    float getRatio() const;
 
-    Orientation getGlobalOrientation() const;
-    void setGlobalOrientation(Orientation rotation);
+    Orientation getOrientation() const;
+    void setOrientation(Orientation _orientation);
 
     bool getPower() const;
-    void setPower(bool state);
+    void setPower(bool power);
 
-    uint8_t getGlobalBrightness() const;
-    void setGlobalBrightness(uint8_t brightness);
+    uint8_t getBrightness() const;
+    void setBrightness(uint8_t brightness);
 
-    void clear(uint8_t brightness = 0);
-    void invert();
+    void getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void setFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
 
-    void getFrame(uint8_t frame[COLUMNS * ROWS]);
-    void setFrame(uint8_t frame[COLUMNS * ROWS]);
+    void clearFrame(uint8_t brightness = 0);
+    void invertFrame();
 
     uint8_t getPixel(uint8_t x, uint8_t y) const;
     void setPixel(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
 
-    void drawEllipse(double x, double y, double radius, double ratio = 1, bool fill = false, uint8_t brightness = UINT8_MAX);
+    void drawEllipse(float x, float y, float radius, float ratio = 1, bool fill = false, uint8_t brightness = UINT8_MAX);
     void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill = true, uint8_t brightness = UINT8_MAX);
 
     void flush();
 
-    void receiverHook(const JsonDocument doc) override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 
     static DisplayService &getInstance();
 };

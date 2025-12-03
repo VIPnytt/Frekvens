@@ -1,11 +1,9 @@
-#include "config/constants.h"
-
 #if EXTENSION_HOMEASSISTANT
 
 #include <regex>
 #include <WiFi.h>
 
-#include "extensions/BuildExtension.h"
+#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
@@ -21,85 +19,73 @@ HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assista
     HomeAssistant = this;
 }
 
-void HomeAssistantExtension::setup()
+void HomeAssistantExtension::configure()
 {
-#if EXTENSION_BUILD && defined(HOMEASSISTANT_TOPIC)
-    (*Build->config)[Config::h][__STRING(HOMEASSISTANT_TOPIC)] = HOMEASSISTANT_TOPIC;
-#endif // EXTENSION_BUILD && defined(HOMEASSISTANT_TOPIC)
-
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
         const std::string
             id = std::regex_replace(name, std::regex("\\s+"), "").append("_main"),
-            topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name),
-            topicModes = std::string("frekvens/" HOSTNAME "/").append(Modes.name);
-        JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-        component[Abbreviations::brightness_command_template] = "{\"brightness\":{{value-1}}}";
-        component[Abbreviations::brightness_command_topic] = topicDisplay + "/set";
-        component[Abbreviations::brightness_scale] = 1 << 8;
-        component[Abbreviations::brightness_state_topic] = topicDisplay;
-        component[Abbreviations::brightness_value_template] = "{{value_json.brightness+1}}";
-        component[Abbreviations::command_topic] = topicDisplay + "/set";
-        component[Abbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
-        component[Abbreviations::effect_command_topic] = topicModes + "/set";
-        JsonArray effectList = component[Abbreviations::effect_list].to<JsonArray>();
+            topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value-1}}}";
+        component[HomeAssistantAbbreviations::brightness_command_topic] = topicDisplay + "/set";
+        component[HomeAssistantAbbreviations::brightness_scale] = 1 << 8;
+        component[HomeAssistantAbbreviations::brightness_state_topic] = topicDisplay;
+        component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness+1}}";
+        component[HomeAssistantAbbreviations::command_topic] = topicDisplay + "/set";
+        component[HomeAssistantAbbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::effect_command_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
+        JsonArray effectList = component[HomeAssistantAbbreviations::effect_list].to<JsonArray>();
         for (const ModeModule *mode : Modes.getAll())
         {
             effectList.add(mode->name);
         }
-        component[Abbreviations::effect_state_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name);
-        component[Abbreviations::effect_value_template] = "{{value_json.mode}}";
-        component[Abbreviations::icon] = "mdi:dots-grid";
-        component[Abbreviations::name] = "";
-        component[Abbreviations::object_id] = HOSTNAME "_" + id;
-        component[Abbreviations::on_command_type] = "brightness";
-        component[Abbreviations::payload_off] = payloadOff;
-        component[Abbreviations::payload_on] = payloadOn;
-        component[Abbreviations::platform] = "light";
-        component[Abbreviations::state_topic] = topic;
-        component[Abbreviations::state_value_template] = std::string("{{value_json.").append(Display.name).append(".power}}");
-        component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::effect_state_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name);
+        component[HomeAssistantAbbreviations::effect_value_template] = "{{value_json.mode}}";
+        component[HomeAssistantAbbreviations::icon] = "mdi:dots-grid";
+        component[HomeAssistantAbbreviations::name] = "";
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::on_command_type] = "brightness";
+        component[HomeAssistantAbbreviations::payload_off] = payloadOff;
+        component[HomeAssistantAbbreviations::payload_on] = payloadOn;
+        component[HomeAssistantAbbreviations::platform] = "light";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::state_value_template] = std::string("{{value_json.").append(Display.name).append(".power}}");
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
     }
 }
 
-void HomeAssistantExtension::ready()
+void HomeAssistantExtension::begin()
 {
     {
-        JsonObject availability = (*discovery)[Abbreviations::availability].to<JsonObject>();
-        availability[Abbreviations::payload_not_available] = "";
-        availability[Abbreviations::topic] = "frekvens/" HOSTNAME "/availability";
+        JsonObject availability = (*discovery)[HomeAssistantAbbreviations::availability].to<JsonObject>();
+        availability[HomeAssistantAbbreviations::payload_not_available] = "";
+        availability[HomeAssistantAbbreviations::topic] = "frekvens/" HOSTNAME "/availability";
     }
     {
-        JsonObject device = (*discovery)[Abbreviations::device].to<JsonObject>();
+        JsonObject device = (*discovery)[HomeAssistantAbbreviations::device].to<JsonObject>();
 #if EXTENSION_WEBAPP
-        device[Abbreviations::configuration_url] = std::string("http://").append(Connectivity.domain);
+        device[HomeAssistantAbbreviations::configuration_url] = "http://" HOSTNAME ".local";
 #endif // EXTENSION_WEBAPP
         {
-            JsonArray _connections = device[Abbreviations::connections].to<JsonArray>();
+            JsonArray _connections = device[HomeAssistantAbbreviations::connections].to<JsonArray>();
             {
                 JsonArray _wifi = _connections.add<JsonArray>();
                 _wifi.add("mac");
                 _wifi.add(WiFi.macAddress());
             }
-            {
-                JsonArray _wifi = _connections.add<JsonArray>();
-                _wifi.add("mac");
-                _wifi.add(WiFi.softAPmacAddress());
-            }
         }
-#ifdef BOARD__NAME
-        device[Abbreviations::hw_version] = BOARD__NAME;
-#endif // BOARD__NAME
-        device[Abbreviations::identifiers].to<JsonArray>().add(String(ESP.getEfuseMac(), HEX));
-        device[Abbreviations::manufacturer] = MANUFACTURER;
-        device[Abbreviations::model] = MODEL;
-        device[Abbreviations::name] = NAME;
-        device[Abbreviations::sw_version] = "Frekvens " VERSION;
+        device[HomeAssistantAbbreviations::hw_version] = ARDUINO_BOARD;
+        device[HomeAssistantAbbreviations::identifiers].to<JsonArray>().add(std::format("0x{:x}", ESP.getEfuseMac()));
+        device[HomeAssistantAbbreviations::manufacturer] = MANUFACTURER;
+        device[HomeAssistantAbbreviations::model] = MODEL;
+        device[HomeAssistantAbbreviations::name] = NAME;
+        device[HomeAssistantAbbreviations::sw_version] = "Frekvens " VERSION;
         {
-            JsonObject origin = (*discovery)[Abbreviations::origin].to<JsonObject>();
-            origin[Abbreviations::name] = "Frekvens";
-            origin[Abbreviations::support_url] = Device.repository;
-            origin[Abbreviations::sw_version] = VERSION;
+            JsonObject origin = (*discovery)[HomeAssistantAbbreviations::origin].to<JsonObject>();
+            origin[HomeAssistantAbbreviations::name] = "Frekvens";
+            origin[HomeAssistantAbbreviations::support_url] = "https://github.com/VIPnytt/Frekvens/blob/main/docs/SUPPORT.md";
+            origin[HomeAssistantAbbreviations::sw_version] = VERSION;
         }
     }
     const size_t length = measureJson(*discovery);
@@ -122,10 +108,8 @@ void HomeAssistantExtension::handle()
 
 void HomeAssistantExtension::undiscover()
 {
-    Mqtt->client.publish(discoveryTopic.c_str(), 1, true, reinterpret_cast<const uint8_t *>(""), 0);
-#ifdef F_INFO
-    Serial.printf("%s: discovery packet removed\n", name);
-#endif
+    Mqtt->client.publish(discoveryTopic.c_str(), 1, true, (const uint8_t[]){0}, 0);
+    ESP_LOGW(name, "discovery packet removed");
 }
 
 void HomeAssistantExtension::transmit()
@@ -135,7 +119,7 @@ void HomeAssistantExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void HomeAssistantExtension::transmitterHook(const JsonDocument &doc, const char *const source)
+void HomeAssistantExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Display: Power
     if (!strcmp(source, Display.name) && doc["power"].is<bool>())

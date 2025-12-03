@@ -2,7 +2,7 @@
 
 By adding an IR receiver, you can control the device with almost any common remote — such as a TV remote you already own.
 
-Most remotes operate around the 38 kHz frequency band. While many IR sensors and modules will work, a good starting point is the TSOP382 series (e.g. [TSOP38238](https://www.adafruit.com/product/157)).
+Most remotes operate around the 38 kHz frequency band. While many IR sensors and modules will work, a good starting point is the TSOP382 series (e.g. [this](https://www.adafruit.com/product/157)).
 
 ## 📌 Schematics
 
@@ -42,7 +42,7 @@ Most remotes operate around the 38 kHz frequency band. While many IR sensors and
 
 ## ↔️ Logic level shifter
 
-Most IR sensors are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). If so, a logic level shifter is required to protect the ESP32. Unlike the high-speed SPI lines for the display, this signal is low-speed and single-channel — meaning almost any level-shifting method will work.
+Most IR sensors are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). If so, a logic level shifter is required to protect the ESP32. Unlike the high-speed SPI lines for the display, this signal is low-speed and single-channel — meaning almost any level-shifting method can be used.
 
 ## 🔧 Configuration
 
@@ -52,13 +52,14 @@ Data-line for received signals.
 
 Any digital input pin can be used.
 
-> Avoid strapping pins as this pin is pulled *HIGH* when idle.
-
-[secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h) example:
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
 #define PIN_IR 1 // Receiver
 ```
+
+> [!WARNING]
+> Avoid strapping pins as this pin is pulled *HIGH* when idle.
 
 ## 🧩 Extension
 

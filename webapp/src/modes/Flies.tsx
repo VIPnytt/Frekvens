@@ -2,15 +2,15 @@ import Cookies from 'js-cookie';
 import { Component, createSignal } from 'solid-js';
 
 import { Canvas } from '../components/Canvas';
-import { ws } from '../extensions/WebSocket';
-import { DisplayColumns, DisplayRows } from '../services/Display';
+import { Device } from '../config/devices';
+import { WebSocketWS } from '../extensions/WebSocket';
 
 export const name = 'Flies';
 
 const [getFrame, setFrame] = createSignal<number[]>();
 
 export const Main: Component = () => {
-    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? '', 10) || Math.round(Math.random() * (Math.pow(2, 8) - 1));
+    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? '') || Math.round(Math.random() * (Math.pow(2, 8) - 1));
     Cookies.set(`${name}.id`, _id.toString(), {
         expires: 1,
     });
@@ -20,8 +20,8 @@ export const Main: Component = () => {
     };
 
     const handlePixel = (_x: number, _y: number, _value: number) => {
-        setFrame(new Array(DisplayColumns() * DisplayRows()).fill(0));
-        ws.send(JSON.stringify({
+        setFrame(new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0));
+        WebSocketWS.send(JSON.stringify({
             [name]: {
                 id: _id,
                 x: _x,
@@ -31,12 +31,14 @@ export const Main: Component = () => {
     };
 
     return (
-        <Canvas
-            onFrame={handleFrame}
-            onPixel={handlePixel}
-            pixels={getFrame() || new Array(DisplayColumns() * DisplayRows()).fill(0)}
-        />
+        <div class="bg-contrast-light dark:bg-contrast-dark main">
+            <div>
+                <Canvas
+                    onFrame={handleFrame}
+                    onPixel={handlePixel}
+                    pixels={getFrame() || new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)}
+                />
+            </div>
+        </div>
     );
 };
-
-export default Main;

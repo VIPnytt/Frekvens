@@ -1,5 +1,3 @@
-#include "config/constants.h"
-
 #if MODE_JAGGEDWAVEFORM
 
 #include "extensions/MicrophoneExtension.h"
@@ -10,16 +8,15 @@
 void JaggedWaveformMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 9) && Microphone->play())
+    if (millis() - lastMillis > (1 << 9) && Microphone->isTriggered())
 #else
     if (millis() - lastMillis > (1 << 9))
-#endif
+#endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
 
-        Display.clear();
-        BitmapHandler bitmap = BitmapHandler(jagged[random(jagged.size())]);
-        bitmap.draw((COLUMNS - bitmap.getWidth()) / 2, (ROWS - bitmap.getHeight()) / 2);
+        Display.clearFrame();
+        BitmapHandler(jagged[random(jagged.size())]).draw();
     }
 }
 

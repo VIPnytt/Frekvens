@@ -6,7 +6,6 @@
 #include <Preferences.h>
 #include <regex>
 
-#include "extensions/BuildExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
@@ -15,11 +14,8 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void HomeThermometerMode::setup()
+void HomeThermometerMode::configure()
 {
-#if EXTENSION_BUILD && defined(HOMETHERMOMETER_UNIT)
-    (*Build->config)[Config::h][__STRING(HOMETHERMOMETER_UNIT)] = HOMETHERMOMETER_UNIT;
-#endif // EXTENSION_BUILD && defined(HOMETHERMOMETER_UNIT)
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -29,44 +25,46 @@ void HomeThermometerMode::setup()
              })
         {
             const std::string id = std::regex_replace(name, std::regex("\\s+"), "").append("_").append(where);
-            JsonObject component = (*HomeAssistant->discovery)[Abbreviations::components][id].to<JsonObject>();
-            component[Abbreviations::command_template] = std::string("{\"").append(where).append("\":{{value}}}");
-            component[Abbreviations::command_topic] = topic + "/set";
-            component[Abbreviations::device_class] = "temperature";
-            component[Abbreviations::entity_category] = "config";
-            component[Abbreviations::icon] = "mdi:thermometer";
-#if COLUMNS < 18
-            component[Abbreviations::max] = 999;
-            component[Abbreviations::min] = -99;
-#elif COLUMNS < 22
-            component[Abbreviations::max] = 9999;
-            component[Abbreviations::min] = -999;
-#elif COLUMNS < 26
-            component[Abbreviations::max] = INT16_MAX;
-            component[Abbreviations::min] = -9999;
+            JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+            component[HomeAssistantAbbreviations::command_template] = std::string("{\"").append(where).append("\":{{value}}}");
+            component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+            component[HomeAssistantAbbreviations::device_class] = "temperature";
+            component[HomeAssistantAbbreviations::entity_category] = "config";
+            component[HomeAssistantAbbreviations::icon] = "mdi:thermometer";
+#if GRID_COLUMNS < 18
+            component[HomeAssistantAbbreviations::max] = 999;
+            component[HomeAssistantAbbreviations::min] = -99;
+#elif GRID_COLUMNS < 22
+            component[HomeAssistantAbbreviations::max] = 9999;
+            component[HomeAssistantAbbreviations::min] = -999;
+#elif GRID_COLUMNS < 26
+            component[HomeAssistantAbbreviations::max] = INT16_MAX;
+            component[HomeAssistantAbbreviations::min] = -9999;
 #else
-            component[Abbreviations::max] = INT16_MAX;
-            component[Abbreviations::min] = INT16_MIN;
-#endif // COLUMNS < 18
-            component[Abbreviations::mode] = "box";
-            component[Abbreviations::name] = (char)std::toupper(*where) + std::string(where + 1);
-            component[Abbreviations::object_id] = HOSTNAME "_" + id;
-            component[Abbreviations::platform] = "number";
-            component[Abbreviations::state_topic] = topic;
-            component[Abbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-#ifdef HOMETHERMOMETER_UNIT
-            component[Abbreviations::unit_of_measurement] = HOMETHERMOMETER_UNIT;
-#else
-            component[Abbreviations::unit_of_measurement] = "°C";
-#endif // HOMETHERMOMETER_UNIT
-            component[Abbreviations::value_template] = std::string("{{value_json.").append(where).append("}}");
+            component[HomeAssistantAbbreviations::max] = INT16_MAX;
+            component[HomeAssistantAbbreviations::min] = INT16_MIN;
+#endif // GRID_COLUMNS < 18
+            component[HomeAssistantAbbreviations::mode] = "box";
+            component[HomeAssistantAbbreviations::name] = (char)std::toupper(*where) + std::string(where + 1);
+            component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+            component[HomeAssistantAbbreviations::platform] = "number";
+            component[HomeAssistantAbbreviations::state_topic] = topic;
+            component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+#if TEMPERATURE_KELVIN
+            component[HomeAssistantAbbreviations::unit_of_measurement] = "°K";
+#elif TEMPERATURE_CELSIUS
+            component[HomeAssistantAbbreviations::unit_of_measurement] = "°C";
+#elif TEMPERATURE_FAHRENHEIT
+            component[HomeAssistantAbbreviations::unit_of_measurement] = "°F";
+#endif // TEMPERATURE_KELVIN
+            component[HomeAssistantAbbreviations::value_template] = std::string("{{value_json.").append(where).append("}}");
         }
     }
 #endif // EXTENSION_HOMEASSISTANT
     transmit();
 }
 
-void HomeThermometerMode::wake()
+void HomeThermometerMode::begin()
 {
     pending = true;
 }
@@ -91,19 +89,19 @@ void HomeThermometerMode::update()
         return;
     }
     const int16_t
-        indoorInt = Storage.getShort("indoor"),
-        outdoorInt = Storage.getShort("outdoor");
+        indoor = Storage.getShort("indoor"),
+        outdoor = Storage.getShort("outdoor");
     Storage.end();
 
     TextHandler
-        indoorText = TextHandler((String)indoorInt + "°", FontMini),
-        outdoorText = TextHandler((String)outdoorInt + "°", FontMini);
+        _indoor = TextHandler(std::to_string(indoor).append("°"), FontMini),
+        _outdoor = TextHandler(std::to_string(outdoor).append("°"), FontMini);
     const uint8_t
-        outdoorHeight = outdoorText.getHeight(),
-        marginsY = (ROWS - indoorText.getHeight() - outdoorHeight) / 3;
-    Display.clear();
-    indoorText.draw((COLUMNS - indoorText.getWidth()) / 2, marginsY);
-    outdoorText.draw((COLUMNS - outdoorText.getWidth()) / 2, ROWS - marginsY - outdoorHeight);
+        _height = _outdoor.getHeight(),
+        marginsY = (GRID_ROWS - _indoor.getHeight() - _height) / 3;
+    Display.clearFrame();
+    _indoor.draw((GRID_COLUMNS - _indoor.getWidth()) / 2, marginsY);
+    _outdoor.draw((GRID_COLUMNS - _outdoor.getWidth()) / 2, GRID_ROWS - marginsY - _height);
 }
 
 void HomeThermometerMode::transmit()
@@ -126,19 +124,19 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::receiverHook(const JsonDocument doc)
+void HomeThermometerMode::onReceive(const JsonDocument doc, const char *const source)
 {
     if (doc["indoor"].is<float>())
     {
-        set("indoor", round(doc["indoor"].as<float>()));
+        setTemperature("indoor", round(doc["indoor"].as<float>()));
     }
     if (doc["outdoor"].is<float>())
     {
-        set("outdoor", round(doc["outdoor"].as<float>()));
+        setTemperature("outdoor", round(doc["outdoor"].as<float>()));
     }
 }
 
-void HomeThermometerMode::set(const char *const where, const int16_t temperature)
+void HomeThermometerMode::setTemperature(const char *const where, const int16_t temperature)
 {
     Preferences Storage;
     Storage.begin(std::string(name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str());
@@ -146,10 +144,15 @@ void HomeThermometerMode::set(const char *const where, const int16_t temperature
     Storage.end();
     pending = true;
     transmit();
-
-#ifdef F_DEBUG
-    Serial.printf("%s: %s %d\n", name, where, temperature);
-#endif
+#if TEMPERATURE_KELVIN
+    ESP_LOGD(name, "%s %d°K", where, temperature);
+#elif TEMPERATURE_CELSIUS
+    ESP_LOGD(name, "%s %d°C", where, temperature);
+#elif TEMPERATURE_FAHRENHEIT
+    ESP_LOGD(name, "%s %d°F", where, temperature);
+#else
+    ESP_LOGD(name, "%s %d°", where, temperature);
+#endif // TEMPERATURE_KELVIN
 }
 
 #endif // MODE_HOMETHERMOMETER

@@ -1,13 +1,9 @@
 #pragma once
 
-#include "config/constants.h"
-
 #if MODE_RAIN
 
+#include "config/constants.h"
 #include "modules/ModeModule.h"
-
-// Ikea Obegränsad stock rain animation:
-// 5 drops, length 3-5, and no fading
 
 class RainMode : public ModeModule
 {
@@ -22,12 +18,12 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Drop drops[COLUMNS / 3];
+    Drop drops[GRID_COLUMNS / 3];
 
 public:
     RainMode() : ModeModule("Rain") {};
 
-    void wake() override;
+    void begin() override;
     void handle() override;
 };
 
