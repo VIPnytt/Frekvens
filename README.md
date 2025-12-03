@@ -42,7 +42,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### ESP32 board
 
-Frekvens runs on any commonly available ESP32 boars with Wi-Fi.
+Frekvens can run on any commonly available ESP32 board with Wi-Fi.
 
 Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [wiki](https://github.com/VIPnytt/Frekvens/wiki).
 
@@ -220,7 +220,7 @@ If the build fails due to memory limits, try disabling features you don’t plan
 
 ### Where is the web UI?
 
-First, ensure that the Web app has been uploaded to the device using the *Upload Filesystem Image* option via PlatformIO. Then enter `frekvens.local` or your custom `HOSTNAME.local` in the browser. If this isn't working, try entering the IP address logged to the terminal at startup.
+First, ensure that the Web app has been uploaded to the device using the *Upload Filesystem Image* option via PlatformIO. Then enter `frekvens.local` or your custom `HOSTNAME.local` in the browser. If this isn’t working, try entering the IP address logged to the terminal at startup.
 
 ### Unexpected Reboots
 

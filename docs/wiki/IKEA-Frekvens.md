@@ -282,7 +282,12 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
+# Device type
 IKEA_FREKVENS='true'
+
+# Names
+NAME='Frekvens'
+HOSTNAME='frekvens'
 ```
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):

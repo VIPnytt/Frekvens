@@ -2,7 +2,7 @@
 
 A Real-Time Clock (RTC) module keeps accurate time, even without internet access.
 
-Most common RTC modules will work. Good starting points include the [DS3231](https://www.adafruit.com/product/3013) and the [DS1307](https://www.adafruit.com/product/3296).
+Most common RTC modules with I²C will work. Good starting points include the DS3231 (e.g. [this](https://www.adafruit.com/product/3013)) and the DS1307 (e.g. [this](https://www.adafruit.com/product/3296)).
 
 ## ✅ Supported types
 
@@ -97,7 +97,7 @@ Most common RTC modules will work. Good starting points include the [DS3231](htt
 
 ## ↔️ Logic level shifter
 
-Most RTC modules are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). In those cases, a logic level shifter is required to ensure safe communication with the ESP32. Make sure the level shifter is suited for I²C signals.
+Most RTC modules are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). In those cases, a logic level shifter is required to ensure safe communication with the ESP32. Make sure it is suited for I²C signals, like TXS0104E (e.g. [this](https://soldered.com/product/logic-level-converter-i2c-txs0104-breakout/)).
 
 ## 🔧 Configuration
 

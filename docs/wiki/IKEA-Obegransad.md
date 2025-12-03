@@ -255,10 +255,11 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 # Device type
-IKEA_OBEGRANSAD=''
+IKEA_OBEGRANSAD='true'
 
-# Custom device name (optional)
+# Names
 NAME='Obegränsad'
+HOSTNAME='obegransad'
 ```
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):

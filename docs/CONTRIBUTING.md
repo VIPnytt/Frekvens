@@ -171,6 +171,6 @@ Examples of `type`:
 
 ## 🧑‍🤝‍🧑 Join the Project Team
 
-If you've made several valuable contributions and would like to take on a more active role, we'd love to hear from you.
+If you’ve made several valuable contributions and would like to take on a more active role, we’d love to hear from you.
 
 Reach out via [Discussion](https://github.com/VIPnytt/Frekvens/discussions) to express your interest.
