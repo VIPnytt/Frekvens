@@ -7,7 +7,7 @@ updates:
     labels:
       - "dependencies"
       - "no-changelog"
-    milestone: 7
+    milestone: 8
     schedule:
       interval: "weekly"
 
@@ -20,7 +20,7 @@ updates:
     labels:
       - "dependencies"
       - "extra"
-    milestone: 7
+    milestone: 8
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
@@ -35,7 +35,7 @@ updates:
         - "tzdata"
     labels:
       - "dependencies"
-    milestone: 7
+    milestone: 8
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
@@ -49,7 +49,7 @@ updates:
     labels:
       - "dependencies"
       - "tools"
-    milestone: 7
+    milestone: 8
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
@@ -63,7 +63,7 @@ updates:
     labels:
       - "dependencies"
       - "webapp"
-    milestone: 7
+    milestone: 8
     schedule:
       interval: "weekly"
     versioning-strategy: "increase"
