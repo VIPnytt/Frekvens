@@ -6,4 +6,4 @@
 
 #include "secrets.h"
 
-#define VERSION "2.0.0-dev0"
+#define VERSION "2.0.0"
