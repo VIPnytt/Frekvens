@@ -17,6 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
       - uses: peterus/platformio_dependabot@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
