@@ -79,20 +79,21 @@ void ButtonExtension::handle()
     }
     else if (powerState && millis() - powerMillis > UINT8_MAX)
     {
-        const uint8_t brightness = Display.getBrightness();
+        const uint8_t brightness = Display.getPower() ? Display.getBrightness() : 0;
         if (!powerLong)
         {
             powerLong = true;
             event("power", "long");
-            switch (brightness)
+            if (brightness >= UINT8_MAX)
             {
-            case 0:
-                brightnessIncrease = true;
-                break;
-            case UINT8_MAX:
                 brightnessIncrease = false;
-                break;
-            default:
+            }
+            else if (brightness <= 1)
+            {
+                brightnessIncrease = true;
+            }
+            else
+            {
                 brightnessIncrease = !brightnessIncrease;
             }
         }
@@ -100,7 +101,7 @@ void ButtonExtension::handle()
         {
             Display.setBrightness(brightness + 1);
         }
-        else if (!brightnessIncrease && brightness > 0)
+        else if (!brightnessIncrease && brightness > 1)
         {
             Display.setBrightness(brightness - 1);
         }

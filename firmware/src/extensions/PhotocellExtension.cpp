@@ -167,7 +167,7 @@ void PhotocellExtension::onTransmit(const JsonDocument &doc, const char *const s
         const uint8_t _brightness = doc["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(log((_brightness + 1) / (float)((1 << 8) + 1)) / log((raw + 1) / (float)((1 << 12) + 1)));
+            setGamma(log(_brightness / (float)(1 << 8)) / log((raw + 1) / (float)((1 << 12) + 1)));
         }
     }
 }
