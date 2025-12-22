@@ -76,7 +76,7 @@ void InfraredExtension::parse()
         {
             if (t > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(), code.displayBrightnessDecrease.end(), IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
             {
-                Display.setBrightness(max(0, Display.getBrightness() - 5));
+                Display.setBrightness(max(1, Display.getBrightness() - 5));
                 lastMillis = millis();
                 return;
             }

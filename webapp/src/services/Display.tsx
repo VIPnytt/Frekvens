@@ -68,13 +68,11 @@ export const Sidebar: Component = () => {
                     >
                         <Icon path={mdiPower} />
                     </button>
-                    <Tooltip text={`Brightness ${Math.ceil((getBrightness() + 1) / (Math.pow(2, 8)) * 100)} %`}>
+                    <Tooltip text={`Brightness ${Math.ceil(getBrightness() / (Math.pow(2, 8) - 1) * 100)} %`}>
                         <input
                             class="w-full"
-                            type="range"
-                            min="0"
                             max={Math.pow(2, 8) - 1}
-                            value={getBrightness()}
+                            min="1"
                             onInput={(e) =>
                                 handleBrightness(parseFloat(e.currentTarget.value), false)
                             }
@@ -84,6 +82,8 @@ export const Sidebar: Component = () => {
                             onPointerUp={(e) =>
                                 handleBrightness(getBrightness())
                             }
+                            type="range"
+                            value={getBrightness()}
                         />
                     </Tooltip>
                 </div>

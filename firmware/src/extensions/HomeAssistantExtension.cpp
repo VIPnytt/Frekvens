@@ -27,11 +27,10 @@ void HomeAssistantExtension::configure()
             id = std::regex_replace(name, std::regex("\\s+"), "").append("_main"),
             topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value-1}}}";
+        component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value}}}";
         component[HomeAssistantAbbreviations::brightness_command_topic] = topicDisplay + "/set";
-        component[HomeAssistantAbbreviations::brightness_scale] = 1 << 8;
         component[HomeAssistantAbbreviations::brightness_state_topic] = topicDisplay;
-        component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness+1}}";
+        component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness}}";
         component[HomeAssistantAbbreviations::command_topic] = topicDisplay + "/set";
         component[HomeAssistantAbbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
         component[HomeAssistantAbbreviations::effect_command_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
