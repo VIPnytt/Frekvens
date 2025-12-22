@@ -43,15 +43,10 @@ class Certificate:
                         try:
                             self._add_host(host)
                             break
-                        except TimeoutError as e:
+                        except (ConnectionError, TimeoutError) as e:
                             if attempt >= 3:
                                 raise
-                            logging.warning(
-                                "Timeout fetching certificate for %s (attempt #%d): %s",
-                                host,
-                                attempt,
-                                e,
-                            )
+                            logging.warning("%s (attempt #%d): %s", host, attempt, e)
         bundle_path = pathlib.Path("firmware/certs/bundle")
         bundle_path.mkdir(parents=True, exist_ok=True)
         ca_roots = "ca_roots.pem"
