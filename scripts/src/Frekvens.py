@@ -1,12 +1,11 @@
 import dotenv
-import httpx
 import os
-import packaging.version
 import pathlib
 import shutil
 
 from .config.version import VERSION
 from .components.Certificate import Certificate
+from .components.Dependency import Dependency
 from .components.Partition import Partition
 from .components.TimeZone import TimeZone
 from .extensions.Ota import Ota
@@ -18,6 +17,7 @@ from .Tools import Tools
 
 class Frekvens:
     certificate: Certificate | None = None
+    dependency: Dependency | None = None
     dotenv: dict[str, str]
     extra: Extra
     firmware: Firmware | None = None
@@ -45,6 +45,7 @@ class Frekvens:
             ["uploadfsota"],
         ]:
             self.certificate = Certificate(self)
+            self.dependency = Dependency(self)
             self.firmware = Firmware(self)
             self.timezone = TimeZone(self)
         self.dotenv = {
@@ -54,21 +55,6 @@ class Frekvens:
         self.working = f"env:{ self.env['PIOENV']}"
 
     def run(self) -> None:
-        releases = httpx.get(
-            "https://api.github.com/repos/VIPnytt/Frekvens/releases/latest",
-            headers={
-                "Accept": "application/vnd.github+json",
-            },
-        )
-        if releases.status_code == 200:
-            current = packaging.version.parse(VERSION)
-            latest = packaging.version.parse(releases.json()["tag_name"].lstrip("v"))
-            yellow = "\033[93m"
-            reset = "\033[0m"
-            if latest > current:
-                print(
-                    f"{yellow}[notice] A new release of Frekvens is available: {current.public} -> {latest.public}{reset}"
-                )
         print(f"Building Frekvens {VERSION}")
         pathlib.Path("data").mkdir(parents=True, exist_ok=True)
         self.initialize()
@@ -77,6 +63,8 @@ class Frekvens:
         self.finalize()
 
     def initialize(self) -> None:
+        if self.dependency:
+            self.dependency.initialize()
         if self.firmware:
             self.firmware.initialize()
         self.tools.initialize()
@@ -93,6 +81,8 @@ class Frekvens:
             self.timezone.configure()
 
     def validate(self) -> None:
+        if self.dependency:
+            self.dependency.validate()
         if self.ota:
             self.ota.validate()
         if self.webapp:
