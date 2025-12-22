@@ -54,11 +54,13 @@ class Dependency:
                 logging.warning("Dependency update check failed: %s", e)
                 self.proceed = False
 
-    def _check(self, dependency: str) -> None:
+    def _check(self, dependency: str) -> bool | None:
         match = re.compile(
             r"https://github\.com/"
             r"(?P<repository>[^/]+/[^/]+)/"
-            r"archive/(?P<ref>.+?)\.(?:tar\.gz|zip)$"
+            r"(?:archive/|releases/download/)"
+            r"(?P<ref>[^/]+?)"
+            r"(?:\.[a-z][^/]*|/.*|)$"
         ).search(dependency)
         if not match:
             return
@@ -92,7 +94,8 @@ class Dependency:
                 print(
                     f"{repository}: update available, {local_version.public} → {latest_version.public}"
                 )
-            return
+                return True
+            return False
         local_sha = None if re.fullmatch(r"[0-9a-fA-F]{7,40}", ref) else ref
         if local_sha:
             if (
@@ -104,3 +107,5 @@ class Dependency:
                 == "behind"
             ):
                 print(f"{repository}: update available, {latest_version.public}")
+                return True
+            return False
