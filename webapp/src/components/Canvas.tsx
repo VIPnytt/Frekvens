@@ -1,6 +1,5 @@
 import { mdiBrightness6 } from '@mdi/js';
 import { Component, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
-import { createVisibilityObserver } from '@solid-primitives/intersection-observer';
 
 import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
@@ -43,8 +42,6 @@ export const Canvas: Component<{
     let strength: number = getStrength();
 
     const rotated = DisplayOrientation() % 180;
-    const useVisibilityObserver = createVisibilityObserver({ threshold: 0.8 });
-    const visible = useVisibilityObserver(() => divRef);
 
     onMount(() => {
         if (canvasRef) {
@@ -94,7 +91,7 @@ export const Canvas: Component<{
         ctx.globalAlpha = 1;
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
-        ctx.globalAlpha = (0.5 + 0.5 * DisplayBrightness() / (Math.pow(2, 8) - 1)) * (visible() ? 1 : 0.5);
+        ctx.globalAlpha = DisplayBrightness() / (Math.pow(2, 8) - 1) / 2 + 0.5;
         if (Device.LED_GEOMETRY === 'circular') {
             for (let x = 0; x < Device.GRID_COLUMNS; ++x) {
                 for (let y = 0; y < Device.GRID_ROWS; ++y) {
