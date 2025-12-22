@@ -63,7 +63,7 @@ class Dependency:
             r"(?:\.[a-z][^/]*|/.*|)$"
         ).search(dependency)
         if not match:
-            return
+            return None
         repository = match.group("repository")
         ref = match.group("ref")
         local_tag = (
@@ -109,3 +109,4 @@ class Dependency:
                 print(f"{repository}: update available, {latest_version.public}")
                 return True
             return False
+        return None
