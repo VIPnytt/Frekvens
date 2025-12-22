@@ -4,8 +4,6 @@
  * https://github.com/VIPnytt/Frekvens/wiki/Extensions
  */
 
-#include "secrets.h"
-
 /**
  * IR
  */

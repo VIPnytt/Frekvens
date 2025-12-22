@@ -4,8 +4,6 @@
  * https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad
  */
 
-#include "secrets.h"
-
 #define MANUFACTURER "IKEA"
 #define MODEL "Obegränsad"
 

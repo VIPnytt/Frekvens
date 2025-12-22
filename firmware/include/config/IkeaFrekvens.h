@@ -4,8 +4,6 @@
  * https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens
  */
 
-#include "secrets.h"
-
 #define MANUFACTURER "IKEA"
 #define MODEL "Frekvens"
 

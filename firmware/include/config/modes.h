@@ -4,8 +4,6 @@
  * https://github.com/VIPnytt/Frekvens/wiki/Modes
  */
 
-#include "secrets.h"
-
 /**
  * Home Assistant weather
  */
