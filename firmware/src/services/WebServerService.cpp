@@ -31,6 +31,8 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
     }
 }
 
+void WebServerService::onEmpty(AsyncWebServerRequest *request) {}
+
 WebServerService &WebServerService::getInstance()
 {
     static WebServerService instance;

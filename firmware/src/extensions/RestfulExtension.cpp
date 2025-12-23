@@ -16,36 +16,27 @@ RestfulExtension::RestfulExtension() : ExtensionModule("RESTful")
 
 void RestfulExtension::begin()
 {
-    WebServer.http->on("/restful/", WebRequestMethod::HTTP_GET, &onGet);
-    for (const char *const _name : Device.getNames())
-    {
-        const std::string endpoint = std::string("/restful/").append(_name);
-        WebServer.http->on(endpoint.c_str(), WebRequestMethod::HTTP_GET, &onGetModule);
-        WebServer.http->on(endpoint.c_str(), WebRequestMethod::HTTP_PATCH, [](AsyncWebServerRequest *request) {}, nullptr, &onPatchModule);
-    }
+    WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServer.onEmpty, nullptr, &onPatch);
 }
 
 void RestfulExtension::onGet(AsyncWebServerRequest *request)
 {
+    const String module = request->url().substring(prefixLength);
     const JsonDocument doc = Device.getTransmits();
-    const size_t length = measureJson(doc);
-    char *payload = new char[length + 1];
-    serializeJson(doc, payload, length + 1);
-    request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload);
-    delete[] payload;
-}
-
-void RestfulExtension::onGetModule(AsyncWebServerRequest *request)
-{
-    const JsonDocument doc = Device.getTransmits();
-    const String module = request->url().substring(9);
-    if (doc[module].is<JsonVariantConst>())
+    if (module.isEmpty())
+    {
+        const size_t length = measureJson(doc);
+        std::vector<char> payload(length + 1);
+        serializeJson(doc, payload.data(), length + 1);
+        request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload.data());
+    }
+    else if (doc[module].is<JsonVariantConst>())
     {
         const size_t length = measureJson(doc[module]);
-        char *payload = new char[length + 1];
-        serializeJson(doc[module], payload, length + 1);
-        request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload);
-        delete[] payload;
+        std::vector<char> payload(length + 1);
+        serializeJson(doc[module], payload.data(), length + 1);
+        request->send(t_http_codes::HTTP_CODE_OK, "application/json", payload.data());
     }
     else
     {
@@ -53,10 +44,10 @@ void RestfulExtension::onGetModule(AsyncWebServerRequest *request)
     }
 }
 
-void RestfulExtension::onPatchModule(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void RestfulExtension::onPatch(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
     JsonDocument doc;
-    if (request->contentType() == "application/json" && !deserializeJson(doc, data))
+    if (request->contentType() == "application/json" && !deserializeJson(doc, data, len))
     {
         Device.receive(doc, Restful->name, request->url().substring(prefixLength).c_str());
         request->send(t_http_codes::HTTP_CODE_NO_CONTENT);

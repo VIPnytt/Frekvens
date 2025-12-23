@@ -24,7 +24,7 @@ void WebAppExtension::configure()
 
 void WebAppExtension::begin()
 {
-    WebServer.http->on("/", WebRequestMethod::HTTP_HEAD, &onHeadRoot);
+    WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
 }
 
 void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
