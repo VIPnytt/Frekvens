@@ -21,11 +21,11 @@ void AlexaExtension::begin()
     fauxmo.addDevice(NAME);
     fauxmo.onSetState(&onSetState);
 
-    WebServer.http->on("/api", WebRequestMethod::HTTP_POST, [](AsyncWebServerRequest *request) {}, nullptr, &onSet);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights", WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1", WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state", WebRequestMethod::HTTP_PUT, [](AsyncWebServerRequest *request) {}, nullptr, &onSet);
-    WebServer.http->on("/description.xml", WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServer.onEmpty, nullptr, &onSet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights"), WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1"), WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state"), WebRequestMethod::HTTP_PUT, &WebServer.onEmpty, nullptr, &onSet);
+    WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGet);
 
     fauxmo.setState(NAME, Display.getPower(), static_cast<unsigned char>(Display.getBrightness()));
     fauxmo.enable(true);

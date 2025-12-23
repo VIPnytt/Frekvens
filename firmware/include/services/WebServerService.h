@@ -17,6 +17,8 @@ public:
     void configure();
     void begin();
 
+    static void onEmpty(AsyncWebServerRequest *request);
+
     static WebServerService &getInstance();
 };
 
