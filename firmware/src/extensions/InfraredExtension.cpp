@@ -1,6 +1,5 @@
 #if EXTENSION_INFRARED
 
-#include <stdint.h> // temporary bugfix for arduino-irremote/IRremote @ 4.5.0
 #include <IRremote.hpp>
 #include <Preferences.h>
 
