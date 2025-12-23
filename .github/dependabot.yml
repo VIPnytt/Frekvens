@@ -12,7 +12,7 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "pip"
-    directory: "/extra"
+    directory: "/extra/Python"
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21
