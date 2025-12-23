@@ -92,10 +92,9 @@ void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 void MqttExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     const size_t length = measureJson(doc);
-    uint8_t *payload = new uint8_t[length + 1];
-    serializeJson(doc, reinterpret_cast<char *>(payload), length + 1);
-    client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(), doc["event"].isUnbound() ? 0 : 2, false, payload, length);
-    delete[] payload;
+    std::vector<char> payload(length + 1);
+    serializeJson(doc, payload.data(), length + 1);
+    client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(), doc["event"].isUnbound() ? 0 : 2, false, reinterpret_cast<const uint8_t *>(payload.data()), length);
 }
 
 #endif // EXTENSION_MQTT

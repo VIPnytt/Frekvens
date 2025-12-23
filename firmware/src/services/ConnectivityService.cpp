@@ -115,10 +115,9 @@ void ConnectivityService::initStation()
     if (Storage.isKey("Wi-Fi"))
     {
         const size_t _length = Storage.getBytesLength("Wi-Fi");
-        uint8_t *_buffer = new uint8_t[_length];
-        Storage.getBytes("Wi-Fi", _buffer, _length);
-        deserializeJson(doc, _buffer, _length);
-        delete[] _buffer;
+        std::vector<char> _buffer(_length);
+        Storage.getBytes("Wi-Fi", _buffer.data(), _length);
+        deserializeJson(doc, _buffer.data(), _length);
     }
     wifi_config_t config;
     if (!esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config))
@@ -137,11 +136,10 @@ void ConnectivityService::initStation()
         doc[WIFI_SSID] = WIFI_KEY;
     }
     const size_t length = measureJson(doc);
-    uint8_t *buffer = new uint8_t[length + 1];
-    serializeJson(doc, reinterpret_cast<char *>(buffer), length + 1);
-    Storage.putBytes("Wi-Fi", buffer, length + 1);
+    std::vector<uint8_t> buffer(length + 1);
+    serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length + 1);
+    Storage.putBytes("Wi-Fi", buffer.data(), length + 1);
     Storage.end();
-    delete[] buffer;
     for (const JsonPairConst &credentials : doc.as<JsonObjectConst>())
     {
         multi.addAP(credentials.key().c_str(), credentials.value().as<const char *>());
@@ -292,11 +290,11 @@ void ConnectivityService::transmit()
         if (Storage.isKey("saved"))
         {
             const size_t len = Storage.getBytesLength("saved");
-            uint8_t *buf = new uint8_t[len];
-            Storage.getBytes("saved", buf, len);
+            std::vector<uint8_t> buf(len);
+            Storage.getBytes("saved", buf.data(), len);
             Storage.end();
             JsonDocument _saved;
-            if (!deserializeJson(_saved, buf, len))
+            if (!deserializeJson(_saved, buf.data(), len))
             {
                 JsonArray saved = doc["saved"].to<JsonArray>();
                 for (const JsonPairConst &credentials : _saved.as<JsonObjectConst>())
@@ -304,7 +302,6 @@ void ConnectivityService::transmit()
                     saved.add(credentials.key());
                 }
             }
-            delete[] buf;
         }
         else
         {
