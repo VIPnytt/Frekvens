@@ -27,10 +27,9 @@ void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const s
     JsonDocument _doc;
     _doc[source] = doc;
     const size_t length = measureJson(_doc);
-    char *payload = new char[length + 1];
-    serializeJson(_doc, payload, length + 1);
-    server->textAll(payload, length);
-    delete[] payload;
+    std::vector<char> payload(length + 1);
+    serializeJson(_doc, payload.data(), length + 1);
+    server->textAll(payload.data(), length);
 }
 
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
@@ -41,10 +40,9 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
     {
         const JsonDocument doc = Device.getTransmits();
         const size_t length = measureJson(doc);
-        char *payload = new char[length + 1];
-        serializeJson(doc, payload, length + 1);
-        client->text(payload, length);
-        delete[] payload;
+        std::vector<char> payload(length + 1);
+        serializeJson(doc, payload.data(), length + 1);
+        client->text(payload.data(), length);
     }
     break;
     case AwsEventType::WS_EVT_DATA:

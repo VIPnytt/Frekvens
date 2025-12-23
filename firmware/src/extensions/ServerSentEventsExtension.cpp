@@ -23,10 +23,9 @@ void ServerSentEventsExtension::begin()
 void ServerSentEventsExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     const size_t length = measureJson(doc);
-    char *payload = new char[length + 1];
-    serializeJson(doc, payload, length + 1);
-    client->send(payload, source);
-    delete[] payload;
+    std::vector<char> payload(length + 1);
+    serializeJson(doc, payload.data(), length + 1);
+    client->send(payload.data(), source);
 }
 
 void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
@@ -35,10 +34,9 @@ void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
     for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
     {
         const size_t length = measureJson(pair.value());
-        char *payload = new char[length + 1];
-        serializeJson(pair.value(), payload, length + 1);
-        client->send(payload, pair.key().c_str());
-        delete[] payload;
+        std::vector<char> payload(length + 1);
+        serializeJson(pair.value(), payload.data(), length + 1);
+        client->send(payload.data(), pair.key().c_str());
     }
 }
 

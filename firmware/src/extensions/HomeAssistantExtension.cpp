@@ -88,12 +88,11 @@ void HomeAssistantExtension::begin()
         }
     }
     const size_t length = measureJson(*discovery);
-    uint8_t *payload = new uint8_t[length];
-    serializeJson(*discovery, payload, length);
+    std::vector<uint8_t> payload(length + 1);
+    serializeJson(*discovery, payload.data(), length + 1);
     delete discovery;
     discovery = nullptr;
-    Mqtt->client.publish(discoveryTopic.c_str(), 0, true, payload, length);
-    delete[] payload;
+    Mqtt->client.publish(discoveryTopic.c_str(), 0, true, payload.data(), length);
 }
 
 void HomeAssistantExtension::handle()

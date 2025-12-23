@@ -23,12 +23,13 @@ void PlaylistExtension::configure()
     if (Storage.isKey("modes"))
     {
         const size_t length = Storage.getBytesLength("modes");
-        uint8_t *buffer = new uint8_t[length];
-        Storage.getBytes("modes", buffer, length);
+        std::vector<uint8_t> buffer(length);
+        Storage.getBytes("modes", buffer.data(), length);
         Storage.end();
-        deserializeJson(doc, buffer, length);
-        delete[] buffer;
-        for (JsonVariantConst item : doc.as<JsonArrayConst>())
+        deserializeJson(doc, buffer.data(), length);
+        JsonArrayConst modes = doc.as<JsonArrayConst>();
+        playlist.reserve(modes.size());
+        for (JsonVariantConst item : modes)
         {
             PlaylistExtension::Mode mode;
             mode.duration = item["duration"].as<uint16_t>();
@@ -147,13 +148,12 @@ void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
         playlist.push_back(mode);
     }
     const size_t length = measureJson(doc);
-    uint8_t *buffer = new uint8_t[length + 1];
-    serializeJson(doc, reinterpret_cast<char *>(buffer), length + 1);
+    std::vector<uint8_t> buffer(length + 1);
+    serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length + 1);
     Preferences Storage;
     Storage.begin(name);
-    Storage.putBytes("modes", buffer, length + 1);
+    Storage.putBytes("modes", buffer.data(), length + 1);
     Storage.end();
-    delete[] buffer;
     transmit();
 }
 

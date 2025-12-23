@@ -141,7 +141,7 @@ DisplayService::Orientation DisplayService::getOrientation() const
 
 void DisplayService::setOrientation(Orientation orientation)
 {
-    uint8_t _pixel[GRID_COLUMNS * GRID_ROWS];
+    std::vector<uint8_t> _pixel(GRID_COLUMNS * GRID_ROWS);
     switch ((orientation - this->orientation + 4) % 4)
     {
     case Orientation::deg180:
@@ -168,7 +168,7 @@ void DisplayService::setOrientation(Orientation orientation)
         return;
     }
     ESP_LOGI(name, "orientation %d°", orientation * 90);
-    memcpy(pixel, _pixel, sizeof(_pixel));
+    memcpy(pixel, _pixel.data(), _pixel.size());
     this->orientation = orientation;
 #if GRID_COLUMNS == GRID_ROWS
     ratio = this->orientation % 2
