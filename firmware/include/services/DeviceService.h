@@ -32,7 +32,6 @@ public:
     void transmit(JsonDocument doc, const char *const source, bool retain = true);
     void receive(const JsonDocument doc, const char *const source, const char *const destination);
 
-    const std::vector<const char *> getNames() const;
     const JsonDocument getTransmits() const;
 
     static DeviceService &getInstance();

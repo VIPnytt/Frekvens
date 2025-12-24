@@ -227,28 +227,6 @@ void DeviceService::restore()
     esp_deep_sleep_start();
 }
 
-const std::vector<const char *> DeviceService::getNames() const
-{
-    std::vector<const char *> modules = {
-        Device.name,
-        Display.name,
-        Extensions.name,
-        Fonts.name,
-        Modes.name,
-        Connectivity.name,
-        WebServer.name,
-    };
-    for (const ExtensionModule *extension : Extensions.getAll())
-    {
-        modules.push_back(extension->name);
-    }
-    for (const ModeModule *mode : Modes.getAll())
-    {
-        modules.push_back(mode->name);
-    }
-    return modules;
-}
-
 const JsonDocument DeviceService::getTransmits() const
 {
     return transmits;
