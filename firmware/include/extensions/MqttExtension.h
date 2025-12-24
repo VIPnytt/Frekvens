@@ -14,8 +14,8 @@ private:
     static inline bool subscribed = false;
 
     static constexpr size_t
-        prefixLength = sizeof("frekvens/" HOSTNAME),
-        suffixLength = sizeof("set");
+        prefixLength = sizeof("frekvens/" HOSTNAME "/") - 1,
+        suffixLength = sizeof("/set") - 1;
 
     static void onConnect(bool sessionPresent);
     static void onDisconnect(espMqttClientTypes::DisconnectReason reason);

@@ -64,10 +64,7 @@ void MqttExtension::onConnect(bool sessionPresent)
     ESP_LOGD(Mqtt->name, "connected");
     if (!sessionPresent || (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
-        for (const char *const _name : Device.getNames())
-        {
-            Mqtt->client.subscribe(std::string("frekvens/" HOSTNAME "/").append(_name).append("/set").c_str(), 2);
-        }
+        Mqtt->client.subscribe("frekvens/" HOSTNAME "/+/set", 2);
         subscribed = true;
     }
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
