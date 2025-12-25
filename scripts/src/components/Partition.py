@@ -14,27 +14,22 @@ class Partition:
         self.project = project
 
     def initialize(self) -> None:
-        if self.project.env.GetProjectConfig().has_option(
-            self.project.working, "board_build.partitions"
-        ):
-            self.table = self.project.env.GetProjectOption("board_build.partitions")
+        table = self.project.env.GetProjectOption("board_build.partitions", None)
+        if table:
+            self.table = table
         else:
-            _table = self._lookup_table(self._get_flash_size())
-            if _table is not None:
-                self.table = _table
+            table = self._lookup_table(self._get_flash_size())
+            if table:
+                self.table = table
                 self.project.env.BoardConfig().update(
                     "build.arduino.partitions", self.table
                 )
 
     def _get_flash_size(self) -> str:
-        board_config = self.project.env.BoardConfig()
-        if self.project.env.GetProjectConfig().has_option(
-            self.project.working, "board_upload.flash_size"
-        ):
-            return self.project.env.GetProjectOption("board_upload.flash_size")
-        return board_config.get("upload.flash_size")
+        size = self.project.env.GetProjectOption("board_upload.flash_size", None)
+        return size if size else self.project.env.BoardConfig().get("upload.flash_size")
 
-    def _lookup_table(self, flash_size) -> str | None:
+    def _lookup_table(self, flash_size: str) -> str | None:
         if flash_size in [
             "2MB",
         ]:

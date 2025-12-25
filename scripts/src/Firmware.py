@@ -62,8 +62,8 @@ class Firmware:
             "board",
             "monitor_speed",
         ]:
-            if config.has_option(self.project.working, option):
-                value = config.get(self.project.working, option)
+            value = config.get(self.project.working, option, None)
+            if value:
                 _key = option.replace(".", "__").upper()
                 _value = (
                     value
@@ -79,8 +79,8 @@ class Firmware:
             "board_build.embed_files",
             "board_build.embed_txtfiles",
         ]:
-            if config.has_option(self.project.working, option):
-                embed_files = self.project.env.GetProjectOption(option)
+            embed_files = self.project.env.GetProjectOption(option, None)
+            if embed_files:
                 if not isinstance(embed_files, list):
                     embed_files = [embed_files]
                 _prefix = option.replace(".", "__").upper()

@@ -67,7 +67,7 @@ class Certificate:
         with open(embed / x509_crt_bundle, "wb") as bin:
             bin.write(self._get_bin())
 
-    def add_der(self, path) -> None:
+    def add_der(self, path: pathlib.Path | str) -> None:
         with open(path, "rb") as der:
             self.certificates.append(
                 cryptography.x509.load_der_x509_certificate(
@@ -80,7 +80,7 @@ class Certificate:
             ctx = ssl.create_default_context()
             ctx.minimum_version = ssl.TLSVersion.TLSv1_2
             with ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
-                der = ssock.getpeercert(binary_form=True)
+                der = ssock.getpeercert(True)
                 if der is not None:
                     for pem in self._fetch_chain(der):
                         certificate = cryptography.x509.load_pem_x509_certificate(
@@ -101,7 +101,7 @@ class Certificate:
                             return True
         return False
 
-    def _add_pem(self, path) -> None:
+    def _add_pem(self, path: pathlib.Path | str) -> None:
         with open(path, "r", encoding="utf-8") as pem:
             certificate = ""
             encoded = False
@@ -185,7 +185,10 @@ class Certificate:
                     cryptography.x509.oid.ExtensionOID.AUTHORITY_INFORMATION_ACCESS
                 ).value,
             ):
-                if value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2":
+                if (
+                    value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2"
+                    and value.access_location.value.startswith("http://")
+                ):
                     return urllib.request.urlopen(value.access_location.value).read()
         except Exception as e:
             logging.warning("Failed to fetch issuer certificate: %s", e)

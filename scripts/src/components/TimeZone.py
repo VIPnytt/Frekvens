@@ -17,23 +17,19 @@ class TimeZone:
 
     def configure(self) -> None:
         posix = self._get_posix()
-        if posix is not None:
+        if posix:
             self.project.dotenv["TIME_ZONE"] = posix
 
     def _get_posix(self) -> str | None:
         if "TIME_ZONE" in self.project.dotenv:
-            return self._lookup_posix(self.project.dotenv["TIME_ZONE"])
-        system = self._get_iana_system()
-        if system is not None:
-            return self._lookup_posix(system)
+            return self._lookup(self.project.dotenv["TIME_ZONE"])
+        system = tzlocal.get_localzone_name()
+        if system:
+            return self._lookup(system)
         return None
 
     @staticmethod
-    def _get_iana_system() -> str | None:
-        return tzlocal.get_localzone_name()
-
-    @staticmethod
-    def _lookup_posix(iana: str) -> str | None:
+    def _lookup(iana: str) -> str | None:
         paths = []
         if zoneinfo.TZPATH:
             paths.extend(zoneinfo.TZPATH)

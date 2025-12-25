@@ -39,6 +39,9 @@ class Dependency:
                 print(
                     f"\033[93m[notice] A new release of Frekvens is available: {local.public} -> {latest.public}\033[0m"
                 )
+                print(
+                    "Release notes: https://github.com/VIPnytt/Frekvens/releases/latest"
+                )
                 self.proceed = False
         except httpx.HTTPError as e:
             logging.warning("Update check failed: %s", e)
@@ -48,20 +51,22 @@ class Dependency:
         if self.proceed and packaging.version.parse(VERSION).is_devrelease:
             try:
                 self._check(self.project.env.GetProjectOption("platform"))
-                for dependency in self.project.env.GetProjectOption("lib_deps"):
-                    self._check(dependency)
+                for pkg in self.project.env.GetProjectOption("platform_packages", []):
+                    self._check(pkg.split("@", 1)[-1].strip())
+                for dep in self.project.env.GetProjectOption("lib_deps"):
+                    self._check(dep)
             except httpx.HTTPError as e:
                 logging.warning("Dependency update check failed: %s", e)
                 self.proceed = False
 
-    def _check(self, dependency: str) -> bool | None:
+    def _check(self, url: str) -> bool | None:
         match = re.compile(
             r"https://github\.com/"
             r"(?P<repository>[^/]+/[^/]+)/"
             r"(?:archive/|releases/download/)"
             r"(?P<ref>[^/]+?)"
             r"(?:\.[a-z][^/]*|/.*|)$"
-        ).search(dependency)
+        ).search(url)
         if not match:
             return None
         repository = match.group("repository")
@@ -77,8 +82,8 @@ class Dependency:
                 encoding="utf-8",
             ) as ini:
                 for line in ini:
-                    if dependency in line and ";" in line:
-                        comment = line.split(";", 1)[1].strip()
+                    if url in line and ";" in line:
+                        comment = line.split(";", 1)[-1].strip()
                         if comment:
                             local_tag = comment.split(maxsplit=1)[0]
                             break
@@ -92,7 +97,7 @@ class Dependency:
             local_version = packaging.version.Version(local_tag)
             if latest_version > local_version:
                 print(
-                    f"{repository}: update available, {local_version.public} → {latest_version.public}"
+                    f"Dependency update available: {repository}, {local_version.public} → {latest_version.public}"
                 )
                 return True
             return False
@@ -106,7 +111,9 @@ class Dependency:
                 .json()["status"]
                 == "behind"
             ):
-                print(f"{repository}: update available, {latest_version.public}")
+                print(
+                    f"Dependency update available: {repository}, {latest_version.public}"
+                )
                 return True
             return False
         return None

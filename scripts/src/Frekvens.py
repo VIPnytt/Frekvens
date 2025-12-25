@@ -55,7 +55,7 @@ class Frekvens:
         self.working = f"env:{ self.env['PIOENV']}"
 
     def run(self) -> None:
-        print(f"Building Frekvens {VERSION}")
+        print(f"Frekvens {VERSION}")
         pathlib.Path("data").mkdir(parents=True, exist_ok=True)
         self.initialize()
         self.configure()

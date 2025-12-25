@@ -31,18 +31,19 @@ class Ota:
                 self.ENV_OPTION in self.project.dotenv
                 and self.project.dotenv[self.ENV_OPTION] != "false"
             ):
-                warnings.warn(f"{self.ENV_OPTION}: Partition table does not support OTA.", UserWarning)
+                warnings.warn(
+                    f"{self.ENV_OPTION}: Partition table does not support OTA updates.",
+                    UserWarning,
+                )
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None
 
     def finalize(self) -> None:
-        config = self.project.env.GetProjectConfig()
         if (
-            config.has_option(self.project.working, "upload_protocol")
-            and not config.has_option(self.project.working, "upload_flags")
-            and not config.has_option(self.project.working, "upload_port")
-            and self.project.env.GetProjectOption("upload_protocol") == "espota"
+            self.project.env.GetProjectOption("upload_protocol", None) == "espota"
+            and not self.project.env.GetProjectOption("upload_flags", None)
+            and not self.project.env.GetProjectOption("upload_port", None)
         ):
             self.project.env.Replace(
                 UPLOAD_PORT=f"{self.project.dotenv['HOSTNAME']}.local"
