@@ -13,7 +13,7 @@ sys.path.append(env["PROJECT_DIR"])  # type: ignore
 from scripts.src.Frekvens import Frekvens
 
 # Dump CLI targets
-# print(COMMAND_LINE_TARGETS)# type: ignore
+# print(COMMAND_LINE_TARGETS)  # type: ignore
 
 if env["PIOENV"] in [  # type: ignore
     "upload_ota",

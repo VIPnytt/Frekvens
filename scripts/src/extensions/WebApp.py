@@ -56,12 +56,9 @@ class WebApp:
         for option in [
             "board",
         ]:
-            if config.has_option(self.project.working, option):
-                dotenv.set_key(
-                    path,
-                    f"VITE_{option.upper()}",
-                    config.get(self.project.working, option),
-                )
+            value = config.get(self.project.working, option, None)
+            if value:
+                dotenv.set_key(path, f"VITE_{option.upper()}", value)
         for option in dotenv.dotenv_values(path).keys():
             if option.startswith("VITE_"):
                 _option = option.removeprefix("VITE_")
@@ -99,7 +96,7 @@ class WebApp:
             ):
                 warnings.warn(
                     f"{self.ENV_OPTION}: Partition table has no filesystem support.",
-                    UserWarning
+                    UserWarning,
                 )
         elif (
             WebSocket.ENV_OPTION not in self.project.dotenv
@@ -107,7 +104,7 @@ class WebApp:
         ):
             warnings.warn(
                 f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
-                UserWarning
+                UserWarning,
             )
         elif not self._node():
             raise Exception(
