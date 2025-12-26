@@ -27,15 +27,12 @@ private:
     uint8_t
         hour,
         minute,
-        targetY = GRID_ROWS / 2,
         x = GRID_COLUMNS - 2,
         y = GRID_ROWS / 2;
 
     uint16_t deg = 180;
 
     unsigned long lastMillis = 0;
-
-    void predict();
 
 public:
     PingPongClockMode() : ModeModule("Ping-Pong clock") {};
