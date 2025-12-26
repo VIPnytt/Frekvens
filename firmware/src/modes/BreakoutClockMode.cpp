@@ -8,7 +8,7 @@
 
 void BreakoutClockMode::begin()
 {
-    Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 5 - 1);
+    Display.drawRectangle(0, 0, GRID_COLUMNS - 1, GRID_ROWS - 1 - 4);
     paddle.clear();
     const uint8_t paddleX = random(GRID_COLUMNS - 1 - 3);
     for (uint8_t _x = 0; _x < 3; ++_x)
@@ -70,23 +70,22 @@ void BreakoutClockMode::handle()
     x = xDec + .5f;
     y = yDec + .5f;
     Display.setPixel(x, y);
-
-    const float angle = atanf((GRID_ROWS - 2 - yDec) / abs(paddle[1] - xDec)) * RAD_TO_DEG;
-    if (xDec > paddle.back() && angle < 67.5f && paddle.back() < GRID_COLUMNS - 1)
-    {
-        // Right
-        Display.setPixel(paddle.front(), GRID_COLUMNS - 1, 0);
-        paddle.pop_front();
-        paddle.push_back(paddle.back() + 1);
-        Display.setPixel(paddle.back(), GRID_COLUMNS - 1);
-    }
-    else if (xDec < paddle.front() && angle < 67.5f && paddle.front() > 0)
+    const float rad = atanf((GRID_ROWS - 2 - yDec) / abs(paddle[1] - xDec));
+    if (xDec < paddle.front() && rad < 1 && paddle.front() > 0)
     {
         // Left
-        Display.setPixel(paddle.back(), GRID_COLUMNS - 1, 0);
+        Display.setPixel(paddle.back(), GRID_ROWS - 1, 0);
         paddle.pop_back();
         paddle.push_front(paddle.front() - 1);
-        Display.setPixel(paddle.front(), GRID_COLUMNS - 1);
+        Display.setPixel(paddle.front(), GRID_ROWS - 1);
+    }
+    else if (xDec > paddle.back() && rad < 1 && paddle.back() < GRID_COLUMNS - 1)
+    {
+        // Right
+        Display.setPixel(paddle.front(), GRID_ROWS - 1, 0);
+        paddle.pop_front();
+        paddle.push_back(paddle.back() + 1);
+        Display.setPixel(paddle.back(), GRID_ROWS - 1);
     }
 }
 

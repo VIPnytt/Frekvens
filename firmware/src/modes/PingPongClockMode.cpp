@@ -24,7 +24,6 @@ void PingPongClockMode::begin()
     yDec = y = paddleY + 1;
     deg = random(150, 211); // ±30°
     Display.setPixel(x, y);
-    predict();
 }
 
 void PingPongClockMode::handle()
@@ -44,19 +43,16 @@ void PingPongClockMode::handle()
     {
         // Left
         deg = (random(45, 136) + 270) % 360; // ±45°
-        predict();
     }
     else if (xDec >= GRID_COLUMNS - 2 && (deg < 90 || deg >= 270))
     {
         // Right
         deg = random(135, 226); // ±45°
-        predict();
     }
     if (yDec <= 5 || yDec >= GRID_ROWS - 1)
     {
         // Top/bottom
         deg = 360 - deg; // Invert Y
-        predict();
     }
     Display.setPixel(x, y, 0);
     xDec += cos(deg * DEG_TO_RAD) * speed;
@@ -64,56 +60,41 @@ void PingPongClockMode::handle()
     x = xDec + .5f;
     y = yDec + .5f;
     Display.setPixel(x, y);
-
-    if (deg >= 90 && deg < 270 && targetY - 1 < paddleL.front() && paddleL.front() > 5 && millis() - lastMillis > UINT8_MAX)
-    {
-        // Left up
-        Display.setPixel(0, paddleL.back(), 0);
-        paddleL.pop_back();
-        paddleL.push_front(paddleL.front() - 1);
-        Display.setPixel(0, paddleL.front());
-        lastMillis = millis();
-    }
-    else if (deg >= 90 && deg < 270 && targetY + 1 > paddleL.back() && paddleL.back() < GRID_ROWS - 1 && millis() - lastMillis > UINT8_MAX)
+    const float
+        lRad = atanf((xDec - 1) / abs(paddleL[1] - yDec)),
+        rRad = atanf((GRID_COLUMNS - 2 - xDec) / abs(paddleR[1] - yDec));
+    if (yDec > paddleL.back() && lRad < 1 && paddleL.back() < GRID_ROWS - 1)
     {
         // Left down
         Display.setPixel(0, paddleL.front(), 0);
         paddleL.pop_front();
         paddleL.push_back(paddleL.back() + 1);
         Display.setPixel(0, paddleL.back());
-        lastMillis = millis();
     }
-    else if ((deg < 90 || deg >= 270) && targetY - 1 < paddleR.front() && paddleR.front() > 5 && millis() - lastMillis > UINT8_MAX)
+    else if (yDec < paddleL.front() && lRad < 1 && paddleL.front() > 5)
     {
-        // Right up
-        Display.setPixel(GRID_ROWS - 1, paddleR.back(), 0);
-        paddleR.pop_back();
-        paddleR.push_front(paddleR.front() - 1);
-        Display.setPixel(GRID_ROWS - 1, paddleR.front());
-        lastMillis = millis();
+        // Left up
+        Display.setPixel(0, paddleL.back(), 0);
+        paddleL.pop_back();
+        paddleL.push_front(paddleL.front() - 1);
+        Display.setPixel(0, paddleL.front());
     }
-    else if ((deg < 90 || deg >= 270) && targetY + 1 > paddleR.back() && paddleR.back() < GRID_ROWS - 1 && millis() - lastMillis > UINT8_MAX)
+    else if (yDec > paddleR.back() && rRad < 1 && paddleR.back() < GRID_ROWS - 1)
     {
         // Right down
-        Display.setPixel(GRID_ROWS - 1, paddleR.front(), 0);
+        Display.setPixel(GRID_COLUMNS - 1, paddleR.front(), 0);
         paddleR.pop_front();
         paddleR.push_back(paddleR.back() + 1);
-        Display.setPixel(GRID_ROWS - 1, paddleR.back());
-        lastMillis = millis();
+        Display.setPixel(GRID_COLUMNS - 1, paddleR.back());
     }
-}
-
-void PingPongClockMode::predict()
-{
-    float
-        _x = xDec,
-        _y = yDec;
-    do
+    else if (yDec < paddleR.front() && rRad < 1 && paddleR.front() > 5)
     {
-        _x += cos(deg * DEG_TO_RAD);
-        _y -= sin(deg * DEG_TO_RAD);
-    } while (_x > 1 && _x + .5f < GRID_COLUMNS - 2);
-    targetY = _y + .5f;
+        // Right up
+        Display.setPixel(GRID_COLUMNS - 1, paddleR.back(), 0);
+        paddleR.pop_back();
+        paddleR.push_front(paddleR.front() - 1);
+        Display.setPixel(GRID_COLUMNS - 1, paddleR.front());
+    }
 }
 
 #endif // MODE_PINGPONGCLOCK
