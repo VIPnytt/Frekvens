@@ -21,14 +21,22 @@ void LargeTickingClockMode::handle()
             hour = local.tm_hour;
             minute = local.tm_min;
             Display.clearFrame();
-            TextHandler h1 = TextHandler(std::to_string(hour / 10), FontMedium);
-            h1.draw(GRID_COLUMNS / 2 - 1 - h1.getWidth(), 0);
-            TextHandler h2 = TextHandler(std::to_string(hour % 10), FontMedium);
-            h2.draw(GRID_COLUMNS - h2.getWidth(), 0);
-            TextHandler m1 = TextHandler(std::to_string(minute / 10), FontMedium);
-            m1.draw(GRID_COLUMNS / 2 - 1 - m1.getWidth(), GRID_ROWS - m1.getHeight());
-            TextHandler m2 = TextHandler(std::to_string(minute % 10), FontMedium);
-            m2.draw(GRID_COLUMNS - m2.getWidth(), GRID_ROWS - m2.getHeight());
+            {
+                TextHandler h1 = TextHandler(std::to_string(hour / 10), FontMedium);
+                h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(), GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
+            }
+            {
+                TextHandler h2 = TextHandler(std::to_string(hour % 10), FontMedium);
+                h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2, GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
+            }
+            {
+                TextHandler m1 = TextHandler(std::to_string(minute / 10), FontMedium);
+                m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(), GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
+            }
+            {
+                TextHandler m2 = TextHandler(std::to_string(minute % 10), FontMedium);
+                m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - m2.getHeight()) / 2);
+            }
             pending = false;
         }
         if (secound != local.tm_sec)
