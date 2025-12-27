@@ -34,18 +34,18 @@ void CountdownMode::configure()
     }
 #endif // EXTENSION_HOMEASSISTANT
 
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("epoch"))
+    Preferences preferences;
+    preferences.begin(name, true);
+    if (preferences.isKey("epoch"))
     {
-        const int64_t _epoch = Storage.getLong64("epoch");
-        Storage.end();
+        const int64_t _epoch = preferences.getLong64("epoch");
+        preferences.end();
         epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
         transmit();
     }
     else
     {
-        Storage.end();
+        preferences.end();
     }
 }
 
@@ -73,14 +73,22 @@ void CountdownMode::handle()
         if (seconds >= 0 && minutes >= 0 && hours >= 0)
         {
             Display.clearFrame();
-            TextHandler _tl = TextHandler(std::to_string(upper / 10), FontMedium);
-            _tl.draw(GRID_COLUMNS / 2 - 1 - _tl.getWidth(), 0);
-            TextHandler _tr = TextHandler(std::to_string(upper % 10), FontMedium);
-            _tr.draw(GRID_COLUMNS / 2 + 1, 0);
-            TextHandler _bl = TextHandler(std::to_string(lower / 10), FontMedium);
-            _bl.draw(GRID_COLUMNS / 2 - 1 - _bl.getWidth(), GRID_ROWS - _bl.getHeight());
-            TextHandler _br = TextHandler(std::to_string(lower % 10), FontMedium);
-            _br.draw(GRID_COLUMNS / 2 + 1, GRID_ROWS - _br.getHeight());
+            {
+                TextHandler tl = TextHandler(std::to_string(upper / 10), FontMedium);
+                tl.draw(GRID_COLUMNS / 2 - 1 - (7 - tl.getWidth()) / 2 - tl.getWidth(), GRID_ROWS / 2 - 1 - (7 - tl.getHeight()) / 2 - tl.getHeight());
+            }
+            {
+                TextHandler tr = TextHandler(std::to_string(upper % 10), FontMedium);
+                tr.draw(GRID_COLUMNS / 2 + 1 + (7 - tr.getWidth()) / 2, GRID_ROWS / 2 - 1 + (7 - tr.getHeight()) / 2 - tr.getHeight());
+            }
+            {
+                TextHandler bl = TextHandler(std::to_string(lower / 10), FontMedium);
+                bl.draw(GRID_COLUMNS / 2 - 1 - (7 - bl.getWidth()) / 2 - bl.getWidth(), GRID_ROWS / 2 + 1 - (7 - bl.getHeight()) / 2);
+            }
+            {
+                TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);
+                br.draw(GRID_COLUMNS / 2 + 1 + (7 - br.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - br.getHeight()) / 2);
+            }
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 done = true;
@@ -98,10 +106,10 @@ void CountdownMode::handle()
 
 void CountdownMode::save()
 {
-    Preferences Storage;
-    Storage.begin(name);
-    Storage.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
-    Storage.end();
+    Preferences preferences;
+    preferences.begin(name);
+    preferences.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
+    preferences.end();
     transmit();
 }
 
