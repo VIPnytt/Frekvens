@@ -81,7 +81,7 @@ class Certificate:
             ctx.minimum_version = ssl.TLSVersion.TLSv1_2
             with ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
                 der = ssock.getpeercert(True)
-                if der is not None:
+                if der:
                     for pem in self._fetch_chain(der):
                         certificate = cryptography.x509.load_pem_x509_certificate(
                             pem.encode("utf8"),
@@ -102,7 +102,7 @@ class Certificate:
         return False
 
     def _add_pem(self, path: pathlib.Path | str) -> None:
-        with open(path, "r", encoding="utf-8") as pem:
+        with open(path, encoding="utf-8") as pem:
             certificate = ""
             encoded = False
             for line in [line.rstrip("\r\n") for line in pem.readlines()]:
@@ -128,7 +128,8 @@ class Certificate:
                 cryptography.hazmat.backends.default_backend()
             ),
         )
-        bundle = struct.pack(">H", len(self.certificates))
+        offsets = []
+        bundle = b""
         for certificate in self.certificates:
             public_key_der = certificate.public_key().public_bytes(
                 cryptography.hazmat.primitives.serialization.Encoding.DER,
@@ -137,10 +138,13 @@ class Certificate:
             subject_name_der = certificate.subject.public_bytes(
                 cryptography.hazmat.backends.default_backend()
             )
-            bundle += struct.pack(">HH", len(subject_name_der), len(public_key_der))
-            bundle += subject_name_der
-            bundle += public_key_der
-        return bundle
+            offsets.append(4 * len(self.certificates) + len(bundle))
+            bundle += (
+                struct.pack("<HH", len(subject_name_der), len(public_key_der))
+                + subject_name_der
+                + public_key_der
+            )
+        return struct.pack("<{0:d}L".format(len(offsets)), *offsets) + bundle
 
     def _get_pem(self) -> str:
         bundle = ""
@@ -151,7 +155,7 @@ class Certificate:
             name = self._get_name(pem)
             if len(bundle):
                 bundle += "\n"
-            if name is not None:
+            if name:
                 bundle += f"{name}\n"
                 bundle += f"{'=' * len(name)}\n"
             bundle += pem.strip() + "\n"
