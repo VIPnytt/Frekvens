@@ -5,6 +5,13 @@
  */
 
 /**
+ * Google Weather
+ *
+ * https://developers.google.com/maps/documentation/weather/current-conditions
+ */
+// #define GOOGLEWEATHER_KEY "secret"
+
+/**
  * Home Assistant weather
  */
 // #define HOMEASSISTANT_HOST "homeassistant.local"

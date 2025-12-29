@@ -153,6 +153,7 @@ jobs:
           MODE_GAMEOFLIFE='true'
           MODE_GAMEOFLIFECLOCK='true'
           MODE_GLITTER='true'
+          MODE_GOOGLEWEATHER='true'
           MODE_HOMEASSISTANTWEATHER='true'
           MODE_HOMETHERMOMETER='true'
           MODE_JAGGEDWAVEFORM='true'
@@ -189,6 +190,7 @@ jobs:
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define FRAME_RATE 60
+          #define GOOGLEWEATHER_KEY "redacted"
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
           #define HOMEASSISTANT_HOST "homeassistant.local"
           #define HOMEASSISTANT_KEY "redacted"

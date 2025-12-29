@@ -3,7 +3,7 @@ import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { MainComponent as ClockMainComponent } from '../components/Clock';
 import { Icon } from '../components/Icon';
-import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GLITTER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
+import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
 import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
 import { WebSocketWS } from '../extensions/WebSocket';
 import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
@@ -23,6 +23,7 @@ import { Main as ModeFireworkMain, name as ModeFireworkName } from '../modes/Fir
 import { Main as ModeFliesMain, name as ModeFliesName } from '../modes/Flies';
 import { Main as ModeGameOfLifeMain, name as ModeGameOfLifeName } from '../modes/GameOfLife';
 import { Main as ModeGlitterMain, name as ModeGlitterName } from '../modes/Glitter';
+import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from '../modes/GoogleWeather';
 import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from '../modes/HomeAssistantWeather';
 import { Main as ModeHomeThermometerMain, Link as ModeHomeThermometerLink, receiver as ModeHomeThermometer, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from '../modes/JaggedWaveform';
@@ -187,6 +188,13 @@ export const Main: Component = () => (
             MODE_GLITTER && (
                 <Match when={ModesMode() === ModeGlitterName}>
                     <ModeGlitterMain />
+                </Match>
+            )
+        }
+        {
+            MODE_GOOGLEWEATHER && (
+                <Match when={ModesMode() === ModeGoogleWeatherName}>
+                    <ModeGoogleWeatherMain />
                 </Match>
             )
         }

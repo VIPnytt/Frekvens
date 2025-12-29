@@ -14,7 +14,7 @@
 
 **Streaming:** [Art-Net](#-art-net) | [Distributed Display Protocol](#-distributed-display-protocol) | [E1.31](#-e131)
 
-**Weather:** [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+**Weather:** [Google Weather](#-google-weather) | [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
 **Miscellaneous:** [Blink](#️-blink) | [Bright](#-bright) | [Firework](#-firework) | [Glitter](#-glitter) | [Leaf fall](#-leaf-fall) | [Metaballs](#-metaballs) | [Pixel sequence](#-pixel-sequence) | [Waveform](#-waveform)
 
@@ -308,6 +308,29 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_GLITTER='true'
 ```
+
+## ☁️ Google Weather
+
+Weather service.
+
+Updated every 15 minutes.
+
+Requires a [API-key](https://developers.google.com/maps/documentation/weather/get-api-key), set using the `GOOGLEWEATHER_KEY` variable.
+
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
+
+```h
+#define GOOGLEWEATHER_KEY "secret"
+```
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+MODE_GOOGLEWEATHER='true'
+```
+
+> [!NOTE]
+> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
 
 ## 🏡 Home Assistant weather
 
