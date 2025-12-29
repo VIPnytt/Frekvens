@@ -22,7 +22,7 @@
 void DeviceService::begin()
 {
     Serial.begin(MONITOR_SPEED);
-    vTaskDelay(UINT8_MAX);
+    vTaskDelay(INT8_MAX);
     ESP_LOGI(name, "Frekvens " VERSION);
     ESP_LOGD(name, MANUFACTURER " " MODEL);
 

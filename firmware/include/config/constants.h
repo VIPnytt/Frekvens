@@ -4,8 +4,6 @@
  * https://github.com/VIPnytt/Frekvens/wiki
  */
 
-#include "secrets.h"
-
 /**
  * Device
  */
