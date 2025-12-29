@@ -12,6 +12,20 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "pip"
+    directory: "/.github/platformio"
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+    labels:
+      - "dependencies"
+      - "no-changelog"
+    milestone: 8
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "increase"
+
+  - package-ecosystem: "pip"
     directory: "/extra/Python"
     cooldown:
       semver-major-days: 90

@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install tools/
 
@@ -70,7 +70,7 @@ jobs:
 
       - run: python -m frekvens.AnimationSplitter --input Animation.csv
 
-      - uses: andstor/file-existence-action@v3
+      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: Animation-1.csv, Animation-2.csv
@@ -81,11 +81,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install tools/
 
@@ -174,11 +174,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install tools/
 
@@ -268,11 +268,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install tools/
 
@@ -361,17 +361,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install -r extra/Python/requirements.txt
 
       - run: python extra/Python/FontGenerator.py --input DejaVuSans --size 8
 
-      - uses: andstor/file-existence-action@v3
+      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: DejaVuSansFont.cpp, DejaVuSansFont.h
@@ -381,11 +381,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: pip install tools/
 
@@ -406,11 +406,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - run: |
           cat <<EOL > Animation.csv
@@ -450,7 +450,7 @@ jobs:
 
       - run: python extra/Python/ModeGenerator.py --input Animation.csv
 
-      - uses: andstor/file-existence-action@v3
+      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: AnimationMode.cpp, AnimationMode.h
@@ -477,7 +477,7 @@ jobs:
 
       - run: python extra/Python/ModeGenerator.py --input Drawing.csv
 
-      - uses: andstor/file-existence-action@v3
+      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: DrawingMode.cpp, DrawingMode.h
@@ -487,13 +487,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: 3.13
 
-      - run: pip install --upgrade platformio
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - uses: actions/checkout@v5
+      - run: pip install -r .github/platformio/requirements.txt
 
       - run: |
           cat <<EOL > .env
@@ -525,7 +525,7 @@ jobs:
       - run: pio run --environment esp32dev
         continue-on-error: true
 
-      - uses: andstor/file-existence-action@v3
+      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: firmware/certs/bundle/ca_roots.pem, firmware/embed/x509_crt_bundle.bin
