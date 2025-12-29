@@ -65,7 +65,8 @@ class Certificate:
         embed.mkdir(parents=True, exist_ok=True)
         x509_crt_bundle = "x509_crt_bundle.bin"
         with open(embed / x509_crt_bundle, "wb") as bin:
-            bin.write(self._get_bin())
+            raw = self._get_bin()
+            bin.write(raw if raw else b"\x00")
 
     def add_der(self, path: pathlib.Path | str) -> None:
         with open(path, "rb") as der:
