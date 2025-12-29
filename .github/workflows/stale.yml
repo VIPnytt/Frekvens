@@ -2,7 +2,7 @@ name: Close stale issues and PRs
 
 on:
   schedule:
-    - cron: '0 6 * * 2'
+    - cron: '0 6 * * *'
 
   workflow_dispatch:
 
@@ -11,12 +11,6 @@ permissions:
   issues: write
   pull-requests: write
 
-env:
-  DAYS_BEFORE_ISSUE_STALE: 60
-  DAYS_BEFORE_ISSUE_CLOSE: 7
-  DAYS_BEFORE_PR_STALE: 90
-  DAYS_BEFORE_PR_CLOSE: 14
-
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -24,9 +18,9 @@ jobs:
       - uses: actions/stale@v9
         with:
           stale-issue-message: No recent activity has been detected on this issue. It's now marked as stale and may be closed soon if no further updates are made.
-          days-before-issue-stale: ${{ env.DAYS_BEFORE_ISSUE_STALE }}
-          days-before-issue-close: ${{ env.DAYS_BEFORE_ISSUE_CLOSE }}
-          stale-pr-message: This pull request hasn't seen any recent activity and is now marked as stale. It will be closed soon if no further updates are made, so please make sure it's up to date and still relevant.
-          days-before-pr-stale: ${{ env.DAYS_BEFORE_PR_STALE }}
-          days-before-pr-close: ${{ env.DAYS_BEFORE_PR_CLOSE }}
+          days-before-issue-stale: 60
+          days-before-issue-close: 30
+          stale-pr-message: This pull request hasn't seen any recent activity and is now marked as stale. Please make sure it's up to date and still relevant.
+          days-before-pr-stale: 90
+          days-before-pr-close: -1
           exempt-pr-labels: 'dependencies'

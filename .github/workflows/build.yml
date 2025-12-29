@@ -25,20 +25,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            .platformio/.cache
-          key: ${{ runner.os }}-pio
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
 
       - run: pip install --upgrade platformio
+
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
@@ -78,9 +71,6 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - run: npm ci
-        working-directory: webapp
-
       - run: pio run
 
   frekvens-extensive:
@@ -89,20 +79,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            .platformio/.cache
-          key: ${{ runner.os }}-pio
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
 
       - run: pip install --upgrade platformio
+
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
@@ -224,9 +207,6 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-      - run: npm ci
-        working-directory: webapp
-
       - run: pio run
 
   frekvens-spotlight:
@@ -253,20 +233,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            .platformio/.cache
-          key: ${{ runner.os }}-pio
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
 
       - run: pip install --upgrade platformio
+
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
@@ -303,8 +276,5 @@ jobs:
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"
           EOL
-
-      - run: npm ci
-        working-directory: webapp
 
       - run: pio run

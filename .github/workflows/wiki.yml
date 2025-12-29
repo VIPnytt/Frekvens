@@ -5,13 +5,8 @@ on:
     branches: [main]
     paths:
       - docs/wiki/**
-      - .github/workflows/wiki.yml
 
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -21,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
       - uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
           path: docs/wiki

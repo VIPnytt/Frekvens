@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install tools/
 
@@ -73,7 +73,7 @@ jobs:
       - uses: andstor/file-existence-action@v3
         with:
           fail: true
-          files: "Animation-1.csv, Animation-2.csv"
+          files: Animation-1.csv, Animation-2.csv
 
   art-net-streamer:
     name: Art-Net streamer
@@ -81,11 +81,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install tools/
 
@@ -174,11 +174,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install tools/
 
@@ -268,11 +268,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install tools/
 
@@ -361,11 +361,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install -r extra/Python/requirements.txt
 
@@ -374,18 +374,18 @@ jobs:
       - uses: andstor/file-existence-action@v3
         with:
           fail: true
-          files: "DejaVuSansFont.cpp, DejaVuSansFont.h"
+          files: DejaVuSansFont.cpp, DejaVuSansFont.h
 
   home-thermometer-demo:
     name: Home thermometer demo
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: pip install tools/
 
@@ -406,11 +406,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
+
+      - uses: actions/checkout@v5
 
       - run: |
           cat <<EOL > Animation.csv
@@ -453,7 +453,7 @@ jobs:
       - uses: andstor/file-existence-action@v3
         with:
           fail: true
-          files: "AnimationMode.cpp, AnimationMode.h"
+          files: AnimationMode.cpp, AnimationMode.h
 
       - run: |
           cat <<EOL > Drawing.csv
@@ -480,4 +480,66 @@ jobs:
       - uses: andstor/file-existence-action@v3
         with:
           fail: true
-          files: "DrawingMode.cpp, DrawingMode.h"
+          files: DrawingMode.cpp, DrawingMode.h
+
+  x509_crt_bundle:
+    name: x509 certificate bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - run: pip install --upgrade platformio
+
+      - uses: actions/checkout@v5
+
+      - run: |
+          cat <<EOL > .env
+          HOSTNAME='frekvens'
+          IKEA_FREKVENS='true'
+          MODE_GOOGLEWEATHER='true'
+          MODE_OPENMETEO='true'
+          MODE_OPENWEATHER='true'
+          MODE_WTTRIN='true'
+          MODE_YR='true'
+          NAME='Frekvens'
+          EOL
+
+      - run: |
+          cat <<EOL > firmware/include/config/secrets.h
+          #pragma once
+          #define GOOGLEWEATHER_KEY "redacted"
+          #define LATITUDE "0.000"
+          #define LONGITUDE "0.000"
+          #define OPENWEATHER_KEY "redacted"
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
+      - run: pio run --environment esp32dev
+        continue-on-error: true
+
+      - uses: andstor/file-existence-action@v3
+        with:
+          fail: true
+          files: firmware/certs/bundle/ca_roots.pem, firmware/embed/x509_crt_bundle.bin
+
+      - run: |
+          git clone --branch release/v5.5 --filter=blob:none --sparse https://github.com/espressif/esp-idf.git
+          cd esp-idf
+          git sparse-checkout add components/mbedtls/esp_crt_bundle
+
+      - run: |
+          python esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py --input firmware/certs/bundle
+          if cmp x509_crt_bundle firmware/embed/x509_crt_bundle.bin; then
+            echo "Root CA bundles identical."
+            exit 0
+          fi
+          echo "Unexpected error or file mismatch."
+          exit 1
