@@ -23,6 +23,7 @@
 #include "modes/GameOfLifeClockMode.h"
 #include "modes/GameOfLifeMode.h"
 #include "modes/GlitterMode.h"
+#include "modes/GoogleWeatherMode.h"
 #include "modes/HomeAssistantWeatherMode.h"
 #include "modes/HomeThermometerMode.h"
 #include "modes/JaggedWaveformMode.h"
@@ -121,6 +122,9 @@ private:
 #endif
 #if MODE_GLITTER
         new GlitterMode(),
+#endif
+#if MODE_GOOGLEWEATHER
+        new GoogleWeatherMode(),
 #endif
 #if MODE_HOMEASSISTANTWEATHER
         new HomeAssistantWeatherMode(),

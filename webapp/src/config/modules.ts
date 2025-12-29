@@ -26,6 +26,7 @@ export const MODE_FIREWORK: boolean = import.meta.env.VITE_MODE_FIREWORK === 'tr
 export const MODE_FLIES: boolean = import.meta.env.VITE_MODE_FLIES === 'true';
 export const MODE_GAMEOFLIFE: boolean = import.meta.env.VITE_MODE_GAMEOFLIFE === 'true';
 export const MODE_GLITTER: boolean = import.meta.env.VITE_MODE_GLITTER === 'true';
+export const MODE_GOOGLEWEATHER: boolean = import.meta.env.VITE_MODE_GOOGLEWEATHER === 'true';
 export const MODE_HOMEASSISTANTWEATHER: boolean = import.meta.env.VITE_MODE_HOMEASSISTANTWEATHER === 'true';
 export const MODE_HOMETHERMOMETER: boolean = import.meta.env.VITE_MODE_HOMETHERMOMETER === 'true';
 export const MODE_JAGGEDWAVEFORM: boolean = import.meta.env.VITE_MODE_JAGGEDWAVEFORM === 'true';
