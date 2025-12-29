@@ -10,7 +10,7 @@ class Ota:
     ENV_OPTION: str = "EXTENSION_OTA"
     NAME: str = "OTA"
     project: "Frekvens"
-    _auth: str | None
+    auth: str | None = None
 
     def __init__(self, project: "Frekvens") -> None:
         self.project = project
@@ -20,7 +20,7 @@ class Ota:
             "OTA_KEY" in self.project.dotenv
             and len(self.project.dotenv["OTA_KEY"]) != 64
         ):
-            self._auth = self.project.dotenv["OTA_KEY"]
+            self.auth = self.project.dotenv["OTA_KEY"]
             self.project.dotenv["OTA_KEY"] = hashlib.sha256(
                 self.project.dotenv["OTA_KEY"].encode()
             ).hexdigest()
@@ -48,9 +48,9 @@ class Ota:
             self.project.env.Replace(
                 UPLOAD_PORT=f"{self.project.dotenv['HOSTNAME']}.local"
             )
-            if self._auth is not None:
+            if self.auth:
                 self.project.env.Append(
                     UPLOAD_FLAGS=[
-                        f"-a={self._auth}",
+                        f"-a={self.auth}",
                     ]
                 )
