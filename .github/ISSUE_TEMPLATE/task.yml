@@ -33,7 +33,7 @@ body:
     attributes:
       label: Dependencies
       description: Other issues, PRs, or external constraints that must be resolved first.
-      placeholder: e.g. Blocks release 2.0.0; depends on #123
+      placeholder: e.g. Blocks release v2.1.0
 
   - type: textarea
     id: notes
