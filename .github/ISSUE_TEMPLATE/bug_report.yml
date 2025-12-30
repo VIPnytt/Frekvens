@@ -13,7 +13,7 @@ body:
     attributes:
       label: Version
       description: Which version did you encounter the bug on?
-      placeholder: e.g. v1.2.0 or latest commit from main branch
+      placeholder: e.g. v2.0.1 or main branch
 
   - type: textarea
     id: bug-summary

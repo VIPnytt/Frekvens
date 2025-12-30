@@ -1,6 +1,4 @@
-### Summary
-
-<!-- Briefly describe what this pull request does and why. What problem does it solve, or what improvement does it bring? -->
+<!-- Briefly summarize what this pull request does and why. What problem does it solve, or what improvement does it bring? -->
 
 ### Key changes
 
