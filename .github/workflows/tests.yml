@@ -502,6 +502,7 @@ jobs:
           MODE_GOOGLEWEATHER='true'
           MODE_OPENMETEO='true'
           MODE_OPENWEATHER='true'
+          MODE_WORLDWEATHERONLINE='true'
           MODE_WTTRIN='true'
           MODE_YR='true'
           NAME='Frekvens'
@@ -520,6 +521,7 @@ jobs:
           #define PIN_SCLK 4
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"
+          #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
       - run: pio run --environment esp32dev

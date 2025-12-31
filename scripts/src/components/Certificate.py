@@ -14,6 +14,7 @@ import urllib.request
 
 from ..modes.GoogleWeather import GoogleWeather
 from ..modes.OpenMeteo import OpenMeteo
+from ..modes.OpenWeather import OpenWeather
 from ..modes.WorldWeatherOnline import WorldWeatherOnline
 from ..modes.WttrIn import WttrIn
 from ..modes.Yr import Yr
@@ -35,6 +36,7 @@ class Certificate:
         for option, hosts in {
             GoogleWeather.ENV_OPTION: GoogleWeather.HOST_WHITELIST,
             OpenMeteo.ENV_OPTION: OpenMeteo.HOST_WHITELIST,
+            OpenWeather.ENV_OPTION: OpenWeather.HOST_WHITELIST,
             WorldWeatherOnline.ENV_OPTION: WorldWeatherOnline.HOST_WHITELIST,
             WttrIn.ENV_OPTION: WttrIn.HOST_WHITELIST,
             Yr.ENV_OPTION: Yr.HOST_WHITELIST,
