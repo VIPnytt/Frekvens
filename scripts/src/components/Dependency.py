@@ -49,32 +49,45 @@ class Dependency:
 
     def validate(self) -> None:
         if self.proceed and packaging.version.parse(VERSION).is_devrelease:
-            try:
-                self._check(self.project.env.GetProjectOption("platform"))
+            self._check("platform", self.project.env.GetProjectOption("platform"))
+            if self.proceed:
                 for pkg in self.project.env.GetProjectOption("platform_packages", []):
-                    self._check(pkg.split("@", 1)[-1].strip())
+                    self._check("tool", pkg.split("@", 1)[-1].strip())
+                    if not self.proceed:
+                        return
                 for dep in self.project.env.GetProjectOption("lib_deps"):
-                    self._check(dep)
-            except httpx.HTTPError as e:
-                logging.warning("Dependency update check failed: %s", e)
-                self.proceed = False
+                    self._check("library", dep)
+                    if not self.proceed:
+                        return
 
-    def _check(self, url: str) -> bool | None:
-        match = re.compile(
-            r"https://github\.com/"
-            r"(?P<repository>[^/]+/[^/]+)/"
-            r"(?:archive/|releases/download/)"
-            r"(?P<ref>[^/]+?)"
-            r"(?:\.[a-z][^/]*|/.*|)$"
-        ).search(url)
+    def _check(self, type: str, query: str) -> bool | None:
+        try:
+            return (
+                self._github(query)
+                if "https://github.com/" in query
+                else self._platformio(type, query)
+            )
+        except httpx.HTTPError as e:
+            logging.warning("Dependency update check failed: %s", e)
+            self.proceed = False
+        except packaging.version.InvalidVersion as e:
+            logging.warning("Dependency update check failed: %s", e)
+        return None
+
+    def _github(self, url: str) -> bool | None:
+        match = re.search(
+            r"^(?:git\+)?https://github\.com/(?P<repository>[^/]+/[^/#]+)(?:\.git\#(?:(?P<sha_git>[0-9a-fA-F]{7,40})|(?P<tag_git>[A-Za-z0-9._-]+))|/(?:archive/(?:(?P<sha_archive>[0-9a-fA-F]{7,40})|refs/tags/(?P<tag_archive>[A-Za-z0-9._-]+))\.(?:zip|tar\.gz)|releases/download/(?P<tag_release>[A-Za-z0-9._-]+)/[^/]+\.(?:zip|tar\.gz)))$",
+            url,
+        )
         if not match:
+            logging.debug("Unsupported GitHub format: %s", url)
             return None
         repository = match.group("repository")
-        ref = match.group("ref")
+        local_sha = match.group("sha_archive") or match.group("sha_git")
         local_tag = (
-            ref.split("refs/tags/", 1)[1]
-            if ref.startswith("refs/tags/")
-            else (None if re.fullmatch(r"[0-9a-fA-F]{7,40}", ref) else ref)
+            match.group("tag_archive")
+            or match.group("tag_git")
+            or match.group("tag_release")
         )
         if not local_tag:
             with open(
@@ -82,8 +95,8 @@ class Dependency:
                 encoding="utf-8",
             ) as ini:
                 for line in ini:
-                    if url in line and ";" in line:
-                        comment = line.split(";", 1)[-1].strip()
+                    if url in line:
+                        _, _, comment = line.partition(";")
                         if comment:
                             local_tag = comment.split(maxsplit=1)[0]
                             break
@@ -101,19 +114,52 @@ class Dependency:
                 )
                 return True
             return False
-        local_sha = None if re.fullmatch(r"[0-9a-fA-F]{7,40}", ref) else ref
         if local_sha:
-            if (
+            latest_sha: str = (
+                self.github.get(f"/repos/{repository}/commits/{latest_tag}")
+                .raise_for_status()
+                .json()["sha"]
+            )
+            status = (
                 self.github.get(
-                    f"/repos/{repository}/compare/{local_sha}...{self.github.get(f'/repos/{repository}/commits/{latest_tag}').raise_for_status().json()['sha']}"
+                    f"/repos/{repository}/compare/{local_sha}...{latest_sha}"
                 )
                 .raise_for_status()
                 .json()["status"]
-                == "behind"
-            ):
+            )
+            if status == "behind":
                 print(
                     f"Dependency update available: {repository}, {latest_version.public}"
                 )
                 return True
             return False
         return None
+
+    def _platformio(self, type: str, query: str) -> bool | None:
+        match = re.search(
+            r"^(?P<owner>[\w]+)/(?P<package>[\w]+)\s*@\s*[!<=>^~]*\s*(?P<version>[0-9]+(?:\.[0-9]+)*)(,.*)?$",
+            query,
+        )
+        if not match:
+            logging.debug("Unsupported PlatformIO format: %s", query)
+            return None
+        owner = match.group("owner")
+        package = match.group("package")
+        local = packaging.version.Version(match.group("version"))
+        latest = packaging.version.Version(
+            httpx.get(
+                f"https://api.registry.platformio.org/v3/packages/{owner}/{type}/{package}",
+                headers={
+                    "Accept": "application/json",
+                    "User-Agent": self.github.headers["User-Agent"],
+                },
+            )
+            .raise_for_status()
+            .json()["version"]["name"]
+        )
+        if latest > local:
+            print(
+                f"Dependency update available: {owner}/{package}, {local.public} → {latest.public}"
+            )
+            return True
+        return False
