@@ -30,6 +30,7 @@ export const MODE_GOOGLEWEATHER: boolean = import.meta.env.VITE_MODE_GOOGLEWEATH
 export const MODE_HOMEASSISTANTWEATHER: boolean = import.meta.env.VITE_MODE_HOMEASSISTANTWEATHER === 'true';
 export const MODE_HOMETHERMOMETER: boolean = import.meta.env.VITE_MODE_HOMETHERMOMETER === 'true';
 export const MODE_JAGGEDWAVEFORM: boolean = import.meta.env.VITE_MODE_JAGGEDWAVEFORM === 'true';
+export const MODE_LARGETICKINGCLOCK: boolean = import.meta.env.VITE_MODE_LARGETICKINGCLOCK === 'true';
 export const MODE_LEAFFALL: boolean = import.meta.env.VITE_MODE_LEAFFALL === 'true';
 export const MODE_LINES: boolean = import.meta.env.VITE_MODE_LINES === 'true';
 export const MODE_METABALLS: boolean = import.meta.env.VITE_MODE_METABALLS === 'true';
