@@ -14,7 +14,7 @@ private:
     uint8_t
         hour,
         minute,
-        secound;
+        second;
 
 public:
     SmallTickingClockMode() : ModeModule("Small ticking clock") {};
