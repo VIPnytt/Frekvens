@@ -1,7 +1,6 @@
 import { mdiDotsGrid, mdiImageFrame } from '@mdi/js';
 import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
-import { MainComponent as ClockMainComponent } from '../components/Clock';
 import { Icon } from '../components/Icon';
 import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
 import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
@@ -69,7 +68,7 @@ export const receiver = (json: any) => {
 export const Main: Component = () => (
     <Switch
         fallback={
-            getMode().toLowerCase().includes("clock") ? <ClockMainComponent /> : <MainComponent />
+            <MainComponent />
         }
     >
         {
