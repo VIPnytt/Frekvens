@@ -1,11 +1,32 @@
 #if MODE_LARGETICKINGCLOCK
 
+#include <Preferences.h>
+
 #include "config/constants.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/LargeTickingClockMode.h"
+#include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+void LargeTickingClockMode::configure()
+{
+    Preferences Storage;
+
+    Storage.begin(name, true);
+
+    if (Storage.isKey("ticking"))
+    {
+        ticking = Storage.getBool("ticking");
+        Storage.end();
+        transmit();
+    }
+    else
+    {
+        Storage.end();
+    }
+}
 
 void LargeTickingClockMode::begin()
 {
@@ -39,12 +60,38 @@ void LargeTickingClockMode::handle()
             }
             pending = false;
         }
-        if (secound != local.tm_sec)
+        if (second != local.tm_sec && ticking)
         {
-            Display.setPixel(GRID_COLUMNS / 2 - 8 + (secound + 2) / 4, secound % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
-            secound = local.tm_sec;
-            Display.setPixel(GRID_COLUMNS / 2 - 8 + (secound + 2) / 4, secound % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
+            Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
+            second = local.tm_sec;
+            Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
         }
+    }
+}
+
+void LargeTickingClockMode::setTicking(const bool _ticking)
+{
+    ticking = _ticking;
+    Preferences Storage;
+    Storage.begin(name);
+    Storage.putBool("ticking", ticking);
+    Storage.end();
+    pending = true;
+}
+
+void LargeTickingClockMode::transmit()
+{
+    JsonDocument doc;
+    doc["ticking"] = ticking;
+    Device.transmit(doc, name);
+}
+
+void LargeTickingClockMode::onReceive(const JsonDocument doc, const char *const source)
+{
+    // Font
+    if (doc["ticking"].is<bool>())
+    {
+        setTicking(doc["ticking"].as<bool>());
     }
 }
 
