@@ -4,6 +4,7 @@ import os
 import packaging.version
 import re
 import typing
+import urllib.parse
 
 from ..config.version import VERSION
 
@@ -52,7 +53,8 @@ class Dependency:
             self._check("platform", self.project.env.GetProjectOption("platform"))
             if self.proceed:
                 for pkg in self.project.env.GetProjectOption("platform_packages", []):
-                    self._check("tool", pkg.split("@", 1)[-1].strip())
+                    _, _, uri = pkg.partition("@")
+                    self._check("tool", uri.strip())
                     if not self.proceed:
                         return
                 for dep in self.project.env.GetProjectOption("lib_deps"):
@@ -61,10 +63,11 @@ class Dependency:
                         return
 
     def _check(self, type: str, query: str) -> bool | None:
+        parsed = urllib.parse.urlparse(query, allow_fragments=False)
         try:
             return (
                 self._github(query)
-                if "https://github.com/" in query
+                if parsed.scheme and parsed.netloc and parsed.hostname == "github.com"
                 else self._platformio(type, query)
             )
         except httpx.HTTPError as e:
@@ -80,7 +83,7 @@ class Dependency:
             url,
         )
         if not match:
-            logging.debug("Unsupported GitHub format: %s", url)
+            logging.debug("Unsupported GitHub dependency format: %s", url)
             return None
         repository = match.group("repository")
         local_sha = match.group("sha_archive") or match.group("sha_git")
@@ -90,16 +93,12 @@ class Dependency:
             or match.group("tag_release")
         )
         if not local_tag:
-            with open(
-                os.path.join(self.project.env["PROJECT_DIR"], "platformio.ini"),
-                encoding="utf-8",
-            ) as ini:
+            with open(os.path.join("platformio.ini"), encoding="utf-8") as ini:
                 for line in ini:
-                    if url in line:
-                        _, _, comment = line.partition(";")
-                        if comment:
-                            local_tag = comment.split(maxsplit=1)[0]
-                            break
+                    text, _, comment = line.partition(";")
+                    if url in text and comment:
+                        local_tag = comment.split(maxsplit=1)[0]
+                        break
         latest_tag: str = (
             self.github.get(f"/repos/{repository}/releases/latest")
             .raise_for_status()
@@ -141,7 +140,7 @@ class Dependency:
             query,
         )
         if not match:
-            logging.debug("Unsupported PlatformIO format: %s", query)
+            logging.debug("Unsupported PlatformIO dependency format: %s", query)
             return None
         owner = match.group("owner")
         package = match.group("package")
