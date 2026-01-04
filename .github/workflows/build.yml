@@ -256,25 +256,3 @@ jobs:
           EOL
 
           pio run --environment ${{ matrix.pioenv }}
-
-  ikea-frekvens-led-spotlight:
-    name: ESPHome - IKEA Frekvens LED spotlight
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set up Frekvens
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - name: secrets.yaml
-        run: |
-          cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
-          api_key: "redacted"
-          ota_password: "redacted"
-          wifi_password: "redacted"
-          wifi_ssid: "redacted"
-          EOL
-
-      - name: ESPHome
-        uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
-        with:
-          yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
