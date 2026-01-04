@@ -50,15 +50,219 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
+      fail-fast: false
       matrix:
-        pioenv: ${{ fromJson(needs.pio.outputs.environments) }}
+        config:
+          - name: minimal
+            env: |
+              EXTENSION_BUTTON='true'
+              EXTENSION_OTA='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              HOSTNAME='frekvens'
+              IKEA_FREKVENS='true'
+              MODE_ARROW='true'
+              MODE_BLINDS='true'
+              MODE_EQUALIZER='true'
+              MODE_JAGGEDWAVEFORM='true'
+              MODE_RING='true'
+              MODE_SMOOTHWAVEFORM='true'
+              NAME='Frekvens'
+            secrets: |
+              #pragma once
+              #define PIN_CS 1
+              #define PIN_MOSI 2
+              #define PIN_OE 3
+              #define PIN_SCLK 4
+              #define PIN_SW1 5
+              #define PIN_SW2 6
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+
+          - name: typical
+            env: |
+              EXTENSION_BUTTON='true'
+              EXTENSION_MESSAGE='true'
+              EXTENSION_MICROPHONE='true'
+              EXTENSION_PLAYLIST='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              HOSTNAME='frekvens'
+              IKEA_FREKVENS='true'
+              MODE_ANIMATION='true'
+              MODE_ARROW='true'
+              MODE_BINARYCLOCK='true'
+              MODE_BINARYEPOCH='true'
+              MODE_BLINDS='true'
+              MODE_BLINK='true'
+              MODE_BOLDCLOCK='true'
+              MODE_BREAKOUTCLOCK='true'
+              MODE_BRIGHT='true'
+              MODE_CIRCLE='true'
+              MODE_COUNTDOWN='true'
+              MODE_DRAW='true'
+              MODE_EQUALIZER='true'
+              MODE_FIREWORK='true'
+              MODE_FLIES='true'
+              MODE_GAMEOFLIFE='true'
+              MODE_GAMEOFLIFECLOCK='true'
+              MODE_GLITTER='true'
+              MODE_JAGGEDWAVEFORM='true'
+              MODE_LARGETICKINGCLOCK='true'
+              MODE_LEAFFALL='true'
+              MODE_LINES='true'
+              MODE_METABALLS='true'
+              MODE_NOISE='true'
+              MODE_PINGPONG='true'
+              MODE_PINGPONGCLOCK='true'
+              MODE_PIXELSEQUENCE='true'
+              MODE_RAIN='true'
+              MODE_RING='true'
+              MODE_SCAN='true'
+              MODE_SMALLCLOCK='true'
+              MODE_SMALLTICKINGCLOCK='true'
+              MODE_SMOOTHWAVEFORM='true'
+              MODE_SNAKE='true'
+              MODE_SNAKECLOCK='true'
+              MODE_STARS='true'
+              MODE_TICKER='true'
+              MODE_WAVEFORM='true'
+              MODE_WTTRIN='true'
+              NAME='Frekvens'
+              TIME_ZONE='Etc/Universal'
+            secrets: |
+              #pragma once
+              #define LATITUDE "0.000"
+              #define LONGITUDE "0.000"
+              #define PIN_CS 1
+              #define PIN_MIC 2
+              #define PIN_MOSI 3
+              #define PIN_OE 4
+              #define PIN_SCLK 5
+              #define PIN_SW1 6
+              #define PIN_SW2 7
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+
+          - name: extensive
+            env: |
+              EXTENSION_ALEXA='true'
+              EXTENSION_BUTTON='true'
+              EXTENSION_HEAP='true'
+              EXTENSION_HOMEASSISTANT='true'
+              EXTENSION_INFRARED='true'
+              EXTENSION_MESSAGE='true'
+              EXTENSION_MICROPHONE='true'
+              EXTENSION_MQTT='true'
+              EXTENSION_OTA='true'
+              EXTENSION_PHOTOCELL='true'
+              EXTENSION_PLAYLIST='true'
+              EXTENSION_RESTFUL='true'
+              EXTENSION_RTC='true'
+              EXTENSION_SERVERSENTEVENTS='true'
+              EXTENSION_SIGNAL='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              FONT_BRAILLE='true'
+              HOSTNAME='frekvens'
+              IKEA_FREKVENS='true'
+              MODE_ANIMATION='true'
+              MODE_ARROW='true'
+              MODE_ARTNET='true'
+              MODE_BINARYCLOCK='true'
+              MODE_BINARYEPOCH='true'
+              MODE_BLINDS='true'
+              MODE_BLINK='true'
+              MODE_BOLDCLOCK='true'
+              MODE_BREAKOUTCLOCK='true'
+              MODE_BRIGHT='true'
+              MODE_CIRCLE='true'
+              MODE_COUNTDOWN='true'
+              MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
+              MODE_DRAW='true'
+              MODE_E131='true'
+              MODE_EQUALIZER='true'
+              MODE_FIREWORK='true'
+              MODE_FLIES='true'
+              MODE_GAMEOFLIFE='true'
+              MODE_GAMEOFLIFECLOCK='true'
+              MODE_GLITTER='true'
+              MODE_GOOGLEWEATHER='true'
+              MODE_HOMEASSISTANTWEATHER='true'
+              MODE_HOMETHERMOMETER='true'
+              MODE_JAGGEDWAVEFORM='true'
+              MODE_LARGETICKINGCLOCK='true'
+              MODE_LEAFFALL='true'
+              MODE_LINES='true'
+              MODE_METABALLS='true'
+              MODE_NOISE='true'
+              MODE_OPENMETEO='true'
+              MODE_OPENWEATHER='true'
+              MODE_PINGPONG='true'
+              MODE_PINGPONGCLOCK='true'
+              MODE_PIXELSEQUENCE='true'
+              MODE_RAIN='true'
+              MODE_RING='true'
+              MODE_SCAN='true'
+              MODE_SMALLCLOCK='true'
+              MODE_SMALLTICKINGCLOCK='true'
+              MODE_SMOOTHWAVEFORM='true'
+              MODE_SNAKE='true'
+              MODE_SNAKECLOCK='true'
+              MODE_STARS='true'
+              MODE_TICKER='true'
+              MODE_WAVEFORM='true'
+              MODE_WORLDWEATHERONLINE='true'
+              MODE_WTTRIN='true'
+              MODE_YR='true'
+              NAME='Frekvens'
+              OTA_KEY='redacted'
+              TIME_ZONE='Etc/Universal'
+            secrets: |
+              #pragma once
+              #define FRAME_RATE 60
+              #define GOOGLEWEATHER_KEY "redacted"
+              #define HOMEASSISTANT_ENTITY "weather.forecast_home"
+              #define HOMEASSISTANT_HOST "homeassistant.local"
+              #define HOMEASSISTANT_KEY "redacted"
+              #define HOMEASSISTANT_PORT 8123
+              #define LATITUDE "0.000"
+              #define LOCATION "redacted"
+              #define LONGITUDE "0.000"
+              #define MQTT_HOST "mqtt.local"
+              #define MQTT_PORT 1883
+              #define MQTT_USER "redacted"
+              #define MQTT_KEY "redacted"
+              #define OPENMETEO_KEY "redacted"
+              #define OPENWEATHER_KEY "redacted"
+              #define PIN_CS 1
+              #define PIN_INT 2
+              #define PIN_IR 3
+              #define PIN_LDR 4
+              #define PIN_MIC 5
+              #define PIN_MOSI 6
+              #define PIN_OE 7
+              #define PIN_SCL 8
+              #define PIN_SCLK 9
+              #define PIN_SDA 10
+              #define PIN_SW1 11
+              #define PIN_SW2 12
+              #define RTC_DS3232
+              #define TEMPERATURE_CELSIUS true
+              #define WIFI_COUNTRY "01"
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+              #define WORLDWEATHERONLINE_KEY "redacted"
+
+        environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
           - node-version: 20
             python-version: 3.11
 
           - node-version: 25
             python-version: 3.13
+
+      max-parallel: 3
 
     steps:
       - name: Set up Node.js
@@ -77,157 +281,11 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Build minimal
+      - name: Build Frekvens
         run: |
-          cat <<EOL > .env
-          EXTENSION_BUTTON='true'
-          EXTENSION_MICROPHONE='true'
-          EXTENSION_OTA='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          HOSTNAME='frekvens'
-          IKEA_FREKVENS='true'
-          MODE_ARROW='true'
-          MODE_BLINDS='true'
-          MODE_EQUALIZER='true'
-          MODE_JAGGEDWAVEFORM='true'
-          MODE_RING='true'
-          MODE_SMOOTHWAVEFORM='true'
-          NAME='Frekvens'
-          EOL
-
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MIC 2
-          #define PIN_MOSI 3
-          #define PIN_OE 4
-          #define PIN_SCLK 5
-          #define PIN_SW1 6
-          #define PIN_SW2 7
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-          pio run --environment ${{ matrix.pioenv }}
-
-      - name: PlatformIO clean
-        run: pio run --target clean
-
-      - name: Build extensive
-        run: |
-          cat <<EOL > .env
-          EXTENSION_ALEXA='true'
-          EXTENSION_BUTTON='true'
-          EXTENSION_HEAP='true'
-          EXTENSION_HOMEASSISTANT='true'
-          EXTENSION_INFRARED='true'
-          EXTENSION_MESSAGE='true'
-          EXTENSION_MICROPHONE='true'
-          EXTENSION_MQTT='true'
-          EXTENSION_PHOTOCELL='true'
-          EXTENSION_PLAYLIST='true'
-          EXTENSION_RESTFUL='true'
-          EXTENSION_RTC='true'
-          EXTENSION_SERVERSENTEVENTS='true'
-          EXTENSION_SIGNAL='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          FONT_BRAILLE='true'
-          HOSTNAME='frekvens'
-          IKEA_FREKVENS='true'
-          MODE_ANIMATION='true'
-          MODE_ARROW='true'
-          MODE_ARTNET='true'
-          MODE_BINARYCLOCK='true'
-          MODE_BINARYEPOCH='true'
-          MODE_BLINDS='true'
-          MODE_BLINK='true'
-          MODE_BOLDCLOCK='true'
-          MODE_BREAKOUTCLOCK='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_COUNTDOWN='true'
-          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
-          MODE_DRAW='true'
-          MODE_E131='true'
-          MODE_EQUALIZER='true'
-          MODE_FIREWORK='true'
-          MODE_FLIES='true'
-          MODE_GAMEOFLIFE='true'
-          MODE_GAMEOFLIFECLOCK='true'
-          MODE_GLITTER='true'
-          MODE_GOOGLEWEATHER='true'
-          MODE_HOMEASSISTANTWEATHER='true'
-          MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
-          MODE_LARGETICKINGCLOCK='true'
-          MODE_LEAFFALL='true'
-          MODE_LINES='true'
-          MODE_METABALLS='true'
-          MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_OPENWEATHER='true'
-          MODE_PINGPONG='true'
-          MODE_PINGPONGCLOCK='true'
-          MODE_PIXELSEQUENCE='true'
-          MODE_RAIN='true'
-          MODE_RING='true'
-          MODE_SCAN='true'
-          MODE_SMALLCLOCK='true'
-          MODE_SMALLTICKINGCLOCK='true'
-          MODE_SMOOTHWAVEFORM='true'
-          MODE_SNAKE='true'
-          MODE_SNAKECLOCK='true'
-          MODE_STARS='true'
-          MODE_TICKER='true'
-          MODE_WAVEFORM='true'
-          MODE_WORLDWEATHERONLINE='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
-          NAME='Frekvens'
-          OTA_KEY='redacted'
-          TIME_ZONE='Etc/Universal'
-          EOL
-
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define FRAME_RATE 60
-          #define GOOGLEWEATHER_KEY "redacted"
-          #define HOMEASSISTANT_ENTITY "weather.forecast_home"
-          #define HOMEASSISTANT_HOST "homeassistant.local"
-          #define HOMEASSISTANT_KEY "redacted"
-          #define HOMEASSISTANT_PORT 8123
-          #define LATITUDE "0.000"
-          #define LOCATION "redacted"
-          #define LONGITUDE "0.000"
-          #define MQTT_HOST "mqtt.local"
-          #define MQTT_PORT 1883
-          #define MQTT_USER "redacted"
-          #define MQTT_KEY "redacted"
-          #define OPENMETEO_KEY "redacted"
-          #define OPENWEATHER_KEY "redacted"
-          #define PIN_CS 1
-          #define PIN_INT 2
-          #define PIN_IR 3
-          #define PIN_LDR 4
-          #define PIN_MIC 5
-          #define PIN_MOSI 6
-          #define PIN_OE 7
-          #define PIN_SCL 8
-          #define PIN_SCLK 9
-          #define PIN_SDA 10
-          #define PIN_SW1 11
-          #define PIN_SW2 12
-          #define RTC_DS3232
-          #define TEMPERATURE_CELSIUS true
-          #define WIFI_COUNTRY "01"
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          #define WORLDWEATHERONLINE_KEY "redacted"
-          EOL
-
-          pio run --environment ${{ matrix.pioenv }}
+          printf "%s\n" "${{ matrix.config.env }}" > .env
+          printf "%s\n" "${{ matrix.config.secrets }}" > firmware/include/config/secrets.h
+          pio run --environment ${{ matrix.environment }}
 
   ikea-obegransad-led-wall-lamp:
     name: IKEA Obegränsad LED wall lamp
@@ -235,15 +293,214 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
-        pioenv: ${{ fromJson(needs.pio.outputs.environments) }}
+        config:
+          - name: minimal
+            env: |
+              EXTENSION_BUTTON='true'
+              EXTENSION_OTA='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              HOSTNAME='obegransad'
+              IKEA_OBEGRANSAD='true'
+              MODE_BRIGHT='true'
+              MODE_CIRCLE='true'
+              MODE_LINES='true'
+              MODE_NOISE='true'
+              MODE_RAIN='true'
+              MODE_SCAN='true'
+              MODE_STARS='true'
+              NAME='Obegränsad'
+            secrets: |
+              #pragma once
+              #define PIN_CS 1
+              #define PIN_MOSI 2
+              #define PIN_OE 3
+              #define PIN_SCLK 4
+              #define PIN_SW2 5
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+
+          - name: typical
+            env: |
+              EXTENSION_BUTTON='true'
+              EXTENSION_MESSAGE='true'
+              EXTENSION_PLAYLIST='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              HOSTNAME='obegransad'
+              IKEA_OBEGRANSAD='true'
+              MODE_ANIMATION='true'
+              MODE_ARROW='true'
+              MODE_BINARYCLOCK='true'
+              MODE_BINARYEPOCH='true'
+              MODE_BLINDS='true'
+              MODE_BLINK='true'
+              MODE_BOLDCLOCK='true'
+              MODE_BREAKOUTCLOCK='true'
+              MODE_BRIGHT='true'
+              MODE_CIRCLE='true'
+              MODE_COUNTDOWN='true'
+              MODE_DRAW='true'
+              MODE_EQUALIZER='true'
+              MODE_FIREWORK='true'
+              MODE_FLIES='true'
+              MODE_GAMEOFLIFE='true'
+              MODE_GAMEOFLIFECLOCK='true'
+              MODE_GLITTER='true'
+              MODE_JAGGEDWAVEFORM='true'
+              MODE_LARGETICKINGCLOCK='true'
+              MODE_LEAFFALL='true'
+              MODE_LINES='true'
+              MODE_METABALLS='true'
+              MODE_NOISE='true'
+              MODE_PINGPONG='true'
+              MODE_PINGPONGCLOCK='true'
+              MODE_PIXELSEQUENCE='true'
+              MODE_RAIN='true'
+              MODE_RING='true'
+              MODE_SCAN='true'
+              MODE_SMALLCLOCK='true'
+              MODE_SMALLTICKINGCLOCK='true'
+              MODE_SMOOTHWAVEFORM='true'
+              MODE_SNAKE='true'
+              MODE_SNAKECLOCK='true'
+              MODE_STARS='true'
+              MODE_TICKER='true'
+              MODE_WAVEFORM='true'
+              MODE_WTTRIN='true'
+              NAME='Obegränsad'
+              TIME_ZONE='Etc/Universal'
+            secrets: |
+              #pragma once
+              #define LATITUDE "0.000"
+              #define LONGITUDE "0.000"
+              #define PIN_CS 1
+              #define PIN_MOSI 2
+              #define PIN_OE 3
+              #define PIN_SCLK 4
+              #define PIN_SW2 5
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+
+          - name: extensive
+            env: |
+              EXTENSION_ALEXA='true'
+              EXTENSION_BUTTON='true'
+              EXTENSION_HEAP='true'
+              EXTENSION_HOMEASSISTANT='true'
+              EXTENSION_INFRARED='true'
+              EXTENSION_MESSAGE='true'
+              EXTENSION_MICROPHONE='true'
+              EXTENSION_MQTT='true'
+              EXTENSION_OTA='true'
+              EXTENSION_PHOTOCELL='true'
+              EXTENSION_PLAYLIST='true'
+              EXTENSION_RESTFUL='true'
+              EXTENSION_RTC='true'
+              EXTENSION_SERVERSENTEVENTS='true'
+              EXTENSION_SIGNAL='true'
+              EXTENSION_WEBAPP='true'
+              EXTENSION_WEBSOCKET='true'
+              FONT_BRAILLE='true'
+              HOSTNAME='obegransad'
+              IKEA_OBEGRANSAD='true'
+              MODE_ANIMATION='true'
+              MODE_ARROW='true'
+              MODE_ARTNET='true'
+              MODE_BINARYCLOCK='true'
+              MODE_BINARYEPOCH='true'
+              MODE_BLINDS='true'
+              MODE_BLINK='true'
+              MODE_BOLDCLOCK='true'
+              MODE_BREAKOUTCLOCK='true'
+              MODE_BRIGHT='true'
+              MODE_CIRCLE='true'
+              MODE_COUNTDOWN='true'
+              MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
+              MODE_DRAW='true'
+              MODE_E131='true'
+              MODE_EQUALIZER='true'
+              MODE_FIREWORK='true'
+              MODE_FLIES='true'
+              MODE_GAMEOFLIFE='true'
+              MODE_GAMEOFLIFECLOCK='true'
+              MODE_GLITTER='true'
+              MODE_GOOGLEWEATHER='true'
+              MODE_HOMEASSISTANTWEATHER='true'
+              MODE_HOMETHERMOMETER='true'
+              MODE_JAGGEDWAVEFORM='true'
+              MODE_LARGETICKINGCLOCK='true'
+              MODE_LEAFFALL='true'
+              MODE_LINES='true'
+              MODE_METABALLS='true'
+              MODE_NOISE='true'
+              MODE_OPENMETEO='true'
+              MODE_OPENWEATHER='true'
+              MODE_PINGPONG='true'
+              MODE_PINGPONGCLOCK='true'
+              MODE_PIXELSEQUENCE='true'
+              MODE_RAIN='true'
+              MODE_RING='true'
+              MODE_SCAN='true'
+              MODE_SMALLCLOCK='true'
+              MODE_SMALLTICKINGCLOCK='true'
+              MODE_SMOOTHWAVEFORM='true'
+              MODE_SNAKE='true'
+              MODE_SNAKECLOCK='true'
+              MODE_STARS='true'
+              MODE_TICKER='true'
+              MODE_WAVEFORM='true'
+              MODE_WORLDWEATHERONLINE='true'
+              MODE_WTTRIN='true'
+              MODE_YR='true'
+              NAME='Obegränsad'
+              OTA_KEY='redacted'
+              TIME_ZONE='Etc/Universal'
+            secrets: |
+              #pragma once
+              #define FRAME_RATE 60
+              #define GOOGLEWEATHER_KEY "redacted"
+              #define HOMEASSISTANT_ENTITY "weather.forecast_home"
+              #define HOMEASSISTANT_HOST "homeassistant.local"
+              #define HOMEASSISTANT_KEY "redacted"
+              #define HOMEASSISTANT_PORT 8123
+              #define LATITUDE "0.000"
+              #define LOCATION "redacted"
+              #define LONGITUDE "0.000"
+              #define MQTT_HOST "mqtt.local"
+              #define MQTT_PORT 1883
+              #define MQTT_USER "redacted"
+              #define MQTT_KEY "redacted"
+              #define OPENMETEO_KEY "redacted"
+              #define OPENWEATHER_KEY "redacted"
+              #define PIN_CS 1
+              #define PIN_INT 2
+              #define PIN_IR 3
+              #define PIN_LDR 4
+              #define PIN_MIC 5
+              #define PIN_MOSI 6
+              #define PIN_OE 7
+              #define PIN_SCL 8
+              #define PIN_SCLK 9
+              #define PIN_SDA 10
+              #define PIN_SW2 11
+              #define RTC_DS3231
+              #define TEMPERATURE_FAHRENHEIT true
+              #define WIFI_COUNTRY "01"
+              #define WIFI_KEY "redacted"
+              #define WIFI_SSID "redacted"
+              #define WORLDWEATHERONLINE_KEY "redacted"
+
+        environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
           - node-version: 20
             python-version: 3.11
 
           - node-version: 25
             python-version: 3.13
+
+      max-parallel: 3
 
     steps:
       - name: Set up Node.js
@@ -262,151 +519,8 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Build minimal
+      - name: Build Frekvens
         run: |
-          cat <<EOL > .env
-          EXTENSION_BUTTON='true'
-          EXTENSION_OTA='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_LINES='true'
-          MODE_NOISE='true'
-          MODE_RAIN='true'
-          MODE_SCAN='true'
-          MODE_STARS='true'
-          NAME='Obegränsad'
-          EOL
-
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-          pio run --environment ${{ matrix.pioenv }}
-
-      - name: PlatformIO clean
-        run: pio run --target clean
-
-      - name: Build extensive
-        run: |
-          cat <<EOL > .env
-          EXTENSION_ALEXA='true'
-          EXTENSION_BUTTON='true'
-          EXTENSION_HEAP='true'
-          EXTENSION_HOMEASSISTANT='true'
-          EXTENSION_INFRARED='true'
-          EXTENSION_MESSAGE='true'
-          EXTENSION_MICROPHONE='true'
-          EXTENSION_MQTT='true'
-          EXTENSION_PHOTOCELL='true'
-          EXTENSION_PLAYLIST='true'
-          EXTENSION_RESTFUL='true'
-          EXTENSION_RTC='true'
-          EXTENSION_SERVERSENTEVENTS='true'
-          EXTENSION_SIGNAL='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          FONT_BRAILLE='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_ANIMATION='true'
-          MODE_ARROW='true'
-          MODE_ARTNET='true'
-          MODE_BINARYCLOCK='true'
-          MODE_BINARYEPOCH='true'
-          MODE_BLINDS='true'
-          MODE_BLINK='true'
-          MODE_BOLDCLOCK='true'
-          MODE_BREAKOUTCLOCK='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_COUNTDOWN='true'
-          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
-          MODE_DRAW='true'
-          MODE_E131='true'
-          MODE_EQUALIZER='true'
-          MODE_FIREWORK='true'
-          MODE_FLIES='true'
-          MODE_GAMEOFLIFE='true'
-          MODE_GAMEOFLIFECLOCK='true'
-          MODE_GLITTER='true'
-          MODE_GOOGLEWEATHER='true'
-          MODE_HOMEASSISTANTWEATHER='true'
-          MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
-          MODE_LARGETICKINGCLOCK='true'
-          MODE_LEAFFALL='true'
-          MODE_LINES='true'
-          MODE_METABALLS='true'
-          MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_OPENWEATHER='true'
-          MODE_PINGPONG='true'
-          MODE_PINGPONGCLOCK='true'
-          MODE_PIXELSEQUENCE='true'
-          MODE_RAIN='true'
-          MODE_RING='true'
-          MODE_SCAN='true'
-          MODE_SMALLCLOCK='true'
-          MODE_SMALLTICKINGCLOCK='true'
-          MODE_SMOOTHWAVEFORM='true'
-          MODE_SNAKE='true'
-          MODE_SNAKECLOCK='true'
-          MODE_STARS='true'
-          MODE_TICKER='true'
-          MODE_WAVEFORM='true'
-          MODE_WORLDWEATHERONLINE='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
-          NAME='Obegränsad'
-          OTA_KEY='redacted'
-          TIME_ZONE='Etc/Universal'
-          EOL
-
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define FRAME_RATE 60
-          #define GOOGLEWEATHER_KEY "redacted"
-          #define HOMEASSISTANT_ENTITY "weather.forecast_home"
-          #define HOMEASSISTANT_HOST "homeassistant.local"
-          #define HOMEASSISTANT_KEY "redacted"
-          #define HOMEASSISTANT_PORT 8123
-          #define LATITUDE "0.000"
-          #define LOCATION "redacted"
-          #define LONGITUDE "0.000"
-          #define MQTT_HOST "mqtt.local"
-          #define MQTT_PORT 1883
-          #define MQTT_USER "redacted"
-          #define MQTT_KEY "redacted"
-          #define OPENMETEO_KEY "redacted"
-          #define OPENWEATHER_KEY "redacted"
-          #define PIN_CS 1
-          #define PIN_INT 2
-          #define PIN_IR 3
-          #define PIN_LDR 4
-          #define PIN_MIC 5
-          #define PIN_MOSI 6
-          #define PIN_OE 7
-          #define PIN_SCL 8
-          #define PIN_SCLK 9
-          #define PIN_SDA 10
-          #define PIN_SW2 11
-          #define RTC_DS3231
-          #define TEMPERATURE_FAHRENHEIT true
-          #define WIFI_COUNTRY "01"
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          #define WORLDWEATHERONLINE_KEY "redacted"
-          EOL
-
-          pio run --environment ${{ matrix.pioenv }}
+          printf "%s\n" "${{ matrix.config.env }}" > .env
+          printf "%s\n" "${{ matrix.config.secrets }}" > firmware/include/config/secrets.h
+          pio run --environment ${{ matrix.environment }}
