@@ -1,4 +1,4 @@
-name: Build
+name: ESPHome
 
 on:
   merge_group:
@@ -35,8 +35,8 @@ jobs:
             | cut -d '"' -f 2)" \
             >> "$GITHUB_OUTPUT"
 
-  ikea-frekvens-led-spotlight:
-    name: ESPHome
+  frekvens-spotlight:
+    name: Frekvens spotlight
     needs: yaml
     runs-on: ubuntu-latest
 
