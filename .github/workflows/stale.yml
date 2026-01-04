@@ -15,7 +15,8 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
+      - name: Stale
+        uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
         with:
           stale-issue-message: No recent activity has been detected on this issue. It's now marked as stale and may be closed soon if no further updates are made.
           days-before-issue-stale: 60
