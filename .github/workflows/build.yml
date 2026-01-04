@@ -53,9 +53,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: extensive
-          - name: minimal
-          - name: typical
+          - type: extensive
+          - type: minimal
+          - type: typical
 
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
@@ -85,7 +85,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Minimal
-        if: matrix.config == 'minimal'
+        if: matrix.config.type == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -116,7 +116,7 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config == 'typical'
+        if: matrix.config.type == 'typical'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -186,7 +186,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config == 'extensive'
+        if: matrix.config.type == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -301,10 +301,7 @@ jobs:
           EOL
 
       - name: Build Frekvens
-        run: |
-          printf "%s\n" "${{ matrix.config.env }}" > .env
-          printf "%s\n" "${{ matrix.config.secrets }}" > firmware/include/config/secrets.h
-          pio run --environment ${{ matrix.environment }}
+        run: pio run --environment ${{ matrix.environment }}
 
   ikea-obegransad-led-wall-lamp:
     name: IKEA Obegränsad LED wall lamp
@@ -315,9 +312,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: extensive
-          - name: minimal
-          - name: typical
+          - type: extensive
+          - type: minimal
+          - type: typical
 
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
@@ -347,7 +344,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Minimal
-        if: matrix.config == 'minimal'
+        if: matrix.config.type == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -378,7 +375,7 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config == 'typical'
+        if: matrix.config.type == 'typical'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -445,7 +442,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config == 'extensive'
+        if: matrix.config.type == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -559,7 +556,4 @@ jobs:
           EOL
 
       - name: Build Frekvens
-        run: |
-          printf "%s\n" "${{ matrix.config.env }}" > .env
-          printf "%s\n" "${{ matrix.config.secrets }}" > firmware/include/config/secrets.h
-          pio run --environment ${{ matrix.environment }}
+        run: pio run --environment ${{ matrix.environment }}
