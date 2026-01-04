@@ -23,10 +23,17 @@ jobs:
     name: Animation splitter
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -80,10 +87,17 @@ jobs:
     needs: distributed-display-protocol-streamer
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -173,10 +187,17 @@ jobs:
     name: Distributed Display Protocol streamer
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -267,10 +288,17 @@ jobs:
     needs: art-net-streamer
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -360,10 +388,17 @@ jobs:
     name: Font generator
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -380,10 +415,17 @@ jobs:
     name: Home thermometer demo
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -405,10 +447,17 @@ jobs:
     name: Mode generator
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.14
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
@@ -486,10 +535,17 @@ jobs:
     name: x509 certificate bundle
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+
+          - python-version: 3.13
+
     steps:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.13
+          python-version: ${{ matrix.python-version }}
 
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
