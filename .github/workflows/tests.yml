@@ -24,7 +24,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -93,7 +92,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -197,7 +195,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -301,7 +298,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -405,7 +401,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -438,7 +433,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -475,7 +469,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11
@@ -570,7 +563,6 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - python-version: 3.11

@@ -53,9 +53,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - type: extensive
-          - type: minimal
-          - type: typical
+          - template: default
+          - template: extensive
+          - template: minimal
+          - template: typical
 
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
@@ -64,8 +65,6 @@ jobs:
 
           - node-version: 25
             python-version: 3.13
-
-      max-parallel: 1
 
     steps:
       - name: Set up Node.js
@@ -84,12 +83,28 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
+      - name: Default
+        if: matrix.config.template == 'default'
+        run: |
+          echo "IKEA_FREKVENS='true'" >> .env
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW1 5
+          #define PIN_SW2 6
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
       - name: Minimal
-        if: matrix.config.type == 'minimal'
+        if: matrix.config.template == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
-          EXTENSION_OTA='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           HOSTNAME='frekvens'
@@ -116,19 +131,27 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config.type == 'typical'
+        if: matrix.config.template == 'typical'
         run: |
           cat <<'EOL' > .env
+          EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
+          EXTENSION_HEAP='true'
           EXTENSION_MESSAGE='true'
           EXTENSION_MICROPHONE='true'
+          EXTENSION_OTA='true'
           EXTENSION_PLAYLIST='true'
+          EXTENSION_RESTFUL='true'
+          EXTENSION_SERVERSENTEVENTS='true'
+          EXTENSION_SIGNAL='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
+          FONT_BRAILLE='true'
           HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
+          MODE_ARTNET='true'
           MODE_BINARYCLOCK='true'
           MODE_BINARYEPOCH='true'
           MODE_BLINDS='true'
@@ -138,19 +161,23 @@ jobs:
           MODE_BRIGHT='true'
           MODE_CIRCLE='true'
           MODE_COUNTDOWN='true'
+          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
           MODE_DRAW='true'
+          MODE_E131='true'
           MODE_EQUALIZER='true'
           MODE_FIREWORK='true'
           MODE_FLIES='true'
           MODE_GAMEOFLIFE='true'
           MODE_GAMEOFLIFECLOCK='true'
           MODE_GLITTER='true'
+          MODE_HOMETHERMOMETER='true'
           MODE_JAGGEDWAVEFORM='true'
           MODE_LARGETICKINGCLOCK='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
           MODE_NOISE='true'
+          MODE_OPENMETEO='true'
           MODE_PINGPONG='true'
           MODE_PINGPONGCLOCK='true'
           MODE_PIXELSEQUENCE='true'
@@ -166,6 +193,7 @@ jobs:
           MODE_TICKER='true'
           MODE_WAVEFORM='true'
           MODE_WTTRIN='true'
+          MODE_YR='true'
           NAME='Frekvens'
           TIME_ZONE='Etc/Universal'
           EOL
@@ -173,6 +201,7 @@ jobs:
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
           #define LATITUDE "0.000"
+          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define PIN_CS 1
           #define PIN_MIC 2
@@ -186,7 +215,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config.type == 'extensive'
+        if: matrix.config.template == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -312,9 +341,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - type: extensive
-          - type: minimal
-          - type: typical
+          - template: default
+          - template: extensive
+          - template: minimal
+          - template: typical
 
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         toolchain:
@@ -323,8 +353,6 @@ jobs:
 
           - node-version: 25
             python-version: 3.13
-
-      max-parallel: 1
 
     steps:
       - name: Set up Node.js
@@ -343,12 +371,27 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
+      - name: Default
+        if: matrix.config.template == 'default'
+        run: |
+          echo "IKEA_OBEGRANSAD='true'" >> .env
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
       - name: Minimal
-        if: matrix.config.type == 'minimal'
+        if: matrix.config.template == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
-          EXTENSION_OTA='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           HOSTNAME='obegransad'
@@ -375,18 +418,26 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config.type == 'typical'
+        if: matrix.config.template == 'typical'
         run: |
           cat <<'EOL' > .env
+          EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
+          EXTENSION_HEAP='true'
           EXTENSION_MESSAGE='true'
+          EXTENSION_OTA='true'
           EXTENSION_PLAYLIST='true'
+          EXTENSION_RESTFUL='true'
+          EXTENSION_SERVERSENTEVENTS='true'
+          EXTENSION_SIGNAL='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
+          FONT_BRAILLE='true'
           HOSTNAME='obegransad'
           IKEA_OBEGRANSAD='true'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
+          MODE_ARTNET='true'
           MODE_BINARYCLOCK='true'
           MODE_BINARYEPOCH='true'
           MODE_BLINDS='true'
@@ -396,19 +447,23 @@ jobs:
           MODE_BRIGHT='true'
           MODE_CIRCLE='true'
           MODE_COUNTDOWN='true'
+          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
           MODE_DRAW='true'
+          MODE_E131='true'
           MODE_EQUALIZER='true'
           MODE_FIREWORK='true'
           MODE_FLIES='true'
           MODE_GAMEOFLIFE='true'
           MODE_GAMEOFLIFECLOCK='true'
           MODE_GLITTER='true'
+          MODE_HOMETHERMOMETER='true'
           MODE_JAGGEDWAVEFORM='true'
           MODE_LARGETICKINGCLOCK='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
           MODE_NOISE='true'
+          MODE_OPENMETEO='true'
           MODE_PINGPONG='true'
           MODE_PINGPONGCLOCK='true'
           MODE_PIXELSEQUENCE='true'
@@ -424,6 +479,7 @@ jobs:
           MODE_TICKER='true'
           MODE_WAVEFORM='true'
           MODE_WTTRIN='true'
+          MODE_YR='true'
           NAME='Obegränsad'
           TIME_ZONE='Etc/Universal'
           EOL
@@ -431,6 +487,7 @@ jobs:
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
           #define LATITUDE "0.000"
+          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define PIN_CS 1
           #define PIN_MOSI 2
@@ -442,7 +499,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config.type == 'extensive'
+        if: matrix.config.template == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
