@@ -44,7 +44,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 Frekvens can run on any commonly available ESP32 board with Wi-Fi.
 
-Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [wiki](https://github.com/VIPnytt/Frekvens/wiki).
+Because board layouts vary widely, the documentation refers to pin types rather than fixed pin numbers. For board-specific guidance, see the [discussions section](https://github.com/VIPnytt/Frekvens/discussions/categories/general) — many common configurations are already covered there. Further details are available in the [wiki](https://github.com/VIPnytt/Frekvens/wiki#-devices).
 
 > [!TIP]
 > If a new board is required, the `ESP32-S3` chip is recommended — for example [this board](https://www.adafruit.com/product/5426) or [this board](https://www.seeedstudio.com/XIAO-ESP32S3-p-5627.html). It offers excellent performance, and variants with 8 MB flash memory provide plenty of room for features and future expansion. Boards with 4 MB flash works fine too, for basic setups.

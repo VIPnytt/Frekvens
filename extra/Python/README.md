@@ -6,10 +6,10 @@ Optional utilities that are not part of the core functionality but may be useful
 
 Converts `.ttf` or `.otf` font files into C++ source files that can easily be added to the project or used as templates for adding missing characters to existing fonts.
 
-Installation of dependency packages:
+Installation of dependencies:
 
 ```bash
-pip install -r extra/requirements.txt
+pip install -r extra/Python/requirements.txt
 ```
 
 ## 🏭 Mode generator
