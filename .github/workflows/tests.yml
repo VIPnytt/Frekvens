@@ -31,15 +31,19 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install tools/
+      - name: Set up Frekvens tools
+        run: pip install tools/
 
-      - run: |
+      - name: Animation splitter
+        run: |
           cat <<EOL > Animation.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -75,16 +79,16 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python -m frekvens.AnimationSplitter --input Animation.csv
+          python -m frekvens.AnimationSplitter --input Animation.csv
 
-      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
+      - name: File existence
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: Animation-1.csv, Animation-2.csv
 
   art-net-streamer:
     name: Art-Net streamer
-    needs: distributed-display-protocol-streamer
     runs-on: ubuntu-latest
 
     strategy:
@@ -95,15 +99,19 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install tools/
+      - name: Set up Frekvens tools
+        run: pip install tools/
 
-      - run: |
+      - name: Animation
+        run: |
           cat <<EOL > Animation.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -139,7 +147,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.ArtNetStreamer --host localhost --input Animation.csv 2>&1)
           STATUS=$?
@@ -151,7 +158,8 @@ jobs:
           echo "Unexpected error or no error."
           exit $STATUS
 
-      - run: |
+      - name: Drawing
+        run: |
           cat <<EOL > Drawing.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -171,7 +179,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.ArtNetStreamer --host localhost --input Drawing.csv 2>&1)
           STATUS=$?
@@ -195,15 +202,19 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install tools/
+      - name: Set up Frekvens tools
+        run: pip install tools/
 
-      - run: |
+      - name: Animation
+        run: |
           cat <<EOL > Animation.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -239,7 +250,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.DistributedDisplayProtocolStreamer --host localhost --input Animation.csv 2>&1)
           STATUS=$?
@@ -251,7 +261,8 @@ jobs:
           echo "Unexpected error or no error."
           exit $STATUS
 
-      - run: |
+      - name: Drawing
+        run: |
           cat <<EOL > Drawing.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -271,7 +282,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.DistributedDisplayProtocolStreamer --host localhost --input Drawing.csv 2>&1)
           STATUS=$?
@@ -285,7 +295,6 @@ jobs:
 
   e131-streamer:
     name: E1.31 streamer
-    needs: art-net-streamer
     runs-on: ubuntu-latest
 
     strategy:
@@ -296,15 +305,19 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install tools/
+      - name: Set up Frekvens tools
+        run: pip install tools/
 
-      - run: |
+      - name: Animation
+        run: |
           cat <<EOL > Animation.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -340,7 +353,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.E131Streamer --host localhost --input Animation.csv 2>&1)
           STATUS=$?
@@ -352,7 +364,8 @@ jobs:
           echo "Unexpected error or no error."
           exit $STATUS
 
-      - run: |
+      - name: Drawing
+        run: |
           cat <<EOL > Drawing.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -372,7 +385,6 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: |
           set +e
           OUTPUT=$(python -m frekvens.E131Streamer --host localhost --input Drawing.csv 2>&1)
           STATUS=$?
@@ -396,17 +408,22 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install -r extra/Python/requirements.txt
+      - name: Set up Frekvens extra
+        run: pip install -r extra/Python/requirements.txt
 
-      - run: python extra/Python/FontGenerator.py --input DejaVuSans --size 8
+      - name: Font generator
+        run: python extra/Python/FontGenerator.py --input DejaVuSans --size 8
 
-      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
+      - name: File existence
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: DejaVuSansFont.cpp, DejaVuSansFont.h
@@ -423,15 +440,19 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install tools/
+      - name: Set up Frekvens tools
+        run: pip install tools/
 
-      - run: |
+      - name: Home thermometer demo
+        run: |
           set +e
           OUTPUT=$(python -m frekvens.HomeThermometerDemo --host localhost --indoor=22 --outdoor=8 2>&1)
           STATUS=$?
@@ -455,13 +476,16 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: |
+      - name: Animation
+        run: |
           cat <<EOL > Animation.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -497,14 +521,16 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python extra/Python/ModeGenerator.py --input Animation.csv
+          python extra/Python/ModeGenerator.py --input Animation.csv
 
-      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
+      - name: File existence
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: AnimationMode.cpp, AnimationMode.h
 
-      - run: |
+      - name: Drawing
+        run: |
           cat <<EOL > Drawing.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -524,9 +550,10 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-      - run: python extra/Python/ModeGenerator.py --input Drawing.csv
+          python extra/Python/ModeGenerator.py --input Drawing.csv
 
-      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
+      - name: File existence
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: DrawingMode.cpp, DrawingMode.h
@@ -543,15 +570,20 @@ jobs:
           - python-version: 3.13
 
     steps:
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install -r .github/platformio/requirements.txt
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
 
-      - run: |
+      - name: Weather
+        continue-on-error: true
+        run: |
           cat <<EOL > .env
           HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
@@ -564,7 +596,6 @@ jobs:
           NAME='Frekvens'
           EOL
 
-      - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define GOOGLEWEATHER_KEY "redacted"
@@ -580,20 +611,22 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-      - run: pio run --environment esp32dev
-        continue-on-error: true
+          pio run --environment esp32dev
 
-      - uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
+      - name: File existence
+        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
         with:
           fail: true
           files: firmware/certs/bundle/ca_roots.pem, firmware/embed/x509_crt_bundle.bin
 
-      - run: |
+      - name: Set up ESP-IDF
+        run: |
           git clone --branch release/v5.5 --filter=blob:none --sparse https://github.com/espressif/esp-idf.git
           cd esp-idf
           git sparse-checkout add components/mbedtls/esp_crt_bundle
 
-      - run: |
+      - name: Certificate bundle
+        run: |
           python esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py --input firmware/certs/bundle
           if cmp x509_crt_bundle firmware/embed/x509_crt_bundle.bin; then
             echo "Root CA bundles identical."

@@ -19,25 +19,65 @@ permissions:
   contents: read
 
 jobs:
-  frekvens-basic:
-    name: IKEA Frekvens LED multi-use light - basic
-    needs: obegransad-basic
+  pio:
+    name: PlatformIO environments
+    runs-on: ubuntu-latest
+    outputs:
+      environments: ${{ steps.pio.outputs.environments }}
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: 3.13
+
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: Export PlatformIO environments
+        id: pio
+        run: |
+          echo "environments=$(pio project config --json-output \
+            | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" \
+            >> "$GITHUB_OUTPUT"
+
+  frekvens:
+    name: Frekvens
+    needs: pio
     runs-on: ubuntu-latest
 
+    strategy:
+      max-parallel: 1
+      matrix:
+        pioenv: ${{ fromJson(needs.pio.outputs.environments) }}
+        toolchain:
+          - node-version: 22
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
     steps:
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22
+          node-version: ${{ matrix.toolchain.node-version }}
 
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: 3.11
+          python-version: ${{ matrix.toolchain.python-version }}
 
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: pip install -r .github/platformio/requirements.txt
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
 
-      - run: |
+      - name: Basic - IKEA Frekvens LED multi-use light
+        run: |
           cat <<EOL > .env
           EXTENSION_BUTTON='true'
           EXTENSION_MICROPHONE='true'
@@ -55,7 +95,6 @@ jobs:
           NAME='Frekvens'
           EOL
 
-      - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define PIN_CS 1
@@ -69,36 +108,42 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - run: pio run
+          pio run --environment ${{ matrix.pioenv }}
 
-  frekvens-extensive:
-    name: IKEA Frekvens LED multi-use light - extensive
-    needs: [frekvens-basic, obegransad-basic]
-    runs-on: ubuntu-latest
+      - name: Basic - IKEA Obegränsad LED wall lamp
+        run: |
+          cat <<EOL > .env
+          EXTENSION_BUTTON='true'
+          EXTENSION_OTA='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          HOSTNAME='obegransad'
+          IKEA_OBEGRANSAD='true'
+          MODE_BRIGHT='true'
+          MODE_CIRCLE='true'
+          MODE_LINES='true'
+          MODE_NOISE='true'
+          MODE_RAIN='true'
+          MODE_SCAN='true'
+          MODE_STARS='true'
+          NAME='Obegränsad'
+          EOL
 
-    strategy:
-      matrix:
-        include:
-          - node-version: 22
-            python-version: 3.11
+          cat <<EOL > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
 
-          - node-version: 25
-            python-version: 3.13
+          pio run --environment ${{ matrix.pioenv }}
 
-    steps:
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - run: pip install -r .github/platformio/requirements.txt
-
-      - run: |
+      - name: Extensive - IKEA Frekvens LED multi-use light
+        run: |
           cat <<EOL > .env
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
@@ -119,7 +164,6 @@ jobs:
           FONT_BRAILLE='true'
           HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
-          IKEA_OBEGRANSAD='false'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
           MODE_ARTNET='true'
@@ -174,7 +218,6 @@ jobs:
           TIME_ZONE='Etc/Universal'
           EOL
 
-      - run: |
           cat <<EOL > firmware/include/config/secrets.h
           #pragma once
           #define FRAME_RATE 60
@@ -212,16 +255,18 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-      - run: pio run
+          pio run --environment ${{ matrix.pioenv }}
 
-  frekvens-spotlight:
-    name: IKEA Frekvens LED spotlight - ESPHome
+  ikea-frekvens-led-spotlight:
+    name: ESPHome - IKEA Frekvens LED spotlight
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - run: |
+      - name: secrets.yaml
+        run: |
           cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
           api_key: "redacted"
           ota_password: "redacted"
@@ -229,55 +274,7 @@ jobs:
           wifi_ssid: "redacted"
           EOL
 
-      - uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
+      - name: ESPHome
+        uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
         with:
           yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
-
-  obegransad-basic:
-    name: IKEA Obegränsad LED wall lamp - basic
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: 22
-
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: 3.11
-
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - run: pip install -r .github/platformio/requirements.txt
-
-      - run: |
-          cat <<EOL > .env
-          EXTENSION_BUTTON='true'
-          EXTENSION_OTA='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_LINES='true'
-          MODE_NOISE='true'
-          MODE_RAIN='true'
-          MODE_SCAN='true'
-          MODE_STARS='true'
-          NAME='Obegränsad'
-          EOL
-
-      - run: |
-          cat <<EOL > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-      - run: pio run
