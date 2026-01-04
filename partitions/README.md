@@ -18,12 +18,14 @@ Use one of the predefined layouts below to match your board’s flash size:
 
 **Legend:**
 
-- :white_check_mark: — full
-- :ballot_box_with_check: — limited
-- :x: — not available
+:white_check_mark: — full
+
+:ballot_box_with_check: — limited
+
+:x: — not available
 
 > [!TIP]
-> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit the selected partition.
+> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit.
 
 ## 2️⃣ 2 MB flash boards
 

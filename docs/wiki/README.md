@@ -1,17 +1,6 @@
 # 📖 Frekvens Wiki
 
-## 🚀 Getting Started
-
 If you’re new to the project, we recommend starting with the [README](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#readme) for an introduction and basic setup instructions.
-
-- [Features](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-features)
-- [Hardware](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#%EF%B8%8F-hardware)
-- [Getting started](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-getting-started)
-- [Upload to the device](https://github.com/VIPnytt/Frekvens?tab=readme-ov-file#%EF%B8%8F-upload-to-the-device)
-- [Smart-home integrations](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-smart-home-integrations)
-- [FAQ](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-faq)
-- [API](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-api)
-- [Troubleshooting](https://github.com/VIPnytt/Frekvens/?tab=readme-ov-file#-troubleshooting)
 
 ## 💡 Devices
 
@@ -23,7 +12,7 @@ Detailed instructions, schematics and templates.
 
 ## 📦 Modules
 
-API documentation and configuration options.
+Software features, configuration options and API documentation.
 
 - [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
 - [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)

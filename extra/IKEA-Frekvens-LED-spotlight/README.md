@@ -118,7 +118,7 @@ PIN_SW: 2 # K3
 ```
 
 > [!WARNING]
-> Avoid strapping pins as this pin is pulled *HIGH* using a resistor and *LOW* when pressed.
+> Avoid strapping pins as this pin is pulled *HIGH* by default and *LOW* when pressed.
 
 ### Microphone amplifier
 
@@ -139,5 +139,8 @@ PIN_MIC: 3 # U3
 
 External links for deeper exploration — provided for reference only and with no formal connection to this project.
 
-- [IKEA: FREKVENS PR kit](https://www.ikea.com/us/en/files/pdf/27/28/27281cda/frekvens_pr_kit.pdf)
+- [IKEA: FREKVENS Press kit](https://www.ikea.com/us/en/files/pdf/27/28/27281cda/frekvens_pr_kit.pdf)
+- [IKEA: Get the party started with FREKVENS](https://www.ikea.com/us/en/newsroom/range-news/get-the-party-started-with-frekvens-pubaaf1fd67/)
+- [IKEA: IKEA and Teenage Engineering team up for the FREKVENS collection](https://www.ikea.com/global/en/newsroom/collaborations/make-some-noise-and-get-the-party-started-with-upcoming-collection-frekvens--ikea-and-teenage-engineering-in-collaboration-170607/)
 - [Instagram: Simple IKEA FREKVENS Hack](https://www.instagram.com/p/B8cVZQCo1BH/)
+- [Teenage Engineering: Frekvens](https://teenage.engineering/designs/frekvens)
