@@ -19,11 +19,11 @@ permissions:
   contents: read
 
 jobs:
-  yaml:
-    name: ESPHome YAML minimum version
+  esphome:
+    name: ESPHome minimum version
     runs-on: ubuntu-latest
     outputs:
-      min-version: ${{ steps.yaml.outputs.min-version }}
+      min_version: ${{ steps.yaml.outputs.min_version }}
 
     steps:
       - name: Set up Frekvens
@@ -32,20 +32,20 @@ jobs:
       - name: Export ESPHome minimum version
         id: yaml
         run: |
-          echo "min-version=$(grep "  min_version:" "extra/IKEA-Frekvens-LED-spotlight/esphome.yaml" \
+          echo "min_version=$(grep "  min_version:" "extra/IKEA-Frekvens-LED-spotlight/esphome.yaml" \
             | cut -d '"' -f 2)" \
             >> "$GITHUB_OUTPUT"
 
-  frekvens-spotlight:
+  ikea-frekvens-led-spotlight:
     name: IKEA Frekvens LED spotlight
-    needs: yaml
+    needs: esphome
     runs-on: ubuntu-latest
 
     strategy:
       max-parallel: 1
       matrix:
         esphome-version:
-          - ${{ needs.yaml.outputs.min-version }}
+          - ${{ needs.esphome.outputs.min_version }}
           - latest
 
     steps:
