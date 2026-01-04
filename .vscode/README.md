@@ -2,7 +2,8 @@
 
 List of Visual Studio Code extensions from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode) that improve the workflow for this project.
 
-While there are many great general-purpose extensions, this list focuses on project-specific or contextually useful ones that go beyond the essentials.
+> [!NOTE]
+> While there are many great general-purpose extensions, this list focuses on project-specific or contextually useful ones that go beyond the essentials.
 
 ## 🧩 Required
 
