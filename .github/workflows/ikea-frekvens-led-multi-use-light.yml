@@ -1,4 +1,4 @@
-name: Build
+name: IKEA Frekvens LED multi-use light
 
 on:
   merge_group:
@@ -44,63 +44,20 @@ jobs:
             | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" \
             >> "$GITHUB_OUTPUT"
 
-  ikea-frekvens-led-multi-use-light:
-    name: IKEA Frekvens LED multi-use light
+  default:
+    name: Default build
     needs: pio
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
-        template:
-          - extensive
-          - default
-          - minimal
-          - typical
-
         toolchain:
           - node-version: 20
             python-version: 3.11
 
           - node-version: 25
             python-version: 3.13
-
-        exclude:
-          - environment: adafruit_qtpy_esp32s2
-            template: extensive
-
-          - environment: adafruit_qtpy_esp32s3_n4r2
-            template: extensive
-
-          - environment: esp32-c3-devkitm-1
-            template: extensive
-
-          - environment: esp32-c5-devkitc-1
-            template: extensive
-
-          - environment: esp32-c6-devkitm-1
-            template: extensive
-
-          - environment: esp32dev
-            template: extensive
-
-          - environment: lolin_d32
-            template: extensive
-
-          - environment: lolin_d32_pro
-            template: extensive
-
-          - environment: lolin_s3_mini
-            template: extensive
-
-          - environment: seeed_xiao_esp32c3
-            template: extensive
-
-          - environment: seeed_xiao_esp32c6
-            template: extensive
-
-          - environment: wemos_d1_mini32
-            template: extensive
 
     steps:
       - name: Set up Node.js
@@ -119,8 +76,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Default configuration template
-        if: matrix.template == 'default'
+      - name: PlatformIO build
         run: |
           echo "IKEA_FREKVENS='true'" >> .env
 
@@ -136,13 +92,44 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Minimal configuration template
-        if: matrix.template == 'minimal'
+          pio run --environment ${{ matrix.environment }}
+
+  minimal:
+    name: Minimal build
+    needs: pio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.pio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
           HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
           MODE_ARROW='true'
@@ -166,8 +153,41 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Typical configuration template
-        if: matrix.template == 'typical'
+          pio run --environment ${{ matrix.environment }}
+
+  typical:
+    name: Typical build
+    needs: pio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.pio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -249,8 +269,55 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Extensive configuration template
-        if: matrix.template == 'extensive'
+          pio run --environment ${{ matrix.environment }}
+
+  extensive:
+    name: Extensive build
+    needs: pio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.pio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+          - environment: adafruit_qtpy_esp32s3_n4r2
+          - environment: esp32-c3-devkitm-1
+          - environment: esp32-c5-devkitc-1
+          - environment: esp32-c6-devkitm-1
+          - environment: esp32dev
+          - environment: lolin_d32
+          - environment: lolin_d32_pro
+          - environment: lolin_s3_mini
+          - environment: seeed_xiao_esp32c3
+          - environment: seeed_xiao_esp32c6
+          - environment: wemos_d1_mini32
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -364,323 +431,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-      - name: Build Frekvens
-        run: pio run --environment ${{ matrix.environment }}
-
-  ikea-obegransad-led-wall-lamp:
-    name: IKEA Obegränsad LED wall lamp
-    needs: pio
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        environment: ${{ fromJson(needs.pio.outputs.environments) }}
-        template:
-          - extensive
-          - default
-          - minimal
-          - typical
-
-        toolchain:
-          - node-version: 20
-            python-version: 3.11
-
-          - node-version: 25
-            python-version: 3.13
-
-        exclude:
-          - environment: adafruit_qtpy_esp32s2
-            template: extensive
-
-          - environment: adafruit_qtpy_esp32s3_n4r2
-            template: extensive
-
-          - environment: esp32-c3-devkitm-1
-            template: extensive
-
-          - environment: esp32-c5-devkitc-1
-            template: extensive
-
-          - environment: esp32-c6-devkitm-1
-            template: extensive
-
-          - environment: esp32dev
-            template: extensive
-
-          - environment: lolin_d32
-            template: extensive
-
-          - environment: lolin_d32_pro
-            template: extensive
-
-          - environment: lolin_s3_mini
-            template: extensive
-
-          - environment: seeed_xiao_esp32c3
-            template: extensive
-
-          - environment: seeed_xiao_esp32c6
-            template: extensive
-
-          - environment: wemos_d1_mini32
-            template: extensive
-
-    steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: ${{ matrix.toolchain.node-version }}
-
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
-        with:
-          python-version: ${{ matrix.toolchain.python-version }}
-
-      - name: Set up Frekvens
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
-
-      - name: Default configuration template
-        if: matrix.template == 'default'
-        run: |
-          echo "IKEA_OBEGRANSAD='true'" >> .env
-
-          cat <<'EOL' > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-      - name: Minimal configuration template
-        if: matrix.template == 'minimal'
-        run: |
-          cat <<'EOL' > .env
-          EXTENSION_BUTTON='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_LINES='true'
-          MODE_NOISE='true'
-          MODE_RAIN='true'
-          MODE_SCAN='true'
-          MODE_STARS='true'
-          NAME='Obegränsad'
-          EOL
-
-          cat <<'EOL' > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-      - name: Typical configuration template
-        if: matrix.template == 'typical'
-        run: |
-          cat <<'EOL' > .env
-          EXTENSION_ALEXA='true'
-          EXTENSION_BUTTON='true'
-          EXTENSION_HEAP='true'
-          EXTENSION_MESSAGE='true'
-          EXTENSION_OTA='true'
-          EXTENSION_PLAYLIST='true'
-          EXTENSION_RESTFUL='true'
-          EXTENSION_SERVERSENTEVENTS='true'
-          EXTENSION_SIGNAL='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          FONT_BRAILLE='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_ANIMATION='true'
-          MODE_ARROW='true'
-          MODE_ARTNET='true'
-          MODE_BINARYCLOCK='true'
-          MODE_BINARYEPOCH='true'
-          MODE_BLINDS='true'
-          MODE_BLINK='true'
-          MODE_BOLDCLOCK='true'
-          MODE_BREAKOUTCLOCK='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_COUNTDOWN='true'
-          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
-          MODE_DRAW='true'
-          MODE_E131='true'
-          MODE_EQUALIZER='true'
-          MODE_FIREWORK='true'
-          MODE_FLIES='true'
-          MODE_GAMEOFLIFE='true'
-          MODE_GAMEOFLIFECLOCK='true'
-          MODE_GLITTER='true'
-          MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
-          MODE_LARGETICKINGCLOCK='true'
-          MODE_LEAFFALL='true'
-          MODE_LINES='true'
-          MODE_METABALLS='true'
-          MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_PINGPONG='true'
-          MODE_PINGPONGCLOCK='true'
-          MODE_PIXELSEQUENCE='true'
-          MODE_RAIN='true'
-          MODE_RING='true'
-          MODE_SCAN='true'
-          MODE_SMALLCLOCK='true'
-          MODE_SMALLTICKINGCLOCK='true'
-          MODE_SMOOTHWAVEFORM='true'
-          MODE_SNAKE='true'
-          MODE_SNAKECLOCK='true'
-          MODE_STARS='true'
-          MODE_TICKER='true'
-          MODE_WAVEFORM='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
-          NAME='Obegränsad'
-          EOL
-
-          cat <<'EOL' > firmware/include/config/secrets.h
-          #pragma once
-          #define LATITUDE "0.000"
-          #define LOCATION "redacted"
-          #define LONGITUDE "0.000"
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-      - name: Extensive configuration template
-        if: matrix.template == 'extensive'
-        run: |
-          cat <<'EOL' > .env
-          EXTENSION_ALEXA='true'
-          EXTENSION_BUTTON='true'
-          EXTENSION_HEAP='true'
-          EXTENSION_HOMEASSISTANT='true'
-          EXTENSION_INFRARED='true'
-          EXTENSION_MESSAGE='true'
-          EXTENSION_MICROPHONE='true'
-          EXTENSION_MQTT='true'
-          EXTENSION_OTA='true'
-          EXTENSION_PHOTOCELL='true'
-          EXTENSION_PLAYLIST='true'
-          EXTENSION_RESTFUL='true'
-          EXTENSION_RTC='true'
-          EXTENSION_SERVERSENTEVENTS='true'
-          EXTENSION_SIGNAL='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
-          FONT_BRAILLE='true'
-          HOSTNAME='obegransad'
-          IKEA_OBEGRANSAD='true'
-          MODE_ANIMATION='true'
-          MODE_ARROW='true'
-          MODE_ARTNET='true'
-          MODE_BINARYCLOCK='true'
-          MODE_BINARYEPOCH='true'
-          MODE_BLINDS='true'
-          MODE_BLINK='true'
-          MODE_BOLDCLOCK='true'
-          MODE_BREAKOUTCLOCK='true'
-          MODE_BRIGHT='true'
-          MODE_CIRCLE='true'
-          MODE_COUNTDOWN='true'
-          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
-          MODE_DRAW='true'
-          MODE_E131='true'
-          MODE_EQUALIZER='true'
-          MODE_FIREWORK='true'
-          MODE_FLIES='true'
-          MODE_GAMEOFLIFE='true'
-          MODE_GAMEOFLIFECLOCK='true'
-          MODE_GLITTER='true'
-          MODE_GOOGLEWEATHER='true'
-          MODE_HOMEASSISTANTWEATHER='true'
-          MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
-          MODE_LARGETICKINGCLOCK='true'
-          MODE_LEAFFALL='true'
-          MODE_LINES='true'
-          MODE_METABALLS='true'
-          MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_OPENWEATHER='true'
-          MODE_PINGPONG='true'
-          MODE_PINGPONGCLOCK='true'
-          MODE_PIXELSEQUENCE='true'
-          MODE_RAIN='true'
-          MODE_RING='true'
-          MODE_SCAN='true'
-          MODE_SMALLCLOCK='true'
-          MODE_SMALLTICKINGCLOCK='true'
-          MODE_SMOOTHWAVEFORM='true'
-          MODE_SNAKE='true'
-          MODE_SNAKECLOCK='true'
-          MODE_STARS='true'
-          MODE_TICKER='true'
-          MODE_WAVEFORM='true'
-          MODE_WORLDWEATHERONLINE='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
-          NAME='Obegränsad'
-          OTA_KEY='redacted'
-          TIME_ZONE='Etc/Universal'
-          EOL
-
-          cat <<'EOL' > firmware/include/config/secrets.h
-          #pragma once
-          #define FRAME_RATE 60
-          #define GOOGLEWEATHER_KEY "redacted"
-          #define HOMEASSISTANT_ENTITY "weather.forecast_home"
-          #define HOMEASSISTANT_HOST "homeassistant.local"
-          #define HOMEASSISTANT_KEY "redacted"
-          #define HOMEASSISTANT_PORT 8123
-          #define LATITUDE "0.000"
-          #define LOCATION "redacted"
-          #define LONGITUDE "0.000"
-          #define MQTT_HOST "mqtt.local"
-          #define MQTT_PORT 1883
-          #define MQTT_USER "redacted"
-          #define MQTT_KEY "redacted"
-          #define OPENMETEO_KEY "redacted"
-          #define OPENWEATHER_KEY "redacted"
-          #define PIN_CS 1
-          #define PIN_INT 2
-          #define PIN_IR 3
-          #define PIN_LDR 4
-          #define PIN_MIC 5
-          #define PIN_MOSI 6
-          #define PIN_OE 7
-          #define PIN_SCL 8
-          #define PIN_SCLK 9
-          #define PIN_SDA 10
-          #define PIN_SW2 11
-          #define RTC_DS3231
-          #define TEMPERATURE_FAHRENHEIT true
-          #define WIFI_COUNTRY "01"
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          #define WORLDWEATHERONLINE_KEY "redacted"
-          EOL
-
-      - name: Build Frekvens
-        run: pio run --environment ${{ matrix.environment }}
+          pio run --environment ${{ matrix.environment }}

@@ -1,4 +1,4 @@
-name: ESPHome
+name: IKEA Frekvens LED spotlight
 
 on:
   merge_group:
@@ -37,7 +37,7 @@ jobs:
             >> "$GITHUB_OUTPUT"
 
   ikea-frekvens-led-spotlight:
-    name: IKEA Frekvens LED spotlight
+    name: ESPHome build
     needs: esphome
     runs-on: ubuntu-latest
 
@@ -60,7 +60,7 @@ jobs:
           wifi_ssid: "redacted"
           EOL
 
-      - name: IKEA Frekvens LED spotlight
+      - name: ESPHome build
         uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
         with:
           yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
