@@ -27,7 +27,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -95,7 +94,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -198,7 +196,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -301,7 +298,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -404,7 +400,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -436,7 +431,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -472,7 +466,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.14
 
     steps:
@@ -566,7 +559,6 @@ jobs:
       matrix:
         include:
           - python-version: 3.11
-
           - python-version: 3.13
 
     steps:

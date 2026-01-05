@@ -52,19 +52,56 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - template: default
-          - template: extensive
-          - template: minimal
-          - template: typical
-
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
+        template:
+          - minimal
+          - default
+          - typical
+          - extensive
+
         toolchain:
           - node-version: 20
             python-version: 3.11
 
           - node-version: 25
             python-version: 3.13
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+            template: extensive
+
+          - environment: adafruit_qtpy_esp32s3_n4r2
+            template: extensive
+
+          - environment: esp32dev
+            template: extensive
+
+          - environment: esp32-c3-devkitm-1
+            template: extensive
+
+          - environment: esp32-c5-devkitc-1
+            template: extensive
+
+          - environment: esp32-c6-devkitm-1
+            template: extensive
+
+          - environment: seeed_xiao_esp32c3
+            template: extensive
+
+          - environment: seeed_xiao_esp32c6
+            template: extensive
+
+          - environment: wemos_d1_mini32
+            template: extensive
+
+          - environment: lolin_d32
+            template: extensive
+
+          - environment: lolin_d32_pro
+            template: extensive
+
+          - environment: lolin_s3_mini
+            template: extensive
 
     steps:
       - name: Set up Node.js
@@ -84,7 +121,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Default
-        if: matrix.config.template == 'default'
+        if: matrix.template == 'default'
         run: |
           echo "IKEA_FREKVENS='true'" >> .env
 
@@ -101,7 +138,7 @@ jobs:
           EOL
 
       - name: Minimal
-        if: matrix.config.template == 'minimal'
+        if: matrix.template == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -131,7 +168,7 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config.template == 'typical'
+        if: matrix.template == 'typical'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -215,7 +252,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config.template == 'extensive'
+        if: matrix.template == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -340,19 +377,56 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - template: default
-          - template: extensive
-          - template: minimal
-          - template: typical
-
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
+        template:
+          - minimal
+          - default
+          - typical
+          - extensive
+
         toolchain:
           - node-version: 20
             python-version: 3.11
 
           - node-version: 25
             python-version: 3.13
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+            template: extensive
+
+          - environment: adafruit_qtpy_esp32s3_n4r2
+            template: extensive
+
+          - environment: esp32dev
+            template: extensive
+
+          - environment: esp32-c3-devkitm-1
+            template: extensive
+
+          - environment: esp32-c5-devkitc-1
+            template: extensive
+
+          - environment: esp32-c6-devkitm-1
+            template: extensive
+
+          - environment: seeed_xiao_esp32c3
+            template: extensive
+
+          - environment: seeed_xiao_esp32c6
+            template: extensive
+
+          - environment: wemos_d1_mini32
+            template: extensive
+
+          - environment: lolin_d32
+            template: extensive
+
+          - environment: lolin_d32_pro
+            template: extensive
+
+          - environment: lolin_s3_mini
+            template: extensive
 
     steps:
       - name: Set up Node.js
@@ -372,7 +446,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Default
-        if: matrix.config.template == 'default'
+        if: matrix.template == 'default'
         run: |
           echo "IKEA_OBEGRANSAD='true'" >> .env
 
@@ -388,7 +462,7 @@ jobs:
           EOL
 
       - name: Minimal
-        if: matrix.config.template == 'minimal'
+        if: matrix.template == 'minimal'
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -418,7 +492,7 @@ jobs:
           EOL
 
       - name: Typical
-        if: matrix.config.template == 'typical'
+        if: matrix.template == 'typical'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -499,7 +573,7 @@ jobs:
           EOL
 
       - name: Extensive
-        if: matrix.config.template == 'extensive'
+        if: matrix.template == 'extensive'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
