@@ -50,14 +50,13 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         template:
-          - minimal
-          - default
-          - typical
           - extensive
+          - default
+          - minimal
+          - typical
 
         toolchain:
           - node-version: 20
@@ -73,9 +72,6 @@ jobs:
           - environment: adafruit_qtpy_esp32s3_n4r2
             template: extensive
 
-          - environment: esp32dev
-            template: extensive
-
           - environment: esp32-c3-devkitm-1
             template: extensive
 
@@ -85,13 +81,7 @@ jobs:
           - environment: esp32-c6-devkitm-1
             template: extensive
 
-          - environment: seeed_xiao_esp32c3
-            template: extensive
-
-          - environment: seeed_xiao_esp32c6
-            template: extensive
-
-          - environment: wemos_d1_mini32
+          - environment: esp32dev
             template: extensive
 
           - environment: lolin_d32
@@ -101,6 +91,15 @@ jobs:
             template: extensive
 
           - environment: lolin_s3_mini
+            template: extensive
+
+          - environment: seeed_xiao_esp32c3
+            template: extensive
+
+          - environment: seeed_xiao_esp32c6
+            template: extensive
+
+          - environment: wemos_d1_mini32
             template: extensive
 
     steps:
@@ -120,7 +119,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Default
+      - name: Default configuration template
         if: matrix.template == 'default'
         run: |
           echo "IKEA_FREKVENS='true'" >> .env
@@ -137,7 +136,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Minimal
+      - name: Minimal configuration template
         if: matrix.template == 'minimal'
         run: |
           cat <<'EOL' > .env
@@ -167,7 +166,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Typical
+      - name: Typical configuration template
         if: matrix.template == 'typical'
         run: |
           cat <<'EOL' > .env
@@ -232,7 +231,6 @@ jobs:
           MODE_WTTRIN='true'
           MODE_YR='true'
           NAME='Frekvens'
-          TIME_ZONE='Etc/Universal'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -251,7 +249,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Extensive
+      - name: Extensive configuration template
         if: matrix.template == 'extensive'
         run: |
           cat <<'EOL' > .env
@@ -375,14 +373,13 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
         environment: ${{ fromJson(needs.pio.outputs.environments) }}
         template:
-          - minimal
-          - default
-          - typical
           - extensive
+          - default
+          - minimal
+          - typical
 
         toolchain:
           - node-version: 20
@@ -398,9 +395,6 @@ jobs:
           - environment: adafruit_qtpy_esp32s3_n4r2
             template: extensive
 
-          - environment: esp32dev
-            template: extensive
-
           - environment: esp32-c3-devkitm-1
             template: extensive
 
@@ -410,13 +404,7 @@ jobs:
           - environment: esp32-c6-devkitm-1
             template: extensive
 
-          - environment: seeed_xiao_esp32c3
-            template: extensive
-
-          - environment: seeed_xiao_esp32c6
-            template: extensive
-
-          - environment: wemos_d1_mini32
+          - environment: esp32dev
             template: extensive
 
           - environment: lolin_d32
@@ -426,6 +414,15 @@ jobs:
             template: extensive
 
           - environment: lolin_s3_mini
+            template: extensive
+
+          - environment: seeed_xiao_esp32c3
+            template: extensive
+
+          - environment: seeed_xiao_esp32c6
+            template: extensive
+
+          - environment: wemos_d1_mini32
             template: extensive
 
     steps:
@@ -445,7 +442,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Default
+      - name: Default configuration template
         if: matrix.template == 'default'
         run: |
           echo "IKEA_OBEGRANSAD='true'" >> .env
@@ -461,7 +458,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Minimal
+      - name: Minimal configuration template
         if: matrix.template == 'minimal'
         run: |
           cat <<'EOL' > .env
@@ -491,7 +488,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Typical
+      - name: Typical configuration template
         if: matrix.template == 'typical'
         run: |
           cat <<'EOL' > .env
@@ -555,7 +552,6 @@ jobs:
           MODE_WTTRIN='true'
           MODE_YR='true'
           NAME='Obegränsad'
-          TIME_ZONE='Etc/Universal'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -572,7 +568,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-      - name: Extensive
+      - name: Extensive configuration template
         if: matrix.template == 'extensive'
         run: |
           cat <<'EOL' > .env
