@@ -19,7 +19,6 @@ private:
     bool ticking = true;
 
     void setTicking(const bool _ticking);
-
     void transmit();
 
 public:

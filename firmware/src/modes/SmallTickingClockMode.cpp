@@ -1,11 +1,32 @@
 #if MODE_SMALLTICKINGCLOCK
 
+#include <Preferences.h>
+
 #include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/SmallTickingClockMode.h"
+#include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+void SmallTickingClockMode::configure()
+{
+    Preferences Storage;
+
+    Storage.begin(name, true);
+
+    if (Storage.isKey("ticking"))
+    {
+        ticking = Storage.getBool("ticking");
+        Storage.end();
+        transmit();
+    }
+    else
+    {
+        Storage.end();
+    }
+}
 
 void SmallTickingClockMode::begin()
 {
@@ -27,7 +48,8 @@ void SmallTickingClockMode::handle()
             TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 1, GRID_ROWS / 2);
             pending = false;
         }
-        if (second != local.tm_sec)
+
+        if (second != local.tm_sec && ticking)
         {
             second = local.tm_sec;
             if (second < 8)
@@ -56,6 +78,32 @@ void SmallTickingClockMode::handle()
                 Display.setPixel(GRID_COLUMNS / 2 - 60 + second, GRID_ROWS / 2 - 8, INT8_MAX);
             }
         }
+    }
+}
+
+void SmallTickingClockMode::setTicking(const bool _ticking)
+{
+    ticking = _ticking;
+    Preferences Storage;
+    Storage.begin(name);
+    Storage.putBool("ticking", ticking);
+    Storage.end();
+    pending = true;
+}
+
+void SmallTickingClockMode::transmit()
+{
+    JsonDocument doc;
+    doc["ticking"] = ticking;
+    Device.transmit(doc, name);
+}
+
+void SmallTickingClockMode::onReceive(const JsonDocument doc, const char *const source)
+{
+    // Toggle ticking
+    if (doc["ticking"].is<bool>())
+    {
+        setTicking(doc["ticking"].as<bool>());
     }
 }
 

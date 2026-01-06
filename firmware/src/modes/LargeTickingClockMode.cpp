@@ -60,6 +60,7 @@ void LargeTickingClockMode::handle()
             }
             pending = false;
         }
+
         if (second != local.tm_sec && ticking)
         {
             Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
@@ -88,7 +89,7 @@ void LargeTickingClockMode::transmit()
 
 void LargeTickingClockMode::onReceive(const JsonDocument doc, const char *const source)
 {
-    // Font
+    // Toggle ticking
     if (doc["ticking"].is<bool>())
     {
         setTicking(doc["ticking"].as<bool>());
