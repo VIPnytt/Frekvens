@@ -2,15 +2,18 @@ import { mdiDotsGrid, mdiImageFrame } from '@mdi/js';
 import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
-import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
+import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BOLDCLOCK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGETICKINGCLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMALLTICKINGCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
 import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
 import { WebSocketWS } from '../extensions/WebSocket';
 import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
 import { Main as ModeArrowMain, name as ModeArrowName } from '../modes/Arrow';
 import { Main as ModeArtNetMain, name as ModeArtNetName } from '../modes/ArtNet';
+import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from '../modes/BinaryClock';
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from '../modes/BinaryEpoch';
 import { Main as ModeBlindsMain, name as ModeBlindsName } from '../modes/Blinds';
 import { Main as ModeBlinkMain, name as ModeBlinkName } from '../modes/Blink';
+import { Main as ModeBoldClockMain, name as ModeBoldClockName } from '../modes/BoldClock';
+import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from '../modes/BreakoutClock';
 import { Main as ModeBrightMain, name as ModeBrightName } from '../modes/Bright';
 import { Main as ModeCircleMain, name as ModeCircleName } from '../modes/Circle';
 import { Main as ModeCountdownMain, Sidebar as ModeCountdownSidebar, Actions as ModeCountdownActions, Link as ModeCountdownLink, receiver as ModeCountdown, name as ModeCountdownName } from '../modes/Countdown';
@@ -21,11 +24,13 @@ import { Main as ModeEqualizerMain, name as ModeEqualizerName } from '../modes/E
 import { Main as ModeFireworkMain, name as ModeFireworkName } from '../modes/Firework';
 import { Main as ModeFliesMain, name as ModeFliesName } from '../modes/Flies';
 import { Main as ModeGameOfLifeMain, name as ModeGameOfLifeName } from '../modes/GameOfLife';
+import { Main as ModeGameOfLifeClockMain, name as ModeGameOfLifeClockName } from '../modes/GameOfLifeClock';
 import { Main as ModeGlitterMain, name as ModeGlitterName } from '../modes/Glitter';
 import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from '../modes/GoogleWeather';
 import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from '../modes/HomeAssistantWeather';
 import { Main as ModeHomeThermometerMain, Link as ModeHomeThermometerLink, receiver as ModeHomeThermometer, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from '../modes/JaggedWaveform';
+import { Main as ModeLargeTickingClockMain, name as ModeLargeTickingClockName } from '../modes/LargeTickingClock';
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from '../modes/LeafFall';
 import { Main as ModeLinesMain, name as ModeLinesName } from '../modes/Lines';
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from '../modes/Metaballs';
@@ -33,12 +38,16 @@ import { Main as ModeNoiseMain, name as ModeNoiseName } from '../modes/Noise';
 import { Main as ModeOpenMeteoMain, name as ModeOpenMeteoName } from '../modes/OpenMeteo';
 import { Main as ModeOpenWeatherMain, name as ModeOpenWeatherName } from '../modes/OpenWeather';
 import { Main as ModePingPongMain, name as ModePingPongName } from '../modes/PingPong';
+import { Main as ModePingPongClockMain, name as ModePingPongClockName } from '../modes/PingPongClock';
 import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from '../modes/PixelSequence';
 import { Main as ModeRainMain, name as ModeRainName } from '../modes/Rain';
 import { Main as ModeRingMain, name as ModeRingName } from '../modes/Ring';
 import { Main as ModeScanMain, name as ModeScanName } from '../modes/Scan';
+import { Main as ModeSmallClockMain, name as ModeSmallClockName } from '../modes/SmallClock';
+import { Main as ModeSmallTickingClockMain, name as ModeSmallTickingClockName } from '../modes/SmallTickingClock';
 import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from '../modes/SmoothWaveform';
 import { Main as ModeSnakeMain, name as ModeSnakeName } from '../modes/Snake';
+import { Main as ModeSnakeClockMain, name as ModeSnakeClockName } from '../modes/SnakeClock';
 import { Main as ModeStarsMain, name as ModeStarsName } from '../modes/Stars';
 import { Main as ModeTickerMain, Sidebar as ModeTickerSidebar, receiver as ModeTicker, name as ModeTickerName } from '../modes/Ticker';
 import { Main as ModeWaveformMain, name as ModeWaveformName } from '../modes/Waveform';
@@ -73,280 +82,343 @@ export const Main: Component = () => (
     >
         {
             MODE_ANIMATION && (
-                <Match when={ModesMode() === ModeAnimationName}>
+                <Match when={getMode() === ModeAnimationName}>
                     <ModeAnimationMain />
                 </Match>
             )
         }
         {
             MODE_ARROW && (
-                <Match when={ModesMode() === ModeArrowName}>
+                <Match when={getMode() === ModeArrowName}>
                     <ModeArrowMain />
                 </Match>
             )
         }
         {
             MODE_ARTNET && (
-                <Match when={ModesMode() === ModeArtNetName}>
+                <Match when={getMode() === ModeArtNetName}>
                     <ModeArtNetMain />
                 </Match>
             )
         }
         {
+            MODE_BINARYCLOCK && (
+                <Match when={getMode() === ModeBinaryClockName}>
+                    <ModeBinaryClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_BINARYEPOCH && (
-                <Match when={ModesMode() === ModeBinaryEpochName}>
+                <Match when={getMode() === ModeBinaryEpochName}>
                     <ModeBinaryEpochMain />
                 </Match>
             )
         }
         {
             MODE_BLINDS && (
-                <Match when={ModesMode() === ModeBlindsName}>
+                <Match when={getMode() === ModeBlindsName}>
                     <ModeBlindsMain />
                 </Match>
             )
         }
         {
             MODE_BLINK && (
-                <Match when={ModesMode() === ModeBlinkName}>
+                <Match when={getMode() === ModeBlinkName}>
                     <ModeBlinkMain />
                 </Match>
             )
         }
         {
+            MODE_BOLDCLOCK && (
+                <Match when={getMode() === ModeBoldClockName}>
+                    <ModeBoldClockMain />
+                </Match>
+            )
+        }
+        {
+            MODE_BREAKOUTCLOCK && (
+                <Match when={getMode() === ModeBreakoutClockName}>
+                    <ModeBreakoutClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_BRIGHT && (
-                <Match when={ModesMode() === ModeBrightName}>
+                <Match when={getMode() === ModeBrightName}>
                     <ModeBrightMain />
                 </Match>
             )
         }
         {
             MODE_CIRCLE && (
-                <Match when={ModesMode() === ModeCircleName}>
+                <Match when={getMode() === ModeCircleName}>
                     <ModeCircleMain />
                 </Match>
             )
         }
         {
             MODE_COUNTDOWN && (
-                <Match when={ModesMode() === ModeCountdownName}>
+                <Match when={getMode() === ModeCountdownName}>
                     <ModeCountdownMain />
                 </Match>
             )
         }
         {
             MODE_DISTRIBUTEDDISPLAYPROTOCOL && (
-                <Match when={ModesMode() === ModeDistributedDisplayProtocolName}>
+                <Match when={getMode() === ModeDistributedDisplayProtocolName}>
                     <ModeDistributedDisplayProtocolMain />
                 </Match>
             )
         }
         {
             MODE_DRAW && (
-                <Match when={ModesMode() === ModeDrawName}>
+                <Match when={getMode() === ModeDrawName}>
                     <ModeDrawMain />
                 </Match>
             )
         }
         {
             MODE_E131 && (
-                <Match when={ModesMode() === ModeE131Name}>
+                <Match when={getMode() === ModeE131Name}>
                     <ModeE131Main />
                 </Match>
             )
         }
         {
             MODE_EQUALIZER && (
-                <Match when={ModesMode() === ModeEqualizerName}>
+                <Match when={getMode() === ModeEqualizerName}>
                     <ModeEqualizerMain />
                 </Match>
             )
         }
         {
             MODE_FIREWORK && (
-                <Match when={ModesMode() === ModeFireworkName}>
+                <Match when={getMode() === ModeFireworkName}>
                     <ModeFireworkMain />
                 </Match>
             )
         }
         {
             MODE_FLIES && (
-                <Match when={ModesMode() === ModeFliesName}>
+                <Match when={getMode() === ModeFliesName}>
                     <ModeFliesMain />
                 </Match>
             )
         }
         {
             MODE_GAMEOFLIFE && (
-                <Match when={ModesMode() === ModeGameOfLifeName}>
+                <Match when={getMode() === ModeGameOfLifeName}>
                     <ModeGameOfLifeMain />
                 </Match>
             )
         }
         {
+            MODE_GAMEOFLIFECLOCK && (
+                <Match when={getMode() === ModeGameOfLifeClockName}>
+                    <ModeGameOfLifeClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_GLITTER && (
-                <Match when={ModesMode() === ModeGlitterName}>
+                <Match when={getMode() === ModeGlitterName}>
                     <ModeGlitterMain />
                 </Match>
             )
         }
         {
             MODE_GOOGLEWEATHER && (
-                <Match when={ModesMode() === ModeGoogleWeatherName}>
+                <Match when={getMode() === ModeGoogleWeatherName}>
                     <ModeGoogleWeatherMain />
                 </Match>
             )
         }
         {
             MODE_HOMEASSISTANTWEATHER && (
-                <Match when={ModesMode() === ModeHomeAssistantWeatherName}>
+                <Match when={getMode() === ModeHomeAssistantWeatherName}>
                     <ModeHomeAssistantWeatherMain />
                 </Match>
             )
         }
         {
             MODE_HOMETHERMOMETER && (
-                <Match when={ModesMode() === ModeHomeThermometerName}>
+                <Match when={getMode() === ModeHomeThermometerName}>
                     <ModeHomeThermometerMain />
                 </Match>
             )
         }
         {
             MODE_JAGGEDWAVEFORM && (
-                <Match when={ModesMode() === ModeJaggedWaveformName}>
+                <Match when={getMode() === ModeJaggedWaveformName}>
                     <ModeJaggedWaveformMain />
                 </Match>
             )
         }
         {
+            MODE_LARGETICKINGCLOCK && (
+                <Match when={getMode() === ModeLargeTickingClockName}>
+                    <ModeLargeTickingClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_LEAFFALL && (
-                <Match when={ModesMode() === ModeLeafFallName}>
+                <Match when={getMode() === ModeLeafFallName}>
                     <ModeLeafFallMain />
                 </Match>
             )
         }
         {
             MODE_LINES && (
-                <Match when={ModesMode() === ModeLinesName}>
+                <Match when={getMode() === ModeLinesName}>
                     <ModeLinesMain />
                 </Match>
             )
         }
         {
             MODE_METABALLS && (
-                <Match when={ModesMode() === ModeMetaballsName}>
+                <Match when={getMode() === ModeMetaballsName}>
                     <ModeMetaballsMain />
                 </Match>
             )
         }
         {
             MODE_NOISE && (
-                <Match when={ModesMode() === ModeNoiseName}>
+                <Match when={getMode() === ModeNoiseName}>
                     <ModeNoiseMain />
                 </Match>
             )
         }
         {
             MODE_OPENMETEO && (
-                <Match when={ModesMode() === ModeOpenMeteoName}>
+                <Match when={getMode() === ModeOpenMeteoName}>
                     <ModeOpenMeteoMain />
                 </Match>
             )
         }
         {
             MODE_OPENWEATHER && (
-                <Match when={ModesMode() === ModeOpenWeatherName}>
+                <Match when={getMode() === ModeOpenWeatherName}>
                     <ModeOpenWeatherMain />
                 </Match>
             )
         }
         {
             MODE_PINGPONG && (
-                <Match when={ModesMode() === ModePingPongName}>
+                <Match when={getMode() === ModePingPongName}>
                     <ModePingPongMain />
                 </Match>
             )
         }
         {
+            MODE_PINGPONGCLOCK && (
+                <Match when={getMode() === ModePingPongClockName}>
+                    <ModePingPongClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_PIXELSEQUENCE && (
-                <Match when={ModesMode() === ModePixelSequenceName}>
+                <Match when={getMode() === ModePixelSequenceName}>
                     <ModePixelSequenceMain />
                 </Match>
             )
         }
         {
             MODE_RAIN && (
-                <Match when={ModesMode() === ModeRainName}>
+                <Match when={getMode() === ModeRainName}>
                     <ModeRainMain />
                 </Match>
             )
         }
         {
             MODE_RING && (
-                <Match when={ModesMode() === ModeRingName}>
+                <Match when={getMode() === ModeRingName}>
                     <ModeRingMain />
                 </Match>
             )
         }
         {
             MODE_SCAN && (
-                <Match when={ModesMode() === ModeScanName}>
+                <Match when={getMode() === ModeScanName}>
                     <ModeScanMain />
                 </Match>
             )
         }
         {
+            MODE_SMALLCLOCK && (
+                <Match when={getMode() === ModeSmallClockName}>
+                    <ModeSmallClockMain />
+                </Match>
+            )
+        }
+        {
+            MODE_SMALLTICKINGCLOCK && (
+                <Match when={getMode() === ModeSmallTickingClockName}>
+                    <ModeSmallTickingClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_SMOOTHWAVEFORM && (
-                <Match when={ModesMode() === ModeSmoothWaveformName}>
+                <Match when={getMode() === ModeSmoothWaveformName}>
                     <ModeSmoothWaveformMain />
                 </Match>
             )
         }
         {
             MODE_SNAKE && (
-                <Match when={ModesMode() === ModeSnakeName}>
+                <Match when={getMode() === ModeSnakeName}>
                     <ModeSnakeMain />
                 </Match>
             )
         }
         {
+            MODE_SNAKECLOCK && (
+                <Match when={getMode() === ModeSnakeClockName}>
+                    <ModeSnakeClockMain />
+                </Match>
+            )
+        }
+        {
             MODE_STARS && (
-                <Match when={ModesMode() === ModeStarsName}>
+                <Match when={getMode() === ModeStarsName}>
                     <ModeStarsMain />
                 </Match>
             )
         }
         {
             MODE_TICKER && (
-                <Match when={ModesMode() === ModeTickerName}>
+                <Match when={getMode() === ModeTickerName}>
                     <ModeTickerMain />
                 </Match>
             )
         }
         {
             MODE_WAVEFORM && (
-                <Match when={ModesMode() === ModeWaveformName}>
+                <Match when={getMode() === ModeWaveformName}>
                     <ModeWaveformMain />
                 </Match>
             )
         }
         {
             MODE_WORLDWEATHERONLINE && (
-                <Match when={ModesMode() === ModeWorldWeatherOnlineName}>
+                <Match when={getMode() === ModeWorldWeatherOnlineName}>
                     <ModeWorldWeatherOnlineMain />
                 </Match>
             )
         }
         {
             MODE_WTTRIN && (
-                <Match when={ModesMode() === ModeWttrInName}>
+                <Match when={getMode() === ModeWttrInName}>
                     <ModeWttrInMain />
                 </Match>
             )
         }
         {
             MODE_YR && (
-                <Match when={ModesMode() === ModeYrName}>
+                <Match when={getMode() === ModeYrName}>
                     <ModeYrMain />
                 </Match>
             )
@@ -386,28 +458,28 @@ export const Sidebar: Component = () => {
             <Switch>
                 {
                     MODE_ANIMATION && (
-                        <Match when={ModesMode() === ModeAnimationName}>
+                        <Match when={getMode() === ModeAnimationName}>
                             <ModeAnimationSidebar />
                         </Match>
                     )
                 }
                 {
                     MODE_COUNTDOWN && (
-                        <Match when={ModesMode() === ModeCountdownName}>
+                        <Match when={getMode() === ModeCountdownName}>
                             <ModeCountdownSidebar />
                         </Match>
                     )
                 }
                 {
                     MODE_DRAW && (
-                        <Match when={ModesMode() === ModeDrawName}>
+                        <Match when={getMode() === ModeDrawName}>
                             <ModeDrawSidebar />
                         </Match>
                     )
                 }
                 {
                     MODE_TICKER && (
-                        <Match when={ModesMode() === ModeTickerName}>
+                        <Match when={getMode() === ModeTickerName}>
                             <ModeTickerSidebar />
                         </Match>
                     )
