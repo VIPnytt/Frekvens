@@ -43,9 +43,9 @@ jobs:
 
     strategy:
       matrix:
-        toolchain:
-          - esphome-version: ${{ needs.esphome.outputs.min_version }}
-          - esphome-version: latest
+        esphome-version:
+          - ${{ needs.esphome.outputs.min_version }}
+          - latest
 
     steps:
       - name: Set up Frekvens
@@ -63,5 +63,5 @@ jobs:
       - name: ESPHome build
         uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
         with:
+          version: ${{ matrix.esphome-version }}
           yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml
-          version: ${{ matrix.toolchain.esphome-version }}
