@@ -87,7 +87,8 @@ jobs:
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
           path: |
-            .pio/libdeps
+            .platformio/.cache/downloads
+            .platformio/.cache/http
             .platformio/packages
             .platformio/penv/Lib/site-packages
             .platformio/platforms
@@ -141,7 +142,8 @@ jobs:
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
           path: |
-            .pio/libdeps
+            .platformio/.cache/downloads
+            .platformio/.cache/http
             .platformio/packages
             .platformio/penv/Lib/site-packages
             .platformio/platforms
@@ -216,7 +218,8 @@ jobs:
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
           path: |
-            .pio/libdeps
+            .platformio/.cache/downloads
+            .platformio/.cache/http
             .platformio/packages
             .platformio/penv/Lib/site-packages
             .platformio/platforms
@@ -358,7 +361,8 @@ jobs:
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
           path: |
-            .pio/libdeps
+            .platformio/.cache/downloads
+            .platformio/.cache/http
             .platformio/packages
             .platformio/penv/Lib/site-packages
             .platformio/platforms
