@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   animation:
-    name: Animation streamer
+    name: Animation
     runs-on: ubuntu-latest
 
     strategy:
@@ -96,7 +96,7 @@ jobs:
           exit $STATUS
 
   drawing:
-    name: Drawing streamer
+    name: Drawing
     runs-on: ubuntu-latest
 
     strategy:

@@ -77,7 +77,9 @@ jobs:
         with:
           python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
-          cache-dependency-path: .github/platformio/requirements.txt
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
 
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
@@ -85,14 +87,10 @@ jobs:
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-            .platformio/packages
-            .platformio/penv/Lib/site-packages
-            .platformio/platforms
-            .platformio/tools
 
       - name: PlatformIO build
         run: |
@@ -132,7 +130,9 @@ jobs:
         with:
           python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
-          cache-dependency-path: .github/platformio/requirements.txt
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
 
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
@@ -140,14 +140,10 @@ jobs:
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-            .platformio/packages
-            .platformio/penv/Lib/site-packages
-            .platformio/platforms
-            .platformio/tools
 
       - name: PlatformIO build
         run: |
@@ -208,7 +204,9 @@ jobs:
         with:
           python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
-          cache-dependency-path: .github/platformio/requirements.txt
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
 
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
@@ -216,14 +214,10 @@ jobs:
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-            .platformio/packages
-            .platformio/penv/Lib/site-packages
-            .platformio/platforms
-            .platformio/tools
 
       - name: PlatformIO build
         run: |
@@ -351,7 +345,9 @@ jobs:
         with:
           python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
-          cache-dependency-path: .github/platformio/requirements.txt
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
 
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
@@ -359,14 +355,10 @@ jobs:
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ matrix.toolchain.python-version }}-${{ hashFiles('.github/platformio/requirements.txt', 'scripts/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-            .platformio/packages
-            .platformio/penv/Lib/site-packages
-            .platformio/platforms
-            .platformio/tools
 
       - name: PlatformIO build
         run: |
