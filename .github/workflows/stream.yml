@@ -93,9 +93,9 @@ jobs:
     strategy:
       matrix:
         module:
-          - frekvens.ArtNetStreamer
-          - frekvens.DistributedDisplayProtocolStreamer
-          - frekvens.E131Streamer
+          - ArtNetStreamer
+          - DistributedDisplayProtocolStreamer
+          - E131Streamer
         toolchain:
           - python-version: 3.11
           - python-version: 3.14
