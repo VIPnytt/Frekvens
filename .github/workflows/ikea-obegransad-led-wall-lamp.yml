@@ -20,10 +20,11 @@ permissions:
 
 jobs:
   platformio:
-    name: PlatformIO environments
+    name: PlatformIO variable extract
     runs-on: ubuntu-latest
     outputs:
-      environments: ${{ steps.pio.outputs.environments }}
+      environments: ${{ steps.print.outputs.environments }}
+      version: ${{ steps.print.outputs.version }}
 
     steps:
       - name: Set up Frekvens
@@ -39,12 +40,11 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: Export PlatformIO environments
-        id: pio
+      - name: PlatformIO extract
+        id: print
         run: |
-          echo "environments=$(pio project config --json-output \
-            | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" \
-            >> "$GITHUB_OUTPUT"
+          echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+          echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default build
@@ -81,16 +81,16 @@ jobs:
             .github/platformio/requirements.txt
             scripts/requirements.txt
 
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
 
       - name: PlatformIO build
         run: |
@@ -134,16 +134,16 @@ jobs:
             .github/platformio/requirements.txt
             scripts/requirements.txt
 
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
 
       - name: PlatformIO build
         run: |
@@ -208,16 +208,16 @@ jobs:
             .github/platformio/requirements.txt
             scripts/requirements.txt
 
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
-
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
 
       - name: PlatformIO build
         run: |
@@ -349,18 +349,18 @@ jobs:
             .github/platformio/requirements.txt
             scripts/requirements.txt
 
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
       - name: Set up Cache
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.github/platformio/requirements.txt', 'platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
 
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
-
-      - name: PlatformIO build
+      - name: PlatformIO build'
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'

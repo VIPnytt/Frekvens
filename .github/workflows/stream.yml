@@ -26,9 +26,9 @@ jobs:
     strategy:
       matrix:
         module:
-          - frekvens.ArtNetStreamer
-          - frekvens.DistributedDisplayProtocolStreamer
-          - frekvens.E131Streamer
+          - ArtNetStreamer
+          - DistributedDisplayProtocolStreamer
+          - E131Streamer
         toolchain:
           - python-version: 3.11
           - python-version: 3.14
@@ -84,16 +84,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          set +e
-          OUTPUT=$(python -m ${{ matrix.module }} --host localhost -i Animation.csv 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
-            echo "Expected ConnectError occurred."
-            exit 0
-          fi
-          echo "Unexpected error or no error."
-          exit $STATUS
+          python -m frekvens.${{ matrix.module }} --host localhost -i Animation.csv 2>&1 | grep "httpx.ConnectError"
 
   drawing:
     name: Drawing
@@ -144,13 +135,4 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          set +e
-          OUTPUT=$(python -m ${{ matrix.module }} --host localhost -i Drawing.csv 2>&1)
-          STATUS=$?
-          echo "$OUTPUT"
-          if echo "$OUTPUT" | grep -q "httpx.ConnectError"; then
-            echo "Expected ConnectError occurred."
-            exit 0
-          fi
-          echo "Unexpected error or no error."
-          exit $STATUS
+          python -m frekvens.${{ matrix.module }} --host localhost -i Drawing.csv 2>&1 | grep "httpx.ConnectError"
