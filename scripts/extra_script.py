@@ -7,7 +7,8 @@ import typing
 
 if typing.TYPE_CHECKING:
 
-    def Import(*vars) -> None: ...
+    def Import(*vars) -> None:
+        pass
 
 
 Import("env")
