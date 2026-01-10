@@ -15,6 +15,7 @@ from .Extra import Extra
 from .Firmware import Firmware
 from .Tools import Tools
 
+
 class Frekvens:
     certificate: Certificate | None = None
     dependency: Dependency | None = None

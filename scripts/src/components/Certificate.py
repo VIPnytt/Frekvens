@@ -85,7 +85,9 @@ class Certificate:
                 der = ssock.getpeercert(True)
                 if der:
                     for pem in self._fetch_chain(der):
-                        certificate = cryptography.x509.load_pem_x509_certificate(pem.encode())
+                        certificate = cryptography.x509.load_pem_x509_certificate(
+                            pem.encode()
+                        )
                         if self._is_self_signed(pem):
                             if not any(
                                 _certificate.fingerprint(
@@ -121,8 +123,7 @@ class Certificate:
 
     def _get_bin(self) -> bytes:
         self.certificates = sorted(
-            self.certificates,
-            key=lambda cert: cert.subject.public_bytes(),
+            self.certificates, key=lambda cert: cert.subject.public_bytes()
         )
         offsets = []
         bundle = b""
