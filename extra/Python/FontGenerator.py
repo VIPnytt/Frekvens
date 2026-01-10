@@ -82,7 +82,7 @@ class FontGenerator:
     def _font_to_characters(self) -> list[str]:
         font = fontTools.ttLib.TTFont(self.path)
         unicode: set[int] = set()
-        for table in font["cmap"].tables:  # type: ignore
+        for table in font["cmap"].tables:
             if table.isUnicode():
                 unicode.update(table.cmap.keys())
         characters = []
@@ -98,7 +98,7 @@ class FontGenerator:
         unique = os.path.splitext(os.path.basename(self.path))[0]
         name = unique
         font = fontTools.ttLib.TTFont(self.path)
-        for record in font["name"].names:  # type: ignore
+        for record in font["name"].names:
             if record.nameID == 4:
                 name = record.toUnicode()
             elif record.nameID == 6:

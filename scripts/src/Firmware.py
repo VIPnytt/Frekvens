@@ -62,7 +62,7 @@ class Firmware:
             "board",
             "monitor_speed",
         ]:
-            value = config.get(self.project.working, option, None)
+            value = config.get(f"env:{self.project.env['PIOENV']}", option, None)
             if value:
                 _key = option.replace(".", "__").upper()
                 _value = (

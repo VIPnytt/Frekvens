@@ -1,22 +1,36 @@
 # PlatformIO pre-build extra script
 
+import os
+import SCons.Script
 import sys
+import typing
 
-Import("env")  # type: ignore
+if typing.TYPE_CHECKING:
 
-if not env.IsCleanTarget():  # type: ignore
-    env.Execute(f"pip install -r scripts/requirements.txt -q")  # type: ignore
+    def Import(*vars) -> None:
+        pass
 
-sys.path.append(env["PROJECT_DIR"])  # type: ignore
+
+Import("env")
+
+if typing.TYPE_CHECKING:
+    env = SCons.Script.Environment()
+
+if not env.IsCleanTarget():
+    if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]) or "CI" in os.environ:
+        env.Execute("pip install -r scripts/requirements.txt")
+    else:
+        env.Execute("pip install -q -r scripts/requirements.txt")
+
+sys.path.append(env["PROJECT_DIR"])
 
 from scripts.src.Frekvens import Frekvens
 
-if not env.IsCleanTarget() and COMMAND_LINE_TARGETS not in [  # type: ignore
+if env.IsCleanTarget():
+    Frekvens.clean()
+elif SCons.Script.COMMAND_LINE_TARGETS not in [
     ["erase"],
     ["menuconfig"],
     ["size"],
 ]:
-    Frekvens(env, COMMAND_LINE_TARGETS).run()  # type: ignore
-
-if env.IsCleanTarget():  # type: ignore
-    Frekvens.clean()
+    Frekvens(env).run()

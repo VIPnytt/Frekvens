@@ -1,4 +1,3 @@
-import cryptography.hazmat.backends
 import cryptography.hazmat.primitives.hashes
 import cryptography.hazmat.primitives.serialization
 import cryptography.x509
@@ -75,9 +74,7 @@ class Certificate:
     def add_der(self, path: pathlib.Path | str) -> None:
         with open(path, "rb") as der:
             self.certificates.append(
-                cryptography.x509.load_der_x509_certificate(
-                    der.read(), cryptography.hazmat.backends.default_backend()
-                )
+                cryptography.x509.load_der_x509_certificate(der.read())
             )
 
     def _add_host(self, hostname: str, port: int = 443) -> bool:
@@ -89,8 +86,7 @@ class Certificate:
                 if der:
                     for pem in self._fetch_chain(der):
                         certificate = cryptography.x509.load_pem_x509_certificate(
-                            pem.encode("utf8"),
-                            cryptography.hazmat.backends.default_backend(),
+                            pem.encode()
                         )
                         if self._is_self_signed(pem):
                             if not any(
@@ -119,8 +115,7 @@ class Certificate:
                     encoded = False
                     self.certificates.append(
                         cryptography.x509.load_pem_x509_certificate(
-                            certificate.encode(),
-                            cryptography.hazmat.backends.default_backend(),
+                            certificate.encode()
                         )
                     )
                 if encoded is True:
@@ -128,10 +123,7 @@ class Certificate:
 
     def _get_bin(self) -> bytes:
         self.certificates = sorted(
-            self.certificates,
-            key=lambda cert: cert.subject.public_bytes(
-                cryptography.hazmat.backends.default_backend()
-            ),
+            self.certificates, key=lambda cert: cert.subject.public_bytes()
         )
         offsets = []
         bundle = b""
@@ -140,9 +132,7 @@ class Certificate:
                 cryptography.hazmat.primitives.serialization.Encoding.DER,
                 cryptography.hazmat.primitives.serialization.PublicFormat.SubjectPublicKeyInfo,
             )
-            subject_name_der = certificate.subject.public_bytes(
-                cryptography.hazmat.backends.default_backend()
-            )
+            subject_name_der = certificate.subject.public_bytes()
             offsets.append(4 * len(self.certificates) + len(bundle))
             bundle += (
                 struct.pack("<HH", len(subject_name_der), len(public_key_der))
@@ -156,7 +146,7 @@ class Certificate:
         for cert in self.certificates:
             pem = cert.public_bytes(
                 cryptography.hazmat.primitives.serialization.Encoding.PEM
-            ).decode("utf8")
+            ).decode()
             name = self._get_name(pem)
             if len(bundle):
                 bundle += "\n"
@@ -205,18 +195,14 @@ class Certificate:
 
     def _is_self_signed(self, pem: str) -> bool:
         try:
-            cert = cryptography.x509.load_pem_x509_certificate(
-                pem.encode("utf8"), cryptography.hazmat.backends.default_backend()
-            )
+            cert = cryptography.x509.load_pem_x509_certificate(pem.encode())
             return cert.issuer == cert.subject
         except Exception as e:
             logging.warning("Failed to load issuer certificate: %s", e)
         return False
 
     def _get_name(self, pem: str) -> str | None:
-        subject = cryptography.x509.load_pem_x509_certificate(
-            pem.encode("utf8"), cryptography.hazmat.backends.default_backend()
-        ).subject
+        subject = cryptography.x509.load_pem_x509_certificate(pem.encode()).subject
         com = subject.get_attributes_for_oid(cryptography.x509.oid.NameOID.COMMON_NAME)
         if com and isinstance(com[0].value, str):
             return com[0].value
