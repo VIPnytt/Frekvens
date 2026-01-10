@@ -1,24 +1,25 @@
 import dotenv
 import os
 import pathlib
+import SCons.Script
 import shutil
 
-from .config.version import VERSION
 from .components.Certificate import Certificate
 from .components.Dependency import Dependency
 from .components.Partition import Partition
 from .components.TimeZone import TimeZone
+from .config.version import VERSION
 from .extensions.Ota import Ota
 from .extensions.WebApp import WebApp
 from .Extra import Extra
 from .Firmware import Firmware
 from .Tools import Tools
 
-
 class Frekvens:
     certificate: Certificate | None = None
     dependency: Dependency | None = None
     dotenv: dict[str, str]
+    env: SCons.Script.Environment
     extra: Extra
     firmware: Firmware | None = None
     ota: Ota | None = None
@@ -26,20 +27,19 @@ class Frekvens:
     timezone: TimeZone | None = None
     tools: Tools
     webapp: WebApp | None = None
-    working: str = ""
 
-    def __init__(self, env, targets: list[str]) -> None:
+    def __init__(self, env: SCons.Script.Environment) -> None:
         self.env = env
         self.extra = Extra(self)
         self.ota = Ota(self)
         self.partition = Partition(self)
         self.tools = Tools(self)
-        if targets not in [
+        if SCons.Script.COMMAND_LINE_TARGETS not in [
             ["build"],
             ["upload"],
         ]:
             self.webapp = WebApp(self)
-        if targets not in [
+        if SCons.Script.COMMAND_LINE_TARGETS not in [
             ["buildfs"],
             ["uploadfs"],
             ["uploadfsota"],
@@ -52,7 +52,6 @@ class Frekvens:
             key: (value if value is not None else "")
             for key, value in dotenv.dotenv_values(".env").items()
         }
-        self.working = f"env:{ self.env['PIOENV']}"
 
     def run(self) -> None:
         print(f"Frekvens {VERSION}")
