@@ -29,6 +29,9 @@ firmware:
     - any-glob-to-any-file:
       - firmware/**/*
 
+  - head-branch:
+    - ^platformio_dependabot/
+
 tools:
   - changed-files:
     - any-glob-to-any-file:
