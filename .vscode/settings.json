@@ -1,9 +1,9 @@
 {
   "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   // Biome LSP configuration workaround
   // https://github.com/biomejs/biome-vscode/issues/680#issuecomment-3188786705
@@ -15,7 +15,8 @@
     "linux-arm64-musl": "webapp/node_modules/@biomejs/cli-linux-arm64-musl/biome",
     "darwin-x64": "webapp/node_modules/@biomejs/cli-darwin-x64/biome",
     "darwin-arm64": "webapp/node_modules/@biomejs/cli-darwin-arm64/biome"
-  }
+  },
   // This does not work with the latest version of the Biome extension
   //"biome.lsp.bin": "webapp/node_modules/@biomejs/biome/bin/biome"
+  "editor.formatOnSave": true
 }

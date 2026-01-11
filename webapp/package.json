@@ -13,9 +13,7 @@
         "dev": "vite",
         "serve": "vite preview",
         "start": "vite",
-        "format": "biome format ./src",
-        "lint": "biome lint --write ./src",
-        "check": "biome check ./src"
+        "lint": "biome lint ./src"
     },
     "dependencies": {
         "@mdi/js": "7.4.47",
