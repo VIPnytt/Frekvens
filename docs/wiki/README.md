@@ -43,6 +43,7 @@ Optional hardware that adds new capabilities and functionality to the device.
 
 Supplementary files and developer resources.
 
+- [Tips for development](https://github.com/VIPnytt/Frekvens/wiki/Development)
 - [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
 - [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
 - [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
