@@ -51,7 +51,7 @@ jobs:
               def do_PATCH(self):
                   self.send_response(202 if self.path == "/restful/Modes" else 404)
                   self.end_headers()
-          http.server.HTTPServer(("127.0.0.1", 80), Test).serve_forever()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF
 
       - name: Set up Socket server
@@ -62,6 +62,11 @@ jobs:
           socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 6454))
           time.sleep(60)
           EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Frekvens stream
         run: |
@@ -134,7 +139,7 @@ jobs:
               def do_PATCH(self):
                   self.send_response(202 if self.path == "/restful/Modes" else 404)
                   self.end_headers()
-          http.server.HTTPServer(("127.0.0.1", 80), Test).serve_forever()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF
 
       - name: Set up Socket server
@@ -145,6 +150,11 @@ jobs:
           socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 6454))
           time.sleep(60)
           EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Frekvens stream
         run: |

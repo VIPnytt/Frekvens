@@ -145,8 +145,13 @@ jobs:
               def do_PATCH(self):
                   self.send_response(202 if self.path == "/restful/Home%20thermometer" else 404)
                   self.end_headers()
-          http.server.HTTPServer(("127.0.0.1", 80), Test).serve_forever()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Home thermometer demo
         run: python -m frekvens.HomeThermometerDemo --host 127.0.0.1 --indoor=22 --outdoor=8
