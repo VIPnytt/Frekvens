@@ -43,6 +43,15 @@ jobs:
       - name: Set up Frekvens tools
         run: pip install tools/
 
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          import time
+          socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 5568))
+          time.sleep(60)
+          EOF
+
       - name: Set up HTTP server
         run: |
           python - << 'EOF' &
@@ -52,15 +61,6 @@ jobs:
                   self.send_response(202 if self.path == "/restful/Modes" else 404)
                   self.end_headers()
           http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
-          EOF
-
-      - name: Set up Socket server
-        run: |
-          setsid python - << 'EOF' >/dev/null 2>&1 &
-          import socket
-          import time
-          socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 5568))
-          time.sleep(60)
           EOF
 
       - name: Set ip iptables rules
@@ -131,6 +131,15 @@ jobs:
       - name: Set up Frekvens tools
         run: pip install tools/
 
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          import time
+          socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 5568))
+          time.sleep(60)
+          EOF
+
       - name: Set up HTTP server
         run: |
           python - << 'EOF' &
@@ -140,15 +149,6 @@ jobs:
                   self.send_response(202 if self.path == "/restful/Modes" else 404)
                   self.end_headers()
           http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
-          EOF
-
-      - name: Set up Socket server
-        run: |
-          setsid python - << 'EOF' >/dev/null 2>&1 &
-          import socket
-          import time
-          socket.socket(type=socket.SOCK_DGRAM).bind(("127.0.0.1", 5568))
-          time.sleep(60)
           EOF
 
       - name: Set ip iptables rules
