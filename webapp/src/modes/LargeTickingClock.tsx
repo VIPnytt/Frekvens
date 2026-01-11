@@ -2,16 +2,17 @@ import { type Component, createSignal } from "solid-js";
 
 import { ClockIcon } from "../components/Clock";
 import { Toast } from "../components/Toast";
-import { Tooltip } from "../components/Tooltip";
-import { MODE_LARGETICKINGCLOCK } from "../config/modules";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
-import { name as LargeTickingClockName } from "./LargeTickingClock";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Large ticking clock";
 
 const [getTicking, setTicking] = createSignal<boolean>(true);
+
+export const receiver = (json: any) => {
+		json[name]?.ticking !== undefined && setTicking(json[name].ticking);
+};
 
 const { toast } = Toast();
 
@@ -31,19 +32,16 @@ export const Sidebar: Component = () => {
 	};
 
 	return (
-		MODE_LARGETICKINGCLOCK && (
-			<SidebarSection title={name}>
-				<div>
-					Ticking
-					<Tooltip text={LargeTickingClockName}>
-						<input
-							type="checkbox"
-							checked={getTicking()}
-							onChange={(e) => handleTicking(e.currentTarget.checked)}
-						/>
-					</Tooltip>
-				</div>
-			</SidebarSection>
-		)
+		<SidebarSection title={name}>
+			<label class="flex items-center gap-3 cursor-pointer">
+				<input
+					type="checkbox"
+					checked={getTicking()}
+					onChange={(e) => handleTicking(e.currentTarget.checked)}
+					class="cursor-pointer w-5 h-5"
+				/>
+				<span>Ticking</span>
+			</label>
+		</SidebarSection>
 	);
 };

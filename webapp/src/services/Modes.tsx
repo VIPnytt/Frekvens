@@ -30,7 +30,7 @@ import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from '..
 import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from '../modes/HomeAssistantWeather';
 import { Main as ModeHomeThermometerMain, Link as ModeHomeThermometerLink, receiver as ModeHomeThermometer, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from '../modes/JaggedWaveform';
-import { Main as ModeLargeTickingClockMain, name as ModeLargeTickingClockName } from '../modes/LargeTickingClock';
+import { Main as ModeLargeTickingClockMain, Sidebar as ModeLargeTickingClockSidebar, receiver as ModeLargeTickingClock, name as ModeLargeTickingClockName } from '../modes/LargeTickingClock';
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from '../modes/LeafFall';
 import { Main as ModeLinesMain, name as ModeLinesName } from '../modes/Lines';
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from '../modes/Metaballs';
@@ -72,6 +72,7 @@ export const receiver = (json: any) => {
     MODE_DRAW && ModeDraw(json);
     MODE_HOMETHERMOMETER && ModeHomeThermometer(json);
     MODE_TICKER && ModeTicker(json);
+    MODE_LARGETICKINGCLOCK && ModeLargeTickingClock(json);
 };
 
 export const Main: Component = () => (
@@ -474,6 +475,13 @@ export const Sidebar: Component = () => {
                     MODE_DRAW && (
                         <Match when={getMode() === ModeDrawName}>
                             <ModeDrawSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_LARGETICKINGCLOCK && (
+                        <Match when={getMode() === ModeLargeTickingClockName}>
+                            <ModeLargeTickingClockSidebar />
                         </Match>
                     )
                 }
