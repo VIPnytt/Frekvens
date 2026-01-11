@@ -11,7 +11,7 @@ export const name = "Small ticking clock";
 const [getTicking, setTicking] = createSignal<boolean>(true);
 
 export const receiver = (json: any) => {
-		json[name]?.ticking !== undefined && setTicking(json[name].ticking);
+    json[name]?.ticking !== undefined && setTicking(json[name].ticking);
 };
 
 const { toast } = Toast();
@@ -19,29 +19,29 @@ const { toast } = Toast();
 export const Main: Component = () => <ModesMainComponent icon={ClockIcon()} />;
 
 export const Sidebar: Component = () => {
-	const handleTicking = (ticking: boolean) => {
-		setTicking(ticking);
-		WebSocketWS.send(
-			JSON.stringify({
-				[name]: {
-					ticking: getTicking(),
-				},
-			}),
-		);
-		toast(`${name} updated`);
-	};
+    const handleTicking = (ticking: boolean) => {
+        setTicking(ticking);
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    ticking: getTicking(),
+                },
+            }),
+        );
+        toast(`${name} updated`);
+    };
 
-	return (
-		<SidebarSection title={name}>
-			<label class="flex items-center gap-3 cursor-pointer">
-				<input
-					type="checkbox"
-					checked={getTicking()}
-					onChange={(e) => handleTicking(e.currentTarget.checked)}
-					class="cursor-pointer w-5 h-5"
-				/>
-				<span>Ticking</span>
-			</label>
-		</SidebarSection>
-	);
+    return (
+        <SidebarSection title={name}>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input
+                    type="checkbox"
+                    checked={getTicking()}
+                    onChange={(e) => handleTicking(e.currentTarget.checked)}
+                    class="cursor-pointer w-5 h-5"
+                />
+                <span>Ticking</span>
+            </label>
+        </SidebarSection>
+    );
 };
