@@ -52,23 +52,23 @@ class Dependency:
         if self.proceed and packaging.version.parse(VERSION).is_devrelease:
             self._check("platform", self.project.env.GetProjectOption("platform"))
             if self.proceed:
-                for pkg in self.project.env.GetProjectOption("platform_packages", []):
-                    _, _, uri = pkg.partition("@")
+                for tool in self.project.env.GetProjectOption("platform_packages", []):  # type: ignore
+                    _, _, uri = tool.partition("@")
                     self._check("tool", uri.strip())
                     if not self.proceed:
                         return
-                for dep in self.project.env.GetProjectOption("lib_deps"):
-                    self._check("library", dep)
+                for library in self.project.env.GetProjectOption("lib_deps"):  # type: ignore
+                    self._check("library", library)
                     if not self.proceed:
                         return
 
-    def _check(self, type: str, query: str) -> bool | None:
+    def _check(self, section: str, query: str) -> bool | None:
         parsed = urllib.parse.urlparse(query, allow_fragments=False)
         try:
             return (
                 self._github(query)
                 if parsed.scheme and parsed.netloc and parsed.hostname == "github.com"
-                else self._platformio(type, query)
+                else self._platformio(section, query)
             )
         except httpx.HTTPError as e:
             logging.warning("Dependency update check failed: %s", e)

@@ -56,7 +56,7 @@ class WebApp:
         for option in [
             "board",
         ]:
-            value = config.get(self.project.working, option, None)
+            value = config.get(f"env:{self.project.env['PIOENV']}", option, None)
             if value:
                 dotenv.set_key(path, f"VITE_{option.upper()}", value)
         for option in dotenv.dotenv_values(path).keys():
