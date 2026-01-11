@@ -1,6 +1,6 @@
 # Development
 
-The project is setup to format source files on save.
+The project is set up to format source files on save.
 
 ## Firmware
 
