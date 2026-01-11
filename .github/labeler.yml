@@ -32,12 +32,13 @@ firmware:
   - head-branch:
     - ^platformio_dependabot/
 
+frontend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - webapp/**/*
+
 tools:
   - changed-files:
     - any-glob-to-any-file:
       - tools/**/*
 
-webapp:
-  - changed-files:
-    - any-glob-to-any-file:
-      - webapp/**/*

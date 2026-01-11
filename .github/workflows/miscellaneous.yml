@@ -137,8 +137,19 @@ jobs:
       - name: Set up Frekvens tools
         run: pip install tools/
 
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Home%20thermometer" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 80), Test).serve_forever()
+          EOF
+
       - name: Home thermometer demo
-        run: python -m frekvens.HomeThermometerDemo --host localhost --indoor=22 --outdoor=8 2>&1 | grep "httpx.ConnectError"
+        run: python -m frekvens.HomeThermometerDemo --host 127.0.0.1 --indoor=22 --outdoor=8
 
   x509_crt_bundle:
     name: x509 certificate bundle
@@ -168,12 +179,21 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Set up Cache
+        continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/bertmelis\/espMqttClient/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+          sed -i '/vintlabs\/FauxmoESP/d' platformio.ini
 
       - name: PlatformIO build
         continue-on-error: true
@@ -213,13 +233,14 @@ jobs:
           fail: true
           files: firmware/certs/bundle/ca_roots.pem, firmware/embed/x509_crt_bundle.bin
 
-      - name: Set up ESP-IDF
-        run: |
-          git clone -b release/v5.5 --filter=blob:none --sparse https://github.com/espressif/esp-idf.git && \
-          cd esp-idf && \
-          git sparse-checkout add components/mbedtls/esp_crt_bundle
+      - name: Checkout espressif/esp-idf
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          repository: espressif/esp-idf
+          ref: release/v5.5
+          path: lib/esp-idf
 
-      - name: Certificate bundle
+      - name: Certificate bundle comparison
         run: |
-          python esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py --i firmware/certs/bundle && \
+          python lib/esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py -i firmware/certs/bundle && \
           cmp x509_crt_bundle firmware/embed/x509_crt_bundle.bin

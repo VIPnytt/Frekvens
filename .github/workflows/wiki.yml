@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   wiki:
+    name: Wiki
     runs-on: ubuntu-latest
     steps:
       - name: Set up Frekvens
