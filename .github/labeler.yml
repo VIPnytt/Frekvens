@@ -1,0 +1,43 @@
+bug:
+  - head-branch:
+    - ^fix
+    - bugfix
+
+dependencies:
+  - head-branch:
+    - ^dependabot/
+    - ^platformio_dependabot/
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - docs/**
+      - "**/*.md"
+
+enhancement:
+  - head-branch:
+    - ^feat
+    - feature
+
+extra:
+  - changed-files:
+    - any-glob-to-any-file:
+      - extra/**/*
+
+firmware:
+  - changed-files:
+    - any-glob-to-any-file:
+      - firmware/**/*
+
+  - head-branch:
+    - ^platformio_dependabot/
+
+tools:
+  - changed-files:
+    - any-glob-to-any-file:
+      - tools/**/*
+
+webapp:
+  - changed-files:
+    - any-glob-to-any-file:
+      - webapp/**/*
