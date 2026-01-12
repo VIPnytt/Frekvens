@@ -50,7 +50,7 @@ jobs:
           sock = socket.socket(type=socket.SOCK_DGRAM)
           sock.bind(("127.0.0.1", 5568))
           while True:
-              sock.recvfrom(126 + 256)
+              sock.recvfrom(126 + 16 * 16)
           EOF
 
       - name: Set up HTTP server
@@ -139,7 +139,7 @@ jobs:
           sock = socket.socket(type=socket.SOCK_DGRAM)
           sock.bind(("127.0.0.1", 5568))
           while True:
-              sock.recvfrom(126 + 256)
+              sock.recvfrom(126 + 16 * 16)
           EOF
 
       - name: Set up HTTP server
