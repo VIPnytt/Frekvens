@@ -1,4 +1,4 @@
-name: Stream
+name: Distributed Display Protocol
 
 on:
   merge_group:
@@ -20,16 +20,12 @@ permissions:
 
 jobs:
   animation:
-    name: Animation
+    name: Animation stream
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        module:
-          - ArtNetStreamer
-          - DistributedDisplayProtocolStreamer
-          - E131Streamer
-        toolchain:
+        include:
           - python-version: 3.11
           - python-version: 3.14
 
@@ -40,12 +36,38 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.toolchain.python-version }}
+          python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: tools/pyproject.toml
 
       - name: Set up Frekvens tools
         run: pip install tools/
+
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          sock = socket.socket(type=socket.SOCK_DGRAM)
+          sock.bind(("127.0.0.1", 4048))
+          while True:
+              sock.recvfrom(10 + 16 * 16)
+          EOF
+
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
+          EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Frekvens stream
         run: |
@@ -84,19 +106,15 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          python -m frekvens.${{ matrix.module }} --host localhost -i Animation.csv 2>&1 | grep "httpx.ConnectError"
+          timeout --preserve-status -s INT 10s python -m frekvens.DistributedDisplayProtocolStreamer --host 127.0.0.1 -i Animation.csv
 
   drawing:
-    name: Drawing
+    name: Drawing stream
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        module:
-          - ArtNetStreamer
-          - DistributedDisplayProtocolStreamer
-          - E131Streamer
-        toolchain:
+        include:
           - python-version: 3.11
           - python-version: 3.14
 
@@ -107,12 +125,38 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.toolchain.python-version }}
+          python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: tools/pyproject.toml
 
       - name: Set up Frekvens tools
         run: pip install tools/
+
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          sock = socket.socket(type=socket.SOCK_DGRAM)
+          sock.bind(("127.0.0.1", 4048))
+          while True:
+              sock.recvfrom(10 + 16 * 16)
+          EOF
+
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
+          EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Frekvens stream
         run: |
@@ -135,4 +179,4 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          python -m frekvens.${{ matrix.module }} --host localhost -i Drawing.csv 2>&1 | grep "httpx.ConnectError"
+          python -m frekvens.DistributedDisplayProtocolStreamer --host 127.0.0.1 -i Drawing.csv

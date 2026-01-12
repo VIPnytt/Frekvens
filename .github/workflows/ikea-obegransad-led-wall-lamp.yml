@@ -85,12 +85,20 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Set up Cache
+        continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/bertmelis\/espMqttClient/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
 
       - name: PlatformIO build
         run: |
@@ -138,12 +146,21 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Set up Cache
+        continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/bertmelis\/espMqttClient/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+          sed -i '/vintlabs\/FauxmoESP/d' platformio.ini
 
       - name: PlatformIO build
         run: |
@@ -188,6 +205,20 @@ jobs:
           - node-version: 25
             python-version: 3.13
 
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+          - environment: adafruit_qtpy_esp32s3_n4r2
+          - environment: esp32-c3-devkitm-1
+          - environment: esp32-c5-devkitc-1
+          - environment: esp32-c6-devkitm-1
+          - environment: esp32dev
+          - environment: lolin_d32
+          - environment: lolin_d32_pro
+          - environment: lolin_s3_mini
+          - environment: seeed_xiao_esp32c3
+          - environment: seeed_xiao_esp32c6
+          - environment: wemos_d1_mini32
+
     steps:
       - name: Set up Frekvens
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -212,6 +243,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Set up Cache
+        continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
@@ -219,13 +251,21 @@ jobs:
             .platformio/.cache/downloads
             .platformio/.cache/http
 
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+
       - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
           EXTENSION_HEAP='true'
+          EXTENSION_HOMEASSISTANT='true'
           EXTENSION_MESSAGE='true'
+          EXTENSION_MQTT='true'
           EXTENSION_OTA='true'
           EXTENSION_PLAYLIST='true'
           EXTENSION_RESTFUL='true'
@@ -289,6 +329,9 @@ jobs:
           #define LATITUDE "0.000"
           #define LOCATION "redacted"
           #define LONGITUDE "0.000"
+          #define MQTT_HOST "mqtt.local"
+          #define MQTT_KEY "redacted"
+          #define MQTT_USER "redacted"
           #define PIN_CS 1
           #define PIN_MOSI 2
           #define PIN_OE 3
@@ -353,6 +396,7 @@ jobs:
         run: pip install -r .github/platformio/requirements.txt
 
       - name: Set up Cache
+        continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
