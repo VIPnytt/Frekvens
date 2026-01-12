@@ -1,0 +1,24 @@
+name: PlatformIO
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    name: Dependabot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: PlatformIO dependabot
+        uses: peterus/platformio_dependabot@ee459e446a090c4894b1354a3b85bc064797fd2b # v1.2.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

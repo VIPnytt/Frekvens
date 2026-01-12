@@ -1,0 +1,520 @@
+name: IKEA Obegränsad LED wall lamp
+
+on:
+  merge_group:
+    types:
+      - checks_requested
+
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  platformio:
+    name: PlatformIO variable extract
+    runs-on: ubuntu-latest
+    outputs:
+      environments: ${{ steps.print.outputs.environments }}
+      version: ${{ steps.print.outputs.version }}
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: 3.13
+          cache: pip
+          cache-dependency-path: .github/platformio/requirements.txt
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: PlatformIO extract
+        id: print
+        run: |
+          echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+          echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+
+  default:
+    name: Default build
+    needs: platformio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: Set up Cache
+        continue-on-error: true
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          path: |
+            .platformio/.cache/downloads
+            .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/bertmelis\/espMqttClient/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+
+      - name: PlatformIO build
+        run: |
+          echo "IKEA_OBEGRANSAD='true'" >> .env
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
+          pio run -e ${{ matrix.environment }}
+
+  minimal:
+    name: Minimal build
+    needs: platformio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
+        toolchain:
+          - python-version: 3.11
+          - python-version: 3.13
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: Set up Cache
+        continue-on-error: true
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          path: |
+            .platformio/.cache/downloads
+            .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/bertmelis\/espMqttClient/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+          sed -i '/vintlabs\/FauxmoESP/d' platformio.ini
+
+      - name: PlatformIO build
+        run: |
+          cat <<'EOL' > .env
+          EXTENSION_BUTTON='true'
+          HOSTNAME='obegransad'
+          IKEA_OBEGRANSAD='true'
+          MODE_CIRCLE='true'
+          MODE_LINES='true'
+          MODE_NOISE='true'
+          MODE_RAIN='true'
+          MODE_SCAN='true'
+          MODE_STARS='true'
+          NAME='Obegränsad'
+          EOL
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
+          pio run -e ${{ matrix.environment }}
+
+  typical:
+    name: Typical build
+    needs: platformio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+          - environment: adafruit_qtpy_esp32s3_n4r2
+          - environment: esp32-c3-devkitm-1
+          - environment: esp32-c5-devkitc-1
+          - environment: esp32-c6-devkitm-1
+          - environment: esp32dev
+          - environment: lolin_d32
+          - environment: lolin_d32_pro
+          - environment: lolin_s3_mini
+          - environment: seeed_xiao_esp32c3
+          - environment: seeed_xiao_esp32c6
+          - environment: wemos_d1_mini32
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: Set up Cache
+        continue-on-error: true
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          path: |
+            .platformio/.cache/downloads
+            .platformio/.cache/http
+
+      - name: Remove platformio.ini lib_deps
+        continue-on-error: true
+        run: |
+          sed -i '/(?:arduino-irremote\/IRremote)|(?:Arduino-IRremote\/Arduino-IRremote)/d' platformio.ini
+          sed -i '/(?:makuna\/RTC)|(?:Makuna\/Rtc)/d' platformio.ini
+
+      - name: PlatformIO build
+        run: |
+          cat <<'EOL' > .env
+          EXTENSION_ALEXA='true'
+          EXTENSION_BUTTON='true'
+          EXTENSION_HEAP='true'
+          EXTENSION_HOMEASSISTANT='true'
+          EXTENSION_MESSAGE='true'
+          EXTENSION_MQTT='true'
+          EXTENSION_OTA='true'
+          EXTENSION_PLAYLIST='true'
+          EXTENSION_RESTFUL='true'
+          EXTENSION_SERVERSENTEVENTS='true'
+          EXTENSION_SIGNAL='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          FONT_BRAILLE='true'
+          HOSTNAME='obegransad'
+          IKEA_OBEGRANSAD='true'
+          MODE_ANIMATION='true'
+          MODE_ARROW='true'
+          MODE_ARTNET='true'
+          MODE_BINARYCLOCK='true'
+          MODE_BINARYEPOCH='true'
+          MODE_BLINDS='true'
+          MODE_BLINK='true'
+          MODE_BOLDCLOCK='true'
+          MODE_BREAKOUTCLOCK='true'
+          MODE_BRIGHT='true'
+          MODE_CIRCLE='true'
+          MODE_COUNTDOWN='true'
+          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
+          MODE_DRAW='true'
+          MODE_E131='true'
+          MODE_EQUALIZER='true'
+          MODE_FIREWORK='true'
+          MODE_FLIES='true'
+          MODE_GAMEOFLIFE='true'
+          MODE_GAMEOFLIFECLOCK='true'
+          MODE_GLITTER='true'
+          MODE_HOMETHERMOMETER='true'
+          MODE_JAGGEDWAVEFORM='true'
+          MODE_LARGETICKINGCLOCK='true'
+          MODE_LEAFFALL='true'
+          MODE_LINES='true'
+          MODE_METABALLS='true'
+          MODE_NOISE='true'
+          MODE_OPENMETEO='true'
+          MODE_PINGPONG='true'
+          MODE_PINGPONGCLOCK='true'
+          MODE_PIXELSEQUENCE='true'
+          MODE_RAIN='true'
+          MODE_RING='true'
+          MODE_SCAN='true'
+          MODE_SMALLCLOCK='true'
+          MODE_SMALLTICKINGCLOCK='true'
+          MODE_SMOOTHWAVEFORM='true'
+          MODE_SNAKE='true'
+          MODE_SNAKECLOCK='true'
+          MODE_STARS='true'
+          MODE_TICKER='true'
+          MODE_WAVEFORM='true'
+          MODE_WTTRIN='true'
+          MODE_YR='true'
+          NAME='Obegränsad'
+          EOL
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define LATITUDE "0.000"
+          #define LOCATION "redacted"
+          #define LONGITUDE "0.000"
+          #define MQTT_HOST "mqtt.local"
+          #define MQTT_KEY "redacted"
+          #define MQTT_USER "redacted"
+          #define PIN_CS 1
+          #define PIN_MOSI 2
+          #define PIN_OE 3
+          #define PIN_SCLK 4
+          #define PIN_SW2 5
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          EOL
+
+          pio run -e ${{ matrix.environment }}
+
+  extensive:
+    name: Extensive build
+    needs: platformio
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
+        toolchain:
+          - node-version: 20
+            python-version: 3.11
+
+          - node-version: 25
+            python-version: 3.13
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+          - environment: adafruit_qtpy_esp32s3_n4r2
+          - environment: esp32-c3-devkitm-1
+          - environment: esp32-c5-devkitc-1
+          - environment: esp32-c6-devkitm-1
+          - environment: esp32dev
+          - environment: lolin_d32
+          - environment: lolin_d32_pro
+          - environment: lolin_s3_mini
+          - environment: seeed_xiao_esp32c3
+          - environment: seeed_xiao_esp32c6
+          - environment: wemos_d1_mini32
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.toolchain.node-version }}
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.toolchain.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            .github/platformio/requirements.txt
+            scripts/requirements.txt
+
+      - name: Set up PlatformIO
+        run: pip install -r .github/platformio/requirements.txt
+
+      - name: Set up Cache
+        continue-on-error: true
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          path: |
+            .platformio/.cache/downloads
+            .platformio/.cache/http
+
+      - name: PlatformIO build'
+        run: |
+          cat <<'EOL' > .env
+          EXTENSION_ALEXA='true'
+          EXTENSION_BUTTON='true'
+          EXTENSION_HEAP='true'
+          EXTENSION_HOMEASSISTANT='true'
+          EXTENSION_INFRARED='true'
+          EXTENSION_MESSAGE='true'
+          EXTENSION_MICROPHONE='true'
+          EXTENSION_MQTT='true'
+          EXTENSION_OTA='true'
+          EXTENSION_PHOTOCELL='true'
+          EXTENSION_PLAYLIST='true'
+          EXTENSION_RESTFUL='true'
+          EXTENSION_RTC='true'
+          EXTENSION_SERVERSENTEVENTS='true'
+          EXTENSION_SIGNAL='true'
+          EXTENSION_WEBAPP='true'
+          EXTENSION_WEBSOCKET='true'
+          FONT_BRAILLE='true'
+          HOSTNAME='obegransad'
+          IKEA_OBEGRANSAD='true'
+          MODE_ANIMATION='true'
+          MODE_ARROW='true'
+          MODE_ARTNET='true'
+          MODE_BINARYCLOCK='true'
+          MODE_BINARYEPOCH='true'
+          MODE_BLINDS='true'
+          MODE_BLINK='true'
+          MODE_BOLDCLOCK='true'
+          MODE_BREAKOUTCLOCK='true'
+          MODE_BRIGHT='true'
+          MODE_CIRCLE='true'
+          MODE_COUNTDOWN='true'
+          MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
+          MODE_DRAW='true'
+          MODE_E131='true'
+          MODE_EQUALIZER='true'
+          MODE_FIREWORK='true'
+          MODE_FLIES='true'
+          MODE_GAMEOFLIFE='true'
+          MODE_GAMEOFLIFECLOCK='true'
+          MODE_GLITTER='true'
+          MODE_GOOGLEWEATHER='true'
+          MODE_HOMEASSISTANTWEATHER='true'
+          MODE_HOMETHERMOMETER='true'
+          MODE_JAGGEDWAVEFORM='true'
+          MODE_LARGETICKINGCLOCK='true'
+          MODE_LEAFFALL='true'
+          MODE_LINES='true'
+          MODE_METABALLS='true'
+          MODE_NOISE='true'
+          MODE_OPENMETEO='true'
+          MODE_OPENWEATHER='true'
+          MODE_PINGPONG='true'
+          MODE_PINGPONGCLOCK='true'
+          MODE_PIXELSEQUENCE='true'
+          MODE_RAIN='true'
+          MODE_RING='true'
+          MODE_SCAN='true'
+          MODE_SMALLCLOCK='true'
+          MODE_SMALLTICKINGCLOCK='true'
+          MODE_SMOOTHWAVEFORM='true'
+          MODE_SNAKE='true'
+          MODE_SNAKECLOCK='true'
+          MODE_STARS='true'
+          MODE_TICKER='true'
+          MODE_WAVEFORM='true'
+          MODE_WORLDWEATHERONLINE='true'
+          MODE_WTTRIN='true'
+          MODE_YR='true'
+          NAME='Obegränsad'
+          OTA_KEY='redacted'
+          TIME_ZONE='Etc/Universal'
+          EOL
+
+          cat <<'EOL' > firmware/include/config/secrets.h
+          #pragma once
+          #define FRAME_RATE 60
+          #define GOOGLEWEATHER_KEY "redacted"
+          #define HOMEASSISTANT_ENTITY "weather.forecast_home"
+          #define HOMEASSISTANT_HOST "homeassistant.local"
+          #define HOMEASSISTANT_KEY "redacted"
+          #define HOMEASSISTANT_PORT 8123
+          #define LATITUDE "0.000"
+          #define LOCATION "redacted"
+          #define LONGITUDE "0.000"
+          #define MQTT_HOST "mqtt.local"
+          #define MQTT_PORT 1883
+          #define MQTT_USER "redacted"
+          #define MQTT_KEY "redacted"
+          #define OPENMETEO_KEY "redacted"
+          #define OPENWEATHER_KEY "redacted"
+          #define PIN_CS 1
+          #define PIN_INT 2
+          #define PIN_IR 3
+          #define PIN_LDR 4
+          #define PIN_MIC 5
+          #define PIN_MOSI 6
+          #define PIN_OE 7
+          #define PIN_SCL 8
+          #define PIN_SCLK 9
+          #define PIN_SDA 10
+          #define PIN_SW2 11
+          #define RTC_DS3231
+          #define TEMPERATURE_FAHRENHEIT true
+          #define WIFI_COUNTRY "01"
+          #define WIFI_KEY "redacted"
+          #define WIFI_SSID "redacted"
+          #define WORLDWEATHERONLINE_KEY "redacted"
+          EOL
+
+          pio run -e ${{ matrix.environment }}

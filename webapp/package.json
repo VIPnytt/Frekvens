@@ -1,6 +1,6 @@
 {
     "name": "frekvens",
-    "version": "2.1.0",
+    "version": "2.1.1-dev0",
     "homepage": "https://github.com/VIPnytt/Frekvens",
     "repository": {
         "type": "git",
@@ -12,7 +12,8 @@
         "build": "vite build",
         "dev": "vite",
         "serve": "vite preview",
-        "start": "vite"
+        "start": "vite",
+        "lint": "biome lint ./src"
     },
     "dependencies": {
         "@mdi/js": "7.4.47",
@@ -22,11 +23,12 @@
         "solid-js": "1.9.10"
     },
     "devDependencies": {
+        "@biomejs/biome": "2.3.11",
         "@tailwindcss/vite": "4.1.18",
         "@types/js-cookie": "3.0.6",
         "@types/node": "24.10.4",
         "@types/offscreencanvas": "2019.7.3",
-        "vite": "7.2.7",
+        "vite": "7.3.1",
         "vite-plugin-html": "3.2.2",
         "vite-plugin-singlefile": "2.3.0",
         "vite-plugin-solid": "2.11.10"

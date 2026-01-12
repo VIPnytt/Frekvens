@@ -1,83 +1,85 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     cooldown:
       default-days: 90
     labels:
-      - "dependencies"
-      - "no-changelog"
+      - dependencies
+      - no-changelog
     milestone: 9
     schedule:
-      interval: "weekly"
+      interval: daily
 
-  - package-ecosystem: "pip"
-    directory: "/.github/platformio"
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - "dependencies"
-      - "no-changelog"
-    milestone: 9
-    schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
-
-  - package-ecosystem: "pip"
-    directory: "/extra/Python"
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - "dependencies"
-      - "extra"
-    milestone: 9
-    schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
-
-  - package-ecosystem: "pip"
-    directory: "/scripts"
+  - package-ecosystem: pip
+    directory: /.github/platformio
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
       exclude:
-        - "tzdata"
+        - platformio
     labels:
-      - "dependencies"
+      - dependencies
+      - no-changelog
     milestone: 9
     schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
+      interval: daily
+    versioning-strategy: increase
 
-  - package-ecosystem: "pip"
-    directory: "/tools"
+  - package-ecosystem: pip
+    directory: /extra/Python
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
     labels:
-      - "dependencies"
-      - "tools"
+      - dependencies
+      - extra
     milestone: 9
     schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
+      interval: daily
+    versioning-strategy: increase
 
-  - package-ecosystem: "npm"
-    directory: "/webapp"
+  - package-ecosystem: pip
+    directory: /scripts
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+      exclude:
+        - tzdata
+    labels:
+      - dependencies
+    milestone: 9
+    schedule:
+      interval: daily
+    versioning-strategy: increase
+
+  - package-ecosystem: pip
+    directory: /tools
     cooldown:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
     labels:
-      - "dependencies"
-      - "webapp"
+      - dependencies
+      - tools
     milestone: 9
     schedule:
-      interval: "weekly"
-    versioning-strategy: "increase"
+      interval: daily
+    versioning-strategy: increase
+
+  - package-ecosystem: npm
+    directory: /webapp
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+    labels:
+      - dependencies
+      - frontend
+    milestone: 9
+    schedule:
+      interval: daily
+    versioning-strategy: increase

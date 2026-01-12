@@ -1,0 +1,182 @@
+name: Art-Net
+
+on:
+  merge_group:
+    types:
+      - checks_requested
+
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  animation:
+    name: Animation stream
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+          - python-version: 3.14
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: tools/pyproject.toml
+
+      - name: Set up Frekvens tools
+        run: pip install tools/
+
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          sock = socket.socket(type=socket.SOCK_DGRAM)
+          sock.bind(("127.0.0.1", 6454))
+          while True:
+              sock.recvfrom(18 + 16 * 16)
+          EOF
+
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
+          EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+
+      - name: Frekvens stream
+        run: |
+          cat <<EOL > Animation.csv
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
+          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,255,255,255,255,255,255,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          EOL
+
+          timeout --preserve-status -s INT 10s python -m frekvens.ArtNetStreamer --host 127.0.0.1 -i Animation.csv
+
+  drawing:
+    name: Drawing stream
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+          - python-version: 3.14
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: tools/pyproject.toml
+
+      - name: Set up Frekvens tools
+        run: pip install tools/
+
+      - name: Set up Socket server
+        run: |
+          setsid python - << 'EOF' >/dev/null 2>&1 &
+          import socket
+          sock = socket.socket(type=socket.SOCK_DGRAM)
+          sock.bind(("127.0.0.1", 6454))
+          while True:
+              sock.recvfrom(18 + 16 * 16)
+          EOF
+
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
+          EOF
+
+      - name: Set ip iptables rules
+        run: |
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+
+      - name: Frekvens stream
+        run: |
+          cat <<EOL > Drawing.csv
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
+          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,255,255,255,255,255,255,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          EOL
+
+          python -m frekvens.ArtNetStreamer --host 127.0.0.1 -i Drawing.csv

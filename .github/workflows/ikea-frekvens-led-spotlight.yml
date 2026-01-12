@@ -1,0 +1,65 @@
+name: IKEA Frekvens LED spotlight
+
+on:
+  merge_group:
+    types:
+      - checks_requested
+
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  esphome:
+    name: ESPHome minimum version extract
+    runs-on: ubuntu-latest
+    outputs:
+      min_version: ${{ steps.print.outputs.min_version }}
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Extract ESPHome minimum version
+        id: print
+        run: |
+          echo "min_version=$(grep "  min_version:" "extra/IKEA-Frekvens-LED-spotlight/esphome.yaml" | cut -d '"' -f 2)" >> "$GITHUB_OUTPUT"
+
+  ikea-frekvens-led-spotlight:
+    name: ESPHome build
+    needs: esphome
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        esphome-version:
+          - ${{ needs.esphome.outputs.min_version }}
+          - latest
+
+    steps:
+      - name: Set up Frekvens
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up ESPHome secrets.yaml
+        run: |
+          cat <<EOL > extra/IKEA-Frekvens-LED-spotlight/secrets.yaml
+          api_key: "redacted"
+          ota_password: "redacted"
+          wifi_password: "redacted"
+          wifi_ssid: "redacted"
+          EOL
+
+      - name: ESPHome build
+        uses: esphome/build-action@f93bda46d83c761cd25bbfdf350cfe508a0a39d5 # v7.1.0
+        with:
+          version: ${{ matrix.esphome-version }}
+          yaml-file: extra/IKEA-Frekvens-LED-spotlight/esphome.yaml

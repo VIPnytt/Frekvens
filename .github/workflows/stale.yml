@@ -1,8 +1,8 @@
-name: Close stale issues and PRs
+name: Stale
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 12 * * 1-5'
 
   workflow_dispatch:
 
@@ -13,14 +13,22 @@ permissions:
 
 jobs:
   stale:
+    name: Stale bot
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
+      - name: Run Stale
+        uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9.1.0
         with:
+          exempt-all-assignees: true
+          exempt-all-milestones: true
           stale-issue-message: No recent activity has been detected on this issue. It's now marked as stale and may be closed soon if no further updates are made.
-          days-before-issue-stale: 60
-          days-before-issue-close: 30
+          stale-issue-label: stale
+          days-before-issue-stale: 300
+          days-before-issue-close: 65
+          exempt-issue-labels: bug, enhancement
           stale-pr-message: This pull request hasn't seen any recent activity and is now marked as stale. Please make sure it's up to date and still relevant.
-          days-before-pr-stale: 90
+          stale-pr-label: stale
+          days-before-pr-stale: 365
           days-before-pr-close: -1
-          exempt-pr-labels: 'dependencies'
+          exempt-draft-pr: true
+          exempt-pr-labels: dependencies
