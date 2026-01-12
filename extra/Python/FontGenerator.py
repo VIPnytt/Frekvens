@@ -14,10 +14,12 @@ import unicodedata
 
 
 class FontGenerator:
+    count: int
     path: str
     size: int
 
     def __init__(self, path: str, size: int = 8) -> None:
+        self.count = 0
         self.path = path
         self.size = size
 
@@ -124,18 +126,23 @@ class FontGenerator:
             "    const std::vector<Symbol> ascii = {",
         ]
         for cp in range(0x20, 0x80):
-            if chr(cp) in bitmaps:
-                bitmap, offsetX, offsetY = self._crop(bitmaps[chr(cp)])
+            character = chr(cp)
+            if character in bitmaps:
+                bitmap, offsetX, offsetY = self._crop(bitmaps[character])
                 font.extend(
                     [
                         "        {",
-                        f"            // 0x{cp:X}, {self._character_to_description(chr(cp))}",
+                        f"            // 0x{cp:X}, {self._character_to_description(character)}",
                     ]
                 )
                 if bitmap:
                     font.append("            {")
+                    if len(bitmap[0]) > 8:
+                        font.append("                /*")
                     for row in bitmap:
                         font.append(f"                0b{row},")
+                    if len(bitmap[0]) > 8:
+                        font.append("                */")
                     font.append("            },")
                 else:
                     font.append("            {},")
@@ -148,6 +155,7 @@ class FontGenerator:
                         "        },",
                     ]
                 )
+                self.count += 1
             else:
                 font.append("        {},")
         font.extend(
@@ -159,13 +167,16 @@ class FontGenerator:
         )
         for character, _bitmap in bitmaps.items():
             bitmap, offsetX, offsetY = self._crop(_bitmap)
-            if ord(character) >= 0x80 and ord(character) <= 0x10FFFF:
+            cp = ord(character)
+            if cp >= 0x80 and cp <= 0x10FFFF:
                 comment = self._character_to_description(character)
+                if self.count >= 2**10 or (bitmap and len(bitmap[0]) > 8):
+                    font.append("        /*")
                 font.append("        {")
                 if comment:
-                    font.append(f"            0x{ord(character):X}, // {comment}")
+                    font.append(f"            0x{cp:X}, // {comment}")
                 else:
-                    font.append(f"            0x{ord(character):X},")
+                    font.append(f"            0x{cp:X},")
                 font.append("            {")
                 if bitmap:
                     font.append("                {")
@@ -174,6 +185,8 @@ class FontGenerator:
                     font.append("                },")
                 else:
                     font.append("                {},")
+                if cp == 0xA0:
+                    offsetX = round(self.size / 2)
                 font.extend(
                     [
                         f"                {offsetX},",
@@ -182,6 +195,10 @@ class FontGenerator:
                         "        },",
                     ]
                 )
+                if self.count >= 2**10 or (bitmap and len(bitmap[0]) > 8):
+                    font.append("        */")
+                else:
+                    self.count += 1
         font.append("    };")
         with open(f"{unique}Font.h", "w", encoding="utf-8") as h:
             font.extend(
