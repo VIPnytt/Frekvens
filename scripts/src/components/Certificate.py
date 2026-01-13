@@ -46,7 +46,7 @@ class Certificate:
                         try:
                             self._add_host(host)
                             break
-                        except (ConnectionError, TimeoutError) as e:
+                        except (ConnectionError, ssl.SSLEOFError, TimeoutError) as e:
                             if attempt >= 3:
                                 raise
                             logging.warning("%s (attempt #%d): %s", host, attempt, e)
