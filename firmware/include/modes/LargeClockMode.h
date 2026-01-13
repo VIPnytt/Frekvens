@@ -1,10 +1,10 @@
 #pragma once
 
-#if MODE_SMALLTICKINGCLOCK
+#if MODE_LARGECLOCK
 
 #include "modules/ModeModule.h"
 
-class SmallTickingClockMode : public ModeModule
+class LargeClockMode : public ModeModule
 {
 private:
     tm local;
@@ -14,7 +14,7 @@ private:
     uint8_t
         hour,
         minute,
-        second;
+        second = 0;
 
     bool ticking = true;
 
@@ -22,7 +22,7 @@ private:
     void transmit();
 
 public:
-    SmallTickingClockMode() : ModeModule("Small ticking clock") {};
+    LargeClockMode() : ModeModule("Large clock") {};
 
     void configure() override;
     void begin() override;
@@ -30,4 +30,4 @@ public:
     void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
-#endif // MODE_SMALLETICKINGCLOCK
+#endif // MODE_LARGECLOCK

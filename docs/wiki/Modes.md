@@ -1,6 +1,6 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Bold clock](#️-bold-clock) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large ticking clock](#️-large-ticking-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#️-small-clock) | [Small ticking clock](#️-small-ticking-clock) | [Snake clock](#️-snake-clock)
+**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Bold clock](#️-bold-clock) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#️-small-clock) | [Snake clock](#️-snake-clock)
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Game of Life clock](#-game-of-life-clock) | [Ping-pong](#-ping-pong) | [Ping-pong clock](#-ping-pong-clock) | [Snake](#-snake) | [Snake clock](#️-snake-clock)
 
@@ -124,7 +124,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_BOLD='true'
 ```
 
-See also [Small clock](#%EF%B8%8F-small-clock).
+See also [Large clock](#%EF%B8%8F-large-clock).
 
 ## 💥 Breakout clock
 
@@ -397,17 +397,17 @@ MODE_JAGGEDWAVEFORM='true'
 
 See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
 
-## ⏱️ Large ticking clock
+## ⏱️ Large clock
 
-Clock with a seconds indicator.
+Clock with optional seconds indicator.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-MODE_LARGETICKINGCLOCK='true'
+MODE_LARGECLOCK='true'
 ```
 
-See also [Small ticking clock](#-small-ticking-clock).
+See also [Bold clock](#%EF%B8%8F-bold-clock) and [Small clock](#%EF%B8%8F-small-clock).
 
 ## 🍂 Leaf fall
 
@@ -580,9 +580,9 @@ MODE_SCAN='true'
 
 See also [Lines](#-lines).
 
-## ⏲️ Small clock
+## ⏱️ Small clock
 
-Clock.
+Clock with optional seconds indicator.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -590,19 +590,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_SMALLCLOCK='true'
 ```
 
-See also [Bold clock](#%EF%B8%8F-bold-clock).
-
-## ⏱️ Small ticking clock
-
-Clock with a seconds indicator.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_SMALLTICKINGCLOCK='true'
-```
-
-See also [Large ticking clock](#-large-ticking-clock).
+See also [Large clock](#%EF%B8%8F-large-clock).
 
 ## 〰️ Smooth waveform
 

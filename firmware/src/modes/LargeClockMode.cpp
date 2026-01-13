@@ -1,21 +1,42 @@
-#if MODE_LARGETICKINGCLOCK
+#if MODE_LARGECLOCK
 
 #include <Preferences.h>
 
 #include "config/constants.h"
+#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/LargeTickingClockMode.h"
+#include "modes/LargeClockMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void LargeTickingClockMode::configure()
+void LargeClockMode::configure()
 {
+#if EXTENSION_HOMEASSISTANT
+    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    {
+        const std::string id = std::string(name).append("_ticking");
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"ticking\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::enabled_by_default] = false;
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:progress-clock";
+        component[HomeAssistantAbbreviations::name] = std::string(name).append(" ticking");
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        component[HomeAssistantAbbreviations::payload_off] = "false";
+        component[HomeAssistantAbbreviations::payload_on] = "true";
+        component[HomeAssistantAbbreviations::platform] = "switch";
+        component[HomeAssistantAbbreviations::state_off] = "False";
+        component[HomeAssistantAbbreviations::state_on] = "True";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.ticking}}";
+    }
+#endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
-
     Storage.begin(name, true);
-
     if (Storage.isKey("ticking"))
     {
         ticking = Storage.getBool("ticking");
@@ -28,12 +49,12 @@ void LargeTickingClockMode::configure()
     }
 }
 
-void LargeTickingClockMode::begin()
+void LargeClockMode::begin()
 {
     pending = true;
 }
 
-void LargeTickingClockMode::handle()
+void LargeClockMode::handle()
 {
     if (getLocalTime(&local))
     {
@@ -58,10 +79,8 @@ void LargeTickingClockMode::handle()
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), FontMedium);
                 m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - m2.getHeight()) / 2);
             }
-
             pending = false;
         }
-
         if (second != local.tm_sec && ticking)
         {
             Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
@@ -71,25 +90,28 @@ void LargeTickingClockMode::handle()
     }
 }
 
-void LargeTickingClockMode::setTicking(const bool _ticking)
+void LargeClockMode::setTicking(const bool _ticking)
 {
-    ticking = _ticking;
-    Preferences Storage;
-    Storage.begin(name);
-    Storage.putBool("ticking", ticking);
-    Storage.end();
-    pending = true;
-    transmit();
+    if (_ticking != ticking)
+    {
+        ticking = _ticking;
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putBool("ticking", ticking);
+        Storage.end();
+        pending = true;
+        transmit();
+    }
 }
 
-void LargeTickingClockMode::transmit()
+void LargeClockMode::transmit()
 {
     JsonDocument doc;
     doc["ticking"] = ticking;
     Device.transmit(doc, name);
 }
 
-void LargeTickingClockMode::onReceive(const JsonDocument doc, const char *const source)
+void LargeClockMode::onReceive(const JsonDocument doc, const char *const source)
 {
     // Toggle ticking
     if (doc["ticking"].is<bool>())
@@ -98,4 +120,4 @@ void LargeTickingClockMode::onReceive(const JsonDocument doc, const char *const 
     }
 }
 
-#endif // MODE_LARGETICKINGCLOCK
+#endif // MODE_LARGECLOCK

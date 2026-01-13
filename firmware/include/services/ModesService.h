@@ -27,7 +27,7 @@
 #include "modes/HomeAssistantWeatherMode.h"
 #include "modes/HomeThermometerMode.h"
 #include "modes/JaggedWaveformMode.h"
-#include "modes/LargeTickingClockMode.h"
+#include "modes/LargeClockMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
@@ -41,7 +41,6 @@
 #include "modes/RingMode.h"
 #include "modes/ScanMode.h"
 #include "modes/SmallClockMode.h"
-#include "modes/SmallTickingClockMode.h"
 #include "modes/SmoothWaveformMode.h"
 #include "modes/SnakeClockMode.h"
 #include "modes/SnakeMode.h"
@@ -135,8 +134,8 @@ private:
 #if MODE_JAGGEDWAVEFORM
         new JaggedWaveformMode(),
 #endif
-#if MODE_LARGETICKINGCLOCK
-        new LargeTickingClockMode(),
+#if MODE_LARGECLOCK
+        new LargeClockMode(),
 #endif
 #if MODE_LEAFFALL
         new LeafFallMode(),
@@ -176,9 +175,6 @@ private:
 #endif
 #if MODE_SMALLCLOCK
         new SmallClockMode(),
-#endif
-#if MODE_SMALLTICKINGCLOCK
-        new SmallTickingClockMode(),
 #endif
 #if MODE_SMOOTHWAVEFORM
         new SmoothWaveformMode(),

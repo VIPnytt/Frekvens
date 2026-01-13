@@ -34,7 +34,7 @@ export const MODE_GOOGLEWEATHER: boolean = import.meta.env.VITE_MODE_GOOGLEWEATH
 export const MODE_HOMEASSISTANTWEATHER: boolean = import.meta.env.VITE_MODE_HOMEASSISTANTWEATHER === 'true';
 export const MODE_HOMETHERMOMETER: boolean = import.meta.env.VITE_MODE_HOMETHERMOMETER === 'true';
 export const MODE_JAGGEDWAVEFORM: boolean = import.meta.env.VITE_MODE_JAGGEDWAVEFORM === 'true';
-export const MODE_LARGETICKINGCLOCK: boolean = import.meta.env.VITE_MODE_LARGETICKINGCLOCK === 'true';
+export const MODE_LARGECLOCK: boolean = import.meta.env.VITE_MODE_LARGECLOCK === 'true';
 export const MODE_LEAFFALL: boolean = import.meta.env.VITE_MODE_LEAFFALL === 'true';
 export const MODE_LINES: boolean = import.meta.env.VITE_MODE_LINES === 'true';
 export const MODE_METABALLS: boolean = import.meta.env.VITE_MODE_METABALLS === 'true';
@@ -48,7 +48,6 @@ export const MODE_RAIN: boolean = import.meta.env.VITE_MODE_RAIN === 'true';
 export const MODE_RING: boolean = import.meta.env.VITE_MODE_RING === 'true';
 export const MODE_SCAN: boolean = import.meta.env.VITE_MODE_SCAN === 'true';
 export const MODE_SMALLCLOCK: boolean = import.meta.env.VITE_MODE_SMALLCLOCK === 'true';
-export const MODE_SMALLTICKINGCLOCK: boolean = import.meta.env.VITE_MODE_SMALLTICKINGCLOCK === 'true';
 export const MODE_SMOOTHWAVEFORM: boolean = import.meta.env.VITE_MODE_SMOOTHWAVEFORM === 'true';
 export const MODE_SNAKE: boolean = import.meta.env.VITE_MODE_SNAKE === 'true';
 export const MODE_SNAKECLOCK: boolean = import.meta.env.VITE_MODE_SNAKECLOCK === 'true';
