@@ -2,6 +2,9 @@
 
 #if MODE_LARGECLOCK
 
+#include <vector>
+
+#include "modules/FontModule.h"
 #include "modules/ModeModule.h"
 
 class LargeClockMode : public ModeModule
@@ -9,15 +12,20 @@ class LargeClockMode : public ModeModule
 private:
     tm local;
 
-    bool pending = false;
+    bool
+        pending = false,
+        ticking = false;
 
     uint8_t
         hour,
         minute,
         second = 0;
 
-    bool ticking = true;
+    FontModule *font = nullptr;
 
+    std::vector<FontModule *> fonts = {};
+
+    void setFont(const char *const fontName);
     void setTicking(const bool _ticking);
     void transmit();
 

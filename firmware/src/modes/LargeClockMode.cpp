@@ -5,6 +5,7 @@
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumFont.h"
+#include "fonts/MediumBoldFont.h"
 #include "handlers/TextHandler.h"
 #include "modes/LargeClockMode.h"
 #include "services/DeviceService.h"
@@ -13,8 +14,32 @@
 
 void LargeClockMode::configure()
 {
+    fonts = {
+        FontMedium,
+        FontMediumBold,
+    };
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    {
+        const std::string id = std::string(name).append("_font");
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::enabled_by_default] = false;
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:format-font";
+        component[HomeAssistantAbbreviations::name] = std::string(name).append(" font");
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
+        for (const FontModule *font : fonts)
+        {
+            options.add(font->name);
+        }
+        component[HomeAssistantAbbreviations::platform] = "select";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.font}}";
+    }
     {
         const std::string id = std::string(name).append("_ticking");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
@@ -40,13 +65,19 @@ void LargeClockMode::configure()
     if (Storage.isKey("ticking"))
     {
         ticking = Storage.getBool("ticking");
+    }
+    if (Storage.isKey("font"))
+    {
+        const String _font = Storage.getString("font");
         Storage.end();
-        transmit();
+        setFont(_font.c_str());
     }
     else
     {
         Storage.end();
+        setFont(FontMediumBold->name);
     }
+    transmit();
 }
 
 void LargeClockMode::begin()
@@ -64,29 +95,51 @@ void LargeClockMode::handle()
             minute = local.tm_min;
             Display.clearFrame();
             {
-                TextHandler h1 = TextHandler(std::to_string(hour / 10), FontMedium);
+                TextHandler h1 = TextHandler(std::to_string(hour / 10), font);
                 h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(), GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
             }
             {
-                TextHandler h2 = TextHandler(std::to_string(hour % 10), FontMedium);
+                TextHandler h2 = TextHandler(std::to_string(hour % 10), font);
                 h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2, GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
             }
             {
-                TextHandler m1 = TextHandler(std::to_string(minute / 10), FontMedium);
+                TextHandler m1 = TextHandler(std::to_string(minute / 10), font);
                 m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(), GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
             }
             {
-                TextHandler m2 = TextHandler(std::to_string(minute % 10), FontMedium);
+                TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
                 m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - m2.getHeight()) / 2);
             }
             pending = false;
         }
-        if (second != local.tm_sec && ticking)
+        if (ticking && second != local.tm_sec)
         {
             Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
             second = local.tm_sec;
             Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
         }
+    }
+}
+
+void LargeClockMode::setFont(const char *const fontName)
+{
+    if (!font || strcmp(font->name, fontName))
+    {
+        for (FontModule *_font : fonts)
+        {
+            if (!strcmp(_font->name, fontName))
+            {
+                font = _font;
+                Preferences Storage;
+                Storage.begin(name);
+                Storage.putString("font", font->name);
+                Storage.end();
+                pending = true;
+                transmit();
+                return;
+            }
+        }
+        ESP_LOGD(name, "unsupported font %s", fontName);
     }
 }
 
@@ -107,13 +160,24 @@ void LargeClockMode::setTicking(const bool _ticking)
 void LargeClockMode::transmit()
 {
     JsonDocument doc;
+    doc["font"] = font->name;
+    JsonArray _fonts = doc["fonts"].to<JsonArray>();
+    for (const FontModule *_font : fonts)
+    {
+        _fonts.add(_font->name);
+    }
     doc["ticking"] = ticking;
     Device.transmit(doc, name);
 }
 
 void LargeClockMode::onReceive(const JsonDocument doc, const char *const source)
 {
-    // Toggle ticking
+    // Font
+    if (doc["font"].is<const char *>())
+    {
+        setFont(doc["font"].as<const char *>());
+    }
+    // Ticking
     if (doc["ticking"].is<bool>())
     {
         setTicking(doc["ticking"].as<bool>());

@@ -1,4 +1,4 @@
-import { type Component, createSignal } from "solid-js";
+import { type Component, createSignal, For } from "solid-js";
 
 import { ClockIcon } from "../components/Clock";
 import { Toast } from "../components/Toast";
@@ -8,9 +8,13 @@ import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Large clock";
 
-const [getTicking, setTicking] = createSignal<boolean>(true);
+const [getFont, setFont] = createSignal<string>('');
+const [getFonts, setFonts] = createSignal<string[]>([]);
+const [getTicking, setTicking] = createSignal<boolean>(false);
 
 export const receiver = (json: any) => {
+    json[name]?.font !== undefined && setFont(json[name].font);
+    json[name]?.fonts !== undefined && setFonts(json[name].fonts);
     json[name]?.ticking !== undefined && setTicking(json[name].ticking);
 };
 
@@ -19,6 +23,17 @@ const { toast } = Toast();
 export const Main: Component = () => <ModesMainComponent icon={ClockIcon()} />;
 
 export const Sidebar: Component = () => {
+    const handleFont = (font: string) => {
+        setFont(font);
+        WebSocketWS.send(JSON.stringify({
+            [name]:
+            {
+                'font': getFont(),
+            },
+        }));
+        toast(`${name} updated`);
+    };
+
     const handleTicking = (ticking: boolean) => {
         setTicking(ticking);
         WebSocketWS.send(
@@ -33,6 +48,19 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection title={name}>
+            <select
+                class="mt-3 w-full"
+                value={getFont()}
+                onchange={(e) =>
+                    handleFont(e.currentTarget.value)
+                }
+            >
+                <For each={getFonts()}>
+                    {
+                        (font) => <option>{font}</option>
+                    }
+                </For>
+            </select>
             <label class="flex items-center gap-3 cursor-pointer">
                 <input
                     type="checkbox"

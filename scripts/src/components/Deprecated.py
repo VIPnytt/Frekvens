@@ -12,8 +12,20 @@ class Deprecated:
         self.project = project
 
     def initialize(self) -> None:
+        self._boldclock()
         self._largetickingclock()
         self._smalltickingclock()
+
+    def _boldclock(self) -> None:
+        if "MODE_BOLDCLOCK" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_BOLDCLOCK "Bold clock" is deprecated. Use MODE_LARGECLOCK "Large clock" instead.'
+            )
+            if "MODE_LARGECLOCK" not in self.project.dotenv:
+                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv[
+                    "MODE_BOLDCLOCK"
+                ]
+            del self.project.dotenv["MODE_BOLDCLOCK"]
 
     def _largetickingclock(self) -> None:
         if "MODE_LARGETICKINGCLOCK" in self.project.dotenv:
