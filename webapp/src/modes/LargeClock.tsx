@@ -6,7 +6,7 @@ import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-export const name = "Small ticking clock";
+export const name = "Large clock";
 
 const [getTicking, setTicking] = createSignal<boolean>(true);
 

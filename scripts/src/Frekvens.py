@@ -6,6 +6,7 @@ import shutil
 
 from .components.Certificate import Certificate
 from .components.Dependency import Dependency
+from .components.Deprecated import Deprecated
 from .components.Partition import Partition
 from .components.TimeZone import TimeZone
 from .config.version import VERSION
@@ -19,6 +20,7 @@ from .Tools import Tools
 class Frekvens:
     certificate: Certificate | None = None
     dependency: Dependency | None = None
+    deprecated: Deprecated
     dotenv: dict[str, str]
     env: SCons.Script.Environment
     extra: Extra
@@ -31,6 +33,7 @@ class Frekvens:
 
     def __init__(self, env: SCons.Script.Environment) -> None:
         self.env = env
+        self.deprecated = Deprecated(self)
         self.extra = Extra(self)
         self.ota = Ota(self)
         self.partition = Partition(self)
@@ -65,6 +68,7 @@ class Frekvens:
     def initialize(self) -> None:
         if self.dependency:
             self.dependency.initialize()
+        self.deprecated.initialize()
         if self.firmware:
             self.firmware.initialize()
         self.tools.initialize()
