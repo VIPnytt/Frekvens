@@ -40,13 +40,9 @@ void SmallClockMode::configure()
     if (Storage.isKey("ticking"))
     {
         ticking = Storage.getBool("ticking");
-        Storage.end();
-        transmit();
     }
-    else
-    {
-        Storage.end();
-    }
+    Storage.end();
+    transmit();
 }
 
 void SmallClockMode::begin()

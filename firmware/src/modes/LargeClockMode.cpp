@@ -18,6 +18,26 @@ void LargeClockMode::configure()
         FontMedium,
         FontMediumBold,
     };
+    Preferences Storage;
+    Storage.begin(name, true);
+    if (Storage.isKey("ticking"))
+    {
+        ticking = Storage.getBool("ticking");
+    }
+    if (Storage.isKey("font"))
+    {
+        const String _font = Storage.getString("font");
+        Storage.end();
+        setFont(_font.c_str());
+    }
+    else
+    {
+        Storage.end();
+    }
+    if (!font)
+    {
+        font = FontMediumBold;
+    }
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
@@ -31,9 +51,9 @@ void LargeClockMode::configure()
         component[HomeAssistantAbbreviations::name] = std::string(name).append(" font");
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
         JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
-        for (const FontModule *font : fonts)
+        for (const FontModule *_font : fonts)
         {
-            options.add(font->name);
+            options.add(_font->name);
         }
         component[HomeAssistantAbbreviations::platform] = "select";
         component[HomeAssistantAbbreviations::state_topic] = topic;
@@ -60,23 +80,6 @@ void LargeClockMode::configure()
         component[HomeAssistantAbbreviations::value_template] = "{{value_json.ticking}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("ticking"))
-    {
-        ticking = Storage.getBool("ticking");
-    }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
-        setFont(FontMediumBold->name);
-    }
     transmit();
 }
 
