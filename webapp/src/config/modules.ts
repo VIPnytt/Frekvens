@@ -11,7 +11,6 @@ export const EXTENSION_SIGNAL: boolean = import.meta.env.VITE_EXTENSION_SIGNAL =
 
 export const MODE_ANIMATION: boolean = import.meta.env.VITE_MODE_ANIMATION === 'true';
 export const MODE_ARROW: boolean = import.meta.env.VITE_MODE_ARROW === 'true';
-export const MODE_ARTNET: boolean = import.meta.env.VITE_MODE_ARTNET === 'true';
 export const MODE_BINARYCLOCK: boolean = import.meta.env.VITE_MODE_BINARYCLOCK === 'true';
 export const MODE_BINARYEPOCH: boolean = import.meta.env.VITE_MODE_BINARYEPOCH === 'true';
 export const MODE_BLINK: boolean = import.meta.env.VITE_MODE_BLINK === 'true';
@@ -20,9 +19,7 @@ export const MODE_BREAKOUTCLOCK: boolean = import.meta.env.VITE_MODE_BREAKOUTCLO
 export const MODE_BRIGHT: boolean = import.meta.env.VITE_MODE_BRIGHT === 'true';
 export const MODE_CIRCLE: boolean = import.meta.env.VITE_MODE_CIRCLE === 'true';
 export const MODE_COUNTDOWN: boolean = import.meta.env.VITE_MODE_COUNTDOWN === 'true';
-export const MODE_DISTRIBUTEDDISPLAYPROTOCOL: boolean = import.meta.env.VITE_MODE_DISTRIBUTEDDISPLAYPROTOCOL === 'true';
 export const MODE_DRAW: boolean = import.meta.env.VITE_MODE_DRAW === 'true';
-export const MODE_E131: boolean = import.meta.env.VITE_MODE_E131 === 'true';
 export const MODE_EQUALIZER: boolean = import.meta.env.VITE_MODE_EQUALIZER === 'true';
 export const MODE_FIREWORK: boolean = import.meta.env.VITE_MODE_FIREWORK === 'true';
 export const MODE_FLIES: boolean = import.meta.env.VITE_MODE_FLIES === 'true';
@@ -51,6 +48,7 @@ export const MODE_SMOOTHWAVEFORM: boolean = import.meta.env.VITE_MODE_SMOOTHWAVE
 export const MODE_SNAKE: boolean = import.meta.env.VITE_MODE_SNAKE === 'true';
 export const MODE_SNAKECLOCK: boolean = import.meta.env.VITE_MODE_SNAKECLOCK === 'true';
 export const MODE_STARS: boolean = import.meta.env.VITE_MODE_STARS === 'true';
+export const MODE_STREAM: boolean = import.meta.env.VITE_MODE_STREAM === 'true';
 export const MODE_TICKER: boolean = import.meta.env.VITE_MODE_TICKER === 'true';
 export const MODE_WAVEFORM: boolean = import.meta.env.VITE_MODE_WAVEFORM === 'true';
 export const MODE_WORLDWEATHERONLINE: boolean = import.meta.env.VITE_MODE_WORLDWEATHERONLINE === 'true';

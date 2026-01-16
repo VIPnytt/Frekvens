@@ -8,11 +8,9 @@
 
 **IKEA Obegränsad:** [Circle](#-circle) | [Lines](#-lines) | [Noise](#-noise) | [Rain](#-rain) | [Scan](#-scan) | [Stars](#-stars)
 
-**Interactive:** [Animation](#-animation) | [Countdown](#-countdown) | [Draw](#-draw) | [Flies](#-flies) | [Ticker](#🅰%EF%B8%8F-ticker)
+**Interactive:** [Animation](#-animation) | [Countdown](#-countdown) | [Draw](#-draw) | [Flies](#-flies) | [Stream](#-stream) | [Ticker](#🅰%EF%B8%8F-ticker)
 
 **Smart-home:** [Home Assistant Weather](#-home-assistant-weather) | [Home Thermometer](#️-home-thermometer)
-
-**Streaming:** [Art-Net](#-art-net) | [Distributed Display Protocol](#-distributed-display-protocol) | [E1.31](#-e131)
 
 **Weather:** [Google Weather](#-google-weather) | [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
@@ -47,23 +45,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_ARROW='true'
 ```
-
-## 💻 Art-Net
-
-DMX over UDP/IP, stream in real-time over Wi-Fi.
-
-Client: `example.local:6454`
-
-> [!TIP]
-> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_ARTNET='true'
-```
-
-See also [Distributed Display Protocol](#-distributed-display-protocol) and [E1.31](#-e131).
 
 ## 0️⃣ Binary clock
 
@@ -184,23 +165,6 @@ MODE_COUNTDOWN='true'
 
 See also [Blink](#%EF%B8%8F-blink).
 
-## 💻 Distributed Display Protocol
-
-Efficient Ethernet pixel data, stream in real-time over Wi-Fi.
-
-Client: `example.local:4048`
-
-> [!TIP]
-> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_DISTRIBUTEDDISPLAYPROTOCOL='true'
-```
-
-See also [Art-Net](#-art-net) and [E1.31](#-e131).
-
 ## 🎨 Draw
 
 Create artwork and show it off on the display.
@@ -212,23 +176,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_DRAW='true'
 ```
-
-## 💻 E1.31
-
-Streaming ACN, send DMX512 data over Wi-Fi.
-
-Client: `example.local:5568`
-
-> [!TIP]
-> The [csv streamer](https://github.com/VIPnytt/Frekvens/blob/main/tools/csvStreamer.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_E131='true'
-```
-
-See also [Art-Net](#-art-net) and [Distributed Display Protocol](#-distributed-display-protocol).
 
 ## 📊 Equalizer
 
@@ -627,6 +574,31 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_STARS='true'
+```
+
+## 💻 Stream
+
+Provides real-time pixel and lighting data over Wi-Fi, allowing the display to be driven live from external software and controllers.
+
+Multiple widely used streaming protocols are supported:
+
+- Art-Net – Real-time lighting control data over UDP/IP.
+- Distributed Display Protocol (DDP) – Efficient pixel-oriented data streaming.
+- E1.31 (sACN) – Network-based DMX512 data streaming.
+
+Receivers:
+
+- `example.local:4048`
+- `example.local:5568`
+- `example.local:6454`
+
+> [!TIP]
+> The [Stream csv](https://github.com/VIPnytt/Frekvens/blob/main/tools/src/frekvens/StreamCsv.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+MODE_STREAM='true'
 ```
 
 ## 🅰️ Ticker

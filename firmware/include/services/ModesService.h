@@ -4,7 +4,6 @@
 
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
-#include "modes/ArtNetMode.h"
 #include "modes/BinaryClockMode.h"
 #include "modes/BinaryEpochMode.h"
 #include "modes/BlindsMode.h"
@@ -13,9 +12,7 @@
 #include "modes/BrightMode.h"
 #include "modes/CircleMode.h"
 #include "modes/CountdownMode.h"
-#include "modes/DistributedDisplayProtocolMode.h"
 #include "modes/DrawMode.h"
-#include "modes/E131Mode.h"
 #include "modes/EqualizerMode.h"
 #include "modes/FireworkMode.h"
 #include "modes/FliesMode.h"
@@ -44,6 +41,7 @@
 #include "modes/SnakeClockMode.h"
 #include "modes/SnakeMode.h"
 #include "modes/StarsMode.h"
+#include "modes/StreamMode.h"
 #include "modes/TickerMode.h"
 #include "modes/WaveformMode.h"
 #include "modes/WorldWeatherOnlineMode.h"
@@ -63,9 +61,6 @@ private:
 #endif
 #if MODE_ARROW
         new ArrowMode(),
-#endif
-#if MODE_ARTNET
-        new ArtNetMode(),
 #endif
 #if MODE_BINARYCLOCK
         new BinaryClockMode(),
@@ -91,14 +86,8 @@ private:
 #if MODE_COUNTDOWN
         new CountdownMode(),
 #endif
-#if MODE_DISTRIBUTEDDISPLAYPROTOCOL
-        new DistributedDisplayProtocolMode(),
-#endif
 #if MODE_DRAW
         new DrawMode(),
-#endif
-#if MODE_E131
-        new E131Mode(),
 #endif
 #if MODE_EQUALIZER
         new EqualizerMode(),
@@ -183,6 +172,9 @@ private:
 #endif
 #if MODE_STARS
         new StarsMode(),
+#endif
+#if MODE_STREAM
+        new StreamMode(),
 #endif
 #if MODE_TICKER
         new TickerMode(),

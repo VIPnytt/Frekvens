@@ -1,21 +1,21 @@
 #pragma once
 
-#if MODE_E131
+#if MODE_STREAM
 
 #include <AsyncUDP.h>
 #include <bits/unique_ptr.h>
 
 #include "modules/ModeModule.h"
 
-class E131Mode : public ModeModule
+class StreamMode : public ModeModule
 {
 private:
-    static constexpr std::string_view _name = "E1.31";
+    static constexpr std::string_view _name = "Stream";
 
     std::unique_ptr<AsyncUDP> udp;
 
 public:
-    E131Mode() : ModeModule(_name.data()) {};
+    StreamMode() : ModeModule(_name.data()) {};
 
     void begin() override;
     void end() override;
@@ -23,4 +23,4 @@ public:
     static void onPacket(AsyncUDPPacket packet);
 };
 
-#endif // MODE_E131
+#endif // MODE_STREAM

@@ -12,9 +12,21 @@ class Deprecated:
         self.project = project
 
     def initialize(self) -> None:
+        self._artnet()
         self._boldclock()
+        self._distributeddisplayprotocol()
+        self._e131()
         self._largetickingclock()
         self._smalltickingclock()
+
+    def _artnet(self) -> None:
+        if "MODE_ARTNET" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_ARTNET "Art-Net" is deprecated. Use MODE_STREAM "Stream" instead.'
+            )
+            if "MODE_STREAM" not in self.project.dotenv:
+                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_ARTNET"]
+            del self.project.dotenv["MODE_ARTNET"]
 
     def _boldclock(self) -> None:
         if "MODE_BOLDCLOCK" in self.project.dotenv:
@@ -26,6 +38,26 @@ class Deprecated:
                     "MODE_BOLDCLOCK"
                 ]
             del self.project.dotenv["MODE_BOLDCLOCK"]
+
+    def _distributeddisplayprotocol(self) -> None:
+        if "MODE_DISTRIBUTEDDISPLAYPROTOCOL" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_DISTRIBUTEDDISPLAYPROTOCOL "Distributed Display Protocol" is deprecated. Use MODE_STREAM "Stream" instead.'
+            )
+            if "MODE_STREAM" not in self.project.dotenv:
+                self.project.dotenv["MODE_STREAM"] = self.project.dotenv[
+                    "MODE_DISTRIBUTEDDISPLAYPROTOCOL"
+                ]
+            del self.project.dotenv["MODE_DISTRIBUTEDDISPLAYPROTOCOL"]
+
+    def _e131(self) -> None:
+        if "MODE_E131" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_E131 "E1.31" is deprecated. Use MODE_STREAM "Stream" instead.'
+            )
+            if "MODE_STREAM" not in self.project.dotenv:
+                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_E131"]
+            del self.project.dotenv["MODE_E131"]
 
     def _largetickingclock(self) -> None:
         if "MODE_LARGETICKINGCLOCK" in self.project.dotenv:
