@@ -16,7 +16,6 @@ export const MODE_BINARYCLOCK: boolean = import.meta.env.VITE_MODE_BINARYCLOCK =
 export const MODE_BINARYEPOCH: boolean = import.meta.env.VITE_MODE_BINARYEPOCH === 'true';
 export const MODE_BLINK: boolean = import.meta.env.VITE_MODE_BLINK === 'true';
 export const MODE_BLINDS: boolean = import.meta.env.VITE_MODE_BLINDS === 'true';
-export const MODE_BOLDCLOCK: boolean = import.meta.env.VITE_MODE_BOLDCLOCK === 'true';
 export const MODE_BREAKOUTCLOCK: boolean = import.meta.env.VITE_MODE_BREAKOUTCLOCK === 'true';
 export const MODE_BRIGHT: boolean = import.meta.env.VITE_MODE_BRIGHT === 'true';
 export const MODE_CIRCLE: boolean = import.meta.env.VITE_MODE_CIRCLE === 'true';

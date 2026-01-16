@@ -9,7 +9,6 @@
 #include "modes/BinaryEpochMode.h"
 #include "modes/BlindsMode.h"
 #include "modes/BlinkMode.h"
-#include "modes/BoldClockMode.h"
 #include "modes/BreakoutClockMode.h"
 #include "modes/BrightMode.h"
 #include "modes/CircleMode.h"
@@ -79,9 +78,6 @@ private:
 #endif
 #if MODE_BLINK
         new BlinkMode(),
-#endif
-#if MODE_BOLDCLOCK
-        new BoldClockMode(),
 #endif
 #if MODE_BREAKOUTCLOCK
         new BreakoutClockMode(),

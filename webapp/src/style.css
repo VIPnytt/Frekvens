@@ -51,6 +51,7 @@
         @apply accent-highlight-light dark:accent-highlight-dark bg-interactive-light dark:bg-interactive-dark border-contrast-light dark:border-contrast-dark border focus:border-highlight-light dark:focus:border-highlight-dark focus:ring-highlight-light dark:focus:ring-highlight-dark hover:enabled:bg-interactive-alt-light dark:hover:enabled:bg-interactive-alt-dark focus:ring outline-none rounded-lg;
     }
 
+    input[type="checkbox"],
     input[type="datetime-local"],
     input[type="file"],
     input[type="number"],

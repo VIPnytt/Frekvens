@@ -1,6 +1,6 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Bold clock](#️-bold-clock) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#️-small-clock) | [Snake clock](#️-snake-clock)
+**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#%EF%B8%8F-small-clock) | [Snake clock](#️-snake-clock)
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Game of Life clock](#-game-of-life-clock) | [Ping-pong](#-ping-pong) | [Ping-pong clock](#-ping-pong-clock) | [Snake](#-snake) | [Snake clock](#️-snake-clock)
 
@@ -113,18 +113,6 @@ MODE_BLINK='true'
 ```
 
 See also [Bright](#-bright).
-
-## 🕰️ Bold clock
-
-Clock.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_BOLD='true'
-```
-
-See also [Large clock](#%EF%B8%8F-large-clock).
 
 ## 💥 Breakout clock
 
@@ -407,7 +395,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_LARGECLOCK='true'
 ```
 
-See also [Bold clock](#%EF%B8%8F-bold-clock) and [Small clock](#%EF%B8%8F-small-clock).
+See also [Small clock](#%EF%B8%8F-small-clock).
 
 ## 🍂 Leaf fall
 

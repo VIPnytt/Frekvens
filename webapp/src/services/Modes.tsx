@@ -2,7 +2,7 @@ import { mdiDotsGrid, mdiImageFrame } from '@mdi/js';
 import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
-import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BOLDCLOCK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGECLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
+import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGECLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
 import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
 import { WebSocketWS } from '../extensions/WebSocket';
 import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
@@ -12,7 +12,6 @@ import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from '../mod
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from '../modes/BinaryEpoch';
 import { Main as ModeBlindsMain, name as ModeBlindsName } from '../modes/Blinds';
 import { Main as ModeBlinkMain, name as ModeBlinkName } from '../modes/Blink';
-import { Main as ModeBoldClockMain, name as ModeBoldClockName } from '../modes/BoldClock';
 import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from '../modes/BreakoutClock';
 import { Main as ModeBrightMain, name as ModeBrightName } from '../modes/Bright';
 import { Main as ModeCircleMain, name as ModeCircleName } from '../modes/Circle';
@@ -127,13 +126,6 @@ export const Main: Component = () => (
             MODE_BLINK && (
                 <Match when={getMode() === ModeBlinkName}>
                     <ModeBlinkMain />
-                </Match>
-            )
-        }
-        {
-            MODE_BOLDCLOCK && (
-                <Match when={getMode() === ModeBoldClockName}>
-                    <ModeBoldClockMain />
                 </Match>
             )
         }
