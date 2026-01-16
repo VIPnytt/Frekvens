@@ -59,7 +59,7 @@ class E131Streamer:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=f"Stream .csv graphic files.")
+    parser = argparse.ArgumentParser(description="Stream .csv graphic files.")
     parser.add_argument("--host", help="Host", type=str)
     parser.add_argument("--interval", default=0.5, help="Frame interval", type=float)
     parser.add_argument("-i", "--input", help=".csv file path", type=str)
