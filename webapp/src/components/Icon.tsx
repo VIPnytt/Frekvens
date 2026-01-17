@@ -1,4 +1,4 @@
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 
 const fill = 'currentColor';
 const viewBox = '0 0 24 24';

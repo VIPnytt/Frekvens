@@ -1,14 +1,14 @@
 import { mdiRemoteTv, mdiRemoteTvOff } from '@mdi/js';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
 import { EXTENSION_MICROPHONE, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST } from '../config/modules';
+import { name as ExtensionsName } from '../services/Extensions';
+import { name as MicName } from './Microphone';
 import { name as PhotocellName } from './Photocell';
 import { name as PlaylistName } from './Playlist';
-import { name as MicName } from './Microphone';
 import { WebSocketWS } from './WebSocket';
-import { name as ExtensionsName } from '../services/Extensions';
 
 export const name = 'Infrared';
 
@@ -55,6 +55,7 @@ export const Actions: Component = () => (
             <button
                 class={`w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
                 onclick={handleActive}
+                type="button"
             >
                 <Icon path={getActive() ? mdiRemoteTv : mdiRemoteTvOff} />
             </button>
@@ -102,6 +103,7 @@ export const MainThird: Component = () => (
                     <button
                         class={`mt-3 w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
                         onclick={handleActive}
+                        type="button"
                     >
                         <Icon
                             class="mr-2"

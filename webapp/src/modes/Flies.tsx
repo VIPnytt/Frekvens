@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
 import { Canvas } from '../components/Canvas';
 import { Device } from '../config/devices';
@@ -10,7 +10,7 @@ export const name = 'Flies';
 const [getFrame, setFrame] = createSignal<number[]>();
 
 export const Main: Component = () => {
-    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? '') || Math.round(Math.random() * (Math.pow(2, 8) - 1));
+    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? '', 10) || Math.round(Math.random() * (2 ** 8 - 1));
     Cookies.set(`${name}.id`, _id.toString(), {
         expires: 1,
     });

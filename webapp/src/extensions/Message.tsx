@@ -1,15 +1,15 @@
 import { mdiMessage, mdiSend } from '@mdi/js';
 import Cookies from 'js-cookie';
-import { Component, createSignal, For } from 'solid-js';
+import { type Component, createSignal, For } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';
 import { Device } from '../config/devices';
-import { WebSocketWS } from './WebSocket';
 import { name as DisplayName } from '../services/Display';
 import { name as ExtensionsName } from '../services/Extensions';
 import { FontsList } from '../services/Fonts';
+import { WebSocketWS } from './WebSocket';
 
 export const name = 'Message';
 
@@ -26,7 +26,7 @@ export const receiver = (json: any) => {
 const { toast } = Toast();
 
 const event = (message: string) => {
-    toast(message, Math.pow(2, 7) * (Device.GRID_COLUMNS + message.length * 6.8));
+    toast(message, 2 ** 7 * (Device.GRID_COLUMNS + message.length * 6.8));
 };
 
 export const Link: Component = () => (
@@ -90,9 +90,9 @@ export const MainThird: Component = () => {
                             <input
                                 class="pr-14 text-right w-full"
                                 min="0"
-                                max={Math.pow(2, 8) - 1}
+                                max={2 ** 8 - 1}
                                 onchange={(e) =>
-                                    setRepeat(parseInt(e.currentTarget.value))
+                                    setRepeat(parseInt(e.currentTarget.value, 10))
                                 }
                                 type="number"
                                 value={getRepeat()}
@@ -114,7 +114,7 @@ export const MainThird: Component = () => {
                             >
                                 <For each={FontsList()}>
                                     {
-                                        (fontName) => <option selected={fontName == getFont()}>{fontName}</option>
+                                        (fontName) => <option selected={fontName === getFont()}>{fontName}</option>
                                     }
                                 </For>
                             </select>
@@ -123,6 +123,7 @@ export const MainThird: Component = () => {
                             class="action-positive mt-3 w-full"
                             disabled={getMessage().length === 0}
                             onclick={handleSend}
+                            type="button"
                         >
                             <Icon
                                 class="mr-2"

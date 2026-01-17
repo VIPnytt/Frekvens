@@ -1,13 +1,13 @@
 import { mdiBrightness6 } from '@mdi/js';
-import { Component, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
+import { type Component, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 
+import { Device } from '../config/devices';
+import { WebAppSidebar } from '../extensions/WebApp';
+import { DisplayBrightness, DisplayOrientation } from '../services/Display';
 import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
-import { Device } from '../config/devices';
-import { DisplayBrightness, DisplayOrientation } from '../services/Display';
-import { WebAppSidebar } from '../extensions/WebApp';
 
-const [getStrength, setStrength] = createSignal<number>(Math.pow(2, 8) - 1);
+const [getStrength, setStrength] = createSignal<number>(2 ** 8 - 1);
 
 export const Strength: Component = () => (
     <div class="flex items-center mt-3">
@@ -15,10 +15,10 @@ export const Strength: Component = () => (
             class="mr-2"
             path={mdiBrightness6}
         />
-        <Tooltip text={`Brush brightness ${Math.ceil(getStrength() / (Math.pow(2, 8) - 1) * 100)} %`}>
+        <Tooltip text={`Brush brightness ${Math.ceil(getStrength() / (2 ** 8 - 1) * 100)} %`}>
             <input
                 class="w-full"
-                max={Math.pow(2, 8) - 1}
+                max={2 ** 8 - 1}
                 min="1"
                 onInput={(e) =>
                     setStrength(parseFloat(e.currentTarget.value))
@@ -91,7 +91,7 @@ export const Canvas: Component<{
         ctx.globalAlpha = 1;
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
-        ctx.globalAlpha = DisplayBrightness() / (Math.pow(2, 8) - 1) / 2 + 0.5;
+        ctx.globalAlpha = DisplayBrightness() / (2 ** 8 - 1) / 2 + 0.5;
         if (Device.LED_GEOMETRY === 'circular') {
             for (let x = 0; x < Device.GRID_COLUMNS; ++x) {
                 for (let y = 0; y < Device.GRID_ROWS; ++y) {
@@ -124,7 +124,7 @@ export const Canvas: Component<{
     };
 
     const toColor = (brightness: number) => {
-        const value = brightness === 0 ? Device.LED_BASE_TONE : (brightness - 1) / (Math.pow(2, 8) - 2) * (Math.pow(2, 8) - 2 - Device.LED_BASE_BRIGHTNESS) + 1 + Device.LED_BASE_BRIGHTNESS;
+        const value = brightness === 0 ? Device.LED_BASE_TONE : (brightness - 1) / (2 ** 8 - 2) * (2 ** 8 - 2 - Device.LED_BASE_BRIGHTNESS) + 1 + Device.LED_BASE_BRIGHTNESS;
         return `rgb(${value},${value},${value})`;
     };
 

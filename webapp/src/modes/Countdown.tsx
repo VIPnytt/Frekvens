@@ -1,6 +1,6 @@
 import { mdiTimerSand, mdiTimerSandComplete } from '@mdi/js';
 import Cookies from 'js-cookie';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -12,9 +12,9 @@ import { ModesMode, name as ModesName } from '../services/Modes';
 
 export const name = 'Countdown';
 
-const [getHours, setHours] = createSignal<number>(parseInt(Cookies.get(`${name}.hours`) || '') || 0);
-const [getMinutes, setMinutes] = createSignal<number>(parseInt(Cookies.get(`${name}.minutes`) || '') || 10);
-const [getSeconds, setSeconds] = createSignal<number>(parseInt(Cookies.get(`${name}.seconds`) || '') || 0);
+const [getHours, setHours] = createSignal<number>(parseInt(Cookies.get(`${name}.hours`) || '', 10) || 0);
+const [getMinutes, setMinutes] = createSignal<number>(parseInt(Cookies.get(`${name}.minutes`) || '', 10) || 10);
+const [getSeconds, setSeconds] = createSignal<number>(parseInt(Cookies.get(`${name}.seconds`) || '', 10) || 0);
 const [getTimestamp, setTimestamp] = createSignal<string | undefined>(undefined);
 
 export const receiver = (json: any) => {
@@ -70,6 +70,7 @@ export const Actions: Component = () => (
                 class={`w-full ${ModesMode() === name ? 'action-activated' : 'action-deactivated'}`}
                 disabled={ModesMode() === name}
                 onclick={handleRelative}
+                type="button"
             >
                 <Icon path={ModesMode() === name ? mdiTimerSandComplete : mdiTimerSand} />
             </button>
@@ -104,7 +105,7 @@ export const Sidebar: Component = () => {
         }));
         toast(`${name} updated`);
     };
-    
+
     return (
         <SidebarSection title={name}>
             <input
@@ -139,7 +140,7 @@ export const Main: Component = () => (
                                     name="hours"
                                     value={getHours()}
                                     oninput={(e) =>
-                                        setHours(parseInt(e.currentTarget.value))
+                                        setHours(parseInt(e.currentTarget.value, 10))
                                     }
                                 />
                                 <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
@@ -155,7 +156,7 @@ export const Main: Component = () => (
                                     name="minutes"
                                     value={getMinutes()}
                                     oninput={(e) =>
-                                        setMinutes(parseInt(e.currentTarget.value))
+                                        setMinutes(parseInt(e.currentTarget.value, 10))
                                     }
                                 />
                                 <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
@@ -171,7 +172,7 @@ export const Main: Component = () => (
                                     name="seconds"
                                     value={getSeconds()}
                                     oninput={(e) =>
-                                        setSeconds(parseInt(e.currentTarget.value))
+                                        setSeconds(parseInt(e.currentTarget.value, 10))
                                     }
                                 />
                                 <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
@@ -184,6 +185,7 @@ export const Main: Component = () => (
                         class="action-positive mt-3 w-full"
                         disabled={!getHours() && !getMinutes() && !getSeconds()}
                         onclick={handleRelative}
+                        type="button"
                     >
                         <Icon
                             class="mr-2"

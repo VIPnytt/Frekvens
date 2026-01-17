@@ -1,13 +1,13 @@
 import { mdiHomeThermometer } from '@mdi/js';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
 import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from '../config/modules';
 import { name as ExtensionHomeAssistantName } from '../extensions/HomeAssistant';
-import { MqttTopic, name as ExtensionMqttName } from '../extensions/Mqtt';
-import { RestfulUrl, name as ExtensionRestfulName } from '../extensions/Restful';
-import { WebSocketUrl, name as ExtensionWebSocketName } from '../extensions/WebSocket';
+import { name as ExtensionMqttName, MqttTopic, } from '../extensions/Mqtt';
+import { name as ExtensionRestfulName, RestfulUrl } from '../extensions/Restful';
+import { name as ExtensionWebSocketName, WebSocketUrl } from '../extensions/WebSocket';
 import { MainComponent as ModesMainComponent, name as ModesName } from '../services/Modes';
 
 export const name = 'Home thermometer';

@@ -1,5 +1,5 @@
 import { mdiWeatherSunny } from '@mdi/js';
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 
 import { MainComponent as ModesMainComponent } from '../services/Modes';
 

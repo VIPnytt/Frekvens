@@ -1,5 +1,5 @@
 import { mdiBlindsHorizontalClosed } from '@mdi/js';
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 
 import { IkeaFrekvens } from '../config/devices';
 import { MainComponent as ModesMainComponent } from '../services/Modes';

@@ -1,16 +1,16 @@
 import { mdiBriefcase } from '@mdi/js';
-import { Component, Match, Switch } from 'solid-js';
+import { type Component, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_OTA, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST, EXTENSION_SIGNAL } from '../config/modules';
-import { MainThird as ExtensionIrThird, Link as ExtensionIrLink, Actions as ExtensionIrActions, receiver as ExtensionIr, name as ExtensionIrName } from '../extensions/Infrared';
-import { MainThird as ExtensionMessageThird, Link as ExtensionMessageLink, receiver as ExtensionMessage, name as ExtensionMessageName } from '../extensions/Message';
-import { MainThird as ExtensionMicThird, Link as ExtensionMicLink, Actions as ExtensionMicActions, receiver as ExtensionMic, name as ExtensionMicName } from '../extensions/Microphone';
-import { MainThird as ExtensionOtaThird, Link as ExtensionOtaLink, name as ExtensionOtaName } from '../extensions/Ota';
-import { MainThird as ExtensionPhotocellThird, Link as ExtensionPhotocellLink, Actions as ExtensionPhotocellActions, receiver as ExtensionPhotocell, name as ExtensionPhotocellName } from '../extensions/Photocell';
-import { MainThird as ExtensionPlaylistThird, Link as ExtensionPlaylistLink, Actions as ExtensionPlaylistActions, receiver as ExtensionPlaylist, name as ExtensionPlaylistName } from '../extensions/Playlist';
+import { receiver as ExtensionIr, Actions as ExtensionIrActions, Link as ExtensionIrLink, name as ExtensionIrName, MainThird as ExtensionIrThird } from '../extensions/Infrared';
+import { receiver as ExtensionMessage, Link as ExtensionMessageLink, name as ExtensionMessageName, MainThird as ExtensionMessageThird } from '../extensions/Message';
+import { receiver as ExtensionMic, Actions as ExtensionMicActions, Link as ExtensionMicLink, name as ExtensionMicName, MainThird as ExtensionMicThird } from '../extensions/Microphone';
+import { Link as ExtensionOtaLink, name as ExtensionOtaName, MainThird as ExtensionOtaThird } from '../extensions/Ota';
+import { receiver as ExtensionPhotocell, Actions as ExtensionPhotocellActions, Link as ExtensionPhotocellLink, name as ExtensionPhotocellName, MainThird as ExtensionPhotocellThird } from '../extensions/Photocell';
+import { receiver as ExtensionPlaylist, Actions as ExtensionPlaylistActions, Link as ExtensionPlaylistLink, name as ExtensionPlaylistName, MainThird as ExtensionPlaylistThird } from '../extensions/Playlist';
 import { receiver as ExtensionSignal } from '../extensions/Signal';
-import { Main as WebAppMain, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
+import { SidebarSectionSecondary, Main as WebAppMain, WebAppPath } from '../extensions/WebApp';
 import { name as ExtensionsName } from './Extensions';
 
 export const name = 'Extensions';
@@ -134,37 +134,35 @@ export const MainThird: Component = () => (
 
 export const SidebarThird: Component = () => (
     <SidebarSectionSecondary title={name}>
-        <>
-            {
-                EXTENSION_INFRARED && (
-                    <ExtensionIrLink />
-                )
-            }
-            {
-                EXTENSION_MESSAGE && (
-                    <ExtensionMessageLink />
-                )
-            }
-            {
-                EXTENSION_MICROPHONE && (
-                    <ExtensionMicLink />
-                )
-            }
-            {
-                EXTENSION_OTA && (
-                    <ExtensionOtaLink />
-                )
-            }
-            {
-                EXTENSION_PHOTOCELL && (
-                    <ExtensionPhotocellLink />
-                )
-            }
-            {
-                EXTENSION_PLAYLIST && (
-                    <ExtensionPlaylistLink />
-                )
-            }
-        </>
+        {
+            EXTENSION_INFRARED && (
+                <ExtensionIrLink />
+            )
+        }
+        {
+            EXTENSION_MESSAGE && (
+                <ExtensionMessageLink />
+            )
+        }
+        {
+            EXTENSION_MICROPHONE && (
+                <ExtensionMicLink />
+            )
+        }
+        {
+            EXTENSION_OTA && (
+                <ExtensionOtaLink />
+            )
+        }
+        {
+            EXTENSION_PHOTOCELL && (
+                <ExtensionPhotocellLink />
+            )
+        }
+        {
+            EXTENSION_PLAYLIST && (
+                <ExtensionPlaylistLink />
+            )
+        }
     </SidebarSectionSecondary>
 );

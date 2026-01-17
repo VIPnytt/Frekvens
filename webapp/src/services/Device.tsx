@@ -1,5 +1,5 @@
 import { mdiPower } from '@mdi/js';
-import { Component, createEffect, createSignal } from 'solid-js';
+import { type Component, createEffect, createSignal } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -64,6 +64,7 @@ export const SidebarSecondaryComponent: Component = () => {
                 <button
                     class="bg-positive-light dark:bg-positive-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark text-interactive-light dark:text-content-dark w-full"
                     onclick={() => handlePower()}
+                    type="button"
                 >
                     <Icon path={mdiPower} />
                 </button>

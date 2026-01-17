@@ -1,12 +1,12 @@
 import { mdiDelete, mdiPlay, mdiPlaylistPlay, mdiPlus, mdiStop } from '@mdi/js';
 import Cookies from 'js-cookie';
-import { Component, createSignal, For, Index } from 'solid-js';
+import { type Component, createSignal, For, Index } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
-import { WebSocketWS } from './WebSocket';
 import { name as ExtensionsName } from '../services/Extensions';
 import { ModesList, name as ModesName } from '../services/Modes';
+import { WebSocketWS } from './WebSocket';
 
 export const name = 'Playlist';
 
@@ -16,7 +16,7 @@ interface Item {
 }
 
 const [getActive, setActive] = createSignal<boolean>(false);
-const [getDuration, setDuration] = createSignal<number>(parseInt(Cookies.get(`${name}.duration`) ?? '') || 60);
+const [getDuration, setDuration] = createSignal<number>(parseInt(Cookies.get(`${name}.duration`) ?? '', 10) || 60);
 const [getPlaylist, setPlaylist] = createSignal<Item[]>([]);
 
 export const PlaylistActive = getActive;
@@ -50,6 +50,7 @@ export const Actions: Component = () => (
                 class={`w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
                 disabled={!getPlaylist().length}
                 onclick={handleActive}
+                type="button"
             >
                 <Icon path={getActive() ? mdiStop : mdiPlay} />
             </button>
@@ -137,10 +138,10 @@ export const MainThird: Component = () => {
                                                 <input
                                                     class="text-right pr-6 w-24"
                                                     disabled={getActive()}
-                                                    max={Math.pow(2, 16) - 1}
+                                                    max={2 ** 16 - 1}
                                                     min="10"
                                                     onInput={(e) =>
-                                                        handleDuration(index, parseInt(e.currentTarget.value))
+                                                        handleDuration(index, parseInt(e.currentTarget.value, 10))
                                                     }
                                                     step="5"
                                                     type="number"
@@ -155,6 +156,7 @@ export const MainThird: Component = () => {
                                                     class="action-negative"
                                                     disabled={getActive()}
                                                     onclick={() => handleRemove(index)}
+                                                    type="button"
                                                 >
                                                     <Icon path={mdiDelete} />
                                                 </button>
@@ -170,6 +172,7 @@ export const MainThird: Component = () => {
                                     class={`action-neutral w-full ${getPlaylist().length < 2 ? `bg-neutral-light dark:enabled:bg-neutral-dark text-interactive-light dark:text-content-dark` : ''}`}
                                     disabled={getActive()}
                                     onclick={handleAdd}
+                                    type="button"
                                 >
                                     <Icon path={mdiPlus} />
                                 </button>
@@ -179,6 +182,7 @@ export const MainThird: Component = () => {
                                     class={`w-full ${getActive() ? 'action-activated' : 'action-positive'}`}
                                     disabled={getPlaylist().length < 2}
                                     onclick={handleActive}
+                                    type="button"
                                 >
                                     <Icon path={getActive() ? mdiStop : mdiPlay} />
                                 </button>

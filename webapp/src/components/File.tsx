@@ -12,7 +12,7 @@ export const fileImport = (callback: (frames: number[][]) => void) => {
                 let x = 0;
                 row.split(",").forEach((column) => {
                     if (column.length && x < Device.GRID_COLUMNS) {
-                        frame.push(parseInt(column));
+                        frame.push(parseInt(column, 10));
                         ++x;
                     }
                 });
@@ -54,13 +54,13 @@ export const fileImport = (callback: (frames: number[][]) => void) => {
                 const imgData = ctx?.getImageData(0, 0, Device.GRID_COLUMNS, Device.GRID_ROWS);
                 if (imgData) {
                     const frame: number[] = [];
-                    for (var i = 0; i < imgData.data.length; i += 4) {
+                    for (let i = 0; i < imgData.data.length; i += 4) {
                         frame.push(imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]);
                     }
                     const avg = frame.reduce((p, c, i) => {
                         return p + (c - p) / (i + 1);
                     }, 0);
-                    callback([frame.map((i) => (i > avg ? Math.pow(2, 8) - 1 : 0))]);
+                    callback([frame.map((i) => (i > avg ? 2 ** 8 - 1 : 0))]);
                 }
             };
         };
