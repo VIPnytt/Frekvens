@@ -25,9 +25,9 @@ void StreamMode::configure()
         component[HomeAssistantAbbreviations::name] = std::string(name).append(" protocol");
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
         JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
-        options.add("Art-Net");
-        options.add("Distributed Display Protocol");
-        options.add("E1.31");
+        options.add(artnet);
+        options.add(ddp);
+        options.add(e131);
         component[HomeAssistantAbbreviations::platform] = "select";
         component[HomeAssistantAbbreviations::state_topic] = topic;
         component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
@@ -47,29 +47,10 @@ void StreamMode::configure()
 void StreamMode::begin()
 {
     udp = std::make_unique<AsyncUDP>();
-    switch (port)
+    if (udp->listen(port))
     {
-    case 4048:
-        if (udp->listen(port))
-        {
-            udp->onPacket(&onDistributedDisplayProtocol);
-            ESP_LOGD(name, "Distributed Display Protocol listening at " HOSTNAME ".local:4048");
-        }
-        break;
-    case 5568:
-        if (udp->listen(port))
-        {
-            udp->onPacket(&onE131);
-            ESP_LOGD(name, "E1.31 listening at " HOSTNAME ".local:5568");
-        }
-        break;
-    case 6454:
-        if (udp->listen(port))
-        {
-            udp->onPacket(&onArtNet);
-            ESP_LOGD(name, "Art-Net listening at " HOSTNAME ".local:6454");
-        }
-        break;
+        udp->onPacket(&onPacket);
+        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port);
     }
 }
 
@@ -85,22 +66,23 @@ void StreamMode::setPort(const uint16_t _port)
         transmit();
         if (udp)
         {
-            begin();
+            udp->listen(port);
+            ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port);
         }
     }
 }
 
 void StreamMode::setProtocol(const char *const protocol)
 {
-    if (!strcmp(protocol, "Art-Net"))
+    if (!strcmp(protocol, artnet.data()))
     {
         setPort(6454);
     }
-    else if (!strcmp(protocol, "Distributed Display Protocol"))
+    else if (!strcmp(protocol, ddp.data()))
     {
         setPort(4048);
     }
-    else if (!strcmp(protocol, "E1.31"))
+    else if (!strcmp(protocol, e131.data()))
     {
         setPort(5568);
     }
@@ -113,13 +95,13 @@ void StreamMode::transmit()
     switch (port)
     {
     case 4048:
-        doc["protocol"] = "Distributed Display Protocol";
+        doc["protocol"] = ddp;
         break;
     case 5568:
-        doc["protocol"] = "E1.31";
+        doc["protocol"] = e131;
         break;
     case 6454:
-        doc["protocol"] = "Art-Net";
+        doc["protocol"] = artnet;
         break;
     }
     Device.transmit(doc, name);
@@ -139,28 +121,15 @@ void StreamMode::onReceive(const JsonDocument doc, const char *const source)
     }
 }
 
-void StreamMode::onArtNet(AsyncUDPPacket packet)
+void StreamMode::onPacket(AsyncUDPPacket packet)
 {
-    if (packet.length() == 18 + GRID_COLUMNS * GRID_ROWS)
-    {
-        Display.setFrame(packet.data() + 18);
-    }
-}
-
-void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
-{
+    const uint16_t port = packet.localPort();
     const size_t len = packet.length();
-    if (len == 10 + GRID_COLUMNS * GRID_ROWS || len == 14 + GRID_COLUMNS * GRID_ROWS)
+    if ((port == 4048 && (len == 10 + GRID_COLUMNS * GRID_ROWS || len == 14 + GRID_COLUMNS * GRID_ROWS)) ||
+        (port == 6454 && len == 18 + GRID_COLUMNS * GRID_ROWS) ||
+        (port == 5568 && len == 126 + GRID_COLUMNS * GRID_ROWS))
     {
         Display.setFrame(packet.data() + len - GRID_COLUMNS * GRID_ROWS);
-    }
-}
-
-void StreamMode::onE131(AsyncUDPPacket packet)
-{
-    if (packet.length() == 126 + GRID_COLUMNS * GRID_ROWS)
-    {
-        Display.setFrame(packet.data() + 126);
     }
 }
 

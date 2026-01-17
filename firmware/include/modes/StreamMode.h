@@ -10,7 +10,11 @@
 class StreamMode : public ModeModule
 {
 private:
-    static constexpr std::string_view _name = "Stream";
+    static constexpr std::string_view
+        _name = "Stream",
+        artnet = "Art-Net",
+        ddp = "Distributed Display Protocol",
+        e131 = "E1.31";
 
     uint16_t port = 4048;
 
@@ -20,6 +24,8 @@ private:
     void setProtocol(const char *const protocol);
     void transmit();
 
+    static void onPacket(AsyncUDPPacket packet);
+
 public:
     StreamMode() : ModeModule(_name.data()) {};
 
@@ -28,10 +34,6 @@ public:
     void end() override;
 
     void onReceive(const JsonDocument doc, const char *const source) override;
-
-    static void onArtNet(AsyncUDPPacket packet);
-    static void onDistributedDisplayProtocol(AsyncUDPPacket packet);
-    static void onE131(AsyncUDPPacket packet);
 };
 
 #endif // MODE_STREAM

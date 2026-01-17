@@ -38,13 +38,6 @@ class StreamCsv:
         else:
             raise ValueError("Unsupported port number.")
 
-    def __enter__(self):
-        self.configure()
-        return self
-
-    def __exit__(self, exc_type, exc, tb):
-        self.sock.close()
-
     def configure(self) -> httpx.Response:
         return httpx.patch(
             f"http://{self.host}/restful/Stream",
@@ -75,7 +68,7 @@ class StreamCsv:
             if interval is not None:
                 time.sleep(interval)
 
-    def switch(self) -> httpx.Response:
+    def show(self) -> httpx.Response:
         return httpx.patch(
             f"http://{self.host}/restful/Modes", json={"mode": "Stream"}
         ).raise_for_status()
@@ -98,18 +91,19 @@ def main() -> None:
         }.items()
         if value is not None
     }
-    with StreamCsv(**kwargs) as stream:
-        stream.switch()
-        frames = stream.parse(args.input)
-        if len(frames) > 1:
-            try:
-                print(f"{stream.protocol} stream started. Press Ctrl+C to terminate.")
-                while True:
-                    stream.send(frames, args.interval)
-            except KeyboardInterrupt:
-                print("Stream ended gracefully.")
-        else:
-            stream.send(frames[0], args.interval)
+    stream = StreamCsv(**kwargs)
+    stream.configure()
+    stream.show()
+    frames = stream.parse(args.input)
+    if len(frames) > 1:
+        try:
+            print(f"{stream.protocol} stream started. Press Ctrl+C to terminate.")
+            while True:
+                stream.send(frames, args.interval)
+        except KeyboardInterrupt:
+            print("Stream ended gracefully.")
+    else:
+        stream.send(frames[0], args.interval)
 
 
 if __name__ == "__main__":
