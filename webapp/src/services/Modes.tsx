@@ -2,12 +2,11 @@ import { mdiDotsGrid, mdiImageFrame } from '@mdi/js';
 import { Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
-import { MODE_ANIMATION, MODE_ARROW, MODE_ARTNET, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DISTRIBUTEDDISPLAYPROTOCOL, MODE_DRAW, MODE_E131, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGECLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
+import { MODE_ANIMATION, MODE_ARROW, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DRAW, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGECLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_STREAM, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
 import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
 import { WebSocketWS } from '../extensions/WebSocket';
 import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
 import { Main as ModeArrowMain, name as ModeArrowName } from '../modes/Arrow';
-import { Main as ModeArtNetMain, name as ModeArtNetName } from '../modes/ArtNet';
 import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from '../modes/BinaryClock';
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from '../modes/BinaryEpoch';
 import { Main as ModeBlindsMain, name as ModeBlindsName } from '../modes/Blinds';
@@ -16,9 +15,7 @@ import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from '..
 import { Main as ModeBrightMain, name as ModeBrightName } from '../modes/Bright';
 import { Main as ModeCircleMain, name as ModeCircleName } from '../modes/Circle';
 import { Main as ModeCountdownMain, Sidebar as ModeCountdownSidebar, Actions as ModeCountdownActions, Link as ModeCountdownLink, receiver as ModeCountdown, name as ModeCountdownName } from '../modes/Countdown';
-import { Main as ModeDistributedDisplayProtocolMain, name as ModeDistributedDisplayProtocolName } from '../modes/DistributedDisplayProtocol';
 import { Main as ModeDrawMain, Sidebar as ModeDrawSidebar, receiver as ModeDraw, name as ModeDrawName } from '../modes/Draw';
-import { Main as ModeE131Main, name as ModeE131Name } from '../modes/E131';
 import { Main as ModeEqualizerMain, name as ModeEqualizerName } from '../modes/Equalizer';
 import { Main as ModeFireworkMain, name as ModeFireworkName } from '../modes/Firework';
 import { Main as ModeFliesMain, name as ModeFliesName } from '../modes/Flies';
@@ -47,6 +44,7 @@ import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from '
 import { Main as ModeSnakeMain, name as ModeSnakeName } from '../modes/Snake';
 import { Main as ModeSnakeClockMain, name as ModeSnakeClockName } from '../modes/SnakeClock';
 import { Main as ModeStarsMain, name as ModeStarsName } from '../modes/Stars';
+import { Main as ModeStreamMain, Sidebar as ModeStreamSidebar, receiver as ModeStream, name as ModeStreamName } from '../modes/Stream';
 import { Main as ModeTickerMain, Sidebar as ModeTickerSidebar, receiver as ModeTicker, name as ModeTickerName } from '../modes/Ticker';
 import { Main as ModeWaveformMain, name as ModeWaveformName } from '../modes/Waveform';
 import { Main as ModeWorldWeatherOnlineMain, name as ModeWorldWeatherOnlineName } from '../modes/WorldWeatherOnline';
@@ -72,6 +70,7 @@ export const receiver = (json: any) => {
     MODE_LARGECLOCK && ModeLargeClock(json);
     MODE_TICKER && ModeTicker(json);
     MODE_SMALLCLOCK && ModeSmallClock(json);
+    MODE_STREAM && ModeStream(json);
 };
 
 export const Main: Component = () => (
@@ -91,13 +90,6 @@ export const Main: Component = () => (
             MODE_ARROW && (
                 <Match when={getMode() === ModeArrowName}>
                     <ModeArrowMain />
-                </Match>
-            )
-        }
-        {
-            MODE_ARTNET && (
-                <Match when={getMode() === ModeArtNetName}>
-                    <ModeArtNetMain />
                 </Match>
             )
         }
@@ -158,23 +150,9 @@ export const Main: Component = () => (
             )
         }
         {
-            MODE_DISTRIBUTEDDISPLAYPROTOCOL && (
-                <Match when={getMode() === ModeDistributedDisplayProtocolName}>
-                    <ModeDistributedDisplayProtocolMain />
-                </Match>
-            )
-        }
-        {
             MODE_DRAW && (
                 <Match when={getMode() === ModeDrawName}>
                     <ModeDrawMain />
-                </Match>
-            )
-        }
-        {
-            MODE_E131 && (
-                <Match when={getMode() === ModeE131Name}>
-                    <ModeE131Main />
                 </Match>
             )
         }
@@ -375,6 +353,13 @@ export const Main: Component = () => (
             )
         }
         {
+            MODE_STREAM && (
+                <Match when={getMode() === ModeStreamName}>
+                    <ModeStreamMain />
+                </Match>
+            )
+        }
+        {
             MODE_TICKER && (
                 <Match when={getMode() === ModeTickerName}>
                     <ModeTickerMain />
@@ -474,6 +459,13 @@ export const Sidebar: Component = () => {
                     MODE_SMALLCLOCK && (
                         <Match when={getMode() === ModeSmallClockName}>
                             <ModeSmallClockSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_STREAM && (
+                        <Match when={getMode() === ModeStreamName}>
+                            <ModeStreamSidebar />
                         </Match>
                     )
                 }

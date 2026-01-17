@@ -12,7 +12,7 @@ import time
 
 class E131Streamer:
     host: str
-    mode: str = "E1.31"
+    mode: str = "Stream"
     rows: int
     sock: socket.socket = socket.socket(type=socket.SOCK_DGRAM)
 
@@ -23,8 +23,12 @@ class E131Streamer:
     ) -> None:
         self.host = host
         self.rows = rows
+        logging.warning(
+            "Deprecation: E131Streamer is deprecated. Use StreamCsv instead."
+        )
 
     def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 5568})
         httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
         self.sock.connect((self.host, 5568))
         return self
@@ -46,7 +50,7 @@ class E131Streamer:
         self, frames: list[list[list[int]]], interval: float | int = 0.5
     ) -> None:
         try:
-            print(f"{self.mode} stream started. Press Ctrl+C to terminate.")
+            print("E1.31 stream started. Press Ctrl+C to terminate.")
             while True:
                 for frame in frames:
                     self.display(frame)
@@ -56,9 +60,7 @@ class E131Streamer:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=f"Stream .csv graphic files via {E131Streamer.mode}."
-    )
+    parser = argparse.ArgumentParser(description="Stream .csv graphic files.")
     parser.add_argument("--host", help="Host", type=str)
     parser.add_argument("--interval", default=0.5, help="Frame interval", type=float)
     parser.add_argument("-i", "--input", help=".csv file path", type=str)

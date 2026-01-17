@@ -12,7 +12,7 @@ import time
 
 class ArtNetStreamer:
     host: str
-    mode: str = "Art-Net"
+    mode: str = "Stream"
     rows: int
     sock: socket.socket = socket.socket(type=socket.SOCK_DGRAM)
 
@@ -23,8 +23,12 @@ class ArtNetStreamer:
     ) -> None:
         self.host = host
         self.rows = rows
+        logging.warning(
+            "Deprecation: ArtNetStreamer is deprecated. Use StreamCsv instead."
+        )
 
     def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 6454})
         httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
         self.sock.connect((self.host, 6454))
         return self
@@ -46,19 +50,17 @@ class ArtNetStreamer:
         self, frames: list[list[list[int]]], interval: float | int = 0.5
     ) -> None:
         try:
-            print(f"{self.mode} stream started. Press Ctrl+C to terminate.")
+            print("Art-Net stream started. Press Ctrl+C to terminate.")
             while True:
                 for frame in frames:
                     self.display(frame)
                     time.sleep(interval)
         except KeyboardInterrupt:
-            logging.info(f"Stream ended gracefully.")
+            logging.info("Stream ended gracefully.")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description=f"Stream .csv graphic files via {ArtNetStreamer.mode}."
-    )
+    parser = argparse.ArgumentParser(description="Stream .csv graphic files.")
     parser.add_argument("--host", help="Host", type=str)
     parser.add_argument("--interval", default=0.5, help="Frame interval", type=float)
     parser.add_argument("-i", "--input", help=".csv file path", type=str)
