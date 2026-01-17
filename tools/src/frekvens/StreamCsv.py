@@ -39,11 +39,20 @@ class StreamCsv:
             raise ValueError("Unsupported port number.")
 
     def __enter__(self):
-        self.switch()
+        self.configure()
         return self
 
     def __exit__(self, exc_type, exc, tb):
         self.sock.close()
+
+    def configure(self) -> httpx.Response:
+        return httpx.patch(
+            f"http://{self.host}/restful/Stream",
+            json={
+                "port": self.port,
+                "protocol": self.protocol,
+            },
+        ).raise_for_status()
 
     def parse(self, path: str) -> list[list[list[int]]]:
         with open(path, encoding="utf-8", newline="") as graphic:
@@ -89,17 +98,18 @@ def main() -> None:
         }.items()
         if value is not None
     }
-    with StreamCsv(**kwargs) as streamer:
-        frames = streamer.parse(args.input)
+    with StreamCsv(**kwargs) as stream:
+        stream.switch()
+        frames = stream.parse(args.input)
         if len(frames) > 1:
             try:
-                print(f"{streamer.protocol} stream started. Press Ctrl+C to terminate.")
+                print(f"{stream.protocol} stream started. Press Ctrl+C to terminate.")
                 while True:
-                    streamer.send(frames, args.interval)
+                    stream.send(frames, args.interval)
             except KeyboardInterrupt:
                 print("Stream ended gracefully.")
         else:
-            streamer.send(frames[0], args.interval)
+            stream.send(frames[0], args.interval)
 
 
 if __name__ == "__main__":

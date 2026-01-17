@@ -54,7 +54,7 @@ jobs:
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
-                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.send_response(202 if self.path in ["/restful/Modes", "/restful/Stream"] else 404)
                   self.end_headers()
           http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF
@@ -136,7 +136,7 @@ jobs:
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
-                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.send_response(202 if self.path in ["/restful/Modes", "/restful/Stream"] else 404)
                   self.end_headers()
           http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF

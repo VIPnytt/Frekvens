@@ -44,7 +44,7 @@ import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from '
 import { Main as ModeSnakeMain, name as ModeSnakeName } from '../modes/Snake';
 import { Main as ModeSnakeClockMain, name as ModeSnakeClockName } from '../modes/SnakeClock';
 import { Main as ModeStarsMain, name as ModeStarsName } from '../modes/Stars';
-import { Main as ModeStreamMain, name as ModeStreamName } from '../modes/Stream';
+import { Main as ModeStreamMain, Sidebar as ModeStreamSidebar, receiver as ModeStream, name as ModeStreamName } from '../modes/Stream';
 import { Main as ModeTickerMain, Sidebar as ModeTickerSidebar, receiver as ModeTicker, name as ModeTickerName } from '../modes/Ticker';
 import { Main as ModeWaveformMain, name as ModeWaveformName } from '../modes/Waveform';
 import { Main as ModeWorldWeatherOnlineMain, name as ModeWorldWeatherOnlineName } from '../modes/WorldWeatherOnline';
@@ -70,6 +70,7 @@ export const receiver = (json: any) => {
     MODE_LARGECLOCK && ModeLargeClock(json);
     MODE_TICKER && ModeTicker(json);
     MODE_SMALLCLOCK && ModeSmallClock(json);
+    MODE_STREAM && ModeStream(json);
 };
 
 export const Main: Component = () => (
@@ -458,6 +459,13 @@ export const Sidebar: Component = () => {
                     MODE_SMALLCLOCK && (
                         <Match when={getMode() === ModeSmallClockName}>
                             <ModeSmallClockSidebar />
+                        </Match>
+                    )
+                }
+                {
+                    MODE_STREAM && (
+                        <Match when={getMode() === ModeStreamName}>
+                            <ModeStreamSidebar />
                         </Match>
                     )
                 }
