@@ -1,13 +1,18 @@
 {
-    "formatter": {
-        "indentStyle": "space",
-        "indentWidth": 4,
-        "lineWidth": 100,
-        "lineEnding": "auto"
-    },
     "css": {
         "parser": {
             "tailwindDirectives": true
         }
+    },
+    "formatter": {
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineEnding": "auto",
+        "lineWidth": 100
+    },
+    "vcs": {
+        "clientKind": "git",
+        "defaultBranch": "main",
+        "enabled": true
     }
 }
