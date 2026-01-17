@@ -28,6 +28,7 @@ class E131Streamer:
         )
 
     def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 5568})
         httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
         self.sock.connect((self.host, 5568))
         return self

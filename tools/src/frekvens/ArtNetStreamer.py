@@ -28,6 +28,7 @@ class ArtNetStreamer:
         )
 
     def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 6454})
         httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
         self.sock.connect((self.host, 6454))
         return self

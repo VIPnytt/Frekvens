@@ -28,6 +28,7 @@ class DistributedDisplayProtocolStreamer:
         )
 
     def __enter__(self):
+        httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 4048})
         httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": self.mode})
         self.sock.connect((self.host, 4048))
         return self
