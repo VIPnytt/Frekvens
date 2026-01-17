@@ -38,7 +38,7 @@ export const Sidebar: Component = () => {
                 class="mt-3 w-full"
                 value={getPort()}
                 onchange={(e) =>
-                    handlePort(parseInt(e.currentTarget.value))
+                    handlePort(parseInt(e.currentTarget.value, 10))
                 }
             >
                 <option value="6454">Art-Net</option>
