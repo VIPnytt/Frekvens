@@ -10,18 +10,13 @@
 class StreamMode : public ModeModule
 {
 private:
-    static constexpr std::string_view
-        _name = "Stream",
-        artnet = "Art-Net",
-        ddp = "Distributed Display Protocol",
-        e131 = "E1.31";
+    static constexpr std::string_view _name = "Stream";
 
     uint16_t port = 4048;
 
     std::unique_ptr<AsyncUDP> udp;
 
-    void setPort(const uint16_t _port);
-    void setProtocol(const char *const protocol);
+    void set(const uint16_t _port);
     void transmit();
 
     static void onPacket(AsyncUDPPacket packet);

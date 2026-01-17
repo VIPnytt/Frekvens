@@ -17,7 +17,7 @@ void StreamMode::configure()
     {
         const std::string id = std::string(name).append("_protocol");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"protocol\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = "{\"port\":{{{\"Art-Net\":6454,\"Distributed Display Protocol\":4048,\"E1.31\":5568}.get(value)}}}";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -25,13 +25,13 @@ void StreamMode::configure()
         component[HomeAssistantAbbreviations::name] = std::string(name).append(" protocol");
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
         JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
-        options.add(artnet);
-        options.add(ddp);
-        options.add(e131);
+        options.add("Art-Net");
+        options.add("Distributed Display Protocol");
+        options.add("E1.31");
         component[HomeAssistantAbbreviations::platform] = "select";
         component[HomeAssistantAbbreviations::state_topic] = topic;
         component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.protocol}}";
+        component[HomeAssistantAbbreviations::value_template] = "{{{4048:\"Distributed Display Protocol\",5568:\"E1.31\",6454:\"Art-Net\"}.get(value_json.port)}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
@@ -54,7 +54,7 @@ void StreamMode::begin()
     }
 }
 
-void StreamMode::setPort(const uint16_t _port)
+void StreamMode::set(const uint16_t _port)
 {
     if (_port != port && (_port == 4048 || _port == 5568 || _port == 6454))
     {
@@ -63,28 +63,12 @@ void StreamMode::setPort(const uint16_t _port)
         Storage.begin(name);
         Storage.putUShort("port", port);
         Storage.end();
-        transmit();
         if (udp)
         {
             udp->listen(port);
             ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port);
         }
-    }
-}
-
-void StreamMode::setProtocol(const char *const protocol)
-{
-    if (!strcmp(protocol, artnet.data()))
-    {
-        setPort(6454);
-    }
-    else if (!strcmp(protocol, ddp.data()))
-    {
-        setPort(4048);
-    }
-    else if (!strcmp(protocol, e131.data()))
-    {
-        setPort(5568);
+        transmit();
     }
 }
 
@@ -92,18 +76,6 @@ void StreamMode::transmit()
 {
     JsonDocument doc;
     doc["port"] = port;
-    switch (port)
-    {
-    case 4048:
-        doc["protocol"] = ddp;
-        break;
-    case 5568:
-        doc["protocol"] = e131;
-        break;
-    case 6454:
-        doc["protocol"] = artnet;
-        break;
-    }
     Device.transmit(doc, name);
 }
 
@@ -112,12 +84,7 @@ void StreamMode::onReceive(const JsonDocument doc, const char *const source)
     // Port
     if (doc["port"].is<uint16_t>())
     {
-        setPort(doc["port"].as<uint16_t>());
-    }
-    // Protocol
-    if (doc["protocol"].is<const char *>())
-    {
-        setProtocol(doc["protocol"].as<const char *>());
+        set(doc["port"].as<uint16_t>());
     }
 }
 

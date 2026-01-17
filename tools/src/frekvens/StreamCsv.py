@@ -38,15 +38,6 @@ class StreamCsv:
         else:
             raise ValueError("Unsupported port number.")
 
-    def configure(self) -> httpx.Response:
-        return httpx.patch(
-            f"http://{self.host}/restful/Stream",
-            json={
-                "port": self.port,
-                "protocol": self.protocol,
-            },
-        ).raise_for_status()
-
     def parse(self, path: str) -> list[list[list[int]]]:
         with open(path, encoding="utf-8", newline="") as graphic:
             rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
@@ -68,9 +59,14 @@ class StreamCsv:
             if interval is not None:
                 time.sleep(interval)
 
-    def show(self) -> httpx.Response:
+    def setMode(self) -> httpx.Response:
         return httpx.patch(
             f"http://{self.host}/restful/Modes", json={"mode": "Stream"}
+        ).raise_for_status()
+
+    def setPort(self) -> httpx.Response:
+        return httpx.patch(
+            f"http://{self.host}/restful/Stream", json={"port": self.port}
         ).raise_for_status()
 
 
@@ -92,8 +88,8 @@ def main() -> None:
         if value is not None
     }
     stream = StreamCsv(**kwargs)
-    stream.configure()
-    stream.show()
+    stream.setMode()
+    stream.setPort()
     frames = stream.parse(args.input)
     if len(frames) > 1:
         try:
