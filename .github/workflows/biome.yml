@@ -27,4 +27,4 @@ jobs:
           working-dir: webapp
 
       - name: Biome
-        run: biome ci --changed webapp
+        run: biome ci --changed ./webapp
