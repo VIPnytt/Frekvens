@@ -12,7 +12,7 @@
     },
     "vcs": {
         "clientKind": "git",
-        "defaultBranch": "main",
+        "defaultBranch": "origin/main",
         "enabled": true
     }
 }
