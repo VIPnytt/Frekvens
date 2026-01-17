@@ -27,4 +27,4 @@ jobs:
           working-dir: webapp
 
       - name: Biome
-        run: biome ci --changed --since="origin/main" webapp
+        run: biome ci --changed --since="origin/main" ./webapp
