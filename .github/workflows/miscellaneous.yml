@@ -104,6 +104,8 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
+          sed -i 's/\r\{0,1\}$/\r/' Frames.csv
+
           python -m frekvens.AnimationSplitter -i Frames.csv
 
       - name: Frame comparison
@@ -145,6 +147,8 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
+
+          sed -i 's/\r\{0,1\}$/\r/' Expected-1.csv Expected-2.csv
 
           cmp Frames-1.csv Expected-1.csv && \
           cmp Frames-2.csv Expected-2.csv
