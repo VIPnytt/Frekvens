@@ -99,6 +99,8 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
+          sed -i 's/\r\{0,1\}$/\r/' Animation.csv
+
           timeout --preserve-status -s INT 10s python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Animation.csv
 
   drawing:
@@ -164,5 +166,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
+
+          sed -i 's/\r\{0,1\}$/\r/' Drawing.csv
 
           python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Drawing.csv

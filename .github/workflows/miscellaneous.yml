@@ -232,20 +232,16 @@ jobs:
 
           pio run -e esp32dev
 
-      - name: File existence
-        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
-        with:
-          fail: true
-          files: firmware/certs/bundle/ca_roots.pem, firmware/embed/x509_crt_bundle.bin
-
       - name: Checkout espressif/esp-idf
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           repository: espressif/esp-idf
           ref: release/v5.5
           path: lib/esp-idf
+          sparse-checkout: components/mbedtls/esp_crt_bundle/gen_crt_bundle.py
+          sparse-checkout-cone-mode: false
 
-      - name: Certificate bundle comparison
+      - name: Bundle comparison
         run: |
           python lib/esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py -i firmware/certs/bundle && \
           cmp x509_crt_bundle firmware/embed/x509_crt_bundle.bin
