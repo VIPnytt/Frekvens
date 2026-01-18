@@ -13,6 +13,26 @@ void TickerMode::configure()
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
+        const std::string id = std::string(name).append("_font");
+        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
+        component[HomeAssistantAbbreviations::enabled_by_default] = false;
+        component[HomeAssistantAbbreviations::entity_category] = "config";
+        component[HomeAssistantAbbreviations::icon] = "mdi:format-font";
+        component[HomeAssistantAbbreviations::name] = std::string(name).append(" font");
+        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
+        JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
+        for (const FontModule *_font : Fonts.getAll())
+        {
+            options.add(_font->name);
+        }
+        component[HomeAssistantAbbreviations::platform] = "select";
+        component[HomeAssistantAbbreviations::state_topic] = topic;
+        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        component[HomeAssistantAbbreviations::value_template] = "{{value_json.font}}";
+    }
+    {
         const std::string id = std::string(name).append("_message");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
         component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
@@ -26,31 +46,27 @@ void TickerMode::configure()
         component[HomeAssistantAbbreviations::value_template] = "{{value_json.message}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
-
-    bool _transmit = false;
     Preferences Storage;
     Storage.begin(name, true);
     if (Storage.isKey("message"))
     {
         message = Storage.getString("message").c_str();
-        _transmit = true;
     }
     if (Storage.isKey("font"))
     {
         const String _font = Storage.getString("font");
         Storage.end();
         setFont(_font.c_str());
-        _transmit = true;
     }
     else
     {
         Storage.end();
-        setFont(FontSmall->name);
     }
-    if (_transmit)
+    if (!font)
     {
-        transmit();
+        font = FontSmall;
     }
+    transmit();
 }
 
 void TickerMode::begin()
@@ -84,20 +100,23 @@ void TickerMode::handle()
 
 void TickerMode::setFont(const char *const fontName)
 {
-    for (FontModule *_font : Fonts.getAll())
+    if (!font || strcmp(font->name, fontName))
     {
-        if (!strcmp(_font->name, fontName))
+        for (FontModule *_font : Fonts.getAll())
         {
-            font = _font;
-            Preferences Storage;
-            Storage.begin(name);
-            Storage.putString("font", font->name);
-            Storage.end();
-            pending = true;
-            return;
+            if (!strcmp(_font->name, fontName))
+            {
+                font = _font;
+                Preferences Storage;
+                Storage.begin(name);
+                Storage.putString("font", font->name);
+                Storage.end();
+                pending = true;
+                return;
+            }
         }
+        ESP_LOGD(name, "unknown font %s", fontName);
     }
-    ESP_LOGD(name, "unknown font %s", fontName);
 }
 
 void TickerMode::setMessage(std::string _message)
@@ -109,6 +128,7 @@ void TickerMode::setMessage(std::string _message)
         Storage.begin(name);
         Storage.putString("message", message.c_str());
         Storage.end();
+        ESP_LOGD(name, "received");
         pending = true;
     }
 }
@@ -132,7 +152,6 @@ void TickerMode::onReceive(const JsonDocument doc, const char *const source)
     if (doc["message"].is<std::string>())
     {
         setMessage(doc["message"].as<std::string>());
-        ESP_LOGD(name, "received");
     }
 }
 
