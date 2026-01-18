@@ -1,11 +1,11 @@
 import { mdiDotsGrid, mdiImageFrame } from '@mdi/js';
-import { Component, createSignal, For, Match, Switch } from 'solid-js';
+import { type Component, createSignal, For, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { MODE_ANIMATION, MODE_ARROW, MODE_BINARYCLOCK, MODE_BINARYEPOCH, MODE_BLINDS, MODE_BLINK, MODE_BREAKOUTCLOCK, MODE_BRIGHT, MODE_CIRCLE, MODE_COUNTDOWN, MODE_DRAW, MODE_EQUALIZER, MODE_FIREWORK, MODE_FLIES, MODE_GAMEOFLIFE, MODE_GAMEOFLIFECLOCK, MODE_GLITTER, MODE_GOOGLEWEATHER, MODE_HOMEASSISTANTWEATHER, MODE_HOMETHERMOMETER, MODE_JAGGEDWAVEFORM, MODE_LARGECLOCK, MODE_LEAFFALL, MODE_LINES, MODE_METABALLS, MODE_NOISE, MODE_OPENMETEO, MODE_OPENWEATHER, MODE_PINGPONG, MODE_PINGPONGCLOCK, MODE_PIXELSEQUENCE, MODE_RAIN, MODE_RING, MODE_SCAN, MODE_SMALLCLOCK, MODE_SMOOTHWAVEFORM, MODE_SNAKE, MODE_SNAKECLOCK, MODE_STARS, MODE_STREAM, MODE_TICKER, MODE_WAVEFORM, MODE_WORLDWEATHERONLINE, MODE_WTTRIN, MODE_YR } from '../config/modules';
-import { Main as WebAppMain, SidebarSection, WebAppPath, SidebarSectionSecondary } from '../extensions/WebApp';
+import { SidebarSection, SidebarSectionSecondary, Main as WebAppMain, WebAppPath } from '../extensions/WebApp';
 import { WebSocketWS } from '../extensions/WebSocket';
-import { Main as ModeAnimationMain, Sidebar as ModeAnimationSidebar, receiver as ModeAnimation, name as ModeAnimationName } from '../modes/Animation';
+import { receiver as ModeAnimation, Main as ModeAnimationMain, name as ModeAnimationName, Sidebar as ModeAnimationSidebar } from '../modes/Animation';
 import { Main as ModeArrowMain, name as ModeArrowName } from '../modes/Arrow';
 import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from '../modes/BinaryClock';
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from '../modes/BinaryEpoch';
@@ -14,8 +14,8 @@ import { Main as ModeBlinkMain, name as ModeBlinkName } from '../modes/Blink';
 import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from '../modes/BreakoutClock';
 import { Main as ModeBrightMain, name as ModeBrightName } from '../modes/Bright';
 import { Main as ModeCircleMain, name as ModeCircleName } from '../modes/Circle';
-import { Main as ModeCountdownMain, Sidebar as ModeCountdownSidebar, Actions as ModeCountdownActions, Link as ModeCountdownLink, receiver as ModeCountdown, name as ModeCountdownName } from '../modes/Countdown';
-import { Main as ModeDrawMain, Sidebar as ModeDrawSidebar, receiver as ModeDraw, name as ModeDrawName } from '../modes/Draw';
+import { receiver as ModeCountdown, Actions as ModeCountdownActions, Link as ModeCountdownLink, Main as ModeCountdownMain, name as ModeCountdownName, Sidebar as ModeCountdownSidebar } from '../modes/Countdown';
+import { receiver as ModeDraw, Main as ModeDrawMain, name as ModeDrawName, Sidebar as ModeDrawSidebar } from '../modes/Draw';
 import { Main as ModeEqualizerMain, name as ModeEqualizerName } from '../modes/Equalizer';
 import { Main as ModeFireworkMain, name as ModeFireworkName } from '../modes/Firework';
 import { Main as ModeFliesMain, name as ModeFliesName } from '../modes/Flies';
@@ -24,9 +24,9 @@ import { Main as ModeGameOfLifeClockMain, name as ModeGameOfLifeClockName } from
 import { Main as ModeGlitterMain, name as ModeGlitterName } from '../modes/Glitter';
 import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from '../modes/GoogleWeather';
 import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from '../modes/HomeAssistantWeather';
-import { Main as ModeHomeThermometerMain, Link as ModeHomeThermometerLink, receiver as ModeHomeThermometer, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
+import { receiver as ModeHomeThermometer, Link as ModeHomeThermometerLink, Main as ModeHomeThermometerMain, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from '../modes/HomeThermometer';
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from '../modes/JaggedWaveform';
-import { Main as ModeLargeClockMain, Sidebar as ModeLargeClockSidebar, receiver as ModeLargeClock, name as ModeLargeClockName } from '../modes/LargeClock';
+import { receiver as ModeLargeClock, Main as ModeLargeClockMain, name as ModeLargeClockName, Sidebar as ModeLargeClockSidebar } from '../modes/LargeClock';
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from '../modes/LeafFall';
 import { Main as ModeLinesMain, name as ModeLinesName } from '../modes/Lines';
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from '../modes/Metaballs';
@@ -39,13 +39,13 @@ import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from '..
 import { Main as ModeRainMain, name as ModeRainName } from '../modes/Rain';
 import { Main as ModeRingMain, name as ModeRingName } from '../modes/Ring';
 import { Main as ModeScanMain, name as ModeScanName } from '../modes/Scan';
-import { Main as ModeSmallClockMain, Sidebar as ModeSmallClockSidebar, receiver as ModeSmallClock, name as ModeSmallClockName } from '../modes/SmallClock';
+import { receiver as ModeSmallClock, Main as ModeSmallClockMain, name as ModeSmallClockName, Sidebar as ModeSmallClockSidebar } from '../modes/SmallClock';
 import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from '../modes/SmoothWaveform';
 import { Main as ModeSnakeMain, name as ModeSnakeName } from '../modes/Snake';
 import { Main as ModeSnakeClockMain, name as ModeSnakeClockName } from '../modes/SnakeClock';
 import { Main as ModeStarsMain, name as ModeStarsName } from '../modes/Stars';
-import { Main as ModeStreamMain, Sidebar as ModeStreamSidebar, receiver as ModeStream, name as ModeStreamName } from '../modes/Stream';
-import { Main as ModeTickerMain, Sidebar as ModeTickerSidebar, receiver as ModeTicker, name as ModeTickerName } from '../modes/Ticker';
+import { receiver as ModeStream, Main as ModeStreamMain, name as ModeStreamName, Sidebar as ModeStreamSidebar } from '../modes/Stream';
+import { receiver as ModeTicker, Main as ModeTickerMain, name as ModeTickerName, Sidebar as ModeTickerSidebar } from '../modes/Ticker';
 import { Main as ModeWaveformMain, name as ModeWaveformName } from '../modes/Waveform';
 import { Main as ModeWorldWeatherOnlineMain, name as ModeWorldWeatherOnlineName } from '../modes/WorldWeatherOnline';
 import { Main as ModeWttrInMain, name as ModeWttrInName } from '../modes/WttrIn';
@@ -528,18 +528,16 @@ export const MainThird: Component = () => (
 
 export const SidebarThird: Component = () => (
     <SidebarSectionSecondary title={name}>
-        <>
-            {
-                MODE_COUNTDOWN && (
-                    <ModeCountdownLink />
-                )
-            }
-            {
-                MODE_HOMETHERMOMETER && (
-                    <ModeHomeThermometerLink />
-                )
-            }
-        </>
+        {
+            MODE_COUNTDOWN && (
+                <ModeCountdownLink />
+            )
+        }
+        {
+            MODE_HOMETHERMOMETER && (
+                <ModeHomeThermometerLink />
+            )
+        }
     </SidebarSectionSecondary>
 );
 

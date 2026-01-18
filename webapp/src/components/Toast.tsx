@@ -1,5 +1,5 @@
 import { mdiInformation } from '@mdi/js';
-import { createContext, createSignal, ParentComponent, useContext } from 'solid-js';
+import { createContext, createSignal, type ParentComponent, useContext } from 'solid-js';
 
 import { Icon } from './Icon';
 

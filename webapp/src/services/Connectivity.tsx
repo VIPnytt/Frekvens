@@ -1,5 +1,5 @@
 import { mdiContentSave, mdiWifi, mdiWifiRefresh, mdiWifiStrength1, mdiWifiStrength1Lock, mdiWifiStrength2, mdiWifiStrength2Lock, mdiWifiStrength3, mdiWifiStrength3Lock, mdiWifiStrength4, mdiWifiStrength4Lock, mdiWifiStrengthLockOutline, mdiWifiStrengthOutline } from '@mdi/js';
-import { Component, createSignal, For, Index } from 'solid-js';
+import { type Component, createSignal, For, Index } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -104,6 +104,7 @@ export const MainThird: Component = () => {
                             disabled={getConnecting() || !getCredentialSsid().length || (getCredentialKey().length > 0 && getCredentialKey().length < 8)}
                             id="connect"
                             onclick={handleConnect}
+                            type="button"
                         >
                             <Icon
                                 class="mr-2"

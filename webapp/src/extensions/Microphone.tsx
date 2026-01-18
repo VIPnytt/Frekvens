@@ -1,10 +1,10 @@
 import { mdiMicrophone, mdiMicrophoneOff } from '@mdi/js';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Tooltip } from '../components/Tooltip';
-import { WebSocketWS } from './WebSocket';
 import { name as ExtensionsName } from '../services/Extensions';
+import { WebSocketWS } from './WebSocket';
 
 export const name = 'Microphone';
 
@@ -42,6 +42,7 @@ export const Actions: Component = () => (
             <button
                 class={`w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
                 onclick={handleActive}
+                type="button"
             >
                 <Icon path={getActive() ? mdiMicrophone : mdiMicrophoneOff} />
             </button>
@@ -101,10 +102,10 @@ export const MainThird: Component = () => {
                                 onInput={(e) =>
                                     handleThreshold(parseFloat(e.currentTarget.value), false)
                                 }
-                                onKeyUp={(e) =>
+                                onKeyUp={() =>
                                     handleThreshold(getThreshold())
                                 }
-                                onPointerUp={(e) =>
+                                onPointerUp={() =>
                                     handleThreshold(getThreshold())
                                 }
                             />
@@ -112,6 +113,7 @@ export const MainThird: Component = () => {
                         <button
                             class={`mt-3 w-full ${getActive() ? 'action-activated' : 'action-deactivated'}`}
                             onclick={handleActive}
+                            type="button"
                         >
                             <Icon
                                 class="mr-2"

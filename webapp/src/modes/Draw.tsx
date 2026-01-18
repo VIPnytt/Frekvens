@@ -1,7 +1,7 @@
 import { mdiBackupRestore, mdiContentSave, mdiDownload, mdiEraser, mdiUpload } from '@mdi/js';
-import { Component, createSignal } from 'solid-js';
+import { type Component, createSignal } from 'solid-js';
 
-import { Strength, Canvas } from '../components/Canvas';
+import { Canvas, Strength } from '../components/Canvas';
 import { csvExport, fileImport } from '../components/File';
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -65,6 +65,7 @@ export const Sidebar: Component = () => {
                         class="action-positive w-full"
                         disabled={!getFrame()?.some(pixel => pixel > 0) || getSaved()}
                         onclick={handleSave}
+                        type="button"
                     >
                         <Icon path={mdiContentSave} />
                     </button>
@@ -74,6 +75,7 @@ export const Sidebar: Component = () => {
                         class="action-neutral w-full"
                         disabled={getSaved()}
                         onclick={handleLoad}
+                        type="button"
                     >
                         <Icon path={mdiBackupRestore} />
                     </button>
@@ -83,6 +85,7 @@ export const Sidebar: Component = () => {
                         class="w-full"
                         disabled={!getFrame()?.some(pixel => pixel > 0)}
                         onclick={handleDownload}
+                        type="button"
                     >
                         <Icon path={mdiDownload} />
                     </button>
@@ -91,6 +94,7 @@ export const Sidebar: Component = () => {
                     <button
                         class="w-full"
                         onclick={handleUpload}
+                        type="button"
                     >
                         <Icon path={mdiUpload} />
                     </button>
@@ -151,6 +155,7 @@ export const Main: Component = () => {
                                 class="canvas-action-negative"
                                 disabled={!getFrame()?.some(pixel => pixel > 0)}
                                 onclick={handleClear}
+                                type="button"
                             >
                                 <Icon path={mdiEraser} />
                             </button>

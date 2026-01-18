@@ -1,5 +1,5 @@
 import { mdiProgressUpload } from '@mdi/js';
-import { Component } from 'solid-js';
+import type { Component } from 'solid-js';
 
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -89,6 +89,7 @@ export const MainComponent: Component = () => {
                             <a
                                 class="italic"
                                 href={`https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini`}
+                                rel="noopener"
                                 target="_blank"
                             >
                                 platformio.ini
@@ -134,6 +135,7 @@ export const MainComponent: Component = () => {
                                         id="upload"
                                         disabled
                                         onclick={handleUpload}
+                                        type="button"
                                     >
                                         Update
                                     </button>

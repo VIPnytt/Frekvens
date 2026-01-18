@@ -1,7 +1,7 @@
 import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiPresentation, mdiPresentationPlay, mdiUpload } from '@mdi/js';
-import { Component, createEffect, createSignal, For, Show } from 'solid-js';
+import { type Component, createEffect, createSignal, For, Show } from 'solid-js';
 
-import { Strength, Canvas } from '../components/Canvas';
+import { Canvas, Strength } from '../components/Canvas';
 import { csvExport, fileImport } from '../components/File';
 import { Icon } from '../components/Icon';
 import { Toast } from '../components/Toast';
@@ -166,6 +166,7 @@ export const Sidebar: Component = () => {
                         class={`w-full ${getPreview() ? 'action-negative not-hover:bg-neutral-light dark:not-hover:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0))}
                         onclick={handlePreview}
+                        type="button"
                     >
                         <Icon path={getPreview() ? mdiPresentationPlay : mdiPresentation} />
                     </button>
@@ -175,6 +176,7 @@ export const Sidebar: Component = () => {
                         class={`action-neutral w-full ${getFramesDraft().length < 2 ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={getPreview()}
                         onclick={handleAdd}
+                        type="button"
                     >
                         <Icon path={mdiPlus} />
                     </button>
@@ -184,6 +186,7 @@ export const Sidebar: Component = () => {
                         class="action-neutral w-full"
                         disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0)) || getSaved()}
                         onclick={handleSave}
+                        type="button"
                     >
                         <Icon path={mdiContentSave} />
                     </button>
@@ -193,6 +196,7 @@ export const Sidebar: Component = () => {
                         class={`action-neutral w-full ${!getFramesDraft().length ? 'not-hover:enabled:bg-neutral-light dark:not-hover:enabled:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark' : ''}`}
                         disabled={!getFrames().length || getSaved()}
                         onclick={handleLoad}
+                        type="button"
                     >
                         <Icon path={mdiBackupRestore} />
                     </button>
@@ -202,6 +206,7 @@ export const Sidebar: Component = () => {
                         class="w-full"
                         disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some(pixel => pixel > 0))}
                         onclick={handleDownload}
+                        type="button"
                     >
                         <Icon path={mdiDownload} />
                     </button>
@@ -211,6 +216,7 @@ export const Sidebar: Component = () => {
                         class="w-full"
                         disabled={getPreview()}
                         onclick={handleUpload}
+                        type="button"
                     >
                         <Icon path={mdiUpload} />
                     </button>
@@ -224,7 +230,7 @@ export const Sidebar: Component = () => {
                     <input
                         class="text-right pr-6 w-full"
                         disabled={getPreview()}
-                        max={(Math.pow(2, 16) - 1) / 1_000}
+                        max={(2 ** 16 - 1) / 1_000}
                         name="Interval"
                         min="0.05"
                         onChange={(e) => handleInterval(Math.round(parseFloat(e.currentTarget.value) * 1_000))}
@@ -302,6 +308,7 @@ export const Main: Component = () => {
                                                 <button
                                                     class="canvas-action-neutral"
                                                     onclick={() => handleInsert(index())}
+                                                    type="button"
                                                 >
                                                     <Icon path={mdiPlus} />
                                                 </button>
@@ -311,6 +318,7 @@ export const Main: Component = () => {
                                                     class="canvas-action-negative"
                                                     disabled={!getFramesDraft()[index()][0]?.().some(pixel => pixel > 0)}
                                                     onclick={() => handleClear(index())}
+                                                    type="button"
                                                 >
                                                     <Icon path={mdiEraser} />
                                                 </button>
@@ -319,6 +327,7 @@ export const Main: Component = () => {
                                                 <button
                                                     class="canvas-action-negative"
                                                     onclick={() => handleRemove(index())}
+                                                    type="button"
                                                 >
                                                     <Icon path={mdiDelete} />
                                                 </button>

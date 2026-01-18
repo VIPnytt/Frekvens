@@ -1,20 +1,20 @@
 import { mdiDockLeft, mdiDotsGrid, mdiHome, mdiMenu, mdiWindowClose } from '@mdi/js';
-import { Component, createEffect, createSignal, JSX, Match, onCleanup, onMount, Switch } from 'solid-js';
+import { type Component, createEffect, createSignal, type JSX, Match, onCleanup, onMount, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
-import { Tooltip } from '../components/Tooltip';
 import { ToastProvider } from '../components/Toast';
+import { Tooltip } from '../components/Tooltip';
 import { HOSTNAME, NAME } from '../config/constants';
 import { Device } from '../config/devices';
 import { EXTENSION_OTA } from '../config/modules';
 import { VERSION } from '../config/version';
-import { MainComponent as ExtensionOtaComponent } from './Ota';
-import { WebSocketWS, WebSocketmessages, WebSocketState } from './WebSocket';
-import { MainThird as ConnectivityThird, SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent, SidebarThird as ConnectivityThirdSidebar, name as ConnectivityName } from '../services/Connectivity';
+import { name as ConnectivityName, SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent, MainThird as ConnectivityThird, SidebarThird as ConnectivityThirdSidebar } from '../services/Connectivity';
 import { SidebarSecondaryComponent as DeviceSecondarySidebarComponent, DeviceVersion } from '../services/Device';
-import { Main as DisplayMain, Sidebar as DisplaySidebar, SidebarSecondaryComponent as DisplaySecondarySidebarComponent, DisplayPower } from '../services/Display';
-import { Footer as ExtensionsFooter, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar, name as ExtensionsName } from '../services/Extensions';
-import { Main as ModesMain, MainThird as ModesThird, Sidebar as ModesSidebar, SidebarSecondary as ModesSecondarySidebar, SidebarThird as ModesThirdSidebar, name as ModesName } from '../services/Modes';
+import { Main as DisplayMain, DisplayPower, SidebarSecondaryComponent as DisplaySecondarySidebarComponent, Sidebar as DisplaySidebar } from '../services/Display';
+import { Footer as ExtensionsFooter, name as ExtensionsName, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar } from '../services/Extensions';
+import { Main as ModesMain, name as ModesName, SidebarSecondary as ModesSecondarySidebar, Sidebar as ModesSidebar, MainThird as ModesThird, SidebarThird as ModesThirdSidebar } from '../services/Modes';
+import { MainComponent as ExtensionOtaComponent } from './Ota';
+import { WebSocketmessages, WebSocketState, WebSocketWS } from './WebSocket';
 
 export const name = 'Web app';
 export const WebAppUrl = `http://${HOSTNAME}.local`;
@@ -50,7 +50,7 @@ export const WebApp: Component = () => (
                 fallback={
                     <>
                         {
-                            WebAppPath() == '/' ? (
+                            WebAppPath() === '/' ? (
                                 <Primary />
                             ) : (
                                 <Secondary />
@@ -174,6 +174,7 @@ export const Third: Component = () => (
             <div class="text-sm tracking-wide">
                 <a
                     href="https://github.com/VIPnytt/Frekvens"
+                    rel="noopener"
                     target="_blank"
                 >
                     Download the latest version
@@ -217,9 +218,9 @@ const Home: Component = () => (
             >
                 <Icon
                     class="mr-2"
-                    path={WebAppPath() == '/' ? mdiMenu : mdiHome}
+                    path={WebAppPath() === '/' ? mdiMenu : mdiHome}
                 />
-                {WebAppPath() == '/' ? 'Menu' : 'Home'}
+                {WebAppPath() === '/' ? 'Menu' : 'Home'}
             </a>
         </div>
     </>
@@ -233,6 +234,7 @@ const Footer: Component = () => (
                 <a
                     class="flex-1"
                     href="https://github.com/VIPnytt/Frekvens/wiki"
+                    rel="noopener"
                     target="_blank"
                 >
                     <Icon
@@ -244,6 +246,7 @@ const Footer: Component = () => (
                 <a
                     class="text-content-alt-light dark:text-content-alt-dark flex-none"
                     href="https://github.com/VIPnytt/Frekvens/releases"
+                    rel="noopener"
                     target="_blank"
                 >
                     <Tooltip text="Release notes">
@@ -260,6 +263,7 @@ const Toggle: Component = () => (
         <button
             class={`text-interactive-light dark:text-content-dark ${getSidebar() ? 'border-0 bg-menu-light dark:bg-menu-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark' : 'bg-neutral-light dark:bg-neutral-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark'}`}
             onclick={() => setSidebar(!getSidebar())}
+            type="button"
         >
             <Icon path={getSidebar() ? mdiWindowClose : mdiDockLeft} />
         </button>

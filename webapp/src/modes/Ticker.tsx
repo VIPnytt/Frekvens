@@ -1,5 +1,5 @@
 import { mdiFormatText } from '@mdi/js';
-import { Component, createSignal, For } from 'solid-js';
+import { type Component, createSignal, For } from 'solid-js';
 
 import { Toast } from '../components/Toast';
 import { Tooltip } from '../components/Tooltip';

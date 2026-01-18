@@ -10,10 +10,12 @@
     "license": "MIT",
     "scripts": {
         "build": "vite build",
+        "check": "biome check ./src",
         "dev": "vite",
+        "format": "biome format ./src",
+        "lint": "biome lint ./src",
         "serve": "vite preview",
-        "start": "vite",
-        "lint": "biome lint ./src"
+        "start": "vite"
     },
     "dependencies": {
         "@mdi/js": "7.4.47",

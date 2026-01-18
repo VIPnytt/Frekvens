@@ -17,21 +17,21 @@ interface Parameters {
 const IkeaFrekvensParameters: Parameters = {
     GRID_COLUMNS: 16, // px
     GRID_ROWS: 16,    // px
-    LED_BASE_BRIGHTNESS: Math.pow(2, 6),
-    LED_BASE_TONE: Math.pow(2, 4),
+    LED_BASE_BRIGHTNESS: 2 ** 6,
+    LED_BASE_TONE: 2 ** 4,
     LED_GEOMETRY: 'circular',
     LED_SIZE_HORIZONTAL: 4, // mm
     LED_SIZE_VERTICAL: 4,   // mm
     MANUFACTURER: "IKEA",
     MODEL: "Frekvens",
-    PITCH_HORIZONTAL: 6,    // mm
-    PITCH_VERTICAL: 6,      // mm
+    PITCH_HORIZONTAL: 6, // mm
+    PITCH_VERTICAL: 6,   // mm
 }
 
 const IkeaObegransadParameters: Parameters = {
     GRID_COLUMNS: 16, // px
     GRID_ROWS: 16,    // px
-    LED_BASE_BRIGHTNESS: Math.pow(2, 5),
+    LED_BASE_BRIGHTNESS: 2 ** 5,
     LED_BASE_TONE: 0,
     LED_GEOMETRY: 'rectangular',
     LED_SIZE_HORIZONTAL: 12.5, // mm
