@@ -82,19 +82,19 @@ export const fileImport = (callback: (frames: number[][]) => void) => {
 
 export const csvExport = (name: string, frames: number[][]) => {
     const csvGenerator = (pixels: number[]) => {
-        let contents = '';
+        let csv = '';
         let column = 1;
         for (const brightness of pixels) {
-            contents += brightness;
+            csv += brightness;
             if (column >= Device.GRID_COLUMNS) {
-                contents += `\n`;
+                csv += `\r\n`;
                 column = 1;
             } else {
-                contents += ',';
+                csv += ',';
                 ++column;
             }
         }
-        return contents;
+        return csv;
     };
 
     const handleDownload = (name: string, csv: string) => {
