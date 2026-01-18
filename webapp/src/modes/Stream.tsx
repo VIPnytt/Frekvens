@@ -10,8 +10,10 @@ export const name = 'Stream';
 
 const [getPort, setPort] = createSignal<number>(4048);
 
-export const receiver = (json: any) => {
-    json[name]?.port !== undefined && setPort(json[name].port);
+export const receiver = (json: {
+    port?: number;
+}) => {
+    json?.port !== undefined && setPort(json.port);
 };
 
 export const Main: Component = () => (

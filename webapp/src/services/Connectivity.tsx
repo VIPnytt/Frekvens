@@ -20,11 +20,16 @@ const [getScan, setScan] = createSignal<WiFi[]>([]);
 const [getSaved, setSaved] = createSignal<string[]>([]);
 const [getSsid, setSsid] = createSignal<string | undefined>(undefined);
 
-export const receiver = (json: any) => {
-    json[name]?.event !== undefined && event(json[name].event);
-    json[name]?.saved !== undefined && setSaved(json[name].saved);
-    json[name]?.scan !== undefined && setScan(json[name].scan);
-    json[name]?.ssid !== undefined && setSsid(json[name].ssid);
+export const receiver = (json: {
+    event?: string;
+    saved?: string[];
+    scan?: WiFi[];
+    ssid?: string | undefined;
+}) => {
+    json?.event !== undefined && event(json.event);
+    json?.saved !== undefined && setSaved(json.saved);
+    json?.scan !== undefined && setScan(json.scan);
+    json?.ssid !== undefined && setSsid(json.ssid);
 };
 
 const { toast } = Toast();

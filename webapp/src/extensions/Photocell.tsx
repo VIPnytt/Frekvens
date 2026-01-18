@@ -12,8 +12,10 @@ const [getActive, setActive] = createSignal<boolean>(false);
 
 export const PhotocellActive = getActive;
 
-export const receiver = (json: any) => {
-    json[name]?.active !== undefined && setActive(json[name].active);
+export const receiver = (json: {
+    active?: boolean;
+}) => {
+    json?.active !== undefined && setActive(json.active);
 };
 
 const handleActive = () => {

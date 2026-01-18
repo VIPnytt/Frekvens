@@ -12,10 +12,14 @@ const [getFont, setFont] = createSignal<string>('');
 const [getFonts, setFonts] = createSignal<string[]>([]);
 const [getTicking, setTicking] = createSignal<boolean>(false);
 
-export const receiver = (json: any) => {
-    json[name]?.font !== undefined && setFont(json[name].font);
-    json[name]?.fonts !== undefined && setFonts(json[name].fonts);
-    json[name]?.ticking !== undefined && setTicking(json[name].ticking);
+export const receiver = (json: {
+    font?: string;
+    fonts?: string[];
+    ticking?: boolean;
+}) => {
+    json?.font !== undefined && setFont(json.font);
+    json?.fonts !== undefined && setFonts(json.fonts);
+    json?.ticking !== undefined && setTicking(json.ticking);
 };
 
 const { toast } = Toast();

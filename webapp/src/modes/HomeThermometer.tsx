@@ -15,9 +15,12 @@ export const name = 'Home thermometer';
 const [getIndoor, setIndoor] = createSignal<number>(0);
 const [getOutdoor, setOutdoor] = createSignal<number>(0);
 
-export const receiver = (json: any) => {
-    json[name]?.indoor !== undefined && setIndoor(json[name].indoor);
-    json[name]?.outdoor !== undefined && setOutdoor(json[name].outdoor);
+export const receiver = (json: {
+    indoor?: number;
+    outdoor?: number;
+}) => {
+    json?.indoor !== undefined && setIndoor(json.indoor);
+    json?.outdoor !== undefined && setOutdoor(json.outdoor);
 };
 
 export const Main: Component = () => (

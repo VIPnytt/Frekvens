@@ -2,27 +2,17 @@ import { mdiBriefcase } from '@mdi/js';
 import { type Component, Match, Switch } from 'solid-js';
 
 import { Icon } from '../components/Icon';
-import { EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_OTA, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST, EXTENSION_SIGNAL } from '../config/modules';
-import { receiver as ExtensionIr, Actions as ExtensionIrActions, Link as ExtensionIrLink, name as ExtensionIrName, MainThird as ExtensionIrThird } from '../extensions/Infrared';
-import { receiver as ExtensionMessage, Link as ExtensionMessageLink, name as ExtensionMessageName, MainThird as ExtensionMessageThird } from '../extensions/Message';
-import { receiver as ExtensionMic, Actions as ExtensionMicActions, Link as ExtensionMicLink, name as ExtensionMicName, MainThird as ExtensionMicThird } from '../extensions/Microphone';
+import { EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_OTA, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST } from '../config/modules';
+import { Actions as ExtensionIrActions, Link as ExtensionIrLink, name as ExtensionIrName, MainThird as ExtensionIrThird } from '../extensions/Infrared';
+import { Link as ExtensionMessageLink, name as ExtensionMessageName, MainThird as ExtensionMessageThird } from '../extensions/Message';
+import { Actions as ExtensionMicActions, Link as ExtensionMicLink, name as ExtensionMicName, MainThird as ExtensionMicThird } from '../extensions/Microphone';
 import { Link as ExtensionOtaLink, name as ExtensionOtaName, MainThird as ExtensionOtaThird } from '../extensions/Ota';
-import { receiver as ExtensionPhotocell, Actions as ExtensionPhotocellActions, Link as ExtensionPhotocellLink, name as ExtensionPhotocellName, MainThird as ExtensionPhotocellThird } from '../extensions/Photocell';
-import { receiver as ExtensionPlaylist, Actions as ExtensionPlaylistActions, Link as ExtensionPlaylistLink, name as ExtensionPlaylistName, MainThird as ExtensionPlaylistThird } from '../extensions/Playlist';
-import { receiver as ExtensionSignal } from '../extensions/Signal';
+import { Actions as ExtensionPhotocellActions, Link as ExtensionPhotocellLink, name as ExtensionPhotocellName, MainThird as ExtensionPhotocellThird } from '../extensions/Photocell';
+import { Actions as ExtensionPlaylistActions, Link as ExtensionPlaylistLink, name as ExtensionPlaylistName, MainThird as ExtensionPlaylistThird } from '../extensions/Playlist';
 import { SidebarSectionSecondary, Main as WebAppMain, WebAppPath } from '../extensions/WebApp';
 import { name as ExtensionsName } from './Extensions';
 
 export const name = 'Extensions';
-
-export const receiver = (json: any) => {
-    EXTENSION_INFRARED && ExtensionIr(json);
-    EXTENSION_MESSAGE && ExtensionMessage(json);
-    EXTENSION_MICROPHONE && ExtensionMic(json);
-    EXTENSION_PHOTOCELL && ExtensionPhotocell(json);
-    EXTENSION_PLAYLIST && ExtensionPlaylist(json);
-    EXTENSION_SIGNAL && ExtensionSignal(json);
-};
 
 export const Footer: Component = () => (
     <>
