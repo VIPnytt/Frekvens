@@ -37,8 +37,11 @@ frontend:
     - any-glob-to-any-file:
       - webapp/**/*
 
+no-changelog:
+  - head-branch:
+    - ^dependabot/npm_and_yarn/webapp/types/
+
 tools:
   - changed-files:
     - any-glob-to-any-file:
       - tools/**/*
-
