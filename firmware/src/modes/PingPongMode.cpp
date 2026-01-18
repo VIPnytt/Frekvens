@@ -11,12 +11,12 @@ void PingPongMode::begin()
     paddleB.clear();
     paddleT.clear();
     const uint8_t paddleX = random(GRID_COLUMNS - 3);
-    for (uint8_t _x = 0; _x < 3; ++_x)
+    for (uint8_t i = 0; i < 3; ++i)
     {
-        paddleB.push_back(paddleX + _x);
-        paddleT.push_back(paddleX + _x);
-        Display.setPixel(paddleX + _x, 0);
-        Display.setPixel(paddleX + _x, GRID_COLUMNS - 1);
+        paddleB.push_back(paddleX + i);
+        paddleT.push_back(paddleX + i);
+        Display.setPixel(paddleX + i, 0);
+        Display.setPixel(paddleX + i, GRID_ROWS - 1);
     }
     xDec = x = paddleX + 1;
     yDec = y = GRID_ROWS - 2;
@@ -31,7 +31,7 @@ void PingPongMode::handle()
         // Top
         deg = random(225, 316); // ±45°
     }
-    else if (yDec >= GRID_COLUMNS - 2 && deg >= 180)
+    else if (yDec >= GRID_ROWS - 2 && deg >= 180)
     {
         // Bottom
         deg = random(45, 136); // ±45°
