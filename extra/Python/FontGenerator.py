@@ -29,13 +29,13 @@ class FontGenerator:
                 try:
                     return f"{character} {unicodedata.name(character)}"
                 except ValueError as e:
-                    logging.debug("Character name not found: %s", e)
+                    logging.debug("Character name for %s not found: %s", character, e)
             return character
         else:
             try:
                 return unicodedata.name(character)
             except ValueError as e:
-                logging.debug("Character name not found: %s", e)
+                logging.debug("Character name for %s not found: %s", character, e)
                 return None
 
     def _characters_to_bitmaps(
@@ -96,7 +96,7 @@ class FontGenerator:
         font.close()
         return characters
 
-    def source(self) -> None:
+    def source(self) -> list[str]:
         unique = os.path.splitext(os.path.basename(self.path))[0]
         name = unique
         font = fontTools.ttLib.TTFont(self.path)
@@ -106,10 +106,12 @@ class FontGenerator:
             elif record.nameID == 6:
                 unique = record.toUnicode()
         font.close()
-        self._source_h(unique)
-        self._source_cpp(unique, name)
+        return [
+            self._source_h(unique),
+            self._source_cpp(unique, name),
+        ]
 
-    def _source_h(self, unique: str) -> None:
+    def _source_h(self, unique: str) -> str:
         bitmaps = self._characters_to_bitmaps(self._font_to_characters())
         font = [
             "#pragma once",
@@ -139,6 +141,7 @@ class FontGenerator:
                     font.append("            {")
                     if len(bitmap[0]) > 8:
                         font.append("                /*")
+                        logging.debug("Character too wide: %s", character)
                     for row in bitmap:
                         font.append(f"                0b{row},")
                     if len(bitmap[0]) > 8:
@@ -170,8 +173,12 @@ class FontGenerator:
             cp = ord(character)
             if cp >= 0x80 and cp <= 0x10FFFF:
                 comment = self._character_to_description(character)
-                if self.count >= 2**10 or (bitmap and len(bitmap[0]) > 8):
+                if self.count >= 2**10:
                     font.append("        /*")
+                    logging.debug("Too many characters, skipping: %s", character)
+                elif bitmap and len(bitmap[0]) > 8:
+                    font.append("        /*")
+                    logging.debug("Character too wide: %s", character)
                 font.append("        {")
                 if comment:
                     font.append(f"            0x{cp:X}, // {comment}")
@@ -215,9 +222,9 @@ class FontGenerator:
                 ]
             )
             h.write("\n".join(font))
-        print(f"{unique}Font.h")
+        return f"{unique}Font.h"
 
-    def _source_cpp(self, unique: str, name: str) -> None:
+    def _source_cpp(self, unique: str, name: str) -> str:
         with open(f"{unique}Font.cpp", "w", encoding="utf-8") as cpp:
             cpp.write(
                 "\n".join(
@@ -257,7 +264,7 @@ class FontGenerator:
                     ]
                 )
             )
-        print(f"{unique}Font.cpp")
+        return f"{unique}Font.cpp"
 
     @staticmethod
     def find(query: str) -> list[str]:
@@ -271,26 +278,42 @@ class FontGenerator:
         return fonts
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate font source files from .ttf or .otf files."
     )
-    parser.add_argument("-i", "--input", help="Font path", type=str)
+    parser.add_argument("-i", "--input", help="Font path", required=True, type=str)
     parser.add_argument("--size", help="Font size", type=int)
     args = parser.parse_args()
-    if args.input is None:
-        args.input = input("Font file path: ")
-    if args.size is None:
-        args.size = int(input("Font size: ") or 8)
-    try:
-        FontGenerator(args.input, args.size).source()
-    except FileNotFoundError:
-        match = False
+    kwargs = {
+        key: value
+        for key, value in {
+            "path": args.input,
+            "size": args.size,
+        }.items()
+        if value is not None
+    }
+    paths: list[str] = []
+    if os.path.isfile(args.input):
+        paths = FontGenerator(**kwargs).source()
+    else:
         fonts = FontGenerator.find(args.input)
         for font in fonts:
-            if os.path.splitext(os.path.basename(font))[0] == args.input:
-                FontGenerator(font, args.size).source()
-                match = True
+            if (
+                os.path.splitext(os.path.basename(font))[0].lower()
+                == args.input.lower()
+            ):
+                paths = (
+                    FontGenerator(font).source()
+                    if args.size is None
+                    else FontGenerator(font, args.size).source()
+                )
                 break
-        if not match:
-            raise
+    if not paths:
+        raise FileNotFoundError(f"Font not found: '{args.input}'")
+    for path in paths:
+        print(path)
+
+
+if __name__ == "__main__":
+    main()

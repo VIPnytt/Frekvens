@@ -4,6 +4,7 @@
 
 import argparse
 import httpx
+import logging
 
 
 class HomeThermometerDemo:
@@ -19,6 +20,9 @@ class HomeThermometerDemo:
         outdoor: float | int | None = None,
         activate: bool = False,
     ) -> None:
+        logging.warning(
+            "Deprecation: HomeThermometerDemo is deprecated. Use HomeThermometerUpdater instead."
+        )
         httpx.patch(
             f"http://{self.host}/restful/{self.mode}",
             json={

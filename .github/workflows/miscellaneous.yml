@@ -23,11 +23,10 @@ jobs:
     name: PlatformIO version extract
     runs-on: ubuntu-latest
     outputs:
-      environments: ${{ steps.print.outputs.environments }}
       version: ${{ steps.print.outputs.version }}
 
     steps:
-      - name: Set up Frekvens
+      - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Set up Python
@@ -55,7 +54,7 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - name: Set up Frekvens
+      - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Set up Python
@@ -70,7 +69,7 @@ jobs:
 
       - name: Animation splitter
         run: |
-          cat <<EOL > Animation.csv
+          cat <<EOL > Frames.csv
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
@@ -105,16 +104,53 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          python -m frekvens.AnimationSplitter -i Animation.csv
+          python -m frekvens.AnimationSplitter -i Frames.csv
 
-      - name: File existence
-        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # v3.0.0
-        with:
-          fail: true
-          files: Animation-1.csv, Animation-2.csv
+      - name: Frame comparison
+        run: |
+          cat <<EOL > Expected-1.csv
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,255,0,0,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,0,0,0,0,0,0,255,0,0,0
+          0,0,0,255,255,255,0,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0
+          0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          EOL
 
-  home-thermometer-demo:
-    name: Home thermometer demo
+          cat <<EOL > Expected-2.csv
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0
+          0,0,0,0,0,255,255,255,255,255,255,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          EOL
+
+          cmp Frames-1.csv Expected-1.csv && \
+          cmp Frames-2.csv Expected-2.csv
+
+  homethermometer-updater:
+    name: Home thermometer updater
     runs-on: ubuntu-latest
 
     strategy:
@@ -124,7 +160,7 @@ jobs:
           - python-version: 3.14
 
     steps:
-      - name: Set up Frekvens
+      - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Set up Python
@@ -148,13 +184,52 @@ jobs:
           http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
           EOF
 
-      - name: Set ip iptables rules
-        run: |
           sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
           sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
-      - name: Home thermometer demo
-        run: python -m frekvens.HomeThermometerDemo --host 127.0.0.1 --indoor=22 --outdoor=8
+      - name: Home thermometer updater
+        run: python -m frekvens.HomeThermometerUpdater 127.0.0.1 --indoor=22 --outdoor=8
+
+  mode-switcher:
+    name: Mode switcher
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+          - python-version: 3.14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: tools/pyproject.toml
+
+      - name: Set up Frekvens tools
+        run: pip install tools/
+
+      - name: Set up HTTP server
+        run: |
+          python - << 'EOF' &
+          import http.server
+          class Test(http.server.BaseHTTPRequestHandler):
+              def do_PATCH(self):
+                  self.send_response(202 if self.path == "/restful/Modes" else 404)
+                  self.end_headers()
+          http.server.HTTPServer(("127.0.0.1", 8080), Test).serve_forever()
+          EOF
+
+          sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDIRECT --to-ports 8080
+          sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+
+      - name: Mode switcher
+        run: python -m frekvens.ModeSwitcher 127.0.0.1 --mode=Test
 
   x509_crt_bundle:
     name: x509 certificate bundle
@@ -168,7 +243,7 @@ jobs:
           - python-version: 3.13
 
     steps:
-      - name: Set up Frekvens
+      - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Set up Python
