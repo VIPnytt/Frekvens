@@ -17,9 +17,12 @@ const [getMinutes, setMinutes] = createSignal<number>(parseInt(Cookies.get(`${na
 const [getSeconds, setSeconds] = createSignal<number>(parseInt(Cookies.get(`${name}.seconds`) || '', 10) || 0);
 const [getTimestamp, setTimestamp] = createSignal<string | undefined>(undefined);
 
-export const receiver = (json: any) => {
-    json[name]?.event !== undefined && event(json[name].event);
-    json[name]?.timestamp !== undefined && setTimestamp(json[name].timestamp);
+export const receiver = (json: {
+    event?: string;
+    timestamp?: string | undefined;
+}) => {
+    json?.event !== undefined && event(json.event);
+    json?.timestamp !== undefined && setTimestamp(json.timestamp);
 };
 
 const { toast } = Toast();

@@ -14,10 +14,14 @@ const [getThreshold, setThreshold] = createSignal<number>(0);
 
 export const MicActive = getActive;
 
-export const receiver = (json: any) => {
-    json[name]?.active !== undefined && setActive(json[name].active);
-    json[name]?.max !== undefined && setMax(json[name].max);
-    json[name]?.threshold !== undefined && setThreshold(json[name].threshold);
+export const receiver = (json: {
+    active?: boolean;
+    max?: number;
+    threshold?: number;
+}) => {
+    json?.active !== undefined && setActive(json.active);
+    json?.max !== undefined && setMax(json.max);
+    json?.threshold !== undefined && setThreshold(json.threshold);
 };
 
 const handleActive = () => {

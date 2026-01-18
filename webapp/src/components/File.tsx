@@ -71,10 +71,11 @@ export const fileImport = (callback: (frames: number[][]) => void) => {
     upload.accept = 'text/csv,image/*';
     upload.click();
     upload.onchange = (e: Event) => {
-        if (!e.target) {
+        const input = e.target as HTMLInputElement | null;
+        const file = input?.files?.[0];
+        if (!file) {
             return;
         }
-        const file = (e.target as HTMLInputElement).files?.[0]!;
         file.name.endsWith('.csv') ? csvParser(file, callback) : imageParser(file, callback);
     };
 };

@@ -46,7 +46,10 @@ export const ToastProvider: ParentComponent = (props) => {
 
     return (
         <ToastContext.Provider value={{ toast }}>
-            {getToast() && <Toast item={getToast()!} />}
+            {(() => {
+                const item = getToast();
+                return item && <Toast item={item} />;
+            })()}
             {props.children}
         </ToastContext.Provider>
     );

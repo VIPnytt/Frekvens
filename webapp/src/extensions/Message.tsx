@@ -17,10 +17,14 @@ const [getFont, setFont] = createSignal<string>('');
 const [getMessage, setMessage] = createSignal<string>(Cookies.get(`${name}.message`) || '');
 const [getRepeat, setRepeat] = createSignal<number>(0);
 
-export const receiver = (json: any) => {
-    json[name]?.event !== undefined && event(json[name].event);
-    json[name]?.font !== undefined && setFont(json[name].font);
-    json[name]?.repeat !== undefined && setRepeat(json[name].repeat);
+export const receiver = (json: {
+    event?: string;
+    font?: string;
+    repeat?: number;
+}) => {
+    json?.event !== undefined && event(json.event);
+    json?.font !== undefined && setFont(json.font);
+    json?.repeat !== undefined && setRepeat(json.repeat);
 };
 
 const { toast } = Toast();

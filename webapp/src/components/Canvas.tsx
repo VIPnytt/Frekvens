@@ -85,7 +85,10 @@ export const Canvas: Component<{
         const pixelWidth = columnWidth * (rotated ? Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL : Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL);
         const offsetX = (columnWidth - pixelWidth) / 2;
         const offsetY = (rowHeight - pixelHeight) / 2;
-        const ctx = canvasRef.getContext('2d')!;
+        const ctx = canvasRef.getContext('2d');
+        if (!ctx) {
+            return;
+        }
         ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
         ctx.save();
         ctx.globalAlpha = 1;
@@ -189,12 +192,18 @@ export const Canvas: Component<{
     return (
         <div
             class={`bg-black flex-none inline-block max-h-[calc((100vh---spacing(32))*0.9)] mx-auto p-2.5 relative shrink-0 w-full ${WebAppSidebar() ? 'max-w-[calc((100vw---spacing(80))*0.9)]' : 'max-w-[90vw]'}`}
-            ref={div => divRef = div}
+            ref={(div) => {
+                divRef = div;
+            }}
             style={{
                 'aspect-ratio': rotated ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}` : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
             }}
         >
-            <canvas ref={canvas => canvasRef = canvas} />
+            <canvas
+                ref={(canvas) => {
+                    canvasRef = canvas;
+                }}
+            />
         </div>
     );
 };

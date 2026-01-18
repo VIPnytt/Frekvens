@@ -21,9 +21,12 @@ const [getPlaylist, setPlaylist] = createSignal<Item[]>([]);
 
 export const PlaylistActive = getActive;
 
-export const receiver = (json: any) => {
-    json[name]?.playlist !== undefined && setPlaylist(json[name].playlist);
-    json[name]?.active !== undefined && setActive(json[name].active);
+export const receiver = (json: {
+    active?: boolean;
+    playlist?: Item[];
+}) => {
+    json?.active !== undefined && setActive(json.active);
+    json?.playlist !== undefined && setPlaylist(json.playlist);
 };
 
 const handleActive = () => {

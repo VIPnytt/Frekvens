@@ -24,14 +24,24 @@ const [getPreviewIndex, setPreviewIndex] = createSignal<number>(0);
 const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | undefined>(undefined);
 const [getSaved, setSaved] = createSignal<boolean>(true);
 
-export const receiver = (json: any) => {
-    json[name]?.interval !== undefined && setFrameInterval(json[name].interval);
-    json[name]?.frame !== undefined && json[name]?.index !== undefined && setFrames(f => (f = [...f], f[json[name].index] = json[name].frame, f)) && getSaved() && handleLoad();
+export const receiver = (json: {
+    frame?: Frame;
+    index?: number;
+    interval?: number;
+}) => {
+    json?.frame !== undefined && json?.index !== undefined && setFrames(handleFrameAt(json.index, json.frame)) && getSaved() && handleLoad();
+    json?.interval !== undefined && setFrameInterval(json.interval);
 };
 
 let divRef: HTMLDivElement | undefined;
 
 const template = new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0);
+
+const handleFrameAt = (index: number, frame: Frame) => (frames: Frame[]) => {
+    const next = [...frames];
+    next[index] = frame;
+    return next;
+};
 
 const handleLoad = () => {
     if (!getFrames().length) {
@@ -292,7 +302,9 @@ export const Main: Component = () => {
             <div class="bg-contrast-light dark:bg-contrast-dark h-full relative rounded-none">
                 <div
                     class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw---spacing(80))*0.05)] ${getPreview() ? 'justify-center-safe' : 'justify-start'}`}
-                    ref={div => divRef = div}
+                    ref={(div) => {
+                        divRef = div;
+                    }}
                 >
                     {getPreview() ? (
                         <div class="animate-fade-in">

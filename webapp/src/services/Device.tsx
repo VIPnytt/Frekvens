@@ -15,9 +15,12 @@ const [getVersion, setVersion] = createSignal<string>(VERSION);
 
 export const DeviceVersion = getVersion;
 
-export const receiver = (json: any) => {
-    json[name]?.event !== undefined && event(json[name].event);
-    json[name]?.version !== undefined && setVersion(json[name].version);
+export const receiver = (json: {
+    event?: string;
+    version?: string;
+}) => {
+    json?.event !== undefined && event(json.event);
+    json?.version !== undefined && setVersion(json.version);
 };
 
 createEffect(() => {
