@@ -13,9 +13,12 @@ export const name = 'Ticker';
 const [getFont, setFont] = createSignal<string>('');
 const [getMessage, setMessage] = createSignal<string>('');
 
-export const receiver = (json: any) => {
-    json[name]?.font !== undefined && setFont(json[name].font);
-    json[name]?.message !== undefined && setMessage(json[name].message);
+export const receiver = (json: {
+    font?: string;
+    message?: string;
+}) => {
+    json?.font !== undefined && setFont(json.font);
+    json?.message !== undefined && setMessage(json.message);
 };
 
 const { toast } = Toast();

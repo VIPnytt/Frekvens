@@ -15,8 +15,10 @@ export const name = 'Draw';
 const [getFrame, setFrame] = createSignal<number[]>();
 const [getSaved, setSaved] = createSignal<boolean>(false);
 
-export const receiver = (json: any) => {
-    json[name]?.frame !== undefined && setFrame(json[name].frame);
+export const receiver = (json: {
+    frame?: number[];
+}) => {
+    json?.frame !== undefined && setFrame(json.frame);
 };
 
 export const Sidebar: Component = () => {

@@ -2,8 +2,10 @@ import { Toast } from '../components/Toast';
 
 export const name = 'Signal';
 
-export const receiver = (json: any) => {
-    json[name]?.event !== undefined && event(json[name].event);
+export const receiver = (json: {
+    event?: string;
+}) => {
+    json?.event !== undefined && event(json.event);
 };
 
 const { toast } = Toast();

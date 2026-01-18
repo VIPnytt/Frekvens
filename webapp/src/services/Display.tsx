@@ -18,10 +18,14 @@ export const DisplayOrientation = getOrientation;
 export const DisplayPower = getPower;
 export const DisplayPowerSet = setPower;
 
-export const receiver = (json: any) => {
-    json[name]?.brightness !== undefined && setBrightness(json[name].brightness);
-    json[name]?.orientation !== undefined && setOrientation(json[name].orientation);
-    json[name]?.power !== undefined && setPower(json[name].power);
+export const receiver = (json: {
+    brightness?: number;
+    orientation?: number;
+    power?: boolean;
+}) => {
+    json?.brightness !== undefined && setBrightness(json.brightness);
+    json?.orientation !== undefined && setOrientation(json.orientation);
+    json?.power !== undefined && setPower(json.power);
 };
 
 export const Main: Component = () => (
