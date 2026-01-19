@@ -19,17 +19,21 @@ class ModeGenerator:
         self.name = os.path.splitext(os.path.basename(path))[0]
         self.id = "".join(self.name.split()).capitalize()
 
-    def create(self) -> None:
+    def create(self) -> list[str]:
         with open(self.path, "r", encoding="utf-8") as animation:
             rows = csv.reader(animation)
             if sum(1 for _ in rows) <= self.rows:
-                self._drawing_h()
-                self._drawing_cpp()
+                return [
+                    self._drawing_h(),
+                    self._drawing_cpp(),
+                ]
             else:
-                self._animation_h()
-                self._animation_cpp()
+                return [
+                    self._animation_h(),
+                    self._animation_cpp(),
+                ]
 
-    def _animation_h(self) -> None:
+    def _animation_h(self) -> str:
         frames = [
             "#pragma once",
             "",
@@ -75,9 +79,9 @@ class ModeGenerator:
         )
         with open(f"{self.id}Mode.h", "w", encoding="utf-8") as hMode:
             hMode.write("\n".join(frames))
-        print(f"{self.id}Mode.h")
+        return f"{self.id}Mode.h"
 
-    def _animation_cpp(self) -> None:
+    def _animation_cpp(self) -> str:
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as cppMode:
             cppMode.write(
                 "\n".join(
@@ -110,9 +114,9 @@ class ModeGenerator:
                     ]
                 )
             )
-        print(f"{self.id}Mode.cpp")
+        return f"{self.id}Mode.cpp"
 
-    def _drawing_h(self) -> None:
+    def _drawing_h(self) -> str:
         frame = [
             "#pragma once",
             "",
@@ -157,9 +161,9 @@ class ModeGenerator:
         )
         with open(f"{self.id}Mode.h", "w", encoding="utf-8") as hMode:
             hMode.write("\n".join(frame))
-        print(f"{self.id}Mode.h")
+        return f"{self.id}Mode.h"
 
-    def _drawing_cpp(self) -> None:
+    def _drawing_cpp(self) -> str:
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as cppMode:
             cppMode.write(
                 "\n".join(
@@ -183,16 +187,27 @@ class ModeGenerator:
                     ]
                 )
             )
-        print(f"{self.id}Mode.cpp")
+        return f"{self.id}Mode.cpp"
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate mode source files from .csv files provided by the Animation or Draw modes."
     )
-    parser.add_argument("-i", "--input", help=".csv file path", type=str)
-    parser.add_argument("--rows", default=16, help="Grid rows", type=int)
+    parser.add_argument("-i", "--input", help=".csv file path", required=True, type=str)
+    parser.add_argument("--rows", help="Grid rows", type=int)
     args = parser.parse_args()
-    if args.input is None:
-        args.input = input(".csv file path: ")
-    ModeGenerator(args.input, args.rows).create()
+    kwargs = {
+        key: value
+        for key, value in {
+            "path": args.input,
+            "rows": args.rows,
+        }.items()
+        if value is not None
+    }
+    for path in ModeGenerator(**kwargs).create():
+        print(path)
+
+
+if __name__ == "__main__":
+    main()
