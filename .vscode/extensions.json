@@ -7,6 +7,7 @@
         "esphome.esphome-vscode",
         "lukas-tr.materialdesignicons-intellisense",
         "platformio.platformio-ide",
+        "redhat.vscode-yaml",
         "tamasfe.even-better-toml"
-    ],
+    ]
 }
