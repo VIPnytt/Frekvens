@@ -1,12 +1,8 @@
-import { mdiWeatherPouring } from '@mdi/js';
-import type { Component } from 'solid-js';
+import { mdiWeatherPouring } from "@mdi/js";
+import type { Component } from "solid-js";
 
-import { MainComponent as ModesMainComponent } from '../services/Modes';
+import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-export const name = 'Yr';
+export const name = "Yr";
 
-export const Main: Component = () => (
-    <ModesMainComponent
-        icon={mdiWeatherPouring}
-    />
-);
+export const Main: Component = () => <ModesMainComponent icon={mdiWeatherPouring} />;

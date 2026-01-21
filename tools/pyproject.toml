@@ -8,10 +8,10 @@ dependencies = [
     'httpx~=0.28.1',
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
 [project.urls]
 "Homepage" = "https://github.com/VIPnytt/Frekvens"
 "Wiki" = "https://github.com/VIPnytt/Frekvens/wiki"
 "Bug Reports" = "https://github.com/VIPnytt/Frekvens/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

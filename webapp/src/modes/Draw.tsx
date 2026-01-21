@@ -1,23 +1,21 @@
-import { mdiBackupRestore, mdiContentSave, mdiDownload, mdiEraser, mdiUpload } from '@mdi/js';
-import { type Component, createSignal } from 'solid-js';
+import { mdiBackupRestore, mdiContentSave, mdiDownload, mdiEraser, mdiUpload } from "@mdi/js";
+import { type Component, createSignal } from "solid-js";
 
-import { Canvas, Strength } from '../components/Canvas';
-import { csvExport, fileImport } from '../components/File';
-import { Icon } from '../components/Icon';
-import { Toast } from '../components/Toast';
-import { Tooltip } from '../components/Tooltip';
-import { Device } from '../config/devices';
-import { SidebarSection } from '../extensions/WebApp';
-import { WebSocketWS } from '../extensions/WebSocket';
+import { Canvas, Strength } from "../components/Canvas";
+import { csvExport, fileImport } from "../components/File";
+import { Icon } from "../components/Icon";
+import { Toast } from "../components/Toast";
+import { Tooltip } from "../components/Tooltip";
+import { Device } from "../config/devices";
+import { SidebarSection } from "../extensions/WebApp";
+import { WebSocketWS } from "../extensions/WebSocket";
 
-export const name = 'Draw';
+export const name = "Draw";
 
 const [getFrame, setFrame] = createSignal<number[]>();
 const [getSaved, setSaved] = createSignal<boolean>(false);
 
-export const receiver = (json: {
-    frame?: number[];
-}) => {
+export const receiver = (json: { frame?: number[] }) => {
     json?.frame !== undefined && setFrame(json.frame);
 };
 
@@ -25,36 +23,44 @@ export const Sidebar: Component = () => {
     const { toast } = Toast();
 
     const handleDownload = () => {
-        csvExport(name, [getFrame() || new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)]);
+        csvExport(name, [
+            getFrame() || new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0),
+        ]);
     };
 
     const handleLoad = () => {
-        WebSocketWS.send(JSON.stringify({
-            [name]: {
-                action: 'load',
-            },
-        }));
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    action: "load",
+                },
+            }),
+        );
         setSaved(true);
     };
 
     const handleSave = () => {
-        WebSocketWS.send(JSON.stringify({
-            [name]: {
-                action: 'save',
-            },
-        }));
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    action: "save",
+                },
+            }),
+        );
         setSaved(true);
         toast(`Drawing saved`);
     };
 
     const handleUpload = () => {
         fileImport((frames) => {
-            setFrame(frames[0])
-            WebSocketWS.send(JSON.stringify({
-                [name]: {
-                    frame: frames[0],
-                },
-            }));
+            setFrame(frames[0]);
+            WebSocketWS.send(
+                JSON.stringify({
+                    [name]: {
+                        frame: frames[0],
+                    },
+                }),
+            );
             setSaved(false);
         });
     };
@@ -65,7 +71,7 @@ export const Sidebar: Component = () => {
                 <Tooltip text="Save drawing">
                     <button
                         class="action-positive w-full"
-                        disabled={!getFrame()?.some(pixel => pixel > 0) || getSaved()}
+                        disabled={!getFrame()?.some((pixel) => pixel > 0) || getSaved()}
                         onclick={handleSave}
                         type="button"
                     >
@@ -85,7 +91,7 @@ export const Sidebar: Component = () => {
                 <Tooltip text="Download drawing">
                     <button
                         class="w-full"
-                        disabled={!getFrame()?.some(pixel => pixel > 0)}
+                        disabled={!getFrame()?.some((pixel) => pixel > 0)}
                         onclick={handleDownload}
                         type="button"
                     >
@@ -109,40 +115,50 @@ export const Sidebar: Component = () => {
 
 export const Main: Component = () => {
     const handleClear = () => {
-        setFrame([...new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0)]);
-        WebSocketWS.send(JSON.stringify({
-            [name]: {
-                action: 'clear',
-            },
-        }));
+        setFrame([
+            ...new Array(Device.GRID_COLUMNS * Device.GRID_ROWS).fill(0),
+        ]);
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    action: "clear",
+                },
+            }),
+        );
     };
 
     const handleFrame = (data: number[]) => {
         setSaved(false);
-        setFrame([...data]);
+        setFrame([
+            ...data,
+        ]);
     };
 
     const handlePixel = (x: number, y: number, brightness: number) => {
         setSaved(false);
-        WebSocketWS.send(JSON.stringify({
-            [name]: {
-                pixels: [
-                    {
-                        x: x,
-                        y: y,
-                        brightness: brightness,
-                    }
-                ]
-            },
-        }));
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    pixels: [
+                        {
+                            x: x,
+                            y: y,
+                            brightness: brightness,
+                        },
+                    ],
+                },
+            }),
+        );
     };
 
     const handlePull = () => {
-        WebSocketWS.send(JSON.stringify({
-            [name]: {
-                action: 'pull',
-            },
-        }));
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    action: "pull",
+                },
+            }),
+        );
     };
 
     handlePull();
@@ -155,7 +171,7 @@ export const Main: Component = () => {
                         <Tooltip text="Clear drawing">
                             <button
                                 class="canvas-action-negative"
-                                disabled={!getFrame()?.some(pixel => pixel > 0)}
+                                disabled={!getFrame()?.some((pixel) => pixel > 0)}
                                 onclick={handleClear}
                                 type="button"
                             >

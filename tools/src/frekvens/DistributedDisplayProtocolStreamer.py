@@ -23,9 +23,7 @@ class DistributedDisplayProtocolStreamer:
     ) -> None:
         self.host = host
         self.rows = rows
-        logging.warning(
-            "Deprecation: DistributedDisplayProtocolStreamer is deprecated. Use StreamCsv instead."
-        )
+        logging.warning("Deprecation: DistributedDisplayProtocolStreamer is deprecated. Use StreamCsv instead.")
 
     def __enter__(self):
         httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 4048})
@@ -46,13 +44,9 @@ class DistributedDisplayProtocolStreamer:
             rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
             return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
 
-    def stream(
-        self, frames: list[list[list[int]]], interval: float | int = 0.5
-    ) -> None:
+    def stream(self, frames: list[list[list[int]]], interval: float | int = 0.5) -> None:
         try:
-            print(
-                "Distributed Display Protocol stream started. Press Ctrl+C to terminate."
-            )
+            print("Distributed Display Protocol stream started. Press Ctrl+C to terminate.")
             while True:
                 for frame in frames:
                     self.display(frame)

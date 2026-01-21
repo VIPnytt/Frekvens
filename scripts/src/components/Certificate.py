@@ -73,9 +73,7 @@ class Certificate:
 
     def add_der(self, path: pathlib.Path | str) -> None:
         with open(path, "rb") as der:
-            self.certificates.append(
-                cryptography.x509.load_der_x509_certificate(der.read())
-            )
+            self.certificates.append(cryptography.x509.load_der_x509_certificate(der.read()))
 
     def _add_host(self, hostname: str, port: int = 443) -> bool:
         with socket.create_connection((hostname, port)) as sock:
@@ -85,17 +83,11 @@ class Certificate:
                 der = ssock.getpeercert(True)
                 if der:
                     for pem in self._fetch_chain(der):
-                        certificate = cryptography.x509.load_pem_x509_certificate(
-                            pem.encode()
-                        )
+                        certificate = cryptography.x509.load_pem_x509_certificate(pem.encode())
                         if self._is_self_signed(pem):
                             if not any(
-                                _certificate.fingerprint(
-                                    cryptography.hazmat.primitives.hashes.SHA256()
-                                ).hex()
-                                == certificate.fingerprint(
-                                    cryptography.hazmat.primitives.hashes.SHA256()
-                                ).hex()
+                                _certificate.fingerprint(cryptography.hazmat.primitives.hashes.SHA256()).hex()
+                                == certificate.fingerprint(cryptography.hazmat.primitives.hashes.SHA256()).hex()
                                 for _certificate in self.certificates
                             ):
                                 self.certificates.append(certificate)
@@ -113,18 +105,12 @@ class Certificate:
                 elif line == "-----END CERTIFICATE-----" and encoded is True:
                     certificate += line
                     encoded = False
-                    self.certificates.append(
-                        cryptography.x509.load_pem_x509_certificate(
-                            certificate.encode()
-                        )
-                    )
+                    self.certificates.append(cryptography.x509.load_pem_x509_certificate(certificate.encode()))
                 if encoded is True:
                     certificate += line
 
     def _get_bin(self) -> bytes:
-        self.certificates = sorted(
-            self.certificates, key=lambda cert: cert.subject.public_bytes()
-        )
+        self.certificates = sorted(self.certificates, key=lambda cert: cert.subject.public_bytes())
         offsets = []
         bundle = b""
         for certificate in self.certificates:
@@ -134,19 +120,13 @@ class Certificate:
             )
             subject_name_der = certificate.subject.public_bytes()
             offsets.append(4 * len(self.certificates) + len(bundle))
-            bundle += (
-                struct.pack("<HH", len(subject_name_der), len(public_key_der))
-                + subject_name_der
-                + public_key_der
-            )
+            bundle += struct.pack("<HH", len(subject_name_der), len(public_key_der)) + subject_name_der + public_key_der
         return struct.pack("<{0:d}L".format(len(offsets)), *offsets) + bundle
 
     def _get_pem(self) -> str:
         bundle = ""
         for cert in self.certificates:
-            pem = cert.public_bytes(
-                cryptography.hazmat.primitives.serialization.Encoding.PEM
-            ).decode()
+            pem = cert.public_bytes(cryptography.hazmat.primitives.serialization.Encoding.PEM).decode()
             name = self._get_name(pem)
             if len(bundle):
                 bundle += "\n"
@@ -161,9 +141,7 @@ class Certificate:
         fingerprints = set()
         while der:
             cert = cryptography.x509.load_der_x509_certificate(der)
-            fingerprint = cert.fingerprint(
-                cryptography.hazmat.primitives.hashes.SHA256()
-            ).hex()
+            fingerprint = cert.fingerprint(cryptography.hazmat.primitives.hashes.SHA256()).hex()
             if fingerprint in fingerprints:
                 break
             fingerprints.add(fingerprint)
@@ -184,9 +162,8 @@ class Certificate:
                     cryptography.x509.oid.ExtensionOID.AUTHORITY_INFORMATION_ACCESS
                 ).value,
             ):
-                if (
-                    value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2"
-                    and value.access_location.value.startswith("http://")
+                if value.access_method.dotted_string == "1.3.6.1.5.5.7.48.2" and value.access_location.value.startswith(
+                    "http://"
                 ):
                     return urllib.request.urlopen(value.access_location.value).read()
         except Exception as e:
@@ -206,9 +183,7 @@ class Certificate:
         com = subject.get_attributes_for_oid(cryptography.x509.oid.NameOID.COMMON_NAME)
         if com and isinstance(com[0].value, str):
             return com[0].value
-        org = subject.get_attributes_for_oid(
-            cryptography.x509.oid.NameOID.ORGANIZATION_NAME
-        )
+        org = subject.get_attributes_for_oid(cryptography.x509.oid.NameOID.ORGANIZATION_NAME)
         if org and isinstance(org[0].value, str):
             return org[0].value
         return None

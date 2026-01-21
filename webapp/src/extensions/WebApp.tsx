@@ -1,22 +1,22 @@
-import { mdiDockLeft, mdiDotsGrid, mdiHome, mdiMenu, mdiWindowClose } from '@mdi/js';
-import { type Component, createEffect, createSignal, type JSX, Match, onCleanup, onMount, Switch } from 'solid-js';
+import { mdiDockLeft, mdiDotsGrid, mdiHome, mdiMenu, mdiWindowClose } from "@mdi/js";
+import { type Component, createEffect, createSignal, type JSX, Match, onCleanup, onMount, Switch } from "solid-js";
 
-import { Icon } from '../components/Icon';
-import { ToastProvider } from '../components/Toast';
-import { Tooltip } from '../components/Tooltip';
-import { HOSTNAME, NAME } from '../config/constants';
-import { Device } from '../config/devices';
-import { EXTENSION_OTA } from '../config/modules';
-import { VERSION } from '../config/version';
-import { name as ConnectivityName, SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent, MainThird as ConnectivityThird, SidebarThird as ConnectivityThirdSidebar } from '../services/Connectivity';
-import { SidebarSecondaryComponent as DeviceSecondarySidebarComponent, DeviceVersion } from '../services/Device';
-import { Main as DisplayMain, DisplayPower, SidebarSecondaryComponent as DisplaySecondarySidebarComponent, Sidebar as DisplaySidebar } from '../services/Display';
-import { Footer as ExtensionsFooter, name as ExtensionsName, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar } from '../services/Extensions';
-import { Main as ModesMain, name as ModesName, SidebarSecondary as ModesSecondarySidebar, Sidebar as ModesSidebar, MainThird as ModesThird, SidebarThird as ModesThirdSidebar } from '../services/Modes';
-import { MainComponent as ExtensionOtaComponent } from './Ota';
-import { WebSocketmessages, WebSocketState, WebSocketWS } from './WebSocket';
+import { Icon } from "../components/Icon";
+import { ToastProvider } from "../components/Toast";
+import { Tooltip } from "../components/Tooltip";
+import { HOSTNAME, NAME } from "../config/constants";
+import { Device } from "../config/devices";
+import { EXTENSION_OTA } from "../config/modules";
+import { VERSION } from "../config/version";
+import { name as ConnectivityName, SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent, MainThird as ConnectivityThird, SidebarThird as ConnectivityThirdSidebar } from "../services/Connectivity";
+import { SidebarSecondaryComponent as DeviceSecondarySidebarComponent, DeviceVersion } from "../services/Device";
+import { Main as DisplayMain, DisplayPower, SidebarSecondaryComponent as DisplaySecondarySidebarComponent, Sidebar as DisplaySidebar } from "../services/Display";
+import { Footer as ExtensionsFooter, name as ExtensionsName, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar } from "../services/Extensions";
+import { Main as ModesMain, name as ModesName, SidebarSecondary as ModesSecondarySidebar, Sidebar as ModesSidebar, MainThird as ModesThird, SidebarThird as ModesThirdSidebar } from "../services/Modes";
+import { MainComponent as ExtensionOtaComponent } from "./Ota";
+import { WebSocketmessages, WebSocketState, WebSocketWS } from "./WebSocket";
 
-export const name = 'Web app';
+export const name = "Web app";
 export const WebAppUrl = `http://${HOSTNAME}.local`;
 
 const [getHash, setHash] = createSignal(location.hash);
@@ -34,14 +34,14 @@ createEffect(() => {
 });
 
 onMount(() => {
-    addEventListener('hashchange', onChange, false);
+    addEventListener("hashchange", onChange, false);
 });
 
 onCleanup(() => {
-    removeEventListener('hashchange', onChange, false);
+    removeEventListener("hashchange", onChange, false);
 });
 
-export const WebAppPath = () => getHash().replace(/^#/, '') || '/';
+export const WebAppPath = () => getHash().replace(/^#/, "") || "/";
 
 export const WebApp: Component = () => (
     <WebSocketmessages>
@@ -49,18 +49,8 @@ export const WebApp: Component = () => (
             <Switch
                 fallback={
                     <>
-                        {
-                            WebAppPath() === '/' ? (
-                                <Primary />
-                            ) : (
-                                <Secondary />
-                            )
-                        }
-                        {
-                            (DisplayPower() || !getSidebar()) && (
-                                <Toggle />
-                            )
-                        }
+                        {WebAppPath() === "/" ? <Primary /> : <Secondary />}
+                        {(DisplayPower() || !getSidebar()) && <Toggle />}
                     </>
                 }
             >
@@ -73,17 +63,12 @@ export const WebApp: Component = () => (
             </Switch>
         </ToastProvider>
     </WebSocketmessages>
-
 );
 
 const Primary: Component = () => (
     <Layout
         main={
-            <Switch
-                fallback={
-                    <ModesMain />
-                }
-            >
+            <Switch fallback={<ModesMain />}>
                 <Match when={!DisplayPower()}>
                     <DisplayMain />
                 </Match>
@@ -102,11 +87,7 @@ const Primary: Component = () => (
 const Secondary: Component = () => (
     <Layout
         main={
-            <Switch
-                fallback={
-                    <Main />
-                }
-            >
+            <Switch fallback={<Main />}>
                 <Match when={WebAppPath().startsWith(`/${ConnectivityName.toLowerCase()}`)}>
                     <ConnectivityThird />
                 </Match>
@@ -154,21 +135,16 @@ const Secondary: Component = () => (
 export const Third: Component = () => (
     <div class="main">
         <div class="space-y-3 p-5">
-            <h2>
-                Frekvens
-            </h2>
+            <h2>Frekvens</h2>
             <div class="box">
                 <div class="space-y-3">
-                    <h3>
-                        Version conflict
-                    </h3>
+                    <h3>Version conflict</h3>
                     <div class="text-sm">
-                        Firmware: {DeviceVersion()}<br />
+                        Firmware: {DeviceVersion()}
+                        <br />
                         Filesystem: {VERSION}
                     </div>
-                    <div class="text-sm">
-                        Flash or upload matching versions to restore compatibility.
-                    </div>
+                    <div class="text-sm">Flash or upload matching versions to restore compatibility.</div>
                 </div>
             </div>
             <div class="text-sm tracking-wide">
@@ -181,46 +157,32 @@ export const Third: Component = () => (
                 </a>
             </div>
         </div>
-        {
-            EXTENSION_OTA && (
-                <ExtensionOtaComponent />
-            )
-        }
+        {EXTENSION_OTA && <ExtensionOtaComponent />}
     </div>
 );
 
 export const Main: Component = () => (
     <div class="main">
         <h1>
-            <Icon
-                path={mdiDotsGrid}
-            />
+            <Icon path={mdiDotsGrid} />
         </h1>
-        <div class="mode-title">
-            {NAME}
-        </div>
+        <div class="mode-title">{NAME}</div>
     </div>
 );
 
 const Home: Component = () => (
     <>
-        {
-            WebAppPath() === '/' ? (
-                <ExtensionsFooter />
-            ) : (
-                <Footer />
-            )
-        }
+        {WebAppPath() === "/" ? <ExtensionsFooter /> : <Footer />}
         <div class="hr mt-3 pt-3">
             <a
                 class="link"
-                href={`#/${WebAppPath() === '/' ? 'menu' : ''}`}
+                href={`#/${WebAppPath() === "/" ? "menu" : ""}`}
             >
                 <Icon
                     class="mr-2"
-                    path={WebAppPath() === '/' ? mdiMenu : mdiHome}
+                    path={WebAppPath() === "/" ? mdiMenu : mdiHome}
                 />
-                {WebAppPath() === '/' ? 'Menu' : 'Home'}
+                {WebAppPath() === "/" ? "Menu" : "Home"}
             </a>
         </div>
     </>
@@ -249,9 +211,7 @@ const Footer: Component = () => (
                     rel="noopener"
                     target="_blank"
                 >
-                    <Tooltip text="Release notes">
-                        {VERSION}
-                    </Tooltip>
+                    <Tooltip text="Release notes">{VERSION}</Tooltip>
                 </a>
             </div>
         </div>
@@ -259,9 +219,9 @@ const Footer: Component = () => (
 );
 
 const Toggle: Component = () => (
-    <div class={`absolute ${getSidebar() ? 'left-[calc(--spacing(68)-1px)] top-0' : 'left-6 top-6'}`}>
+    <div class={`absolute ${getSidebar() ? "left-[calc(--spacing(68)-1px)] top-0" : "left-6 top-6"}`}>
         <button
-            class={`text-interactive-light dark:text-content-dark ${getSidebar() ? 'border-0 bg-menu-light dark:bg-menu-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark' : 'bg-neutral-light dark:bg-neutral-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark'}`}
+            class={`text-interactive-light dark:text-content-dark ${getSidebar() ? "border-0 bg-menu-light dark:bg-menu-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark" : "bg-neutral-light dark:bg-neutral-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark"}`}
             onclick={() => setSidebar(!getSidebar())}
             type="button"
         >
@@ -276,13 +236,9 @@ export const SidebarSection: Component<{
 }> = (props) => (
     <>
         <div class="space-y-3">
-            <h3 class="ml-3">
-                {props.title}
-            </h3>
+            <h3 class="ml-3">{props.title}</h3>
             <div class="mx-3 space-y-3">
-                <div class="px-3">
-                    {props.children}
-                </div>
+                <div class="px-3">{props.children}</div>
             </div>
         </div>
         <div class="hr my-6" />
@@ -295,12 +251,8 @@ export const SidebarSectionSecondary: Component<{
 }> = (props) => (
     <>
         <div class="space-y-3">
-            <h3 class="ml-3">
-                {props.title}
-            </h3>
-            <div class="mx-3 space-y-3">
-                {props.children}
-            </div>
+            <h3 class="ml-3">{props.title}</h3>
+            <div class="mx-3 space-y-3">{props.children}</div>
         </div>
         <div class="hr my-6" />
     </>
@@ -310,25 +262,21 @@ const Layout: Component<{
     main: JSX.Element;
     sidebar: JSX.Element;
 }> = (props) => (
-    <div class={`h-full ${getSidebar() ? `grid grid-cols-[--spacing(80)_1fr]` : ''}`}>
-        {getSidebar() && (
-            <aside class="bg-menu-light dark:bg-menu-dark border-r flex flex-col h-full p-2 pt-4 rounded-none">
-                {props.sidebar}
-            </aside>
-        )}
-        <main class="h-full overflow-auto rounded-none">
-            {props.main}
-        </main>
+    <div class={`h-full ${getSidebar() ? `grid grid-cols-[--spacing(80)_1fr]` : ""}`}>
+        {getSidebar() && <aside class="bg-menu-light dark:bg-menu-dark border-r flex flex-col h-full p-2 pt-4 rounded-none">{props.sidebar}</aside>}
+        <main class="h-full overflow-auto rounded-none">{props.main}</main>
     </div>
 );
 
 export const Canonical = () => {
-    import.meta.env.PROD && `${HOSTNAME}.local` !== location.hostname && fetch(WebAppUrl, {
-        method: 'HEAD',
-    }).then((response) => {
-        if (response.status === 200) {
-            WebSocketWS.close();
-            location.href = WebAppUrl;
-        }
-    })
+    import.meta.env.PROD &&
+        `${HOSTNAME}.local` !== location.hostname &&
+        fetch(WebAppUrl, {
+            method: "HEAD",
+        }).then((response) => {
+            if (response.status === 200) {
+                WebSocketWS.close();
+                location.href = WebAppUrl;
+            }
+        });
 };

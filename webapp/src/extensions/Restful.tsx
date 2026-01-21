@@ -1,4 +1,4 @@
-import { HOSTNAME } from '../config/constants';
+import { HOSTNAME } from "../config/constants";
 
-export const name = 'RESTful';
-export const RestfulUrl = `http//${HOSTNAME}.local/${name.toLowerCase()}/`
+export const name = "RESTful";
+export const RestfulUrl = `http//${HOSTNAME}.local/${name.toLowerCase()}/`;

@@ -8,15 +8,11 @@ import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Large clock";
 
-const [getFont, setFont] = createSignal<string>('');
+const [getFont, setFont] = createSignal<string>("");
 const [getFonts, setFonts] = createSignal<string[]>([]);
 const [getTicking, setTicking] = createSignal<boolean>(false);
 
-export const receiver = (json: {
-    font?: string;
-    fonts?: string[];
-    ticking?: boolean;
-}) => {
+export const receiver = (json: { font?: string; fonts?: string[]; ticking?: boolean }) => {
     json?.font !== undefined && setFont(json.font);
     json?.fonts !== undefined && setFonts(json.fonts);
     json?.ticking !== undefined && setTicking(json.ticking);
@@ -29,12 +25,13 @@ export const Main: Component = () => <ModesMainComponent icon={ClockIcon()} />;
 export const Sidebar: Component = () => {
     const handleFont = (font: string) => {
         setFont(font);
-        WebSocketWS.send(JSON.stringify({
-            [name]:
-            {
-                'font': getFont(),
-            },
-        }));
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    font: getFont(),
+                },
+            }),
+        );
         toast(`${name} updated`);
     };
 
@@ -55,15 +52,9 @@ export const Sidebar: Component = () => {
             <select
                 class="mt-3 w-full"
                 value={getFont()}
-                onchange={(e) =>
-                    handleFont(e.currentTarget.value)
-                }
+                onchange={(e) => handleFont(e.currentTarget.value)}
             >
-                <For each={getFonts()}>
-                    {
-                        (font) => <option>{font}</option>
-                    }
-                </For>
+                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
             </select>
             <label class="flex items-center gap-3 cursor-pointer">
                 <input

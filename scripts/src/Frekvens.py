@@ -52,10 +52,7 @@ class Frekvens:
             self.dependency = Dependency(self)
             self.firmware = Firmware(self)
             self.timezone = TimeZone(self)
-        self.dotenv = {
-            key: (value if value is not None else "")
-            for key, value in dotenv.dotenv_values(".env").items()
-        }
+        self.dotenv = {key: (value if value is not None else "") for key, value in dotenv.dotenv_values(".env").items()}
 
     def run(self) -> None:
         print(f"Frekvens {VERSION}")

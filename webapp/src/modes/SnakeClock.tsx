@@ -1,12 +1,8 @@
-import type { Component } from 'solid-js';
+import type { Component } from "solid-js";
 
-import { ClockIcon } from '../components/Clock';
-import { MainComponent as ModesMainComponent } from '../services/Modes';
+import { ClockIcon } from "../components/Clock";
+import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-export const name = 'Snake clock';
+export const name = "Snake clock";
 
-export const Main: Component = () => (
-    <ModesMainComponent
-        icon={ClockIcon()}
-    />
-);
+export const Main: Component = () => <ModesMainComponent icon={ClockIcon()} />;

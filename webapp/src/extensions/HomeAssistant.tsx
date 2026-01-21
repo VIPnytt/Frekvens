@@ -1,1 +1,1 @@
-export const name = 'Home Assistant';
+export const name = "Home Assistant";

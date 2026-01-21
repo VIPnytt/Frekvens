@@ -31,9 +31,7 @@ class AnimationSplitter:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Split .csv graphic files into individual frames."
-    )
+    parser = argparse.ArgumentParser(description="Split .csv graphic files into individual frames.")
     parser.add_argument("-i", "--input", help=".csv file path", required=True, type=str)
     parser.add_argument("--rows", help="Grid rows", type=int)
     args = parser.parse_args()

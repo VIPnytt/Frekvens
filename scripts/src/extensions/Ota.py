@@ -16,21 +16,13 @@ class Ota:
         self.project = project
 
     def configure(self) -> None:
-        if (
-            "OTA_KEY" in self.project.dotenv
-            and len(self.project.dotenv["OTA_KEY"]) != 64
-        ):
+        if "OTA_KEY" in self.project.dotenv and len(self.project.dotenv["OTA_KEY"]) != 64:
             self.auth = self.project.dotenv["OTA_KEY"]
-            self.project.dotenv["OTA_KEY"] = hashlib.sha256(
-                self.project.dotenv["OTA_KEY"].encode()
-            ).hexdigest()
+            self.project.dotenv["OTA_KEY"] = hashlib.sha256(self.project.dotenv["OTA_KEY"].encode()).hexdigest()
 
     def validate(self) -> None:
         if "no_ota" in self.project.partition.table:
-            if (
-                self.ENV_OPTION in self.project.dotenv
-                and self.project.dotenv[self.ENV_OPTION] != "false"
-            ):
+            if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] != "false":
                 warnings.warn(
                     f"{self.ENV_OPTION}: Partition table does not support OTA updates.",
                     UserWarning,
@@ -45,9 +37,7 @@ class Ota:
             and not self.project.env.GetProjectOption("upload_flags", None)
             and not self.project.env.GetProjectOption("upload_port", None)
         ):
-            self.project.env.Replace(
-                UPLOAD_PORT=f"{self.project.dotenv['HOSTNAME']}.local"
-            )
+            self.project.env.Replace(UPLOAD_PORT=f"{self.project.dotenv['HOSTNAME']}.local")
             if self.auth:
                 self.project.env.Append(
                     UPLOAD_FLAGS=[
