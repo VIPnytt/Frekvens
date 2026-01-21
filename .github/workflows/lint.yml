@@ -21,6 +21,8 @@ jobs:
 
       - name: Set up Biome
         uses: biomejs/setup-biome@29711cbb52afee00eb13aeb30636592f9edc0088 # v2.7.0
+        with:
+          working-dir: webapp
 
       - name: Biome lint
         run: biome lint --reporter=github
