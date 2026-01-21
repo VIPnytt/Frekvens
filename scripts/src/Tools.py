@@ -19,8 +19,8 @@ class Tools:
         with open("tools/pyproject.toml", "r", encoding="utf-8") as toml:
             contents = toml.read()
             if (
-                not f'version = "{VERSION}"' in contents
-                and not f'version = "{VERSION.replace("-", ".")}"' in contents
+                f'version = "{VERSION}"' not in contents
+                and f'version = "{VERSION.replace("-", ".")}"' not in contents
             ):
                 raise ValueError(f"{self.NAME} version mismatch")
 

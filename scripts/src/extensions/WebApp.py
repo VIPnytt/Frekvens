@@ -124,8 +124,8 @@ class WebApp:
             return False
 
     def _npm_build(self) -> None:
-        if self.project.env.Execute(f"cd webapp && npm run build"):
-            self.project.env.Execute(f"cd webapp && npm install && npm run build")
+        if self.project.env.Execute("cd webapp && npm run build"):
+            self.project.env.Execute("cd webapp && npm install && npm run build")
         prefix = "data/webapp"
         pathlib.Path(prefix).mkdir(parents=True, exist_ok=True)
         index = f"{prefix}/index.html.gz"

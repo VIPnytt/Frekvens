@@ -72,7 +72,7 @@ class ModeGenerator:
                 "public:",
                 f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',
                 "",
-                f"    void handle() override;",
+                "    void handle() override;",
                 "};",
                 "",
             ]
@@ -154,7 +154,7 @@ class ModeGenerator:
                 "public:",
                 f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',
                 "",
-                f"    void begin() override;",
+                "    void begin() override;",
                 "};",
                 "",
             ]

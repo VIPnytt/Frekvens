@@ -56,7 +56,7 @@ class E131Streamer:
                     self.display(frame)
                     time.sleep(interval)
         except KeyboardInterrupt:
-            logging.info(f"Stream ended gracefully.")
+            logging.info("Stream ended gracefully.")
 
 
 if __name__ == "__main__":
