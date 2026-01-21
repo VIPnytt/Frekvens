@@ -13,7 +13,7 @@
         "target": "ESNext",
         "types": [
             "offscreencanvas",
-            "vite/client",
-        ],
+            "vite/client"
+        ]
     }
 }

@@ -14,7 +14,6 @@
         "dev": "vite",
         "format": "biome format ./src",
         "lint": "biome lint ./src",
-        "serve": "vite preview",
         "start": "vite"
     },
     "dependencies": {

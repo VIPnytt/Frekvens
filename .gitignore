@@ -2,6 +2,7 @@ __pycache__
 /.env*
 /.pio
 /.platformio
+/.ruff_cache
 /.venv
 /.vscode/*
 /build
