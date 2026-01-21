@@ -10,9 +10,7 @@ export const name = "Small clock";
 
 const [getTicking, setTicking] = createSignal<boolean>(true);
 
-export const receiver = (json: {
-    ticking?: boolean;
-}) => {
+export const receiver = (json: { ticking?: boolean }) => {
     json?.ticking !== undefined && setTicking(json.ticking);
 };
 

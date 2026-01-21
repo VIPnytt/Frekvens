@@ -8,16 +8,13 @@ import { VERSION } from '../config/version';
 import { WebSocketWS } from '../extensions/WebSocket';
 import { DisplayPowerSet } from './Display';
 
-export const name = 'Device';
+export const name = "Device";
 
 const [getVersion, setVersion] = createSignal<string>(VERSION);
 
 export const DeviceVersion = getVersion;
 
-export const receiver = (json: {
-    event?: string;
-    version?: string;
-}) => {
+export const receiver = (json: { event?: string; version?: string }) => {
     json?.event !== undefined && event(json.event);
     json?.version !== undefined && setVersion(json.version);
 };
@@ -26,26 +23,28 @@ const { toast } = Toast();
 
 const event = (action: string) => {
     switch (action) {
-        case 'power':
+        case "power":
             DisplayPowerSet(false);
-            toast('Power off', 60e3);
+            toast("Power off", 60e3);
             break;
-        case 'reboot':
+        case "reboot":
             DisplayPowerSet(false);
-            toast('Rebooting', 10e3);
+            toast("Rebooting", 10e3);
             break;
     }
 };
 
 export const SidebarSecondaryComponent: Component = () => {
     const handlePower = () => {
-        if (confirm('Are you sure you want to power off?')) {
+        if (confirm("Are you sure you want to power off?")) {
             DisplayPowerSet(false);
-            WebSocketWS.send(JSON.stringify({
-                [name]: {
-                    action: 'power',
-                },
-            }));
+            WebSocketWS.send(
+                JSON.stringify({
+                    [name]: {
+                        action: "power",
+                    },
+                }),
+            );
         }
     };
 

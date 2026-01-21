@@ -1,4 +1,4 @@
-import { HOSTNAME } from '../config/constants';
+import { HOSTNAME } from "../config/constants";
 
-export const name = 'MQTT';
-export const MqttTopic = `frekvens/${HOSTNAME}`
+export const name = "MQTT";
+export const MqttTopic = `frekvens/${HOSTNAME}`;

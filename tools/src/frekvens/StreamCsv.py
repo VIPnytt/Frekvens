@@ -60,14 +60,10 @@ class StreamCsv:
                 time.sleep(interval)
 
     def setMode(self) -> httpx.Response:
-        return httpx.patch(
-            f"http://{self.host}/restful/Modes", json={"mode": "Stream"}
-        ).raise_for_status()
+        return httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": "Stream"}).raise_for_status()
 
     def setPort(self) -> httpx.Response:
-        return httpx.patch(
-            f"http://{self.host}/restful/Stream", json={"port": self.port}
-        ).raise_for_status()
+        return httpx.patch(f"http://{self.host}/restful/Stream", json={"port": self.port}).raise_for_status()
 
 
 def main() -> None:

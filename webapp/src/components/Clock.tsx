@@ -1,4 +1,17 @@
-import { mdiClockTimeEightOutline, mdiClockTimeElevenOutline, mdiClockTimeFiveOutline, mdiClockTimeFourOutline, mdiClockTimeNineOutline, mdiClockTimeOneOutline, mdiClockTimeSevenOutline, mdiClockTimeSixOutline, mdiClockTimeTenOutline, mdiClockTimeThreeOutline, mdiClockTimeTwelveOutline, mdiClockTimeTwoOutline } from "@mdi/js";
+import {
+    mdiClockTimeEightOutline,
+    mdiClockTimeElevenOutline,
+    mdiClockTimeFiveOutline,
+    mdiClockTimeFourOutline,
+    mdiClockTimeNineOutline,
+    mdiClockTimeOneOutline,
+    mdiClockTimeSevenOutline,
+    mdiClockTimeSixOutline,
+    mdiClockTimeTenOutline,
+    mdiClockTimeThreeOutline,
+    mdiClockTimeTwelveOutline,
+    mdiClockTimeTwoOutline,
+} from "@mdi/js";
 import { createSignal, onCleanup } from "solid-js";
 
 const hour = () => {

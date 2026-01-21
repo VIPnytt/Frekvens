@@ -41,11 +41,7 @@ class TimeZone:
             if os.path.exists(zone_file):
                 with open(zone_file, "rb") as f:
                     lines = [
-                        line.strip()
-                        for line in f.read()
-                        .decode("ascii", errors="ignore")
-                        .splitlines()
-                        if line.strip()
+                        line.strip() for line in f.read().decode("ascii", errors="ignore").splitlines() if line.strip()
                     ]
                     if len(lines) >= 2:
                         return lines[-1]

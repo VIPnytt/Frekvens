@@ -20,9 +20,7 @@ class HomeThermometerDemo:
         outdoor: float | int | None = None,
         activate: bool = False,
     ) -> None:
-        logging.warning(
-            "Deprecation: HomeThermometerDemo is deprecated. Use HomeThermometerUpdater instead."
-        )
+        logging.warning("Deprecation: HomeThermometerDemo is deprecated. Use HomeThermometerUpdater instead.")
         httpx.patch(
             f"http://{self.host}/restful/{self.mode}",
             json={
@@ -39,9 +37,7 @@ class HomeThermometerDemo:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Set the Home thermometer temperatures."
-    )
+    parser = argparse.ArgumentParser(description="Set the Home thermometer temperatures.")
     parser.add_argument("--host", help="Host", type=str)
     parser.add_argument("--indoor", help="Indoor temperature", type=float)
     parser.add_argument("--outdoor", help="Outdoor temperature", type=float)

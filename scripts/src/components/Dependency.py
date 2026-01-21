@@ -32,17 +32,13 @@ class Dependency:
         local = packaging.version.parse(VERSION)
         try:
             latest = packaging.version.parse(
-                self.github.get("/repos/VIPnytt/Frekvens/releases/latest")
-                .raise_for_status()
-                .json()["tag_name"]
+                self.github.get("/repos/VIPnytt/Frekvens/releases/latest").raise_for_status().json()["tag_name"]
             )
             if latest > local:
                 print(
                     f"\033[93m[notice] A new release of Frekvens is available: {local.public} -> {latest.public}\033[0m"
                 )
-                print(
-                    "Release notes: https://github.com/VIPnytt/Frekvens/releases/latest"
-                )
+                print("Release notes: https://github.com/VIPnytt/Frekvens/releases/latest")
                 self.proceed = False
         except httpx.HTTPError as e:
             logging.warning("Update check failed: %s", e)
@@ -87,11 +83,7 @@ class Dependency:
             return None
         repository = match.group("repository")
         local_sha = match.group("sha_archive") or match.group("sha_git")
-        local_tag = (
-            match.group("tag_archive")
-            or match.group("tag_git")
-            or match.group("tag_release")
-        )
+        local_tag = match.group("tag_archive") or match.group("tag_git") or match.group("tag_release")
         if not local_tag:
             with open(os.path.join("platformio.ini"), encoding="utf-8") as ini:
                 for line in ini:
@@ -99,37 +91,25 @@ class Dependency:
                     if url in text and comment:
                         local_tag = comment.split(maxsplit=1)[0]
                         break
-        latest_tag: str = (
-            self.github.get(f"/repos/{repository}/releases/latest")
-            .raise_for_status()
-            .json()["tag_name"]
-        )
+        latest_tag: str = self.github.get(f"/repos/{repository}/releases/latest").raise_for_status().json()["tag_name"]
         latest_version = packaging.version.Version(latest_tag)
         if local_tag:
             local_version = packaging.version.Version(local_tag)
             if latest_version > local_version:
-                print(
-                    f"Dependency update available: {repository}, {local_version.public} → {latest_version.public}"
-                )
+                print(f"Dependency update available: {repository}, {local_version.public} → {latest_version.public}")
                 return True
             return False
         if local_sha:
             latest_sha: str = (
-                self.github.get(f"/repos/{repository}/commits/{latest_tag}")
-                .raise_for_status()
-                .json()["sha"]
+                self.github.get(f"/repos/{repository}/commits/{latest_tag}").raise_for_status().json()["sha"]
             )
             status = (
-                self.github.get(
-                    f"/repos/{repository}/compare/{local_sha}...{latest_sha}"
-                )
+                self.github.get(f"/repos/{repository}/compare/{local_sha}...{latest_sha}")
                 .raise_for_status()
                 .json()["status"]
             )
             if status == "behind":
-                print(
-                    f"Dependency update available: {repository}, {latest_version.public}"
-                )
+                print(f"Dependency update available: {repository}, {latest_version.public}")
                 return True
             return False
         return None
@@ -157,8 +137,6 @@ class Dependency:
             .json()["version"]["name"]
         )
         if latest > local:
-            print(
-                f"Dependency update available: {owner}/{package}, {local.public} → {latest.public}"
-            )
+            print(f"Dependency update available: {owner}/{package}, {local.public} → {latest.public}")
             return True
         return False

@@ -58,11 +58,7 @@ class ModeGenerator:
             for i, row in enumerate(csv.reader(animation)):
                 if i % self.rows == 0:
                     frames.append("        {")
-                frames.append(
-                    "            0b"
-                    + "".join("1" if int(column) > 0 else "0" for column in row)
-                    + ","
-                )
+                frames.append("            0b" + "".join("1" if int(column) > 0 else "0" for column in row) + ",")
                 if i % self.rows == self.rows - 1:
                     frames.append("        },")
         frames.extend(
@@ -142,11 +138,7 @@ class ModeGenerator:
                             "    {",
                         ]
                     )
-                frame.append(
-                    "        0b"
-                    + "".join("1" if int(column) > 0 else "0" for column in row)
-                    + ","
-                )
+                frame.append("        0b" + "".join("1" if int(column) > 0 else "0" for column in row) + ",")
         frame.extend(
             [
                 "    };",

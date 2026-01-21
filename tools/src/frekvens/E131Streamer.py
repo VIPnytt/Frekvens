@@ -23,9 +23,7 @@ class E131Streamer:
     ) -> None:
         self.host = host
         self.rows = rows
-        logging.warning(
-            "Deprecation: E131Streamer is deprecated. Use StreamCsv instead."
-        )
+        logging.warning("Deprecation: E131Streamer is deprecated. Use StreamCsv instead.")
 
     def __enter__(self):
         httpx.patch(f"http://{self.host}/restful/{self.mode}", json={"port": 5568})
@@ -46,9 +44,7 @@ class E131Streamer:
             rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
             return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
 
-    def stream(
-        self, frames: list[list[list[int]]], interval: float | int = 0.5
-    ) -> None:
+    def stream(self, frames: list[list[list[int]]], interval: float | int = 0.5) -> None:
         try:
             print("E1.31 stream started. Press Ctrl+C to terminate.")
             while True:

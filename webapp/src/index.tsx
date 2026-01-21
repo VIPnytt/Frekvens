@@ -1,12 +1,7 @@
-import { render } from 'solid-js/web';
+import { render } from "solid-js/web";
 
-import { WebApp } from './extensions/WebApp';
+import { WebApp } from "./extensions/WebApp";
 
-import './style.css';
+import "./style.css";
 
-render(
-    () => (
-        <WebApp />
-    ),
-    document.getElementById('webapp') as HTMLElement,
-);
+render(() => <WebApp />, document.getElementById("webapp") as HTMLElement);

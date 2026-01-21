@@ -1,7 +1,7 @@
-import { mdiInformation } from '@mdi/js';
-import { createContext, createSignal, type ParentComponent, useContext } from 'solid-js';
+import { mdiInformation } from "@mdi/js";
+import { createContext, createSignal, type ParentComponent, useContext } from "solid-js";
 
-import { Icon } from './Icon';
+import { Icon } from "./Icon";
 
 type ToastItem = {
     id: number;
@@ -13,7 +13,11 @@ const [getToast, setToast] = createSignal<ToastItem | null>(null);
 
 const toast = (text: string, duration: number = 3e3) => {
     const id = Date.now();
-    setToast({ id, text, duration });
+    setToast({
+        id,
+        text,
+        duration,
+    });
     setTimeout(() => {
         if (getToast()?.id === id) {
             setToast(null);
@@ -45,7 +49,11 @@ export const ToastProvider: ParentComponent = (props) => {
     };
 
     return (
-        <ToastContext.Provider value={{ toast }}>
+        <ToastContext.Provider
+            value={{
+                toast,
+            }}
+        >
             {(() => {
                 const item = getToast();
                 return item && <Toast item={item} />;

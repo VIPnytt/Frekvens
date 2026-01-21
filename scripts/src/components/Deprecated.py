@@ -21,9 +21,7 @@ class Deprecated:
 
     def _artnet(self) -> None:
         if "MODE_ARTNET" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_ARTNET "Art-Net" is deprecated. Use MODE_STREAM "Stream" instead.'
-            )
+            logging.warning('Deprecation: MODE_ARTNET "Art-Net" is deprecated. Use MODE_STREAM "Stream" instead.')
             if "MODE_STREAM" not in self.project.dotenv:
                 self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_ARTNET"]
             del self.project.dotenv["MODE_ARTNET"]
@@ -34,9 +32,7 @@ class Deprecated:
                 'Deprecation: MODE_BOLDCLOCK "Bold clock" is deprecated. Use MODE_LARGECLOCK "Large clock" instead.'
             )
             if "MODE_LARGECLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv[
-                    "MODE_BOLDCLOCK"
-                ]
+                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv["MODE_BOLDCLOCK"]
             del self.project.dotenv["MODE_BOLDCLOCK"]
 
     def _distributeddisplayprotocol(self) -> None:
@@ -45,16 +41,12 @@ class Deprecated:
                 'Deprecation: MODE_DISTRIBUTEDDISPLAYPROTOCOL "Distributed Display Protocol" is deprecated. Use MODE_STREAM "Stream" instead.'
             )
             if "MODE_STREAM" not in self.project.dotenv:
-                self.project.dotenv["MODE_STREAM"] = self.project.dotenv[
-                    "MODE_DISTRIBUTEDDISPLAYPROTOCOL"
-                ]
+                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_DISTRIBUTEDDISPLAYPROTOCOL"]
             del self.project.dotenv["MODE_DISTRIBUTEDDISPLAYPROTOCOL"]
 
     def _e131(self) -> None:
         if "MODE_E131" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_E131 "E1.31" is deprecated. Use MODE_STREAM "Stream" instead.'
-            )
+            logging.warning('Deprecation: MODE_E131 "E1.31" is deprecated. Use MODE_STREAM "Stream" instead.')
             if "MODE_STREAM" not in self.project.dotenv:
                 self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_E131"]
             del self.project.dotenv["MODE_E131"]
@@ -65,9 +57,7 @@ class Deprecated:
                 'Deprecation: MODE_LARGETICKINGCLOCK "Large ticking clock" is deprecated. Use MODE_LARGECLOCK "Large clock" instead.'
             )
             if "MODE_LARGECLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv[
-                    "MODE_LARGETICKINGCLOCK"
-                ]
+                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv["MODE_LARGETICKINGCLOCK"]
             del self.project.dotenv["MODE_LARGETICKINGCLOCK"]
 
     def _smalltickingclock(self) -> None:
@@ -76,7 +66,5 @@ class Deprecated:
                 'Deprecation: MODE_SMALLTICKINGCLOCK "Small ticking clock" is deprecated. Use MODE_SMALLCLOCK "Small clock" instead.'
             )
             if "MODE_SMALLCLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_SMALLCLOCK"] = self.project.dotenv[
-                    "MODE_SMALLTICKINGCLOCK"
-                ]
+                self.project.dotenv["MODE_SMALLCLOCK"] = self.project.dotenv["MODE_SMALLTICKINGCLOCK"]
             del self.project.dotenv["MODE_SMALLTICKINGCLOCK"]

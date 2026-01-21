@@ -38,24 +38,15 @@ class FontGenerator:
                 logging.debug("Character name for %s not found: %s", character, e)
                 return None
 
-    def _characters_to_bitmaps(
-        self, characters: list[str], index: int = 0
-    ) -> dict[str, list[str]]:
+    def _characters_to_bitmaps(self, characters: list[str], index: int = 0) -> dict[str, list[str]]:
         bitmaps = {}
         font = PIL.ImageFont.truetype(self.path, self.size, index)
         for character in characters:
-            bbox = PIL.ImageDraw.Draw(PIL.Image.new("1", (1, 1), 0)).textbbox(
-                (0, 0), character, font=font
-            )
-            img = PIL.Image.new(
-                "1", (int(bbox[2] - bbox[0]), int(bbox[3] - bbox[1])), 0
-            )
-            PIL.ImageDraw.Draw(img).text(
-                (-bbox[0], -bbox[1]), character, fill=1, font=font
-            )
+            bbox = PIL.ImageDraw.Draw(PIL.Image.new("1", (1, 1), 0)).textbbox((0, 0), character, font=font)
+            img = PIL.Image.new("1", (int(bbox[2] - bbox[0]), int(bbox[3] - bbox[1])), 0)
+            PIL.ImageDraw.Draw(img).text((-bbox[0], -bbox[1]), character, fill=1, font=font)
             bitmaps[character] = [
-                "".join("1" if img.getpixel((x, y)) else "0" for x in range(img.width))
-                for y in range(img.height)
+                "".join("1" if img.getpixel((x, y)) else "0" for x in range(img.width)) for y in range(img.height)
             ]
         return bitmaps
 
@@ -270,18 +261,12 @@ class FontGenerator:
     def find(query: str) -> list[str]:
         fonts = matplotlib.font_manager.findSystemFonts()
         if query:
-            return [
-                font
-                for font in fonts
-                if query.lower() in os.path.basename(font).lower()
-            ]
+            return [font for font in fonts if query.lower() in os.path.basename(font).lower()]
         return fonts
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Generate font source files from .ttf or .otf files."
-    )
+    parser = argparse.ArgumentParser(description="Generate font source files from .ttf or .otf files.")
     parser.add_argument("-i", "--input", help="Font path", required=True, type=str)
     parser.add_argument("--size", help="Font size", type=int)
     args = parser.parse_args()
@@ -299,15 +284,8 @@ def main() -> None:
     else:
         fonts = FontGenerator.find(args.input)
         for font in fonts:
-            if (
-                os.path.splitext(os.path.basename(font))[0].lower()
-                == args.input.lower()
-            ):
-                paths = (
-                    FontGenerator(font).source()
-                    if args.size is None
-                    else FontGenerator(font, args.size).source()
-                )
+            if os.path.splitext(os.path.basename(font))[0].lower() == args.input.lower():
+                paths = FontGenerator(font).source() if args.size is None else FontGenerator(font, args.size).source()
                 break
     if not paths:
         raise FileNotFoundError(f"Font not found: '{args.input}'")

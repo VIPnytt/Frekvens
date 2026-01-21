@@ -1,10 +1,10 @@
-import { mdiEqualizer } from '@mdi/js';
-import type { Component } from 'solid-js';
+import { mdiEqualizer } from "@mdi/js";
+import type { Component } from "solid-js";
 
-import { IkeaFrekvens } from '../config/devices';
-import { MainComponent as ModesMainComponent } from '../services/Modes';
+import { IkeaFrekvens } from "../config/devices";
+import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-export const name = 'Equalizer';
+export const name = "Equalizer";
 
 export const Main: Component = () => (
     <ModesMainComponent

@@ -21,9 +21,7 @@ class Partition:
             table = self._lookup_table(self._get_flash_size())
             if table:
                 self.table = table
-                self.project.env.BoardConfig().update(
-                    "build.arduino.partitions", self.table
-                )
+                self.project.env.BoardConfig().update("build.arduino.partitions", self.table)
 
     def _get_flash_size(self) -> str:
         size = self.project.env.GetProjectOption("board_upload.flash_size", None)
@@ -39,8 +37,7 @@ class Partition:
         ]:
             return (
                 f"partitions/{flash_size}.csv"
-                if Ota.ENV_OPTION in self.project.dotenv
-                and self.project.dotenv[Ota.ENV_OPTION] == "true"
+                if Ota.ENV_OPTION in self.project.dotenv and self.project.dotenv[Ota.ENV_OPTION] == "true"
                 else f"partitions/{flash_size}_no_ota.csv"
             )
         elif flash_size in [

@@ -13,9 +13,7 @@ class ModeSwitcher:
         self.host = host
 
     def set(self, mode) -> httpx.Response:
-        return httpx.patch(
-            f"http://{self.host}/restful/Modes", json={"mode": mode}
-        ).raise_for_status()
+        return httpx.patch(f"http://{self.host}/restful/Modes", json={"mode": mode}).raise_for_status()
 
 
 def main() -> None:

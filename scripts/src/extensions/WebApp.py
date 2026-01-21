@@ -62,9 +62,7 @@ class WebApp:
         for option in dotenv.dotenv_values(path).keys():
             if option.startswith("VITE_"):
                 _option = option.removeprefix("VITE_")
-                if _option not in self.project.dotenv and (
-                    _option in options or _option.startswith(prefixes)
-                ):
+                if _option not in self.project.dotenv and (_option in options or _option.startswith(prefixes)):
                     dotenv.unset_key(path, option)
         self._npm_build()
 
@@ -84,32 +82,21 @@ class WebApp:
             print(f"Removing {node_modules}")
 
     def validate(self) -> None:
-        if (
-            self.ENV_OPTION not in self.project.dotenv
-            or self.project.dotenv[self.ENV_OPTION] == "false"
-        ):
+        if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] == "false":
             self.project.webapp = None
         elif "no_fs" in self.project.partition.table:
-            if (
-                self.ENV_OPTION in self.project.dotenv
-                and self.project.dotenv[self.ENV_OPTION] == "true"
-            ):
+            if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
                 warnings.warn(
                     f"{self.ENV_OPTION}: Partition table has no filesystem support.",
                     UserWarning,
                 )
-        elif (
-            WebSocket.ENV_OPTION not in self.project.dotenv
-            or self.project.dotenv[WebSocket.ENV_OPTION] == "false"
-        ):
+        elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
             warnings.warn(
                 f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
                 UserWarning,
             )
         elif not self._node():
-            raise Exception(
-                "Node.js is required but was not found, please install. https://nodejs.org"
-            )
+            raise Exception("Node.js is required but was not found, please install. https://nodejs.org")
 
     def _node(self) -> bool:
         try:

@@ -1,12 +1,7 @@
-import { mdiSnake } from '@mdi/js';
-import type { Component } from 'solid-js';
+import { mdiSnake } from "@mdi/js";
+import type { Component } from "solid-js";
+import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-import { MainComponent as ModesMainComponent } from '../services/Modes';
+export const name = "Snake";
 
-export const name = 'Snake';
-
-export const Main: Component = () => (
-    <ModesMainComponent
-        icon={mdiSnake}
-    />
-);
+export const Main: Component = () => <ModesMainComponent icon={mdiSnake} />;
