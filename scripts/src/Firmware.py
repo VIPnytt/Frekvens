@@ -20,7 +20,7 @@ class Firmware:
 
     def initialize(self) -> None:
         with open("firmware/include/config/version.h", "r", encoding="utf-8") as h:
-            if not f'#define VERSION "{VERSION}"' in h.read():
+            if f'#define VERSION "{VERSION}"' not in h.read():
                 raise ValueError(f"{self.NAME} version mismatch")
 
     def finalize(self) -> None:

@@ -24,7 +24,7 @@ if not env.IsCleanTarget():
 
 sys.path.append(env["PROJECT_DIR"])
 
-from scripts.src.Frekvens import Frekvens
+from scripts.src.Frekvens import Frekvens  # noqa: E402
 
 if env.IsCleanTarget():
     Frekvens.clean()
