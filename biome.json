@@ -1,0 +1,38 @@
+{
+    "css": {
+        "formatter": {
+            "enabled": true
+        },
+        "parser": {
+            "tailwindDirectives": true
+        }
+    },
+    "files": {
+        "ignoreUnknown": true,
+        "includes": [
+            "**",
+            "!**/.pio",
+            "!**/.platformio",
+            "!**/dist",
+            "!**/lib",
+            "!**/node_modules"
+        ]
+    },
+    "formatter": {
+        "attributePosition": "multiline",
+        "expand": "always",
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 320
+    },
+    "html": {
+        "formatter": {
+            "enabled": true
+        }
+    },
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    }
+}

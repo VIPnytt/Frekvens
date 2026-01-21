@@ -9,7 +9,7 @@ updates:
       - no-changelog
     milestone: 9
     schedule:
-      interval: daily
+      interval: weekly
 
   - package-ecosystem: pip
     directory: /.github/platformio
@@ -17,14 +17,26 @@ updates:
       semver-major-days: 90
       semver-minor-days: 21
       semver-patch-days: 3
-      exclude:
-        - platformio
     labels:
       - dependencies
       - no-changelog
     milestone: 9
     schedule:
-      interval: daily
+      interval: weekly
+    versioning-strategy: increase
+
+  - package-ecosystem: pip
+    directory: /.github/ruff
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+    labels:
+      - dependencies
+      - no-changelog
+    milestone: 9
+    schedule:
+      interval: weekly
     versioning-strategy: increase
 
   - package-ecosystem: pip
