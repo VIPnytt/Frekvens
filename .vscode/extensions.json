@@ -1,6 +1,13 @@
 {
     "recommendations": [
+        "biomejs.biome",
+        "bradlc.vscode-tailwindcss",
+        "charliermarsh.ruff",
+        "davidanson.vscode-markdownlint",
+        "esphome.esphome-vscode",
+        "lukas-tr.materialdesignicons-intellisense",
         "platformio.platformio-ide",
-        "biomejs.biome"
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml"
     ]
 }

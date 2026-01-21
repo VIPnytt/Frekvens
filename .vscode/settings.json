@@ -1,22 +1,36 @@
 {
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  // Biome LSP configuration workaround
-  // https://github.com/biomejs/biome-vscode/issues/680#issuecomment-3188786705
-  "biome.lsp.bin": {
-    "win32-x64": "webapp/node_modules/@biomejs/cli-win32-x64/biome.exe",
-    "linux-x64": "webapp/node_modules/@biomejs/cli-linux-x64/biome",
-    "linux-arm64": "webapp/node_modules/@biomejs/cli-linux-arm64/biome",
-    "linux-x64-musl": "webapp/node_modules/@biomejs/cli-linux-x64-musl/biome",
-    "linux-arm64-musl": "webapp/node_modules/@biomejs/cli-linux-arm64-musl/biome",
-    "darwin-x64": "webapp/node_modules/@biomejs/cli-darwin-x64/biome",
-    "darwin-arm64": "webapp/node_modules/@biomejs/cli-darwin-arm64/biome"
-  },
-  // This does not work with the latest version of the Biome extension
-  //"biome.lsp.bin": "webapp/node_modules/@biomejs/biome/bin/biome"
-  "editor.formatOnSave": true
+    "[css]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    // Biome LSP configuration workaround:
+    // https://github.com/biomejs/biome-vscode/issues/680#issuecomment-3188786705
+    // "biome.lsp.bin": "webapp/node_modules/@biomejs/biome/bin/biome",
+    "biome.lsp.bin": {
+        "darwin-arm64": "webapp/node_modules/@biomejs/cli-darwin-arm64/biome",
+        "darwin-x64": "webapp/node_modules/@biomejs/cli-darwin-x64/biome",
+        "linux-arm64": "webapp/node_modules/@biomejs/cli-linux-arm64/biome",
+        "linux-arm64-musl": "webapp/node_modules/@biomejs/cli-linux-arm64-musl/biome",
+        "linux-x64": "webapp/node_modules/@biomejs/cli-linux-x64/biome",
+        "linux-x64-musl": "webapp/node_modules/@biomejs/cli-linux-x64-musl/biome",
+        "win32-x64": "webapp/node_modules/@biomejs/cli-win32-x64/biome.exe"
+    },
+    "files.associations": {
+        "*.css": "tailwindcss",
+        "*.yaml": "esphome"
+    }
 }
