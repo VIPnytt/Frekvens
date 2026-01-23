@@ -21,7 +21,7 @@ permissions:
 jobs:
   platformio:
     name: PlatformIO variable extract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       environments: ${{ steps.print.outputs.environments }}
       version: ${{ steps.print.outputs.version }}
@@ -49,7 +49,7 @@ jobs:
   default:
     name: Default build
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -121,7 +121,7 @@ jobs:
   minimal:
     name: Minimal build
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -195,7 +195,7 @@ jobs:
   typical:
     name: Typical build
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -347,7 +347,7 @@ jobs:
   extensive:
     name: Extensive build
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:

@@ -13,7 +13,7 @@ permissions:
 jobs:
   platformio:
     name: PlatformIO version extract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       version: ${{ steps.print.outputs.version }}
 
@@ -38,7 +38,7 @@ jobs:
   font-dejavusans:
     name: DejaVuSans font
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -118,7 +118,7 @@ jobs:
   mode-dynamic:
     name: Dynamic mode
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -228,7 +228,7 @@ jobs:
   mode-static:
     name: Static mode
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:

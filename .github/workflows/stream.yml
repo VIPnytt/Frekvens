@@ -13,7 +13,7 @@ permissions:
 jobs:
   animation:
     name: Animation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -97,7 +97,7 @@ jobs:
 
   drawing:
     name: Drawing
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:

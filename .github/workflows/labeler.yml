@@ -12,7 +12,7 @@ permissions:
 jobs:
   pr-labeler:
     name: Pull request
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
       - name: Checkout

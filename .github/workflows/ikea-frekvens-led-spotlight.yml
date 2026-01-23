@@ -13,7 +13,7 @@ permissions:
 jobs:
   esphome:
     name: ESPHome minimum version extract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       min_version: ${{ steps.print.outputs.min_version }}
 
@@ -29,7 +29,7 @@ jobs:
   ikea-frekvens-led-spotlight:
     name: ESPHome build
     needs: esphome
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:

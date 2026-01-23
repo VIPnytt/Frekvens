@@ -13,7 +13,7 @@ permissions:
 jobs:
   platformio:
     name: PlatformIO version extract
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       version: ${{ steps.print.outputs.version }}
 
@@ -37,7 +37,7 @@ jobs:
 
   animation-splitter:
     name: Animation splitter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -147,7 +147,7 @@ jobs:
 
   homethermometer-updater:
     name: Home thermometer updater
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -188,7 +188,7 @@ jobs:
 
   mode-switcher:
     name: Mode switcher
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
@@ -230,7 +230,7 @@ jobs:
   x509_crt_bundle:
     name: x509 certificate bundle
     needs: platformio
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     strategy:
       matrix:
