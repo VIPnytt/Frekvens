@@ -1,4 +1,5 @@
 {
+    "$schema": "./webapp/node_modules/@biomejs/biome/configuration_schema.json",
     "css": {
         "formatter": {
             "enabled": true
@@ -8,26 +9,23 @@
         }
     },
     "files": {
-        "ignoreUnknown": true,
-        "includes": [
-            "**",
-            "!**/.pio",
-            "!**/.platformio",
-            "!**/dist",
-            "!**/lib",
-            "!**/node_modules"
-        ]
+        "ignoreUnknown": true
     },
     "formatter": {
         "attributePosition": "multiline",
         "expand": "always",
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 320
+        "lineWidth": 120
     },
     "html": {
         "formatter": {
             "enabled": true
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "lineWidth": 320
         }
     },
     "vcs": {
