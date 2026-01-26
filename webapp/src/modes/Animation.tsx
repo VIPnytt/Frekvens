@@ -352,7 +352,7 @@ export const Main: Component = () => {
                                                     class="canvas-action-negative"
                                                     disabled={
                                                         !getFramesDraft()
-                                                        [index()][0]?.()
+                                                            [index()][0]?.()
                                                             .some((pixel) => pixel > 0)
                                                     }
                                                     onclick={() => handleClear(index())}
