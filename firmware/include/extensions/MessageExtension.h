@@ -2,12 +2,12 @@
 
 #if EXTENSION_MESSAGE
 
-#include <bits/unique_ptr.h>
-
 #include "config/constants.h"
 #include "handlers/TextHandler.h"
 #include "modules/ExtensionModule.h"
 #include "services/FontsService.h"
+
+#include <bits/unique_ptr.h>
 
 class MessageExtension : public ExtensionModule
 {

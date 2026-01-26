@@ -1,15 +1,16 @@
-#include <esp_crt_bundle.h>
-#include <esp_sntp.h>
-#include <esp_wifi.h>
-#include <ESPmDNS.h>
-#include <Preferences.h>
+#include "services/ConnectivityService.h"
 
 #include "extensions/HomeAssistantExtension.h"
 #include "handlers/TextHandler.h"
-#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
+
+#include <ESPmDNS.h>
+#include <Preferences.h>
+#include <esp_crt_bundle.h>
+#include <esp_sntp.h>
+#include <esp_wifi.h>
 
 void ConnectivityService::configure()
 {

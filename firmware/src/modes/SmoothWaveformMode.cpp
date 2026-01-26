@@ -1,8 +1,9 @@
 #if MODE_SMOOTHWAVEFORM
 
+#include "modes/SmoothWaveformMode.h"
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
-#include "modes/SmoothWaveformMode.h"
 #include "services/DisplayService.h"
 
 void SmoothWaveformMode::handle()

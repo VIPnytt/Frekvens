@@ -1,7 +1,8 @@
 #if MODE_BINARYCLOCK
 
-#include "config/constants.h"
 #include "modes/BinaryClockMode.h"
+
+#include "config/constants.h"
 #include "services/DisplayService.h"
 
 void BinaryClockMode::begin()

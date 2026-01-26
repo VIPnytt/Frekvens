@@ -2,9 +2,9 @@
 
 #if EXTENSION_HOMEASSISTANT
 
-#include <format>
-
 #include "modules/ExtensionModule.h"
+
+#include <format>
 
 class HomeAssistantExtension : public ExtensionModule
 {

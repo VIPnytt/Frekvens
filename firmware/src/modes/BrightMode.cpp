@@ -1,6 +1,7 @@
 #if MODE_BRIGHT
 
 #include "modes/BrightMode.h"
+
 #include "services/DisplayService.h"
 
 void BrightMode::begin()

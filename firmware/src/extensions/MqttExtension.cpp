@@ -1,12 +1,13 @@
 #if EXTENSION_MQTT
 
-#include <WiFi.h>
+#include "extensions/MqttExtension.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
+
+#include <WiFi.h>
 
 MqttExtension *Mqtt = nullptr;
 

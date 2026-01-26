@@ -1,5 +1,6 @@
-#include "config/constants.h"
 #include "handlers/BitmapHandler.h"
+
+#include "config/constants.h"
 #include "services/DisplayService.h"
 
 BitmapHandler::BitmapHandler(std::vector<uint16_t> bitmap) : bitmap(bitmap)

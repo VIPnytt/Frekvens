@@ -2,10 +2,6 @@
 
 #if MODE_HOMETHERMOMETER
 
-#include <nvs.h>
-#include <Preferences.h>
-#include <regex>
-
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
@@ -13,6 +9,10 @@
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+#include <Preferences.h>
+#include <nvs.h>
+#include <regex>
 
 void HomeThermometerMode::configure()
 {
@@ -92,7 +92,6 @@ void HomeThermometerMode::update()
         indoor = Storage.getShort("indoor"),
         outdoor = Storage.getShort("outdoor");
     Storage.end();
-
     TextHandler
         _indoor = TextHandler(std::to_string(indoor).append("°"), FontMini),
         _outdoor = TextHandler(std::to_string(outdoor).append("°"), FontMini);

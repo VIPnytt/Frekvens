@@ -1,8 +1,9 @@
+#include "handlers/WeatherHandler.h"
+
 #include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/BitmapHandler.h"
 #include "handlers/TextHandler.h"
-#include "handlers/WeatherHandler.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 

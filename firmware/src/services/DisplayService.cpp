@@ -1,11 +1,12 @@
-#include <Preferences.h>
-#include <SPI.h>
+#include "services/DisplayService.h"
 
 #include "extensions/HomeAssistantExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
+#include <SPI.h>
 
 void DisplayService::configure()
 {

@@ -1,9 +1,10 @@
 #if MODE_GAMEOFLIFECLOCK
 
+#include "modes/GameOfLifeClockMode.h"
+
 #include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/GameOfLifeClockMode.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 

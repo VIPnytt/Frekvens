@@ -1,7 +1,8 @@
 #if MODE_EQUALIZER
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/EqualizerMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void EqualizerMode::begin()

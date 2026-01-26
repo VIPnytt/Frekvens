@@ -1,7 +1,8 @@
 #if MODE_GLITTER
 
-#include "config/constants.h"
 #include "modes/GlitterMode.h"
+
+#include "config/constants.h"
 #include "services/DisplayService.h"
 
 void GlitterMode::handle()

@@ -2,9 +2,9 @@
 
 #if EXTENSION_RESTFUL
 
-#include <ESPAsyncWebServer.h>
-
 #include "modules/ExtensionModule.h"
+
+#include <ESPAsyncWebServer.h>
 
 class RestfulExtension : public ExtensionModule
 {

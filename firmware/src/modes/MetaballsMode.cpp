@@ -1,7 +1,8 @@
 #if MODE_METABALLS
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/MetaballsMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void MetaballsMode::configure()

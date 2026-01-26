@@ -1,13 +1,14 @@
 #if MODE_SNAKECLOCK
 
-#include <map>
-#include <queue>
+#include "modes/SnakeClockMode.h"
 
 #include "config/constants.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/SnakeClockMode.h"
 #include "services/DisplayService.h"
+
+#include <map>
+#include <queue>
 
 void SnakeClockMode::begin()
 {

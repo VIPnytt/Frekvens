@@ -1,7 +1,8 @@
 #if MODE_CIRCLE
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/CircleMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void CircleMode::handle()

@@ -1,17 +1,18 @@
 #if EXTENSION_INFRARED
 
-#include <IRremote.hpp>
-#include <Preferences.h>
+#include "extensions/InfraredExtension.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/InfraredExtension.h"
 #include "extensions/MicrophoneExtension.h"
 #include "extensions/PhotocellExtension.h"
 #include "extensions/PlaylistExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <IRremote.hpp>
+#include <Preferences.h>
 
 InfraredExtension *Infrared = nullptr;
 

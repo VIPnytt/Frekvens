@@ -2,11 +2,11 @@
 
 #if MODE_HOMEASSISTANTWEATHER
 
-#include <vector>
-
 #include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
+
+#include <vector>
 
 class HomeAssistantWeatherMode : public ModeModule
 {

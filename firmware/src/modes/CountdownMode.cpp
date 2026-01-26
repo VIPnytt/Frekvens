@@ -1,17 +1,18 @@
 #if MODE_COUNTDOWN
 
-#include <iomanip>
-#include <Preferences.h>
-#include <sstream>
+#include "modes/CountdownMode.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/CountdownMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+#include <Preferences.h>
+#include <iomanip>
+#include <sstream>
 
 void CountdownMode::configure()
 {

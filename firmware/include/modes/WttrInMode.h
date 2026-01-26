@@ -2,11 +2,11 @@
 
 #if MODE_WTTRIN
 
-#include <vector>
-
 #include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
+
+#include <vector>
 
 class WttrInMode : public ModeModule
 {

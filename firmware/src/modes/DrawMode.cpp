@@ -1,12 +1,13 @@
 #if MODE_DRAW
 
-#include <Preferences.h>
+#include "modes/DrawMode.h"
 
 #include "handlers/BitmapHandler.h"
-#include "modes/DrawMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
 
 void DrawMode::begin()
 {

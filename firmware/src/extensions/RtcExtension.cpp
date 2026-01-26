@@ -1,11 +1,12 @@
 #if EXTENSION_RTC
 
-#include <esp_sntp.h>
+#include "extensions/RtcExtension.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/RtcExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+
+#include <esp_sntp.h>
 
 RtcExtension *Rtc = nullptr;
 

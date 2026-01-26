@@ -1,8 +1,9 @@
 #if MODE_LINES
 
+#include "modes/LinesMode.h"
+
 #include "config/constants.h"
 #include "extensions/MicrophoneExtension.h"
-#include "modes/LinesMode.h"
 #include "services/DisplayService.h"
 
 void LinesMode::handle()

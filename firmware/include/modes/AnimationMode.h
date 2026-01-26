@@ -2,10 +2,10 @@
 
 #if MODE_ANIMATION
 
-#include <vector>
-
 #include "config/constants.h"
 #include "modules/ModeModule.h"
+
+#include <vector>
 
 class AnimationMode : public ModeModule
 {

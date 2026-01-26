@@ -1,7 +1,8 @@
 #if MODE_FIREWORK
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/FireworkMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void FireworkMode::handle()

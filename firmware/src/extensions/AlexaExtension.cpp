@@ -1,11 +1,12 @@
 #if EXTENSION_ALEXA
 
-#include <HTTPClient.h>
+#include "extensions/AlexaExtension.h"
 
 #include "config/constants.h"
-#include "extensions/AlexaExtension.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
+
+#include <HTTPClient.h>
 
 AlexaExtension *Alexa = nullptr;
 

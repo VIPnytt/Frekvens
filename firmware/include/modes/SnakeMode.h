@@ -4,6 +4,8 @@
 
 #include "modules/ModeModule.h"
 
+#include <deque>
+
 class SnakeMode : public ModeModule
 {
 private:

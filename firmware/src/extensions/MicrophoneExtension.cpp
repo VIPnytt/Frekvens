@@ -1,12 +1,13 @@
 #if EXTENSION_MICROPHONE
 
-#include <Preferences.h>
+#include "extensions/MicrophoneExtension.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MicrophoneExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+
+#include <Preferences.h>
 
 MicrophoneExtension *Microphone = nullptr;
 

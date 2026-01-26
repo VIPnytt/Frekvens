@@ -1,9 +1,10 @@
+#include "services/WebServerService.h"
+
+#include "services/ConnectivityService.h"
+
 #include <ESPmDNS.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
-
-#include "services/ConnectivityService.h"
-#include "services/WebServerService.h"
 
 void WebServerService::configure()
 {

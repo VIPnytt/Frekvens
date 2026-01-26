@@ -1,12 +1,13 @@
 #if EXTENSION_PLAYLIST
 
-#include <Preferences.h>
+#include "extensions/PlaylistExtension.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/PlaylistExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
 
 PlaylistExtension *Playlist = nullptr;
 

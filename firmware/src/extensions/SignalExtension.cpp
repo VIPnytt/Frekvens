@@ -1,11 +1,12 @@
 #if EXTENSION_SIGNAL
 
-#include <Preferences.h>
-
 #include "extensions/SignalExtension.h"
+
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
 
 SignalExtension *Signal = nullptr;
 
@@ -95,7 +96,9 @@ void SignalExtension::onReceive(const JsonDocument doc, const char *const source
             {
                 std::string bits = bitset.as<std::string>();
                 bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit)
-                                          { return bit < 0x30 || bit > 0x31; }),
+                                          {
+                                              return bit < 0x30 || bit > 0x31;
+                                          }),
                            bits.end());
                 sign.push_back(std::stoi(bits, nullptr, 2));
             }

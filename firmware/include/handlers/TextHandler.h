@@ -1,9 +1,9 @@
 #pragma once
 
+#include "modules/FontModule.h"
+
 #include <string>
 #include <string_view>
-
-#include "modules/FontModule.h"
 
 class TextHandler
 {

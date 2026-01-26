@@ -2,14 +2,15 @@
 
 #if EXTENSION_INFRARED
 
-#include <vector>
+#include "config/constants.h"
+#include "modules/ExtensionModule.h"
 
 #define USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
 #include <IRremote.hpp>
 #undef USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
+#undef _IR_REMOTE_HPP
 
-#include "config/constants.h"
-#include "modules/ExtensionModule.h"
+#include <vector>
 
 class InfraredExtension : public ExtensionModule
 {

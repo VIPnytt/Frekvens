@@ -1,16 +1,17 @@
 #if EXTENSION_HOMEASSISTANT
 
-#include <regex>
-#include <WiFi.h>
+#include "extensions/HomeAssistantExtension.h"
 
 #include "config/constants.h"
-#include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
+
+#include <WiFi.h>
+#include <regex>
 
 HomeAssistantExtension *HomeAssistant = nullptr;
 

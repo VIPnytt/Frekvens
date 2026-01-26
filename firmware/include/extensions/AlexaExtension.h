@@ -2,10 +2,10 @@
 
 #if EXTENSION_ALEXA
 
+#include "modules/ExtensionModule.h"
+
 #include <ESPAsyncWebServer.h>
 #include <fauxmoESP.h>
-
-#include "modules/ExtensionModule.h"
 
 class AlexaExtension : public ExtensionModule
 {

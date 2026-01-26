@@ -1,6 +1,7 @@
 #if MODE_STARS
 
 #include "modes/StarsMode.h"
+
 #include "services/DisplayService.h"
 
 void StarsMode::begin()

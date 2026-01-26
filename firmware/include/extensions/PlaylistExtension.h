@@ -2,9 +2,9 @@
 
 #if EXTENSION_PLAYLIST
 
-#include <vector>
-
 #include "modules/ExtensionModule.h"
+
+#include <vector>
 
 class PlaylistExtension : public ExtensionModule
 {

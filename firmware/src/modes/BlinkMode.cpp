@@ -1,7 +1,8 @@
 #if MODE_BLINK
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/BlinkMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void BlinkMode::handle()

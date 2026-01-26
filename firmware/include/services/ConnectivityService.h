@@ -1,10 +1,10 @@
 #pragma once
 
-#include <DNSServer.h>
-#include <WiFiMulti.h>
-
 #include "config/constants.h"
 #include "modules/ServiceModule.h"
+
+#include <DNSServer.h>
+#include <WiFiMulti.h>
 
 class ConnectivityService : public ServiceModule
 {
