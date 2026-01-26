@@ -2,16 +2,16 @@
 
 #if MODE_OPENMETEO
 
-#include <vector>
-
 #include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
+#include <vector>
+
 class OpenMeteoMode : public ModeModule
 {
 private:
-        static constexpr uint32_t interval = 900'000; // Data resolution: down to 15 minutes (depending on location)
+    static constexpr uint32_t interval = 900'000; // Data resolution: down to 15 minutes (depending on location)
 
     unsigned long lastMillis = 0;
 

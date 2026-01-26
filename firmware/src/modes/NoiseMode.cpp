@@ -1,6 +1,7 @@
 #if MODE_NOISE
 
 #include "modes/NoiseMode.h"
+
 #include "services/DisplayService.h"
 
 void NoiseMode::handle()

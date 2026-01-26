@@ -1,10 +1,11 @@
 #if MODE_HOMEASSISTANTWEATHER
 
+#include "modes/HomeAssistantWeatherMode.h"
+
+#include "services/ConnectivityService.h"
+
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
-
-#include "modes/HomeAssistantWeatherMode.h"
-#include "services/ConnectivityService.h"
 
 void HomeAssistantWeatherMode::begin()
 {
@@ -42,7 +43,6 @@ void HomeAssistantWeatherMode::update()
     http.setAuthorizationType("Bearer");
     http.setAuthorization(HOMEASSISTANT_KEY);
     http.setUserAgent(Connectivity.userAgent.data());
-
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {

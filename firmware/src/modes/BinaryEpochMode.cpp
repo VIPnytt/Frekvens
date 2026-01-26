@@ -1,7 +1,8 @@
 #if MODE_BINARYEPOCH
 
-#include "config/constants.h"
 #include "modes/BinaryEpochMode.h"
+
+#include "config/constants.h"
 #include "services/DisplayService.h"
 
 void BinaryEpochMode::handle()

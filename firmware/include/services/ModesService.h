@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
 #include "modes/BinaryClockMode.h"
@@ -49,6 +47,8 @@
 #include "modes/YrMode.h"
 #include "modules/ModeModule.h"
 #include "modules/ServiceModule.h"
+
+#include <vector>
 
 class ModesService : public ServiceModule
 {

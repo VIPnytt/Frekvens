@@ -1,8 +1,9 @@
 #if MODE_JAGGEDWAVEFORM
 
+#include "modes/JaggedWaveformMode.h"
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
-#include "modes/JaggedWaveformMode.h"
 #include "services/DisplayService.h"
 
 void JaggedWaveformMode::handle()

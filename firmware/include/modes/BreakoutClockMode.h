@@ -2,10 +2,10 @@
 
 #if MODE_BREAKOUTCLOCK
 
-#include <deque>
-
 #include "config/constants.h"
 #include "modules/ModeModule.h"
+
+#include <deque>
 
 class BreakoutClockMode : public ModeModule
 {

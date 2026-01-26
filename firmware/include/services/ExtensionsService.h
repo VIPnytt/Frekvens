@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
 #include "extensions/HeapExtension.h"
@@ -21,6 +19,8 @@
 #include "extensions/WebSocketExtension.h"
 #include "modules/ExtensionModule.h"
 #include "modules/ServiceModule.h"
+
+#include <vector>
 
 class ExtensionsService : public ServiceModule
 {

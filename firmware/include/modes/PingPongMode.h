@@ -2,10 +2,10 @@
 
 #if MODE_PINGPONG
 
-#include <deque>
-
 #include "config/constants.h"
 #include "modules/ModeModule.h"
+
+#include <deque>
 
 class PingPongMode : public ModeModule
 {

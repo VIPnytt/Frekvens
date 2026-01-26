@@ -2,10 +2,10 @@
 
 #if MODE_LARGECLOCK
 
-#include <vector>
-
 #include "modules/FontModule.h"
 #include "modules/ModeModule.h"
+
+#include <vector>
 
 class LargeClockMode : public ModeModule
 {

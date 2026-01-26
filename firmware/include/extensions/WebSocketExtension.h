@@ -2,9 +2,9 @@
 
 #if EXTENSION_WEBSOCKET
 
-#include <ESPAsyncWebServer.h>
-
 #include "modules/ExtensionModule.h"
+
+#include <ESPAsyncWebServer.h>
 
 class WebSocketExtension : public ExtensionModule
 {

@@ -1,6 +1,7 @@
 #if MODE_FLIES
 
 #include "modes/FliesMode.h"
+
 #include "services/DisplayService.h"
 
 void FliesMode::handle()

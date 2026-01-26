@@ -1,14 +1,15 @@
 #if MODE_STREAM
 
-#include <ESPmDNS.h>
-#include <Preferences.h>
+#include "modes/StreamMode.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "modes/StreamMode.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+
+#include <ESPmDNS.h>
+#include <Preferences.h>
 
 void StreamMode::configure()
 {

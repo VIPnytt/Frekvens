@@ -1,11 +1,12 @@
 #if EXTENSION_RESTFUL
 
-#include <HTTPClient.h>
-#include <vector>
-
 #include "extensions/RestfulExtension.h"
+
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
+
+#include <HTTPClient.h>
+#include <vector>
 
 RestfulExtension *Restful = nullptr;
 

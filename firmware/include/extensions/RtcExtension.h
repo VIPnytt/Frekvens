@@ -2,14 +2,14 @@
 
 #if EXTENSION_RTC
 
+#include "config/constants.h"
+#include "modules/ExtensionModule.h"
+
 #include <RtcDS1307.h>
 #include <RtcDS3231.h>
 #include <RtcDS3232.h>
 #include <RtcPCF8563.h>
 #include <Wire.h>
-
-#include "config/constants.h"
-#include "modules/ExtensionModule.h"
 
 class RtcExtension : public ExtensionModule
 {

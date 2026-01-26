@@ -1,13 +1,14 @@
 #if EXTENSION_MESSAGE
 
-#include <Preferences.h>
+#include "extensions/MessageExtension.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MessageExtension.h"
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
 
 MessageExtension *Message = nullptr;
 

@@ -18,5 +18,7 @@ __pycache__
 /webapp/.env*
 /webapp/dist
 /webapp/node_modules
+!/.vscode/extensions.json
 !/.vscode/README.md
+!/.vscode/settings.json
 !/sdkconfig.defaults*

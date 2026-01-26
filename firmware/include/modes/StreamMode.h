@@ -2,10 +2,10 @@
 
 #if MODE_STREAM
 
+#include "modules/ModeModule.h"
+
 #include <AsyncUDP.h>
 #include <bits/unique_ptr.h>
-
-#include "modules/ModeModule.h"
 
 class StreamMode : public ModeModule
 {

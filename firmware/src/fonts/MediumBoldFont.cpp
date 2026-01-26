@@ -1,4 +1,5 @@
 #include "fonts/MediumBoldFont.h"
+
 #include "fonts/MediumFont.h"
 
 MediumBoldFont *FontMediumBold = nullptr;

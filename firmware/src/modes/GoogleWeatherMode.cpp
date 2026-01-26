@@ -1,10 +1,11 @@
 #if MODE_GOOGLEWEATHER
 
+#include "modes/GoogleWeatherMode.h"
+
+#include "services/ConnectivityService.h"
+
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
-
-#include "modes/GoogleWeatherMode.h"
-#include "services/ConnectivityService.h"
 
 void GoogleWeatherMode::begin()
 {

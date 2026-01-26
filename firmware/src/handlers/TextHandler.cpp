@@ -1,5 +1,6 @@
-#include "config/constants.h"
 #include "handlers/TextHandler.h"
+
+#include "config/constants.h"
 #include "services/DisplayService.h"
 
 TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(font)

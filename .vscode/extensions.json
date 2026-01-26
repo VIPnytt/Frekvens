@@ -6,6 +6,7 @@
         "davidanson.vscode-markdownlint",
         "esphome.esphome-vscode",
         "lukas-tr.materialdesignicons-intellisense",
+        "ms-vscode.cpptools",
         "platformio.platformio-ide",
         "redhat.vscode-yaml",
         "tamasfe.even-better-toml"

@@ -1,12 +1,13 @@
 #if MODE_TICKER
 
-#include <Preferences.h>
+#include "modes/TickerMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/SmallFont.h"
-#include "modes/TickerMode.h"
 #include "services/DeviceService.h"
 #include "services/ModesService.h"
+
+#include <Preferences.h>
 
 void TickerMode::configure()
 {

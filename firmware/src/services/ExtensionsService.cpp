@@ -1,6 +1,7 @@
+#include "services/ExtensionsService.h"
+
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
 #include "services/ModesService.h"
 
 void ExtensionsService::configure()

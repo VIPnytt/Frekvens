@@ -2,10 +2,10 @@
 
 #if MODE_FLIES
 
-#include <unordered_map>
-
 #include "config/constants.h"
 #include "modules/ModeModule.h"
+
+#include <unordered_map>
 
 class FliesMode : public ModeModule
 {

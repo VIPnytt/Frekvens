@@ -2,9 +2,9 @@
 
 #if EXTENSION_SERVERSENTEVENTS
 
-#include <ESPAsyncWebServer.h>
-
 #include "modules/ExtensionModule.h"
+
+#include <ESPAsyncWebServer.h>
 
 class ServerSentEventsExtension : public ExtensionModule
 {

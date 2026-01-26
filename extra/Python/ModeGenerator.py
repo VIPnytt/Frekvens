@@ -37,9 +37,9 @@ class ModeGenerator:
         frames = [
             "#pragma once",
             "",
-            "#include <vector>",
-            "",
             '#include "modules/ModeModule.h"',
+            "",
+            "#include <vector>",
             "",
             "//",
             "// @warning Automatically generated file",
@@ -82,9 +82,10 @@ class ModeGenerator:
             cppMode.write(
                 "\n".join(
                     [
+                        f'#include "modes/{self.id}Mode.h"',
+                        "",
                         '#include "config/constants.h"',
                         '#include "handlers/BitmapHandler.h"',
-                        f'#include "modes/{self.id}Mode.h"',
                         '#include "services/DisplayService.h"',
                         "",
                         "//",
@@ -160,9 +161,10 @@ class ModeGenerator:
             cppMode.write(
                 "\n".join(
                     [
+                        f'#include "modes/{self.id}Mode.h"',
+                        "",
                         '#include "config/constants.h"',
                         '#include "handlers/BitmapHandler.h"',
-                        f'#include "modes/{self.id}Mode.h"',
                         '#include "services/DisplayService.h"',
                         "",
                         "//",

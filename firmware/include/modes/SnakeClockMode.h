@@ -2,9 +2,9 @@
 
 #if MODE_SNAKECLOCK
 
-#include <deque>
-
 #include "modules/ModeModule.h"
+
+#include <deque>
 
 class SnakeClockMode : public ModeModule
 {

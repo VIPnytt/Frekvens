@@ -1,12 +1,13 @@
 #if MODE_ANIMATION
 
-#include <Preferences.h>
+#include "modes/AnimationMode.h"
 
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
-#include "modes/AnimationMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+
+#include <Preferences.h>
 
 void AnimationMode::begin()
 {

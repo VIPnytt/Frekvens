@@ -1,0 +1,11 @@
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+BreakBeforeBraces: Allman
+ColumnLimit: 0
+FixNamespaceComments: false
+IncludeBlocks: Regroup
+IndentWidth: 4
+InsertBraces: true
+NamespaceIndentation: All

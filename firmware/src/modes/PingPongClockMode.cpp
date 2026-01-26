@@ -1,8 +1,9 @@
 #if MODE_PINGPONGCLOCK
 
+#include "modes/PingPongClockMode.h"
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/PingPongClockMode.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 

@@ -1,10 +1,11 @@
 #if MODE_OPENMETEO
 
+#include "modes/OpenMeteoMode.h"
+
+#include "services/ConnectivityService.h"
+
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
-
-#include "modes/OpenMeteoMode.h"
-#include "services/ConnectivityService.h"
 
 void OpenMeteoMode::begin()
 {
@@ -35,7 +36,6 @@ void OpenMeteoMode::update()
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {

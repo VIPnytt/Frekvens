@@ -1,7 +1,8 @@
 #if MODE_PIXELSEQUENCE
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/PixelSequenceMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void PixelSequenceMode::handle()

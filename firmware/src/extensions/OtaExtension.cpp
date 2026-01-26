@@ -1,15 +1,16 @@
 #if EXTENSION_OTA
 
-#include <ESPmDNS.h>
-#include <HTTPClient.h>
-
 #include "extensions/OtaExtension.h"
+
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+
+#include <ESPmDNS.h>
+#include <HTTPClient.h>
 
 OtaExtension *Ota = nullptr;
 

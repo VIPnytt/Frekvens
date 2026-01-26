@@ -2,9 +2,9 @@
 
 #if MODE_COUNTDOWN
 
-#include <chrono>
-
 #include "modules/ModeModule.h"
+
+#include <chrono>
 
 class CountdownMode : public ModeModule
 {

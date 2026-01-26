@@ -2,10 +2,10 @@
 
 #if EXTENSION_OTA
 
-#include <ArduinoOTA.h>
-
 #include "modules/ExtensionModule.h"
 #include "services/WebServerService.h"
+
+#include <ArduinoOTA.h>
 
 class OtaExtension : public ExtensionModule
 {

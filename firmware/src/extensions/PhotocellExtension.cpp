@@ -1,12 +1,13 @@
 #if EXTENSION_PHOTOCELL
 
-#include <Preferences.h>
+#include "extensions/PhotocellExtension.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/PhotocellExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+
+#include <Preferences.h>
 
 PhotocellExtension *Photocell = nullptr;
 

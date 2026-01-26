@@ -1,10 +1,11 @@
 #if MODE_YR
 
+#include "modes/YrMode.h"
+
+#include "services/ConnectivityService.h"
+
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
-
-#include "modes/YrMode.h"
-#include "services/ConnectivityService.h"
 
 void YrMode::begin()
 {
@@ -35,7 +36,6 @@ void YrMode::update()
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {

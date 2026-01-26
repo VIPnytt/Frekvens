@@ -1,8 +1,9 @@
 #if MODE_RING
 
+#include "modes/RingMode.h"
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
-#include "modes/RingMode.h"
 #include "services/DisplayService.h"
 
 void RingMode::handle()

@@ -1,10 +1,11 @@
 #if EXTENSION_WEBAPP
 
+#include "extensions/WebAppExtension.h"
+
+#include "services/DeviceService.h"
+
 #include <HTTPClient.h>
 #include <LittleFS.h>
-
-#include "extensions/WebAppExtension.h"
-#include "services/DeviceService.h"
 
 WebAppExtension *WebApp = nullptr;
 

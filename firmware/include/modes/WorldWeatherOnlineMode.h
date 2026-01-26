@@ -2,11 +2,11 @@
 
 #if MODE_WORLDWEATHERONLINE
 
-#include <vector>
-
 #include "config/constants.h"
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
+
+#include <vector>
 
 class WorldWeatherOnlineMode : public ModeModule
 {

@@ -1,8 +1,9 @@
 #if MODE_BREAKOUTCLOCK
 
+#include "modes/BreakoutClockMode.h"
+
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/BreakoutClockMode.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 

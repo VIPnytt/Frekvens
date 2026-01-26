@@ -1,10 +1,11 @@
 #if MODE_WORLDWEATHERONLINE
 
+#include "modes/WorldWeatherOnlineMode.h"
+
+#include "services/ConnectivityService.h"
+
 #include <HTTPClient.h>
 #include <NetworkClientSecure.h>
-
-#include "modes/WorldWeatherOnlineMode.h"
-#include "services/ConnectivityService.h"
 
 void WorldWeatherOnlineMode::begin()
 {
@@ -35,7 +36,6 @@ void WorldWeatherOnlineMode::update()
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
     http.setUserAgent(Connectivity.userAgent.data());
-
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
@@ -51,7 +51,7 @@ void WorldWeatherOnlineMode::update()
         filter["data"]["current_condition"][0]["temp_F"] = true;
 #else
         filter["data"]["current_condition"][0]["temp_C"] = true;
-#endif
+#endif // TEMPERATURE_FAHRENHEIT
         filter["data"]["current_condition"][0]["weatherCode"] = true;
         JsonDocument doc;
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
@@ -59,7 +59,7 @@ void WorldWeatherOnlineMode::update()
             !(doc["data"]["current_condition"][0]["temp_F"].is<float>() || doc["data"]["current_condition"][0]["temp_F"].is<std::string>()) ||
 #else
             !(doc["data"]["current_condition"][0]["temp_C"].is<float>() || doc["data"]["current_condition"][0]["temp_C"].is<std::string>()) ||
-#endif
+#endif // TEMPERATURE_FAHRENHEIT
             !(doc["data"]["current_condition"][0]["weatherCode"].is<uint16_t>() || doc["data"]["current_condition"][0]["weatherCode"].is<std::string>()))
         {
             urls.pop_back();
@@ -72,7 +72,7 @@ void WorldWeatherOnlineMode::update()
         weather.temperature = round(doc["data"]["current_condition"][0]["temp_F"].as<float>());
 #else
         weather.temperature = round(doc["data"]["current_condition"][0]["temp_C"].as<float>());
-#endif
+#endif // TEMPERATURE_FAHRENHEIT
         weather.parse(doc["data"]["current_condition"][0]["weatherCode"].as<uint16_t>(), codesets);
         weather.draw();
     }

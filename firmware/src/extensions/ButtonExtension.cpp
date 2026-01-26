@@ -1,6 +1,7 @@
 #if EXTENSION_BUTTON
 
 #include "extensions/ButtonExtension.h"
+
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"

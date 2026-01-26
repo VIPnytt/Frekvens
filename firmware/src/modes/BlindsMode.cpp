@@ -1,7 +1,8 @@
 #if MODE_BLINDS
 
-#include "extensions/MicrophoneExtension.h"
 #include "modes/BlindsMode.h"
+
+#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 
 void BlindsMode::handle()

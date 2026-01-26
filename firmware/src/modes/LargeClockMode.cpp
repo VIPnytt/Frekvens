@@ -1,16 +1,17 @@
 #if MODE_LARGECLOCK
 
-#include <Preferences.h>
+#include "modes/LargeClockMode.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MediumFont.h"
 #include "fonts/MediumBoldFont.h"
+#include "fonts/MediumFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/LargeClockMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+#include <Preferences.h>
 
 void LargeClockMode::configure()
 {

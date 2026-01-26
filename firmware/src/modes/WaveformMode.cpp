@@ -1,8 +1,9 @@
 #if MODE_WAVEFORM
 
+#include "modes/WaveformMode.h"
+
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
-#include "modes/WaveformMode.h"
 #include "services/DisplayService.h"
 
 void WaveformMode::handle()

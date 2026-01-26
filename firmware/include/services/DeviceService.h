@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
-
 #include "config/constants.h"
 #include "modules/ServiceModule.h"
+
+#include <vector>
 
 class DeviceService : public ServiceModule
 {

@@ -1,15 +1,16 @@
 #if MODE_SMALLCLOCK
 
-#include <Preferences.h>
+#include "modes/SmallClockMode.h"
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
-#include "modes/SmallClockMode.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
+
+#include <Preferences.h>
 
 void SmallClockMode::configure()
 {

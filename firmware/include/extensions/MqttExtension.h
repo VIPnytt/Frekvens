@@ -2,9 +2,9 @@
 
 #if EXTENSION_MQTT
 
-#include <espMqttClient.h>
-
 #include "modules/ExtensionModule.h"
+
+#include <espMqttClient.h>
 
 class MqttExtension : public ExtensionModule
 {

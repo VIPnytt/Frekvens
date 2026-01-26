@@ -1,9 +1,4 @@
-#include <HTTPClient.h>
-#include <NetworkClientSecure.h>
-#include <nvs.h>
-#include <nvs_flash.h>
-#include <Preferences.h>
-#include <regex>
+#include "services/DeviceService.h"
 
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/MqttExtension.h"
@@ -12,12 +7,18 @@
 #include "fonts/LargeFont.h"
 #include "handlers/TextHandler.h"
 #include "services/ConnectivityService.h"
-#include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 #include "services/FontsService.h"
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
+
+#include <HTTPClient.h>
+#include <NetworkClientSecure.h>
+#include <Preferences.h>
+#include <nvs.h>
+#include <nvs_flash.h>
+#include <regex>
 
 void DeviceService::begin()
 {
