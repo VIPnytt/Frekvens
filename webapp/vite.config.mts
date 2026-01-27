@@ -1,3 +1,5 @@
+import { cwd } from "node:process";
+
 import { mdiDotsGrid } from "@mdi/js";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, loadEnv } from "vite";
@@ -7,16 +9,10 @@ import solidPlugin from "vite-plugin-solid";
 
 import { IconUri } from "./src/components/Icon";
 
-export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => ({
+export default defineConfig(({ mode }) => ({
     build: {
-        minify: process.env.NODE_ENV === "production",
+        minify: mode === "production",
         target: "esnext",
-    },
-    define: {
-        COMMAND: JSON.stringify(command),
-        MODE: JSON.stringify(mode),
-        SSR: JSON.stringify(isSsrBuild),
-        PREVIEW: JSON.stringify(isPreview),
     },
     plugins: [
         solidPlugin(),
@@ -25,21 +21,23 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => ({
             inject: {
                 tags: [
                     {
-                        injectTo: "head" as const,
+                        injectTo: "head",
                         tag: "link",
                         attrs: {
                             rel: "icon",
-                            href: IconUri({ path: mdiDotsGrid }),
+                            href: IconUri({
+                                path: mdiDotsGrid,
+                            }),
                         },
                     },
                     {
-                        injectTo: "head" as const,
+                        injectTo: "head",
                         tag: "title",
-                        children: loadEnv(mode, process.cwd()).VITE_NAME,
+                        children: loadEnv(mode, cwd()).VITE_NAME,
                     },
                 ],
             },
-            minify: process.env.NODE_ENV === "production",
+            minify: mode === "production",
         }),
         viteSingleFile(),
     ],

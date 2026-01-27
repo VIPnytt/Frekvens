@@ -92,9 +92,9 @@ export const MainThird: Component = () => {
             getPlaylist().map((item, i) =>
                 i === index
                     ? {
-                        ...item,
-                        duration,
-                    }
+                          ...item,
+                          duration,
+                      }
                     : item,
             ),
         );
@@ -108,9 +108,9 @@ export const MainThird: Component = () => {
             getPlaylist().map((item, i) =>
                 i === index
                     ? {
-                        ...item,
-                        mode: name,
-                    }
+                          ...item,
+                          mode: name,
+                      }
                     : item,
             ),
         );

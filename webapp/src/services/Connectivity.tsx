@@ -43,12 +43,12 @@ export const MainThird: Component = () => {
             JSON.stringify({
                 [name]: getCredentialKey().length
                     ? {
-                        key: getCredentialKey(),
-                        ssid: getCredentialSsid(),
-                    }
+                          key: getCredentialKey(),
+                          ssid: getCredentialSsid(),
+                      }
                     : {
-                        ssid: getCredentialSsid(),
-                    },
+                          ssid: getCredentialSsid(),
+                      },
             }),
         );
         toast("Connecting to Wi-Fi...", 60e3);
@@ -153,20 +153,20 @@ export const SidebarThird: Component = () => {
                                             ? mdiWifiStrength4
                                             : mdiWifiStrength4Lock
                                         : item().rssi >= -55
+                                          ? getSaved().includes(item().ssid)
+                                              ? mdiWifiStrength3
+                                              : mdiWifiStrength3Lock
+                                          : item().rssi >= -65
                                             ? getSaved().includes(item().ssid)
-                                                ? mdiWifiStrength3
-                                                : mdiWifiStrength3Lock
-                                            : item().rssi >= -65
-                                                ? getSaved().includes(item().ssid)
-                                                    ? mdiWifiStrength2
-                                                    : mdiWifiStrength2Lock
-                                                : item().rssi >= -75
-                                                    ? getSaved().includes(item().ssid)
-                                                        ? mdiWifiStrength1
-                                                        : mdiWifiStrength1Lock
-                                                    : getSaved().includes(item().ssid)
-                                                        ? mdiWifiStrengthOutline
-                                                        : mdiWifiStrengthLockOutline
+                                                ? mdiWifiStrength2
+                                                : mdiWifiStrength2Lock
+                                            : item().rssi >= -75
+                                              ? getSaved().includes(item().ssid)
+                                                  ? mdiWifiStrength1
+                                                  : mdiWifiStrength1Lock
+                                              : getSaved().includes(item().ssid)
+                                                ? mdiWifiStrengthOutline
+                                                : mdiWifiStrengthLockOutline
                                 }
                             />
                             {item().ssid}

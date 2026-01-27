@@ -1,12 +1,12 @@
-import { mdiPower } from '@mdi/js';
-import { type Component, createSignal } from 'solid-js';
+import { mdiPower } from "@mdi/js";
+import { type Component, createSignal } from "solid-js";
 
-import { Icon } from '../components/Icon';
-import { Toast } from '../components/Toast';
-import { Tooltip } from '../components/Tooltip';
-import { VERSION } from '../config/version';
-import { WebSocketWS } from '../extensions/WebSocket';
-import { DisplayPowerSet } from './Display';
+import { Icon } from "../components/Icon";
+import { Toast } from "../components/Toast";
+import { Tooltip } from "../components/Tooltip";
+import { VERSION } from "../config/version";
+import { WebSocketWS } from "../extensions/WebSocket";
+import { DisplayPowerSet } from "./Display";
 
 export const name = "Device";
 
