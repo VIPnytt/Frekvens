@@ -19,16 +19,25 @@ private:
         {
             return x == pixel.x && y == pixel.y;
         }
+
         bool operator<(const Pixel &pixel) const
         {
             return (y < pixel.y) || (y == pixel.y && x < pixel.x);
         }
     };
 
+    tm local;
+
+    bool
+        clock = true,
+        pending = false;
+
     unsigned long lastMillis = 0;
 
     uint8_t
         blink = 0,
+        hour,
+        minute,
         stage = 0;
 
     std::deque<Pixel> snake;
@@ -40,14 +49,19 @@ private:
     void end();
     void clean();
 
-    void setDot();
     bool findPath(Pixel start, Pixel goal, Pixel &next);
+
+    void setClock(const bool _clock);
+    void setDot();
+    void transmit();
 
 public:
     SnakeMode() : ModeModule("Snake") {}
 
+    void configure() override;
     void begin() override;
     void handle() override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_SNAKE

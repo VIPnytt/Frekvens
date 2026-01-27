@@ -18,6 +18,7 @@ class Deprecated:
         self._e131()
         self._largetickingclock()
         self._smalltickingclock()
+        self._snakeclock()
 
     def _artnet(self) -> None:
         if "MODE_ARTNET" in self.project.dotenv:
@@ -68,3 +69,10 @@ class Deprecated:
             if "MODE_SMALLCLOCK" not in self.project.dotenv:
                 self.project.dotenv["MODE_SMALLCLOCK"] = self.project.dotenv["MODE_SMALLTICKINGCLOCK"]
             del self.project.dotenv["MODE_SMALLTICKINGCLOCK"]
+
+    def _snakeclock(self) -> None:
+        if "MODE_SNAKECLOCK" in self.project.dotenv:
+            logging.warning('Deprecation: MODE_SNAKECLOCK "Snake clock" is deprecated. Use MODE_SNAKE "Snake" instead.')
+            if "MODE_SNAKE" not in self.project.dotenv:
+                self.project.dotenv["MODE_SNAKE"] = self.project.dotenv["MODE_SNAKECLOCK"]
+            del self.project.dotenv["MODE_SNAKECLOCK"]

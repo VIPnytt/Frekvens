@@ -40,7 +40,6 @@ import {
     MODE_SMALLCLOCK,
     MODE_SMOOTHWAVEFORM,
     MODE_SNAKE,
-    MODE_SNAKECLOCK,
     MODE_STARS,
     MODE_STREAM,
     MODE_TICKER,
@@ -87,8 +86,7 @@ import { Main as ModeRingMain, name as ModeRingName } from "../modes/Ring";
 import { Main as ModeScanMain, name as ModeScanName } from "../modes/Scan";
 import { Main as ModeSmallClockMain, name as ModeSmallClockName, Sidebar as ModeSmallClockSidebar } from "../modes/SmallClock";
 import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from "../modes/SmoothWaveform";
-import { Main as ModeSnakeMain, name as ModeSnakeName } from "../modes/Snake";
-import { Main as ModeSnakeClockMain, name as ModeSnakeClockName } from "../modes/SnakeClock";
+import { Main as ModeSnakeMain, name as ModeSnakeName, Sidebar as ModeSnakeSidebar } from "../modes/Snake";
 import { Main as ModeStarsMain, name as ModeStarsName } from "../modes/Stars";
 import { Main as ModeStreamMain, name as ModeStreamName, Sidebar as ModeStreamSidebar } from "../modes/Stream";
 import { Main as ModeTickerMain, name as ModeTickerName, Sidebar as ModeTickerSidebar } from "../modes/Ticker";
@@ -298,11 +296,6 @@ export const Main: Component = () => (
                 <ModeSnakeMain />
             </Match>
         )}
-        {MODE_SNAKECLOCK && (
-            <Match when={getMode() === ModeSnakeClockName}>
-                <ModeSnakeClockMain />
-            </Match>
-        )}
         {MODE_STARS && (
             <Match when={getMode() === ModeStarsName}>
                 <ModeStarsMain />
@@ -390,6 +383,11 @@ export const Sidebar: Component = () => {
                 {MODE_SMALLCLOCK && (
                     <Match when={getMode() === ModeSmallClockName}>
                         <ModeSmallClockSidebar />
+                    </Match>
+                )}
+                {MODE_SNAKE && (
+                    <Match when={getMode() === ModeSnakeName}>
+                        <ModeSnakeSidebar />
                     </Match>
                 )}
                 {MODE_STREAM && (

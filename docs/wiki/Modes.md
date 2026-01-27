@@ -1,8 +1,8 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#%EF%B8%8F-small-clock) | [Snake clock](#️-snake-clock)
+**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life clock](#-game-of-life-clock) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#%EF%B8%8F-small-clock) | [Snake](#️-snake)
 
-**Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Game of Life clock](#-game-of-life-clock) | [Ping-pong](#-ping-pong) | [Ping-pong clock](#-ping-pong-clock) | [Snake](#-snake) | [Snake clock](#️-snake-clock)
+**Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Game of Life clock](#-game-of-life-clock) | [Ping-pong](#-ping-pong) | [Ping-pong clock](#-ping-pong-clock) | [Snake](#-snake)
 
 **IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Jagged Waveform](#-jagged-waveform) | [Ring](#-ring) | [Smooth waveform](#️-smooth-waveform)
 
@@ -544,27 +544,13 @@ See also [Jagged waveform](#-jagged-waveform) and [Waveform](#-waveform).
 
 ## 🐍 Snake
 
-Inspired by the classic snake-game.
+Inspired by the classic snake-game. Comes with an optional clock.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_SNAKE='true'
 ```
-
-See also [Snake clock](#%EF%B8%8F-snake-clock).
-
-## 🕰️ Snake clock
-
-Inspired by the classic snake-game.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_SNAKECLOCK='true'
-```
-
-See also [Snake](#-snake).
 
 ## ⭐ Stars
 

@@ -46,7 +46,6 @@ export const MODE_SCAN: boolean = import.meta.env.VITE_MODE_SCAN === "true";
 export const MODE_SMALLCLOCK: boolean = import.meta.env.VITE_MODE_SMALLCLOCK === "true";
 export const MODE_SMOOTHWAVEFORM: boolean = import.meta.env.VITE_MODE_SMOOTHWAVEFORM === "true";
 export const MODE_SNAKE: boolean = import.meta.env.VITE_MODE_SNAKE === "true";
-export const MODE_SNAKECLOCK: boolean = import.meta.env.VITE_MODE_SNAKECLOCK === "true";
 export const MODE_STARS: boolean = import.meta.env.VITE_MODE_STARS === "true";
 export const MODE_STREAM: boolean = import.meta.env.VITE_MODE_STREAM === "true";
 export const MODE_TICKER: boolean = import.meta.env.VITE_MODE_TICKER === "true";
