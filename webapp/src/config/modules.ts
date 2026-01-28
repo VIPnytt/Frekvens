@@ -24,7 +24,6 @@ export const MODE_EQUALIZER: boolean = import.meta.env.VITE_MODE_EQUALIZER === "
 export const MODE_FIREWORK: boolean = import.meta.env.VITE_MODE_FIREWORK === "true";
 export const MODE_FLIES: boolean = import.meta.env.VITE_MODE_FLIES === "true";
 export const MODE_GAMEOFLIFE: boolean = import.meta.env.VITE_MODE_GAMEOFLIFE === "true";
-export const MODE_GAMEOFLIFECLOCK: boolean = import.meta.env.VITE_MODE_GAMEOFLIFECLOCK === "true";
 export const MODE_GLITTER: boolean = import.meta.env.VITE_MODE_GLITTER === "true";
 export const MODE_GOOGLEWEATHER: boolean = import.meta.env.VITE_MODE_GOOGLEWEATHER === "true";
 export const MODE_HOMEASSISTANTWEATHER: boolean = import.meta.env.VITE_MODE_HOMEASSISTANTWEATHER === "true";

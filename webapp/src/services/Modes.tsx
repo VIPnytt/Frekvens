@@ -18,7 +18,6 @@ import {
     MODE_FIREWORK,
     MODE_FLIES,
     MODE_GAMEOFLIFE,
-    MODE_GAMEOFLIFECLOCK,
     MODE_GLITTER,
     MODE_GOOGLEWEATHER,
     MODE_HOMEASSISTANTWEATHER,
@@ -64,8 +63,7 @@ import { Main as ModeDrawMain, name as ModeDrawName, Sidebar as ModeDrawSidebar 
 import { Main as ModeEqualizerMain, name as ModeEqualizerName } from "../modes/Equalizer";
 import { Main as ModeFireworkMain, name as ModeFireworkName } from "../modes/Firework";
 import { Main as ModeFliesMain, name as ModeFliesName } from "../modes/Flies";
-import { Main as ModeGameOfLifeMain, name as ModeGameOfLifeName } from "../modes/GameOfLife";
-import { Main as ModeGameOfLifeClockMain, name as ModeGameOfLifeClockName } from "../modes/GameOfLifeClock";
+import { Main as ModeGameOfLifeMain, name as ModeGameOfLifeName, Sidebar as ModeGameOfLifeSidebar } from "../modes/GameOfLife";
 import { Main as ModeGlitterMain, name as ModeGlitterName } from "../modes/Glitter";
 import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from "../modes/GoogleWeather";
 import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from "../modes/HomeAssistantWeather";
@@ -184,11 +182,6 @@ export const Main: Component = () => (
         {MODE_GAMEOFLIFE && (
             <Match when={getMode() === ModeGameOfLifeName}>
                 <ModeGameOfLifeMain />
-            </Match>
-        )}
-        {MODE_GAMEOFLIFECLOCK && (
-            <Match when={getMode() === ModeGameOfLifeClockName}>
-                <ModeGameOfLifeClockMain />
             </Match>
         )}
         {MODE_GLITTER && (
@@ -373,6 +366,11 @@ export const Sidebar: Component = () => {
                 {MODE_DRAW && (
                     <Match when={getMode() === ModeDrawName}>
                         <ModeDrawSidebar />
+                    </Match>
+                )}
+                {MODE_GAMEOFLIFE && (
+                    <Match when={getMode() === ModeGameOfLifeName}>
+                        <ModeGameOfLifeSidebar />
                     </Match>
                 )}
                 {MODE_LARGECLOCK && (
