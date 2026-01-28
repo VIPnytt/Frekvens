@@ -14,7 +14,6 @@
 #include "modes/EqualizerMode.h"
 #include "modes/FireworkMode.h"
 #include "modes/FliesMode.h"
-#include "modes/GameOfLifeClockMode.h"
 #include "modes/GameOfLifeMode.h"
 #include "modes/GlitterMode.h"
 #include "modes/GoogleWeatherMode.h"
@@ -99,9 +98,6 @@ private:
 #endif
 #if MODE_GAMEOFLIFE
         new GameOfLifeMode(),
-#endif
-#if MODE_GAMEOFLIFECLOCK
-        new GameOfLifeClockMode(),
 #endif
 #if MODE_GLITTER
         new GlitterMode(),
