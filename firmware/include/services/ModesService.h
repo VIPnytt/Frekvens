@@ -36,7 +36,6 @@
 #include "modes/ScanMode.h"
 #include "modes/SmallClockMode.h"
 #include "modes/SmoothWaveformMode.h"
-#include "modes/SnakeClockMode.h"
 #include "modes/SnakeMode.h"
 #include "modes/StarsMode.h"
 #include "modes/StreamMode.h"
@@ -166,9 +165,6 @@ private:
 #endif
 #if MODE_SNAKE
         new SnakeMode(),
-#endif
-#if MODE_SNAKECLOCK
-        new SnakeClockMode(),
 #endif
 #if MODE_STARS
         new StarsMode(),
