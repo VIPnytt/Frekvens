@@ -27,7 +27,6 @@
 #include "modes/NoiseMode.h"
 #include "modes/OpenMeteoMode.h"
 #include "modes/OpenWeatherMode.h"
-#include "modes/PingPongClockMode.h"
 #include "modes/PingPongMode.h"
 #include "modes/PixelSequenceMode.h"
 #include "modes/RainMode.h"
@@ -137,9 +136,6 @@ private:
 #endif
 #if MODE_PINGPONG
         new PingPongMode(),
-#endif
-#if MODE_PINGPONGCLOCK
-        new PingPongClockMode(),
 #endif
 #if MODE_PIXELSEQUENCE
         new PixelSequenceMode(),

@@ -10,29 +10,42 @@
 class PingPongMode : public ModeModule
 {
 private:
-    static constexpr float speed = 1e-3 * GRID_ROWS;
+    static constexpr float speed = 1e-3 * GRID_COLUMNS;
+
+    bool
+        clock = false,
+        pending = false;
 
     float
-        xDec = GRID_COLUMNS / 2,
-        yDec = GRID_ROWS - 2;
+        xDec,
+        yDec;
 
     std::deque<uint8_t>
-        paddleB,
-        paddleT;
+        paddleA,
+        paddleB;
+
+    tm local;
 
     uint8_t
-        x = GRID_COLUMNS / 2,
-        y = GRID_ROWS - 2;
+        hour,
+        minute,
+        x = GRID_COLUMNS - 2,
+        y = GRID_ROWS / 2;
 
-    uint16_t deg = 90;
+    uint16_t deg = 180;
 
     unsigned long lastMillis = 0;
 
-public:
-    PingPongMode() : ModeModule("Ping-Pong") {};
+    void setClock(const bool _clock);
+    void transmit();
 
+public:
+    PingPongMode() : ModeModule("Ping-pong") {};
+
+    void configure() override;
     void begin() override;
     void handle() override;
+    void onReceive(const JsonDocument doc, const char *const source) override;
 };
 
 #endif // MODE_PINGPONG

@@ -31,7 +31,6 @@ import {
     MODE_OPENMETEO,
     MODE_OPENWEATHER,
     MODE_PINGPONG,
-    MODE_PINGPONGCLOCK,
     MODE_PIXELSEQUENCE,
     MODE_RAIN,
     MODE_RING,
@@ -76,8 +75,7 @@ import { Main as ModeMetaballsMain, name as ModeMetaballsName } from "../modes/M
 import { Main as ModeNoiseMain, name as ModeNoiseName } from "../modes/Noise";
 import { Main as ModeOpenMeteoMain, name as ModeOpenMeteoName } from "../modes/OpenMeteo";
 import { Main as ModeOpenWeatherMain, name as ModeOpenWeatherName } from "../modes/OpenWeather";
-import { Main as ModePingPongMain, name as ModePingPongName } from "../modes/PingPong";
-import { Main as ModePingPongClockMain, name as ModePingPongClockName } from "../modes/PingPongClock";
+import { Main as ModePingPongMain, name as ModePingPongName, Sidebar as ModePingPongSidebar } from "../modes/PingPong";
 import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from "../modes/PixelSequence";
 import { Main as ModeRainMain, name as ModeRainName } from "../modes/Rain";
 import { Main as ModeRingMain, name as ModeRingName } from "../modes/Ring";
@@ -249,11 +247,6 @@ export const Main: Component = () => (
                 <ModePingPongMain />
             </Match>
         )}
-        {MODE_PINGPONGCLOCK && (
-            <Match when={getMode() === ModePingPongClockName}>
-                <ModePingPongClockMain />
-            </Match>
-        )}
         {MODE_PIXELSEQUENCE && (
             <Match when={getMode() === ModePixelSequenceName}>
                 <ModePixelSequenceMain />
@@ -376,6 +369,11 @@ export const Sidebar: Component = () => {
                 {MODE_LARGECLOCK && (
                     <Match when={getMode() === ModeLargeClockName}>
                         <ModeLargeClockSidebar />
+                    </Match>
+                )}
+                {MODE_PINGPONG && (
+                    <Match when={getMode() === ModePingPongName}>
+                        <ModePingPongSidebar />
                     </Match>
                 )}
                 {MODE_SMALLCLOCK && (
