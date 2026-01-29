@@ -13,7 +13,7 @@ private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
     bool
-        clock = false,
+        clock = true,
         pending = false;
 
     float
@@ -32,7 +32,7 @@ private:
         x = GRID_COLUMNS - 2,
         y = GRID_ROWS / 2;
 
-    uint16_t deg = 180;
+    uint16_t deg = 135;
 
     unsigned long lastMillis = 0;
 

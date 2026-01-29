@@ -51,16 +51,16 @@ void PingPongMode::begin()
     Display.clearFrame();
     paddleA.clear();
     paddleB.clear();
-    const uint8_t paddle = random(clock ? 5 : 0, clock ? GRID_ROWS - 3 : GRID_COLUMNS - 3);
+    const uint8_t _paddle = random(clock ? 5 : 0, clock ? GRID_ROWS - 3 : GRID_COLUMNS - 3);
     for (uint8_t i = 0; i < 3; ++i)
     {
-        paddleA.push_back(paddle + i);
-        paddleB.push_back(paddle + i);
-        Display.setPixel(clock ? 0 : paddle + i, clock ? paddle + i : 0);
-        Display.setPixel(clock ? GRID_ROWS - 1 : paddle + i, clock ? paddle + i : GRID_ROWS - 1);
+        paddleA.push_back(_paddle + i);
+        paddleB.push_back(_paddle + i);
+        Display.setPixel(clock ? 0 : _paddle + i, clock ? _paddle + i : 0);
+        Display.setPixel(clock ? GRID_ROWS - 1 : _paddle + i, clock ? _paddle + i : GRID_ROWS - 1);
     }
-    xDec = x = clock ? GRID_COLUMNS - 2 : paddle + 1;
-    yDec = y = clock ? paddle + 1 : GRID_ROWS - 2;
+    xDec = x = clock ? GRID_COLUMNS - 2 : _paddle + 1;
+    yDec = y = clock ? _paddle + 1 : GRID_ROWS - 2;
     deg = random(clock ? 150 : 60, clock ? 211 : 121); // ±30°
     Display.setPixel(x, y);
 }
