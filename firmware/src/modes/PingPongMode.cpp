@@ -113,7 +113,7 @@ void PingPongMode::handle()
     yDec -= sin(deg * DEG_TO_RAD) * speed;
     x = xDec + .5f;
     y = yDec + .5f;
-    Display.setPixel(x, y);
+    Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
     const float
         aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec)),
         bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec) : (GRID_ROWS - 2 - yDec) / abs(paddleA[1] - xDec));
@@ -139,7 +139,7 @@ void PingPongMode::handle()
         Display.setPixel(0, paddleA.front(), 0);
         paddleA.pop_front();
         paddleA.push_back(paddleA.back() + 1);
-        Display.setPixel(0, paddleA.back());
+        Display.setPixel(0, paddleA.back(), INT8_MAX);
     }
     else if (clock && yDec < paddleA.front() && aRad < 1 && paddleA.front() > 5)
     {
@@ -147,7 +147,7 @@ void PingPongMode::handle()
         Display.setPixel(0, paddleA.back(), 0);
         paddleA.pop_back();
         paddleA.push_front(paddleA.front() - 1);
-        Display.setPixel(0, paddleA.front());
+        Display.setPixel(0, paddleA.front(), INT8_MAX);
     }
     else if (clock && yDec > paddleB.back() && bRad < 1 && paddleB.back() < GRID_ROWS - 1)
     {
@@ -155,7 +155,7 @@ void PingPongMode::handle()
         Display.setPixel(GRID_COLUMNS - 1, paddleB.front(), 0);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1);
-        Display.setPixel(GRID_COLUMNS - 1, paddleB.back());
+        Display.setPixel(GRID_COLUMNS - 1, paddleB.back(), INT8_MAX);
     }
     else if (clock && yDec < paddleB.front() && bRad < 1 && paddleB.front() > 5)
     {
@@ -163,7 +163,7 @@ void PingPongMode::handle()
         Display.setPixel(GRID_COLUMNS - 1, paddleB.back(), 0);
         paddleB.pop_back();
         paddleB.push_front(paddleB.front() - 1);
-        Display.setPixel(GRID_COLUMNS - 1, paddleB.front());
+        Display.setPixel(GRID_COLUMNS - 1, paddleB.front(), INT8_MAX);
     }
     else if (!clock && xDec < paddleB.front() && aRad < 1 && paddleB.front() > 0)
     {
