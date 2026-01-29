@@ -16,6 +16,7 @@ class Deprecated:
         self._boldclock()
         self._distributeddisplayprotocol()
         self._e131()
+        self._gameoflifeclock()
         self._largetickingclock()
         self._smalltickingclock()
         self._snakeclock()
@@ -51,6 +52,15 @@ class Deprecated:
             if "MODE_STREAM" not in self.project.dotenv:
                 self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_E131"]
             del self.project.dotenv["MODE_E131"]
+
+    def _gameoflifeclock(self) -> None:
+        if "MODE_GAMEOFLIFECLOCK" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_GAMEOFLIFECLOCK "Game of Life clock" is deprecated. Use MODE_GAMEOFLIFE "Game of Life" instead.'
+            )
+            if "MODE_GAMEOFLIFE" not in self.project.dotenv:
+                self.project.dotenv["MODE_GAMEOFLIFE"] = self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
+            del self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
 
     def _largetickingclock(self) -> None:
         if "MODE_LARGETICKINGCLOCK" in self.project.dotenv:
