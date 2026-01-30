@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  ci:
-    name: CI
+  format:
+    name: Format
     runs-on: ubuntu-latest
 
     steps:
@@ -24,5 +24,21 @@ jobs:
         with:
           working-dir: webapp
 
-      - name: Biome CI
-        run: biome ci --reporter=github
+      - name: Biome format
+        run: biome format --reporter=github
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up Biome
+        uses: biomejs/setup-biome@29711cbb52afee00eb13aeb30636592f9edc0088 # v2.7.0
+        with:
+          working-dir: webapp
+
+      - name: Biome lint
+        run: biome lint --reporter=github
