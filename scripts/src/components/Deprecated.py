@@ -18,6 +18,7 @@ class Deprecated:
         self._e131()
         self._gameoflifeclock()
         self._largetickingclock()
+        self._pingpongclock()
         self._smalltickingclock()
         self._snakeclock()
 
@@ -70,6 +71,15 @@ class Deprecated:
             if "MODE_LARGECLOCK" not in self.project.dotenv:
                 self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv["MODE_LARGETICKINGCLOCK"]
             del self.project.dotenv["MODE_LARGETICKINGCLOCK"]
+
+    def _pingpongclock(self) -> None:
+        if "MODE_PINGPONGCLOCK" in self.project.dotenv:
+            logging.warning(
+                'Deprecation: MODE_PINGPONGCLOCK "Ping-Pong clock" is deprecated. Use MODE_PINGPONG "Ping-pong" instead.'
+            )
+            if "MODE_PINGPONG" not in self.project.dotenv:
+                self.project.dotenv["MODE_PINGPONG"] = self.project.dotenv["MODE_PINGPONGCLOCK"]
+            del self.project.dotenv["MODE_PINGPONGCLOCK"]
 
     def _smalltickingclock(self) -> None:
         if "MODE_SMALLTICKINGCLOCK" in self.project.dotenv:

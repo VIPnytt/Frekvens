@@ -1,8 +1,8 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life](#-game-of-life) | [Large clock](#️-large-clock) | [Ping-pong clock](#-ping-pong-clock) | [Small clock](#%EF%B8%8F-small-clock) | [Snake](#️-snake)
+**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life](#-game-of-life) | [Large clock](#️-large-clock) | [Ping-pong](#-ping-pong) | [Small clock](#%EF%B8%8F-small-clock) | [Snake](#️-snake)
 
-**Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong) | [Ping-pong clock](#-ping-pong-clock) | [Snake](#-snake)
+**Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong)| [Snake](#-snake)
 
 **IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Jagged Waveform](#-jagged-waveform) | [Ring](#-ring) | [Smooth waveform](#️-smooth-waveform)
 
@@ -426,27 +426,13 @@ MODE_OPENWEATHER='true'
 
 ## 🏓 Ping-pong
 
-Inspired by the classic ping-pong game.
+Inspired by the classic ping-pong game. Comes with an optional clock.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_PINGPONG='true'
 ```
-
-See also [Ping-pong clock](#-ping-pong-clock).
-
-## 🎱 Ping-pong clock
-
-Inspired by the classic ping-pong game.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_PINGPONGCLOCK='true'
-```
-
-See also [Ping-pong](#-ping-pong).
 
 ## 🔢 Pixel sequence
 

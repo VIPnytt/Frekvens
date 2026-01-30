@@ -37,7 +37,6 @@ export const MODE_NOISE: boolean = import.meta.env.VITE_MODE_NOISE === "true";
 export const MODE_OPENMETEO: boolean = import.meta.env.VITE_MODE_OPENMETEO === "true";
 export const MODE_OPENWEATHER: boolean = import.meta.env.VITE_MODE_OPENWEATHER === "true";
 export const MODE_PINGPONG: boolean = import.meta.env.VITE_MODE_PINGPONG === "true";
-export const MODE_PINGPONGCLOCK: boolean = import.meta.env.VITE_MODE_PINGPONGCLOCK === "true";
 export const MODE_PIXELSEQUENCE: boolean = import.meta.env.VITE_MODE_PIXELSEQUENCE === "true";
 export const MODE_RAIN: boolean = import.meta.env.VITE_MODE_RAIN === "true";
 export const MODE_RING: boolean = import.meta.env.VITE_MODE_RING === "true";
