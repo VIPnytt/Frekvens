@@ -6,6 +6,7 @@ __pycache__
 /.venv
 /.vscode/*
 /build
+/compile_commands.json
 /data/webapp
 /extra/IKEA-Frekvens-LED-spotlight/secrets*.yaml
 /firmware/certs
