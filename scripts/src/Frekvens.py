@@ -39,19 +39,37 @@ class Frekvens:
         self.partition = Partition(self)
         self.tools = Tools(self)
         if SCons.Script.COMMAND_LINE_TARGETS not in [
-            ["build"],
-            ["upload"],
+            ["buildfs"],
+            ["compiledb"],
+            ["uploadfs"],
+            ["uploadfsota"],
         ]:
-            self.webapp = WebApp(self)
+            self.certificate = Certificate(self)
+        if SCons.Script.COMMAND_LINE_TARGETS not in [
+            ["buildfs"],
+            ["compiledb"],
+            ["uploadfs"],
+            ["uploadfsota"],
+        ]:
+            self.dependency = Dependency(self)
         if SCons.Script.COMMAND_LINE_TARGETS not in [
             ["buildfs"],
             ["uploadfs"],
             ["uploadfsota"],
         ]:
-            self.certificate = Certificate(self)
-            self.dependency = Dependency(self)
             self.firmware = Firmware(self)
+        if SCons.Script.COMMAND_LINE_TARGETS not in [
+            ["buildfs"],
+            ["uploadfs"],
+            ["uploadfsota"],
+        ]:
             self.timezone = TimeZone(self)
+        if SCons.Script.COMMAND_LINE_TARGETS not in [
+            ["build"],
+            ["compiledb"],
+            ["upload"],
+        ]:
+            self.webapp = WebApp(self)
         self.dotenv = {key: (value if value is not None else "") for key, value in dotenv.dotenv_values(".env").items()}
 
     def run(self) -> None:
