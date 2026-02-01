@@ -56,7 +56,6 @@ jobs:
           version: 21
           format-review: true
           passive-reviews: true
-          repo-root: ./firmware
           step-summary: true
           style: file
           tidy-checks: -*
@@ -208,9 +207,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: 21
-          extra-args: -p=compile_commands.json
           passive-reviews: true
-          repo-root: ./firmware
           step-summary: true
           style: ''
           tidy-checks: ''
