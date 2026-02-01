@@ -188,9 +188,7 @@ void ModesService::setModeNext()
 {
     const char *const _name = mode ? mode->name : scheduled->name;
     std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                   {
-                                                                       return !strcmp(_mode->name, _name);
-                                                                   });
+                                                                   { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
     {
         Display.setPower(true);
@@ -210,9 +208,7 @@ void ModesService::setModePrevious()
 {
     const char *const _name = mode ? mode->name : scheduled->name;
     std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                   {
-                                                                       return !strcmp(_mode->name, _name);
-                                                                   });
+                                                                   { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
     {
         Display.setPower(true);
