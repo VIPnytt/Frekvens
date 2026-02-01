@@ -42,9 +42,12 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - python-version: 3.11
-          - python-version: 3.13
+        toolchain:
+          - clang-version: false
+            python-version: 3.11
+
+          - clang-version: 21
+            python-version: 3.13
 
     steps:
       - name: Checkout
@@ -53,7 +56,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -115,25 +118,25 @@ jobs:
 
           pio run -e esp32dev
 
-      - name: PlatformIO Compilation database
-        if: matrix.python-version == 3.13
+      - name: PlatformIO compilation database
+        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.python-version == 3.13
+        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: 21
+          version: ${{ matrix.toolchain.clang-version }}
           files-changed-only: false
           format-review: true
-          ignore: '*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h'
+          ignore: "*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h"
           passive-reviews: true
           step-summary: true
           style: file
-          tidy-checks: ''
+          tidy-checks: ""
           tidy-review: true
 
   mode-dynamic:
@@ -143,9 +146,12 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - python-version: 3.11
-          - python-version: 3.13
+        toolchain:
+          - clang-version: false
+            python-version: 3.11
+
+          - clang-version: 21
+            python-version: 3.13
 
     steps:
       - name: Checkout
@@ -154,7 +160,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -246,25 +252,25 @@ jobs:
 
           pio run -e esp32dev
 
-      - name: PlatformIO Compilation database
-        if: matrix.python-version == 3.13
+      - name: PlatformIO compilation database
+        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.python-version == 3.13
+        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: 21
+          version: ${{ matrix.toolchain.clang-version }}
           files-changed-only: false
           format-review: true
-          ignore: '*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h'
+          ignore: "*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h"
           passive-reviews: true
           step-summary: true
           style: file
-          tidy-checks: ''
+          tidy-checks: ""
           tidy-review: true
 
   mode-static:
@@ -274,9 +280,12 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - python-version: 3.11
-          - python-version: 3.13
+        toolchain:
+          - clang-version: false
+            python-version: 3.11
+
+          - clang-version: 21
+            python-version: 3.13
 
     steps:
       - name: Checkout
@@ -285,7 +294,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -361,23 +370,23 @@ jobs:
 
           pio run -e esp32dev
 
-      - name: PlatformIO Compilation database
-        if: matrix.python-version == 3.13
+      - name: PlatformIO compilation database
+        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.python-version == 3.13
+        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: 21
+          version: ${{ matrix.toolchain.clang-version }}
           files-changed-only: false
           format-review: true
-          ignore: '*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h'
+          ignore: "*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h"
           passive-reviews: true
           step-summary: true
           style: file
-          tidy-checks: ''
+          tidy-checks: ""
           tidy-review: true
