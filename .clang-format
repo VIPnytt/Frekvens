@@ -1,13 +1,9 @@
 ---
 Language: Cpp
 AccessModifierOffset: -4
-AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Allman
-ColumnLimit: 0
-FixNamespaceComments: false
+ColumnLimit: 120
 IncludeBlocks: Regroup
 IndentWidth: 4
 InsertBraces: true
-NamespaceIndentation: All
-PackConstructorInitializers: NextLine
 ...
