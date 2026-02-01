@@ -115,6 +115,24 @@ jobs:
 
           pio run -e esp32dev
 
+          pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: 21
+          files-changed-only: false
+          format-review: true
+          ignore: '*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h'
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ''
+          tidy-review: true
+
   mode-dynamic:
     name: Dynamic mode
     needs: platformio
@@ -190,8 +208,8 @@ jobs:
 
           python extra/Python/ModeGenerator.py -i Dynamic.csv
 
-          mv DynamicMode.cpp firmware/src/modes/DynamicMode.cpp
-          mv DynamicMode.h firmware/include/modes/DynamicMode.h
+          mv DynamicMode.cpp firmware/src/modes
+          mv DynamicMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/DynamicMode.h"' firmware/include/services/ModesService.h
           sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
@@ -224,6 +242,24 @@ jobs:
           EOL
 
           pio run -e esp32dev
+
+          pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: 21
+          files-changed-only: false
+          format-review: true
+          ignore: '*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h'
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ''
+          tidy-review: true
 
   mode-static:
     name: Static mode
@@ -284,8 +320,8 @@ jobs:
 
           python extra/Python/ModeGenerator.py -i Static.csv
 
-          mv StaticMode.cpp firmware/src/modes/StaticMode.cpp
-          mv StaticMode.h firmware/include/modes/StaticMode.h
+          mv StaticMode.cpp firmware/src/modes
+          mv StaticMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/StaticMode.h"' firmware/include/services/ModesService.h
           sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new StaticMode(),' firmware/include/services/ModesService.h
@@ -318,3 +354,21 @@ jobs:
           EOL
 
           pio run -e esp32dev
+
+          pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: 21
+          files-changed-only: false
+          format-review: true
+          ignore: '*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h'
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ''
+          tidy-review: true
