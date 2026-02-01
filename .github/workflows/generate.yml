@@ -115,9 +115,12 @@ jobs:
 
           pio run -e esp32dev
 
-          pio run -e esp32dev -t compiledb
+      - name: PlatformIO Compilation database
+        if: matrix.python-version == 3.13
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: matrix.python-version == 3.13
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -243,9 +246,12 @@ jobs:
 
           pio run -e esp32dev
 
-          pio run -e esp32dev -t compiledb
+      - name: PlatformIO Compilation database
+        if: matrix.python-version == 3.13
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: matrix.python-version == 3.13
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -355,9 +361,12 @@ jobs:
 
           pio run -e esp32dev
 
-          pio run -e esp32dev -t compiledb
+      - name: PlatformIO Compilation database
+        if: matrix.python-version == 3.13
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: matrix.python-version == 3.13
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
