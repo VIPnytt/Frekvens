@@ -107,7 +107,8 @@ void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
         pending = true;
     }
     // Frame
-    if (doc["frame"].is<JsonArrayConst>() && doc["frame"].size() == GRID_COLUMNS * GRID_ROWS && doc["index"].is<uint8_t>())
+    if (doc["frame"].is<JsonArrayConst>() && doc["frame"].size() == GRID_COLUMNS * GRID_ROWS &&
+        doc["index"].is<uint8_t>())
     {
         uint8_t frame[GRID_COLUMNS * GRID_ROWS];
 #if GRID_COLUMNS * GRID_ROWS > (1 << 8)

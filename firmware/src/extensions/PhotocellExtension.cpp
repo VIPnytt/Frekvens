@@ -11,10 +11,7 @@
 
 PhotocellExtension *Photocell = nullptr;
 
-PhotocellExtension::PhotocellExtension() : ExtensionModule("Photocell")
-{
-    Photocell = this;
-}
+PhotocellExtension::PhotocellExtension() : ExtensionModule("Photocell") { Photocell = this; }
 
 void PhotocellExtension::configure()
 {
@@ -99,10 +96,7 @@ void PhotocellExtension::handle()
     }
 }
 
-bool PhotocellExtension::getActive() const
-{
-    return active;
-}
+bool PhotocellExtension::getActive() const { return active; }
 
 void PhotocellExtension::setActive(bool active)
 {

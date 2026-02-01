@@ -2,10 +2,7 @@
 
 SmallFont *FontSmall = nullptr;
 
-SmallFont::SmallFont() : FontModule("Small")
-{
-    FontSmall = this;
-}
+SmallFont::SmallFont() : FontModule("Small") { FontSmall = this; }
 
 FontModule::Symbol SmallFont::getChar(uint32_t character) const
 {

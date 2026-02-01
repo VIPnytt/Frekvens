@@ -41,17 +41,15 @@ private:
         0b0011111100,
     };
 
-    bool
-        pending = false,
-        power = false;
+    bool pending = false;
+    bool power = false;
 
     float ratio = PITCH_HORIZONTAL / (float)PITCH_VERTICAL;
 
-    uint8_t
-        brightness = 0,
-        _frame[GRID_COLUMNS * GRID_ROWS] = {0},
-        frame[GRID_COLUMNS * GRID_ROWS] = {0},
-        pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
+    uint8_t brightness = 0;
+    uint8_t _frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
 
     Orientation orientation = Orientation::deg0;
 
@@ -89,8 +87,10 @@ public:
     uint8_t getPixel(uint8_t x, uint8_t y) const;
     void setPixel(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
 
-    void drawEllipse(float x, float y, float radius, float ratio = 1, bool fill = false, uint8_t brightness = UINT8_MAX);
-    void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill = true, uint8_t brightness = UINT8_MAX);
+    void drawEllipse(float x, float y, float radius, float ratio = 1, bool fill = false,
+                     uint8_t brightness = UINT8_MAX);
+    void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill = true,
+                       uint8_t brightness = UINT8_MAX);
 
     void flush();
 

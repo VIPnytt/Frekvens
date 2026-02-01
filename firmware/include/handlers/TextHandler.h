@@ -14,11 +14,10 @@ private:
 
     FontModule *font = nullptr;
 
-    uint8_t
-        height = 0,
-        i = 0,
-        tracking = 1,
-        width = 0;
+    uint8_t height = 0;
+    uint8_t i = 0;
+    uint8_t tracking = 1;
+    uint8_t width = 0;
 
     uint8_t calcMsbMax(const FontModule::Symbol &character) const;
 

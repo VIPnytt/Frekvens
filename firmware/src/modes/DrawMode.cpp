@@ -40,10 +40,7 @@ void DrawMode::handle()
     }
 }
 
-void DrawMode::end()
-{
-    save(true);
-}
+void DrawMode::end() { save(true); }
 
 void DrawMode::load(const bool cache)
 {
@@ -148,7 +145,8 @@ void DrawMode::onReceive(const JsonDocument doc, const char *const source)
         {
             if (pixel["x"].is<uint8_t>() && pixel["y"].is<uint8_t>() && pixel["brightness"].is<uint8_t>())
             {
-                drawing[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] = pixel["brightness"].as<uint8_t>();
+                drawing[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] =
+                    pixel["brightness"].as<uint8_t>();
             }
         }
         render = true;

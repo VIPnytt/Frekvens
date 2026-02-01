@@ -85,19 +85,19 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    const uint8_t
-        x = random(GRID_COLUMNS),
-        y = random(clock ? 5 : 0, GRID_ROWS);
+    const uint8_t x = random(GRID_COLUMNS);
+    const uint8_t y = random(clock ? 5 : 0, GRID_ROWS);
     snake = {{x, y}};
     Display.setPixel(x, y);
     setDot();
     stage = 1;
 }
 
-bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
+std::optional<SnakeMode::Pixel> SnakeMode::next()
 {
-    std::queue<Pixel> frontier;
+    Pixel start = snake.back();
     std::map<Pixel, Pixel> from;
+    std::queue<Pixel> frontier;
     frontier.push(start);
     from[start] = start;
     bool pathFound = false;
@@ -105,8 +105,7 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     {
         Pixel current = frontier.front();
         frontier.pop();
-
-        if (current == goal)
+        if (current == dot)
         {
             pathFound = true;
             break;
@@ -139,13 +138,12 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     }
     if (pathFound)
     {
-        Pixel step = goal;
-        while (!(from[step] == start))
+        Pixel step = dot;
+        while (from[step] != start)
         {
             step = from[step];
         }
-        next = step;
-        return true;
+        return step;
     }
     std::vector<Pixel> fallback;
     if (start.y > (clock ? 5 : 0))
@@ -168,29 +166,27 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     {
         if (std::find(snake.begin(), snake.end(), option) == snake.end())
         {
-            next = option;
-            return true;
+            return option;
         }
     }
-    return false;
+    return std::nullopt;
 }
 
 void SnakeMode::move()
 {
     if (millis() - lastMillis > INT8_MAX + snake.size())
     {
-        Pixel nextStep;
-        if (findPath(snake.back(), dot, nextStep))
+        std::optional<SnakeMode::Pixel> step = next();
+        if (step.has_value())
         {
-            if (nextStep == dot)
+            snake.push_back(step.value());
+            if (snake.back() == dot)
             {
-                snake.push_back(nextStep);
-                Display.setPixel(nextStep.x, nextStep.y, 1);
+                Display.setPixel(dot.x, dot.y);
                 setDot();
             }
             else
             {
-                snake.push_back(nextStep);
                 uint8_t i = 0;
                 for (const Pixel &part : snake)
                 {
@@ -198,7 +194,7 @@ void SnakeMode::move()
                     ++i;
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0);
-                snake.erase(snake.begin());
+                snake.pop_front();
             }
         }
         else
@@ -246,7 +242,8 @@ void SnakeMode::setDot()
 {
     do
     {
-        dot = {(uint8_t)random(GRID_COLUMNS), (uint8_t)random(clock ? 5 : 0, GRID_ROWS)};
+        dot.x = random(GRID_COLUMNS);
+        dot.y = random(clock ? 5 : 0, GRID_ROWS);
     } while (Display.getPixel(dot.x, dot.y));
     Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
 }

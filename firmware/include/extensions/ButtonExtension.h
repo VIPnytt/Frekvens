@@ -9,15 +9,13 @@ class ButtonExtension : public ExtensionModule
 {
 private:
 #ifdef PIN_SW1
-    bool
-        brightnessIncrease = false,
-        powerLong = false,
-        powerShort = false;
+    bool brightnessIncrease = false;
+    bool powerLong = false;
+    bool powerShort = false;
 #endif
 #ifdef PIN_SW2
-    bool
-        modeLong = false,
-        modeShort = false;
+    bool modeLong = false;
+    bool modeShort = false;
 #endif
 
 #ifdef PIN_SW1

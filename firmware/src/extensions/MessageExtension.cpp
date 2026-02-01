@@ -12,10 +12,7 @@
 
 MessageExtension *Message = nullptr;
 
-MessageExtension::MessageExtension() : ExtensionModule("Message")
-{
-    Message = this;
-}
+MessageExtension::MessageExtension() : ExtensionModule("Message") { Message = this; }
 
 #if EXTENSION_HOMEASSISTANT
 void MessageExtension::configure()

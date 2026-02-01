@@ -4,15 +4,9 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
-void FontsService::begin()
-{
-    transmit();
-}
+void FontsService::begin() { transmit(); }
 
-const std::vector<FontModule *> &FontsService::getAll() const
-{
-    return modules;
-}
+const std::vector<FontModule *> &FontsService::getAll() const { return modules; }
 
 void FontsService::transmit()
 {

@@ -12,25 +12,21 @@ class PingPongMode : public ModeModule
 private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
-    bool
-        clock = true,
-        pending = false;
+    bool clock = true;
+    bool pending = false;
 
-    float
-        xDec,
-        yDec;
+    float xDec;
+    float yDec;
 
-    std::deque<uint8_t>
-        paddleA,
-        paddleB;
+    std::deque<uint8_t> paddleA;
+    std::deque<uint8_t> paddleB;
 
     tm local;
 
-    uint8_t
-        hour,
-        minute,
-        x = GRID_COLUMNS - 2,
-        y = GRID_ROWS / 2;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t x = GRID_COLUMNS - 2;
+    uint8_t y = GRID_ROWS / 2;
 
     uint16_t deg = 135;
 

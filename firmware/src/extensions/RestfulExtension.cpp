@@ -10,15 +10,13 @@
 
 RestfulExtension *Restful = nullptr;
 
-RestfulExtension::RestfulExtension() : ExtensionModule("RESTful")
-{
-    Restful = this;
-}
+RestfulExtension::RestfulExtension() : ExtensionModule("RESTful") { Restful = this; }
 
 void RestfulExtension::begin()
 {
     WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServer.onEmpty, nullptr, &onPatch);
+    WebServer.http->on(
+        AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServer.onEmpty, nullptr, &onPatch);
 }
 
 void RestfulExtension::onGet(AsyncWebServerRequest *request)

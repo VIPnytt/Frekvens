@@ -5,10 +5,7 @@
 #include "config/constants.h"
 #include "services/DisplayService.h"
 
-void BinaryClockMode::begin()
-{
-    pending = true;
-}
+void BinaryClockMode::begin() { pending = true; }
 
 void BinaryClockMode::handle()
 {

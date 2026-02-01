@@ -14,10 +14,7 @@
 
 OtaExtension *Ota = nullptr;
 
-OtaExtension::OtaExtension() : ExtensionModule("OTA")
-{
-    Ota = this;
-}
+OtaExtension::OtaExtension() : ExtensionModule("OTA") { Ota = this; }
 
 void OtaExtension::configure()
 {
@@ -41,10 +38,7 @@ void OtaExtension::begin()
 #endif // OTA_KEY
 }
 
-void OtaExtension::handle()
-{
-    ArduinoOTA.handle();
-}
+void OtaExtension::handle() { ArduinoOTA.handle(); }
 
 void OtaExtension::onStart()
 {
@@ -57,19 +51,18 @@ void OtaExtension::onStart()
     timerWrite(Display.timer, 1'000'000 / (1 << 8)); // 1 fps
 }
 
-void OtaExtension::onEnd()
-{
-    ESP_LOGI(Ota->name, "complete");
-}
+void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }
 
 #ifndef OTA_KEY
-void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,
+                          size_t len, bool final)
 {
     if (!index)
     {
         onStart();
     }
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) || Update.write(data, len) != len || (final && !Update.end(true)))
+    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
+        Update.write(data, len) != len || (final && !Update.end(true)))
     {
         ESP_LOGE(Ota->name, "%s", Update.errorString());
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);

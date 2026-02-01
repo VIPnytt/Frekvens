@@ -9,10 +9,7 @@
 
 WebAppExtension *WebApp = nullptr;
 
-WebAppExtension::WebAppExtension() : ExtensionModule("Web app")
-{
-    WebApp = this;
-}
+WebAppExtension::WebAppExtension() : ExtensionModule("Web app") { WebApp = this; }
 
 void WebAppExtension::configure()
 {

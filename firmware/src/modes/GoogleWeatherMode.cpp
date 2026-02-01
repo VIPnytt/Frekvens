@@ -31,7 +31,8 @@ void GoogleWeatherMode::update()
 {
     lastMillis = millis();
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::x509_crt_bundle_start,
+                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
@@ -43,7 +44,8 @@ void GoogleWeatherMode::update()
         filter["temperature"]["degrees"] = true;
         filter["weatherCondition"]["type"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) || !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
+        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) ||
+            !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
         {
             urls.pop_back();
             lastMillis = millis() - interval + (1 << 14);

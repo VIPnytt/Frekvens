@@ -53,7 +53,10 @@ void FireworkMode::launching()
 #if PITCH_VERTICAL == PITCH_HORIZONTAL
             maxRadius = random(1, min(GRID_COLUMNS, GRID_ROWS) / 2);
 #else
-            maxRadius = random(2, min(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL, GRID_ROWS / (float)PITCH_HORIZONTAL * PITCH_VERTICAL) / 2);
+            maxRadius = random(2,
+                               min(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL,
+                                   GRID_ROWS / (float)PITCH_HORIZONTAL * PITCH_VERTICAL) /
+                                   2);
 #endif // PITCH_VERTICAL == PITCH_HORIZONTAL
             stage = 2;
         }

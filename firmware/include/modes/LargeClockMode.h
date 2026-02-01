@@ -12,14 +12,12 @@ class LargeClockMode : public ModeModule
 private:
     tm local;
 
-    bool
-        pending = false,
-        ticking = false;
+    bool pending = false;
+    bool ticking = false;
 
-    uint8_t
-        hour,
-        minute,
-        second = 0;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second = 0;
 
     FontModule *font = nullptr;
 

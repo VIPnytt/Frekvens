@@ -20,7 +20,8 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    esp_crt_bundle_set(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    esp_crt_bundle_set(Certificates::x509_crt_bundle_start,
+                       Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     WiFi.enableIPv6();
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
@@ -48,7 +49,8 @@ void ConnectivityService::configure()
 #endif // WIFI_COUNTRY
 #if defined(PIN_SW1) || defined(PIN_SW2)
 #if defined(PIN_SW1) && defined(PIN_SW2)
-    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW))
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED &&
+        (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW))
 #elif defined(PIN_SW1)
     if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW1) == LOW)
 #elif defined(PIN_SW2)
@@ -210,7 +212,9 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info
         Connectivity.mDNS = false;
     }
     ESP_LOGI(Connectivity.name, "disconnected");
-    ESP_LOGD(Connectivity.name, "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
+    ESP_LOGD(Connectivity.name,
+             "%s",
+             WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
 void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
@@ -318,7 +322,8 @@ void ConnectivityService::onReceive(const JsonDocument doc, const char *const so
     // Connect
     if (doc["ssid"].is<const char *>())
     {
-        connect(doc["ssid"].as<const char *>(), doc["key"].is<const char *>() ? doc["key"].as<const char *>() : nullptr);
+        connect(doc["ssid"].as<const char *>(),
+                doc["key"].is<const char *>() ? doc["key"].as<const char *>() : nullptr);
     }
     // Scan
     if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "scan"))

@@ -46,10 +46,7 @@ void GameOfLifeMode::configure()
     transmit();
 }
 
-void GameOfLifeMode::begin()
-{
-    pending = true;
-}
+void GameOfLifeMode::begin() { pending = true; }
 
 void GameOfLifeMode::handle()
 {
@@ -69,7 +66,8 @@ void GameOfLifeMode::handle()
         bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))] = {false};
         for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1 << 4); ++i)
         {
-            seeds[random(1, GRID_COLUMNS - 1) + random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0))] = true;
+            seeds[random(1, GRID_COLUMNS - 1) +
+                  random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0))] = true;
         }
         lastMillis = millis();
         active = 0;
@@ -80,9 +78,11 @@ void GameOfLifeMode::handle()
                 uint8_t n = 0;
                 for (uint8_t _x = x <= 0 ? 0 : x - 1; _x <= x + 1 && _x < GRID_COLUMNS; ++_x)
                 {
-                    for (uint8_t _y = y <= (clock ? 5 : 0) ? (clock ? 5 : 0) : y - 1; _y <= y + 1 && _y < GRID_ROWS; ++_y)
+                    for (uint8_t _y = y <= (clock ? 5 : 0) ? (clock ? 5 : 0) : y - 1; _y <= y + 1 && _y < GRID_ROWS;
+                         ++_y)
                     {
-                        if ((_x != x || _y != y) && (seeds[_x + _y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(_x, _y)))
+                        if ((_x != x || _y != y) &&
+                            (seeds[_x + _y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(_x, _y)))
                         {
                             ++n;
                         }

@@ -2,10 +2,7 @@
 
 #include "services/DeviceService.h"
 
-void setup()
-{
-    Device.begin();
-}
+void setup() { Device.begin(); }
 
 void loop()
 {

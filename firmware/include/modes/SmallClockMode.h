@@ -9,14 +9,12 @@ class SmallClockMode : public ModeModule
 private:
     tm local;
 
-    bool
-        pending = false,
-        ticking = true;
+    bool pending = false;
+    bool ticking = true;
 
-    uint8_t
-        hour,
-        minute,
-        second;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
 
     void setTicking(const bool _ticking);
     void transmit();

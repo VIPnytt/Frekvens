@@ -46,10 +46,7 @@ void SmallClockMode::configure()
     transmit();
 }
 
-void SmallClockMode::begin()
-{
-    pending = true;
-}
+void SmallClockMode::begin() { pending = true; }
 
 void SmallClockMode::handle()
 {

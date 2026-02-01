@@ -70,10 +70,7 @@ void TickerMode::configure()
     transmit();
 }
 
-void TickerMode::begin()
-{
-    pending = true;
-}
+void TickerMode::begin() { pending = true; }
 
 void TickerMode::handle()
 {
@@ -156,9 +153,6 @@ void TickerMode::onReceive(const JsonDocument doc, const char *const source)
     }
 }
 
-void TickerMode::end()
-{
-    text.reset();
-}
+void TickerMode::end() { text.reset(); }
 
 #endif // MODE_TICKER

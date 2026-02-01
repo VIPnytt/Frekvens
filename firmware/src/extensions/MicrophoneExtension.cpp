@@ -11,10 +11,7 @@
 
 MicrophoneExtension *Microphone = nullptr;
 
-MicrophoneExtension::MicrophoneExtension() : ExtensionModule("Microphone")
-{
-    Microphone = this;
-}
+MicrophoneExtension::MicrophoneExtension() : ExtensionModule("Microphone") { Microphone = this; }
 
 void MicrophoneExtension::configure()
 {
@@ -137,10 +134,7 @@ void MicrophoneExtension::handle()
     }
 }
 
-bool MicrophoneExtension::getActive()
-{
-    return active;
-}
+bool MicrophoneExtension::getActive() { return active; }
 
 void MicrophoneExtension::setActive(bool active)
 {
@@ -180,10 +174,7 @@ void MicrophoneExtension::setThreshold(uint16_t _threshold)
     }
 }
 
-bool MicrophoneExtension::isTriggered() const
-{
-    return detected || !active;
-}
+bool MicrophoneExtension::isTriggered() const { return detected || !active; }
 
 void MicrophoneExtension::transmit()
 {

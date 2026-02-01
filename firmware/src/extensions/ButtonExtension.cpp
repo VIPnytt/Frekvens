@@ -9,10 +9,7 @@
 
 ButtonExtension *Button = nullptr;
 
-ButtonExtension::ButtonExtension() : ExtensionModule("Button")
-{
-    Button = this;
-}
+ButtonExtension::ButtonExtension() : ExtensionModule("Button") { Button = this; }
 
 void ButtonExtension::configure()
 {
@@ -41,7 +38,8 @@ void ButtonExtension::configure()
 #ifdef PIN_SW1
             {
                 const std::string id = std::string(name).append("_power_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                JsonObject component =
+                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
                 component[HomeAssistantAbbreviations::automation_type] = "trigger";
                 component[HomeAssistantAbbreviations::payload] = payload;
                 component[HomeAssistantAbbreviations::platform] = "device_automation";
@@ -54,7 +52,8 @@ void ButtonExtension::configure()
 #ifdef PIN_SW2
             {
                 const std::string id = std::string(name).append("_mode_").append(payload);
-                JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+                JsonObject component =
+                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
                 component[HomeAssistantAbbreviations::automation_type] = "trigger";
                 component[HomeAssistantAbbreviations::payload] = payload;
                 component[HomeAssistantAbbreviations::platform] = "device_automation";

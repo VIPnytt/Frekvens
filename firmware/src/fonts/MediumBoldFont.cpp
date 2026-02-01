@@ -4,10 +4,7 @@
 
 MediumBoldFont *FontMediumBold = nullptr;
 
-MediumBoldFont::MediumBoldFont() : FontModule("Medium bold")
-{
-    FontMediumBold = this;
-}
+MediumBoldFont::MediumBoldFont() : FontModule("Medium bold") { FontMediumBold = this; }
 
 FontModule::Symbol MediumBoldFont::getChar(uint32_t character) const
 {

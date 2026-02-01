@@ -74,7 +74,8 @@ void DeviceService::begin()
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_SW2)
     esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_SW2, LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1) && defined(PIN_SW2)
-    esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2), ESP_GPIO_WAKEUP_GPIO_LOW);
+    esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2),
+                                      ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1), ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW2)
@@ -228,10 +229,7 @@ void DeviceService::restore()
     esp_deep_sleep_start();
 }
 
-const JsonDocument DeviceService::getTransmits() const
-{
-    return transmits;
-}
+const JsonDocument DeviceService::getTransmits() const { return transmits; }
 
 void DeviceService::transmit()
 {

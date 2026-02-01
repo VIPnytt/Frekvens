@@ -84,10 +84,7 @@ void LargeClockMode::configure()
     transmit();
 }
 
-void LargeClockMode::begin()
-{
-    pending = true;
-}
+void LargeClockMode::begin() { pending = true; }
 
 void LargeClockMode::handle()
 {
@@ -100,15 +97,18 @@ void LargeClockMode::handle()
             Display.clearFrame();
             {
                 TextHandler h1 = TextHandler(std::to_string(hour / 10), font);
-                h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(), GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
+                h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(),
+                        GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
             }
             {
                 TextHandler h2 = TextHandler(std::to_string(hour % 10), font);
-                h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2, GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
+                h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2,
+                        GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
             }
             {
                 TextHandler m1 = TextHandler(std::to_string(minute / 10), font);
-                m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(), GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
+                m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(),
+                        GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
             }
             {
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
@@ -118,9 +118,11 @@ void LargeClockMode::handle()
         }
         if (ticking && second != local.tm_sec)
         {
-            Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
+            Display.setPixel(
+                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
             second = local.tm_sec;
-            Display.setPixel(GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
+            Display.setPixel(
+                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
         }
     }
 }
