@@ -16,7 +16,7 @@ void ModesService::configure()
     {
         const std::string id = std::string(name).append("_mode");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"mode":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
         component[HomeAssistantAbbreviations::name] = "Mode";

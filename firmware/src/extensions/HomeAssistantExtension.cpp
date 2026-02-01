@@ -29,7 +29,7 @@ void HomeAssistantExtension::configure()
         component[HomeAssistantAbbreviations::brightness_state_topic] = topicDisplay;
         component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness}}";
         component[HomeAssistantAbbreviations::command_topic] = topicDisplay + "/set";
-        component[HomeAssistantAbbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::effect_command_template] = R"({"mode":"{{value}}"})";
         component[HomeAssistantAbbreviations::effect_command_topic] =
             std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
         JsonArray effectList = component[HomeAssistantAbbreviations::effect_list].to<JsonArray>();

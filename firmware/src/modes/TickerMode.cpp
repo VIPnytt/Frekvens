@@ -16,7 +16,7 @@ void TickerMode::configure()
     {
         const std::string id = std::string(name).append("_font");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"font":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -36,7 +36,7 @@ void TickerMode::configure()
     {
         const std::string id = std::string(name).append("_message");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"message":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:message";
         component[HomeAssistantAbbreviations::name] = name;

@@ -137,7 +137,6 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true
 
   mode-dynamic:
     name: Dynamic mode
@@ -271,7 +270,6 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true
 
   mode-static:
     name: Static mode
@@ -389,4 +387,3 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true

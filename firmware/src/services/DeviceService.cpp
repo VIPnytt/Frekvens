@@ -106,7 +106,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_reboot");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::device_class] = "restart";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
@@ -120,7 +120,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_power");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::entity_category] = "config";
         component[HomeAssistantAbbreviations::icon] = "mdi:power";

@@ -21,7 +21,7 @@ void CountdownMode::configure()
     {
         const std::string id = std::string(name).append("_timestamp");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"timestamp\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"timestamp":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::entity_category] = "config";
         component[HomeAssistantAbbreviations::icon] = "mdi:timer-sand-full";

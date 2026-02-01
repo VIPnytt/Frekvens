@@ -117,9 +117,9 @@ class ModeGenerator:
         frame = [
             "#pragma once",
             "",
-            "#include <vector>",
-            "",
             '#include "modules/ModeModule.h"',
+            "",
+            "#include <vector>",
             "",
             "//",
             "// @warning Automatically generated file",
