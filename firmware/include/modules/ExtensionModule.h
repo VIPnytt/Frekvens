@@ -6,6 +6,7 @@ class ExtensionModule
 {
 protected:
     ExtensionModule(const char *const name) : name(name) {};
+    ~ExtensionModule() = default;
 
 public:
     ExtensionModule(const ExtensionModule &) = delete;

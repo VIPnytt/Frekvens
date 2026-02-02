@@ -6,6 +6,7 @@ class ServiceModule
 {
 protected:
     ServiceModule(const char *const name) : name(name) {};
+    ~ServiceModule() = default;
 
 public:
     ServiceModule(const ServiceModule &) = delete;

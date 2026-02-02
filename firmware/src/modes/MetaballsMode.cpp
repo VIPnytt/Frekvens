@@ -15,8 +15,8 @@ void MetaballsMode::configure()
     {
         ball.x = static_cast<float>(random(GRID_COLUMNS));
         ball.y = static_cast<float>(random(GRID_ROWS));
-        ball.xVelocity = speed * random(1, multiplier) * ((random(2) * 2) - 1);
-        ball.yVelocity = speed * random(1, multiplier) * ((random(2) * 2) - 1);
+        ball.xVelocity = speed * static_cast<float>(random(1, multiplier) * ((random(2) * 2) - 1));
+        ball.yVelocity = speed * static_cast<float>(random(1, multiplier) * ((random(2) * 2) - 1));
     }
 }
 
@@ -68,22 +68,22 @@ void MetaballsMode::handle()
             if (ball.x < 0)
             {
                 ball.x = 0;
-                ball.xVelocity = speed * random(1, multiplier);
+                ball.xVelocity = speed * static_cast<float>(random(1, multiplier));
             }
             else if (ball.x > GRID_COLUMNS - 1)
             {
                 ball.x = GRID_COLUMNS - 1;
-                ball.xVelocity = -speed * random(1, multiplier);
+                ball.xVelocity = -speed * static_cast<float>(random(1, multiplier));
             }
             if (ball.y < 0)
             {
                 ball.y = 0;
-                ball.yVelocity = speed * random(1, multiplier);
+                ball.yVelocity = speed * static_cast<float>(random(1, multiplier));
             }
             else if (ball.y > GRID_ROWS - 1)
             {
                 ball.y = GRID_ROWS - 1;
-                ball.yVelocity = -speed * random(1, multiplier);
+                ball.yVelocity = -speed * static_cast<float>(random(1, multiplier));
             }
         }
     }

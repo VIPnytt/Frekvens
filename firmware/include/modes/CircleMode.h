@@ -12,10 +12,10 @@ private:
     static constexpr float y = (GRID_ROWS - 1) / 2.0f;
 
     const uint8_t maxRadius = 3 + ceilf((max(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL,
-                                            GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) /
-                                            M_SQRT2 +
-                                        M_SQRT1_2) /
-                                       2.0f);
+                                             GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) /
+                                             M_SQRT2 +
+                                         M_SQRT1_2) /
+                                        2.0f);
 
     bool lit = true;
 

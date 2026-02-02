@@ -7,6 +7,7 @@ class FontModule
 {
 protected:
     FontModule(const char *const name) : name(name) {};
+    ~FontModule() = default;
 
 public:
     FontModule(const FontModule &) = delete;

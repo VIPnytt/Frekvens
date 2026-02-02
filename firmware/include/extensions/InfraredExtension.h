@@ -17,7 +17,7 @@ class InfraredExtension : public ExtensionModule
 private:
     struct Code
     {
-        const decode_type_t protocol;
+        const decode_type_t protocol = {};
         const std::vector<uint16_t> displayBrightnessDecrease = {};
         const std::vector<uint16_t> displayBrightnessIncrease = {};
         const std::vector<uint16_t> displayPowerToggle = {};
