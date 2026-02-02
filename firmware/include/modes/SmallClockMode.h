@@ -7,14 +7,14 @@
 class SmallClockMode : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
     bool pending = false;
     bool ticking = true;
 
-    uint8_t hour = 24;
-    uint8_t minute = 60;
-    uint8_t second = 60;
+    int hour = 24;
+    int minute = 60;
+    int second = 60;
 
     void setTicking(bool _ticking);
     void transmit();

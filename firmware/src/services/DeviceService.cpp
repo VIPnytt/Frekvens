@@ -304,17 +304,17 @@ void DeviceService::onReceive(const JsonDocument &doc, const char *source)
     {
         const char *const action = doc["action"].as<const char *>();
         // Power off
-        if (!strcmp(action, "power"))
+        if (strcmp(action, "power") == 0)
         {
             setPower(false);
         }
         // Reboot
-        else if (!strcmp(action, "reboot"))
+        else if (strcmp(action, "reboot") == 0)
         {
             setPower(true);
         }
         // Restore
-        else if (!strcmp(action, "restore"))
+        else if (strcmp(action, "restore") == 0)
         {
             restore();
         }

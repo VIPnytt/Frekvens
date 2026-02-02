@@ -10,7 +10,7 @@ class TextHandler
 private:
     static constexpr std::string_view _name = "TextHandler";
 
-    const std::string text = "";
+    std::string text = "";
 
     FontModule *font = nullptr;
 

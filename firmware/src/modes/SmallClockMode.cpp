@@ -76,12 +76,12 @@ void SmallClockMode::handle()
                 Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 16 + second, 0);
                 Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 15 + second, INT8_MAX);
             }
-            else if (second < 8 + 15 * 2)
+            else if (second < 8 + 30)
             {
                 Display.setPixel((GRID_COLUMNS / 2) + 30 - second, (GRID_ROWS / 2) + 7, 0);
                 Display.setPixel((GRID_COLUMNS / 2) + 29 - second, (GRID_ROWS / 2) + 7, INT8_MAX);
             }
-            else if (second < 8 + 15 * 3)
+            else if (second < 8 + 45)
             {
                 Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 45 - second, 0);
                 Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 44 - second, INT8_MAX);

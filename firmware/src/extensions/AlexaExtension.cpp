@@ -42,7 +42,7 @@ void AlexaExtension::handle() { fauxmo.handle(); }
 
 void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value)
 {
-    if (!strcmp(deviceName, NAME))
+    if (strcmp(deviceName, NAME) == 0)
     {
         Display.setBrightness(static_cast<uint8_t>(value));
         Display.setPower(state);

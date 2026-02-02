@@ -19,16 +19,17 @@ private:
         bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }
     };
 
-    tm local;
+    tm local = {};
 
     bool clock = true;
     bool pending = false;
 
     unsigned long lastMillis = 0;
 
+    int hour = 24;
+    int minute = 60;
+
     uint8_t n = 0;
-    uint8_t hour = 24;
-    uint8_t minute = 60;
     uint8_t stage = 0;
 
     Pixel dot;
@@ -36,7 +37,7 @@ private:
     std::deque<Pixel> snake = {};
 
     void idle();
-    std::optional<Pixel> next() const;
+    [[nodiscard]] std::optional<Pixel> next() const;
     void move();
     void blink();
     void clean();

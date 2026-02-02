@@ -82,13 +82,13 @@ void GameOfLifeMode::handle()
                          ++_y)
                     {
                         if ((_x != x || _y != y) &&
-                            (seeds[_x + _y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(_x, _y)))
+                            (seeds[_x + (_y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(_x, _y) != 0))
                         {
                             ++n;
                         }
                     }
                 }
-                const bool lit = seeds[x + y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(x, y);
+                const bool lit = seeds[x + (y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(x, y) != 0;
                 if (lit && (n < 2 || n > 3))
                 {
                     Display.setPixel(x, y, 0);

@@ -98,7 +98,7 @@ void TickerMode::handle()
 
 void TickerMode::setFont(const char *fontName)
 {
-    if (font == nullptr || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName) != 0)
     {
         for (FontModule *_font : Fonts.getAll())
         {

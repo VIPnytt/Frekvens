@@ -7,7 +7,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void WeatherHandler::parse(std::string code, const std::vector<Codeset> codesets)
+void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
 {
     for (const WeatherHandler::Codeset codeset : codesets)
     {
@@ -20,7 +20,7 @@ void WeatherHandler::parse(std::string code, const std::vector<Codeset> codesets
     ESP_LOGD(_name.data(), "unknown condition code %s", code.c_str());
 }
 
-void WeatherHandler::parse(uint8_t code, const std::vector<Codeset8> codesets)
+void WeatherHandler::parse(uint8_t code, std::vector<Codeset8> codesets)
 {
     for (const WeatherHandler::Codeset8 codeset : codesets)
     {
@@ -33,7 +33,7 @@ void WeatherHandler::parse(uint8_t code, const std::vector<Codeset8> codesets)
     ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
-void WeatherHandler::parse(uint16_t code, const std::vector<Codeset16> codesets)
+void WeatherHandler::parse(uint16_t code, std::vector<Codeset16> codesets)
 {
     for (const WeatherHandler::Codeset16 codeset : codesets)
     {
@@ -54,7 +54,7 @@ void WeatherHandler::setSign(Conditions condition)
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
         sign = conditionClear;
 #else
-        sign = Display.getRatio() > 1 ? conditionClearTall : conditionClearWide;
+        sign = Display.getRatio() > 1.0f ? conditionClearTall : conditionClearWide;
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
         return;
     case Conditions::CLOUDY:

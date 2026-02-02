@@ -7,14 +7,14 @@
 class GameOfLifeMode : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
     bool clock = true;
     bool pending = false;
 
     uint8_t active = 0;
-    uint8_t hour = 24;
-    uint8_t minute = 60;
+    int hour = 24;
+    int minute = 60;
 
     unsigned long lastMillis = 0;
 

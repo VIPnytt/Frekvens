@@ -134,7 +134,7 @@ void CountdownMode::onReceive(const JsonDocument &doc, const char *source)
     }
     else if (doc["timestamp"].is<const char *>())
     {
-        tm local;
+        tm local = {};
         strptime(doc["timestamp"].as<const char *>(), "%FT%T", &local);
         local.tm_isdst = -1;
         epoch = std::chrono::system_clock::from_time_t(mktime(&local));

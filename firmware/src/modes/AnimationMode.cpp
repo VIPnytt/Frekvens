@@ -47,7 +47,7 @@ void AnimationMode::handle()
     }
 }
 
-void AnimationMode::setFrame(uint8_t index, uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::setFrame(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
     lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS * 2);
     Preferences Storage;

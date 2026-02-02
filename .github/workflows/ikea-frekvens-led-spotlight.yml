@@ -30,13 +30,16 @@ jobs:
     name: ESPHome build
     needs: esphome
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       matrix:
-        esphome-version:
-          - ${{ needs.esphome.outputs.min_version }}
-          - latest
+        experimental: [false]
+        include:
+          - esphome-version: ${{ needs.esphome.outputs.min_version }}
+
+          - esphome-version: latest
+            experimental: true
 
     steps:
       - name: Checkout

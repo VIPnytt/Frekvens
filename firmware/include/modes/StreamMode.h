@@ -14,7 +14,7 @@ private:
 
     uint16_t port = 4048;
 
-    std::unique_ptr<AsyncUDP> udp;
+    std::unique_ptr<AsyncUDP> udp = nullptr;
 
     void set(uint16_t _port);
     void transmit();

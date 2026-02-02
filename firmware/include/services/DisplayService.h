@@ -24,7 +24,7 @@ private:
         deg270,
     };
 
-    const uint8_t depth = min<uint8_t>(log2(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
+    const uint8_t depth = min<uint8_t>(log2f(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
     const std::vector<uint16_t> hi = {
         0b1000001001,
@@ -79,7 +79,7 @@ public:
     void setBrightness(uint8_t brightness);
 
     void getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
-    void setFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void setFrame(const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
 
     void clearFrame(uint8_t brightness = 0);
     void invertFrame();

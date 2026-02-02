@@ -14,8 +14,8 @@ public:
 
     AsyncWebServer *http = new AsyncWebServer(80);
 
-    void configure();
-    void begin();
+    void configure() const;
+    void begin() const;
 
     static void onEmpty(AsyncWebServerRequest *request);
 

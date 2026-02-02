@@ -21,10 +21,11 @@ private:
     std::deque<uint8_t> paddleA;
     std::deque<uint8_t> paddleB;
 
-    tm local;
+    tm local = {};
 
-    uint8_t hour = 24;
-    uint8_t minute = 60;
+    int hour = 24;
+    int minute = 60;
+
     uint8_t x = GRID_COLUMNS - 2;
     uint8_t y = GRID_ROWS / 2;
 

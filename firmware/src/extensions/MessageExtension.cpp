@@ -152,7 +152,7 @@ void MessageExtension::addMessage(std::string message)
 
 void MessageExtension::setFont(const char *fontName)
 {
-    if (font == nullptr || strcmp(fontName, font->name))
+    if (font == nullptr || strcmp(fontName, font->name) != 0)
     {
         for (FontModule *_font : Fonts.getAll())
         {

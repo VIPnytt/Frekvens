@@ -109,10 +109,10 @@ void PingPongMode::handle()
         deg = 360 - deg; // Invert Y
     }
     Display.setPixel(x, y, 0);
-    xDec += cos(deg * DEG_TO_RAD) * speed;
-    yDec -= sin(deg * DEG_TO_RAD) * speed;
-    x = xDec + .5f;
-    y = yDec + .5f;
+    xDec += cosf(deg * DEG_TO_RAD) * speed;
+    yDec -= sinf(deg * DEG_TO_RAD) * speed;
+    x = lroundf(xDec);
+    y = lroundf(yDec);
     Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
     const float aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec));
     const float bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec)

@@ -115,7 +115,7 @@ void ModesService::setActive(bool active)
 
 void ModesService::setMode(const char *name)
 {
-    if (mode == nullptr || strcmp(mode->name, name))
+    if (mode == nullptr || strcmp(mode->name, name) != 0)
     {
         for (ModeModule *_mode : modes)
         {

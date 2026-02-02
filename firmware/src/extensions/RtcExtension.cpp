@@ -22,10 +22,10 @@ void RtcExtension::configure()
 #endif
     if (rtc.IsDateTimeValid())
     {
-        tm local;
+        tm local = {};
         if (!getLocalTime(&local))
         {
-            struct timeval tv;
+            struct timeval tv = {};
             tv.tv_sec = rtc.GetDateTime().Unix64Time();
             settimeofday(&tv, nullptr);
             ESP_LOGD(name, "sync");

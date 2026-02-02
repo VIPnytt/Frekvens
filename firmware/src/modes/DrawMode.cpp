@@ -99,23 +99,23 @@ void DrawMode::onReceive(const JsonDocument &doc, const char *source)
     {
         const char *const action = doc["action"].as<const char *>();
         // Clear
-        if (!strcmp(action, "clear"))
+        if (strcmp(action, "clear") == 0)
         {
             memset(drawing, 0, sizeof(drawing));
             render = true;
         }
         // Load
-        else if (!strcmp(action, "load"))
+        else if (strcmp(action, "load") == 0)
         {
             load();
         }
         // Pull
-        else if (!strcmp(action, "pull"))
+        else if (strcmp(action, "pull") == 0)
         {
             save(true);
         }
         // Save
-        else if (!strcmp(action, "save"))
+        else if (strcmp(action, "save") == 0)
         {
             save();
         }

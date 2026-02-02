@@ -43,7 +43,8 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
-void RestfulExtension::onPatch(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                               size_t total)
 {
     JsonDocument doc;
     if (request->contentType() == "application/json" && !deserializeJson(doc, data, len))

@@ -155,7 +155,7 @@ void InfraredExtension::parse()
             break;
         }
     }
-    if (!IrReceiver.decodedIRData.flags)
+    if (IrReceiver.decodedIRData.flags == 0)
     {
         ESP_LOGV(name, "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
     }

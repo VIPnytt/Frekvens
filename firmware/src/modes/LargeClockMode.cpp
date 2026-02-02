@@ -112,18 +112,19 @@ void LargeClockMode::handle()
             }
             {
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
-                m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2,
+                m2.draw(GRID_COLUMNS / 2 + 1 + ((7 - m2.getWidth()) / 2),
                         (GRID_ROWS / 2) + 1 + ((7 - m2.getHeight()) / 2));
             }
             pending = false;
         }
         if (ticking && second != local.tm_sec)
         {
-            Display.setPixel(
-                (GRID_COLUMNS / 2) - 8 + ((second + 2) / 4), second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1, 0);
+            Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
+                             (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                             0);
             second = local.tm_sec;
             Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
-                             second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1,
+                             (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                              INT8_MAX);
         }
     }
@@ -131,7 +132,7 @@ void LargeClockMode::handle()
 
 void LargeClockMode::setFont(const char *fontName)
 {
-    if (font == nullptr || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName) != 0)
     {
         for (FontModule *_font : fonts)
         {

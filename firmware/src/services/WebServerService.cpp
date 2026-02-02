@@ -6,9 +6,9 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-void WebServerService::configure() { http->begin(); }
+void WebServerService::configure() const { http->begin(); }
 
-void WebServerService::begin() { http->onNotFound(&onNotFound); }
+void WebServerService::begin() const { http->onNotFound(&onNotFound); }
 
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {

@@ -28,7 +28,7 @@ void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const s
 }
 
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
-                                 uint8_t *data, size_t len)
+                                 const uint8_t *data, size_t len)
 {
     switch (type)
     {

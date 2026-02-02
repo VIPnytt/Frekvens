@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -41,9 +40,9 @@ public:
     std::vector<uint16_t> sign = {};
     int16_t temperature;
 
-    void parse(std::string code, const std::vector<Codeset> codesets);
-    void parse(uint8_t code, const std::vector<Codeset8> codesets);
-    void parse(uint16_t code, const std::vector<Codeset16> codesets);
+    void parse(std::string code, std::vector<Codeset> codesets);
+    void parse(uint8_t code, std::vector<Codeset8> codesets);
+    void parse(uint16_t code, std::vector<Codeset16> codesets);
     void draw();
 
 private:
