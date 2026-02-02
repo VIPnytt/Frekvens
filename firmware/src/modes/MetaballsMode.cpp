@@ -13,8 +13,8 @@ void MetaballsMode::configure()
     }
     for (Ball &ball : balls)
     {
-        ball.x = random(GRID_COLUMNS);
-        ball.y = random(GRID_ROWS);
+        ball.x = static_cast<float>(random(GRID_COLUMNS));
+        ball.y = static_cast<float>(random(GRID_ROWS));
         ball.xVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
         ball.yVelocity = random(1, multiplier) * speed * (random(2) * 2 - 1);
     }
@@ -26,11 +26,11 @@ void MetaballsMode::handle()
     if (Microphone->isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
-        const bool rotated = Display.getOrientation() % 2;
-        const float xRatio =
-            2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL);
-        const float yRatio =
-            2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL);
+        const bool rotated = (Display.getOrientation() % 2) != 0;
+        const float xRatio = 2.0f * static_cast<float>(rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) /
+                             static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
+        const float yRatio = 2.0f * static_cast<float>(rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) /
+                             static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
         for (const Ball &ball : balls)
         {
             const uint8_t xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0);

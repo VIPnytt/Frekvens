@@ -29,8 +29,8 @@ public:
     void setPower(bool power);
     void restore();
 
-    void transmit(JsonDocument doc, const char *source, bool retain = true);
-    void receive(const JsonDocument &doc, const char *source, const char *destination);
+    void transmit(const JsonDocument &doc, const char *source, bool retain = true) const;
+    void receive(const JsonDocument &doc, const char *source, const char *destination) const;
 
     [[nodiscard]] const JsonDocument getTransmits() const;
 

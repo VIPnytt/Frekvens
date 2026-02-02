@@ -49,7 +49,7 @@ void AnimationMode::handle()
 
 void AnimationMode::setFrame(uint8_t index, uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
-    lastMillis = millis() + GRID_COLUMNS * GRID_ROWS * 2;
+    lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS * 2);
     Preferences Storage;
     Storage.begin(name);
     Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
@@ -84,7 +84,7 @@ void AnimationMode::setInterval(uint16_t interval)
     }
 }
 
-void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
     JsonDocument doc;
     doc["interval"] = interval;

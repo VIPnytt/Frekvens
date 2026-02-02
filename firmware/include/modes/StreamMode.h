@@ -16,7 +16,7 @@ private:
 
     std::unique_ptr<AsyncUDP> udp;
 
-    void set(const uint16_t _port);
+    void set(uint16_t _port);
     void transmit();
 
     static void onPacket(AsyncUDPPacket packet);

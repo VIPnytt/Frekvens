@@ -60,7 +60,7 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
-    hw_timer_t *timer;
+    hw_timer_t *timer = nullptr;
 
     void configure();
     void begin();

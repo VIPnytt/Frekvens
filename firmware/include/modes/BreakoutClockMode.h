@@ -12,8 +12,8 @@ class BreakoutClockMode : public ModeModule
 private:
     static constexpr float speed = 7e-4 * GRID_ROWS;
 
-    float xDec = GRID_COLUMNS / 2;
-    float yDec = GRID_ROWS - 2;
+    float xDec = GRID_COLUMNS / 2.0f;
+    float yDec = GRID_ROWS - 2.0f;
 
     std::deque<uint8_t> paddle = {};
 

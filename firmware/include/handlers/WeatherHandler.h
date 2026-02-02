@@ -41,9 +41,9 @@ public:
     std::vector<uint16_t> sign = {};
     int16_t temperature;
 
-    void parse(const std::string code, const std::vector<Codeset> codesets);
-    void parse(const uint8_t code, const std::vector<Codeset8> codesets);
-    void parse(const uint16_t code, const std::vector<Codeset16> codesets);
+    void parse(std::string code, const std::vector<Codeset> codesets);
+    void parse(uint8_t code, const std::vector<Codeset8> codesets);
+    void parse(uint16_t code, const std::vector<Codeset16> codesets);
     void draw();
 
 private:

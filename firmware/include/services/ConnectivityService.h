@@ -19,7 +19,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::unique_ptr<DNSServer> dns;
+    std::unique_ptr<DNSServer> dns = nullptr;
 
     WiFiMulti multi;
 

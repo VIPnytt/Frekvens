@@ -18,21 +18,21 @@ private:
     struct Code
     {
         const decode_type_t protocol;
-        const std::vector<uint16_t> displayBrightnessDecrease;
-        const std::vector<uint16_t> displayBrightnessIncrease;
-        const std::vector<uint16_t> displayPowerToggle;
+        const std::vector<uint16_t> displayBrightnessDecrease = {};
+        const std::vector<uint16_t> displayBrightnessIncrease = {};
+        const std::vector<uint16_t> displayPowerToggle = {};
 #if EXTENSION_MICROPHONE
-        const std::vector<uint16_t> extensionMicrophoneToggle;
+        const std::vector<uint16_t> extensionMicrophoneToggle = {};
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-        const std::vector<uint16_t> extensionPhotocellToggle;
+        const std::vector<uint16_t> extensionPhotocellToggle = {};
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-        const std::vector<uint16_t> extensionPlaylistStart;
-        const std::vector<uint16_t> extensionPlaylistStop;
+        const std::vector<uint16_t> extensionPlaylistStart = {};
+        const std::vector<uint16_t> extensionPlaylistStop = {};
 #endif // EXTENSION_PLAYLIST
-        const std::vector<uint16_t> modeNext;
-        const std::vector<uint16_t> modePrevious;
+        const std::vector<uint16_t> modeNext = {};
+        const std::vector<uint16_t> modePrevious = {};
     };
 
     const std::vector<Code> codes = {
@@ -135,7 +135,7 @@ public:
     void begin() override;
     void handle() override;
 
-    bool getActive() const;
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
     void parse();
 

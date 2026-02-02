@@ -130,7 +130,7 @@ void ModesService::setMode(const char *name)
 
 void ModesService::setMode(ModeModule *mode, bool power)
 {
-    if (taskHandle != nullptr && this->mode)
+    if (taskHandle != nullptr && this->mode != nullptr)
     {
         vTaskDelete(taskHandle);
         taskHandle = nullptr;

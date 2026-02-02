@@ -93,7 +93,7 @@ void SnakeMode::idle()
     stage = 1;
 }
 
-std::optional<SnakeMode::Pixel> SnakeMode::next()
+std::optional<SnakeMode::Pixel> SnakeMode::next() const
 {
     Pixel start = snake.back();
     std::map<Pixel, Pixel> from;

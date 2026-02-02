@@ -22,7 +22,7 @@ private:
     void setFrames(uint8_t count);
     void setInterval(uint16_t interval);
 
-    void transmit(const uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
 
 public:
     AnimationMode() : ModeModule("Animation") {};

@@ -244,7 +244,7 @@ void DeviceService::transmit()
     Device.transmit(doc, name);
 }
 
-void DeviceService::transmit(JsonDocument doc, const char *const source, bool retain)
+void DeviceService::transmit(const JsonDocument &doc, const char *const source, bool retain) const
 {
     if (retain)
     {
@@ -260,7 +260,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
     }
 }
 
-void DeviceService::receive(const JsonDocument &doc, const char *source, const char *destination)
+void DeviceService::receive(const JsonDocument &doc, const char *source, const char *destination) const
 {
     if (operational)
     {

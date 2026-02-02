@@ -14,7 +14,7 @@ private:
     uint8_t lower = 0;
     uint8_t upper = 0;
 
-    std::chrono::time_point<std::chrono::system_clock> epoch;
+    std::chrono::time_point<std::chrono::system_clock> epoch = {};
 
     void save();
     void transmit();

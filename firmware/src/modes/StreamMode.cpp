@@ -57,7 +57,7 @@ void StreamMode::begin()
     }
 }
 
-void StreamMode::set(const uint16_t _port)
+void StreamMode::set(uint16_t _port)
 {
     if (_port != port && (_port == 4048 || _port == 5568 || _port == 6454))
     {

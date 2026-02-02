@@ -87,7 +87,8 @@ void CountdownMode::handle()
             }
             {
                 TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);
-                br.draw(GRID_COLUMNS / 2 + 1 + (7 - br.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - br.getHeight()) / 2);
+                br.draw((GRID_COLUMNS / 2) + 1 + ((7 - br.getWidth()) / 2),
+                        (GRID_ROWS / 2) + 1 + ((7 - br.getHeight()) / 2));
             }
             if (seconds == 0 && minutes == 0 && hours == 0)
             {

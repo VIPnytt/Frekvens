@@ -42,7 +42,7 @@ void DrawMode::handle()
 
 void DrawMode::end() { save(true); }
 
-void DrawMode::load(const bool cache)
+void DrawMode::load(bool cache)
 {
     Preferences Storage;
     Storage.begin(name, true);
@@ -62,7 +62,7 @@ void DrawMode::load(const bool cache)
     Storage.end();
 }
 
-void DrawMode::save(const bool cache)
+void DrawMode::save(bool cache)
 {
     for (const uint8_t pixel : drawing)
     {

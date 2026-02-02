@@ -12,8 +12,8 @@ private:
     {
         uint8_t x = 0;
         uint8_t y = 0;
-        uint8_t brightness;
-        uint16_t delay;
+        uint8_t brightness = INT8_MAX;
+        uint16_t delay = UINT8_MAX;
         unsigned long lastMillis = 0;
     };
 

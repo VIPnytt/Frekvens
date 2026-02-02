@@ -13,8 +13,8 @@ private:
 
     uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
 
-    void load(const bool cache = false);
-    void save(const bool cache = false);
+    void load(bool cache = false);
+    void save(bool cache = false);
     void transmit();
 
 public:

@@ -35,9 +35,8 @@ private:
 
     std::deque<Pixel> snake = {};
 
-    std::optional<Pixel> next();
-
     void idle();
+    std::optional<Pixel> next() const;
     void move();
     void blink();
     void clean();

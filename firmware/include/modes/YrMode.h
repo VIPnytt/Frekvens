@@ -155,8 +155,8 @@ private:
 public:
     YrMode() : ModeModule("Yr") {};
 
-    void begin();
-    void handle();
+    void begin() override;
+    void handle() override;
 };
 
 #endif // MODE_YR

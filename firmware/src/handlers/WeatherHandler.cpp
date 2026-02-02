@@ -7,7 +7,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void WeatherHandler::parse(const std::string code, const std::vector<Codeset> codesets)
+void WeatherHandler::parse(std::string code, const std::vector<Codeset> codesets)
 {
     for (const WeatherHandler::Codeset codeset : codesets)
     {
@@ -20,7 +20,7 @@ void WeatherHandler::parse(const std::string code, const std::vector<Codeset> co
     ESP_LOGD(_name.data(), "unknown condition code %s", code.c_str());
 }
 
-void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codesets)
+void WeatherHandler::parse(uint8_t code, const std::vector<Codeset8> codesets)
 {
     for (const WeatherHandler::Codeset8 codeset : codesets)
     {
@@ -33,7 +33,7 @@ void WeatherHandler::parse(const uint8_t code, const std::vector<Codeset8> codes
     ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
-void WeatherHandler::parse(const uint16_t code, const std::vector<Codeset16> codesets)
+void WeatherHandler::parse(uint16_t code, const std::vector<Codeset16> codesets)
 {
     for (const WeatherHandler::Codeset16 codeset : codesets)
     {

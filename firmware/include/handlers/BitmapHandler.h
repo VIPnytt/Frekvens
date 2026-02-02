@@ -9,7 +9,7 @@ class BitmapHandler
 private:
     static constexpr std::string_view _name = "BitmapHandler";
 
-    const std::vector<uint16_t> bitmap;
+    const std::vector<uint16_t> bitmap = {};
 
     uint8_t height = 0;
     uint8_t width = 0;

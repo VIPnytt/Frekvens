@@ -112,17 +112,19 @@ void LargeClockMode::handle()
             }
             {
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
-                m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - m2.getHeight()) / 2);
+                m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2,
+                        (GRID_ROWS / 2) + 1 + ((7 - m2.getHeight()) / 2));
             }
             pending = false;
         }
         if (ticking && second != local.tm_sec)
         {
             Display.setPixel(
-                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
+                (GRID_COLUMNS / 2) - 8 + ((second + 2) / 4), second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1, 0);
             second = local.tm_sec;
-            Display.setPixel(
-                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
+            Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
+                             second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1,
+                             INT8_MAX);
         }
     }
 }

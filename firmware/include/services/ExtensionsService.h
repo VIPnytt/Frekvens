@@ -95,7 +95,7 @@ public:
     void configure();
     void begin();
 
-    const std::vector<ExtensionModule *> &getAll() const;
+    [[nodiscard]] const std::vector<ExtensionModule *> &getAll() const;
 
     static ExtensionsService &getInstance();
 };
