@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class HomeThermometerMode : public ModeModule
+class HomeThermometerMode final : public ModeModule
 {
 private:
     bool pending = false;
@@ -12,6 +12,9 @@ private:
     void update();
     void setTemperature(const char *where, int16_t temperature);
     void transmit();
+
+protected:
+    ~HomeThermometerMode() = default;
 
 public:
     HomeThermometerMode() : ModeModule("Home thermometer") {};

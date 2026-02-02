@@ -4,7 +4,7 @@
 
 #include "modules/ExtensionModule.h"
 
-class PhotocellExtension : public ExtensionModule
+class PhotocellExtension final : public ExtensionModule
 {
 private:
     bool active = false;
@@ -25,6 +25,9 @@ private:
     void setGamma(float _gamma);
 
     void transmit();
+
+protected:
+    ~PhotocellExtension() = default;
 
 public:
     PhotocellExtension();

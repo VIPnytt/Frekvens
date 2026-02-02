@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MiniFont : public FontModule
+class MiniFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -868,6 +868,9 @@ private:
             },
         },
     };
+
+protected:
+    ~MiniFont() = default;
 
 public:
     MiniFont();

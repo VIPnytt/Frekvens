@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class OpenWeatherMode : public ModeModule
+class OpenWeatherMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 600'000; // Recommended update interval: 10 minutes
@@ -72,6 +72,9 @@ private:
     };
 
     void update();
+
+protected:
+    ~OpenWeatherMode() = default;
 
 public:
     OpenWeatherMode() : ModeModule("OpenWeather") {};

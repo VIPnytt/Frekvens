@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class RainMode : public ModeModule
+class RainMode final : public ModeModule
 {
 private:
     struct Drop
@@ -19,6 +19,9 @@ private:
     };
 
     Drop drops[GRID_COLUMNS / 3];
+
+protected:
+    ~RainMode() = default;
 
 public:
     RainMode() : ModeModule("Rain") {};

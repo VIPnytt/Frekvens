@@ -7,7 +7,7 @@
 
 #include <vector>
 
-class LargeClockMode : public ModeModule
+class LargeClockMode final : public ModeModule
 {
 private:
     tm local = {};
@@ -26,6 +26,9 @@ private:
     void setFont(const char *fontName);
     void setTicking(bool _ticking);
     void transmit();
+
+protected:
+    ~LargeClockMode() = default;
 
 public:
     LargeClockMode() : ModeModule("Large clock") {};

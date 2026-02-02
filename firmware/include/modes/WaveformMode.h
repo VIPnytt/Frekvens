@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class WaveformMode : public ModeModule
+class WaveformMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -113,6 +113,9 @@ private:
             0b0000001000000000,
         },
     };
+
+protected:
+    ~WaveformMode() = default;
 
 public:
     WaveformMode() : ModeModule("Waveform") {};

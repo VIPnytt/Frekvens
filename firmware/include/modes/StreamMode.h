@@ -7,7 +7,7 @@
 #include <AsyncUDP.h>
 #include <bits/unique_ptr.h>
 
-class StreamMode : public ModeModule
+class StreamMode final : public ModeModule
 {
 private:
     static constexpr std::string_view _name = "Stream";
@@ -20,6 +20,9 @@ private:
     void transmit();
 
     static void onPacket(AsyncUDPPacket packet);
+
+protected:
+    ~StreamMode() = default;
 
 public:
     StreamMode() : ModeModule(_name.data()) {};

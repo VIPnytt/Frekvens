@@ -6,7 +6,7 @@
 
 #include <chrono>
 
-class CountdownMode : public ModeModule
+class CountdownMode final : public ModeModule
 {
 private:
     bool done = false;
@@ -18,6 +18,9 @@ private:
 
     void save();
     void transmit();
+
+protected:
+    ~CountdownMode() = default;
 
 public:
     CountdownMode() : ModeModule("Countdown") {};

@@ -6,7 +6,7 @@
 #include "handlers/BitmapHandler.h"
 #include "modules/ExtensionModule.h"
 
-class SignalExtension : public ExtensionModule
+class SignalExtension final : public ExtensionModule
 {
 private:
     bool active = false;
@@ -20,6 +20,9 @@ private:
 
     void setDuration(uint8_t seconds);
     void transmit();
+
+protected:
+    ~SignalExtension() = default;
 
 public:
     SignalExtension();

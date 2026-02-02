@@ -10,7 +10,7 @@
 
 #include <bits/unique_ptr.h>
 
-class TickerMode : public ModeModule
+class TickerMode final : public ModeModule
 {
 private:
     bool pending = false;
@@ -32,6 +32,9 @@ private:
     void setMessage(std::string _message);
 
     void transmit();
+
+protected:
+    ~TickerMode() = default;
 
 public:
     TickerMode() : ModeModule("Ticker") {};

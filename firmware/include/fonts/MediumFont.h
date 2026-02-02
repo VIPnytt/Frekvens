@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MediumFont : public FontModule
+class MediumFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -259,6 +259,9 @@ private:
             0,
         },
     };
+
+protected:
+    ~MediumFont() = default;
 
 public:
     MediumFont();

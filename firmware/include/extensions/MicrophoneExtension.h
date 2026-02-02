@@ -4,7 +4,7 @@
 
 #include "modules/ExtensionModule.h"
 
-class MicrophoneExtension : public ExtensionModule
+class MicrophoneExtension final : public ExtensionModule
 {
 private:
     bool active = false;
@@ -19,6 +19,9 @@ private:
     unsigned long _lastMillis = 0;
 
     void transmit();
+
+protected:
+    ~MicrophoneExtension() = default;
 
 public:
     MicrophoneExtension();

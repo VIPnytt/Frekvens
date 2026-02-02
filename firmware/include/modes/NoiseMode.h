@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class NoiseMode : public ModeModule
+class NoiseMode final : public ModeModule
 {
 private:
     struct Dot
@@ -17,6 +17,9 @@ private:
     };
 
     Dot dots[GRID_COLUMNS * GRID_ROWS / 9];
+
+protected:
+    ~NoiseMode() = default;
 
 public:
     NoiseMode() : ModeModule("Noise") {};

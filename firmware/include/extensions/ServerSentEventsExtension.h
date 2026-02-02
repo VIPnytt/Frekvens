@@ -6,8 +6,11 @@
 
 #include <ESPAsyncWebServer.h>
 
-class ServerSentEventsExtension : public ExtensionModule
+class ServerSentEventsExtension final : public ExtensionModule
 {
+protected:
+    ~ServerSentEventsExtension() = default;
+
 public:
     ServerSentEventsExtension();
 

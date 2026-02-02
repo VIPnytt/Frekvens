@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class DisplayService : public ServiceModule
+class DisplayService final : public ServiceModule
 {
 private:
     DisplayService() : ServiceModule("Display") {};
@@ -58,6 +58,9 @@ private:
     static void onPowerOff();
 
     static IRAM_ATTR void onTimer();
+
+protected:
+    ~DisplayService() = default;
 
 public:
     hw_timer_t *timer = nullptr;

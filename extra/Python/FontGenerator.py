@@ -113,7 +113,7 @@ class FontGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {unique}Font : public FontModule",
+            f"class {unique}Font final : public FontModule",
             "{",
             "private:",
             "    const std::vector<Symbol> ascii = {",
@@ -201,6 +201,9 @@ class FontGenerator:
         with open(f"{unique}Font.h", "w", encoding="utf-8") as h:
             font.extend(
                 [
+                    "",
+                    "protected:",
+                    f"    ~{unique}Font() = default;",
                     "",
                     "public:",
                     f"    {unique}Font();",

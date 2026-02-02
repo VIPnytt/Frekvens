@@ -7,7 +7,7 @@
 #include <ESPAsyncWebServer.h>
 #include <fauxmoESP.h>
 
-class AlexaExtension : public ExtensionModule
+class AlexaExtension final : public ExtensionModule
 {
 private:
     fauxmoESP fauxmo = fauxmoESP();
@@ -15,6 +15,9 @@ private:
     static void onGet(AsyncWebServerRequest *request);
     static void onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     static void onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value);
+
+protected:
+    ~AlexaExtension() = default;
 
 public:
     AlexaExtension();

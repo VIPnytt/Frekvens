@@ -4,10 +4,13 @@
 
 #include <ESPAsyncWebServer.h>
 
-class WebServerService : public ServiceModule
+class WebServerService final : public ServiceModule
 {
 private:
     static void onNotFound(AsyncWebServerRequest *request);
+
+protected:
+    ~WebServerService() = default;
 
 public:
     WebServerService() : ServiceModule("WebServer") {};

@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class DrawMode : public ModeModule
+class DrawMode final : public ModeModule
 {
 private:
     bool pending = false;
@@ -16,6 +16,9 @@ private:
     void load(bool cache = false);
     void save(bool cache = false);
     void transmit();
+
+protected:
+    ~DrawMode() = default;
 
 public:
     DrawMode() : ModeModule("Draw") {};

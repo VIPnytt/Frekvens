@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class PlaylistExtension : public ExtensionModule
+class PlaylistExtension final : public ExtensionModule
 {
 public:
     PlaylistExtension();
@@ -25,6 +25,9 @@ public:
 
     void onReceive(const JsonDocument &doc, const char *source) override;
     void onTransmit(const JsonDocument &doc, const char *source) override;
+
+protected:
+    ~PlaylistExtension() = default;
 
 private:
     bool active = false;

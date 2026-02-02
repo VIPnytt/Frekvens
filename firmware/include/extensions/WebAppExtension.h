@@ -5,10 +5,13 @@
 #include "modules/ExtensionModule.h"
 #include "services/WebServerService.h"
 
-class WebAppExtension : public ExtensionModule
+class WebAppExtension final : public ExtensionModule
 {
 private:
     static void onHeadRoot(AsyncWebServerRequest *request);
+
+protected:
+    ~WebAppExtension() = default;
 
 public:
     WebAppExtension();

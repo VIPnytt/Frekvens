@@ -4,10 +4,13 @@
 
 #include "modules/ExtensionModule.h"
 
-class HeapExtension : public ExtensionModule
+class HeapExtension final : public ExtensionModule
 {
 private:
     unsigned long lastMillis = 0;
+
+protected:
+    ~HeapExtension() = default;
 
 public:
     HeapExtension();

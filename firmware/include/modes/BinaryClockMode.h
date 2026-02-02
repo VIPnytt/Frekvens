@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class BinaryClockMode : public ModeModule
+class BinaryClockMode final : public ModeModule
 {
 private:
     tm local = {};
@@ -16,6 +16,9 @@ private:
     int second = 60;
 
     void draw(uint8_t col, uint8_t value);
+
+protected:
+    ~BinaryClockMode() = default;
 
 public:
     BinaryClockMode() : ModeModule("Binary clock") {};

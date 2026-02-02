@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class MetaballsMode : public ModeModule
+class MetaballsMode final : public ModeModule
 {
 private:
     static constexpr float radius = min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL,
@@ -27,6 +27,9 @@ private:
     uint8_t contributions[1 << 8] = {0};
 
     Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)] = {};
+
+protected:
+    ~MetaballsMode() = default;
 
 public:
     MetaballsMode() : ModeModule("Metaballs") {};

@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class JaggedWaveformMode : public ModeModule
+class JaggedWaveformMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -68,6 +68,9 @@ private:
             0b0000010000000010,
         },
     };
+
+protected:
+    ~JaggedWaveformMode() = default;
 
 public:
     JaggedWaveformMode() : ModeModule("Jagged waveform") {};

@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class StarsMode : public ModeModule
+class StarsMode final : public ModeModule
 {
 private:
     struct Star
@@ -19,6 +19,9 @@ private:
     };
 
     Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
+
+protected:
+    ~StarsMode() = default;
 
 public:
     StarsMode() : ModeModule("Stars") {};

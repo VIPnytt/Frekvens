@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class HomeAssistantWeatherMode : public ModeModule
+class HomeAssistantWeatherMode final : public ModeModule
 {
 private:
     static constexpr uint16_t interval = UINT16_MAX;
@@ -115,6 +115,9 @@ private:
     };
 
     void update();
+
+protected:
+    ~HomeAssistantWeatherMode() = default;
 
 public:
     HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};

@@ -6,10 +6,9 @@ class ModeModule
 {
 protected:
     ModeModule(const char *const name) : name(name) {};
-
-public:
     ~ModeModule() = default;
 
+public:
     ModeModule(const ModeModule &) = delete;
     ModeModule &operator=(const ModeModule &) = delete;
 

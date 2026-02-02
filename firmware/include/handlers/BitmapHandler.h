@@ -15,6 +15,7 @@ private:
 
 public:
     BitmapHandler(std::vector<uint16_t> bitmap);
+    ~BitmapHandler() = default;
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);

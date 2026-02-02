@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class SmallClockMode : public ModeModule
+class SmallClockMode final : public ModeModule
 {
 private:
     tm local = {};
@@ -18,6 +18,9 @@ private:
 
     void setTicking(bool _ticking);
     void transmit();
+
+protected:
+    ~SmallClockMode() = default;
 
 public:
     SmallClockMode() : ModeModule("Small clock") {};

@@ -7,7 +7,7 @@
 
 #include <vector>
 
-class AnimationMode : public ModeModule
+class AnimationMode final : public ModeModule
 {
 private:
     bool pending = false;
@@ -23,6 +23,9 @@ private:
     void setInterval(uint16_t interval);
 
     void transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+
+protected:
+    ~AnimationMode() = default;
 
 public:
     AnimationMode() : ModeModule("Animation") {};

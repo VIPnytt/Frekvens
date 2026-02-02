@@ -6,6 +6,9 @@
 class WeatherHandler
 {
 public:
+    WeatherHandler() {};
+    ~WeatherHandler() = default;
+
     enum Conditions
     {
         CLEAR,

@@ -7,7 +7,7 @@
 
 #include <ArduinoOTA.h>
 
-class OtaExtension : public ExtensionModule
+class OtaExtension final : public ExtensionModule
 {
 private:
     ArduinoOTAClass ArduinoOTA;
@@ -19,6 +19,9 @@ private:
     static void onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len,
                        bool final);
 #endif
+
+protected:
+    ~OtaExtension() = default;
 
 public:
     OtaExtension();

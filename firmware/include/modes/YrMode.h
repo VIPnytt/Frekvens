@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class YrMode : public ModeModule
+class YrMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 300'000; // Data resolution: down to 5 minutes (depending on location)
@@ -151,6 +151,9 @@ private:
     };
 
     void update();
+
+protected:
+    ~YrMode() = default;
 
 public:
     YrMode() : ModeModule("Yr") {};

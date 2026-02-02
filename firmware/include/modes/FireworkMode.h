@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class FireworkMode : public ModeModule
+class FireworkMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -21,6 +21,9 @@ private:
     void launching();
     void exploding();
     void fading();
+
+protected:
+    ~FireworkMode() = default;
 
 public:
     FireworkMode() : ModeModule("Firework") {};

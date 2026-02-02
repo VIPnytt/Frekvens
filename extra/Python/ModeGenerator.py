@@ -45,7 +45,7 @@ class ModeGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {self.id}Mode : public ModeModule",
+            f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
             "    unsigned long lastMillis = 0;",
@@ -64,6 +64,9 @@ class ModeGenerator:
         frames.extend(
             [
                 "    };",
+                "",
+                "protected:",
+                f"    ~{self.id}Mode() = default;",
                 "",
                 "public:",
                 f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',
@@ -125,7 +128,7 @@ class ModeGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {self.id}Mode : public ModeModule",
+            f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
             "    std::vector<uint16_t> frame = {",
@@ -143,6 +146,9 @@ class ModeGenerator:
         frame.extend(
             [
                 "    };",
+                "",
+                "protected:",
+                f"    ~{self.id}Mode() = default;",
                 "",
                 "public:",
                 f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',

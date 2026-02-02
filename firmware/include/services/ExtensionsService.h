@@ -22,7 +22,7 @@
 
 #include <vector>
 
-class ExtensionsService : public ServiceModule
+class ExtensionsService final : public ServiceModule
 {
 private:
     ExtensionsService() : ServiceModule("Extensions") {};
@@ -86,6 +86,9 @@ private:
     void transmit();
 
     static void onTask(void *parameter = nullptr);
+
+protected:
+    ~ExtensionsService() = default;
 
 public:
     TaskHandle_t taskHandle = nullptr;

@@ -11,7 +11,7 @@
 #include <RtcPCF8563.h>
 #include <Wire.h>
 
-class RtcExtension : public ExtensionModule
+class RtcExtension final : public ExtensionModule
 {
 private:
 #ifdef PIN_INT
@@ -31,6 +31,9 @@ private:
 #ifdef PIN_INT
     static void onInterrupt();
 #endif
+
+protected:
+    ~RtcExtension() = default;
 
 public:
     RtcExtension();

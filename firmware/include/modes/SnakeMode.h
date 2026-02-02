@@ -7,7 +7,7 @@
 #include <deque>
 #include <optional>
 
-class SnakeMode : public ModeModule
+class SnakeMode final : public ModeModule
 {
 private:
     struct Pixel
@@ -45,6 +45,9 @@ private:
     void setClock(bool _clock);
     void setDot();
     void transmit();
+
+protected:
+    ~SnakeMode() = default;
 
 public:
     SnakeMode() : ModeModule("Snake") {}

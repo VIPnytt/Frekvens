@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class EqualizerMode : public ModeModule
+class EqualizerMode final : public ModeModule
 {
 private:
     static constexpr uint8_t width = 3;
@@ -19,6 +19,9 @@ private:
     Bar bars[GRID_COLUMNS / (width + 1)] = {0};
 
     unsigned long lastMillis = 0;
+
+protected:
+    ~EqualizerMode() = default;
 
 public:
     EqualizerMode() : ModeModule("Equalizer") {};

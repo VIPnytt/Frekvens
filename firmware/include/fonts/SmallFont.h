@@ -6,7 +6,7 @@
 // Font inspired by https://github.com/MakeMagazinDE/Obegraensad
 //
 
-class SmallFont : public FontModule
+class SmallFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -1454,6 +1454,9 @@ private:
             },
         },
     };
+
+protected:
+    ~SmallFont() = default;
 
 public:
     SmallFont();

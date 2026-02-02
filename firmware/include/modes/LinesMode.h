@@ -4,12 +4,15 @@
 
 #include "modules/ModeModule.h"
 
-class LinesMode : public ModeModule
+class LinesMode final : public ModeModule
 {
 private:
     uint8_t x = 0;
 
     unsigned long lastMillis = 0;
+
+protected:
+    ~LinesMode() = default;
 
 public:
     LinesMode() : ModeModule("Lines") {};

@@ -7,7 +7,7 @@
 
 #include <deque>
 
-class BreakoutClockMode : public ModeModule
+class BreakoutClockMode final : public ModeModule
 {
 private:
     static constexpr float speed = 7e-4 * GRID_ROWS;
@@ -26,6 +26,9 @@ private:
     uint8_t y = GRID_ROWS - 2;
 
     uint16_t deg = 90;
+
+protected:
+    ~BreakoutClockMode() = default;
 
 public:
     BreakoutClockMode() : ModeModule("Breakout clock") {};

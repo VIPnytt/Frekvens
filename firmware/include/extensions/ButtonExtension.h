@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
-class ButtonExtension : public ExtensionModule
+class ButtonExtension final : public ExtensionModule
 {
 private:
 #ifdef PIN_SW1
@@ -35,6 +35,9 @@ private:
     static IRAM_ATTR void onInterrupt();
 
     static void event(const char *key, const char *value);
+
+protected:
+    ~ButtonExtension() = default;
 
 public:
     ButtonExtension();

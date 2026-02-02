@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class OpenMeteoMode : public ModeModule
+class OpenMeteoMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 900'000; // Data resolution: down to 15 minutes (depending on location)
@@ -73,6 +73,9 @@ private:
     };
 
     void update();
+
+protected:
+    ~OpenMeteoMode() = default;
 
 public:
     OpenMeteoMode() : ModeModule("Open-Meteo") {};

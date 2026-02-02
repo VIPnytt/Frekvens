@@ -12,7 +12,7 @@
 
 #include <vector>
 
-class InfraredExtension : public ExtensionModule
+class InfraredExtension final : public ExtensionModule
 {
 private:
     struct Code
@@ -127,6 +127,9 @@ private:
     unsigned long lastMillis = 0;
 
     void transmit();
+
+protected:
+    ~InfraredExtension() = default;
 
 public:
     InfraredExtension();

@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class WorldWeatherOnlineMode : public ModeModule
+class WorldWeatherOnlineMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 600'000; // Recommended update interval: 10-15 minutes
@@ -60,6 +60,9 @@ private:
     };
 
     void update();
+
+protected:
+    ~WorldWeatherOnlineMode() = default;
 
 public:
     WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};

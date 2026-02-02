@@ -4,8 +4,11 @@
 
 #include "modules/ModeModule.h"
 
-class GlitterMode : public ModeModule
+class GlitterMode final : public ModeModule
 {
+protected:
+    ~GlitterMode() = default;
+
 public:
     GlitterMode() : ModeModule("Glitter") {};
 

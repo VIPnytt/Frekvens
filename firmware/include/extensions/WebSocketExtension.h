@@ -6,11 +6,14 @@
 
 #include <ESPAsyncWebServer.h>
 
-class WebSocketExtension : public ExtensionModule
+class WebSocketExtension final : public ExtensionModule
 {
 private:
     static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                         const uint8_t *data, size_t len);
+
+protected:
+    ~WebSocketExtension() = default;
 
 public:
     WebSocketExtension();

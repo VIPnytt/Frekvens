@@ -6,7 +6,7 @@
 #include <DNSServer.h>
 #include <WiFiMulti.h>
 
-class ConnectivityService : public ServiceModule
+class ConnectivityService final : public ServiceModule
 {
 private:
     static constexpr std::string_view _name = "Connectivity";
@@ -34,6 +34,9 @@ private:
     static void onIPv6(WiFiEvent_t event, WiFiEventInfo_t info);
     static void onRoutable();
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
+
+protected:
+    ~ConnectivityService() = default;
 
 public:
     static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";

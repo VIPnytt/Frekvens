@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class ArrowMode : public ModeModule
+class ArrowMode final : public ModeModule
 {
 private:
     const std::vector<std::vector<uint16_t>> arrow = {
@@ -82,6 +82,9 @@ private:
     uint8_t index = 0;
 
     unsigned long lastMillis = 0;
+
+protected:
+    ~ArrowMode() = default;
 
 public:
     ArrowMode() : ModeModule("Arrow") {};

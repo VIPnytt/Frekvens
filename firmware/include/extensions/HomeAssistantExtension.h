@@ -6,7 +6,7 @@
 
 #include <format>
 
-class HomeAssistantExtension : public ExtensionModule
+class HomeAssistantExtension final : public ExtensionModule
 {
 private:
     bool pending = false;
@@ -17,6 +17,9 @@ private:
     static constexpr std::string_view payloadOn = "{\"power\":true}";
 
     void transmit();
+
+protected:
+    ~HomeAssistantExtension() = default;
 
 public:
     HomeAssistantExtension();

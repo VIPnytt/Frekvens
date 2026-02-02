@@ -4,8 +4,11 @@
 
 #include "modules/ModeModule.h"
 
-class BrightMode : public ModeModule
+class BrightMode final : public ModeModule
 {
+protected:
+    ~BrightMode() = default;
+
 public:
     BrightMode() : ModeModule("Bright") {};
 

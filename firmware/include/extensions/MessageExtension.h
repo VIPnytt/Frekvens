@@ -9,7 +9,7 @@
 
 #include <bits/unique_ptr.h>
 
-class MessageExtension : public ExtensionModule
+class MessageExtension final : public ExtensionModule
 {
 private:
     bool active = false;
@@ -37,6 +37,9 @@ private:
     void setRepeat(uint8_t count);
 
     void transmit();
+
+protected:
+    ~MessageExtension() = default;
 
 public:
     MessageExtension();

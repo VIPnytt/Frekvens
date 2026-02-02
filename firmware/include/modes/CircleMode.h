@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class CircleMode : public ModeModule
+class CircleMode final : public ModeModule
 {
 private:
     static constexpr float x = (GRID_COLUMNS - 1) / 2.0f;
@@ -22,6 +22,9 @@ private:
     uint8_t radius = 0;
 
     unsigned long lastMillis = 0;
+
+protected:
+    ~CircleMode() = default;
 
 public:
     CircleMode() : ModeModule("Circle") {};

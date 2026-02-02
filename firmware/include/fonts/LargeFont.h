@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class LargeFont : public FontModule
+class LargeFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -142,6 +142,9 @@ private:
             },
         },
     };
+
+protected:
+    ~LargeFont() = default;
 
 public:
     LargeFont();

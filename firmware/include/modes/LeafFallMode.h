@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class LeafFallMode : public ModeModule
+class LeafFallMode final : public ModeModule
 {
 private:
     struct Leaf
@@ -18,6 +18,9 @@ private:
     };
 
     Leaf leaves[GRID_COLUMNS * GRID_ROWS / 20];
+
+protected:
+    ~LeafFallMode() = default;
 
 public:
     LeafFallMode() : ModeModule("Leaf fall") {};

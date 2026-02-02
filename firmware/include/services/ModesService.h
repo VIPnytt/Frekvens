@@ -47,7 +47,7 @@
 
 #include <vector>
 
-class ModesService : public ServiceModule
+class ModesService final : public ServiceModule
 {
 private:
     ModesService() : ServiceModule("Modes") {};
@@ -189,6 +189,9 @@ private:
     void transmit();
 
     static void onTask(void *parameter = nullptr);
+
+protected:
+    ~ModesService() = default;
 
 public:
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB

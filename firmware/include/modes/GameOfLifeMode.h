@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class GameOfLifeMode : public ModeModule
+class GameOfLifeMode final : public ModeModule
 {
 private:
     tm local = {};
@@ -20,6 +20,9 @@ private:
 
     void setClock(bool _clock);
     void transmit();
+
+protected:
+    ~GameOfLifeMode() = default;
 
 public:
     GameOfLifeMode() : ModeModule("Game of Life") {};

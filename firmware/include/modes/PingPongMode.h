@@ -7,7 +7,7 @@
 
 #include <deque>
 
-class PingPongMode : public ModeModule
+class PingPongMode final : public ModeModule
 {
 private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
@@ -35,6 +35,9 @@ private:
 
     void setClock(bool _clock);
     void transmit();
+
+protected:
+    ~PingPongMode() = default;
 
 public:
     PingPongMode() : ModeModule("Ping-pong") {};

@@ -7,7 +7,7 @@
 
 #include <unordered_map>
 
-class FliesMode : public ModeModule
+class FliesMode final : public ModeModule
 {
 private:
     struct Dot
@@ -21,6 +21,9 @@ private:
     std::unordered_map<uint8_t, Dot> flies = {};
 
     uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
+
+protected:
+    ~FliesMode() = default;
 
 public:
     FliesMode() : ModeModule("Flies") {};

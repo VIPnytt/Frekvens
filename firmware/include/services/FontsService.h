@@ -9,7 +9,7 @@
 #include "fonts/SmallFont.h"
 #include "modules/ServiceModule.h"
 
-class FontsService : public ServiceModule
+class FontsService final : public ServiceModule
 {
 private:
     FontsService() : ServiceModule("Fonts") {};
@@ -27,6 +27,9 @@ private:
     };
 
     void transmit();
+
+protected:
+    ~FontsService() = default;
 
 public:
     void begin();

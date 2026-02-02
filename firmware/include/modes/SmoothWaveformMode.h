@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class SmoothWaveformMode : public ModeModule
+class SmoothWaveformMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -56,6 +56,9 @@ private:
             0b0000001000000000,
         },
     };
+
+protected:
+    ~SmoothWaveformMode() = default;
 
 public:
     SmoothWaveformMode() : ModeModule("Smooth waveform") {};

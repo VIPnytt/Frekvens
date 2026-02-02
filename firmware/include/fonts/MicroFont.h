@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MicroFont : public FontModule
+class MicroFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -642,6 +642,9 @@ private:
             },
         },
     };
+
+protected:
+    ~MicroFont() = default;
 
 public:
     MicroFont();

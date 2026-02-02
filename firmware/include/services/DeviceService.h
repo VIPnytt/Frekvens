@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class DeviceService : public ServiceModule
+class DeviceService final : public ServiceModule
 {
 private:
     DeviceService() : ServiceModule("Device") {};
@@ -19,6 +19,9 @@ private:
     void transmit();
 
     void onReceive(const JsonDocument &doc, const char *source) override;
+
+protected:
+    ~DeviceService() = default;
 
 public:
     TaskHandle_t taskHandle = nullptr;
