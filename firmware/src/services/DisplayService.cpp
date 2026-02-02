@@ -167,7 +167,8 @@ void DisplayService::setOrientation(Orientation orientation)
     memcpy(pixel, _pixel.data(), _pixel.size());
     this->orientation = orientation;
 #if GRID_COLUMNS == GRID_ROWS
-    ratio = this->orientation % 2 ? PITCH_VERTICAL / (float)PITCH_HORIZONTAL : PITCH_HORIZONTAL / (float)PITCH_VERTICAL;
+    ratio = (this->orientation % 2) == 0 ? PITCH_HORIZONTAL / (float)PITCH_VERTICAL
+                                         : PITCH_VERTICAL / (float)PITCH_HORIZONTAL;
 #endif
     Preferences Storage;
     Storage.begin(name);
@@ -319,7 +320,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 
 void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
 {
-    const bool rotated = orientation % 2;
+    const bool rotated = (orientation % 2) != 0;
     const float xRatio =
         2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
     const float yRatio =
@@ -334,7 +335,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
         {
             const float xDistance = (_x - x) * xRatio;
             const float yDistance = (_y - y) * yRatio;
-            const float distance = sqrt(xDistance * xDistance + yDistance * yDistance);
+            const float distance = sqrt((xDistance * xDistance) + (yDistance * yDistance));
             if (fill ? (distance <= radius) : (fabs(distance - radius) < .5f))
             {
                 setPixel(_x, _y, brightness);
@@ -360,7 +361,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = orientation % 2;
+    const bool rotated = (orientation % 2) != 0;
     JsonDocument doc;
     doc["brightness"] = brightness;
 #if GRID_COLUMNS == GRID_ROWS

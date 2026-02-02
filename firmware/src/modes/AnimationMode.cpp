@@ -102,7 +102,7 @@ void AnimationMode::onReceive(const JsonDocument &doc, const char *source)
     // Action: pull
     if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "pull"))
     {
-        lastMillis = millis() + GRID_COLUMNS * GRID_ROWS;
+        lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS);
         index = 0;
         pending = true;
     }

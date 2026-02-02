@@ -95,11 +95,11 @@ void StreamMode::onPacket(AsyncUDPPacket packet)
 {
     const uint16_t port = packet.localPort();
     const size_t len = packet.length();
-    if ((port == 4048 && (len == 10 + GRID_COLUMNS * GRID_ROWS || len == 14 + GRID_COLUMNS * GRID_ROWS)) ||
-        (port == 6454 && len == 18 + GRID_COLUMNS * GRID_ROWS) ||
-        (port == 5568 && len == 126 + GRID_COLUMNS * GRID_ROWS))
+    if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
+        (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
+        (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
     {
-        Display.setFrame(packet.data() + len - GRID_COLUMNS * GRID_ROWS);
+        Display.setFrame(packet.data() + len - (GRID_COLUMNS * GRID_ROWS));
     }
 }
 

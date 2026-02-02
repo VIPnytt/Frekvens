@@ -46,7 +46,7 @@ void MetaballsMode::handle()
                     {
                         const float xDistance = (ball.x - x) * xRatio;
                         const float yDistance = (ball.y - y) * yRatio;
-                        const float distanceSq = xDistance * xDistance + yDistance * yDistance;
+                        const float distanceSq = (xDistance * xDistance) + (yDistance * yDistance);
                         if (distanceSq < radiusSq)
                         {
                             brightness = min<uint8_t>(

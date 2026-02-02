@@ -15,7 +15,7 @@ private:
     float xDec = GRID_COLUMNS / 2;
     float yDec = GRID_ROWS - 2;
 
-    std::deque<uint8_t> paddle;
+    std::deque<uint8_t> paddle = {};
 
     tm local;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 class FontModule
@@ -21,7 +21,7 @@ public:
 
     struct SymbolExtended
     {
-        const wchar_t hex;
+        const wchar_t hex = 0;
         const Symbol symbol;
     };
 

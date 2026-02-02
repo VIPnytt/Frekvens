@@ -8,7 +8,11 @@ Checks: >
   -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-init-variables,
+  -cppcoreguidelines-macro-to-enum,
+  -modernize-use-auto,
   -modernize-use-trailing-return-type,
   -readability-convert-member-functions-to-static,
   -readability-identifier-length,
-  -readability-static-accessed-through-instance
+  -readability-magic-numbers,
+  -readability-static-accessed-through-instance,
+  -readability-uppercase-literal-suffix

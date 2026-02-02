@@ -35,7 +35,7 @@ void LargeClockMode::configure()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontMediumBold;
     }
@@ -97,18 +97,18 @@ void LargeClockMode::handle()
             Display.clearFrame();
             {
                 TextHandler h1 = TextHandler(std::to_string(hour / 10), font);
-                h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(),
-                        GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
+                h1.draw((GRID_COLUMNS / 2) - 1 - ((7 - h1.getWidth()) / 2) - h1.getWidth(),
+                        (GRID_ROWS / 2) - 1 - ((7 - h1.getHeight()) / 2) - h1.getHeight());
             }
             {
                 TextHandler h2 = TextHandler(std::to_string(hour % 10), font);
-                h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2,
-                        GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
+                h2.draw((GRID_COLUMNS / 2) + 1 + ((7 - h2.getWidth()) / 2),
+                        (GRID_ROWS / 2) - 1 + ((7 - h2.getHeight()) / 2) - h2.getHeight());
             }
             {
                 TextHandler m1 = TextHandler(std::to_string(minute / 10), font);
-                m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(),
-                        GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
+                m1.draw((GRID_COLUMNS / 2) - 1 - ((7 - m1.getWidth()) / 2) - m1.getWidth(),
+                        (GRID_ROWS / 2) + 1 - ((7 - m1.getHeight()) / 2));
             }
             {
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
@@ -129,7 +129,7 @@ void LargeClockMode::handle()
 
 void LargeClockMode::setFont(const char *fontName)
 {
-    if (!font || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName))
     {
         for (FontModule *_font : fonts)
         {

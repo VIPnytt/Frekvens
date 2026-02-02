@@ -135,7 +135,7 @@ public:
     void begin() override;
     void handle() override;
 
-    bool getActive();
+    bool getActive() const;
     void setActive(bool active);
     void parse();
 

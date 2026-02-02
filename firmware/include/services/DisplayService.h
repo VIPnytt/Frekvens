@@ -67,15 +67,15 @@ public:
 
     void handle();
 
-    float getRatio() const;
+    [[nodiscard]] float getRatio() const;
 
-    Orientation getOrientation() const;
+    [[nodiscard]] Orientation getOrientation() const;
     void setOrientation(Orientation _orientation);
 
-    bool getPower() const;
+    [[nodiscard]] bool getPower() const;
     void setPower(bool power);
 
-    uint8_t getBrightness() const;
+    [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t brightness);
 
     void getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
@@ -84,7 +84,7 @@ public:
     void clearFrame(uint8_t brightness = 0);
     void invertFrame();
 
-    uint8_t getPixel(uint8_t x, uint8_t y) const;
+    [[nodiscard]] uint8_t getPixel(uint8_t x, uint8_t y) const;
     void setPixel(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
 
     void drawEllipse(float x, float y, float radius, float ratio = 1, bool fill = false,

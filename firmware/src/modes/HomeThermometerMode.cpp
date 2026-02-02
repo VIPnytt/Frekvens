@@ -114,7 +114,7 @@ void HomeThermometerMode::transmit()
         doc["outdoor"] = Storage.getShort("outdoor");
     }
     Storage.end();
-    if (doc.size())
+    if (doc.size() != 0)
     {
         Device.transmit(doc, name);
     }
@@ -132,7 +132,7 @@ void HomeThermometerMode::onReceive(const JsonDocument &doc, const char *source)
     }
 }
 
-void HomeThermometerMode::setTemperature(const char *const where, const int16_t temperature)
+void HomeThermometerMode::setTemperature(const char *where, const int16_t temperature)
 {
     Preferences Storage;
     Storage.begin(std::string(name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str());

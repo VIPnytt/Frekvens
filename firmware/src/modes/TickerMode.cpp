@@ -63,7 +63,7 @@ void TickerMode::configure()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontSmall;
     }
@@ -98,7 +98,7 @@ void TickerMode::handle()
 
 void TickerMode::setFont(const char *fontName)
 {
-    if (!font || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName))
     {
         for (FontModule *_font : Fonts.getAll())
         {

@@ -161,7 +161,7 @@ void InfraredExtension::parse()
     }
 }
 
-bool InfraredExtension::getActive() { return active; }
+bool InfraredExtension::getActive() const { return active; }
 
 void InfraredExtension::setActive(bool active)
 {

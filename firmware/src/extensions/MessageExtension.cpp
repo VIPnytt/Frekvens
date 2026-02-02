@@ -86,7 +86,7 @@ void MessageExtension::begin()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontSmall;
     }
@@ -152,7 +152,7 @@ void MessageExtension::addMessage(std::string message)
 
 void MessageExtension::setFont(const char *fontName)
 {
-    if (!font || strcmp(fontName, font->name))
+    if (font == nullptr || strcmp(fontName, font->name))
     {
         for (FontModule *_font : Fonts.getAll())
         {

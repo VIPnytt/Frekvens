@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <string_view>
 #include <vector>
 
@@ -19,6 +19,6 @@ public:
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
-    uint8_t getHeight() const;
-    uint8_t getWidth() const;
+    [[nodiscard]] uint8_t getHeight() const;
+    [[nodiscard]] uint8_t getWidth() const;
 };

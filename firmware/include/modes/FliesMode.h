@@ -12,13 +12,13 @@ class FliesMode : public ModeModule
 private:
     struct Dot
     {
-        uint8_t x;
-        uint8_t y;
+        uint8_t x = 0;
+        uint8_t y = 0;
     };
 
     bool pending = false;
 
-    std::unordered_map<uint8_t, Dot> flies;
+    std::unordered_map<uint8_t, Dot> flies = {};
 
     uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
 

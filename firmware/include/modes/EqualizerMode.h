@@ -16,7 +16,7 @@ private:
         uint8_t target = GRID_ROWS - 1;
     };
 
-    Bar bars[GRID_COLUMNS / (width + 1)];
+    Bar bars[GRID_COLUMNS / (width + 1)] = {0};
 
     unsigned long lastMillis = 0;
 

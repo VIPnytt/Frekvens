@@ -27,7 +27,7 @@ public:
     void begin() override;
     void handle() override;
 
-    bool getActive() const;
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
     void setThreshold(uint16_t _threshold);
     [[nodiscard]] bool isTriggered() const;

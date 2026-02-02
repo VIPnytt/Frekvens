@@ -30,7 +30,7 @@ private:
 
 public:
     void begin();
-    const std::vector<FontModule *> &getAll() const;
+    [[nodiscard]] const std::vector<FontModule *> &getAll() const;
 
     static FontsService &getInstance();
 };

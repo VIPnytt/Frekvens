@@ -167,7 +167,7 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *const ssid, const char *const key)
+void ConnectivityService::connect(const char *ssid, const char *key)
 {
     if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
     {

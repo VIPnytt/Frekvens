@@ -101,7 +101,7 @@ void HeapExtension::transmit()
     doc["extensions"] = Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle);
     doc["heap"] = ESP.getHeapSize() - ESP.getFreeHeap();
     doc["main"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle);
-    if (Modes.taskHandle)
+    if (Modes.taskHandle != nullptr)
     {
         doc["modes"] = Modes.stackSize - uxTaskGetStackHighWaterMark(Modes.taskHandle);
     }

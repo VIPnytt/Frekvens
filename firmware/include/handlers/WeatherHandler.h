@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -23,19 +23,19 @@ public:
     struct Codeset
     {
         const Conditions condition;
-        const std::vector<std::string> codes;
+        const std::vector<std::string> codes = {};
     };
 
     struct Codeset8
     {
         const Conditions condition;
-        const std::vector<uint8_t> codes;
+        const std::vector<uint8_t> codes = {};
     };
 
     struct Codeset16
     {
         const Conditions condition;
-        const std::vector<uint16_t> codes;
+        const std::vector<uint16_t> codes = {};
     };
 
     std::vector<uint16_t> sign = {};

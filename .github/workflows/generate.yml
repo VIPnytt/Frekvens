@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   platformio:
-    name: PlatformIO version extract
+    name: PlatformIO version
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.print.outputs.version }}
@@ -31,7 +31,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: PlatformIO extract
+      - name: PlatformIO version
         id: print
         run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 

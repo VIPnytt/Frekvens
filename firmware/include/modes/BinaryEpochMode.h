@@ -7,7 +7,7 @@
 class BinaryEpochMode : public ModeModule
 {
 private:
-    time_t epoch;
+    time_t epoch = 0;
 
 public:
     BinaryEpochMode() : ModeModule("Binary epoch") {};

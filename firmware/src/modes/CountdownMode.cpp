@@ -72,18 +72,18 @@ void CountdownMode::handle()
             Display.clearFrame();
             {
                 TextHandler tl = TextHandler(std::to_string(upper / 10), FontMedium);
-                tl.draw(GRID_COLUMNS / 2 - 1 - (7 - tl.getWidth()) / 2 - tl.getWidth(),
-                        GRID_ROWS / 2 - 1 - (7 - tl.getHeight()) / 2 - tl.getHeight());
+                tl.draw((GRID_COLUMNS / 2) - 1 - ((7 - tl.getWidth()) / 2) - tl.getWidth(),
+                        (GRID_ROWS / 2) - 1 - ((7 - tl.getHeight()) / 2) - tl.getHeight());
             }
             {
                 TextHandler tr = TextHandler(std::to_string(upper % 10), FontMedium);
-                tr.draw(GRID_COLUMNS / 2 + 1 + (7 - tr.getWidth()) / 2,
-                        GRID_ROWS / 2 - 1 + (7 - tr.getHeight()) / 2 - tr.getHeight());
+                tr.draw((GRID_COLUMNS / 2) + 1 + ((7 - tr.getWidth()) / 2),
+                        (GRID_ROWS / 2) - 1 + ((7 - tr.getHeight()) / 2) - tr.getHeight());
             }
             {
                 TextHandler bl = TextHandler(std::to_string(lower / 10), FontMedium);
-                bl.draw(GRID_COLUMNS / 2 - 1 - (7 - bl.getWidth()) / 2 - bl.getWidth(),
-                        GRID_ROWS / 2 + 1 - (7 - bl.getHeight()) / 2);
+                bl.draw((GRID_COLUMNS / 2) - 1 - ((7 - bl.getWidth()) / 2) - bl.getWidth(),
+                        (GRID_ROWS / 2) + 1 - ((7 - bl.getHeight()) / 2));
             }
             {
                 TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);

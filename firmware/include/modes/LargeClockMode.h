@@ -23,7 +23,7 @@ private:
 
     std::vector<FontModule *> fonts = {};
 
-    void setFont(const char * fontName);
+    void setFont(const char *fontName);
     void setTicking(bool _ticking);
     void transmit();
 

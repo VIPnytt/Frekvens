@@ -33,7 +33,7 @@ public:
     void begin() override;
     void handle() override;
 
-    bool getActive() const;
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
 
     void onReceive(const JsonDocument &doc, const char *source) override;

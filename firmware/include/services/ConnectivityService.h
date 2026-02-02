@@ -25,7 +25,7 @@ private:
 
     void initStation();
     void initHotspot();
-    void connect(const char *const ssid, const char *const key);
+    void connect(const char *ssid, const char *key);
     void transmit();
 
     static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);

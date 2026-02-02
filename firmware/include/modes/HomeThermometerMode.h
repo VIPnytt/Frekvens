@@ -10,7 +10,7 @@ private:
     bool pending = false;
 
     void update();
-    void setTemperature(const char *const where, const int16_t temperature);
+    void setTemperature(const char *where, const int16_t temperature);
     void transmit();
 
 public:

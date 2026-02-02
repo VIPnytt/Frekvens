@@ -26,7 +26,7 @@ private:
 
     std::string message = NAME;
 
-    std::unique_ptr<TextHandler> text;
+    std::unique_ptr<TextHandler> text = nullptr;
 
     void setFont(const char *fontName);
     void setMessage(std::string _message);
