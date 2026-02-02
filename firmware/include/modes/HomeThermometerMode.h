@@ -19,7 +19,7 @@ public:
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_HOMETHERMOMETER

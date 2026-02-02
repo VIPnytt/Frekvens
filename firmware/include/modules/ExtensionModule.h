@@ -17,6 +17,6 @@ public:
     virtual void begin();
     virtual void handle();
 
-    virtual void onTransmit(const JsonDocument &doc, const char *const source);
-    virtual void onReceive(const JsonDocument doc, const char *source);
+    virtual void onReceive(const JsonDocument &doc, const char *source);
+    virtual void onTransmit(const JsonDocument &doc, const char *source);
 };

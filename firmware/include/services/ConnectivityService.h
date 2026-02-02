@@ -42,7 +42,7 @@ public:
     void begin();
     void handle();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 
     static ConnectivityService &getInstance();
 };

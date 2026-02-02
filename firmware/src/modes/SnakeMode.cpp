@@ -248,7 +248,7 @@ void SnakeMode::setDot()
     Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
 }
 
-void SnakeMode::setClock(const bool _clock)
+void SnakeMode::setClock(bool _clock)
 {
     if (_clock != clock)
     {
@@ -277,7 +277,7 @@ void SnakeMode::transmit()
     Device.transmit(doc, name);
 }
 
-void SnakeMode::onReceive(const JsonDocument doc, const char *const source)
+void SnakeMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Clock
     if (doc["clock"].is<bool>())

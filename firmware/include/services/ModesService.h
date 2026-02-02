@@ -201,11 +201,11 @@ public:
     void begin();
     void handle();
     void setActive(bool active);
-    void setMode(const char *const name);
+    void setMode(const char *name);
     void setModeNext();
     void setModePrevious();
-    const std::vector<ModeModule *> &getAll() const;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    [[nodiscard]] const std::vector<ModeModule *> &getAll() const;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 
     static ModesService &getInstance();
 };

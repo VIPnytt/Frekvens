@@ -123,7 +123,7 @@ void ConnectivityService::initStation()
         deserializeJson(doc, _buffer.data(), _length);
     }
     wifi_config_t config;
-    if (!esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config))
+    if (esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config) == ESP_OK)
     {
         const char *_ssid = reinterpret_cast<const char *>(config.sta.ssid);
         const std::string_view ssid(_ssid, strnlen(_ssid, sizeof(config.sta.ssid)));
@@ -186,7 +186,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
     ESP_LOGI(Connectivity.name, HOSTNAME ".local");
 #ifndef WIFI_COUNTRY
     char country[3];
-    if (!esp_wifi_get_country_code(country))
+    if (esp_wifi_get_country_code(country) == ESP_OK)
     {
         Preferences Storage;
         Storage.begin(_name.data());
@@ -317,7 +317,7 @@ void ConnectivityService::transmit()
     Device.transmit(doc, name);
 }
 
-void ConnectivityService::onReceive(const JsonDocument doc, const char *const source)
+void ConnectivityService::onReceive(const JsonDocument &doc, const char *source)
 {
     // Connect
     if (doc["ssid"].is<const char *>())

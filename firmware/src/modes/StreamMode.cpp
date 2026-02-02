@@ -82,7 +82,7 @@ void StreamMode::transmit()
     Device.transmit(doc, name);
 }
 
-void StreamMode::onReceive(const JsonDocument doc, const char *const source)
+void StreamMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Port
     if (doc["port"].is<uint16_t>())

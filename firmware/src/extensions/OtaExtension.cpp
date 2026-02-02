@@ -57,7 +57,7 @@ void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,
                           size_t len, bool final)
 {
-    if (!index)
+    if (index == 0)
     {
         onStart();
     }

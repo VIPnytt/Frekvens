@@ -14,9 +14,9 @@ public:
 
     struct Symbol
     {
-        const std::vector<uint8_t> bitmap;
-        const int8_t offsetX;
-        const int8_t offsetY;
+        const std::vector<uint8_t> bitmap = {};
+        const int8_t offsetX = 0;
+        const int8_t offsetY = 0;
     };
 
     struct SymbolExtended
@@ -27,5 +27,5 @@ public:
 
     const char *const name;
 
-    virtual Symbol getChar(uint32_t character) const = 0;
+    [[nodiscard]] virtual Symbol getChar(uint32_t character) const = 0;
 };

@@ -27,12 +27,12 @@ public:
     void begin() override;
     void handle() override;
 
-    bool getActive();
+    bool getActive() const;
     void setActive(bool active);
     void setThreshold(uint16_t _threshold);
-    bool isTriggered() const;
+    [[nodiscard]] bool isTriggered() const;
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 extern MicrophoneExtension *Microphone;

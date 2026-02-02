@@ -23,8 +23,8 @@ public:
     bool getActive() const;
     void setActive(bool active);
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
+    void onTransmit(const JsonDocument &doc, const char *source) override;
 
 private:
     bool active = false;

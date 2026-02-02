@@ -127,7 +127,7 @@ void LargeClockMode::handle()
     }
 }
 
-void LargeClockMode::setFont(const char *const fontName)
+void LargeClockMode::setFont(const char *fontName)
 {
     if (!font || strcmp(font->name, fontName))
     {
@@ -149,7 +149,7 @@ void LargeClockMode::setFont(const char *const fontName)
     }
 }
 
-void LargeClockMode::setTicking(const bool _ticking)
+void LargeClockMode::setTicking(bool _ticking)
 {
     if (_ticking != ticking)
     {
@@ -176,7 +176,7 @@ void LargeClockMode::transmit()
     Device.transmit(doc, name);
 }
 
-void LargeClockMode::onReceive(const JsonDocument doc, const char *const source)
+void LargeClockMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Font
     if (doc["font"].is<const char *>())

@@ -28,8 +28,8 @@ private:
     unsigned long lastMillis = 0;
 
     uint8_t blink = 0;
-    uint8_t hour;
-    uint8_t minute;
+    uint8_t hour = 24;
+    uint8_t minute = 60;
     uint8_t stage = 0;
 
     Pixel dot;
@@ -43,7 +43,7 @@ private:
     void end();
     void clean();
 
-    void setClock(const bool _clock);
+    void setClock(bool _clock);
     void setDot();
     void transmit();
 
@@ -53,7 +53,7 @@ public:
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_SNAKE

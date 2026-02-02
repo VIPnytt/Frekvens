@@ -97,7 +97,7 @@ void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUM
     Device.transmit(doc, name, false);
 }
 
-void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
+void AnimationMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Action: pull
     if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "pull"))

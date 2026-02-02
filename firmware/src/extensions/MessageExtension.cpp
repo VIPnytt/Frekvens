@@ -150,7 +150,7 @@ void MessageExtension::addMessage(std::string message)
     ESP_LOGD(name, "received");
 }
 
-void MessageExtension::setFont(const char *const fontName)
+void MessageExtension::setFont(const char *fontName)
 {
     if (!font || strcmp(fontName, font->name))
     {
@@ -192,7 +192,7 @@ void MessageExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MessageExtension::onReceive(const JsonDocument doc, const char *const source)
+void MessageExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Font
     if (doc["font"].is<const char *>())

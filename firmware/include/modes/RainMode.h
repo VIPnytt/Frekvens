@@ -10,10 +10,10 @@ class RainMode : public ModeModule
 private:
     struct Drop
     {
-        uint8_t delay;
-        uint8_t length;
-        uint8_t x;
-        uint8_t y;
+        uint8_t delay = INT8_MAX;
+        uint8_t length = 3;
+        uint8_t x = 0;
+        uint8_t y = 0;
 
         unsigned long lastMillis = 0;
     };

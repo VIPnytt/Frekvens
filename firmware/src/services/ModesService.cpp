@@ -113,7 +113,7 @@ void ModesService::setActive(bool active)
     }
 }
 
-void ModesService::setMode(const char *const name)
+void ModesService::setMode(const char *name)
 {
     if (!mode || strcmp(mode->name, name))
     {
@@ -236,7 +236,7 @@ void ModesService::transmit()
     Device.transmit(doc, name);
 }
 
-void ModesService::onReceive(const JsonDocument doc, const char *const source)
+void ModesService::onReceive(const JsonDocument &doc, const char *source)
 {
     // Mode
     if (doc["mode"].is<const char *>())

@@ -23,7 +23,7 @@ public:
     void begin() override;
     void handle() override;
     void end() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_DRAW

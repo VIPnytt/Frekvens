@@ -378,7 +378,7 @@ void DisplayService::transmit()
     Device.transmit(doc, name);
 }
 
-void DisplayService::onReceive(const JsonDocument doc, const char *const source)
+void DisplayService::onReceive(const JsonDocument &doc, const char *source)
 {
     // Brightness
     if (doc["brightness"].is<uint8_t>())

@@ -183,7 +183,7 @@ void PingPongMode::handle()
     }
 }
 
-void PingPongMode::setClock(const bool _clock)
+void PingPongMode::setClock(bool _clock)
 {
     if (_clock != clock)
     {
@@ -209,7 +209,7 @@ void PingPongMode::transmit()
     Device.transmit(doc, name);
 }
 
-void PingPongMode::onReceive(const JsonDocument doc, const char *const source)
+void PingPongMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Clock
     if (doc["clock"].is<bool>())

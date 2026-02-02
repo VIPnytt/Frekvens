@@ -22,7 +22,7 @@ public:
     void begin() override;
     void handle() override;
 
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *source) override;
 };
 
 extern AlexaExtension *Alexa;

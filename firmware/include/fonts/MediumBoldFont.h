@@ -263,7 +263,7 @@ private:
 public:
     MediumBoldFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern MediumBoldFont *FontMediumBold;

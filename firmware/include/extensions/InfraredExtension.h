@@ -139,7 +139,7 @@ public:
     void setActive(bool active);
     void parse();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 extern InfraredExtension *Infrared;

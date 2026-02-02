@@ -23,8 +23,8 @@ private:
 
     tm local;
 
-    uint8_t hour;
-    uint8_t minute;
+    uint8_t hour = 24;
+    uint8_t minute = 60;
     uint8_t x = GRID_COLUMNS - 2;
     uint8_t y = GRID_ROWS / 2;
 
@@ -32,7 +32,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    void setClock(const bool _clock);
+    void setClock(bool _clock);
     void transmit();
 
 public:
@@ -41,7 +41,7 @@ public:
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_PINGPONG

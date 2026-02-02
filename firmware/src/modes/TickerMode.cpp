@@ -96,7 +96,7 @@ void TickerMode::handle()
     }
 }
 
-void TickerMode::setFont(const char *const fontName)
+void TickerMode::setFont(const char *fontName)
 {
     if (!font || strcmp(font->name, fontName))
     {
@@ -139,7 +139,7 @@ void TickerMode::transmit()
     Device.transmit(doc, name);
 }
 
-void TickerMode::onReceive(const JsonDocument doc, const char *const source)
+void TickerMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Font
     if (doc["font"].is<const char *>())

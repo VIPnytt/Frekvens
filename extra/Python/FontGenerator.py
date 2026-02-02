@@ -205,7 +205,7 @@ class FontGenerator:
                     "public:",
                     f"    {unique}Font();",
                     "",
-                    "    Symbol getChar(uint32_t character) const override;",
+                    "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                     "};",
                     "",
                     f"extern {unique}Font *Font{unique};",

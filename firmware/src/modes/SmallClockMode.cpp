@@ -95,7 +95,7 @@ void SmallClockMode::handle()
     }
 }
 
-void SmallClockMode::setTicking(const bool _ticking)
+void SmallClockMode::setTicking(bool _ticking)
 {
     if (_ticking != ticking)
     {
@@ -116,7 +116,7 @@ void SmallClockMode::transmit()
     Device.transmit(doc, name);
 }
 
-void SmallClockMode::onReceive(const JsonDocument doc, const char *const source)
+void SmallClockMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Toggle ticking
     if (doc["ticking"].is<bool>())

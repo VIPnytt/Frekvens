@@ -72,7 +72,7 @@ void SignalExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void SignalExtension::onReceive(const JsonDocument doc, const char *const source)
+void SignalExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Duration
     if (doc["duration"].is<uint8_t>())

@@ -94,7 +94,7 @@ public:
 
     void flush();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 
     static DisplayService &getInstance();
 };

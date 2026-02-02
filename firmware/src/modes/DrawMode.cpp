@@ -93,7 +93,7 @@ void DrawMode::transmit()
     Device.transmit(doc, name, false);
 }
 
-void DrawMode::onReceive(const JsonDocument doc, const char *const source)
+void DrawMode::onReceive(const JsonDocument &doc, const char *source)
 {
     if (doc["action"].is<const char *>())
     {

@@ -134,7 +134,7 @@ void MicrophoneExtension::handle()
     }
 }
 
-bool MicrophoneExtension::getActive() { return active; }
+bool MicrophoneExtension::getActive() const { return active; }
 
 void MicrophoneExtension::setActive(bool active)
 {
@@ -185,7 +185,7 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MicrophoneExtension::onReceive(const JsonDocument doc, const char *const source)
+void MicrophoneExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Active
     if (doc["active"].is<bool>())

@@ -43,8 +43,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - clang-version: false
-            python-version: 3.11
+          - python-version: 3.11
 
           - clang-version: 21
             python-version: 3.13
@@ -137,6 +136,11 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
+          tidy-review: true
+
+      - name: Clang checks failed
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
+        run: exit 1
 
   mode-dynamic:
     name: Dynamic mode
@@ -146,8 +150,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - clang-version: false
-            python-version: 3.11
+          - python-version: 3.11
 
           - clang-version: 21
             python-version: 3.13
@@ -270,6 +273,11 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
+          tidy-review: true
+
+      - name: Clang checks failed
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
+        run: exit 1
 
   mode-static:
     name: Static mode
@@ -279,8 +287,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - clang-version: false
-            python-version: 3.11
+          - python-version: 3.11
 
           - clang-version: 21
             python-version: 3.13
@@ -387,3 +394,8 @@ jobs:
           step-summary: true
           style: file
           tidy-checks: ""
+          tidy-review: true
+
+      - name: Clang checks failed
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
+        run: exit 1

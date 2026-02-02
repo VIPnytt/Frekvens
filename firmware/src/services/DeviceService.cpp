@@ -260,7 +260,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
     }
 }
 
-void DeviceService::receive(const JsonDocument doc, const char *const source, const char *const destination)
+void DeviceService::receive(const JsonDocument &doc, const char *source, const char *destination)
 {
     if (operational)
     {
@@ -298,7 +298,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
     }
 }
 
-void DeviceService::onReceive(const JsonDocument doc, const char *const source)
+void DeviceService::onReceive(const JsonDocument &doc, const char *source)
 {
     if (doc["action"].is<const char *>())
     {

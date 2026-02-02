@@ -5,3 +5,10 @@ Checks: >
   modernize-*,
   performance-*,
   readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-init-variables,
+  -modernize-use-trailing-return-type,
+  -readability-convert-member-functions-to-static,
+  -readability-identifier-length,
+  -readability-static-accessed-through-instance

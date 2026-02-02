@@ -18,5 +18,5 @@ public:
     virtual void handle();
     virtual void end();
 
-    virtual void onReceive(const JsonDocument doc, const char *source);
+    virtual void onReceive(const JsonDocument &doc, const char *source);
 };

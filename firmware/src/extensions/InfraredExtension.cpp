@@ -195,7 +195,7 @@ void InfraredExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void InfraredExtension::onReceive(const JsonDocument doc, const char *const source)
+void InfraredExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Active
     if (doc["active"].is<bool>())

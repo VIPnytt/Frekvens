@@ -124,7 +124,7 @@ void CountdownMode::transmit()
     Device.transmit(doc, name);
 }
 
-void CountdownMode::onReceive(const JsonDocument doc, const char *const source)
+void CountdownMode::onReceive(const JsonDocument &doc, const char *source)
 {
     if (doc["time"].is<uint32_t>())
     {

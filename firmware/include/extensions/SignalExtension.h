@@ -27,7 +27,7 @@ public:
     void begin() override;
     void handle() override;
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 extern SignalExtension *Signal;

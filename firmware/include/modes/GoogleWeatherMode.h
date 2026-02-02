@@ -112,8 +112,8 @@ private:
 public:
     GoogleWeatherMode() : ModeModule("Google Weather") {};
 
-    void begin();
-    void handle();
+    void begin() override;
+    void handle() override;
 };
 
 #endif // MODE_GOOGLEWEATHER

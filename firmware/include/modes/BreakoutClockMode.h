@@ -19,8 +19,8 @@ private:
 
     tm local;
 
-    uint8_t hour;
-    uint8_t minute;
+    uint8_t hour = 24;
+    uint8_t minute = 60;
     uint8_t x = GRID_COLUMNS / 2;
     uint8_t y = GRID_ROWS - 2;
 

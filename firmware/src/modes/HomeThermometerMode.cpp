@@ -120,7 +120,7 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::onReceive(const JsonDocument doc, const char *const source)
+void HomeThermometerMode::onReceive(const JsonDocument &doc, const char *source)
 {
     if (doc["indoor"].is<float>())
     {

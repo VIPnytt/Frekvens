@@ -29,11 +29,11 @@ private:
 
     std::vector<std::string> messages;
 
-    std::unique_ptr<TextHandler> text;
+    std::unique_ptr<TextHandler> text = {};
 
     void addMessage(std::string message);
 
-    void setFont(const char *const fontName);
+    void setFont(const char *fontName);
     void setRepeat(uint8_t count);
 
     void transmit();
@@ -47,7 +47,7 @@ public:
 
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 extern MessageExtension *Message;

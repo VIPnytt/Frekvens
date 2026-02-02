@@ -15,16 +15,16 @@ private:
     bool pending = false;
     bool ticking = false;
 
-    uint8_t hour;
-    uint8_t minute;
+    uint8_t hour = 24;
+    uint8_t minute = 60;
     uint8_t second = 0;
 
     FontModule *font = nullptr;
 
     std::vector<FontModule *> fonts = {};
 
-    void setFont(const char *const fontName);
-    void setTicking(const bool _ticking);
+    void setFont(const char * fontName);
+    void setTicking(bool _ticking);
     void transmit();
 
 public:
@@ -33,7 +33,7 @@ public:
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_LARGECLOCK

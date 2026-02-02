@@ -11,9 +11,9 @@ private:
 
     bool pending = false;
 
-    uint8_t hour;
-    uint8_t minute;
-    uint8_t second;
+    uint8_t hour = 24;
+    uint8_t minute = 60;
+    uint8_t second = 60;
 
     void draw(uint8_t col, uint8_t value);
 

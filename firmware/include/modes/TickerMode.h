@@ -28,7 +28,7 @@ private:
 
     std::unique_ptr<TextHandler> text;
 
-    void setFont(const char *const fontName);
+    void setFont(const char *fontName);
     void setMessage(std::string _message);
 
     void transmit();
@@ -41,7 +41,7 @@ public:
     void handle() override;
     void end() override;
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(const JsonDocument &doc, const char *source) override;
 };
 
 #endif // MODE_TICKER

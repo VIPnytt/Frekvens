@@ -872,7 +872,7 @@ private:
 public:
     MiniFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern MiniFont *FontMini;

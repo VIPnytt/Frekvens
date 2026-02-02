@@ -145,7 +145,7 @@ void PhotocellExtension::transmit()
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(const JsonDocument doc, const char *const source)
+void PhotocellExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Active
     if (doc["active"].is<bool>())

@@ -177,7 +177,7 @@ void PlaylistExtension::onTransmit(const JsonDocument &doc, const char *const so
     }
 }
 
-void PlaylistExtension::onReceive(const JsonDocument doc, const char *const source)
+void PlaylistExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Playlist
     if (doc["playlist"].is<JsonArrayConst>())
