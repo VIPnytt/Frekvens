@@ -91,6 +91,9 @@ protected:
     ~ExtensionsService() = default;
 
 public:
+    ExtensionsService(const ExtensionsService &) = delete;
+    ExtensionsService &operator=(const ExtensionsService &) = delete;
+
     TaskHandle_t taskHandle = nullptr;
 
     static constexpr uint16_t stackSize = 1 << 12; // 4 kB

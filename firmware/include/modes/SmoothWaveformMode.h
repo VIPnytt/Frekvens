@@ -62,6 +62,8 @@ protected:
 
 public:
     SmoothWaveformMode() : ModeModule("Smooth waveform") {};
+    SmoothWaveformMode(const SmoothWaveformMode &) = delete;
+    SmoothWaveformMode &operator=(const SmoothWaveformMode &) = delete;
 
     void handle() override;
 };

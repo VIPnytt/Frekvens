@@ -148,6 +148,8 @@ protected:
 
 public:
     LargeFont();
+    LargeFont(const LargeFont &) = delete;
+    LargeFont &operator=(const LargeFont &) = delete;
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

@@ -24,6 +24,8 @@ protected:
 
 public:
     SmallClockMode() : ModeModule("Small clock") {};
+    SmallClockMode(const SmallClockMode &) = delete;
+    SmallClockMode &operator=(const SmallClockMode &) = delete;
 
     void configure() override;
     void begin() override;

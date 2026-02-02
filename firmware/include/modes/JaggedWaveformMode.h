@@ -74,6 +74,8 @@ protected:
 
 public:
     JaggedWaveformMode() : ModeModule("Jagged waveform") {};
+    JaggedWaveformMode(const JaggedWaveformMode &) = delete;
+    JaggedWaveformMode &operator=(const JaggedWaveformMode &) = delete;
 
     void handle() override;
 };

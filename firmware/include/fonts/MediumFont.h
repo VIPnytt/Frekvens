@@ -265,6 +265,8 @@ protected:
 
 public:
     MediumFont();
+    MediumFont(const MediumFont &) = delete;
+    MediumFont &operator=(const MediumFont &) = delete;
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

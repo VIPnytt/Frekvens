@@ -25,6 +25,8 @@ protected:
 
 public:
     StarsMode() : ModeModule("Stars") {};
+    StarsMode(const StarsMode &) = delete;
+    StarsMode &operator=(const StarsMode &) = delete;
 
     void begin() override;
     void handle() override;

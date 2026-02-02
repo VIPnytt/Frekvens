@@ -14,6 +14,8 @@ protected:
 
 public:
     HeapExtension();
+    HeapExtension(const HeapExtension &) = delete;
+    HeapExtension &operator=(const HeapExtension &) = delete;
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;

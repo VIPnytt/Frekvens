@@ -13,6 +13,8 @@ protected:
 
 public:
     ServerSentEventsExtension();
+    ServerSentEventsExtension(const ServerSentEventsExtension &) = delete;
+    ServerSentEventsExtension &operator=(const ServerSentEventsExtension &) = delete;
 
     AsyncEventSource *client = new AsyncEventSource("/server-sent%20events");
 

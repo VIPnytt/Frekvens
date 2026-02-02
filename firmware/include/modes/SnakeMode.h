@@ -51,6 +51,8 @@ protected:
 
 public:
     SnakeMode() : ModeModule("Snake") {}
+    SnakeMode(const SnakeMode &) = delete;
+    SnakeMode &operator=(const SnakeMode &) = delete;
 
     void configure() override;
     void begin() override;

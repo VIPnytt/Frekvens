@@ -11,6 +11,8 @@ protected:
 
 public:
     BrightMode() : ModeModule("Bright") {};
+    BrightMode(const BrightMode &) = delete;
+    BrightMode &operator=(const BrightMode &) = delete;
 
     void begin() override;
 };

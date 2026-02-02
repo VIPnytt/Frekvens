@@ -27,6 +27,8 @@ protected:
 
 public:
     FliesMode() : ModeModule("Flies") {};
+    FliesMode(const FliesMode &) = delete;
+    FliesMode &operator=(const FliesMode &) = delete;
 
     void handle() override;
     void onReceive(const JsonDocument &doc, const char *source) override;

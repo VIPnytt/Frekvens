@@ -18,6 +18,8 @@ protected:
 
 public:
     HomeThermometerMode() : ModeModule("Home thermometer") {};
+    HomeThermometerMode(const HomeThermometerMode &) = delete;
+    HomeThermometerMode &operator=(const HomeThermometerMode &) = delete;
 
     void configure() override;
     void begin() override;

@@ -41,6 +41,8 @@ protected:
 
 public:
     ButtonExtension();
+    ButtonExtension(const ButtonExtension &) = delete;
+    ButtonExtension &operator=(const ButtonExtension &) = delete;
 
     void configure() override;
     void handle() override;

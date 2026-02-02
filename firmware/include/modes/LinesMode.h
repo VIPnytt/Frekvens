@@ -16,6 +16,8 @@ protected:
 
 public:
     LinesMode() : ModeModule("Lines") {};
+    LinesMode(const LinesMode &) = delete;
+    LinesMode &operator=(const LinesMode &) = delete;
 
     void handle() override;
 };

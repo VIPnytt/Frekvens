@@ -16,6 +16,8 @@ protected:
 
 public:
     ScanMode() : ModeModule("Scan") {};
+    ScanMode(const ScanMode &) = delete;
+    ScanMode &operator=(const ScanMode &) = delete;
 
     void handle() override;
 };

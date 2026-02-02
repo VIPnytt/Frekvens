@@ -22,6 +22,8 @@ protected:
 
 public:
     BinaryClockMode() : ModeModule("Binary clock") {};
+    BinaryClockMode(const BinaryClockMode &) = delete;
+    BinaryClockMode &operator=(const BinaryClockMode &) = delete;
 
     void begin() override;
     void handle() override;

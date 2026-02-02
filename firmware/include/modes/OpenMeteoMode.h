@@ -79,6 +79,8 @@ protected:
 
 public:
     OpenMeteoMode() : ModeModule("Open-Meteo") {};
+    OpenMeteoMode(const OpenMeteoMode &) = delete;
+    OpenMeteoMode &operator=(const OpenMeteoMode &) = delete;
 
     void begin() override;
     void handle() override;

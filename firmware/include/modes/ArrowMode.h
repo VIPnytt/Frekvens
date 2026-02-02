@@ -88,6 +88,8 @@ protected:
 
 public:
     ArrowMode() : ModeModule("Arrow") {};
+    ArrowMode(const ArrowMode &) = delete;
+    ArrowMode &operator=(const ArrowMode &) = delete;
 
     void handle() override;
 };

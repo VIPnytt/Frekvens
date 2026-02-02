@@ -23,6 +23,8 @@ protected:
 
 public:
     HomeAssistantExtension();
+    HomeAssistantExtension(const HomeAssistantExtension &) = delete;
+    HomeAssistantExtension &operator=(const HomeAssistantExtension &) = delete;
 
     const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 

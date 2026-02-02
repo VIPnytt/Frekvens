@@ -26,6 +26,8 @@ protected:
 
 public:
     MqttExtension();
+    MqttExtension(const MqttExtension &) = delete;
+    MqttExtension &operator=(const MqttExtension &) = delete;
 
     espMqttClient client;
 

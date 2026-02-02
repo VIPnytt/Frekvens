@@ -26,6 +26,8 @@ protected:
 
 public:
     SignalExtension();
+    SignalExtension(const SignalExtension &) = delete;
+    SignalExtension &operator=(const SignalExtension &) = delete;
 
     void begin() override;
     void handle() override;

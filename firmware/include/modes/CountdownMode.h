@@ -24,6 +24,8 @@ protected:
 
 public:
     CountdownMode() : ModeModule("Countdown") {};
+    CountdownMode(const CountdownMode &) = delete;
+    CountdownMode &operator=(const CountdownMode &) = delete;
 
     void configure() override;
     void begin() override;

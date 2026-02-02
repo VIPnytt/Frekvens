@@ -114,6 +114,8 @@ protected:
 
 public:
     GoogleWeatherMode() : ModeModule("Google Weather") {};
+    GoogleWeatherMode(const GoogleWeatherMode &) = delete;
+    GoogleWeatherMode &operator=(const GoogleWeatherMode &) = delete;
 
     void begin() override;
     void handle() override;

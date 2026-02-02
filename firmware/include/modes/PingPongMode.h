@@ -41,6 +41,8 @@ protected:
 
 public:
     PingPongMode() : ModeModule("Ping-pong") {};
+    PingPongMode(const PingPongMode &) = delete;
+    PingPongMode &operator=(const PingPongMode &) = delete;
 
     void configure() override;
     void begin() override;

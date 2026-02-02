@@ -23,6 +23,8 @@ protected:
 
 public:
     NoiseMode() : ModeModule("Noise") {};
+    NoiseMode(const NoiseMode &) = delete;
+    NoiseMode &operator=(const NoiseMode &) = delete;
 
     void handle() override;
 };

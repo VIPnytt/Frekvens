@@ -6,7 +6,7 @@
 class WeatherHandler
 {
 public:
-    WeatherHandler() {};
+    WeatherHandler() = default;
     ~WeatherHandler() = default;
 
     enum Conditions
@@ -41,7 +41,7 @@ public:
     };
 
     std::vector<uint16_t> sign = {};
-    int16_t temperature;
+    int16_t temperature = 0;
 
     void parse(std::string code, std::vector<Codeset> codesets);
     void parse(uint8_t code, std::vector<Codeset8> codesets);

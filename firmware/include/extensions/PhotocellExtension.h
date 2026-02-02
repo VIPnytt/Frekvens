@@ -31,6 +31,8 @@ protected:
 
 public:
     PhotocellExtension();
+    PhotocellExtension(const PhotocellExtension &) = delete;
+    PhotocellExtension &operator=(const PhotocellExtension &) = delete;
 
     void configure() override;
     void begin() override;

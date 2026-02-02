@@ -66,6 +66,8 @@ protected:
 
 public:
     WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
+    WorldWeatherOnlineMode(const WorldWeatherOnlineMode &) = delete;
+    WorldWeatherOnlineMode &operator=(const WorldWeatherOnlineMode &) = delete;
 
     void begin() override;
     void handle() override;

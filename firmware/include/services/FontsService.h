@@ -32,6 +32,9 @@ protected:
     ~FontsService() = default;
 
 public:
+    FontsService(const FontsService &) = delete;
+    FontsService &operator=(const FontsService &) = delete;
+
     void begin();
     [[nodiscard]] const std::vector<FontModule *> &getAll() const;
 

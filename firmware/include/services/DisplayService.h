@@ -63,6 +63,9 @@ protected:
     ~DisplayService() = default;
 
 public:
+    DisplayService(const DisplayService &) = delete;
+    DisplayService &operator=(const DisplayService &) = delete;
+
     hw_timer_t *timer = nullptr;
 
     void configure();

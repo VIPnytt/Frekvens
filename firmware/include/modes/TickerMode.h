@@ -38,6 +38,8 @@ protected:
 
 public:
     TickerMode() : ModeModule("Ticker") {};
+    TickerMode(const TickerMode &) = delete;
+    TickerMode &operator=(const TickerMode &) = delete;
 
     void configure() override;
     void begin() override;

@@ -25,6 +25,8 @@ protected:
 
 public:
     MicrophoneExtension();
+    MicrophoneExtension(const MicrophoneExtension &) = delete;
+    MicrophoneExtension &operator=(const MicrophoneExtension &) = delete;
 
     void configure() override;
     void begin() override;

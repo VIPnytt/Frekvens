@@ -43,6 +43,8 @@ protected:
 
 public:
     MessageExtension();
+    MessageExtension(const MessageExtension &) = delete;
+    MessageExtension &operator=(const MessageExtension &) = delete;
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;

@@ -19,6 +19,8 @@ protected:
 
 public:
     RestfulExtension();
+    RestfulExtension(const RestfulExtension &) = delete;
+    RestfulExtension &operator=(const RestfulExtension &) = delete;
 
     void begin() override;
 };

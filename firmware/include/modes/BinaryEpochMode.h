@@ -14,6 +14,8 @@ protected:
 
 public:
     BinaryEpochMode() : ModeModule("Binary epoch") {};
+    BinaryEpochMode(const BinaryEpochMode &) = delete;
+    BinaryEpochMode &operator=(const BinaryEpochMode &) = delete;
 
     void handle() override;
 };

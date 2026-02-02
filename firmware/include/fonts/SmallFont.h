@@ -1460,6 +1460,8 @@ protected:
 
 public:
     SmallFont();
+    SmallFont(const SmallFont &) = delete;
+    SmallFont &operator=(const SmallFont &) = delete;
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

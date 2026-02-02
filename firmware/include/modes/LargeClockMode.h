@@ -32,6 +32,8 @@ protected:
 
 public:
     LargeClockMode() : ModeModule("Large clock") {};
+    LargeClockMode(const LargeClockMode &) = delete;
+    LargeClockMode &operator=(const LargeClockMode &) = delete;
 
     void configure() override;
     void begin() override;

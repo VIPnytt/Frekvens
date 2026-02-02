@@ -21,6 +21,8 @@ protected:
 
 public:
     BlindsMode() : ModeModule("Blinds") {};
+    BlindsMode(const BlindsMode &) = delete;
+    BlindsMode &operator=(const BlindsMode &) = delete;
 
     void handle() override;
 };

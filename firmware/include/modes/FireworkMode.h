@@ -27,6 +27,8 @@ protected:
 
 public:
     FireworkMode() : ModeModule("Firework") {};
+    FireworkMode(const FireworkMode &) = delete;
+    FireworkMode &operator=(const FireworkMode &) = delete;
 
     void handle() override;
 };

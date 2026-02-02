@@ -21,6 +21,8 @@ protected:
 
 public:
     AlexaExtension();
+    AlexaExtension(const AlexaExtension &) = delete;
+    AlexaExtension &operator=(const AlexaExtension &) = delete;
 
     void begin() override;
     void handle() override;

@@ -22,6 +22,8 @@ protected:
 
 public:
     DrawMode() : ModeModule("Draw") {};
+    DrawMode(const DrawMode &) = delete;
+    DrawMode &operator=(const DrawMode &) = delete;
 
     void begin() override;
     void handle() override;

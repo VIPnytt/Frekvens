@@ -24,6 +24,8 @@ protected:
 
 public:
     LeafFallMode() : ModeModule("Leaf fall") {};
+    LeafFallMode(const LeafFallMode &) = delete;
+    LeafFallMode &operator=(const LeafFallMode &) = delete;
 
     void begin() override;
     void handle() override;

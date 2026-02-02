@@ -24,6 +24,9 @@ protected:
     ~DeviceService() = default;
 
 public:
+    DeviceService(const DeviceService &) = delete;
+    DeviceService &operator=(const DeviceService &) = delete;
+
     TaskHandle_t taskHandle = nullptr;
 
     void begin();

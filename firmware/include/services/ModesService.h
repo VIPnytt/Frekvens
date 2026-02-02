@@ -194,6 +194,9 @@ protected:
     ~ModesService() = default;
 
 public:
+    ModesService(const ModesService &) = delete;
+    ModesService &operator=(const ModesService &) = delete;
+
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 
     ModeModule *mode = nullptr;

@@ -28,6 +28,8 @@ protected:
 
 public:
     CircleMode() : ModeModule("Circle") {};
+    CircleMode(const CircleMode &) = delete;
+    CircleMode &operator=(const CircleMode &) = delete;
 
     void handle() override;
 };

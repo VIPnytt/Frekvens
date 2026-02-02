@@ -121,6 +121,8 @@ protected:
 
 public:
     HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
+    HomeAssistantWeatherMode(const HomeAssistantWeatherMode &) = delete;
+    HomeAssistantWeatherMode &operator=(const HomeAssistantWeatherMode &) = delete;
 
     void begin() override;
     void handle() override;

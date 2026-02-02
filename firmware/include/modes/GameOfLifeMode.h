@@ -26,6 +26,8 @@ protected:
 
 public:
     GameOfLifeMode() : ModeModule("Game of Life") {};
+    GameOfLifeMode(const GameOfLifeMode &) = delete;
+    GameOfLifeMode &operator=(const GameOfLifeMode &) = delete;
 
     void configure() override;
     void begin() override;

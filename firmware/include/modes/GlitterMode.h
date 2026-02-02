@@ -11,6 +11,8 @@ protected:
 
 public:
     GlitterMode() : ModeModule("Glitter") {};
+    GlitterMode(const GlitterMode &) = delete;
+    GlitterMode &operator=(const GlitterMode &) = delete;
 
     void handle() override;
 };

@@ -129,6 +129,8 @@ protected:
 
 public:
     RingMode() : ModeModule("Ring") {};
+    RingMode(const RingMode &) = delete;
+    RingMode &operator=(const RingMode &) = delete;
 
     void handle() override;
 };

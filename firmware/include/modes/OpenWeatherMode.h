@@ -78,6 +78,8 @@ protected:
 
 public:
     OpenWeatherMode() : ModeModule("OpenWeather") {};
+    OpenWeatherMode(const OpenWeatherMode &) = delete;
+    OpenWeatherMode &operator=(const OpenWeatherMode &) = delete;
 
     void begin() override;
     void handle() override;

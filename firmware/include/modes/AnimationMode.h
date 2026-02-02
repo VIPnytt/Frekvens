@@ -29,6 +29,8 @@ protected:
 
 public:
     AnimationMode() : ModeModule("Animation") {};
+    AnimationMode(const AnimationMode &) = delete;
+    AnimationMode &operator=(const AnimationMode &) = delete;
 
     void begin() override;
     void handle() override;

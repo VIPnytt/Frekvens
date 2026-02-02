@@ -119,6 +119,8 @@ protected:
 
 public:
     WaveformMode() : ModeModule("Waveform") {};
+    WaveformMode(const WaveformMode &) = delete;
+    WaveformMode &operator=(const WaveformMode &) = delete;
 
     void handle() override;
 };

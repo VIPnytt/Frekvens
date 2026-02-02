@@ -21,6 +21,8 @@ protected:
 
 public:
     PixelSequenceMode() : ModeModule("Pixel sequence") {};
+    PixelSequenceMode(const PixelSequenceMode &) = delete;
+    PixelSequenceMode &operator=(const PixelSequenceMode &) = delete;
 
     void handle() override;
 };

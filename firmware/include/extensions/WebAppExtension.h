@@ -15,6 +15,8 @@ protected:
 
 public:
     WebAppExtension();
+    WebAppExtension(const WebAppExtension &) = delete;
+    WebAppExtension &operator=(const WebAppExtension &) = delete;
 
     void configure() override;
     void begin() override;

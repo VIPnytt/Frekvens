@@ -25,6 +25,8 @@ protected:
 
 public:
     RainMode() : ModeModule("Rain") {};
+    RainMode(const RainMode &) = delete;
+    RainMode &operator=(const RainMode &) = delete;
 
     void begin() override;
     void handle() override;

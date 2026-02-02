@@ -26,6 +26,8 @@ protected:
 
 public:
     StreamMode() : ModeModule(_name.data()) {};
+    StreamMode(const StreamMode &) = delete;
+    StreamMode &operator=(const StreamMode &) = delete;
 
     void configure() override;
     void begin() override;

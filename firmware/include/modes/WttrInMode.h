@@ -66,6 +66,8 @@ protected:
 
 public:
     WttrInMode() : ModeModule("Wttr.in") {};
+    WttrInMode(const WttrInMode &) = delete;
+    WttrInMode &operator=(const WttrInMode &) = delete;
 
     void begin() override;
     void handle() override;

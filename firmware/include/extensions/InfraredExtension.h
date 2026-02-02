@@ -133,6 +133,8 @@ protected:
 
 public:
     InfraredExtension();
+    InfraredExtension(const InfraredExtension &) = delete;
+    InfraredExtension &operator=(const InfraredExtension &) = delete;
 
     void configure() override;
     void begin() override;

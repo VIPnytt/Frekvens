@@ -33,6 +33,8 @@ protected:
 
 public:
     MetaballsMode() : ModeModule("Metaballs") {};
+    MetaballsMode(const MetaballsMode &) = delete;
+    MetaballsMode &operator=(const MetaballsMode &) = delete;
 
     void configure() override;
     void handle() override;

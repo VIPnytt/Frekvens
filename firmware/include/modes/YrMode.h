@@ -157,6 +157,8 @@ protected:
 
 public:
     YrMode() : ModeModule("Yr") {};
+    YrMode(const YrMode &) = delete;
+    YrMode &operator=(const YrMode &) = delete;
 
     void begin() override;
     void handle() override;

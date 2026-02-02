@@ -25,6 +25,8 @@ protected:
 
 public:
     OtaExtension();
+    OtaExtension(const OtaExtension &) = delete;
+    OtaExtension &operator=(const OtaExtension &) = delete;
 
     void configure() override;
     void begin() override;

@@ -17,6 +17,8 @@ protected:
 
 public:
     WebSocketExtension();
+    WebSocketExtension(const WebSocketExtension &) = delete;
+    WebSocketExtension &operator=(const WebSocketExtension &) = delete;
 
     AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 

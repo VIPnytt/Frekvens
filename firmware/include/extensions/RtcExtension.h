@@ -37,6 +37,8 @@ protected:
 
 public:
     RtcExtension();
+    RtcExtension(const RtcExtension &) = delete;
+    RtcExtension &operator=(const RtcExtension &) = delete;
 
 #ifdef RTC_DS1307
     RtcDS1307<TwoWire> rtc = RtcDS1307(Wire);

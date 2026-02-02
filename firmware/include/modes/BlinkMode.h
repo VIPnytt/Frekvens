@@ -14,6 +14,8 @@ protected:
 
 public:
     BlinkMode() : ModeModule("Blink") {};
+    BlinkMode(const BlinkMode &) = delete;
+    BlinkMode &operator=(const BlinkMode &) = delete;
 
     void handle() override;
 };

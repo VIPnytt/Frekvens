@@ -10,6 +10,8 @@ class PlaylistExtension final : public ExtensionModule
 {
 public:
     PlaylistExtension();
+    PlaylistExtension(const PlaylistExtension &) = delete;
+    PlaylistExtension &operator=(const PlaylistExtension &) = delete;
 
     struct Mode
     {

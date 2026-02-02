@@ -874,6 +874,8 @@ protected:
 
 public:
     MiniFont();
+    MiniFont(const MiniFont &) = delete;
+    MiniFont &operator=(const MiniFont &) = delete;
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

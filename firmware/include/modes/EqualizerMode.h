@@ -25,6 +25,8 @@ protected:
 
 public:
     EqualizerMode() : ModeModule("Equalizer") {};
+    EqualizerMode(const EqualizerMode &) = delete;
+    EqualizerMode &operator=(const EqualizerMode &) = delete;
 
     void begin() override;
     void handle() override;

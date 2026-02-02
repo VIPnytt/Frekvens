@@ -32,6 +32,8 @@ protected:
 
 public:
     BreakoutClockMode() : ModeModule("Breakout clock") {};
+    BreakoutClockMode(const BreakoutClockMode &) = delete;
+    BreakoutClockMode &operator=(const BreakoutClockMode &) = delete;
 
     void begin() override;
     void handle() override;
