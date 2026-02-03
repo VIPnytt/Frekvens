@@ -2,7 +2,7 @@ name: PlatformIO
 
 on:
   schedule:
-    - cron: 0 12 * * 1-5
+    - cron: 0 7 * * 1-5
 
   workflow_dispatch:
 
@@ -18,7 +18,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
+      - name: GitHub Script platformio dependabot PR count
+        id: dependencies
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            let count = 0;
+            for await (const response of github.paginate.iterator(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open"
+            })) {
+              count += response.data.filter(
+                pr => pr.head.ref.startsWith("platformio_dependabot/")
+              ).length;
+            }
+            core.info(`Open PRs: ${count}`);
+            core.setOutput("count", count);
+
       - name: PlatformIO dependabot
+        if: steps.dependencies.outputs.count < 5
         uses: peterus/platformio_dependabot@ee459e446a090c4894b1354a3b85bc064797fd2b # v1.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
