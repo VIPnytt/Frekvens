@@ -120,6 +120,7 @@ jobs:
       - name: PlatformIO compilation database
         run: |
           cat <<'EOL' > .env
+          ${{ matrix.device }}='true'
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
           EXTENSION_HEAP='true'
@@ -139,7 +140,6 @@ jobs:
           EXTENSION_WEBSOCKET='true'
           FONT_BRAILLE='true'
           HOSTNAME='frekvens'
-          IKEA_FREKVENS='true'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
           MODE_BINARYCLOCK='true'

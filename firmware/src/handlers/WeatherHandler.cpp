@@ -7,7 +7,7 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-WeatherHandler::WeatherHandler() {}
+WeatherHandler::WeatherHandler() = default;
 
 void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
 {

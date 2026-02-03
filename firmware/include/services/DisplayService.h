@@ -42,7 +42,7 @@ private:
     bool pending = false;
     bool power = false;
 
-    float ratio = PITCH_HORIZONTAL / (float)PITCH_VERTICAL;
+    float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
 
     uint8_t brightness = 0;
     uint8_t _frame[GRID_COLUMNS * GRID_ROWS] = {0};
@@ -74,24 +74,24 @@ public:
     void setOrientation(Orientation _orientation);
 
     [[nodiscard]] bool getPower() const;
-    void setPower(bool power);
+    void setPower(bool _power);
 
     [[nodiscard]] uint8_t getBrightness() const;
-    void setBrightness(uint8_t brightness);
+    void setBrightness(uint8_t _brightness);
 
-    void getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
-    void setFrame(const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void getFrame(uint8_t __frame[GRID_COLUMNS * GRID_ROWS]);
+    void setFrame(const uint8_t __frame[GRID_COLUMNS * GRID_ROWS]);
 
-    void clearFrame(uint8_t brightness = 0);
+    void clearFrame(uint8_t _brightness = 0);
     void invertFrame();
 
     [[nodiscard]] uint8_t getPixel(uint8_t x, uint8_t y) const;
-    void setPixel(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
+    void setPixel(uint8_t x, uint8_t y, uint8_t _brightness = UINT8_MAX);
 
-    void drawEllipse(float x, float y, float radius, float ratio = 1, bool fill = false,
-                     uint8_t brightness = UINT8_MAX);
+    void drawEllipse(float x, float y, float radius, float _ratio = 1, bool fill = false,
+                     uint8_t _brightness = UINT8_MAX);
     void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill = true,
-                       uint8_t brightness = UINT8_MAX);
+                       uint8_t _brightness = UINT8_MAX);
 
     void flush();
 

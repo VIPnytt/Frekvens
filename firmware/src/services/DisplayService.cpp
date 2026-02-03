@@ -93,7 +93,7 @@ void DisplayService::handle()
 IRAM_ATTR void DisplayService::onTimer()
 {
     static uint8_t filter = 0;
-    static uint8_t bytes[(GRID_COLUMNS * GRID_ROWS + 7) / 8];
+    static uint8_t bytes[((GRID_COLUMNS * GRID_ROWS) + 7) / 8];
     uint8_t *frame = Display.frame;
     uint8_t *out = bytes;
     uint8_t bitMask = 0x80;
@@ -132,10 +132,10 @@ float DisplayService::getRatio() const { return ratio; }
 
 DisplayService::Orientation DisplayService::getOrientation() const { return orientation; }
 
-void DisplayService::setOrientation(Orientation orientation)
+void DisplayService::setOrientation(Orientation _orientation)
 {
     std::vector<uint8_t> _pixel(GRID_COLUMNS * GRID_ROWS);
-    switch ((orientation - this->orientation + 4) % 4)
+    switch ((_orientation - orientation + 4) % 4)
     {
     case Orientation::deg180:
         for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
@@ -163,30 +163,30 @@ void DisplayService::setOrientation(Orientation orientation)
     default:
         return;
     }
-    ESP_LOGI(name, "orientation %d°", orientation * 90);
+    ESP_LOGI(name, "orientation %d°", _orientation * 90);
     memcpy(pixel, _pixel.data(), _pixel.size());
-    this->orientation = orientation;
-#if GRID_COLUMNS == GRID_ROWS
-    ratio = (this->orientation % 2) == 0 ? PITCH_HORIZONTAL / (float)PITCH_VERTICAL
-                                         : PITCH_VERTICAL / (float)PITCH_HORIZONTAL;
-#endif
+    orientation = _orientation;
+#if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
+    ratio = (orientation % 2) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+                                   : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
+#endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     Preferences Storage;
     Storage.begin(name);
-    Storage.putUShort("orientation", this->orientation);
+    Storage.putUShort("orientation", orientation);
     Storage.end();
     pending = true;
 }
 
 bool DisplayService::getPower() const { return power; }
 
-void DisplayService::setPower(bool power)
+void DisplayService::setPower(bool _power)
 {
-    if (power == this->power)
+    if (_power == power)
     {
         return;
     }
     ESP_LOGI(name, "power");
-    if (power)
+    if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGamma(PIN_OE,
@@ -200,7 +200,7 @@ void DisplayService::setPower(bool power)
                  max<uint16_t>(brightness, powf(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)),
                  (1 << 5) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        this->power = true;
+        power = true;
         pending = true;
         Modes.setActive(true);
     }
@@ -234,13 +234,13 @@ void DisplayService::onPowerOff()
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
 
-void DisplayService::setBrightness(uint8_t brightness)
+void DisplayService::setBrightness(uint8_t _brightness)
 {
-    if (power && brightness == this->brightness)
+    if (power && _brightness == brightness)
     {
         return;
     }
-    if (brightness == 0)
+    if (_brightness == 0)
     {
         setPower(false);
         return;
@@ -249,45 +249,42 @@ void DisplayService::setBrightness(uint8_t brightness)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
-        power ? max<uint16_t>(this->brightness, powf(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2))
-              : 0,
-        max<uint16_t>(brightness, powf(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(this->brightness -
-                       brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        power ? max<uint16_t>(brightness, powf(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)) : 0,
+        max<uint16_t>(_brightness, powf(_brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)),
+        (1 << 4) * abs(brightness -
+                       _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-    ledcFade(
-        PIN_OE,
-        power ? max<uint16_t>(this->brightness, powf(this->brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2))
-              : 0,
-        max<uint16_t>(brightness, powf(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(this->brightness - brightness)); // -2 offset due to `ledcFade` stability issues.
+    ledcFade(PIN_OE,
+             power ? max<uint16_t>(brightness, powf(brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)) : 0,
+             max<uint16_t>(_brightness, powf(_brightness / (float)UINT8_MAX, GAMMA) * ((1 << depth) - 2)),
+             (1 << 4) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
         power = true;
         Modes.setActive(true);
     }
-    this->brightness = brightness;
+    brightness = _brightness;
     Preferences Storage;
     Storage.begin(name);
-    Storage.putUShort("brightness", this->brightness);
+    Storage.putUShort("brightness", brightness);
     Storage.end();
     pending = true;
 }
 
-void DisplayService::getFrame(uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::getFrame(uint8_t __frame[GRID_COLUMNS * GRID_ROWS])
 {
     for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        frame[i] = this->frame[pixel[i]];
+        __frame[i] = frame[pixel[i]];
     }
 }
 
-void DisplayService::setFrame(const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::setFrame(const uint8_t __frame[GRID_COLUMNS * GRID_ROWS])
 {
     for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        this->_frame[pixel[i]] = frame[i];
+        _frame[pixel[i]] = __frame[i];
     }
 }
 
@@ -321,11 +318,18 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 
 void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
 {
+#if PITCH_HORIZONTAL == PITCH_VERTICAL
+    const float xRatio =
+        static_cast<float>(2 * PITCH_HORIZONTAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+    const float yRatio =
+        static_cast<float>(2 * PITCH_VERTICAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+#else
     const bool rotated = (orientation % 2) != 0;
-    const float xRatio = 2.0f * static_cast<float>(rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) /
+    const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                          (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
-    const float yRatio = 2.0f * static_cast<float>(rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) /
+    const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
                          (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
+#endif // PITCH_HORIZONTAL == PITCH_VERTICAL
     const uint8_t xMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(x + (radius / xRatio)));
     const uint8_t xMin = max<uint8_t>(0, floorf(x - (radius / xRatio)));
     const uint8_t yMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(y + (radius / yRatio)));

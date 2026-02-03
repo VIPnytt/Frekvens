@@ -26,11 +26,13 @@ void MetaballsMode::handle()
     if (Microphone->isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
+#if PITCH_HORIZONTAL != PITCH_VERTICAL
         const bool rotated = (Display.getOrientation() % 2) != 0;
-        const float xRatio = 2.0f * static_cast<float>(rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) /
+        const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                              static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
-        const float yRatio = 2.0f * static_cast<float>(rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) /
+        const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
                              static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
+#endif // PITCH_HORIZONTAL == PITCH_VERTICAL
         for (const Ball &ball : balls)
         {
             const uint8_t xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0);
@@ -44,8 +46,13 @@ void MetaballsMode::handle()
                     uint8_t brightness = 0;
                     for (const Ball &ball : balls)
                     {
+#if PITCH_HORIZONTAL == PITCH_VERTICAL
+                        const float xDistance = (ball.x - static_cast<float>(x));
+                        const float yDistance = (ball.y - static_cast<float>(y));
+#else
                         const float xDistance = (ball.x - static_cast<float>(x)) * xRatio;
                         const float yDistance = (ball.y - static_cast<float>(y)) * yRatio;
+#endif // PITCH_HORIZONTAL == PITCH_VERTICAL
                         const float distanceSq = (xDistance * xDistance) + (yDistance * yDistance);
                         if (distanceSq < radiusSq)
                         {
