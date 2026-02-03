@@ -67,16 +67,15 @@ jobs:
           style: file
           tidy-checks: -*
 
-      - name: Clang format checks failed
-        if: steps.format.outputs.clang-format-checks-failed != 0
+      - name: Summary
         run: |
-          echo "Job summary:"
+          echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
           fi
-          exit 1
+          exit $(( ${{ steps.format.outputs.clang-format-checks-failed }} != 0 ))
 
   tidy:
     name: Tidy
@@ -236,13 +235,13 @@ jobs:
           tidy-checks: ""
           tidy-review: true
 
-      - name: Clang tidy check failures above threshold
-        if: steps.tidy.outputs.clang-tidy-checks-failed > env.clang-threshold
+      - name: Summary
         run: |
-          echo "Job summary:"
+          echo "${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
           fi
-          exit 1
+          exit $(( ${{ steps.tidy.outputs.clang-tidy-checks-failed }} > ${{ env.clang-threshold }} ))

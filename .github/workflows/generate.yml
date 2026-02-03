@@ -51,9 +51,7 @@ jobs:
       matrix:
         toolchain:
           - python-version: 3.11
-
-          - clang-version: 21
-            python-version: 3.13
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -145,16 +143,16 @@ jobs:
           tidy-checks: ""
           tidy-review: true
 
-      - name: Clang checks failed
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+      - name: Summary
         run: |
-          echo "Job summary:"
+          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
           fi
-          exit 1
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
   mode-dynamic:
     name: Dynamic mode
@@ -169,9 +167,7 @@ jobs:
       matrix:
         toolchain:
           - python-version: 3.11
-
-          - clang-version: 21
-            python-version: 3.13
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -273,11 +269,9 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -293,16 +287,16 @@ jobs:
           tidy-checks: ""
           tidy-review: true
 
-      - name: Clang checks failed
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+      - name: Summary
         run: |
-          echo "Job summary:"
+          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
           fi
-          exit 1
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
   mode-static:
     name: Static mode
@@ -403,11 +397,9 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -423,13 +415,13 @@ jobs:
           tidy-checks: ""
           tidy-review: true
 
-      - name: Clang check failures above threshold
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+      - name: Summary
         run: |
-          echo "Job summary:"
+          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
           fi
-          exit 1
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
