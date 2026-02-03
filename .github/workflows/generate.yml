@@ -148,9 +148,9 @@ jobs:
           echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
@@ -292,9 +292,9 @@ jobs:
           echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
@@ -420,8 +420,8 @@ jobs:
           echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
