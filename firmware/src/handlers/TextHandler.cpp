@@ -65,7 +65,7 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
         if (_height != 0)
         {
             const uint8_t msbMax = calcMsbMax(character);
-            for (uint8_t _x = 0; _x <= msbMax; ++_x)
+            for (uint16_t _x = 0; _x <= msbMax; ++_x)
             {
                 for (uint8_t _y = 0; _y < _height; ++_y)
                 {

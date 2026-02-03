@@ -272,19 +272,19 @@ void DisplayService::setBrightness(uint8_t _brightness)
     pending = true;
 }
 
-void DisplayService::getFrame(uint8_t __frame[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS])
 {
     for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        __frame[i] = frame[pixel[i]];
+        frameCurrent[i] = frame[pixel[i]];
     }
 }
 
-void DisplayService::setFrame(const uint8_t __frame[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS])
 {
     for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        _frame[pixel[i]] = __frame[i];
+        _frame[pixel[i]] = frameNext[i];
     }
 }
 
@@ -334,9 +334,9 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     const uint8_t xMin = max<uint8_t>(0, floorf(x - (radius / xRatio)));
     const uint8_t yMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(y + (radius / yRatio)));
     const uint8_t yMin = max<uint8_t>(0, floorf(y - (radius / yRatio)));
-    for (uint8_t _x = xMin; _x <= xMax; ++_x)
+    for (uint16_t _x = xMin; _x <= xMax; ++_x)
     {
-        for (uint8_t _y = yMin; _y <= yMax; ++_y)
+        for (uint16_t _y = yMin; _y <= yMax; ++_y)
         {
             const float xDistance = xRatio * (_x - x);
             const float yDistance = yRatio * (_y - y);

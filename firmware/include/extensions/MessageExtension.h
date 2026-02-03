@@ -20,14 +20,14 @@ private:
     int16_t offsetX = GRID_COLUMNS;
     int16_t width = 0;
 
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS];
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
     uint8_t repeat = 3;
 
     unsigned long lastMillis = 0;
 
     FontModule *font = nullptr;
 
-    std::vector<std::string> messages;
+    std::vector<std::string> messages = {};
 
     std::unique_ptr<TextHandler> text = {};
 

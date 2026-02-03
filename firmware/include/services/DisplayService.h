@@ -79,8 +79,8 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(uint8_t __frame[GRID_COLUMNS * GRID_ROWS]);
-    void setFrame(const uint8_t __frame[GRID_COLUMNS * GRID_ROWS]);
+    void getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS]);
+    void setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS]);
 
     void clearFrame(uint8_t _brightness = 0);
     void invertFrame();

@@ -51,7 +51,11 @@ void PingPongMode::begin()
     Display.clearFrame();
     paddleA.clear();
     paddleB.clear();
+#if GRID_COLUMNS == GRID_ROWS
+    const uint8_t _paddle = random(clock ? 5 : 0, GRID_COLUMNS - 3);
+#else
     const uint8_t _paddle = random(clock ? 5 : 0, clock ? GRID_ROWS - 3 : GRID_COLUMNS - 3);
+#endif // GRID_COLUMNS == GRID_ROWS
     for (uint8_t i = 0; i < 3; ++i)
     {
         paddleA.push_back(_paddle + i);

@@ -11,6 +11,7 @@ Checks: >
   -cppcoreguidelines-init-variables,
   -cppcoreguidelines-macro-to-enum,
   -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
   -modernize-macro-to-enum,
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
