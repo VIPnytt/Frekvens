@@ -71,9 +71,9 @@ jobs:
         run: |
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           exit $(( ${{ steps.format.outputs.clang-format-checks-failed }} != 0 ))
 
@@ -237,11 +237,11 @@ jobs:
 
       - name: Summary
         run: |
-          echo "${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           exit $(( ${{ steps.tidy.outputs.clang-tidy-checks-failed }} > ${{ env.clang-threshold }} ))

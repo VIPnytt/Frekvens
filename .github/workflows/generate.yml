@@ -123,17 +123,15 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        if: matrix.toolchain.clang-version
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
-        if: matrix.toolchain.clang-version
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: ${{ matrix.toolchain.clang-version }}
+          version: ${{ env.clang-version }}
           files-changed-only: false
           format-review: true
           ignore: "*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h"
@@ -145,12 +143,12 @@ jobs:
 
       - name: Summary
         run: |
-          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
@@ -277,7 +275,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: ${{ matrix.toolchain.clang-version }}
+          version: ${{ env.clang-version }}
           files-changed-only: false
           format-review: true
           ignore: "*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h"
@@ -289,12 +287,12 @@ jobs:
 
       - name: Summary
         run: |
-          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
 
@@ -405,7 +403,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          version: ${{ matrix.toolchain.clang-version }}
+          version: ${{ env.clang-version }}
           files-changed-only: false
           format-review: true
           ignore: "*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h"
@@ -417,11 +415,11 @@ jobs:
 
       - name: Summary
         run: |
-          echo "${{ steps.clang.outputs.clang-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
-            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job.check_run_id }}"
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
           exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
