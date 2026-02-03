@@ -50,8 +50,6 @@
 class ModesService final : public ServiceModule
 {
 private:
-    ModesService() : ServiceModule("Modes") {};
-
     const std::vector<ModeModule *> modes = {
 #if MODE_ANIMATION
         new AnimationMode(),
@@ -191,12 +189,9 @@ private:
     static void onTask(void *parameter = nullptr);
 
 protected:
-    ~ModesService() = default;
+    explicit ModesService() : ServiceModule("Modes") {};
 
 public:
-    ModesService(const ModesService &) = delete;
-    ModesService &operator=(const ModesService &) = delete;
-
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 
     ModeModule *mode = nullptr;

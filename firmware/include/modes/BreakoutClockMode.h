@@ -27,13 +27,8 @@ private:
 
     uint16_t deg = 90;
 
-protected:
-    ~BreakoutClockMode() = default;
-
 public:
-    BreakoutClockMode() : ModeModule("Breakout clock") {};
-    BreakoutClockMode(const BreakoutClockMode &) = delete;
-    BreakoutClockMode &operator=(const BreakoutClockMode &) = delete;
+    explicit BreakoutClockMode() : ModeModule("Breakout clock") {};
 
     void begin() override;
     void handle() override;

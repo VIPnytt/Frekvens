@@ -19,13 +19,8 @@ private:
     void save();
     void transmit();
 
-protected:
-    ~CountdownMode() = default;
-
 public:
-    CountdownMode() : ModeModule("Countdown") {};
-    CountdownMode(const CountdownMode &) = delete;
-    CountdownMode &operator=(const CountdownMode &) = delete;
+    explicit CountdownMode() : ModeModule("Countdown") {};
 
     void configure() override;
     void begin() override;

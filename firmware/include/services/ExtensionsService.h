@@ -25,8 +25,6 @@
 class ExtensionsService final : public ServiceModule
 {
 private:
-    ExtensionsService() : ServiceModule("Extensions") {};
-
     const std::vector<ExtensionModule *> modules = {
 #if EXTENSION_ALEXA
         new AlexaExtension(),
@@ -88,12 +86,9 @@ private:
     static void onTask(void *parameter = nullptr);
 
 protected:
-    ~ExtensionsService() = default;
+    explicit ExtensionsService() : ServiceModule("Extensions") {};
 
 public:
-    ExtensionsService(const ExtensionsService &) = delete;
-    ExtensionsService &operator=(const ExtensionsService &) = delete;
-
     TaskHandle_t taskHandle = nullptr;
 
     static constexpr uint16_t stackSize = 1 << 12; // 4 kB

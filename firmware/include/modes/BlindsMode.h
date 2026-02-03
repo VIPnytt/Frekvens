@@ -16,13 +16,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~BlindsMode() = default;
-
 public:
-    BlindsMode() : ModeModule("Blinds") {};
-    BlindsMode(const BlindsMode &) = delete;
-    BlindsMode &operator=(const BlindsMode &) = delete;
+    explicit BlindsMode() : ModeModule("Blinds") {};
 
     void handle() override;
 };

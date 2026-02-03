@@ -9,13 +9,8 @@ class HeapExtension final : public ExtensionModule
 private:
     unsigned long lastMillis = 0;
 
-protected:
-    ~HeapExtension() = default;
-
 public:
-    HeapExtension();
-    HeapExtension(const HeapExtension &) = delete;
-    HeapExtension &operator=(const HeapExtension &) = delete;
+    explicit HeapExtension();
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;

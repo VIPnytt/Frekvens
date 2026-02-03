@@ -23,13 +23,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~CircleMode() = default;
-
 public:
-    CircleMode() : ModeModule("Circle") {};
-    CircleMode(const CircleMode &) = delete;
-    CircleMode &operator=(const CircleMode &) = delete;
+    explicit CircleMode() : ModeModule("Circle") {};
 
     void handle() override;
 };

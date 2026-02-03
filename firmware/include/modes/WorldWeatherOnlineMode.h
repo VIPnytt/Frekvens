@@ -61,13 +61,8 @@ private:
 
     void update();
 
-protected:
-    ~WorldWeatherOnlineMode() = default;
-
 public:
-    WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
-    WorldWeatherOnlineMode(const WorldWeatherOnlineMode &) = delete;
-    WorldWeatherOnlineMode &operator=(const WorldWeatherOnlineMode &) = delete;
+    explicit WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
 
     void begin() override;
     void handle() override;

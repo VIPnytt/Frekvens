@@ -20,13 +20,8 @@ private:
 
     void transmit();
 
-protected:
-    ~MicrophoneExtension() = default;
-
 public:
-    MicrophoneExtension();
-    MicrophoneExtension(const MicrophoneExtension &) = delete;
-    MicrophoneExtension &operator=(const MicrophoneExtension &) = delete;
+    explicit MicrophoneExtension();
 
     void configure() override;
     void begin() override;

@@ -24,13 +24,8 @@ private:
 
     void transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
 
-protected:
-    ~AnimationMode() = default;
-
 public:
-    AnimationMode() : ModeModule("Animation") {};
-    AnimationMode(const AnimationMode &) = delete;
-    AnimationMode &operator=(const AnimationMode &) = delete;
+    explicit AnimationMode() : ModeModule("Animation") {};
 
     void begin() override;
     void handle() override;

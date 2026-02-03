@@ -36,13 +36,8 @@ private:
 
     static void event(const char *key, const char *value);
 
-protected:
-    ~ButtonExtension() = default;
-
 public:
-    ButtonExtension();
-    ButtonExtension(const ButtonExtension &) = delete;
-    ButtonExtension &operator=(const ButtonExtension &) = delete;
+    explicit ButtonExtension();
 
     void configure() override;
     void handle() override;

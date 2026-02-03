@@ -7,17 +7,12 @@
 class WebServerService final : public ServiceModule
 {
 private:
-    WebServerService() : ServiceModule("WebServer") {};
-
     static void onNotFound(AsyncWebServerRequest *request);
 
 protected:
-    ~WebServerService() = default;
+    explicit WebServerService() : ServiceModule("WebServer") {};
 
 public:
-    WebServerService(const WebServerService &) = delete;
-    WebServerService &operator=(const WebServerService &) = delete;
-
     AsyncWebServer *http = new AsyncWebServer(80);
 
     void configure() const;

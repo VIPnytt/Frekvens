@@ -21,13 +21,8 @@ private:
     void setClock(bool _clock);
     void transmit();
 
-protected:
-    ~GameOfLifeMode() = default;
-
 public:
-    GameOfLifeMode() : ModeModule("Game of Life") {};
-    GameOfLifeMode(const GameOfLifeMode &) = delete;
-    GameOfLifeMode &operator=(const GameOfLifeMode &) = delete;
+    explicit GameOfLifeMode() : ModeModule("Game of Life") {};
 
     void configure() override;
     void begin() override;

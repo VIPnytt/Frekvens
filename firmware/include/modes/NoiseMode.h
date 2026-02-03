@@ -18,13 +18,8 @@ private:
 
     Dot dots[GRID_COLUMNS * GRID_ROWS / 9];
 
-protected:
-    ~NoiseMode() = default;
-
 public:
-    NoiseMode() : ModeModule("Noise") {};
-    NoiseMode(const NoiseMode &) = delete;
-    NoiseMode &operator=(const NoiseMode &) = delete;
+    explicit NoiseMode() : ModeModule("Noise") {};
 
     void handle() override;
 };

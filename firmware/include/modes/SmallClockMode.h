@@ -19,13 +19,8 @@ private:
     void setTicking(bool _ticking);
     void transmit();
 
-protected:
-    ~SmallClockMode() = default;
-
 public:
-    SmallClockMode() : ModeModule("Small clock") {};
-    SmallClockMode(const SmallClockMode &) = delete;
-    SmallClockMode &operator=(const SmallClockMode &) = delete;
+    explicit SmallClockMode() : ModeModule("Small clock") {};
 
     void configure() override;
     void begin() override;

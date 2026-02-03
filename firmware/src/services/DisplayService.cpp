@@ -322,10 +322,10 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
 {
     const bool rotated = (orientation % 2) != 0;
-    const float xRatio =
-        2.0f * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
-    const float yRatio =
-        2.0f * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) / (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
+    const float xRatio = 2.0f * static_cast<float>(rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) /
+                         (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
+    const float yRatio = 2.0f * static_cast<float>(rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) /
+                         (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
     const uint8_t xMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(x + (radius / xRatio)));
     const uint8_t xMin = max<uint8_t>(0, floorf(x - (radius / xRatio)));
     const uint8_t yMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(y + (radius / yRatio)));

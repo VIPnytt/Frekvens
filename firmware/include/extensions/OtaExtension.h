@@ -20,13 +20,8 @@ private:
                        bool final);
 #endif
 
-protected:
-    ~OtaExtension() = default;
-
 public:
-    OtaExtension();
-    OtaExtension(const OtaExtension &) = delete;
-    OtaExtension &operator=(const OtaExtension &) = delete;
+    explicit OtaExtension();
 
     void configure() override;
     void begin() override;

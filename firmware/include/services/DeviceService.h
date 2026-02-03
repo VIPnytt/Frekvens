@@ -8,8 +8,6 @@
 class DeviceService final : public ServiceModule
 {
 private:
-    DeviceService() : ServiceModule("Device") {};
-
     bool operational = false;
 
     unsigned long lastMillis = 0;
@@ -21,12 +19,9 @@ private:
     void onReceive(const JsonDocument &doc, const char *source) override;
 
 protected:
-    ~DeviceService() = default;
+    explicit DeviceService() : ServiceModule("Device") {};
 
 public:
-    DeviceService(const DeviceService &) = delete;
-    DeviceService &operator=(const DeviceService &) = delete;
-
     TaskHandle_t taskHandle = nullptr;
 
     void begin();

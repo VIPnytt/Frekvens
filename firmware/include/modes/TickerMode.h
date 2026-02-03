@@ -33,13 +33,8 @@ private:
 
     void transmit();
 
-protected:
-    ~TickerMode() = default;
-
 public:
-    TickerMode() : ModeModule("Ticker") {};
-    TickerMode(const TickerMode &) = delete;
-    TickerMode &operator=(const TickerMode &) = delete;
+    explicit TickerMode() : ModeModule("Ticker") {};
 
     void configure() override;
     void begin() override;

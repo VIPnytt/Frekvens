@@ -73,13 +73,8 @@ private:
 
     void update();
 
-protected:
-    ~OpenWeatherMode() = default;
-
 public:
-    OpenWeatherMode() : ModeModule("OpenWeather") {};
-    OpenWeatherMode(const OpenWeatherMode &) = delete;
-    OpenWeatherMode &operator=(const OpenWeatherMode &) = delete;
+    explicit OpenWeatherMode() : ModeModule("OpenWeather") {};
 
     void begin() override;
     void handle() override;

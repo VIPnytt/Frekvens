@@ -114,13 +114,8 @@ private:
         },
     };
 
-protected:
-    ~WaveformMode() = default;
-
 public:
-    WaveformMode() : ModeModule("Waveform") {};
-    WaveformMode(const WaveformMode &) = delete;
-    WaveformMode &operator=(const WaveformMode &) = delete;
+    explicit WaveformMode() : ModeModule("Waveform") {};
 
     void handle() override;
 };

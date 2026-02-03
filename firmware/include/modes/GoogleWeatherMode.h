@@ -109,13 +109,8 @@ private:
 
     void update();
 
-protected:
-    ~GoogleWeatherMode() = default;
-
 public:
-    GoogleWeatherMode() : ModeModule("Google Weather") {};
-    GoogleWeatherMode(const GoogleWeatherMode &) = delete;
-    GoogleWeatherMode &operator=(const GoogleWeatherMode &) = delete;
+    explicit GoogleWeatherMode() : ModeModule("Google Weather") {};
 
     void begin() override;
     void handle() override;

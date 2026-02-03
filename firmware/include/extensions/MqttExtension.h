@@ -21,13 +21,8 @@ private:
     static void onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
                           const uint8_t *payload, size_t len, size_t index, size_t total);
 
-protected:
-    ~MqttExtension() = default;
-
 public:
-    MqttExtension();
-    MqttExtension(const MqttExtension &) = delete;
-    MqttExtension &operator=(const MqttExtension &) = delete;
+    explicit MqttExtension();
 
     espMqttClient client;
 

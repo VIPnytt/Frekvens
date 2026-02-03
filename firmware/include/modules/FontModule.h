@@ -6,13 +6,9 @@
 class FontModule
 {
 protected:
-    FontModule(const char *const name) : name(name) {};
-    ~FontModule() = default;
+    explicit FontModule(const char *const name) : name(name) {};
 
 public:
-    FontModule(const FontModule &) = delete;
-    FontModule &operator=(const FontModule &) = delete;
-
     struct Symbol
     {
         const std::vector<uint8_t> bitmap = {};

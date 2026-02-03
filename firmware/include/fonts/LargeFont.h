@@ -143,13 +143,8 @@ private:
         },
     };
 
-protected:
-    ~LargeFont() = default;
-
 public:
-    LargeFont();
-    LargeFont(const LargeFont &) = delete;
-    LargeFont &operator=(const LargeFont &) = delete;
+    explicit LargeFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

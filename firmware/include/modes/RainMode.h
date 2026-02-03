@@ -20,13 +20,8 @@ private:
 
     Drop drops[GRID_COLUMNS / 3];
 
-protected:
-    ~RainMode() = default;
-
 public:
-    RainMode() : ModeModule("Rain") {};
-    RainMode(const RainMode &) = delete;
-    RainMode &operator=(const RainMode &) = delete;
+    explicit RainMode() : ModeModule("Rain") {};
 
     void begin() override;
     void handle() override;

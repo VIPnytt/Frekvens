@@ -8,8 +8,6 @@
 class DisplayService final : public ServiceModule
 {
 private:
-    DisplayService() : ServiceModule("Display") {};
-
 #ifdef FRAME_RATE
     static constexpr uint8_t frameRate = FRAME_RATE;
 #else
@@ -60,12 +58,9 @@ private:
     static IRAM_ATTR void onTimer();
 
 protected:
-    ~DisplayService() = default;
+    explicit DisplayService() : ServiceModule("Display") {};
 
 public:
-    DisplayService(const DisplayService &) = delete;
-    DisplayService &operator=(const DisplayService &) = delete;
-
     hw_timer_t *timer = nullptr;
 
     void configure();

@@ -18,13 +18,8 @@ private:
 
     void transmit();
 
-protected:
-    ~HomeAssistantExtension() = default;
-
 public:
-    HomeAssistantExtension();
-    HomeAssistantExtension(const HomeAssistantExtension &) = delete;
-    HomeAssistantExtension &operator=(const HomeAssistantExtension &) = delete;
+    explicit HomeAssistantExtension();
 
     const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 

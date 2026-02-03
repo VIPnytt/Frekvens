@@ -8,13 +8,8 @@
 
 class ServerSentEventsExtension final : public ExtensionModule
 {
-protected:
-    ~ServerSentEventsExtension() = default;
-
 public:
-    ServerSentEventsExtension();
-    ServerSentEventsExtension(const ServerSentEventsExtension &) = delete;
-    ServerSentEventsExtension &operator=(const ServerSentEventsExtension &) = delete;
+    explicit ServerSentEventsExtension();
 
     AsyncEventSource *client = new AsyncEventSource("/server-sent%20events");
 

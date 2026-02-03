@@ -869,13 +869,8 @@ private:
         },
     };
 
-protected:
-    ~MiniFont() = default;
-
 public:
-    MiniFont();
-    MiniFont(const MiniFont &) = delete;
-    MiniFont &operator=(const MiniFont &) = delete;
+    explicit MiniFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

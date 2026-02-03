@@ -19,13 +19,8 @@ private:
 
     Leaf leaves[GRID_COLUMNS * GRID_ROWS / 20];
 
-protected:
-    ~LeafFallMode() = default;
-
 public:
-    LeafFallMode() : ModeModule("Leaf fall") {};
-    LeafFallMode(const LeafFallMode &) = delete;
-    LeafFallMode &operator=(const LeafFallMode &) = delete;
+    explicit LeafFallMode() : ModeModule("Leaf fall") {};
 
     void begin() override;
     void handle() override;

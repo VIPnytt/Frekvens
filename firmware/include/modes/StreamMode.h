@@ -21,13 +21,8 @@ private:
 
     static void onPacket(AsyncUDPPacket packet);
 
-protected:
-    ~StreamMode() = default;
-
 public:
-    StreamMode() : ModeModule(_name.data()) {};
-    StreamMode(const StreamMode &) = delete;
-    StreamMode &operator=(const StreamMode &) = delete;
+    explicit StreamMode() : ModeModule(_name.data()) {};
 
     void configure() override;
     void begin() override;

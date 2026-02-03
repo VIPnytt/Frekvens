@@ -17,13 +17,8 @@ private:
 
     void draw(uint8_t col, uint8_t value);
 
-protected:
-    ~BinaryClockMode() = default;
-
 public:
-    BinaryClockMode() : ModeModule("Binary clock") {};
-    BinaryClockMode(const BinaryClockMode &) = delete;
-    BinaryClockMode &operator=(const BinaryClockMode &) = delete;
+    explicit BinaryClockMode() : ModeModule("Binary clock") {};
 
     void begin() override;
     void handle() override;

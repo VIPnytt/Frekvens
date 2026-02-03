@@ -6,13 +6,8 @@
 
 class GlitterMode final : public ModeModule
 {
-protected:
-    ~GlitterMode() = default;
-
 public:
-    GlitterMode() : ModeModule("Glitter") {};
-    GlitterMode(const GlitterMode &) = delete;
-    GlitterMode &operator=(const GlitterMode &) = delete;
+    explicit GlitterMode() : ModeModule("Glitter") {};
 
     void handle() override;
 };

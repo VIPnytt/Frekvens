@@ -20,13 +20,8 @@ private:
 
     Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
 
-protected:
-    ~StarsMode() = default;
-
 public:
-    StarsMode() : ModeModule("Stars") {};
-    StarsMode(const StarsMode &) = delete;
-    StarsMode &operator=(const StarsMode &) = delete;
+    explicit StarsMode() : ModeModule("Stars") {};
 
     void begin() override;
     void handle() override;

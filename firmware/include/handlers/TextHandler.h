@@ -26,8 +26,7 @@ private:
     static const char *encode(uint32_t codepoint, char *out);
 
 public:
-    TextHandler(std::string text, FontModule *font);
-    ~TextHandler() = default;
+    explicit TextHandler(std::string text, FontModule *font);
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(int16_t x, int8_t y, uint8_t brightness = UINT8_MAX);

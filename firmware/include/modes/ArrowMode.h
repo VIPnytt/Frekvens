@@ -83,13 +83,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~ArrowMode() = default;
-
 public:
-    ArrowMode() : ModeModule("Arrow") {};
-    ArrowMode(const ArrowMode &) = delete;
-    ArrowMode &operator=(const ArrowMode &) = delete;
+    explicit ArrowMode() : ModeModule("Arrow") {};
 
     void handle() override;
 };

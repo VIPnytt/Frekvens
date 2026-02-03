@@ -9,9 +9,7 @@
 class PlaylistExtension final : public ExtensionModule
 {
 public:
-    PlaylistExtension();
-    PlaylistExtension(const PlaylistExtension &) = delete;
-    PlaylistExtension &operator=(const PlaylistExtension &) = delete;
+    explicit PlaylistExtension();
 
     struct Mode
     {
@@ -27,9 +25,6 @@ public:
 
     void onReceive(const JsonDocument &doc, const char *source) override;
     void onTransmit(const JsonDocument &doc, const char *source) override;
-
-protected:
-    ~PlaylistExtension() = default;
 
 private:
     bool active = false;

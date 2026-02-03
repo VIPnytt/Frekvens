@@ -643,13 +643,8 @@ private:
         },
     };
 
-protected:
-    ~MicroFont() = default;
-
 public:
-    MicroFont();
-    MicroFont(const MicroFont &) = delete;
-    MicroFont &operator=(const MicroFont &) = delete;
+    explicit MicroFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

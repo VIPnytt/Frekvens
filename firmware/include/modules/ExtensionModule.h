@@ -5,13 +5,9 @@
 class ExtensionModule
 {
 protected:
-    ExtensionModule(const char *const name) : name(name) {};
-    ~ExtensionModule() = default;
+    explicit ExtensionModule(const char *const name) : name(name) {};
 
 public:
-    ExtensionModule(const ExtensionModule &) = delete;
-    ExtensionModule &operator=(const ExtensionModule &) = delete;
-
     const char *const name;
 
     virtual void configure();

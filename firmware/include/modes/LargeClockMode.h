@@ -27,13 +27,8 @@ private:
     void setTicking(bool _ticking);
     void transmit();
 
-protected:
-    ~LargeClockMode() = default;
-
 public:
-    LargeClockMode() : ModeModule("Large clock") {};
-    LargeClockMode(const LargeClockMode &) = delete;
-    LargeClockMode &operator=(const LargeClockMode &) = delete;
+    explicit LargeClockMode() : ModeModule("Large clock") {};
 
     void configure() override;
     void begin() override;

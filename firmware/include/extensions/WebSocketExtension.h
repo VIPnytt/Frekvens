@@ -12,13 +12,8 @@ private:
     static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                         const uint8_t *data, size_t len);
 
-protected:
-    ~WebSocketExtension() = default;
-
 public:
-    WebSocketExtension();
-    WebSocketExtension(const WebSocketExtension &) = delete;
-    WebSocketExtension &operator=(const WebSocketExtension &) = delete;
+    explicit WebSocketExtension();
 
     AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 

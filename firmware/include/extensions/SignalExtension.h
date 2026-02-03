@@ -21,13 +21,8 @@ private:
     void setDuration(uint8_t seconds);
     void transmit();
 
-protected:
-    ~SignalExtension() = default;
-
 public:
-    SignalExtension();
-    SignalExtension(const SignalExtension &) = delete;
-    SignalExtension &operator=(const SignalExtension &) = delete;
+    explicit SignalExtension();
 
     void begin() override;
     void handle() override;

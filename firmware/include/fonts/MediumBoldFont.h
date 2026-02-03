@@ -260,13 +260,8 @@ private:
         },
     };
 
-protected:
-    ~MediumBoldFont() = default;
-
 public:
-    MediumBoldFont();
-    MediumBoldFont(const MediumBoldFont &) = delete;
-    MediumBoldFont &operator=(const MediumBoldFont &) = delete;
+    explicit MediumBoldFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

@@ -124,13 +124,8 @@ private:
         },
     };
 
-protected:
-    ~RingMode() = default;
-
 public:
-    RingMode() : ModeModule("Ring") {};
-    RingMode(const RingMode &) = delete;
-    RingMode &operator=(const RingMode &) = delete;
+    explicit RingMode() : ModeModule("Ring") {};
 
     void handle() override;
 };

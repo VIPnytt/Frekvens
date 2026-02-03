@@ -116,13 +116,8 @@ private:
 
     void update();
 
-protected:
-    ~HomeAssistantWeatherMode() = default;
-
 public:
-    HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
-    HomeAssistantWeatherMode(const HomeAssistantWeatherMode &) = delete;
-    HomeAssistantWeatherMode &operator=(const HomeAssistantWeatherMode &) = delete;
+    explicit HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
 
     void begin() override;
     void handle() override;

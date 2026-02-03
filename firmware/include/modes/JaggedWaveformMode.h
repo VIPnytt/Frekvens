@@ -69,13 +69,8 @@ private:
         },
     };
 
-protected:
-    ~JaggedWaveformMode() = default;
-
 public:
-    JaggedWaveformMode() : ModeModule("Jagged waveform") {};
-    JaggedWaveformMode(const JaggedWaveformMode &) = delete;
-    JaggedWaveformMode &operator=(const JaggedWaveformMode &) = delete;
+    explicit JaggedWaveformMode() : ModeModule("Jagged waveform") {};
 
     void handle() override;
 };

@@ -74,13 +74,8 @@ private:
 
     void update();
 
-protected:
-    ~OpenMeteoMode() = default;
-
 public:
-    OpenMeteoMode() : ModeModule("Open-Meteo") {};
-    OpenMeteoMode(const OpenMeteoMode &) = delete;
-    OpenMeteoMode &operator=(const OpenMeteoMode &) = delete;
+    explicit OpenMeteoMode() : ModeModule("Open-Meteo") {};
 
     void begin() override;
     void handle() override;

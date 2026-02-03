@@ -16,13 +16,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~PixelSequenceMode() = default;
-
 public:
-    PixelSequenceMode() : ModeModule("Pixel sequence") {};
-    PixelSequenceMode(const PixelSequenceMode &) = delete;
-    PixelSequenceMode &operator=(const PixelSequenceMode &) = delete;
+    explicit PixelSequenceMode() : ModeModule("Pixel sequence") {};
 
     void handle() override;
 };

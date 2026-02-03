@@ -128,13 +128,8 @@ private:
 
     void transmit();
 
-protected:
-    ~InfraredExtension() = default;
-
 public:
-    InfraredExtension();
-    InfraredExtension(const InfraredExtension &) = delete;
-    InfraredExtension &operator=(const InfraredExtension &) = delete;
+    explicit InfraredExtension();
 
     void configure() override;
     void begin() override;

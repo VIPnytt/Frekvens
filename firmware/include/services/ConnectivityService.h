@@ -9,10 +9,6 @@
 class ConnectivityService final : public ServiceModule
 {
 private:
-    static constexpr std::string_view _name = "Connectivity";
-
-    ConnectivityService() : ServiceModule(_name.data()) {};
-
     bool mDNS = false;
     bool pending = false;
     bool routable = false;
@@ -36,12 +32,11 @@ private:
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 protected:
-    ~ConnectivityService() = default;
+    static constexpr std::string_view _name = "Connectivity";
+
+    explicit ConnectivityService() : ServiceModule(_name.data()) {};
 
 public:
-    ConnectivityService(const ConnectivityService &) = delete;
-    ConnectivityService &operator=(const ConnectivityService &) = delete;
-
     static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
 
     void configure();

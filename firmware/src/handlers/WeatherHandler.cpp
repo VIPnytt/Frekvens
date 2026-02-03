@@ -7,6 +7,8 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
+WeatherHandler::WeatherHandler() {}
+
 void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
 {
     for (const WeatherHandler::Codeset codeset : codesets)

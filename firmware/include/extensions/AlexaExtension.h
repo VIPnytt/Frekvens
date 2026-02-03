@@ -16,13 +16,8 @@ private:
     static void onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     static void onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value);
 
-protected:
-    ~AlexaExtension() = default;
-
 public:
-    AlexaExtension();
-    AlexaExtension(const AlexaExtension &) = delete;
-    AlexaExtension &operator=(const AlexaExtension &) = delete;
+    explicit AlexaExtension();
 
     void begin() override;
     void handle() override;

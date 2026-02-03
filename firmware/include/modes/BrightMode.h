@@ -6,13 +6,8 @@
 
 class BrightMode final : public ModeModule
 {
-protected:
-    ~BrightMode() = default;
-
 public:
-    BrightMode() : ModeModule("Bright") {};
-    BrightMode(const BrightMode &) = delete;
-    BrightMode &operator=(const BrightMode &) = delete;
+    explicit BrightMode() : ModeModule("Bright") {};
 
     void begin() override;
 };

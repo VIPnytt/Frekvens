@@ -20,13 +20,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~EqualizerMode() = default;
-
 public:
-    EqualizerMode() : ModeModule("Equalizer") {};
-    EqualizerMode(const EqualizerMode &) = delete;
-    EqualizerMode &operator=(const EqualizerMode &) = delete;
+    explicit EqualizerMode() : ModeModule("Equalizer") {};
 
     void begin() override;
     void handle() override;

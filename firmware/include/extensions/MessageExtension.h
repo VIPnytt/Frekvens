@@ -38,13 +38,8 @@ private:
 
     void transmit();
 
-protected:
-    ~MessageExtension() = default;
-
 public:
-    MessageExtension();
-    MessageExtension(const MessageExtension &) = delete;
-    MessageExtension &operator=(const MessageExtension &) = delete;
+    explicit MessageExtension();
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;

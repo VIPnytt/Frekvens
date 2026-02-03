@@ -22,13 +22,8 @@ private:
 
     uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
 
-protected:
-    ~FliesMode() = default;
-
 public:
-    FliesMode() : ModeModule("Flies") {};
-    FliesMode(const FliesMode &) = delete;
-    FliesMode &operator=(const FliesMode &) = delete;
+    explicit FliesMode() : ModeModule("Flies") {};
 
     void handle() override;
     void onReceive(const JsonDocument &doc, const char *source) override;

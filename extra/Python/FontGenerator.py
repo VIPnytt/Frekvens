@@ -202,11 +202,8 @@ class FontGenerator:
             font.extend(
                 [
                     "",
-                    "protected:",
-                    f"    ~{unique}Font() = default;",
-                    "",
                     "public:",
-                    f"    {unique}Font();",
+                    f"    explicit {unique}Font();",
                     "",
                     "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                     "};",

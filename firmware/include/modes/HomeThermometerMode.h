@@ -13,13 +13,8 @@ private:
     void setTemperature(const char *where, int16_t temperature);
     void transmit();
 
-protected:
-    ~HomeThermometerMode() = default;
-
 public:
-    HomeThermometerMode() : ModeModule("Home thermometer") {};
-    HomeThermometerMode(const HomeThermometerMode &) = delete;
-    HomeThermometerMode &operator=(const HomeThermometerMode &) = delete;
+    explicit HomeThermometerMode() : ModeModule("Home thermometer") {};
 
     void configure() override;
     void begin() override;

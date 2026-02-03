@@ -11,13 +11,8 @@ private:
 
     unsigned long lastMillis = 0;
 
-protected:
-    ~ScanMode() = default;
-
 public:
-    ScanMode() : ModeModule("Scan") {};
-    ScanMode(const ScanMode &) = delete;
-    ScanMode &operator=(const ScanMode &) = delete;
+    explicit ScanMode() : ModeModule("Scan") {};
 
     void handle() override;
 };

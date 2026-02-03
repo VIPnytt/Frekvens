@@ -10,13 +10,8 @@ class WebAppExtension final : public ExtensionModule
 private:
     static void onHeadRoot(AsyncWebServerRequest *request);
 
-protected:
-    ~WebAppExtension() = default;
-
 public:
-    WebAppExtension();
-    WebAppExtension(const WebAppExtension &) = delete;
-    WebAppExtension &operator=(const WebAppExtension &) = delete;
+    explicit WebAppExtension();
 
     void configure() override;
     void begin() override;

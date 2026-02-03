@@ -36,13 +36,8 @@ private:
     void setClock(bool _clock);
     void transmit();
 
-protected:
-    ~PingPongMode() = default;
-
 public:
-    PingPongMode() : ModeModule("Ping-pong") {};
-    PingPongMode(const PingPongMode &) = delete;
-    PingPongMode &operator=(const PingPongMode &) = delete;
+    explicit PingPongMode() : ModeModule("Ping-pong") {};
 
     void configure() override;
     void begin() override;

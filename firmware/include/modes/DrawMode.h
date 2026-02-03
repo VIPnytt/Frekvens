@@ -17,13 +17,8 @@ private:
     void save(bool cache = false);
     void transmit();
 
-protected:
-    ~DrawMode() = default;
-
 public:
-    DrawMode() : ModeModule("Draw") {};
-    DrawMode(const DrawMode &) = delete;
-    DrawMode &operator=(const DrawMode &) = delete;
+    explicit DrawMode() : ModeModule("Draw") {};
 
     void begin() override;
     void handle() override;

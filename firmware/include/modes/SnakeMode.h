@@ -46,13 +46,8 @@ private:
     void setDot();
     void transmit();
 
-protected:
-    ~SnakeMode() = default;
-
 public:
-    SnakeMode() : ModeModule("Snake") {}
-    SnakeMode(const SnakeMode &) = delete;
-    SnakeMode &operator=(const SnakeMode &) = delete;
+    explicit SnakeMode() : ModeModule("Snake") {}
 
     void configure() override;
     void begin() override;

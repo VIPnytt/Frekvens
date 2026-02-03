@@ -152,13 +152,8 @@ private:
 
     void update();
 
-protected:
-    ~YrMode() = default;
-
 public:
-    YrMode() : ModeModule("Yr") {};
-    YrMode(const YrMode &) = delete;
-    YrMode &operator=(const YrMode &) = delete;
+    explicit YrMode() : ModeModule("Yr") {};
 
     void begin() override;
     void handle() override;

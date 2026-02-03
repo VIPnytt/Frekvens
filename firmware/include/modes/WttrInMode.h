@@ -61,13 +61,8 @@ private:
 
     void update();
 
-protected:
-    ~WttrInMode() = default;
-
 public:
-    WttrInMode() : ModeModule("Wttr.in") {};
-    WttrInMode(const WttrInMode &) = delete;
-    WttrInMode &operator=(const WttrInMode &) = delete;
+    explicit WttrInMode() : ModeModule("Wttr.in") {};
 
     void begin() override;
     void handle() override;

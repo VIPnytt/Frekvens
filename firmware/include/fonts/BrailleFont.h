@@ -341,13 +341,8 @@ private:
         },
     };
 
-protected:
-    ~BrailleFont() = default;
-
 public:
-    BrailleFont();
-    BrailleFont(const BrailleFont &) = delete;
-    BrailleFont &operator=(const BrailleFont &) = delete;
+    explicit BrailleFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };

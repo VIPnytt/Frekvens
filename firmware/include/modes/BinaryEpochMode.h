@@ -9,13 +9,8 @@ class BinaryEpochMode final : public ModeModule
 private:
     time_t epoch = 0;
 
-protected:
-    ~BinaryEpochMode() = default;
-
 public:
-    BinaryEpochMode() : ModeModule("Binary epoch") {};
-    BinaryEpochMode(const BinaryEpochMode &) = delete;
-    BinaryEpochMode &operator=(const BinaryEpochMode &) = delete;
+    explicit BinaryEpochMode() : ModeModule("Binary epoch") {};
 
     void handle() override;
 };

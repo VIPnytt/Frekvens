@@ -28,13 +28,8 @@ private:
 
     Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)] = {};
 
-protected:
-    ~MetaballsMode() = default;
-
 public:
-    MetaballsMode() : ModeModule("Metaballs") {};
-    MetaballsMode(const MetaballsMode &) = delete;
-    MetaballsMode &operator=(const MetaballsMode &) = delete;
+    explicit MetaballsMode() : ModeModule("Metaballs") {};
 
     void configure() override;
     void handle() override;

@@ -32,13 +32,8 @@ private:
     static void onInterrupt();
 #endif
 
-protected:
-    ~RtcExtension() = default;
-
 public:
-    RtcExtension();
-    RtcExtension(const RtcExtension &) = delete;
-    RtcExtension &operator=(const RtcExtension &) = delete;
+    explicit RtcExtension();
 
 #ifdef RTC_DS1307
     RtcDS1307<TwoWire> rtc = RtcDS1307(Wire);

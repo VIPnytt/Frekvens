@@ -57,13 +57,8 @@ private:
         },
     };
 
-protected:
-    ~SmoothWaveformMode() = default;
-
 public:
-    SmoothWaveformMode() : ModeModule("Smooth waveform") {};
-    SmoothWaveformMode(const SmoothWaveformMode &) = delete;
-    SmoothWaveformMode &operator=(const SmoothWaveformMode &) = delete;
+    explicit SmoothWaveformMode() : ModeModule("Smooth waveform") {};
 
     void handle() override;
 };

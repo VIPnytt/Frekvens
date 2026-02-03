@@ -22,13 +22,8 @@ private:
     void exploding();
     void fading();
 
-protected:
-    ~FireworkMode() = default;
-
 public:
-    FireworkMode() : ModeModule("Firework") {};
-    FireworkMode(const FireworkMode &) = delete;
-    FireworkMode &operator=(const FireworkMode &) = delete;
+    explicit FireworkMode() : ModeModule("Firework") {};
 
     void handle() override;
 };

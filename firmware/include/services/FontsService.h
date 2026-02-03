@@ -12,8 +12,6 @@
 class FontsService final : public ServiceModule
 {
 private:
-    FontsService() : ServiceModule("Fonts") {};
-
     const std::vector<FontModule *> modules = {
 #if FONT_BRAILLE
         new BrailleFont(),
@@ -29,12 +27,9 @@ private:
     void transmit();
 
 protected:
-    ~FontsService() = default;
+    explicit FontsService() : ServiceModule("Fonts") {};
 
 public:
-    FontsService(const FontsService &) = delete;
-    FontsService &operator=(const FontsService &) = delete;
-
     void begin();
     [[nodiscard]] const std::vector<FontModule *> &getAll() const;
 
