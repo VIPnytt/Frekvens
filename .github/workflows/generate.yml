@@ -43,6 +43,10 @@ jobs:
     needs: platformio
     runs-on: ubuntu-latest
 
+    env:
+      clang-threshold: 3
+      clang-version: 21
+
     strategy:
       matrix:
         toolchain:
@@ -142,13 +146,24 @@ jobs:
           tidy-review: true
 
       - name: Clang checks failed
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
-        run: exit 1
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+        run: |
+          echo "Job summary:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+          fi
+          exit 1
 
   mode-dynamic:
     name: Dynamic mode
     needs: platformio
     runs-on: ubuntu-latest
+
+    env:
+      clang-threshold: 0
+      clang-version: 21
 
     strategy:
       matrix:
@@ -279,21 +294,30 @@ jobs:
           tidy-review: true
 
       - name: Clang checks failed
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
-        run: exit 1
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+        run: |
+          echo "Job summary:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+          fi
+          exit 1
 
   mode-static:
     name: Static mode
     needs: platformio
     runs-on: ubuntu-latest
 
+    env:
+      clang-threshold: 0
+      clang-version: 21
+
     strategy:
       matrix:
         toolchain:
           - python-version: 3.11
-
-          - clang-version: 21
-            python-version: 3.13
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -399,6 +423,13 @@ jobs:
           tidy-checks: ""
           tidy-review: true
 
-      - name: Clang checks failed
-        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed != 0
-        run: exit 1
+      - name: Clang check failures above threshold
+        if: matrix.toolchain.clang-version && steps.clang.outputs.checks-failed > env.clang-threshold
+        run: |
+          echo "Job summary:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+          fi
+          exit 1

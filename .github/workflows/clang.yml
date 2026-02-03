@@ -69,7 +69,14 @@ jobs:
 
       - name: Clang format checks failed
         if: steps.format.outputs.clang-format-checks-failed != 0
-        run: exit 1
+        run: |
+          echo "Job summary:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+          fi
+          exit 1
 
   tidy:
     name: Tidy
@@ -77,13 +84,13 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      clang-threshold: 358
       clang-version: 21
-      clang-threshold: 361
       python-version: 3.13
 
     strategy:
       matrix:
-        device:
+        device-id:
           - IKEA_FREKVENS
           - IKEA_OBEGRANSAD
 
@@ -117,7 +124,7 @@ jobs:
       - name: PlatformIO compilation database
         run: |
           cat <<'EOL' > .env
-          ${{ matrix.device }}='true'
+          ${{ matrix.device-id }}='true'
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
           EXTENSION_HEAP='true'
@@ -227,7 +234,15 @@ jobs:
           step-summary: true
           style: ""
           tidy-checks: ""
+          tidy-review: true
 
       - name: Clang tidy check failures above threshold
         if: steps.tidy.outputs.clang-tidy-checks-failed > env.clang-threshold
-        run: exit 1
+        run: |
+          echo "Job summary:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}#summary-${{ github.job }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#summary-${{ github.job }}"
+          fi
+          exit 1

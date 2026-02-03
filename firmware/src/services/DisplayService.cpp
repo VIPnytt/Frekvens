@@ -94,7 +94,7 @@ IRAM_ATTR void DisplayService::onTimer()
 {
     static uint8_t filter = 0;
     static uint8_t bytes[((GRID_COLUMNS * GRID_ROWS) + 7) / 8];
-    const uint8_t* frame = Display.frame;
+    const uint8_t *frame = Display.frame;
     uint16_t outIndex = 0;
     uint8_t bitMask = 0x80;
     uint8_t outByte = 0;
