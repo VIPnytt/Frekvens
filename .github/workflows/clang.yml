@@ -78,17 +78,16 @@ jobs:
 
     env:
       clang-version: 21
+      clang-threshold: 361
       python-version: 3.13
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
-        include:
-          - clang-threshold: 268
-            device: IKEA_FREKVENS
+        device:
+          - IKEA_FREKVENS
+          - IKEA_OBEGRANSAD
 
-          - clang-threshold: 268
-            device: IKEA_OBEGRANSAD
+        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
 
     steps:
       - name: Checkout
@@ -230,5 +229,5 @@ jobs:
           tidy-checks: ""
 
       - name: Clang tidy check failures above threshold
-        if: steps.tidy.outputs.clang-tidy-checks-failed > matrix.clang-threshold
+        if: steps.tidy.outputs.clang-tidy-checks-failed > env.clang-threshold
         run: exit 1

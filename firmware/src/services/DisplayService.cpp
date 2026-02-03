@@ -94,30 +94,31 @@ IRAM_ATTR void DisplayService::onTimer()
 {
     static uint8_t filter = 0;
     static uint8_t bytes[((GRID_COLUMNS * GRID_ROWS) + 7) / 8];
-    uint8_t *frame = Display.frame;
-    uint8_t *out = bytes;
+    const uint8_t* frame = Display.frame;
+    uint16_t outIndex = 0;
     uint8_t bitMask = 0x80;
     uint8_t outByte = 0;
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; i++)
+    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
     {
-        if (*frame++ > filter)
+        if (frame[i] > filter)
         {
             outByte |= bitMask;
         }
-        if ((bitMask >>= 1) == 0)
+        bitMask >>= 1;
+        if (bitMask == 0)
         {
-            *out++ = outByte;
+            bytes[outIndex++] = outByte;
             outByte = 0;
             bitMask = 0x80;
         }
     }
 #if GRID_COLUMNS * GRID_ROWS % 8
-    *out = outByte;
+    bytes[outIndex] = outByte;
 #endif // GRID_COLUMNS * GRID_ROWS % 8
     ++filter;
-    gpio_set_level((gpio_num_t)PIN_CS, LOW);
+    gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
     SPI.transferBytes(bytes, nullptr, sizeof(bytes));
-    gpio_set_level((gpio_num_t)PIN_CS, HIGH);
+    gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
 }
 
 void DisplayService::flush()
