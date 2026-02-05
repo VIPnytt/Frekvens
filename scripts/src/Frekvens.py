@@ -100,8 +100,6 @@ class Frekvens:
             self.timezone.configure()
 
     def validate(self) -> None:
-        if self.dependency:
-            self.dependency.validate()
         if self.ota:
             self.ota.validate()
         if self.webapp:
