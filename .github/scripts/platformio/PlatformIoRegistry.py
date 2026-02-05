@@ -118,6 +118,7 @@ class PlatformIoRegistry:
             logging.error(e)
         return None
 
+
 def main() -> None:
     print(PlatformIoRegistry().load())
 

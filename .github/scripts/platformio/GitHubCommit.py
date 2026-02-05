@@ -2,6 +2,7 @@ import datetime
 import httpx
 import json
 import logging
+import os
 import packaging.version
 import re
 import typing
@@ -19,6 +20,7 @@ class GitHubCommit:
             base_url="https://api.github.com",
             headers={
                 "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {os.environ.get('GITHUB_TOKEN')}",
                 "User-Agent": "Frekvens (+https://github.com/VIPnytt/Frekvens)",
                 "X-GitHub-Api-Version": "2022-11-28",
             },
