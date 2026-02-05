@@ -110,13 +110,13 @@ class PlatformIoRegistry:
                         continue
                     if version["name"] == _version:
                         logging.info("Up to date")
-                        return
+                        return None
                     return version["name"]
                 except packaging.version.InvalidVersion as e:
                     logging.warning(e)
         except (httpx.HTTPError, packaging.version.InvalidVersion) as e:
             logging.error(e)
-
+        return None
 
 def main() -> None:
     print(PlatformIoRegistry().load())
