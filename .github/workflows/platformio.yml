@@ -71,6 +71,7 @@ jobs:
     name: GitHub commit
     needs: github-commit
     runs-on: ubuntu-latest
+    if: needs.github-commit.outputs.dependency-fragments != '[]'
 
     strategy:
       matrix:
@@ -176,6 +177,7 @@ jobs:
     name: PlatformIO Registry
     needs: platformio-registry
     runs-on: ubuntu-latest
+    if: needs.platformio-registry.outputs.dependency-fragments != '[]'
 
     strategy:
       matrix:
