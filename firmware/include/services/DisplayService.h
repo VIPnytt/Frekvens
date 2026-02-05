@@ -42,7 +42,11 @@ private:
     bool pending = false;
     bool power = false;
 
+#if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
+#else
+    static constexpr float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
+#endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
 
     uint8_t brightness = 0;
     uint8_t _frame[GRID_COLUMNS * GRID_ROWS] = {0};
