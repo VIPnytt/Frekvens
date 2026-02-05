@@ -93,12 +93,13 @@ class GitHubCommit:
                     )
                     if commits["sha"] == commit:
                         logging.info("Up to date")
-                        return
+                        return None
                     return (commits["sha"], release["tag_name"])
                 except (httpx.HTTPError, packaging.version.InvalidVersion) as e:
                     logging.warning(e)
         except (httpx.HTTPError, packaging.version.InvalidVersion) as e:
             logging.error(e)
+        return None
 
 
 def main() -> None:
