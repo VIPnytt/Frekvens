@@ -76,9 +76,11 @@ void GameOfLifeMode::handle()
             for (uint8_t y = (clock ? 5 : 0); y < GRID_ROWS; ++y)
             {
                 uint8_t n = 0;
-                for (uint8_t _x = x <= 0 ? 0 : x - 1; _x <= x + 1 && _x < GRID_COLUMNS; ++_x)
+                for (uint8_t _x = static_cast<uint8_t>(std::max<int16_t>(x - 1, 0)); _x <= x + 1 && _x < GRID_COLUMNS;
+                     ++_x)
                 {
-                    for (uint8_t _y = y <= (clock ? 5 : 0) ? (clock ? 5 : 0) : y - 1; _y <= y + 1 && _y < GRID_ROWS;
+                    for (uint8_t _y = static_cast<uint8_t>(std::max<int16_t>(clock ? 5 : 0, y - 1));
+                         _y <= y + 1 && _y < GRID_ROWS;
                          ++_y)
                     {
                         if ((_x != x || _y != y) &&

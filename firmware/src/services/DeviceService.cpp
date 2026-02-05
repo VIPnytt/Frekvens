@@ -229,7 +229,7 @@ void DeviceService::restore()
     esp_deep_sleep_start();
 }
 
-const JsonDocument DeviceService::getTransmits() const { return transmits; }
+JsonDocument DeviceService::getTransmits() const { return transmits; }
 
 void DeviceService::transmit()
 {

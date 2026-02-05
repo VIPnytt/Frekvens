@@ -49,13 +49,13 @@ void DrawMode::load(bool cache)
     const char *const key = cache ? "cache" : "saved";
     if (cache && Storage.isKey("cache"))
     {
-        Storage.getBytes("cache", drawing, sizeof(drawing));
+        Storage.getBytes("cache", static_cast<void *>(drawing), sizeof(drawing));
         pending = true;
         render = true;
     }
     else if (Storage.isKey("saved"))
     {
-        Storage.getBytes("saved", drawing, sizeof(drawing));
+        Storage.getBytes("saved", static_cast<void *>(drawing), sizeof(drawing));
         pending = true;
         render = true;
     }
@@ -70,7 +70,7 @@ void DrawMode::save(bool cache)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putBytes(cache ? "cache" : "saved", drawing, sizeof(drawing));
+            Storage.putBytes(cache ? "cache" : "saved", static_cast<void *>(drawing), sizeof(drawing));
             Storage.end();
             pending = true;
             if (!cache)

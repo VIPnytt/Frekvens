@@ -59,7 +59,8 @@ void AlexaExtension::onGet(AsyncWebServerRequest *request)
 
 void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-    if (!Alexa->fauxmo.process(request->client(), false, request->url(), (char *)data))
+    if (!Alexa->fauxmo.process(
+            request->client(), false, request->url(), String(reinterpret_cast<const char *>(data), len)))
     {
         request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }

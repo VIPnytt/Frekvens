@@ -61,8 +61,8 @@ void CountdownMode::handle()
     const int64_t hours = _hours.count();
     const int64_t minutes = _minutes.count();
     const int64_t seconds = std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count();
-    const uint8_t _upper = hours > 99 ? 99 : (hours > 0 ? hours % 100 : minutes);
-    const uint8_t _lower = hours > 99 ? 99 : (hours > 0 ? minutes : seconds);
+    const uint8_t _upper = static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? hours % 100 : minutes, 0, 99));
+    const uint8_t _lower = static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? minutes : seconds, 0, 99));
     if (_lower != lower || _upper != upper)
     {
         upper = _upper;

@@ -11,6 +11,10 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  clang-version: 21
+  python-version: 3.13
+
 jobs:
   platformio:
     name: PlatformIO environments
@@ -18,9 +22,6 @@ jobs:
     outputs:
       environments: ${{ steps.print.outputs.environments }}
       version: ${{ steps.print.outputs.version }}
-
-    env:
-      python-version: 3.13
 
     steps:
       - name: Checkout
@@ -45,9 +46,6 @@ jobs:
   format:
     name: Format
     runs-on: ubuntu-latest
-
-    env:
-      clang-version: 21
 
     steps:
       - name: Checkout
@@ -81,11 +79,6 @@ jobs:
     name: Tidy
     needs: platformio
     runs-on: ubuntu-latest
-
-    env:
-      clang-threshold: 358
-      clang-version: 21
-      python-version: 3.13
 
     strategy:
       matrix:
@@ -236,6 +229,8 @@ jobs:
           tidy-review: true
 
       - name: Summary
+        env:
+          clang-threshold: 274
         run: |
           echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"

@@ -190,7 +190,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
     {
         Preferences Storage;
         Storage.begin(_name.data());
-        if (strcmp(country, "01"))
+        if (strcmp(country, "01") != 0)
         {
             Storage.putString("country", country);
         }

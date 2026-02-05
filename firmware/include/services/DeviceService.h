@@ -33,7 +33,7 @@ public:
     void transmit(const JsonDocument &doc, const char *source, bool retain = true) const;
     void receive(const JsonDocument &doc, const char *source, const char *destination) const;
 
-    [[nodiscard]] const JsonDocument getTransmits() const;
+    [[nodiscard]] JsonDocument getTransmits() const;
 
     static DeviceService &getInstance();
 };

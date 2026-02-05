@@ -43,8 +43,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
     break;
     case AwsEventType::WS_EVT_DATA:
     {
-        AwsFrameInfo *info = (AwsFrameInfo *)arg;
-        if (info->opcode == AwsFrameType::WS_TEXT)
+        if (static_cast<AwsFrameInfo *>(arg)->opcode == AwsFrameType::WS_TEXT)
         {
             JsonDocument doc;
             if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())

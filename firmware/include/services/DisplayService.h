@@ -22,7 +22,8 @@ private:
         deg270,
     };
 
-    const uint8_t depth = min<uint8_t>(log2f(1 / PWM_WIDTH / (float)(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
+    const uint8_t depth =
+        min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
     const std::vector<uint16_t> hi = {
         0b1000001001,
