@@ -8,11 +8,11 @@
 
 **IKEA Obegränsad:** [Circle](#-circle) | [Lines](#-lines) | [Noise](#-noise) | [Rain](#-rain) | [Scan](#-scan) | [Stars](#-stars)
 
-**Interactive:** [Animation](#-animation) | [Countdown](#-countdown) | [Draw](#-draw) | [Flies](#-flies) | [Stream](#-stream) | [Ticker](#🅰%EF%B8%8F-ticker)
+**Interactive:** [Animation](#-animation) | [Countdown](#-countdown) | [Draw](#-draw) | [Flies](#-flies) | [Ticker](#🅰%EF%B8%8F-ticker)
 
-**Smart-home:** [Home Assistant Weather](#-home-assistant-weather) | [Home Thermometer](#️-home-thermometer)
+**Smart-home:** [Home Assistant Weather](#-home-assistant-weather) | [Home Thermometer](#️-home-thermometer) | [Stream](#-stream)
 
-**Weather:** [Google Weather](#-google-weather) | [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+**Weather:** [Google Weather](%EF%B8%8F-google-weather) | [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
 **Miscellaneous:** [Blink](#️-blink) | [Bright](#-bright) | [Firework](#-firework) | [Glitter](#-glitter) | [Leaf fall](#-leaf-fall) | [Metaballs](#-metaballs) | [Pixel sequence](#-pixel-sequence) | [Waveform](#-waveform)
 
@@ -436,7 +436,7 @@ MODE_PINGPONG='true'
 
 ## 🔢 Pixel sequence
 
-For tech-geeks, iterates through the pixels one by one in the exact same order as the pixels are addressed on the SPI-bus.
+For tech enthusiasts, it iterates through the pixels one by one, following the SPI bus addressing order.
 
 > [!TIP]
 > The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the sequence.
