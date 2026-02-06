@@ -14,10 +14,10 @@ Detailed instructions, schematics and templates.
 
 Software features, configuration options and API documentation.
 
-- [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
 - [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
-- [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
 - [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
+- [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
+- [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
 
 ## ➕ Accessories
 
@@ -32,8 +32,9 @@ Optional hardware that adds new capabilities and functionality to the device.
 
 Supplementary files and developer resources.
 
-- [Development](https://github.com/VIPnytt/Frekvens/wiki/Development)
+- [Tips for development](https://github.com/VIPnytt/Frekvens/wiki/Development)
 - [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
 - [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
 - [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
 - [Tools](https://github.com/VIPnytt/Frekvens/tree/main/tools)
+- [VS Code](https://github.com/VIPnytt/Frekvens/tree/main/.vscode)

@@ -134,7 +134,7 @@ The last step is to connect the buttons: `SW` and `SW1` each connect to separate
 
 For safe and reliable communication between the ESP32 and the LED panel, a suitable logic level shifter is required.
 
-The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 4 V and uses pull-up resistors on its inputs — which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines should go through a level shifter*, not just those that are at risk.
+The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs 4 V signals and also uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines should go through a level shifter*, not just those that are at risk.
 
 > [!WARNING]
 > Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to unstable behavior, or even permanent damage to the ESP32.
@@ -155,7 +155,7 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 - `DC+` / `DC-` pads — near the middle
 
 > [!NOTE]
-> Capacitors are optional — consider adding if you already have some available, or if you notice flicker or instability.
+> Capacitors are optional — consider adding them if you already have some available, or if you notice flicker or instability.
 
 ## 🔧 Configuration
 

@@ -107,7 +107,7 @@ PIN_OE: 1 # U6/U7
 
 ### Button
 
-Button input for user interaction.
+Button inputs for user interaction.
 
 Use digital input pins, preferably RTC-capable.
 
