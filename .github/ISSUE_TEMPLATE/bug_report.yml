@@ -8,12 +8,23 @@ body:
         Thanks for taking the time to report a bug! Please fill out the form below as completely as possible.
         The more detail you can provide, the faster we can help.
 
-  - type: input
+  - type: dropdown
     id: version
     attributes:
       label: Version
       description: Which version did you encounter the bug on?
-      placeholder: e.g. v2.1.0 or main branch
+      options:
+        - main branch (latest dev)
+        - v2.1.0 (latest stable)
+        - v2.0.0
+        - v1.3.1
+        - v1.3.0
+        - v1.2.0
+        - v1.1.1
+        - v1.1.0
+        - v1.0.1
+        - v1.0.0
+        - Other
 
   - type: textarea
     id: bug-summary
