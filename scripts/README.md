@@ -5,5 +5,5 @@ Python pre-build scripts for PlatformIO.
 Installation of dependencies:
 
 ```bash
-pip install -r scripts/requirements.txt -r .github/platformio/requirements.txt
+pip install -r scripts/requirements.txt
 ```
