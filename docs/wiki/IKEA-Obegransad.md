@@ -15,24 +15,31 @@ Article number: `005.262.48`
                 │   │   │   │   │   ┌──── 0 V DC
          ┌──────┼───┼───┼───┼───┼───┼──┐
          │     VCC CLA CLK DI  EN  GND │
- Button ─┼ SW                          │
-         │ SW1   U1 ┌┴─┴─┴─┴─┴─┴─┴─┴┐  │
- 0 V DC ─┼ DC-      └┬─┬─┬─┬─┬─┬─┬─┬┘  │
-+5 V DC ─┼ DC+                   └─────┼─ Button
+ Button ─┼ SW ───────────────────────┐ │
+         │ SW1                       | |
+ 0 V DC ─┼ DC-  U1 ┌┴─┴─┴─┴─┴─┴─┴─┴┐ | │
++5 V DC ─┼ DC+     └┬─┬─┬─┬─┬─┬─┬─┬┘ | │
+         |                      └────┘ |
+         ├─────────────────────────────┤
+         │ DC-                         │
+         │ DC+                         │
+         ├─────────────────────────────┤
+         │ DC-                         │
+         │ DC+                         │
+         ├─────────────────────────────┤
+         │ DC-                         │
+         │ DC+                         │
          │     VCC CLA CLK DO  EN  GND │
          └─────────────────────────────┘
 ```
 
-> [!NOTE]
-> There’s four daisy-chained panels, here shown as one combined unit.
-
 ### Button schema
 
 ```text
-┌─────┐
-│  SW ├─ Button
-│ SW1 ├─ 0 V DC
-└─────┘
+──┐
+  ├─ Button
+  ├─ 0 V DC
+──┘
 ```
 
 ### USB cable schema
@@ -80,31 +87,27 @@ Black ┼─ 0 V DC
 
 ### Opening the back panel
 
-Several methods for opening the device have been shared online. Among them, the most *consistently reliable* and *non-destructive* approach appears to involve the careful use of a drill.
-
-By using a 3 mm drill bit and drillilg *slowly*, the aluminium rivets will mostly form a spiral and leave minimal amounts of swarf. Stop drilling once the top edge of the rivets breaks. Once they’re all gone, remove the back panel and use a 2 mm drill bit to remove the last fragments stuck in the holes, optionally with the help of small pliers.
-
-For those who desire, it’s possible to use 2 mm rivets to re-seal the device afterwards.
+The recommended method is to break the rivets with a 3mm drill bit. When drilled slowly, they will usually form a spiral which leaves minimal amounts of aluminum shavings. Clean and remove the back panel once the upper edge of all rivets are broken. Then switch to a 2mm drill bit to remove the last fragments, preferably in combination with a flat screwdriver or pliers.
 
 > [!TIP]
-> There isn’t really risk of hitting anything inside when drilling, as it’s basically just a empty box. Most of the electronic components is covered up, but make sure to clean up any metal fragments before powering on.
+> The risk of hitting something inside is minimal, there are few electronic components and it is mostly just an empty box. For those who wish, it is possible to use 2 mm rivets to seal the unit again afterwards.
+
+> [!NOTE]
+> Alternative methods to open the back panel could be using a tiny chisel and hammer, or even just a utility knife.
 
 ### Removing the `U1` chip
 
-The first thing to do is removing the chip labeled `U1`, as this is the core handling both the button input and display output. It’s easy to locate as the device consists of 4 panels where the `U1` chip is only present on one of them.
+The `U1` chip handles display outputs as well as the button input. It’s easy to locate as the device consists of 4 panels where the `U1` chip is only present on one of them. Remove it by desoldering.
 
 ### Wiring the LED panels
 
-Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, one in the top labeled `IN`, and the other at the bottom labeled `OUT`. There’s no difference between input and output, except for `DI` and `DO`.
-
-> [!NOTE]
-> The LED panels are rotated 180° compared to the device’s natural orientation.
+Next up is attaching the ESP32, via the [logic level shifter](#%EF%B8%8F-logic-level-shifter). There’s two noteworthy locations, at the top labeled `IN`, and at the bottom labeled `OUT`. There’s no difference between input and output, except for `DI` and `DO`.
 
 ### Connecting the button
 
 The button can be wired in several ways, depending on the desired level of modification. The simplest and most visually clear method is to connect it directly between the ESP32 and `GND`. This keeps the wiring straightforward and self-contained, reducing the chance of confusion from the PCB’s existing circuitry.
 
-If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire to the same pad. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 — provides another solder point with the same electrical result.
+If reusing existing connections is preferred, the wire on the `SW` pad can either be re-routed to the ESP32 or simply spliced by adding a second wire. For those comfortable with fine-pitch soldering, the newly desoldered `U1` pad 7 provides another solder point with the same electrical result.
 
 > [!NOTE]
 > On the LED panel, `SW1` is internally tied to `GND`.
@@ -113,20 +116,20 @@ If reusing existing connections is preferred, the wire on the `SW` pad can eithe
 
 For safe and reliable communication between the ESP32 and the LED panels, a suitable logic level shifter is required.
 
-The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) outputs signals at 5 V and uses pull-ups on its inputs — both of which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
+The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V and uses pull-up resistors on its inputs — which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
 
 > [!WARNING]
 > Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to misread signals, unstable behavior, or even permanent damage to the ESP32.
 
 ## 🛠️ Hardware considerations
 
-The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for those who desire it’s easy and straight forward to do something about it.
+The *IKEA Obegränsad* hardware is sub-optimally designed, but fortunately for those who desire it’s easy and straightforward to do something about it.
 
 ### Wiring
 
-The USB cable powers the first LED panel by connecting to its `DC+` and `DC-` pads. Power is then passed along to the other panels through internal traces and the secondary bus interface.
+The USB cable powers the first LED panel by connecting to its `DC+` and `DC-` pads. Power is then passed along to the other panels through the secondary bus interface.
 
-For best performance, however, the power supply should also be connected directly to the `DC+` and `DC-` pads on all four panels. This ensures shorter current paths, more even power delivery, and reduced noise.
+For best performance, the power supply should be wired in parallel to all four `DC+` and `DC-` pads. This ensures even power delivery, significantly shorter power paths, and reduced noise.
 
 ### Capacitors
 
@@ -139,11 +142,11 @@ The [SCT2024 datasheet](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.
 - 4x `DC+` / `DC-` pads — one at each panel
 - 2x `VCC` / `GND` pads — top and bottom
 - 4x `J3` JTAG pads — pin 1 (square, `VCC`) and pin 4 (round, `GND`)
-- 3x `C2` SMD pads — one at each panel, the fourth is already populated
+- 3x `C2` SMD pads — one at each panel, except the fourth which is already populated
 - 4x `C7` SMD pads — one at each panel
 
 > [!NOTE]
-> Capacitors are optional — consider adding them if you already have some available, or if you notice flicker or instability.
+> Capacitors are optional — consider adding if you already have some available, or if you notice flicker or instability.
 
 ## 🔧 Configuration
 

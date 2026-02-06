@@ -25,8 +25,8 @@
 
 ### 🗃️ Miscellaneous
 
+- [Development](https://github.com/VIPnytt/Frekvens/wiki/Development)
 - [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
 - [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
 - [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
 - [Tools](https://github.com/VIPnytt/Frekvens/tree/main/tools)
-- [VS Code](https://github.com/VIPnytt/Frekvens/tree/main/.vscode)
