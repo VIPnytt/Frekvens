@@ -9,13 +9,14 @@ import typing
 
 
 class GitHubCommit:
+    logger: logging.Logger
     major: int = 90
     minor: int = 21
     patch: int = 3
-    path: str = "platformio.ini"
     rest: httpx.Client
 
     def __init__(self) -> None:
+        self.logger = logging.getLogger("Frekvens")
         self.rest = httpx.Client(
             base_url="https://api.github.com",
             headers={
@@ -26,21 +27,20 @@ class GitHubCommit:
             },
         )
 
-    def parse(self) -> str:
+    def matrix(self) -> str:
         seen: set[str] = set()
         fragments: list[typing.Tuple[str, str, str, str, str, str, str]] = []
-        with open(self.path, encoding="utf-8") as f:
+        with open("platformio.ini", encoding="utf-8") as f:
             for match in re.finditer(
                 r"https://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)/archive/(?P<commit>[0-9a-f]{40})\.tar\.gz\s*;\s*(?P<tag>.+)",
                 f.read(),
             ):
                 string = match.group(0)
                 if string in seen:
-                    logging.debug("Skipping duplicate: %s", string)
                     continue
                 seen.add(string)
                 package = match.groupdict()
-                pending = self.check(package["owner"], package["repo"], package["commit"], package["tag"])
+                pending = self.check(package["owner"], package["repo"], package["tag"])
                 if pending:
                     fragments.append(
                         (
@@ -70,14 +70,16 @@ class GitHubCommit:
             ]
         )
 
-    def check(self, owner: str, repo: str, commit: str, tag: str) -> typing.Optional[typing.Tuple[str, str]]:
-        logging.info("Checking for updates to %s/%s %s", owner, repo, tag)
+    def check(self, owner: str, repo: str, tag: str) -> typing.Optional[typing.Tuple[str, str]]:
         try:
             v_tag = packaging.version.Version(tag)
             for release in self.rest.get(f"/repos/{owner}/{repo}/releases").raise_for_status().json():
                 try:
                     v_release = packaging.version.Version(release["tag_name"])
-                    if v_release < v_tag:
+                    if v_release <= v_tag:
+                        continue
+                    elif v_release.is_prerelease:
+                        self.logger.info("Skipping pre-release: %s/%s %s", owner, repo, release["tag_name"])
                         continue
                     days = (
                         datetime.datetime.now(datetime.timezone.utc)
@@ -88,24 +90,27 @@ class GitHubCommit:
                         or (days < self.minor and v_release.minor > v_tag.minor and v_release.major == v_tag.major)
                         or (days < self.patch and v_release.minor == v_tag.minor and v_release.major == v_tag.major)
                     ):
-                        logging.info("Skipping '%s', days since release: %d", release["tag_name"], days)
+                        self.logger.info("On cooldown, skipping: %s/%s %s", owner, repo, release["tag_name"])
                         continue
-                    commits = (
-                        self.rest.get(f"/repos/{owner}/{repo}/commits/{release['tag_name']}").raise_for_status().json()
+                    self.logger.info("Update available: %s/%s %s", owner, repo, release["tag_name"])
+                    return (
+                        self.rest.get(f"/repos/{owner}/{repo}/commits/{release['tag_name']}")
+                        .raise_for_status()
+                        .json()["sha"],
+                        release["tag_name"],
                     )
-                    if commits["sha"] == commit:
-                        logging.info("Up to date")
-                        return None
-                    return (commits["sha"], release["tag_name"])
                 except (httpx.HTTPError, packaging.version.InvalidVersion) as e:
-                    logging.warning(e)
+                    self.logger.warning(e)
         except (httpx.HTTPError, packaging.version.InvalidVersion) as e:
-            logging.error(e)
+            self.logger.error(e)
+        self.logger.info("Up to date: %s/%s %s", owner, repo, tag)
         return None
 
 
 def main() -> None:
-    print(GitHubCommit().parse())
+    logging.basicConfig()
+    logging.getLogger("Frekvens").setLevel(logging.INFO)
+    print(GitHubCommit().matrix())
 
 
 if __name__ == "__main__":
