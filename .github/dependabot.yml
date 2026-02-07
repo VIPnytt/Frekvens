@@ -7,7 +7,7 @@ updates:
     labels:
       - dependencies
       - no-changelog
-    milestone: 9
+    milestone: 10
     schedule:
       interval: weekly
 
@@ -20,7 +20,7 @@ updates:
     labels:
       - dependencies
       - no-changelog
-    milestone: 9
+    milestone: 10
     schedule:
       interval: weekly
     versioning-strategy: increase
@@ -34,7 +34,7 @@ updates:
     labels:
       - dependencies
       - no-changelog
-    milestone: 9
+    milestone: 10
     schedule:
       interval: weekly
     versioning-strategy: increase
@@ -48,7 +48,7 @@ updates:
     labels:
       - dependencies
       - no-changelog
-    milestone: 9
+    milestone: 10
     schedule:
       interval: weekly
     versioning-strategy: increase
@@ -62,7 +62,7 @@ updates:
     labels:
       - dependencies
       - extra
-    milestone: 9
+    milestone: 10
     schedule:
       interval: daily
     versioning-strategy: increase
@@ -77,7 +77,7 @@ updates:
         - tzdata
     labels:
       - dependencies
-    milestone: 9
+    milestone: 10
     schedule:
       interval: daily
     versioning-strategy: increase
@@ -91,7 +91,7 @@ updates:
     labels:
       - dependencies
       - tools
-    milestone: 9
+    milestone: 10
     schedule:
       interval: daily
     versioning-strategy: increase
@@ -105,7 +105,7 @@ updates:
     labels:
       - dependencies
       - frontend
-    milestone: 9
+    milestone: 10
     schedule:
       interval: daily
     versioning-strategy: increase
