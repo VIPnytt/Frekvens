@@ -25,3 +25,4 @@ jobs:
         uses: Andrew-Chen-Wang/github-wiki-action@6448478bd55f1f3f752c93af8ac03207eccc3213 # v5.0.3
         with:
           path: docs/wiki
+          commit-message: ${{ github.event.head_commit.message || format('Update wiki from {0}', github.sha) }}
