@@ -1,4 +1,15 @@
-import { mdiAnimationPlay, mdiBackupRestore, mdiContentSave, mdiDelete, mdiDownload, mdiEraser, mdiPlus, mdiPresentation, mdiPresentationPlay, mdiUpload } from "@mdi/js";
+import {
+    mdiAnimationPlay,
+    mdiBackupRestore,
+    mdiContentSave,
+    mdiDelete,
+    mdiDownload,
+    mdiEraser,
+    mdiPlus,
+    mdiPresentation,
+    mdiPresentationPlay,
+    mdiUpload,
+} from "@mdi/js";
 import { type Component, createEffect, createSignal, For, Show } from "solid-js";
 
 import { Canvas, Strength } from "../components/Canvas";
@@ -28,7 +39,11 @@ const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | undefin
 const [getSaved, setSaved] = createSignal<boolean>(true);
 
 export const receiver = (json: { frame?: Frame; index?: number; interval?: number }) => {
-    json?.frame !== undefined && json?.index !== undefined && setFrames(handleFrameAt(json.index, json.frame)) && getSaved() && handleLoad();
+    json?.frame !== undefined &&
+        json?.index !== undefined &&
+        setFrames(handleFrameAt(json.index, json.frame)) &&
+        getSaved() &&
+        handleLoad();
     json?.interval !== undefined && setFrameInterval(json.interval);
 };
 
@@ -198,7 +213,10 @@ export const Sidebar: Component = () => {
                 <Tooltip text={`${getPreview() ? "Stop" : "Preview"} animation`}>
                     <button
                         class={`w-full ${getPreview() ? "action-negative not-hover:bg-neutral-light dark:not-hover:bg-neutral-dark not-hover:enabled:text-interactive-light dark:not-hover:enabled:text-content-dark" : ""}`}
-                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0))}
+                        disabled={
+                            getFramesDraft().length < 2 ||
+                            !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0))
+                        }
                         onclick={handlePreview}
                         type="button"
                     >
@@ -218,7 +236,11 @@ export const Sidebar: Component = () => {
                 <Tooltip text="Save animation">
                     <button
                         class="action-neutral w-full"
-                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0)) || getSaved()}
+                        disabled={
+                            getFramesDraft().length < 2 ||
+                            !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0)) ||
+                            getSaved()
+                        }
                         onclick={handleSave}
                         type="button"
                     >
@@ -238,7 +260,10 @@ export const Sidebar: Component = () => {
                 <Tooltip text="Download animation">
                     <button
                         class="w-full"
-                        disabled={getFramesDraft().length < 2 || !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0))}
+                        disabled={
+                            getFramesDraft().length < 2 ||
+                            !getFramesDraft().some(([frame]) => frame().some((pixel) => pixel > 0))
+                        }
                         onclick={handleDownload}
                         type="button"
                     >
@@ -258,7 +283,9 @@ export const Sidebar: Component = () => {
             </div>
             <Tooltip text={`${(1_000 / getFrameInterval()).toFixed(1)} fps`}>
                 <div class="mt-3 relative">
-                    <span class="absolute text-content-alt-light dark:text-content-alt-dark left-3 top-1/2 -translate-y-1/2 text-sm">Frame interval:</span>
+                    <span class="absolute text-content-alt-light dark:text-content-alt-dark left-3 top-1/2 -translate-y-1/2 text-sm">
+                        Frame interval:
+                    </span>
                     <input
                         class="text-right pr-6 w-full"
                         disabled={getPreview()}
@@ -270,7 +297,9 @@ export const Sidebar: Component = () => {
                         type="number"
                         value={getFrameInterval() / 1_000}
                     />
-                    <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">s</span>
+                    <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                        s
+                    </span>
                 </div>
             </Tooltip>
             <Strength />
@@ -335,10 +364,18 @@ export const Main: Component = () => {
                     ) : (
                         <For each={getFramesDraft()}>
                             {([getFrame, setFrame], index) => (
-                                <div class={`snap-center max-h-[calc(100vh---spacing(32))] shrink-0 ${WebAppSidebar() ? "max-w-[calc((100vw---spacing(80))*0.8)]" : "max-w-[80vw]"}`}>
+                                <div
+                                    class={`snap-center max-h-[calc(100vh---spacing(32))] shrink-0 ${WebAppSidebar() ? "max-w-[calc((100vw---spacing(80))*0.8)]" : "max-w-[80vw]"}`}
+                                >
                                     <header class="flex justify-between items-center mb-4">
                                         <div class="flex gap-3">
-                                            <Tooltip text={index() ? `Insert frame between #${index()} and #${index() + 1}` : `Insert frame before #${index() + 1}`}>
+                                            <Tooltip
+                                                text={
+                                                    index()
+                                                        ? `Insert frame between #${index()} and #${index() + 1}`
+                                                        : `Insert frame before #${index() + 1}`
+                                                }
+                                            >
                                                 <button
                                                     class="canvas-action-neutral"
                                                     onclick={() => handleInsert(index())}
@@ -373,7 +410,9 @@ export const Main: Component = () => {
                                         </div>
                                         <div class="text-center text-2xl flex items-center">
                                             <span class="font-bold">{index() + 1}</span>
-                                            <span class="text-content-alt-light dark:text-content-alt-dark">/{getFramesDraft().length}</span>
+                                            <span class="text-content-alt-light dark:text-content-alt-dark">
+                                                /{getFramesDraft().length}
+                                            </span>
                                         </div>
                                     </header>
                                     <Canvas

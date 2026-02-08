@@ -8,11 +8,34 @@ import { HOSTNAME, NAME } from "../config/constants";
 import { Device } from "../config/devices";
 import { EXTENSION_OTA } from "../config/modules";
 import { VERSION } from "../config/version";
-import { name as ConnectivityName, SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent, MainThird as ConnectivityThird, SidebarThird as ConnectivityThirdSidebar } from "../services/Connectivity";
+import {
+    name as ConnectivityName,
+    SidebarSecondaryComponent as ConnectivitySecondarySidebarComponent,
+    MainThird as ConnectivityThird,
+    SidebarThird as ConnectivityThirdSidebar,
+} from "../services/Connectivity";
 import { SidebarSecondaryComponent as DeviceSecondarySidebarComponent, DeviceVersion } from "../services/Device";
-import { Main as DisplayMain, DisplayPower, SidebarSecondaryComponent as DisplaySecondarySidebarComponent, Sidebar as DisplaySidebar } from "../services/Display";
-import { Footer as ExtensionsFooter, name as ExtensionsName, SidebarSecondary as ExtensionsSecondarySidebar, MainThird as ExtensionsThird, SidebarThird as ExtensionsThirdSidebar } from "../services/Extensions";
-import { Main as ModesMain, name as ModesName, SidebarSecondary as ModesSecondarySidebar, Sidebar as ModesSidebar, MainThird as ModesThird, SidebarThird as ModesThirdSidebar } from "../services/Modes";
+import {
+    Main as DisplayMain,
+    DisplayPower,
+    SidebarSecondaryComponent as DisplaySecondarySidebarComponent,
+    Sidebar as DisplaySidebar,
+} from "../services/Display";
+import {
+    Footer as ExtensionsFooter,
+    name as ExtensionsName,
+    SidebarSecondary as ExtensionsSecondarySidebar,
+    MainThird as ExtensionsThird,
+    SidebarThird as ExtensionsThirdSidebar,
+} from "../services/Extensions";
+import {
+    Main as ModesMain,
+    name as ModesName,
+    SidebarSecondary as ModesSecondarySidebar,
+    Sidebar as ModesSidebar,
+    MainThird as ModesThird,
+    SidebarThird as ModesThirdSidebar,
+} from "../services/Modes";
 import { MainComponent as ExtensionOtaComponent } from "./Ota";
 import { WebSocketmessages, WebSocketState, WebSocketWS } from "./WebSocket";
 
@@ -263,7 +286,11 @@ const Layout: Component<{
     sidebar: JSX.Element;
 }> = (props) => (
     <div class={`h-full ${getSidebar() ? `grid grid-cols-[--spacing(80)_1fr]` : ""}`}>
-        {getSidebar() && <aside class="bg-menu-light dark:bg-menu-dark border-r flex flex-col h-full p-2 pt-4 rounded-none">{props.sidebar}</aside>}
+        {getSidebar() && (
+            <aside class="bg-menu-light dark:bg-menu-dark border-r flex flex-col h-full p-2 pt-4 rounded-none">
+                {props.sidebar}
+            </aside>
+        )}
         <main class="h-full overflow-auto rounded-none">{props.main}</main>
     </div>
 );

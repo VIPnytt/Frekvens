@@ -79,8 +79,16 @@ export const Canvas: Component<{
         canvasRef.height = divRef.clientHeight;
         const columnWidth = canvasRef.width / Device.GRID_COLUMNS;
         const rowHeight = canvasRef.height / Device.GRID_ROWS;
-        const pixelHeight = rowHeight * (rotated ? Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL : Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL);
-        const pixelWidth = columnWidth * (rotated ? Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL : Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL);
+        const pixelHeight =
+            rowHeight *
+            (rotated
+                ? Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL
+                : Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL);
+        const pixelWidth =
+            columnWidth *
+            (rotated
+                ? Device.LED_SIZE_VERTICAL / Device.PITCH_VERTICAL
+                : Device.LED_SIZE_HORIZONTAL / Device.PITCH_HORIZONTAL);
         const offsetX = (columnWidth - pixelWidth) / 2;
         const offsetY = (rowHeight - pixelHeight) / 2;
         const ctx = canvasRef.getContext("2d");
@@ -98,7 +106,13 @@ export const Canvas: Component<{
                 for (let y = 0; y < Device.GRID_ROWS; ++y) {
                     ctx.fillStyle = toColor(props.pixels[x + y * Device.GRID_COLUMNS]);
                     ctx.beginPath();
-                    ctx.arc(offsetX + x * columnWidth + pixelWidth / 2, offsetY + y * rowHeight + pixelHeight / 2, Math.min(pixelHeight, pixelWidth) / 2, 0, 2 * Math.PI);
+                    ctx.arc(
+                        offsetX + x * columnWidth + pixelWidth / 2,
+                        offsetY + y * rowHeight + pixelHeight / 2,
+                        Math.min(pixelHeight, pixelWidth) / 2,
+                        0,
+                        2 * Math.PI,
+                    );
                     ctx.fill();
                 }
             }
@@ -114,15 +128,24 @@ export const Canvas: Component<{
     };
 
     const toColor = (brightness: number) => {
-        const value = brightness === 0 ? Device.LED_BASE_TONE : ((brightness - 1) / (2 ** 8 - 2)) * (2 ** 8 - 2 - Device.LED_BASE_BRIGHTNESS) + 1 + Device.LED_BASE_BRIGHTNESS;
+        const value =
+            brightness === 0
+                ? Device.LED_BASE_TONE
+                : ((brightness - 1) / (2 ** 8 - 2)) * (2 ** 8 - 2 - Device.LED_BASE_BRIGHTNESS) +
+                  1 +
+                  Device.LED_BASE_BRIGHTNESS;
         return `rgb(${value},${value},${value})`;
     };
 
     const handleEvent = (e: PointerEvent) => {
         if (canvasRef && !props.disabled) {
             const rect = canvasRef.getBoundingClientRect();
-            const x = Math.floor(((e.clientX - rect.left) * canvasRef.width) / rect.width / (canvasRef.width / Device.GRID_COLUMNS));
-            const y = Math.floor(((e.clientY - rect.top) * canvasRef.height) / rect.height / (canvasRef.height / Device.GRID_ROWS));
+            const x = Math.floor(
+                ((e.clientX - rect.left) * canvasRef.width) / rect.width / (canvasRef.width / Device.GRID_COLUMNS),
+            );
+            const y = Math.floor(
+                ((e.clientY - rect.top) * canvasRef.height) / rect.height / (canvasRef.height / Device.GRID_ROWS),
+            );
             if (x >= 0 && x < Device.GRID_COLUMNS && y >= 0 && y < Device.GRID_ROWS) {
                 return {
                     x,
@@ -182,7 +205,9 @@ export const Canvas: Component<{
                 divRef = div;
             }}
             style={{
-                "aspect-ratio": rotated ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}` : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
+                "aspect-ratio": rotated
+                    ? `${Device.GRID_ROWS * Device.PITCH_VERTICAL} / ${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL}`
+                    : `${Device.GRID_COLUMNS * Device.PITCH_HORIZONTAL} / ${Device.GRID_ROWS * Device.PITCH_VERTICAL}`,
             }}
         >
             <canvas

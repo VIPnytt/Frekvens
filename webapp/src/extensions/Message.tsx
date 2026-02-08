@@ -88,7 +88,9 @@ export const MainThird: Component = () => {
                                 type="number"
                                 value={getRepeat()}
                             />
-                            <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">{getRepeat() === 1 ? "time" : "times"}</span>
+                            <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                                {getRepeat() === 1 ? "time" : "times"}
+                            </span>
                         </div>
                         <h3>Font</h3>
                         <Tooltip text="Character availability may vary">
@@ -97,7 +99,9 @@ export const MainThird: Component = () => {
                                 onchange={(e) => setFont(e.currentTarget.value)}
                                 value={getFont()}
                             >
-                                <For each={FontsList()}>{(fontName) => <option selected={fontName === getFont()}>{fontName}</option>}</For>
+                                <For each={FontsList()}>
+                                    {(fontName) => <option selected={fontName === getFont()}>{fontName}</option>}
+                                </For>
                             </select>
                         </Tooltip>
                         <button

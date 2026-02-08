@@ -42,7 +42,12 @@ const IkeaObegransadParameters: Parameters = {
     PITCH_VERTICAL: 30, // mm
 };
 
-export const Device: Parameters = import.meta.env.VITE_IKEA_FREKVENS === "true" ? IkeaFrekvensParameters : import.meta.env.VITE_IKEA_OBEGRANSAD === "true" ? IkeaObegransadParameters : ({} as Parameters);
+export const Device: Parameters =
+    import.meta.env.VITE_IKEA_FREKVENS === "true"
+        ? IkeaFrekvensParameters
+        : import.meta.env.VITE_IKEA_OBEGRANSAD === "true"
+          ? IkeaObegransadParameters
+          : ({} as Parameters);
 
 export const IkeaFrekvens: string = `${IkeaFrekvensParameters.MANUFACTURER} ${IkeaFrekvensParameters.MODEL}`;
 export const IkeaObegransad: string = `${IkeaObegransadParameters.MANUFACTURER} ${IkeaObegransadParameters.MODEL}`;
