@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 env:
-  milestone: 9
+  milestone: 10
 
 jobs:
   idle:
