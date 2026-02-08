@@ -12,19 +12,13 @@
 class MessageExtension : public ExtensionModule
 {
 private:
-    bool
-        active = false,
-        pending = false;
+    bool active = false, pending = false;
 
     int8_t offsetY = 0;
 
-    int16_t
-        offsetX = GRID_COLUMNS,
-        width = 0;
+    int16_t offsetX = GRID_COLUMNS, width = 0;
 
-    uint8_t
-        frame[GRID_COLUMNS * GRID_ROWS],
-        repeat = 3;
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS], repeat = 3;
 
     unsigned long lastMillis = 0;
 

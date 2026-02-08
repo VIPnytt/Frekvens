@@ -89,9 +89,7 @@ void WeatherHandler::draw()
     TextHandler text = TextHandler(std::to_string(temperature) + "°", FontMini);
     BitmapHandler bitmap = BitmapHandler(sign);
 
-    const uint8_t
-        textHeight = text.getHeight(),
-        marginsY = max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
+    const uint8_t textHeight = text.getHeight(), marginsY = max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
 
     Display.clearFrame();
     bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);

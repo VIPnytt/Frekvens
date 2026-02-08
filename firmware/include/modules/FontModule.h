@@ -15,9 +15,7 @@ public:
     struct Symbol
     {
         const std::vector<uint8_t> bitmap;
-        const int8_t
-            offsetX,
-            offsetY;
+        const int8_t offsetX, offsetY;
     };
 
     struct SymbolExtended

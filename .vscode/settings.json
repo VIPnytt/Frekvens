@@ -1,9 +1,9 @@
 {
     "[c]": {
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "xaver.clang-format"
     },
     "[cpp]": {
-        "editor.defaultFormatter": "ms-vscode.cpptools"
+        "editor.defaultFormatter": "xaver.clang-format"
     },
     "[css]": {
         "editor.defaultFormatter": "biomejs.biome"
@@ -35,7 +35,6 @@
         "linux-x64-musl": "webapp/node_modules/@biomejs/cli-linux-x64-musl/biome",
         "win32-x64": "webapp/node_modules/@biomejs/cli-win32-x64/biome.exe"
     },
-    "C_Cpp.clang_format_style": "file",
     "files.associations": {
         "*.css": "tailwindcss",
         "*.yaml": "esphome"

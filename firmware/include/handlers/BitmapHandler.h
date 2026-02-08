@@ -11,9 +11,7 @@ private:
 
     const std::vector<uint16_t> bitmap;
 
-    uint8_t
-        height = 0,
-        width = 0;
+    uint8_t height = 0, width = 0;
 
 public:
     BitmapHandler(std::vector<uint16_t> bitmap);

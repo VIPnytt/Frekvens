@@ -10,10 +10,7 @@
 
 RtcExtension *Rtc = nullptr;
 
-RtcExtension::RtcExtension() : ExtensionModule("RTC")
-{
-    Rtc = this;
-}
+RtcExtension::RtcExtension() : ExtensionModule("RTC") { Rtc = this; }
 
 void RtcExtension::configure()
 {
@@ -95,10 +92,7 @@ void RtcExtension::handle()
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
 
 #ifdef PIN_INT
-IRAM_ATTR void RtcExtension::onInterrupt()
-{
-    Rtc->pending = true;
-}
+IRAM_ATTR void RtcExtension::onInterrupt() { Rtc->pending = true; }
 #endif // PIN_INT
 
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
@@ -114,7 +108,8 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
     time_t timer = tv->tv_sec;
     tm *local = gmtime(&timer);
-    RtcDateTime dt = RtcDateTime(local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
+    RtcDateTime dt = RtcDateTime(
+        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
     Rtc->rtc.SetDateTime(dt);
     ESP_LOGV(Rtc->name, "NTP sync");
 }

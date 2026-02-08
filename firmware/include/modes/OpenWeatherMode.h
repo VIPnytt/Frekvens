@@ -18,17 +18,24 @@ private:
     // https://openweathermap.org/api/one-call-3#current
     // https://openweathermap.org/current#one
     std::vector<const char *> urls = {
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE
+        "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
         "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
 #if TEMPERATURE_KELVIN
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=standard&appid=" OPENWEATHER_KEY,
-        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE
+        "&exclude=alerts,daily,hourly,minutely&units=standard&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE
+        "&units=standard&appid=" OPENWEATHER_KEY,
 #elif TEMPERATURE_CELSIUS
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=metric&appid=" OPENWEATHER_KEY,
-        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=metric&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE
+        "&exclude=alerts,daily,hourly,minutely&units=metric&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE
+        "&units=metric&appid=" OPENWEATHER_KEY,
 #elif TEMPERATURE_FAHRENHEIT
-        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&units=imperial&appid=" OPENWEATHER_KEY,
-        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE "&units=imperial&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/3.0/onecall?lat=" LATITUDE "&lon=" LONGITUDE
+        "&exclude=alerts,daily,hourly,minutely&units=imperial&appid=" OPENWEATHER_KEY,
+        "https://api.openweathermap.org/data/2.5/weather?lat=" LATITUDE "&lon=" LONGITUDE
+        "&units=imperial&appid=" OPENWEATHER_KEY,
 #endif // TEMPERATURE_KELVIN
     };
 

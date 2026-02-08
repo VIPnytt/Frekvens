@@ -2,11 +2,9 @@
 
 ## Formatting and linting
 
-The project is set up to format source files on save.
-
 ### Firmware
 
-The default setup for the C/C++ formatter is used.
+Clang-format is being used for all C/C++ source code.
 
 ### Webapp
 

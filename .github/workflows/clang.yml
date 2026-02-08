@@ -1,0 +1,48 @@
+name: Clang
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  clang-version: 21
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Clang format
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: format
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: ${{ env.clang-version }}
+          files-changed-only: false
+          format-review: true
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: -*
+
+      - name: Summary
+        run: |
+          echo "Clang report:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          exit $(( ${{ steps.format.outputs.clang-format-checks-failed }} != 0 ))

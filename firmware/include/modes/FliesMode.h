@@ -12,9 +12,7 @@ class FliesMode : public ModeModule
 private:
     struct Dot
     {
-        uint8_t
-            x,
-            y;
+        uint8_t x, y;
     };
 
     bool pending = false;

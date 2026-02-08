@@ -7,10 +7,7 @@
 class PhotocellExtension : public ExtensionModule
 {
 private:
-    bool
-        active = false,
-        direction = false,
-        pending = false;
+    bool active = false, direction = false, pending = false;
 
     float gamma = 1.0f;
 
@@ -20,9 +17,7 @@ private:
 
     uint16_t raw = 0;
 
-    unsigned long
-        lastMillis = 0,
-        _lastMillis = 0;
+    unsigned long lastMillis = 0, _lastMillis = 0;
 
     void setGamma(float _gamma);
 

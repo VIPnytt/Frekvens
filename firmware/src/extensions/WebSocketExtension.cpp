@@ -7,10 +7,7 @@
 
 WebSocketExtension *WebSocket = nullptr;
 
-WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket")
-{
-    WebSocket = this;
-}
+WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket") { WebSocket = this; }
 
 void WebSocketExtension::begin()
 {
@@ -18,10 +15,7 @@ void WebSocketExtension::begin()
     WebServer.http->addHandler(server);
 }
 
-void WebSocketExtension::handle()
-{
-    server->cleanupClients();
-}
+void WebSocketExtension::handle() { server->cleanupClients(); }
 
 void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
@@ -33,7 +27,8 @@ void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const s
     server->textAll(payload.data(), length);
 }
 
-void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
+                                 uint8_t *data, size_t len)
 {
     switch (type)
     {

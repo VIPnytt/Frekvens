@@ -10,10 +10,7 @@ class NoiseMode : public ModeModule
 private:
     struct Dot
     {
-        uint8_t
-            x = 0,
-            y = 0,
-            delay = 0;
+        uint8_t x = 0, y = 0, delay = 0;
         unsigned long lastMillis = 0;
     };
 

@@ -11,34 +11,20 @@ class SnakeMode : public ModeModule
 private:
     struct Pixel
     {
-        uint8_t
-            x,
-            y;
+        uint8_t x, y;
 
-        bool operator==(const Pixel &pixel) const
-        {
-            return x == pixel.x && y == pixel.y;
-        }
+        bool operator==(const Pixel &pixel) const { return x == pixel.x && y == pixel.y; }
 
-        bool operator<(const Pixel &pixel) const
-        {
-            return (y < pixel.y) || (y == pixel.y && x < pixel.x);
-        }
+        bool operator<(const Pixel &pixel) const { return (y < pixel.y) || (y == pixel.y && x < pixel.x); }
     };
 
     tm local;
 
-    bool
-        clock = true,
-        pending = false;
+    bool clock = true, pending = false;
 
     unsigned long lastMillis = 0;
 
-    uint8_t
-        blink = 0,
-        hour,
-        minute,
-        stage = 0;
+    uint8_t blink = 0, hour, minute, stage = 0;
 
     std::deque<Pixel> snake;
 

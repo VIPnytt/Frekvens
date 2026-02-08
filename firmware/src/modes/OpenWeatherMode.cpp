@@ -31,7 +31,8 @@ void OpenWeatherMode::update()
 {
     lastMillis = millis();
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::x509_crt_bundle_start,
+                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");

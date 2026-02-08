@@ -10,10 +10,7 @@ class LeafFallMode : public ModeModule
 private:
     struct Leaf
     {
-        uint8_t
-            x,
-            y,
-            brightness;
+        uint8_t x, y, brightness;
         uint16_t delay;
         unsigned long lastMillis = 0;
     };

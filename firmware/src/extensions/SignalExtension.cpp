@@ -10,10 +10,7 @@
 
 SignalExtension *Signal = nullptr;
 
-SignalExtension::SignalExtension() : ExtensionModule("Signal")
-{
-    Signal = this;
-}
+SignalExtension::SignalExtension() : ExtensionModule("Signal") { Signal = this; }
 
 void SignalExtension::begin()
 {
@@ -95,10 +92,7 @@ void SignalExtension::onReceive(const JsonDocument doc, const char *const source
             else if (bitset.is<std::string>())
             {
                 std::string bits = bitset.as<std::string>();
-                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit)
-                                          {
-                                              return bit < 0x30 || bit > 0x31;
-                                          }),
+                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit) { return bit < 0x30 || bit > 0x31; }),
                            bits.end());
                 sign.push_back(std::stoi(bits, nullptr, 2));
             }

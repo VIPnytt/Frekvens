@@ -13,9 +13,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    uint8_t
-        duration = 30,
-        frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t duration = 30, frame[GRID_COLUMNS * GRID_ROWS] = {0};
 
     std::vector<std::vector<uint16_t>> signals;
 

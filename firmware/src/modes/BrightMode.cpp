@@ -4,9 +4,6 @@
 
 #include "services/DisplayService.h"
 
-void BrightMode::begin()
-{
-    Display.clearFrame(UINT8_MAX);
-}
+void BrightMode::begin() { Display.clearFrame(UINT8_MAX); }
 
 #endif // MODE_BRIGHT

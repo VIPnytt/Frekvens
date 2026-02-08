@@ -114,9 +114,9 @@ void PingPongMode::handle()
     x = xDec + .5f;
     y = yDec + .5f;
     Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
-    const float
-        aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec)),
-        bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec) : (GRID_ROWS - 2 - yDec) / abs(paddleA[1] - xDec));
+    const float aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec)),
+                bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec)
+                                   : (GRID_ROWS - 2 - yDec) / abs(paddleA[1] - xDec));
     if (!clock && xDec < paddleA.front() && bRad < 1 && paddleA.front() > 0)
     {
         // Bottom left

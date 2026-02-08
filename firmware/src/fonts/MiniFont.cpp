@@ -2,10 +2,7 @@
 
 MiniFont *FontMini = nullptr;
 
-MiniFont::MiniFont() : FontModule("Mini")
-{
-    FontMini = this;
-}
+MiniFont::MiniFont() : FontModule("Mini") { FontMini = this; }
 
 FontModule::Symbol MiniFont::getChar(uint32_t character) const
 {

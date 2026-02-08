@@ -17,9 +17,7 @@ private:
 
     int8_t offsetY = GRID_ROWS / 2;
 
-    int16_t
-        offsetX = GRID_COLUMNS,
-        width = 0;
+    int16_t offsetX = GRID_COLUMNS, width = 0;
 
     unsigned long lastMillis = 0;
 

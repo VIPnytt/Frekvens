@@ -27,7 +27,8 @@ void CountdownMode::configure()
         component[HomeAssistantAbbreviations::icon] = "mdi:timer-sand-full";
         component[HomeAssistantAbbreviations::name] = name;
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::pattern] = R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)";
+        component[HomeAssistantAbbreviations::pattern] =
+            R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)";
         component[HomeAssistantAbbreviations::platform] = "text";
         component[HomeAssistantAbbreviations::state_topic] = topic;
         component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
@@ -50,23 +51,17 @@ void CountdownMode::configure()
     }
 }
 
-void CountdownMode::begin()
-{
-    done = false;
-}
+void CountdownMode::begin() { done = false; }
 
 void CountdownMode::handle()
 {
     const std::chrono::nanoseconds _nanoseconds = epoch - std::chrono::system_clock::now();
     const std::chrono::hours _hours = std::chrono::duration_cast<std::chrono::hours>(_nanoseconds);
     const std::chrono::minutes _minutes = std::chrono::duration_cast<std::chrono::minutes>(_nanoseconds - _hours);
-    const int64_t
-        hours = _hours.count(),
-        minutes = _minutes.count(),
-        seconds = std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count();
-    const uint8_t
-        _upper = hours > 99 ? 99 : (hours > 0 ? hours % 100 : minutes),
-        _lower = hours > 99 ? 99 : (hours > 0 ? minutes : seconds);
+    const int64_t hours = _hours.count(), minutes = _minutes.count(),
+                  seconds = std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count();
+    const uint8_t _upper = hours > 99 ? 99 : (hours > 0 ? hours % 100 : minutes),
+                  _lower = hours > 99 ? 99 : (hours > 0 ? minutes : seconds);
     if (_lower != lower || _upper != upper)
     {
         upper = _upper;
@@ -76,15 +71,18 @@ void CountdownMode::handle()
             Display.clearFrame();
             {
                 TextHandler tl = TextHandler(std::to_string(upper / 10), FontMedium);
-                tl.draw(GRID_COLUMNS / 2 - 1 - (7 - tl.getWidth()) / 2 - tl.getWidth(), GRID_ROWS / 2 - 1 - (7 - tl.getHeight()) / 2 - tl.getHeight());
+                tl.draw(GRID_COLUMNS / 2 - 1 - (7 - tl.getWidth()) / 2 - tl.getWidth(),
+                        GRID_ROWS / 2 - 1 - (7 - tl.getHeight()) / 2 - tl.getHeight());
             }
             {
                 TextHandler tr = TextHandler(std::to_string(upper % 10), FontMedium);
-                tr.draw(GRID_COLUMNS / 2 + 1 + (7 - tr.getWidth()) / 2, GRID_ROWS / 2 - 1 + (7 - tr.getHeight()) / 2 - tr.getHeight());
+                tr.draw(GRID_COLUMNS / 2 + 1 + (7 - tr.getWidth()) / 2,
+                        GRID_ROWS / 2 - 1 + (7 - tr.getHeight()) / 2 - tr.getHeight());
             }
             {
                 TextHandler bl = TextHandler(std::to_string(lower / 10), FontMedium);
-                bl.draw(GRID_COLUMNS / 2 - 1 - (7 - bl.getWidth()) / 2 - bl.getWidth(), GRID_ROWS / 2 + 1 - (7 - bl.getHeight()) / 2);
+                bl.draw(GRID_COLUMNS / 2 - 1 - (7 - bl.getWidth()) / 2 - bl.getWidth(),
+                        GRID_ROWS / 2 + 1 - (7 - bl.getHeight()) / 2);
             }
             {
                 TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);

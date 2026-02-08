@@ -18,10 +18,7 @@ private:
     struct Code
     {
         const decode_type_t protocol;
-        const std::vector<uint16_t>
-            displayBrightnessDecrease,
-            displayBrightnessIncrease,
-            displayPowerToggle,
+        const std::vector<uint16_t> displayBrightnessDecrease, displayBrightnessIncrease, displayPowerToggle,
 #if EXTENSION_MICROPHONE
             extensionMicrophoneToggle,
 #endif // EXTENSION_MICROPHONE
@@ -29,11 +26,9 @@ private:
             extensionPhotocellToggle,
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            extensionPlaylistStart,
-            extensionPlaylistStop,
+            extensionPlaylistStart, extensionPlaylistStop,
 #endif // EXTENSION_PLAYLIST
-            modeNext,
-            modePrevious;
+            modeNext, modePrevious;
     };
 
     const std::vector<Code> codes = {

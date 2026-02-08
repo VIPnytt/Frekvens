@@ -18,7 +18,8 @@ void StreamMode::configure()
     {
         const std::string id = std::string(name).append("_protocol");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"port\":{{{\"Art-Net\":6454,\"Distributed Display Protocol\":4048,\"E1.31\":5568}.get(value)}}}";
+        component[HomeAssistantAbbreviations::command_template] =
+            "{\"port\":{{{\"Art-Net\":6454,\"Distributed Display Protocol\":4048,\"E1.31\":5568}.get(value)}}}";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -32,7 +33,8 @@ void StreamMode::configure()
         component[HomeAssistantAbbreviations::platform] = "select";
         component[HomeAssistantAbbreviations::state_topic] = topic;
         component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{{4048:\"Distributed Display Protocol\",5568:\"E1.31\",6454:\"Art-Net\"}.get(value_json.port)}}";
+        component[HomeAssistantAbbreviations::value_template] =
+            "{{{4048:\"Distributed Display Protocol\",5568:\"E1.31\",6454:\"Art-Net\"}.get(value_json.port)}}";
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
@@ -101,9 +103,6 @@ void StreamMode::onPacket(AsyncUDPPacket packet)
     }
 }
 
-void StreamMode::end()
-{
-    udp.reset();
-}
+void StreamMode::end() { udp.reset(); }
 
 #endif // MODE_STREAM

@@ -7,19 +7,11 @@
 class MicrophoneExtension : public ExtensionModule
 {
 private:
-    bool
-        active = false,
-        detected = false,
-        pending = false;
+    bool active = false, detected = false, pending = false;
 
-    uint16_t
-        levelMax = UINT8_MAX,
-        mic = 0,
-        threshold = INT8_MAX;
+    uint16_t levelMax = UINT8_MAX, mic = 0, threshold = INT8_MAX;
 
-    unsigned long
-        lastMillis = 0,
-        _lastMillis = 0;
+    unsigned long lastMillis = 0, _lastMillis = 0;
 
     void transmit();
 

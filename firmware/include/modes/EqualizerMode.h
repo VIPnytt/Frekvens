@@ -12,9 +12,7 @@ private:
 
     struct Bar
     {
-        uint8_t
-            level = GRID_ROWS - 1,
-            target = GRID_ROWS - 1;
+        uint8_t level = GRID_ROWS - 1, target = GRID_ROWS - 1;
     };
 
     Bar bars[GRID_COLUMNS / (width + 1)];
