@@ -11,10 +11,7 @@
 
 MqttExtension *Mqtt = nullptr;
 
-MqttExtension::MqttExtension() : ExtensionModule("MQTT")
-{
-    Mqtt = this;
-}
+MqttExtension::MqttExtension() : ExtensionModule("MQTT") { Mqtt = this; }
 
 void MqttExtension::configure()
 {
@@ -63,7 +60,8 @@ void MqttExtension::disconnect()
 void MqttExtension::onConnect(bool sessionPresent)
 {
     ESP_LOGD(Mqtt->name, "connected");
-    if (!sessionPresent || (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
+    if (!sessionPresent ||
+        (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
         Mqtt->client.subscribe("frekvens/" HOSTNAME "/+/set", 2);
         subscribed = true;
@@ -71,14 +69,16 @@ void MqttExtension::onConnect(bool sessionPresent)
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
 }
 
-void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic, const uint8_t *payload, size_t len, size_t index, size_t total)
+void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
+                              const uint8_t *payload, size_t len, size_t index, size_t total)
 {
     JsonDocument doc;
     if (deserializeJson(doc, payload, len))
     {
         return;
     }
-    Device.receive(doc, Mqtt->name, std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
+    Device.receive(
+        doc, Mqtt->name, std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
@@ -92,7 +92,11 @@ void MqttExtension::onTransmit(const JsonDocument &doc, const char *const source
     const size_t length = measureJson(doc);
     std::vector<char> payload(length + 1);
     serializeJson(doc, payload.data(), length + 1);
-    client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(), doc["event"].isUnbound() ? 0 : 2, false, reinterpret_cast<const uint8_t *>(payload.data()), length);
+    client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(),
+                   doc["event"].isUnbound() ? 0 : 2,
+                   false,
+                   reinterpret_cast<const uint8_t *>(payload.data()),
+                   length);
 }
 
 #endif // EXTENSION_MQTT

@@ -15,18 +15,14 @@
 
 HomeAssistantExtension *HomeAssistant = nullptr;
 
-HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assistant")
-{
-    HomeAssistant = this;
-}
+HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assistant") { HomeAssistant = this; }
 
 void HomeAssistantExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
-        const std::string
-            id = std::regex_replace(name, std::regex("\\s+"), "").append("_main"),
-            topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
+        const std::string id = std::regex_replace(name, std::regex("\\s+"), "").append("_main"),
+                          topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
         component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value}}}";
         component[HomeAssistantAbbreviations::brightness_command_topic] = topicDisplay + "/set";
@@ -34,13 +30,15 @@ void HomeAssistantExtension::configure()
         component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness}}";
         component[HomeAssistantAbbreviations::command_topic] = topicDisplay + "/set";
         component[HomeAssistantAbbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
-        component[HomeAssistantAbbreviations::effect_command_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
+        component[HomeAssistantAbbreviations::effect_command_topic] =
+            std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
         JsonArray effectList = component[HomeAssistantAbbreviations::effect_list].to<JsonArray>();
         for (const ModeModule *mode : Modes.getAll())
         {
             effectList.add(mode->name);
         }
-        component[HomeAssistantAbbreviations::effect_state_topic] = std::string("frekvens/" HOSTNAME "/").append(Modes.name);
+        component[HomeAssistantAbbreviations::effect_state_topic] =
+            std::string("frekvens/" HOSTNAME "/").append(Modes.name);
         component[HomeAssistantAbbreviations::effect_value_template] = "{{value_json.mode}}";
         component[HomeAssistantAbbreviations::icon] = "mdi:dots-grid";
         component[HomeAssistantAbbreviations::name] = "";
@@ -50,7 +48,8 @@ void HomeAssistantExtension::configure()
         component[HomeAssistantAbbreviations::payload_on] = payloadOn;
         component[HomeAssistantAbbreviations::platform] = "light";
         component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::state_value_template] = std::string("{{value_json.").append(Display.name).append(".power}}");
+        component[HomeAssistantAbbreviations::state_value_template] =
+            std::string("{{value_json.").append(Display.name).append(".power}}");
         component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
     }
 }
@@ -84,7 +83,8 @@ void HomeAssistantExtension::begin()
         {
             JsonObject origin = (*discovery)[HomeAssistantAbbreviations::origin].to<JsonObject>();
             origin[HomeAssistantAbbreviations::name] = "Frekvens";
-            origin[HomeAssistantAbbreviations::support_url] = "https://github.com/VIPnytt/Frekvens/blob/main/docs/SUPPORT.md";
+            origin[HomeAssistantAbbreviations::support_url] =
+                "https://github.com/VIPnytt/Frekvens/blob/main/docs/SUPPORT.md";
             origin[HomeAssistantAbbreviations::sw_version] = VERSION;
         }
     }

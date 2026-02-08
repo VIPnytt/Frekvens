@@ -179,18 +179,13 @@ void ModesService::setMode(ModeModule *mode, bool power)
     Display.setPower(power);
 }
 
-const std::vector<ModeModule *> &ModesService::getAll() const
-{
-    return modes;
-}
+const std::vector<ModeModule *> &ModesService::getAll() const { return modes; }
 
 void ModesService::setModeNext()
 {
     const char *const _name = mode ? mode->name : scheduled->name;
-    std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                   {
-                                                                       return !strcmp(_mode->name, _name);
-                                                                   });
+    std::vector<ModeModule *>::const_iterator _mode = std::find_if(
+        modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
     {
         Display.setPower(true);
@@ -209,10 +204,8 @@ void ModesService::setModeNext()
 void ModesService::setModePrevious()
 {
     const char *const _name = mode ? mode->name : scheduled->name;
-    std::vector<ModeModule *>::const_iterator _mode = std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode)
-                                                                   {
-                                                                       return !strcmp(_mode->name, _name);
-                                                                   });
+    std::vector<ModeModule *>::const_iterator _mode = std::find_if(
+        modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
     {
         Display.setPower(true);

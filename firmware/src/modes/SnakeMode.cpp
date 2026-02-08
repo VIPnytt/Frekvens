@@ -85,9 +85,7 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    const uint8_t
-        x = random(GRID_COLUMNS),
-        y = random(clock ? 5 : 0, GRID_ROWS);
+    const uint8_t x = random(GRID_COLUMNS), y = random(clock ? 5 : 0, GRID_ROWS);
     snake = {{x, y}};
     Display.setPixel(x, y);
     setDot();

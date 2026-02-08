@@ -4,10 +4,7 @@
 
 #include "services/DisplayService.h"
 
-void StarsMode::begin()
-{
-    Display.clearFrame();
-}
+void StarsMode::begin() { Display.clearFrame(); }
 
 void StarsMode::handle()
 {

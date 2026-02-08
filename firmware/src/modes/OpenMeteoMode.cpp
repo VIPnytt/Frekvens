@@ -31,7 +31,8 @@ void OpenMeteoMode::update()
 {
     lastMillis = millis();
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::x509_crt_bundle_start,
+                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
@@ -50,7 +51,8 @@ void OpenMeteoMode::update()
         filter["current"]["temperature_2m"] = true;
         filter["current"]["weather_code"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) || !doc["current"]["temperature_2m"].is<float>() || !doc["current"]["weather_code"].is<uint8_t>())
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+            !doc["current"]["temperature_2m"].is<float>() || !doc["current"]["weather_code"].is<uint8_t>())
         {
             urls.pop_back();
             lastMillis = millis() - interval + (1 << 14);

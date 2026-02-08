@@ -25,9 +25,8 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
-    const uint8_t
-        nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5f,
-        nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5f;
+    const uint8_t nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5f,
+                  nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5f;
     if (y <= 0 && deg < 180)
     {
         // Top

@@ -13,10 +13,7 @@ private:
 
     ConnectivityService() : ServiceModule(_name.data()) {};
 
-    bool
-        mDNS = false,
-        pending = false,
-        routable = false;
+    bool mDNS = false, pending = false, routable = false;
 
     unsigned long lastMillis = 0;
 
@@ -52,6 +49,6 @@ extern ConnectivityService &Connectivity;
 
 namespace Certificates
 {
-    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
-}
+extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+} // namespace Certificates

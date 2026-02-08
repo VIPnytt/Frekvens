@@ -11,10 +11,7 @@
 
 PlaylistExtension *Playlist = nullptr;
 
-PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist")
-{
-    Playlist = this;
-}
+PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist") { Playlist = this; }
 
 void PlaylistExtension::configure()
 {
@@ -50,7 +47,8 @@ void PlaylistExtension::configure()
         component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
-        component[HomeAssistantAbbreviations::json_attributes_template] = "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}";
+        component[HomeAssistantAbbreviations::json_attributes_template] =
+            "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}";
         component[HomeAssistantAbbreviations::json_attributes_topic] = topic;
         component[HomeAssistantAbbreviations::name] = name;
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
@@ -107,10 +105,7 @@ void PlaylistExtension::handle()
     }
 }
 
-bool PlaylistExtension::getActive() const
-{
-    return active;
-}
+bool PlaylistExtension::getActive() const { return active; }
 
 void PlaylistExtension::setActive(bool active)
 {
@@ -175,7 +170,8 @@ void PlaylistExtension::transmit()
 void PlaylistExtension::onTransmit(const JsonDocument &doc, const char *const source)
 {
     // Modes: Mode
-    if (active && !strcmp(source, Modes.name) && doc["mode"].is<std::string>() && doc["mode"].as<std::string>() != playlist[step].mode)
+    if (active && !strcmp(source, Modes.name) && doc["mode"].is<std::string>() &&
+        doc["mode"].as<std::string>() != playlist[step].mode)
     {
         setActive(false);
     }

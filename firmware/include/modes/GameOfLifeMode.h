@@ -9,14 +9,9 @@ class GameOfLifeMode : public ModeModule
 private:
     tm local;
 
-    bool
-        clock = true,
-        pending = false;
+    bool clock = true, pending = false;
 
-    uint8_t
-        active = 0,
-        hour,
-        minute;
+    uint8_t active = 0, hour, minute;
 
     unsigned long lastMillis = 0;
 

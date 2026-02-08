@@ -27,16 +27,16 @@ void MetaballsMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         const bool rotated = Display.getOrientation() % 2;
-        const float
-            xRatio = 2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL),
-            yRatio = 2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL);
+        const float xRatio =
+                        2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL),
+                    yRatio =
+                        2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL) / (float)(PITCH_VERTICAL + PITCH_HORIZONTAL);
         for (const Ball &ball : balls)
         {
-            const uint8_t
-                xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0),
-                yMin = max<int8_t>(ball.y - radius - max<float>(ball.yVelocity, 0), 0),
-                xMax = min<int8_t>(ceil(ball.x + radius - min<float>(ball.xVelocity, 0)), GRID_COLUMNS - 1),
-                yMax = min<int8_t>(ceil(ball.y + radius - min<float>(ball.yVelocity, 0)), GRID_ROWS - 1);
+            const uint8_t xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0),
+                          yMin = max<int8_t>(ball.y - radius - max<float>(ball.yVelocity, 0), 0),
+                          xMax = min<int8_t>(ceil(ball.x + radius - min<float>(ball.xVelocity, 0)), GRID_COLUMNS - 1),
+                          yMax = min<int8_t>(ceil(ball.y + radius - min<float>(ball.yVelocity, 0)), GRID_ROWS - 1);
             for (uint8_t x = xMin; x <= xMax; ++x)
             {
                 for (uint8_t y = yMin; y <= yMax; ++y)
@@ -44,13 +44,12 @@ void MetaballsMode::handle()
                     uint8_t brightness = 0;
                     for (const Ball &ball : balls)
                     {
-                        const float
-                            xDistance = (ball.x - x) * xRatio,
-                            yDistance = (ball.y - y) * yRatio,
-                            distanceSq = xDistance * xDistance + yDistance * yDistance;
+                        const float xDistance = (ball.x - x) * xRatio, yDistance = (ball.y - y) * yRatio,
+                                    distanceSq = xDistance * xDistance + yDistance * yDistance;
                         if (distanceSq < radiusSq)
                         {
-                            brightness = min<uint8_t>(brightness + contributions[(uint8_t)(distanceSq * UINT8_MAX / radiusSq)], UINT8_MAX);
+                            brightness = min<uint8_t>(
+                                brightness + contributions[(uint8_t)(distanceSq * UINT8_MAX / radiusSq)], UINT8_MAX);
                             if (brightness >= UINT8_MAX)
                             {
                                 break;

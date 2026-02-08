@@ -11,9 +11,7 @@ class CountdownMode : public ModeModule
 private:
     bool done = false;
 
-    uint8_t
-        upper = 0,
-        lower = 0;
+    uint8_t upper = 0, lower = 0;
 
     std::chrono::time_point<std::chrono::system_clock> epoch;
 

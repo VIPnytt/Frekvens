@@ -8,9 +8,7 @@
 class DrawMode : public ModeModule
 {
 private:
-    bool
-        pending = false,
-        render = false;
+    bool pending = false, render = false;
 
     uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
 

@@ -31,7 +31,8 @@ void YrMode::update()
 {
     lastMillis = millis();
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::x509_crt_bundle_start,
+                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
@@ -50,7 +51,9 @@ void YrMode::update()
         filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"] = true;
         filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) || !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() || !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+            !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() ||
+            !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
         {
             urls.pop_back();
             lastMillis = millis() - interval + (1 << 14);
@@ -58,8 +61,11 @@ void YrMode::update()
             return;
         }
         WeatherHandler weather = WeatherHandler();
-        weather.temperature = round(doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].as<float>());
-        weather.parse(doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].as<std::string>(), codesets);
+        weather.temperature =
+            round(doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].as<float>());
+        weather.parse(
+            doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].as<std::string>(),
+            codesets);
         weather.draw();
     }
     else if (code >= 400 && code < 500)

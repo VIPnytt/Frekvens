@@ -10,10 +10,7 @@
 
 HeapExtension *Heap = nullptr;
 
-HeapExtension::HeapExtension() : ExtensionModule("Heap")
-{
-    Heap = this;
-}
+HeapExtension::HeapExtension() : ExtensionModule("Heap") { Heap = this; }
 
 #if EXTENSION_HOMEASSISTANT
 void HeapExtension::configure()

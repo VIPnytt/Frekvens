@@ -9,7 +9,8 @@
 class WebSocketExtension : public ExtensionModule
 {
 private:
-    static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
+    static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
+                        uint8_t *data, size_t len);
 
 public:
     WebSocketExtension();
