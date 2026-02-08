@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class WorldWeatherOnlineMode : public ModeModule
+class WorldWeatherOnlineMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 600'000; // Recommended update interval: 10-15 minutes
@@ -18,10 +18,12 @@ private:
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
     std::vector<const char *> urls = {
 #ifdef LOCATION
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
+        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION
+        "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
 #endif
 #if defined(LATITUDE) && defined(LONGITUDE)
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LATITUDE "," LONGITUDE "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
+        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LATITUDE "," LONGITUDE
+        "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
 #endif
     };
 
@@ -60,7 +62,7 @@ private:
     void update();
 
 public:
-    WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
+    explicit WorldWeatherOnlineMode() : ModeModule("World Weather Online") {};
 
     void begin() override;
     void handle() override;

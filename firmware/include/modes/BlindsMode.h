@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class BlindsMode : public ModeModule
+class BlindsMode final : public ModeModule
 {
 private:
     static constexpr uint8_t moduloMax = GRID_ROWS / 3;
@@ -17,7 +17,7 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    BlindsMode() : ModeModule("Blinds") {};
+    explicit BlindsMode() : ModeModule("Blinds") {};
 
     void handle() override;
 };

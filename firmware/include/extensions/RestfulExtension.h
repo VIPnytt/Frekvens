@@ -6,16 +6,16 @@
 
 #include <ESPAsyncWebServer.h>
 
-class RestfulExtension : public ExtensionModule
+class RestfulExtension final : public ExtensionModule
 {
 private:
     static constexpr size_t prefixLength = sizeof("/restful/") - 1;
 
     static void onGet(AsyncWebServerRequest *request);
-    static void onPatch(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
+    static void onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index, size_t total);
 
 public:
-    RestfulExtension();
+    explicit RestfulExtension();
 
     void begin() override;
 };

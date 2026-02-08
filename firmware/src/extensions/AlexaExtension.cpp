@@ -10,10 +10,7 @@
 
 AlexaExtension *Alexa = nullptr;
 
-AlexaExtension::AlexaExtension() : ExtensionModule("Alexa")
-{
-    Alexa = this;
-}
+AlexaExtension::AlexaExtension() : ExtensionModule("Alexa") { Alexa = this; }
 
 void AlexaExtension::begin()
 {
@@ -22,24 +19,30 @@ void AlexaExtension::begin()
     fauxmo.addDevice(NAME);
     fauxmo.onSetState(&onSetState);
 
-    WebServer.http->on(AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServer.onEmpty, nullptr, &onSet);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights"), WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1"), WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state"), WebRequestMethod::HTTP_PUT, &WebServer.onEmpty, nullptr, &onSet);
+    WebServer.http->on(
+        AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServer.onEmpty, nullptr, &onSet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights"),
+                       WebRequestMethod::HTTP_GET,
+                       &onGet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1"),
+                       WebRequestMethod::HTTP_GET,
+                       &onGet);
+    WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state"),
+                       WebRequestMethod::HTTP_PUT,
+                       &WebServer.onEmpty,
+                       nullptr,
+                       &onSet);
     WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGet);
 
     fauxmo.setState(NAME, Display.getPower(), static_cast<unsigned char>(Display.getBrightness()));
     fauxmo.enable(true);
 }
 
-void AlexaExtension::handle()
-{
-    fauxmo.handle();
-}
+void AlexaExtension::handle() { fauxmo.handle(); }
 
 void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value)
 {
-    if (!strcmp(deviceName, NAME))
+    if (strcmp(deviceName, NAME) == 0)
     {
         Display.setBrightness(static_cast<uint8_t>(value));
         Display.setPower(state);
@@ -56,7 +59,8 @@ void AlexaExtension::onGet(AsyncWebServerRequest *request)
 
 void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-    if (!Alexa->fauxmo.process(request->client(), false, request->url(), (char *)data))
+    if (!Alexa->fauxmo.process(
+            request->client(), false, request->url(), String(reinterpret_cast<const char *>(data), len)))
     {
         request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }
@@ -68,7 +72,10 @@ void AlexaExtension::onTransmit(const JsonDocument &doc, const char *const sourc
     // Display: Power
     if (!strcmp(source, Display.name) && (doc["brightness"].is<uint8_t>() || doc["power"].is<bool>()))
     {
-        fauxmo.setState(NAME, doc["power"].is<bool>() ? doc["power"].as<bool>() : Display.getPower(), static_cast<unsigned char>(doc["brightness"].is<uint8_t>() ? doc["brightness"].as<uint8_t>() : Display.getBrightness()));
+        fauxmo.setState(NAME,
+                        doc["power"].is<bool>() ? doc["power"].as<bool>() : Display.getPower(),
+                        static_cast<unsigned char>(doc["brightness"].is<uint8_t>() ? doc["brightness"].as<uint8_t>()
+                                                                                   : Display.getBrightness()));
     }
 }
 

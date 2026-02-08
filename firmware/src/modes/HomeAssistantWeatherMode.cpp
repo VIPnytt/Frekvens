@@ -32,7 +32,8 @@ void HomeAssistantWeatherMode::update()
     lastMillis = millis();
 #ifdef HOMEASSISTANT_PROTOCOL
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::x509_crt_bundle_start,
+                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
     http.begin(client, urls.back().c_str());
 #else
@@ -57,7 +58,8 @@ void HomeAssistantWeatherMode::update()
         filter["attributes"]["temperature"] = true;
         filter["state"] = true;
         JsonDocument doc;
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) || !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+            !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())
         {
             urls.pop_back();
             lastMillis = millis() - interval + (1 << 14);

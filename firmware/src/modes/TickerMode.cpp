@@ -16,7 +16,7 @@ void TickerMode::configure()
     {
         const std::string id = std::string(name).append("_font");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"font":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -36,7 +36,7 @@ void TickerMode::configure()
     {
         const std::string id = std::string(name).append("_message");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"message":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:message";
         component[HomeAssistantAbbreviations::name] = name;
@@ -63,17 +63,14 @@ void TickerMode::configure()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontSmall;
     }
     transmit();
 }
 
-void TickerMode::begin()
-{
-    pending = true;
-}
+void TickerMode::begin() { pending = true; }
 
 void TickerMode::handle()
 {
@@ -99,9 +96,9 @@ void TickerMode::handle()
     }
 }
 
-void TickerMode::setFont(const char *const fontName)
+void TickerMode::setFont(const char *fontName)
 {
-    if (!font || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName) != 0)
     {
         for (FontModule *_font : Fonts.getAll())
         {
@@ -142,7 +139,7 @@ void TickerMode::transmit()
     Device.transmit(doc, name);
 }
 
-void TickerMode::onReceive(const JsonDocument doc, const char *const source)
+void TickerMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Font
     if (doc["font"].is<const char *>())
@@ -156,9 +153,6 @@ void TickerMode::onReceive(const JsonDocument doc, const char *const source)
     }
 }
 
-void TickerMode::end()
-{
-    text.reset();
-}
+void TickerMode::end() { text.reset(); }
 
 #endif // MODE_TICKER

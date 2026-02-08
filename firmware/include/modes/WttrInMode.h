@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class WttrInMode : public ModeModule
+class WttrInMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 3'600'000; // Recommended update interval: 1 hour (due to heavy caching)
@@ -62,7 +62,7 @@ private:
     void update();
 
 public:
-    WttrInMode() : ModeModule("Wttr.in") {};
+    explicit WttrInMode() : ModeModule("Wttr.in") {};
 
     void begin() override;
     void handle() override;

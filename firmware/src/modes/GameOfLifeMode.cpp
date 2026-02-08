@@ -46,10 +46,7 @@ void GameOfLifeMode::configure()
     transmit();
 }
 
-void GameOfLifeMode::begin()
-{
-    pending = true;
-}
+void GameOfLifeMode::begin() { pending = true; }
 
 void GameOfLifeMode::handle()
 {
@@ -69,7 +66,8 @@ void GameOfLifeMode::handle()
         bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))] = {false};
         for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1 << 4); ++i)
         {
-            seeds[random(1, GRID_COLUMNS - 1) + random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0))] = true;
+            seeds[random(1, GRID_COLUMNS - 1) +
+                  (random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0)))] = true;
         }
         lastMillis = millis();
         active = 0;
@@ -78,17 +76,21 @@ void GameOfLifeMode::handle()
             for (uint8_t y = (clock ? 5 : 0); y < GRID_ROWS; ++y)
             {
                 uint8_t n = 0;
-                for (uint8_t _x = x <= 0 ? 0 : x - 1; _x <= x + 1 && _x < GRID_COLUMNS; ++_x)
+                for (uint8_t _x = static_cast<uint8_t>(std::max<int16_t>(x - 1, 0)); _x <= x + 1 && _x < GRID_COLUMNS;
+                     ++_x)
                 {
-                    for (uint8_t _y = y <= (clock ? 5 : 0) ? (clock ? 5 : 0) : y - 1; _y <= y + 1 && _y < GRID_ROWS; ++_y)
+                    for (uint8_t _y = static_cast<uint8_t>(std::max<int16_t>(clock ? 5 : 0, y - 1));
+                         _y <= y + 1 && _y < GRID_ROWS;
+                         ++_y)
                     {
-                        if ((_x != x || _y != y) && (seeds[_x + _y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(_x, _y)))
+                        if ((_x != x || _y != y) &&
+                            (seeds[_x + (_y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(_x, _y) != 0))
                         {
                             ++n;
                         }
                     }
                 }
-                const bool lit = seeds[x + y * (GRID_COLUMNS - (clock ? 5 : 0))] || Display.getPixel(x, y);
+                const bool lit = seeds[x + (y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(x, y) != 0;
                 if (lit && (n < 2 || n > 3))
                 {
                     Display.setPixel(x, y, 0);
@@ -103,7 +105,7 @@ void GameOfLifeMode::handle()
     }
 }
 
-void GameOfLifeMode::setClock(const bool _clock)
+void GameOfLifeMode::setClock(bool _clock)
 {
     if (_clock != clock)
     {
@@ -124,7 +126,7 @@ void GameOfLifeMode::transmit()
     Device.transmit(doc, name);
 }
 
-void GameOfLifeMode::onReceive(const JsonDocument doc, const char *const source)
+void GameOfLifeMode::onReceive(const JsonDocument &doc, const char *source)
 {
     // Clock
     if (doc["clock"].is<bool>())

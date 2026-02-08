@@ -5,7 +5,7 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class PixelSequenceMode : public ModeModule
+class PixelSequenceMode final : public ModeModule
 {
 private:
     static constexpr uint8_t pixelOrder[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
@@ -17,7 +17,7 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    PixelSequenceMode() : ModeModule("Pixel sequence") {};
+    explicit PixelSequenceMode() : ModeModule("Pixel sequence") {};
 
     void handle() override;
 };

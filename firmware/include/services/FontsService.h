@@ -9,11 +9,9 @@
 #include "fonts/SmallFont.h"
 #include "modules/ServiceModule.h"
 
-class FontsService : public ServiceModule
+class FontsService final : public ServiceModule
 {
 private:
-    FontsService() : ServiceModule("Fonts") {};
-
     const std::vector<FontModule *> modules = {
 #if FONT_BRAILLE
         new BrailleFont(),
@@ -28,9 +26,12 @@ private:
 
     void transmit();
 
+protected:
+    explicit FontsService() : ServiceModule("Fonts") {};
+
 public:
     void begin();
-    const std::vector<FontModule *> &getAll() const;
+    [[nodiscard]] const std::vector<FontModule *> &getAll() const;
 
     static FontsService &getInstance();
 };

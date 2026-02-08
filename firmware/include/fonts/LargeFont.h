@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class LargeFont : public FontModule
+class LargeFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -144,9 +144,9 @@ private:
     };
 
 public:
-    LargeFont();
+    explicit LargeFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern LargeFont *FontLarge;

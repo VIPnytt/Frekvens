@@ -2,10 +2,7 @@
 
 MediumFont *FontMedium = nullptr;
 
-MediumFont::MediumFont() : FontModule("Medium")
-{
-    FontMedium = this;
-}
+MediumFont::MediumFont() : FontModule("Medium") { FontMedium = this; }
 
 FontModule::Symbol MediumFont::getChar(uint32_t character) const
 {

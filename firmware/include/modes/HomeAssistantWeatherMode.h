@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class HomeAssistantWeatherMode : public ModeModule
+class HomeAssistantWeatherMode final : public ModeModule
 {
 private:
     static constexpr uint16_t interval = UINT16_MAX;
@@ -33,9 +33,19 @@ private:
 
     // https://developers.home-assistant.io/docs/api/rest
     std::vector<std::string> urls = {
-        std::string(protocol).append("//").append(host).append(":").append(std::to_string(port)).append("/api/states/weather.forecast_home"),
+        std::string(protocol)
+            .append("//")
+            .append(host)
+            .append(":")
+            .append(std::to_string(port))
+            .append("/api/states/weather.forecast_home"),
 #ifdef HOMEASSISTANT_ENTITY
-        std::string(protocol).append("//").append(host).append(":").append(std::to_string(port)).append("/api/states/" HOMEASSISTANT_ENTITY),
+        std::string(protocol)
+            .append("//")
+            .append(host)
+            .append(":")
+            .append(std::to_string(port))
+            .append("/api/states/" HOMEASSISTANT_ENTITY),
 #endif
 
     };
@@ -107,7 +117,7 @@ private:
     void update();
 
 public:
-    HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
+    explicit HomeAssistantWeatherMode() : ModeModule("Home Assistant weather") {};
 
     void begin() override;
     void handle() override;

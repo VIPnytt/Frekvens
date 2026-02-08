@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class RingMode : public ModeModule
+class RingMode final : public ModeModule
 {
 private:
     bool direction = true;
@@ -125,7 +125,7 @@ private:
     };
 
 public:
-    RingMode() : ModeModule("Ring") {};
+    explicit RingMode() : ModeModule("Ring") {};
 
     void handle() override;
 };

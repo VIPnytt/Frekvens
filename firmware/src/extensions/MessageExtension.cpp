@@ -12,10 +12,7 @@
 
 MessageExtension *Message = nullptr;
 
-MessageExtension::MessageExtension() : ExtensionModule("Message")
-{
-    Message = this;
-}
+MessageExtension::MessageExtension() : ExtensionModule("Message") { Message = this; }
 
 #if EXTENSION_HOMEASSISTANT
 void MessageExtension::configure()
@@ -24,7 +21,7 @@ void MessageExtension::configure()
     {
         const std::string id = std::string(name).append("_font");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"font":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -44,7 +41,7 @@ void MessageExtension::configure()
     {
         const std::string id = std::string(name).append("_notify");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"message\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"message":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::name] = "";
         component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
@@ -54,7 +51,7 @@ void MessageExtension::configure()
     {
         const std::string id = std::string(name).append("_repeat");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"repeat\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"repeat":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -89,7 +86,7 @@ void MessageExtension::begin()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontSmall;
     }
@@ -153,9 +150,9 @@ void MessageExtension::addMessage(std::string message)
     ESP_LOGD(name, "received");
 }
 
-void MessageExtension::setFont(const char *const fontName)
+void MessageExtension::setFont(const char *fontName)
 {
-    if (!font || strcmp(fontName, font->name))
+    if (font == nullptr || strcmp(fontName, font->name) != 0)
     {
         for (FontModule *_font : Fonts.getAll())
         {
@@ -195,7 +192,7 @@ void MessageExtension::transmit()
     Device.transmit(doc, name);
 }
 
-void MessageExtension::onReceive(const JsonDocument doc, const char *const source)
+void MessageExtension::onReceive(const JsonDocument &doc, const char *source)
 {
     // Font
     if (doc["font"].is<const char *>())

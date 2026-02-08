@@ -22,10 +22,7 @@ void ExtensionsService::begin()
     transmit();
 }
 
-const std::vector<ExtensionModule *> &ExtensionsService::getAll() const
-{
-    return modules;
-}
+const std::vector<ExtensionModule *> &ExtensionsService::getAll() const { return modules; }
 
 void ExtensionsService::transmit()
 {

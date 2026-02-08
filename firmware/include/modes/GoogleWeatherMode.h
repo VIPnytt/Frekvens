@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class GoogleWeatherMode : public ModeModule
+class GoogleWeatherMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 900'000; // Update interval: 15 minutes
@@ -17,11 +17,14 @@ private:
 
     // https://developers.google.com/maps/documentation/weather
     std::vector<const char *> urls = {
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
+        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
+        "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
 #if TEMPERATURE_CELSIUS
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
+        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
+        "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
 #elif TEMPERATURE_FAHRENHEIT
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
+        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
+        "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
 #endif // TEMPERATURE_CELSIUS
     };
 
@@ -107,10 +110,10 @@ private:
     void update();
 
 public:
-    GoogleWeatherMode() : ModeModule("Google Weather") {};
+    explicit GoogleWeatherMode() : ModeModule("Google Weather") {};
 
-    void begin();
-    void handle();
+    void begin() override;
+    void handle() override;
 };
 
 #endif // MODE_GOOGLEWEATHER

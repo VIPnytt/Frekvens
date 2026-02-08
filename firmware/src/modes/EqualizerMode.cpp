@@ -50,7 +50,8 @@ void EqualizerMode::handle()
                 {
                     --bar.level;
                 }
-                Display.drawRectangle(minX, bar.level, maxX, GRID_ROWS - 1, true, UINT8_MAX * (GRID_ROWS - bar.level) / GRID_ROWS);
+                Display.drawRectangle(
+                    minX, bar.level, maxX, GRID_ROWS - 1, true, UINT8_MAX * (GRID_ROWS - bar.level) / GRID_ROWS);
             }
             minX += width + 1;
         }

@@ -4,7 +4,7 @@
 
 #include "modules/FontModule.h"
 
-class BrailleFont : public FontModule
+class BrailleFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -342,9 +342,9 @@ private:
     };
 
 public:
-    BrailleFont();
+    explicit BrailleFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern BrailleFont *FontBraille;

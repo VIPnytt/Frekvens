@@ -4,10 +4,7 @@
 
 BrailleFont *FontBraille = nullptr;
 
-BrailleFont::BrailleFont() : FontModule("Braille")
-{
-    FontBraille = this;
-}
+BrailleFont::BrailleFont() : FontModule("Braille") { FontBraille = this; }
 
 FontModule::Symbol BrailleFont::getChar(uint32_t character) const
 {

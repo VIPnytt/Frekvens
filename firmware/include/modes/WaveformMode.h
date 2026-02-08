@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class WaveformMode : public ModeModule
+class WaveformMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -115,7 +115,7 @@ private:
     };
 
 public:
-    WaveformMode() : ModeModule("Waveform") {};
+    explicit WaveformMode() : ModeModule("Waveform") {};
 
     void handle() override;
 };

@@ -11,7 +11,7 @@
 #include <RtcPCF8563.h>
 #include <Wire.h>
 
-class RtcExtension : public ExtensionModule
+class RtcExtension final : public ExtensionModule
 {
 private:
 #ifdef PIN_INT
@@ -33,7 +33,7 @@ private:
 #endif
 
 public:
-    RtcExtension();
+    explicit RtcExtension();
 
 #ifdef RTC_DS1307
     RtcDS1307<TwoWire> rtc = RtcDS1307(Wire);

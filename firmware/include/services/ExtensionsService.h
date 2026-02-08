@@ -22,11 +22,9 @@
 
 #include <vector>
 
-class ExtensionsService : public ServiceModule
+class ExtensionsService final : public ServiceModule
 {
 private:
-    ExtensionsService() : ServiceModule("Extensions") {};
-
     const std::vector<ExtensionModule *> modules = {
 #if EXTENSION_ALEXA
         new AlexaExtension(),
@@ -87,6 +85,9 @@ private:
 
     static void onTask(void *parameter = nullptr);
 
+protected:
+    explicit ExtensionsService() : ServiceModule("Extensions") {};
+
 public:
     TaskHandle_t taskHandle = nullptr;
 
@@ -95,7 +96,7 @@ public:
     void configure();
     void begin();
 
-    const std::vector<ExtensionModule *> &getAll() const;
+    [[nodiscard]] const std::vector<ExtensionModule *> &getAll() const;
 
     static ExtensionsService &getInstance();
 };

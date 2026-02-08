@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MiniFont : public FontModule
+class MiniFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -870,9 +870,9 @@ private:
     };
 
 public:
-    MiniFont();
+    explicit MiniFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern MiniFont *FontMini;

@@ -20,7 +20,8 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    esp_crt_bundle_set(Certificates::x509_crt_bundle_start, Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    esp_crt_bundle_set(Certificates::x509_crt_bundle_start,
+                       Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     WiFi.enableIPv6();
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
@@ -48,7 +49,8 @@ void ConnectivityService::configure()
 #endif // WIFI_COUNTRY
 #if defined(PIN_SW1) || defined(PIN_SW2)
 #if defined(PIN_SW1) && defined(PIN_SW2)
-    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW))
+    if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED &&
+        (digitalRead(PIN_SW1) == LOW || digitalRead(PIN_SW2) == LOW))
 #elif defined(PIN_SW1)
     if (esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED && digitalRead(PIN_SW1) == LOW)
 #elif defined(PIN_SW2)
@@ -121,14 +123,14 @@ void ConnectivityService::initStation()
         deserializeJson(doc, _buffer.data(), _length);
     }
     wifi_config_t config;
-    if (!esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config))
+    if (esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config) == ESP_OK)
     {
-        const char *_ssid = reinterpret_cast<const char *>(config.sta.ssid);
-        const std::string_view ssid(_ssid, strnlen(_ssid, sizeof(config.sta.ssid)));
-        if (ssid.length())
+        const char *ssid_ptr = reinterpret_cast<const char *>(config.sta.ssid);
+        const std::string_view ssid(ssid_ptr, strnlen(ssid_ptr, sizeof(config.sta.ssid)));
+        if (!ssid.empty())
         {
-            const char *_key = reinterpret_cast<const char *>(config.sta.password);
-            const std::string_view key(_key, strnlen(_key, sizeof(config.sta.password)));
+            const char *key_ptr = reinterpret_cast<const char *>(config.sta.password);
+            const std::string_view key(key_ptr, strnlen(key_ptr, sizeof(config.sta.password)));
             doc[ssid] = key.length() ? key : nullptr;
         }
     }
@@ -165,7 +167,7 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *const ssid, const char *const key)
+void ConnectivityService::connect(const char *ssid, const char *key)
 {
     if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
@@ -184,11 +186,11 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
     ESP_LOGI(Connectivity.name, HOSTNAME ".local");
 #ifndef WIFI_COUNTRY
     char country[3];
-    if (!esp_wifi_get_country_code(country))
+    if (esp_wifi_get_country_code(country) == ESP_OK)
     {
         Preferences Storage;
         Storage.begin(_name.data());
-        if (strcmp(country, "01"))
+        if (strcmp(country, "01") != 0)
         {
             Storage.putString("country", country);
         }
@@ -210,7 +212,9 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info
         Connectivity.mDNS = false;
     }
     ESP_LOGI(Connectivity.name, "disconnected");
-    ESP_LOGD(Connectivity.name, "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
+    ESP_LOGD(Connectivity.name,
+             "%s",
+             WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
 void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
@@ -225,7 +229,7 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
 void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info)
 {
     const char *const ipv6 = WiFi.globalIPv6().toString().c_str();
-    if (strcmp(ipv6, ""))
+    if (strcmp(ipv6, "") != 0)
     {
         ESP_LOGI(Connectivity.name, "IPv6 %s", ipv6);
         if (!Connectivity.routable)
@@ -258,7 +262,7 @@ void ConnectivityService::onRoutable()
         MDNS.addService("ws", "tcp", 80);
 #endif // EXTENSION_WEBSOCKET
     }
-    timeval tv;
+    timeval tv = {};
     sntp_sync_time(&tv);
 }
 
@@ -269,7 +273,7 @@ void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
     {
         JsonDocument doc;
         JsonArray scan = doc["scan"].to<JsonArray>();
-        for (uint8_t i = 0; i < n; ++i)
+        for (int16_t i = 0; i < n; ++i)
         {
             JsonObject _scan = scan.add<JsonObject>();
             _scan["encrypted"] = (bool)WiFi.encryptionType(i);
@@ -313,12 +317,13 @@ void ConnectivityService::transmit()
     Device.transmit(doc, name);
 }
 
-void ConnectivityService::onReceive(const JsonDocument doc, const char *const source)
+void ConnectivityService::onReceive(const JsonDocument &doc, const char *source)
 {
     // Connect
     if (doc["ssid"].is<const char *>())
     {
-        connect(doc["ssid"].as<const char *>(), doc["key"].is<const char *>() ? doc["key"].as<const char *>() : nullptr);
+        connect(doc["ssid"].as<const char *>(),
+                doc["key"].is<const char *>() ? doc["key"].as<const char *>() : nullptr);
     }
     // Scan
     if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "scan"))

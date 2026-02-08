@@ -10,9 +10,12 @@ on:
 permissions:
   contents: read
 
+env:
+  clang-version: 21
+
 jobs:
   platformio:
-    name: PlatformIO version extract
+    name: PlatformIO version
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.print.outputs.version }}
@@ -31,7 +34,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: PlatformIO extract
+      - name: PlatformIO version
         id: print
         run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
@@ -42,7 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        include:
+        toolchain:
           - python-version: 3.11
           - python-version: 3.13
 
@@ -53,7 +56,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -115,6 +118,38 @@ jobs:
 
           pio run -e esp32dev
 
+      - name: PlatformIO compilation database
+        run: pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: ${{ env.clang-version }}
+          files-changed-only: false
+          format-review: true
+          ignore: "*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h"
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ""
+          tidy-review: true
+
+      - name: Summary
+        env:
+          clang-threshold: 3
+        run: |
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+
   mode-dynamic:
     name: Dynamic mode
     needs: platformio
@@ -122,7 +157,7 @@ jobs:
 
     strategy:
       matrix:
-        include:
+        toolchain:
           - python-version: 3.11
           - python-version: 3.13
 
@@ -133,7 +168,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -190,8 +225,8 @@ jobs:
 
           python extra/Python/ModeGenerator.py -i Dynamic.csv
 
-          mv DynamicMode.cpp firmware/src/modes/DynamicMode.cpp
-          mv DynamicMode.h firmware/include/modes/DynamicMode.h
+          mv DynamicMode.cpp firmware/src/modes
+          mv DynamicMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/DynamicMode.h"' firmware/include/services/ModesService.h
           sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
@@ -225,6 +260,38 @@ jobs:
 
           pio run -e esp32dev
 
+      - name: PlatformIO compilation database
+        run: pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: ${{ env.clang-version }}
+          files-changed-only: false
+          format-review: true
+          ignore: "*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h"
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ""
+          tidy-review: true
+
+      - name: Summary
+        env:
+          clang-threshold: 0
+        run: |
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+
   mode-static:
     name: Static mode
     needs: platformio
@@ -232,7 +299,7 @@ jobs:
 
     strategy:
       matrix:
-        include:
+        toolchain:
           - python-version: 3.11
           - python-version: 3.13
 
@@ -243,7 +310,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
@@ -284,8 +351,8 @@ jobs:
 
           python extra/Python/ModeGenerator.py -i Static.csv
 
-          mv StaticMode.cpp firmware/src/modes/StaticMode.cpp
-          mv StaticMode.h firmware/include/modes/StaticMode.h
+          mv StaticMode.cpp firmware/src/modes
+          mv StaticMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/StaticMode.h"' firmware/include/services/ModesService.h
           sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new StaticMode(),' firmware/include/services/ModesService.h
@@ -318,3 +385,35 @@ jobs:
           EOL
 
           pio run -e esp32dev
+
+      - name: PlatformIO compilation database
+        run: pio run -e esp32dev -t compiledb
+
+      - name: Clang
+        uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
+        id: clang
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: ${{ env.clang-version }}
+          files-changed-only: false
+          format-review: true
+          ignore: "*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h"
+          passive-reviews: true
+          step-summary: true
+          style: file
+          tidy-checks: ""
+          tidy-review: true
+
+      - name: Summary
+        env:
+          clang-threshold: 0
+        run: |
+          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
+          echo "Clang report:"
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
+          else
+            echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))

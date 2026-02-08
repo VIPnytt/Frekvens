@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   platformio:
-    name: PlatformIO variable extract
+    name: PlatformIO environments
     runs-on: ubuntu-latest
     outputs:
       environments: ${{ steps.print.outputs.environments }}
@@ -40,7 +40,7 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
-      - name: PlatformIO extract
+      - name: PlatformIO environments
         id: print
         run: |
           echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"

@@ -74,7 +74,8 @@ void DeviceService::begin()
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_SW2)
     esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_SW2, LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1) && defined(PIN_SW2)
-    esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2), ESP_GPIO_WAKEUP_GPIO_LOW);
+    esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2),
+                                      ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1), ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW2)
@@ -105,7 +106,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_reboot");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::device_class] = "restart";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
@@ -119,7 +120,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_power");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::entity_category] = "config";
         component[HomeAssistantAbbreviations::icon] = "mdi:power";
@@ -228,10 +229,7 @@ void DeviceService::restore()
     esp_deep_sleep_start();
 }
 
-const JsonDocument DeviceService::getTransmits() const
-{
-    return transmits;
-}
+JsonDocument DeviceService::getTransmits() const { return transmits; }
 
 void DeviceService::transmit()
 {
@@ -246,7 +244,7 @@ void DeviceService::transmit()
     Device.transmit(doc, name);
 }
 
-void DeviceService::transmit(JsonDocument doc, const char *const source, bool retain)
+void DeviceService::transmit(const JsonDocument &doc, const char *const source, bool retain) const
 {
     if (retain)
     {
@@ -262,7 +260,7 @@ void DeviceService::transmit(JsonDocument doc, const char *const source, bool re
     }
 }
 
-void DeviceService::receive(const JsonDocument doc, const char *const source, const char *const destination)
+void DeviceService::receive(const JsonDocument &doc, const char *source, const char *destination) const
 {
     if (operational)
     {
@@ -300,23 +298,23 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
     }
 }
 
-void DeviceService::onReceive(const JsonDocument doc, const char *const source)
+void DeviceService::onReceive(const JsonDocument &doc, const char *source)
 {
     if (doc["action"].is<const char *>())
     {
         const char *const action = doc["action"].as<const char *>();
         // Power off
-        if (!strcmp(action, "power"))
+        if (strcmp(action, "power") == 0)
         {
             setPower(false);
         }
         // Reboot
-        else if (!strcmp(action, "reboot"))
+        else if (strcmp(action, "reboot") == 0)
         {
             setPower(true);
         }
         // Restore
-        else if (!strcmp(action, "restore"))
+        else if (strcmp(action, "restore") == 0)
         {
             restore();
         }

@@ -6,20 +6,21 @@
 
 #include <ESPAsyncWebServer.h>
 
-class WebSocketExtension : public ExtensionModule
+class WebSocketExtension final : public ExtensionModule
 {
 private:
-    static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
+    static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
+                        const uint8_t *data, size_t len);
 
 public:
-    WebSocketExtension();
+    explicit WebSocketExtension();
 
     AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 
     void begin() override;
     void handle() override;
 
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(const JsonDocument &doc, const char *source) override;
 };
 
 extern WebSocketExtension *WebSocket;

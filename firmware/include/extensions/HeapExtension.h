@@ -4,13 +4,13 @@
 
 #include "modules/ExtensionModule.h"
 
-class HeapExtension : public ExtensionModule
+class HeapExtension final : public ExtensionModule
 {
 private:
     unsigned long lastMillis = 0;
 
 public:
-    HeapExtension();
+    explicit HeapExtension();
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;

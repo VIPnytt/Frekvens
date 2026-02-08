@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class OpenMeteoMode : public ModeModule
+class OpenMeteoMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 900'000; // Data resolution: down to 15 minutes (depending on location)
@@ -17,19 +17,25 @@ private:
 
     // https://open-meteo.com/en/docs#api-documentation
     std::vector<const char *> urls = {
-        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
+        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code",
 #if TEMPERATURE_CELSIUS
-        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&temperature_unit=celsius",
+        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code&temperature_unit=celsius",
 #elif TEMPERATURE_FAHRENHEIT
-        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&temperature_unit=fahrenheit",
+        "https://api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code&temperature_unit=fahrenheit",
 #endif // TEMPERATURE_CELSIUS
 #ifdef OPENMETEO_KEY
-        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
+        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
 #endif // OPENMETEO_KEY
 #if defined(OPENMETEO_KEY) && TEMPERATURE_CELSIUS
-        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&temperature_unit=celsius&apikey=" OPENMETEO_KEY,
+        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code&temperature_unit=celsius&apikey=" OPENMETEO_KEY,
 #elif defined(OPENMETEO_KEY) && TEMPERATURE_FAHRENHEIT
-        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&temperature_unit=fahrenheit&apikey=" OPENMETEO_KEY,
+        "https://customer-api.open-meteo.com/v1/forecast?latitude=" LATITUDE "&longitude=" LONGITUDE
+        "&current=temperature_2m,weather_code&temperature_unit=fahrenheit&apikey=" OPENMETEO_KEY,
 #endif // defined(OPENMETEO_KEY) && TEMPERATURE_CELSIUS
 
     };
@@ -69,7 +75,7 @@ private:
     void update();
 
 public:
-    OpenMeteoMode() : ModeModule("Open-Meteo") {};
+    explicit OpenMeteoMode() : ModeModule("Open-Meteo") {};
 
     void begin() override;
     void handle() override;

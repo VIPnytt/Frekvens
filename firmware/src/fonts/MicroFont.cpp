@@ -2,10 +2,7 @@
 
 MicroFont *FontMicro = nullptr;
 
-MicroFont::MicroFont() : FontModule("Micro")
-{
-    FontMicro = this;
-}
+MicroFont::MicroFont() : FontModule("Micro") { FontMicro = this; }
 
 FontModule::Symbol MicroFont::getChar(uint32_t character) const
 {
