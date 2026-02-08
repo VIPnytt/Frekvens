@@ -3,7 +3,22 @@ import { createReconnectingWS, createWSState } from "@solid-primitives/websocket
 import { batch, createEffect, type ParentComponent } from "solid-js";
 
 import { HOSTNAME } from "../config/constants";
-import { EXTENSION_INFRARED, EXTENSION_MESSAGE, EXTENSION_MICROPHONE, EXTENSION_PHOTOCELL, EXTENSION_PLAYLIST, EXTENSION_SIGNAL, MODE_ANIMATION, MODE_COUNTDOWN, MODE_DRAW, MODE_HOMETHERMOMETER, MODE_LARGECLOCK, MODE_SMALLCLOCK, MODE_STREAM, MODE_TICKER } from "../config/modules";
+import {
+    EXTENSION_INFRARED,
+    EXTENSION_MESSAGE,
+    EXTENSION_MICROPHONE,
+    EXTENSION_PHOTOCELL,
+    EXTENSION_PLAYLIST,
+    EXTENSION_SIGNAL,
+    MODE_ANIMATION,
+    MODE_COUNTDOWN,
+    MODE_DRAW,
+    MODE_HOMETHERMOMETER,
+    MODE_LARGECLOCK,
+    MODE_SMALLCLOCK,
+    MODE_STREAM,
+    MODE_TICKER,
+} from "../config/modules";
 import { name as ExtensionIrName, receiver as ExtensionIrReceiver } from "../extensions/Infrared";
 import { name as ExtensionMessageName, receiver as ExtensionMessageReceiver } from "../extensions/Message";
 import { name as ExtensionMicName, receiver as ExtensionMicReceiver } from "../extensions/Microphone";
@@ -28,7 +43,9 @@ import { Canonical as WebAppCanonical } from "./WebApp";
 export const name = "WebSocket";
 export const WebSocketUrl = `ws://${HOSTNAME}.local/${name.toLowerCase()}`;
 
-export const WebSocketWS = createReconnectingWS(`ws://${import.meta.env.PROD ? location.hostname : `${HOSTNAME}.local`}/${name.toLowerCase()}`);
+export const WebSocketWS = createReconnectingWS(
+    `ws://${import.meta.env.PROD ? location.hostname : `${HOSTNAME}.local`}/${name.toLowerCase()}`,
+);
 export const WebSocketState = createWSState(WebSocketWS);
 
 createEffect(() => {
@@ -52,13 +69,17 @@ export const WebSocketmessages: ParentComponent = (props) => {
             EXTENSION_INFRARED && json[ExtensionIrName] && ExtensionIrReceiver(json[ExtensionIrName]);
             EXTENSION_MESSAGE && json[ExtensionMessageName] && ExtensionMessageReceiver(json[ExtensionMessageName]);
             EXTENSION_MICROPHONE && json[ExtensionMicName] && ExtensionMicReceiver(json[ExtensionMicName]);
-            EXTENSION_PHOTOCELL && json[ExtensionPhotocellName] && ExtensionPhotocellReceiver(json[ExtensionPhotocellName]);
+            EXTENSION_PHOTOCELL &&
+                json[ExtensionPhotocellName] &&
+                ExtensionPhotocellReceiver(json[ExtensionPhotocellName]);
             EXTENSION_PLAYLIST && json[ExtensionPlaylistName] && ExtensionPlaylistReceiver(json[ExtensionPlaylistName]);
             EXTENSION_SIGNAL && json[ExtensionSignalName] && ExtensionSignalReceiver(json[ExtensionSignalName]);
             MODE_ANIMATION && json[ModeAnimationName] && ModeAnimationReceiver(json[ModeAnimationName]);
             MODE_COUNTDOWN && json[ModeCountdownName] && ModeCountdownReceiver(json[ModeCountdownName]);
             MODE_DRAW && json[ModeDrawName] && ModeDrawReceiver(json[ModeDrawName]);
-            MODE_HOMETHERMOMETER && json[ModeHomeThermometerName] && ModeHomeThermometerReceiver(json[ModeHomeThermometerName]);
+            MODE_HOMETHERMOMETER &&
+                json[ModeHomeThermometerName] &&
+                ModeHomeThermometerReceiver(json[ModeHomeThermometerName]);
             MODE_LARGECLOCK && json[ModeLargeClockName] && ModeLargeClockReceiver(json[ModeLargeClockName]);
             MODE_TICKER && json[ModeTickerName] && ModeTickerReceiver(json[ModeTickerName]);
             MODE_SMALLCLOCK && json[ModeSmallClockName] && ModeSmallClockReceiver(json[ModeSmallClockName]);

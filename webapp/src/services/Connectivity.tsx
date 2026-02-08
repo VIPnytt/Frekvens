@@ -1,4 +1,18 @@
-import { mdiContentSave, mdiWifi, mdiWifiRefresh, mdiWifiStrength1, mdiWifiStrength1Lock, mdiWifiStrength2, mdiWifiStrength2Lock, mdiWifiStrength3, mdiWifiStrength3Lock, mdiWifiStrength4, mdiWifiStrength4Lock, mdiWifiStrengthLockOutline, mdiWifiStrengthOutline } from "@mdi/js";
+import {
+    mdiContentSave,
+    mdiWifi,
+    mdiWifiRefresh,
+    mdiWifiStrength1,
+    mdiWifiStrength1Lock,
+    mdiWifiStrength2,
+    mdiWifiStrength2Lock,
+    mdiWifiStrength3,
+    mdiWifiStrength3Lock,
+    mdiWifiStrength4,
+    mdiWifiStrength4Lock,
+    mdiWifiStrengthLockOutline,
+    mdiWifiStrengthOutline,
+} from "@mdi/js";
 import { type Component, createSignal, For, Index } from "solid-js";
 
 import { Icon } from "../components/Icon";
@@ -76,7 +90,9 @@ export const MainThird: Component = () => {
                                 value={getCredentialSsid()}
                             />
                             <datalist id="scan">
-                                <For each={getScan().filter((scan) => scan.ssid?.length)}>{(scan) => <option value={scan.ssid}></option>}</For>
+                                <For each={getScan().filter((scan) => scan.ssid?.length)}>
+                                    {(scan) => <option value={scan.ssid}></option>}
+                                </For>
                             </datalist>
                             <h3>Encryption key</h3>
                             <input
@@ -91,7 +107,11 @@ export const MainThird: Component = () => {
                         </div>
                         <button
                             class={`action-deactivated mt-3 w-full ${getCredentialKey().length >= 8 ? "action-positive" : ""}`}
-                            disabled={getConnecting() || !getCredentialSsid().length || (getCredentialKey().length > 0 && getCredentialKey().length < 8)}
+                            disabled={
+                                getConnecting() ||
+                                !getCredentialSsid().length ||
+                                (getCredentialKey().length > 0 && getCredentialKey().length < 8)
+                            }
                             id="connect"
                             onclick={handleConnect}
                             type="button"

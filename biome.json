@@ -23,11 +23,6 @@
             "enabled": true
         }
     },
-    "javascript": {
-        "formatter": {
-            "lineWidth": 320
-        }
-    },
     "vcs": {
         "clientKind": "git",
         "enabled": true,

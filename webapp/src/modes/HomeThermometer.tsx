@@ -58,7 +58,8 @@ export const MainSecondary: Component = () => {
                                 href={`https://github.com/VIPnytt/Frekvens/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, "-")}`}
                                 target="_blank"
                             >
-                                Get started by configuring your <span class="italic">smart-home system</span> to send temperature readings.
+                                Get started by configuring your <span class="italic">smart-home system</span> to send
+                                temperature readings.
                             </a>
                         </div>
                         {EXTENSION_HOMEASSISTANT && (
@@ -66,7 +67,10 @@ export const MainSecondary: Component = () => {
                                 <div class="border-t" />
                                 <h3>{ExtensionHomeAssistantName}</h3>
                                 <div class="text-sm">
-                                    <span class="font-medium ">Automation:</span> <span class="text-content-alt-light dark:text-content-alt-dark">Set up in the user-interface.</span>
+                                    <span class="font-medium ">Automation:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark">
+                                        Set up in the user-interface.
+                                    </span>
                                 </div>
                             </>
                         )}
@@ -75,9 +79,15 @@ export const MainSecondary: Component = () => {
                                 <div class="border-t" />
                                 <h3>{ExtensionMqttName}</h3>
                                 <div class="text-sm">
-                                    <span class="font-medium ">Topic:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{MqttTopic}/set</span>
+                                    <span class="font-medium ">Topic:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
+                                        {MqttTopic}/set
+                                    </span>
                                     <br />
-                                    <span class="font-medium ">Message:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payload}</span>
+                                    <span class="font-medium ">Message:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
+                                        {payload}
+                                    </span>
                                 </div>
                             </>
                         )}
@@ -88,18 +98,30 @@ export const MainSecondary: Component = () => {
                                 <div class="text-sm">
                                     <span class="font-medium ">Method:</span> <span class="font-mono">PATCH</span>
                                     <br />
-                                    <span class="font-medium ">URL:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono">{RestfulUrl + encodeURIComponent(name)}</span>
+                                    <span class="font-medium ">URL:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark font-mono">
+                                        {RestfulUrl + encodeURIComponent(name)}
+                                    </span>
                                     <br />
-                                    <span class="font-medium ">Body:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payload}</span>
+                                    <span class="font-medium ">Body:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
+                                        {payload}
+                                    </span>
                                 </div>
                             </>
                         )}
                         <div class="border-t" />
                         <h3>{ExtensionWebSocketName}</h3>
                         <div class="text-sm">
-                            <span class="font-medium ">URL:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono">{WebSocketUrl}</span>
+                            <span class="font-medium ">URL:</span>{" "}
+                            <span class="text-content-alt-light dark:text-content-alt-dark font-mono">
+                                {WebSocketUrl}
+                            </span>
                             <br />
-                            <span class="font-medium ">Message:</span> <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">{payloadAlt}</span>
+                            <span class="font-medium ">Message:</span>{" "}
+                            <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
+                                {payloadAlt}
+                            </span>
                         </div>
                     </div>
                 </div>

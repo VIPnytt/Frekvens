@@ -1,4 +1,11 @@
-import { mdiPower, mdiRotate3dVariant, mdiRotateLeftVariant, mdiRotateRightVariant, mdiSleep, mdiTelevision } from "@mdi/js";
+import {
+    mdiPower,
+    mdiRotate3dVariant,
+    mdiRotateLeftVariant,
+    mdiRotateRightVariant,
+    mdiSleep,
+    mdiTelevision,
+} from "@mdi/js";
 import { type Component, createSignal } from "solid-js";
 
 import { Icon } from "../components/Icon";
@@ -91,7 +98,9 @@ export const Sidebar: Component = () => {
 
 export const SidebarSecondaryComponent: Component = () => {
     const handleRotate = (clockwise = true) => {
-        setOrientation((getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? (clockwise ? 90 : 270) : 180)) % 360);
+        setOrientation(
+            (getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? (clockwise ? 90 : 270) : 180)) % 360,
+        );
         WebSocketWS.send(
             JSON.stringify({
                 [name]: {
@@ -102,7 +111,9 @@ export const SidebarSecondaryComponent: Component = () => {
     };
 
     return (
-        <div class={`action ${Device.GRID_COLUMNS === Device.GRID_ROWS ? "grid-cols-[1fr_--spacing(12)_--spacing(12)]" : ""}`}>
+        <div
+            class={`action ${Device.GRID_COLUMNS === Device.GRID_ROWS ? "grid-cols-[1fr_--spacing(12)_--spacing(12)]" : ""}`}
+        >
             <div>
                 <Icon
                     class="mr-2"
@@ -125,7 +136,9 @@ export const SidebarSecondaryComponent: Component = () => {
                     </button>
                 </Tooltip>
             )}
-            <Tooltip text={`${getOrientation()}° to ${(getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? 90 : 180)) % 360}°`}>
+            <Tooltip
+                text={`${getOrientation()}° to ${(getOrientation() + (Device.GRID_COLUMNS === Device.GRID_ROWS ? 90 : 180)) % 360}°`}
+            >
                 <button
                     class="action-neutral"
                     disabled={!getPower()}

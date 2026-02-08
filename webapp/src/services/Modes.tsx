@@ -48,7 +48,11 @@ import {
 } from "../config/modules";
 import { SidebarSection, SidebarSectionSecondary, Main as WebAppMain, WebAppPath } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
-import { Main as ModeAnimationMain, name as ModeAnimationName, Sidebar as ModeAnimationSidebar } from "../modes/Animation";
+import {
+    Main as ModeAnimationMain,
+    name as ModeAnimationName,
+    Sidebar as ModeAnimationSidebar,
+} from "../modes/Animation";
 import { Main as ModeArrowMain, name as ModeArrowName } from "../modes/Arrow";
 import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from "../modes/BinaryClock";
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from "../modes/BinaryEpoch";
@@ -57,18 +61,40 @@ import { Main as ModeBlinkMain, name as ModeBlinkName } from "../modes/Blink";
 import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from "../modes/BreakoutClock";
 import { Main as ModeBrightMain, name as ModeBrightName } from "../modes/Bright";
 import { Main as ModeCircleMain, name as ModeCircleName } from "../modes/Circle";
-import { Actions as ModeCountdownActions, Link as ModeCountdownLink, Main as ModeCountdownMain, name as ModeCountdownName, Sidebar as ModeCountdownSidebar } from "../modes/Countdown";
+import {
+    Actions as ModeCountdownActions,
+    Link as ModeCountdownLink,
+    Main as ModeCountdownMain,
+    name as ModeCountdownName,
+    Sidebar as ModeCountdownSidebar,
+} from "../modes/Countdown";
 import { Main as ModeDrawMain, name as ModeDrawName, Sidebar as ModeDrawSidebar } from "../modes/Draw";
 import { Main as ModeEqualizerMain, name as ModeEqualizerName } from "../modes/Equalizer";
 import { Main as ModeFireworkMain, name as ModeFireworkName } from "../modes/Firework";
 import { Main as ModeFliesMain, name as ModeFliesName } from "../modes/Flies";
-import { Main as ModeGameOfLifeMain, name as ModeGameOfLifeName, Sidebar as ModeGameOfLifeSidebar } from "../modes/GameOfLife";
+import {
+    Main as ModeGameOfLifeMain,
+    name as ModeGameOfLifeName,
+    Sidebar as ModeGameOfLifeSidebar,
+} from "../modes/GameOfLife";
 import { Main as ModeGlitterMain, name as ModeGlitterName } from "../modes/Glitter";
 import { Main as ModeGoogleWeatherMain, name as ModeGoogleWeatherName } from "../modes/GoogleWeather";
-import { Main as ModeHomeAssistantWeatherMain, name as ModeHomeAssistantWeatherName } from "../modes/HomeAssistantWeather";
-import { Link as ModeHomeThermometerLink, Main as ModeHomeThermometerMain, MainSecondary as ModeHomeThermometerMainThird, name as ModeHomeThermometerName } from "../modes/HomeThermometer";
+import {
+    Main as ModeHomeAssistantWeatherMain,
+    name as ModeHomeAssistantWeatherName,
+} from "../modes/HomeAssistantWeather";
+import {
+    Link as ModeHomeThermometerLink,
+    Main as ModeHomeThermometerMain,
+    MainSecondary as ModeHomeThermometerMainThird,
+    name as ModeHomeThermometerName,
+} from "../modes/HomeThermometer";
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from "../modes/JaggedWaveform";
-import { Main as ModeLargeClockMain, name as ModeLargeClockName, Sidebar as ModeLargeClockSidebar } from "../modes/LargeClock";
+import {
+    Main as ModeLargeClockMain,
+    name as ModeLargeClockName,
+    Sidebar as ModeLargeClockSidebar,
+} from "../modes/LargeClock";
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from "../modes/LeafFall";
 import { Main as ModeLinesMain, name as ModeLinesName } from "../modes/Lines";
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from "../modes/Metaballs";
@@ -80,7 +106,11 @@ import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from "..
 import { Main as ModeRainMain, name as ModeRainName } from "../modes/Rain";
 import { Main as ModeRingMain, name as ModeRingName } from "../modes/Ring";
 import { Main as ModeScanMain, name as ModeScanName } from "../modes/Scan";
-import { Main as ModeSmallClockMain, name as ModeSmallClockName, Sidebar as ModeSmallClockSidebar } from "../modes/SmallClock";
+import {
+    Main as ModeSmallClockMain,
+    name as ModeSmallClockName,
+    Sidebar as ModeSmallClockSidebar,
+} from "../modes/SmallClock";
 import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from "../modes/SmoothWaveform";
 import { Main as ModeSnakeMain, name as ModeSnakeName, Sidebar as ModeSnakeSidebar } from "../modes/Snake";
 import { Main as ModeStarsMain, name as ModeStarsName } from "../modes/Stars";
@@ -427,7 +457,12 @@ export const MainThird: Component = () => (
             </Match>
         )}
         {MODE_HOMETHERMOMETER && (
-            <Match when={WebAppPath() === `/${name.toLowerCase()}/${ModeHomeThermometerName.toLowerCase().replace(/\s+/g, "-")}`}>
+            <Match
+                when={
+                    WebAppPath() ===
+                    `/${name.toLowerCase()}/${ModeHomeThermometerName.toLowerCase().replace(/\s+/g, "-")}`
+                }
+            >
                 <ModeHomeThermometerMainThird />
             </Match>
         )}

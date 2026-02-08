@@ -146,12 +146,16 @@ export const MainThird: Component = () => {
                                                     disabled={getActive()}
                                                     max={2 ** 16 - 1}
                                                     min="10"
-                                                    onInput={(e) => handleDuration(index, parseInt(e.currentTarget.value, 10))}
+                                                    onInput={(e) =>
+                                                        handleDuration(index, parseInt(e.currentTarget.value, 10))
+                                                    }
                                                     step="5"
                                                     type="number"
                                                     value={item().duration}
                                                 />
-                                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">s</span>
+                                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                                                    s
+                                                </span>
                                             </div>
                                             <div class="flex-none">
                                                 <button

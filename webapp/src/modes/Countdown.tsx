@@ -141,7 +141,9 @@ export const Main: Component = () => (
                                     value={getHours()}
                                     oninput={(e) => setHours(parseInt(e.currentTarget.value, 10))}
                                 />
-                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">h</span>
+                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                                    h
+                                </span>
                             </div>
                             <div class="relative">
                                 <input
@@ -153,7 +155,9 @@ export const Main: Component = () => (
                                     value={getMinutes()}
                                     oninput={(e) => setMinutes(parseInt(e.currentTarget.value, 10))}
                                 />
-                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">m</span>
+                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                                    m
+                                </span>
                             </div>
                             <div class="relative">
                                 <input
@@ -165,7 +169,9 @@ export const Main: Component = () => (
                                     value={getSeconds()}
                                     oninput={(e) => setSeconds(parseInt(e.currentTarget.value, 10))}
                                 />
-                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">s</span>
+                                <span class="absolute text-content-alt-light dark:text-content-alt-dark right-3 top-1/2 -translate-y-1/2 text-sm">
+                                    s
+                                </span>
                             </div>
                         </div>
                     </div>

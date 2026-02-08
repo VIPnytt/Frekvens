@@ -46,7 +46,9 @@ export const MainComponent: Component = () => {
             return;
         }
         upload.disabled = false;
-        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes("littlefs") ? "Update Filesystem" : "Update Firmware";
+        upload.textContent = e.currentTarget.files[0].name.toLowerCase().includes("littlefs")
+            ? "Update Filesystem"
+            : "Update Firmware";
     };
 
     const handleUpload = () => {
@@ -67,7 +69,9 @@ export const MainComponent: Component = () => {
         const upload = document.getElementById("upload") as HTMLInputElement;
         upload.disabled = true;
         upload.classList.add("disabled:bg-negative-alt-light dark:disabled:bg-negative-alt-dark");
-        upload.textContent = binary.files[0].name.toLowerCase().includes("littlefs") ? "Updating Filesystem..." : "Updating Firmware...";
+        upload.textContent = binary.files[0].name.toLowerCase().includes("littlefs")
+            ? "Updating Filesystem..."
+            : "Updating Firmware...";
         toast("System update in progress...", 10e3);
     };
 
@@ -110,7 +114,8 @@ export const MainComponent: Component = () => {
                                 <div class="mt-auto border-t" />
                                 <h3>Manual update</h3>
                                 <div class="text-sm">
-                                    Got a pair of <span class="italic">firmware.bin</span> and <span class="italic">littlefs.bin</span> files?
+                                    Got a pair of <span class="italic">firmware.bin</span> and{" "}
+                                    <span class="italic">littlefs.bin</span> files?
                                 </div>
                                 <input
                                     class="w-full"
