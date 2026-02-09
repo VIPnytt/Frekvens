@@ -155,13 +155,13 @@ void InfraredExtension::parse()
             break;
         }
     }
-    if (!IrReceiver.decodedIRData.flags)
+    if (IrReceiver.decodedIRData.flags == 0)
     {
         ESP_LOGV(name, "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
     }
 }
 
-bool InfraredExtension::getActive() { return active; }
+bool InfraredExtension::getActive() const { return active; }
 
 void InfraredExtension::setActive(bool active)
 {
@@ -192,15 +192,15 @@ void InfraredExtension::transmit()
 {
     JsonDocument doc;
     doc["active"] = active;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void InfraredExtension::onReceive(const JsonDocument doc, const char *const source)
+void InfraredExtension::onReceive(JsonObjectConst payload, const char *source)
 {
     // Active
-    if (doc["active"].is<bool>())
+    if (payload["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>());
+        setActive(payload["active"].as<bool>());
     }
 }
 

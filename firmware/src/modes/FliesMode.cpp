@@ -17,11 +17,11 @@ void FliesMode::handle()
     }
 }
 
-void FliesMode::onReceive(const JsonDocument doc, const char *const source)
+void FliesMode::onReceive(JsonObjectConst payload, const char *source)
 {
-    if (doc["id"].is<uint8_t>() && doc["x"].is<uint8_t>() && doc["y"].is<uint8_t>())
+    if (payload["id"].is<uint8_t>() && payload["x"].is<uint8_t>() && payload["y"].is<uint8_t>())
     {
-        flies[doc["id"].as<uint8_t>()] = Dot{doc["x"].as<uint8_t>(), doc["y"].as<uint8_t>()};
+        flies[payload["id"].as<uint8_t>()] = Dot{payload["x"].as<uint8_t>(), payload["y"].as<uint8_t>()};
         pending = true;
     }
 }

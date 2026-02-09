@@ -111,7 +111,7 @@ void MicrophoneExtension::handle()
                 {
                     JsonDocument doc;
                     doc["event"] = "sound";
-                    Device.transmit(doc, name, false);
+                    Device.transmit(doc.as<JsonObjectConst>(), name, false);
                     _lastMillis = lastMillis;
                 }
                 ESP_LOGV(name, "sound, level %d", level);
@@ -134,7 +134,7 @@ void MicrophoneExtension::handle()
     }
 }
 
-bool MicrophoneExtension::getActive() { return active; }
+bool MicrophoneExtension::getActive() const { return active; }
 
 void MicrophoneExtension::setActive(bool active)
 {
@@ -182,20 +182,20 @@ void MicrophoneExtension::transmit()
     doc["active"] = active;
     doc["max"] = levelMax;
     doc["threshold"] = threshold;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(const JsonDocument doc, const char *const source)
+void MicrophoneExtension::onReceive(JsonObjectConst payload, const char *source)
 {
     // Active
-    if (doc["active"].is<bool>())
+    if (payload["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>());
+        setActive(payload["active"].as<bool>());
     }
     // Threshold
-    if (doc["threshold"].is<uint16_t>())
+    if (payload["threshold"].is<uint16_t>())
     {
-        setThreshold(doc["threshold"].as<uint16_t>());
+        setThreshold(payload["threshold"].as<uint16_t>());
     }
 }
 

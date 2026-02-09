@@ -16,7 +16,7 @@ void ModesService::configure()
     {
         const std::string id = std::string(name).append("_mode");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"mode":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
         component[HomeAssistantAbbreviations::name] = "Mode";
@@ -64,7 +64,7 @@ void ModesService::begin()
             Storage.end();
         }
     }
-    if (!mode)
+    if (mode == nullptr)
     {
         setMode(modes[random(modes.size())]);
     }
@@ -72,7 +72,7 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled && millis() - lastMillis > (1 << 11))
+    if (scheduled != nullptr && millis() - lastMillis > (1 << 11))
     {
         mode = scheduled;
         scheduled = nullptr;
@@ -99,23 +99,23 @@ void ModesService::onTask(void *parameter)
 
 void ModesService::setActive(bool active)
 {
-    if (taskHandle && active && eTaskGetState(taskHandle) == eTaskState::eSuspended)
+    if (taskHandle != nullptr && active && eTaskGetState(taskHandle) == eTaskState::eSuspended)
     {
         vTaskResume(taskHandle);
     }
-    else if (taskHandle && !active && eTaskGetState(taskHandle) != eTaskState::eSuspended)
+    else if (taskHandle != nullptr && !active && eTaskGetState(taskHandle) != eTaskState::eSuspended)
     {
         vTaskSuspend(taskHandle);
     }
-    else if (!taskHandle && active && mode)
+    else if (taskHandle == nullptr && active && mode != nullptr)
     {
         xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
     }
 }
 
-void ModesService::setMode(const char *const name)
+void ModesService::setMode(const char *name)
 {
-    if (!mode || strcmp(mode->name, name))
+    if (mode == nullptr || strcmp(mode->name, name) != 0)
     {
         for (ModeModule *_mode : modes)
         {
@@ -130,7 +130,7 @@ void ModesService::setMode(const char *const name)
 
 void ModesService::setMode(ModeModule *mode, bool power)
 {
-    if (taskHandle && this->mode)
+    if (taskHandle != nullptr && this->mode != nullptr)
     {
         vTaskDelete(taskHandle);
         taskHandle = nullptr;
@@ -183,7 +183,7 @@ const std::vector<ModeModule *> &ModesService::getAll() const { return modes; }
 
 void ModesService::setModeNext()
 {
-    const char *const _name = mode ? mode->name : scheduled->name;
+    const char *const _name = mode == nullptr ? scheduled->name : mode->name;
     std::vector<ModeModule *>::const_iterator _mode = std::find_if(
         modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
@@ -203,7 +203,7 @@ void ModesService::setModeNext()
 
 void ModesService::setModePrevious()
 {
-    const char *const _name = mode ? mode->name : scheduled->name;
+    const char *const _name = mode == nullptr ? scheduled->name : mode->name;
     std::vector<ModeModule *>::const_iterator _mode = std::find_if(
         modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
     if (!Display.getPower())
@@ -229,19 +229,19 @@ void ModesService::transmit()
     {
         list.add(_mode->name);
     }
-    if (mode)
+    if (mode != nullptr)
     {
         doc["mode"] = mode->name;
     }
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ModesService::onReceive(const JsonDocument doc, const char *const source)
+void ModesService::onReceive(JsonObjectConst payload, const char *source)
 {
     // Mode
-    if (doc["mode"].is<const char *>())
+    if (payload["mode"].is<const char *>())
     {
-        setMode(doc["mode"].as<const char *>());
+        setMode(payload["mode"].as<const char *>());
     }
 }
 

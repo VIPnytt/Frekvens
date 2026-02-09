@@ -4,18 +4,18 @@
 
 #include <ESPAsyncWebServer.h>
 
-class WebServerService : public ServiceModule
+class WebServerService final : public ServiceModule
 {
 private:
+    explicit WebServerService() : ServiceModule("WebServer") {};
+
     static void onNotFound(AsyncWebServerRequest *request);
 
 public:
-    WebServerService() : ServiceModule("WebServer") {};
-
     AsyncWebServer *http = new AsyncWebServer(80);
 
-    void configure();
-    void begin();
+    void configure() const;
+    void begin() const;
 
     static void onEmpty(AsyncWebServerRequest *request);
 

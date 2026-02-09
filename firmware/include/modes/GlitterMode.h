@@ -4,10 +4,10 @@
 
 #include "modules/ModeModule.h"
 
-class GlitterMode : public ModeModule
+class GlitterMode final : public ModeModule
 {
 public:
-    GlitterMode() : ModeModule("Glitter") {};
+    explicit GlitterMode() : ModeModule("Glitter") {};
 
     void handle() override;
 };

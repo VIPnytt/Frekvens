@@ -6,16 +6,16 @@
 
 #include <ESPAsyncWebServer.h>
 
-class ServerSentEventsExtension : public ExtensionModule
+class ServerSentEventsExtension final : public ExtensionModule
 {
 public:
-    ServerSentEventsExtension();
+    explicit ServerSentEventsExtension();
 
     AsyncEventSource *client = new AsyncEventSource("/server-sent%20events");
 
     void begin() override;
 
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(JsonObjectConst payload, const char *source) override;
 
     static void onConnect(AsyncEventSourceClient *client);
 };

@@ -8,7 +8,8 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
     if (text.length())
     {
         {
-            uint8_t yMax = 0, yMin = 0;
+            uint8_t yMax = 0;
+            uint8_t yMin = 0;
             for (uint32_t codepoint; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
@@ -20,7 +21,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
             }
             height = yMax - yMin;
         }
-        tracking = ceil(height / Display.getRatio() / 10.0f);
+        tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0f));
         {
             i = 0;
             uint8_t _width = 0;
@@ -61,10 +62,10 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
     {
         FontModule::Symbol character = font->getChar(codepoint);
         const uint8_t _height = character.bitmap.size();
-        if (_height)
+        if (_height != 0)
         {
             const uint8_t msbMax = calcMsbMax(character);
-            for (uint8_t _x = 0; _x <= msbMax; ++_x)
+            for (uint16_t _x = 0; _x <= msbMax; ++_x)
             {
                 for (uint8_t _y = 0; _y < _height; ++_y)
                 {

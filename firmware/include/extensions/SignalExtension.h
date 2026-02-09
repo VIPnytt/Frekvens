@@ -6,14 +6,15 @@
 #include "handlers/BitmapHandler.h"
 #include "modules/ExtensionModule.h"
 
-class SignalExtension : public ExtensionModule
+class SignalExtension final : public ExtensionModule
 {
 private:
     bool active = false;
 
     unsigned long lastMillis = 0;
 
-    uint8_t duration = 30, frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t duration = 30;
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
 
     std::vector<std::vector<uint16_t>> signals;
 
@@ -21,12 +22,12 @@ private:
     void transmit();
 
 public:
-    SignalExtension();
+    explicit SignalExtension();
 
     void begin() override;
     void handle() override;
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 extern SignalExtension *Signal;

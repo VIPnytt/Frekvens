@@ -4,25 +4,28 @@
 
 #include "modules/ModeModule.h"
 
-class SmallClockMode : public ModeModule
+class SmallClockMode final : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
-    bool pending = false, ticking = true;
+    bool pending = false;
+    bool ticking = true;
 
-    uint8_t hour, minute, second;
+    int hour = 24;
+    int minute = 60;
+    int second = 60;
 
-    void setTicking(const bool _ticking);
+    void setTicking(bool _ticking);
     void transmit();
 
 public:
-    SmallClockMode() : ModeModule("Small clock") {};
+    explicit SmallClockMode() : ModeModule("Small clock") {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 #endif // MODE_SMALLCLOCK

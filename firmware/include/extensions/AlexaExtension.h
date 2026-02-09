@@ -7,7 +7,7 @@
 #include <ESPAsyncWebServer.h>
 #include <fauxmoESP.h>
 
-class AlexaExtension : public ExtensionModule
+class AlexaExtension final : public ExtensionModule
 {
 private:
     fauxmoESP fauxmo = fauxmoESP();
@@ -17,12 +17,12 @@ private:
     static void onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value);
 
 public:
-    AlexaExtension();
+    explicit AlexaExtension();
 
     void begin() override;
     void handle() override;
 
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
 extern AlexaExtension *Alexa;

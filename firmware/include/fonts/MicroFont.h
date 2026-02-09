@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MicroFont : public FontModule
+class MicroFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -644,9 +644,9 @@ private:
     };
 
 public:
-    MicroFont();
+    explicit MicroFont();
 
-    Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
 extern MicroFont *FontMicro;

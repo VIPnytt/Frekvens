@@ -5,14 +5,17 @@
 #include "config/constants.h"
 #include "modules/ExtensionModule.h"
 
-class ButtonExtension : public ExtensionModule
+class ButtonExtension final : public ExtensionModule
 {
 private:
 #ifdef PIN_SW1
-    bool brightnessIncrease = false, powerLong = false, powerShort = false;
+    bool brightnessIncrease = false;
+    bool powerLong = false;
+    bool powerShort = false;
 #endif
 #ifdef PIN_SW2
-    bool modeLong = false, modeShort = false;
+    bool modeLong = false;
+    bool modeShort = false;
 #endif
 
 #ifdef PIN_SW1
@@ -34,7 +37,7 @@ private:
     static void event(const char *key, const char *value);
 
 public:
-    ButtonExtension();
+    explicit ButtonExtension();
 
     void configure() override;
     void handle() override;

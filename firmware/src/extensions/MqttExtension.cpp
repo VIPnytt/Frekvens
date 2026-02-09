@@ -77,8 +77,9 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
     {
         return;
     }
-    Device.receive(
-        doc, Mqtt->name, std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
+    Device.receive(doc.as<JsonObjectConst>(),
+                   Mqtt->name,
+                   std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
@@ -87,15 +88,15 @@ void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
-void MqttExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void MqttExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
-    const size_t length = measureJson(doc);
-    std::vector<char> payload(length + 1);
-    serializeJson(doc, payload.data(), length + 1);
+    const size_t length = measureJson(payload);
+    std::vector<char> message(length + 1);
+    serializeJson(payload, message.data(), length + 1);
     client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(),
-                   doc["event"].isUnbound() ? 0 : 2,
+                   payload["event"].isUnbound() ? 0 : 2,
                    false,
-                   reinterpret_cast<const uint8_t *>(payload.data()),
+                   reinterpret_cast<const uint8_t *>(message.data()),
                    length);
 }
 

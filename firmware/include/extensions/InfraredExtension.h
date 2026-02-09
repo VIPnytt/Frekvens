@@ -12,23 +12,27 @@
 
 #include <vector>
 
-class InfraredExtension : public ExtensionModule
+class InfraredExtension final : public ExtensionModule
 {
 private:
     struct Code
     {
-        const decode_type_t protocol;
-        const std::vector<uint16_t> displayBrightnessDecrease, displayBrightnessIncrease, displayPowerToggle,
+        const decode_type_t protocol = {};
+        const std::vector<uint16_t> displayBrightnessDecrease = {};
+        const std::vector<uint16_t> displayBrightnessIncrease = {};
+        const std::vector<uint16_t> displayPowerToggle = {};
 #if EXTENSION_MICROPHONE
-            extensionMicrophoneToggle,
+        const std::vector<uint16_t> extensionMicrophoneToggle = {};
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            extensionPhotocellToggle,
+        const std::vector<uint16_t> extensionPhotocellToggle = {};
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            extensionPlaylistStart, extensionPlaylistStop,
+        const std::vector<uint16_t> extensionPlaylistStart = {};
+        const std::vector<uint16_t> extensionPlaylistStop = {};
 #endif // EXTENSION_PLAYLIST
-            modeNext, modePrevious;
+        const std::vector<uint16_t> modeNext = {};
+        const std::vector<uint16_t> modePrevious = {};
     };
 
     const std::vector<Code> codes = {
@@ -125,17 +129,17 @@ private:
     void transmit();
 
 public:
-    InfraredExtension();
+    explicit InfraredExtension();
 
     void configure() override;
     void begin() override;
     void handle() override;
 
-    bool getActive();
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
     void parse();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 extern InfraredExtension *Infrared;

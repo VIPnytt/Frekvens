@@ -5,16 +5,17 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class CircleMode : public ModeModule
+class CircleMode final : public ModeModule
 {
 private:
-    static constexpr float x = (GRID_COLUMNS - 1) / 2.0f, y = (GRID_ROWS - 1) / 2.0f;
+    static constexpr float x = (GRID_COLUMNS - 1) / 2.0f;
+    static constexpr float y = (GRID_ROWS - 1) / 2.0f;
 
-    const uint8_t maxRadius = 3 + ceil((max(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL,
-                                            GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) /
-                                            M_SQRT2 +
-                                        M_SQRT1_2) /
-                                       2.0f);
+    const uint8_t maxRadius = 3 + ceilf((max(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
+                                             GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
+                                             M_SQRT2 +
+                                         M_SQRT1_2) /
+                                        2.0f);
 
     bool lit = true;
 
@@ -23,7 +24,7 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    CircleMode() : ModeModule("Circle") {};
+    explicit CircleMode() : ModeModule("Circle") {};
 
     void handle() override;
 };

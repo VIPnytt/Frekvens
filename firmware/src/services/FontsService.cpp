@@ -16,7 +16,7 @@ void FontsService::transmit()
     {
         list.add(font->name);
     }
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
 FontsService &FontsService::getInstance()

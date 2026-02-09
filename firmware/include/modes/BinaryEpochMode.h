@@ -4,13 +4,13 @@
 
 #include "modules/ModeModule.h"
 
-class BinaryEpochMode : public ModeModule
+class BinaryEpochMode final : public ModeModule
 {
 private:
-    time_t epoch;
+    time_t epoch = 0;
 
 public:
-    BinaryEpochMode() : ModeModule("Binary epoch") {};
+    explicit BinaryEpochMode() : ModeModule("Binary epoch") {};
 
     void handle() override;
 };

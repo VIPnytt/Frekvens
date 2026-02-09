@@ -15,14 +15,14 @@ jobs:
     name: ESPHome minimum version
     runs-on: ubuntu-latest
     outputs:
-      min_version: ${{ steps.print.outputs.min_version }}
+      min_version: ${{ steps.config.outputs.min_version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: ESPHome minimum version
-        id: print
+        id: config
         run: echo "min_version=$(grep "  min_version:" "extra/IKEA-Frekvens-LED-spotlight/esphome.yaml" | cut -d '"' -f 2)" >> "$GITHUB_OUTPUT"
 
   ikea-frekvens-led-spotlight:

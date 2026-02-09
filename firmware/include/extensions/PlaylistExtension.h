@@ -6,25 +6,25 @@
 
 #include <vector>
 
-class PlaylistExtension : public ExtensionModule
+class PlaylistExtension final : public ExtensionModule
 {
 public:
-    PlaylistExtension();
+    explicit PlaylistExtension();
 
     struct Mode
     {
-        std::string mode;
-        uint16_t duration;
+        std::string mode = "";
+        uint16_t duration = 60;
     };
 
     void configure() override;
     void begin() override;
     void handle() override;
-    bool getActive() const;
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, const char *source) override;
 
 private:
     bool active = false;

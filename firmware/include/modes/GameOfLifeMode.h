@@ -4,27 +4,30 @@
 
 #include "modules/ModeModule.h"
 
-class GameOfLifeMode : public ModeModule
+class GameOfLifeMode final : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
-    bool clock = true, pending = false;
+    bool clock = true;
+    bool pending = false;
 
-    uint8_t active = 0, hour, minute;
+    uint8_t active = 0;
+    int hour = 24;
+    int minute = 60;
 
     unsigned long lastMillis = 0;
 
-    void setClock(const bool _clock);
+    void setClock(bool _clock);
     void transmit();
 
 public:
-    GameOfLifeMode() : ModeModule("Game of Life") {};
+    explicit GameOfLifeMode() : ModeModule("Game of Life") {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 #endif // MODE_GAMEOFLIFE

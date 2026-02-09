@@ -5,12 +5,15 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class StarsMode : public ModeModule
+class StarsMode final : public ModeModule
 {
 private:
     struct Star
     {
-        uint8_t x = 0, y = 0, brightness = 0, delay = 0;
+        uint8_t brightness = 0;
+        uint8_t delay = 0;
+        uint8_t x = 0;
+        uint8_t y = 0;
         unsigned long lastMillis = 0;
         bool direction = true;
     };
@@ -18,7 +21,7 @@ private:
     Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
 
 public:
-    StarsMode() : ModeModule("Stars") {};
+    explicit StarsMode() : ModeModule("Stars") {};
 
     void begin() override;
     void handle() override;

@@ -4,13 +4,13 @@
 
 #include "modules/ModeModule.h"
 
-class BlinkMode : public ModeModule
+class BlinkMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
 
 public:
-    BlinkMode() : ModeModule("Blink") {};
+    explicit BlinkMode() : ModeModule("Blink") {};
 
     void handle() override;
 };

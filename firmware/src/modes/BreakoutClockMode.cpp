@@ -25,8 +25,8 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
-    const uint8_t nextX = xDec + cos(deg * DEG_TO_RAD) * speed + .5f,
-                  nextY = yDec - sin(deg * DEG_TO_RAD) * speed + .5f;
+    const uint8_t nextX = static_cast<uint8_t>(lroundf(xDec + (cosf(deg * DEG_TO_RAD) * speed)));
+    const uint8_t nextY = static_cast<uint8_t>(std::lroundf(yDec - (sinf(deg * DEG_TO_RAD) * speed)));
     if (y <= 0 && deg < 180)
     {
         // Top
@@ -51,7 +51,7 @@ void BreakoutClockMode::handle()
             TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
         }
     }
-    else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY))
+    else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY) != 0)
     {
         // Brick
         Display.setPixel(nextX, nextY, 0);
@@ -65,10 +65,10 @@ void BreakoutClockMode::handle()
         }
     }
     Display.setPixel(x, y, 0);
-    xDec += cos(deg * DEG_TO_RAD) * speed;
-    yDec -= sin(deg * DEG_TO_RAD) * speed;
-    x = xDec + .5f;
-    y = yDec + .5f;
+    xDec += cosf(deg * DEG_TO_RAD) * speed;
+    yDec -= sinf(deg * DEG_TO_RAD) * speed;
+    x = lroundf(xDec);
+    y = lroundf(yDec);
     Display.setPixel(x, y);
     const float rad = atanf((GRID_ROWS - 2 - yDec) / abs(paddle[1] - xDec));
     if (xDec < paddle.front() && rad < 1 && paddle.front() > 0)

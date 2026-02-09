@@ -88,11 +88,13 @@ void HomeThermometerMode::update()
         Storage.end();
         return;
     }
-    const int16_t indoor = Storage.getShort("indoor"), outdoor = Storage.getShort("outdoor");
+    const int16_t indoor = Storage.getShort("indoor");
+    const int16_t outdoor = Storage.getShort("outdoor");
     Storage.end();
-    TextHandler _indoor = TextHandler(std::to_string(indoor).append("°"), FontMini),
-                _outdoor = TextHandler(std::to_string(outdoor).append("°"), FontMini);
-    const uint8_t _height = _outdoor.getHeight(), marginsY = (GRID_ROWS - _indoor.getHeight() - _height) / 3;
+    TextHandler _indoor = TextHandler(std::to_string(indoor).append("°"), FontMini);
+    TextHandler _outdoor = TextHandler(std::to_string(outdoor).append("°"), FontMini);
+    const uint8_t _height = _outdoor.getHeight();
+    const uint8_t marginsY = (GRID_ROWS - _indoor.getHeight() - _height) / 3;
     Display.clearFrame();
     _indoor.draw((GRID_COLUMNS - _indoor.getWidth()) / 2, marginsY);
     _outdoor.draw((GRID_COLUMNS - _outdoor.getWidth()) / 2, GRID_ROWS - marginsY - _height);
@@ -112,25 +114,25 @@ void HomeThermometerMode::transmit()
         doc["outdoor"] = Storage.getShort("outdoor");
     }
     Storage.end();
-    if (doc.size())
+    if (doc.size() != 0)
     {
-        Device.transmit(doc, name);
+        Device.transmit(doc.as<JsonObjectConst>(), name);
     }
 }
 
-void HomeThermometerMode::onReceive(const JsonDocument doc, const char *const source)
+void HomeThermometerMode::onReceive(JsonObjectConst payload, const char *source)
 {
-    if (doc["indoor"].is<float>())
+    if (payload["indoor"].is<float>())
     {
-        setTemperature("indoor", round(doc["indoor"].as<float>()));
+        setTemperature("indoor", round(payload["indoor"].as<float>()));
     }
-    if (doc["outdoor"].is<float>())
+    if (payload["outdoor"].is<float>())
     {
-        setTemperature("outdoor", round(doc["outdoor"].as<float>()));
+        setTemperature("outdoor", round(payload["outdoor"].as<float>()));
     }
 }
 
-void HomeThermometerMode::setTemperature(const char *const where, const int16_t temperature)
+void HomeThermometerMode::setTemperature(const char *where, int16_t temperature)
 {
     Preferences Storage;
     Storage.begin(std::string(name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str());

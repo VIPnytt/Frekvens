@@ -41,7 +41,7 @@ void SignalExtension::handle()
             Display.flush();
             JsonDocument doc;
             doc["event"] = "signal";
-            Device.transmit(doc, name, false);
+            Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
         else if (active)
         {
@@ -69,21 +69,21 @@ void SignalExtension::transmit()
 {
     JsonDocument doc;
     doc["duration"] = duration;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(const JsonDocument doc, const char *const source)
+void SignalExtension::onReceive(JsonObjectConst payload, const char *source)
 {
     // Duration
-    if (doc["duration"].is<uint8_t>())
+    if (payload["duration"].is<uint8_t>())
     {
-        setDuration(doc["duration"].as<uint8_t>());
+        setDuration(payload["duration"].as<uint8_t>());
     }
     // Bitmap
-    if (doc["bitmap"].is<JsonArrayConst>())
+    if (payload["bitmap"].is<JsonArrayConst>())
     {
         std::vector<uint16_t> sign;
-        for (const JsonVariantConst bitset : doc["bitmap"].as<JsonArrayConst>())
+        for (const JsonVariantConst bitset : payload["bitmap"].as<JsonArrayConst>())
         {
             if (bitset.is<uint16_t>())
             {

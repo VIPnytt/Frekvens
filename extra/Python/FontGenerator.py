@@ -113,7 +113,7 @@ class FontGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {unique}Font : public FontModule",
+            f"class {unique}Font final : public FontModule",
             "{",
             "private:",
             "    const std::vector<Symbol> ascii = {",
@@ -198,26 +198,26 @@ class FontGenerator:
                 else:
                     self.count += 1
         font.append("    };")
-        with open(f"{unique}Font.h", "w", encoding="utf-8") as h:
+        with open(f"{unique}Font.h", "w", encoding="utf-8") as f:
             font.extend(
                 [
                     "",
                     "public:",
-                    f"    {unique}Font();",
+                    f"    explicit {unique}Font();",
                     "",
-                    "    Symbol getChar(uint32_t character) const override;",
+                    "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                     "};",
                     "",
                     f"extern {unique}Font *Font{unique};",
                     "",
                 ]
             )
-            h.write("\n".join(font))
+            f.write("\n".join(font))
         return f"{unique}Font.h"
 
     def _source_cpp(self, unique: str, name: str) -> str:
-        with open(f"{unique}Font.cpp", "w", encoding="utf-8") as cpp:
-            cpp.write(
+        with open(f"{unique}Font.cpp", "w", encoding="utf-8") as f:
+            f.write(
                 "\n".join(
                     [
                         f'#include "fonts/{unique}Font.h"',

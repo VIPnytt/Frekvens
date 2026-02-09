@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class GoogleWeatherMode : public ModeModule
+class GoogleWeatherMode final : public ModeModule
 {
 private:
     static constexpr uint32_t interval = 900'000; // Update interval: 15 minutes
@@ -110,10 +110,10 @@ private:
     void update();
 
 public:
-    GoogleWeatherMode() : ModeModule("Google Weather") {};
+    explicit GoogleWeatherMode() : ModeModule("Google Weather") {};
 
-    void begin();
-    void handle();
+    void begin() override;
+    void handle() override;
 };
 
 #endif // MODE_GOOGLEWEATHER

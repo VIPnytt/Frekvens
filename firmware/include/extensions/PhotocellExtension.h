@@ -4,10 +4,12 @@
 
 #include "modules/ExtensionModule.h"
 
-class PhotocellExtension : public ExtensionModule
+class PhotocellExtension final : public ExtensionModule
 {
 private:
-    bool active = false, direction = false, pending = false;
+    bool active = false;
+    bool direction = false;
+    bool pending = false;
 
     float gamma = 1.0f;
 
@@ -17,24 +19,25 @@ private:
 
     uint16_t raw = 0;
 
-    unsigned long lastMillis = 0, _lastMillis = 0;
+    unsigned long lastMillis = 0;
+    unsigned long _lastMillis = 0;
 
     void setGamma(float _gamma);
 
     void transmit();
 
 public:
-    PhotocellExtension();
+    explicit PhotocellExtension();
 
     void configure() override;
     void begin() override;
     void handle() override;
 
-    bool getActive() const;
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
 extern PhotocellExtension *Photocell;

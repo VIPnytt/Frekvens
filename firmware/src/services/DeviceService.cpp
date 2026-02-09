@@ -106,7 +106,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_reboot");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::device_class] = "restart";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
@@ -120,7 +120,7 @@ void DeviceService::begin()
     {
         const std::string id = std::string(name).append("_power");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"action\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::entity_category] = "config";
         component[HomeAssistantAbbreviations::icon] = "mdi:power";
@@ -184,7 +184,7 @@ void DeviceService::setPower(bool power)
     }
     JsonDocument doc;
     doc["event"] = power ? "reboot" : "power";
-    Device.transmit(doc, name, false);
+    Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
     Display.setPower(false);
     Display.clearFrame();
@@ -229,7 +229,7 @@ void DeviceService::restore()
     esp_deep_sleep_start();
 }
 
-const JsonDocument DeviceService::getTransmits() const { return transmits; }
+JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonObjectConst>(); }
 
 void DeviceService::transmit()
 {
@@ -241,26 +241,26 @@ void DeviceService::transmit()
     doc["temperature"] = temperatureRead();
     doc["version"] = VERSION;
     lastMillis = millis();
-    Device.transmit(doc, name);
+    transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void DeviceService::transmit(JsonDocument doc, const char *const source, bool retain)
+void DeviceService::transmit(JsonObjectConst payload, const char *source, bool retain)
 {
     if (retain)
     {
-        transmits[source] = doc;
+        transmits[source].set(payload);
     }
     if (operational)
     {
         ESP_LOGV(source, "transmitting");
         for (ExtensionModule *extension : Extensions.getAll())
         {
-            extension->onTransmit(doc, source);
+            extension->onTransmit(payload, source);
         }
     }
 }
 
-void DeviceService::receive(const JsonDocument doc, const char *const source, const char *const destination)
+void DeviceService::receive(JsonObjectConst payload, const char *source, const char *destination) const
 {
     if (operational)
     {
@@ -275,7 +275,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(service->name, destination))
             {
-                service->onReceive(doc, source);
+                service->onReceive(payload, source);
                 return;
             }
         }
@@ -283,7 +283,7 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(extension->name, destination))
             {
-                extension->onReceive(doc, source);
+                extension->onReceive(payload, source);
                 return;
             }
         }
@@ -291,30 +291,30 @@ void DeviceService::receive(const JsonDocument doc, const char *const source, co
         {
             if (!strcmp(mode->name, destination))
             {
-                mode->onReceive(doc, source);
+                mode->onReceive(payload, source);
                 return;
             }
         }
     }
 }
 
-void DeviceService::onReceive(const JsonDocument doc, const char *const source)
+void DeviceService::onReceive(JsonObjectConst payload, const char *source)
 {
-    if (doc["action"].is<const char *>())
+    if (payload["action"].is<const char *>())
     {
-        const char *const action = doc["action"].as<const char *>();
+        const char *const action = payload["action"].as<const char *>();
         // Power off
-        if (!strcmp(action, "power"))
+        if (strcmp(action, "power") == 0)
         {
             setPower(false);
         }
         // Reboot
-        else if (!strcmp(action, "reboot"))
+        else if (strcmp(action, "reboot") == 0)
         {
             setPower(true);
         }
         // Restore
-        else if (!strcmp(action, "restore"))
+        else if (strcmp(action, "restore") == 0)
         {
             restore();
         }

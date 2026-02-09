@@ -7,7 +7,7 @@
 
 #include <ArduinoOTA.h>
 
-class OtaExtension : public ExtensionModule
+class OtaExtension final : public ExtensionModule
 {
 private:
     ArduinoOTAClass ArduinoOTA;
@@ -21,7 +21,7 @@ private:
 #endif
 
 public:
-    OtaExtension();
+    explicit OtaExtension();
 
     void configure() override;
     void begin() override;

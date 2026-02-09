@@ -5,18 +5,15 @@
 class ExtensionModule
 {
 protected:
-    ExtensionModule(const char *const name) : name(name) {};
+    explicit ExtensionModule(const char *name) : name(name) {};
 
 public:
-    ExtensionModule(const ExtensionModule &) = delete;
-    ExtensionModule &operator=(const ExtensionModule &) = delete;
-
     const char *const name;
 
     virtual void configure();
     virtual void begin();
     virtual void handle();
 
-    virtual void onTransmit(const JsonDocument &doc, const char *const source);
-    virtual void onReceive(const JsonDocument doc, const char *source);
+    virtual void onReceive(JsonObjectConst payload, const char *source);
+    virtual void onTransmit(JsonObjectConst payload, const char *source);
 };

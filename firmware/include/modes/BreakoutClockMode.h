@@ -7,23 +7,28 @@
 
 #include <deque>
 
-class BreakoutClockMode : public ModeModule
+class BreakoutClockMode final : public ModeModule
 {
 private:
     static constexpr float speed = 7e-4 * GRID_ROWS;
 
-    float xDec = GRID_COLUMNS / 2, yDec = GRID_ROWS - 2;
+    float xDec = GRID_COLUMNS / 2.0f;
+    float yDec = GRID_ROWS - 2.0f;
 
-    std::deque<uint8_t> paddle;
+    std::deque<uint8_t> paddle = {};
 
-    tm local;
+    tm local = {};
 
-    uint8_t hour, minute, x = GRID_COLUMNS / 2, y = GRID_ROWS - 2;
+    int hour = 24;
+    int minute = 60;
+
+    uint8_t x = GRID_COLUMNS / 2;
+    uint8_t y = GRID_ROWS - 2;
 
     uint16_t deg = 90;
 
 public:
-    BreakoutClockMode() : ModeModule("Breakout clock") {};
+    explicit BreakoutClockMode() : ModeModule("Breakout clock") {};
 
     void begin() override;
     void handle() override;

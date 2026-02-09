@@ -80,7 +80,8 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
-        const uint8_t _brightness = pow((raw) / (float)((1 << 12) - 1), gamma) * UINT8_MAX;
+        const uint8_t _brightness =
+            static_cast<uint8_t>(powf(raw / static_cast<float>((1 << 12) - 1), gamma) * UINT8_MAX);
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
@@ -141,28 +142,29 @@ void PhotocellExtension::transmit()
     JsonDocument doc;
     doc["active"] = active;
     doc["illuminance"] = raw;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(const JsonDocument doc, const char *const source)
+void PhotocellExtension::onReceive(JsonObjectConst payload, const char *source)
 {
     // Active
-    if (doc["active"].is<bool>())
+    if (payload["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>());
+        setActive(payload["active"].as<bool>());
     }
 }
 
-void PhotocellExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
     // Display: Brightness
-    if (active && !strcmp(source, Display.name) && doc["brightness"].is<uint8_t>())
+    if (active && !strcmp(source, Display.name) && payload["brightness"].is<uint8_t>())
     {
-        const uint8_t _brightness = doc["brightness"].as<uint8_t>();
+        const uint8_t _brightness = payload["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(log(_brightness / (float)(1 << 8)) / log((raw + 1) / (float)((1 << 12) + 1)));
+            setGamma(logf(_brightness / static_cast<float>(1 << 8)) /
+                     logf((raw + 1) / static_cast<float>((1 << 12) + 1)));
         }
     }
 }

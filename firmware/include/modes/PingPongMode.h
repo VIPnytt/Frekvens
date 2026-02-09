@@ -7,35 +7,42 @@
 
 #include <deque>
 
-class PingPongMode : public ModeModule
+class PingPongMode final : public ModeModule
 {
 private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
-    bool clock = true, pending = false;
+    bool clock = true;
+    bool pending = false;
 
-    float xDec, yDec;
+    float xDec = .0f;
+    float yDec = .0f;
 
-    std::deque<uint8_t> paddleA, paddleB;
+    std::deque<uint8_t> paddleA = {};
+    std::deque<uint8_t> paddleB = {};
 
-    tm local;
+    tm local = {};
 
-    uint8_t hour, minute, x = GRID_COLUMNS - 2, y = GRID_ROWS / 2;
+    int hour = 24;
+    int minute = 60;
+
+    uint8_t x = GRID_COLUMNS - 2;
+    uint8_t y = GRID_ROWS / 2;
 
     uint16_t deg = 135;
 
     unsigned long lastMillis = 0;
 
-    void setClock(const bool _clock);
+    void setClock(bool _clock);
     void transmit();
 
 public:
-    PingPongMode() : ModeModule("Ping-pong") {};
+    explicit PingPongMode() : ModeModule("Ping-pong") {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 #endif // MODE_PINGPONG
