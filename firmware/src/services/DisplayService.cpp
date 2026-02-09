@@ -57,7 +57,7 @@ void DisplayService::begin()
     {
         const std::string id = std::string(name).append("_orientation");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"orientation\":{{value.replace('°','')}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"orientation":{{value.replace('°','')}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";

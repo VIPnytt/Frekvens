@@ -21,7 +21,7 @@ void PhotocellExtension::configure()
     {
         const std::string id = std::string(name).append("_active");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:brightness-auto";
         component[HomeAssistantAbbreviations::name] = name;

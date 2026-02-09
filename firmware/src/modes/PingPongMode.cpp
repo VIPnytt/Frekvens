@@ -18,7 +18,7 @@ void PingPongMode::configure()
     {
         const std::string id = std::string(name).append("_clock");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"clock\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"clock":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";

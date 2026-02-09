@@ -28,7 +28,7 @@ void InfraredExtension::configure()
     {
         const std::string id = std::string(name).append("_active");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::entity_category] = "config";
         component[HomeAssistantAbbreviations::icon] = "mdi:remote-tv";

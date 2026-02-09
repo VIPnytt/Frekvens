@@ -64,7 +64,7 @@ void LargeClockMode::configure()
     {
         const std::string id = std::string(name).append("_ticking");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"ticking\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"ticking":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";

@@ -21,10 +21,10 @@ void HomeAssistantExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
-        const std::string id = std::regex_replace(name, std::regex("\\s+"), "").append("_main");
+        const std::string id = std::regex_replace(name, std::regex(R"(\s+)"), "").append("_main");
         const std::string topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value}}}";
+        component[HomeAssistantAbbreviations::brightness_command_template] = R"({"brightness":{{value}}})";
         component[HomeAssistantAbbreviations::brightness_command_topic] = topicDisplay + "/set";
         component[HomeAssistantAbbreviations::brightness_state_topic] = topicDisplay;
         component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness}}";

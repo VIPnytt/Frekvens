@@ -13,8 +13,8 @@ private:
 
     const std::string discoveryTopic = std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
 
-    static constexpr std::string_view payloadOff = "{\"power\":false}";
-    static constexpr std::string_view payloadOn = "{\"power\":true}";
+    static constexpr std::string_view payloadOff = R"({"power":false})";
+    static constexpr std::string_view payloadOn = R"({"power":true})";
 
     void transmit();
 

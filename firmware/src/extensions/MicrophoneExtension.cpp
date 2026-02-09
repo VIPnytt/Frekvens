@@ -30,7 +30,7 @@ void MicrophoneExtension::configure()
     {
         const std::string id = std::string(name).append("_active");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
         component[HomeAssistantAbbreviations::name] = name;
@@ -58,7 +58,7 @@ void MicrophoneExtension::configure()
     {
         const std::string id = std::string(name).append("_threshold");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"threshold\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"threshold":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
