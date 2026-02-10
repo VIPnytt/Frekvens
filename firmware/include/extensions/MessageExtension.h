@@ -9,34 +9,37 @@
 
 #include <bits/unique_ptr.h>
 
-class MessageExtension : public ExtensionModule
+class MessageExtension final : public ExtensionModule
 {
 private:
-    bool active = false, pending = false;
+    bool active = false;
+    bool pending = false;
 
     int8_t offsetY = 0;
 
-    int16_t offsetX = GRID_COLUMNS, width = 0;
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t repeat = 3;
 
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS], repeat = 3;
+    int16_t offsetX = GRID_COLUMNS;
+    int16_t width = 0;
 
     unsigned long lastMillis = 0;
 
     FontModule *font = nullptr;
 
-    std::vector<std::string> messages;
+    std::vector<std::string> messages = {};
 
-    std::unique_ptr<TextHandler> text;
+    std::unique_ptr<TextHandler> text = {};
 
     void addMessage(std::string message);
 
-    void setFont(const char *const fontName);
+    void setFont(const char *fontName);
     void setRepeat(uint8_t count);
 
     void transmit();
 
 public:
-    MessageExtension();
+    explicit MessageExtension();
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;
@@ -44,7 +47,7 @@ public:
 
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 extern MessageExtension *Message;

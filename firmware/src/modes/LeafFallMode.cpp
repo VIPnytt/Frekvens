@@ -31,7 +31,7 @@ void LeafFallMode::handle()
                 do
                 {
                     leaf.x = random(GRID_COLUMNS);
-                } while (Display.getPixel(leaf.x, leaf.y));
+                } while (Display.getPixel(leaf.x, leaf.y) != 0);
             }
             else if (leaf.x > 0 && random(4) == 0)
             {

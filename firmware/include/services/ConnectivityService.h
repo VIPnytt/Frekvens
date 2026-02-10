@@ -6,24 +6,26 @@
 #include <DNSServer.h>
 #include <WiFiMulti.h>
 
-class ConnectivityService : public ServiceModule
+class ConnectivityService final : public ServiceModule
 {
 private:
     static constexpr std::string_view _name = "Connectivity";
 
-    ConnectivityService() : ServiceModule(_name.data()) {};
+    explicit ConnectivityService() : ServiceModule(_name.data()) {};
 
-    bool mDNS = false, pending = false, routable = false;
+    bool mDNS = false;
+    bool pending = false;
+    bool routable = false;
 
     unsigned long lastMillis = 0;
 
-    std::unique_ptr<DNSServer> dns;
+    std::unique_ptr<DNSServer> dns = nullptr;
 
     WiFiMulti multi;
 
     void initStation();
     void initHotspot();
-    void connect(const char *const ssid, const char *const key);
+    void connect(const char *ssid, const char *key);
     void transmit();
 
     static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
@@ -40,7 +42,7 @@ public:
     void begin();
     void handle();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 
     static ConnectivityService &getInstance();
 };

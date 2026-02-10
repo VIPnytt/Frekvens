@@ -6,19 +6,20 @@
 
 #include <format>
 
-class HomeAssistantExtension : public ExtensionModule
+class HomeAssistantExtension final : public ExtensionModule
 {
 private:
     bool pending = false;
 
     const std::string discoveryTopic = std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
 
-    static constexpr std::string_view payloadOff = "{\"power\":false}", payloadOn = "{\"power\":true}";
+    static constexpr std::string_view payloadOff = R"({"power":false})";
+    static constexpr std::string_view payloadOn = R"({"power":true})";
 
     void transmit();
 
 public:
-    HomeAssistantExtension();
+    explicit HomeAssistantExtension();
 
     const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 
@@ -30,104 +31,285 @@ public:
 
     void undiscover();
 
-    void onTransmit(const JsonDocument &doc, const char *const source) override;
+    void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
 extern HomeAssistantExtension *HomeAssistant;
 
 namespace HomeAssistantAbbreviations
 {
-static constexpr std::string_view
-    action_template = "act_tpl",
-    action_topic = "act_t", automation_type = "atype", aux_command_topic = "aux_cmd_t",
-    aux_state_template = "aux_stat_tpl", aux_state_topic = "aux_stat_t", availability = "avty",
-    availability_mode = "avty_mode", availability_template = "avty_tpl", availability_topic = "avty_t",
-    available_tones = "av_tones", away_mode_command_topic = "away_mode_cmd_t",
-    away_mode_state_template = "away_mode_stat_tpl", away_mode_state_topic = "away_mode_stat_t",
-    blue_template = "b_tpl", brightness_command_template = "bri_cmd_tpl", brightness_command_topic = "bri_cmd_t",
-    brightness_scale = "bri_scl", brightness_state_topic = "bri_stat_t", brightness_template = "bri_tpl",
-    brightness_value_template = "bri_val_tpl", code_arm_required = "cod_arm_req", code_disarm_required = "cod_dis_req",
-    code_trigger_required = "cod_trig_req", color_mode = "clrm", color_mode_state_topic = "clrm_stat_t",
-    color_mode_value_template = "clrm_val_tpl", color_temp_command_template = "clr_temp_cmd_tpl",
-    color_temp_command_topic = "clr_temp_cmd_t", color_temp_kelvin = "clr_temp_k",
-    color_temp_state_topic = "clr_temp_stat_t", color_temp_template = "clr_temp_tpl",
-    color_temp_value_template = "clr_temp_val_tpl", command_off_template = "cmd_off_tpl",
-    command_on_template = "cmd_on_tpl", command_template = "cmd_tpl", command_topic = "cmd_t", components = "cmps",
-    configuration_url = "cu", connections = "cns", content_type = "cont_type",
-    current_temperature_template = "curr_temp_tpl", current_temperature_topic = "curr_temp_t", device = "dev",
-    device_class = "dev_cla", direction_command_template = "dir_cmd_tpl", direction_command_topic = "dir_cmd_t",
-    direction_state_topic = "dir_stat_t", direction_value_template = "dir_val_tpl", display_precision = "dsp_prc",
-    effect_command_template = "fx_cmd_tpl", effect_command_topic = "fx_cmd_t", effect_list = "fx_list",
-    effect_state_topic = "fx_stat_t", effect_template = "fx_tpl", effect_value_template = "fx_val_tpl",
-    enabled_by_default = "en", encoding = "e", entity_category = "ent_cat", entity_picture = "ent_pic",
-    event_types = "evt_typ", expire_after = "exp_aft", fan_mode_command_template = "fan_mode_cmd_tpl",
-    fan_mode_command_topic = "fan_mode_cmd_t", fan_mode_state_template = "fan_mode_stat_tpl",
-    fan_mode_state_topic = "fan_mode_stat_t", fan_speed_list = "fanspd_lst", flash = "flsh",
-    flash_time_long = "flsh_tlng", flash_time_short = "flsh_tsht", force_update = "frc_upd", green_template = "g_tpl",
-    hs_command_template = "hs_cmd_tpl", hs_command_topic = "hs_cmd_t", hs_state_topic = "hs_stat_t",
-    hs_value_template = "hs_val_tpl", hw_version = "hw", icon = "ic", identifiers = "ids", image_encoding = "img_e",
-    image_topic = "img_t", initial = "init", json_attributes = "json_attr", json_attributes_template = "json_attr_tpl",
-    json_attributes_topic = "json_attr_t", last_reset_topic = "lrst_t", last_reset_value_template = "lrst_val_tpl",
-    latest_version_template = "l_ver_tpl", latest_version_topic = "l_ver_t", manufacturer = "mf", max = "max",
-    max_humidity = "max_hum", max_kelvin = "max_k", max_mireds = "max_mirs", max_temp = "max_temp",
-    migrate_discovery = "migr_discvry", min = "min", min_humidity = "min_hum", min_kelvin = "min_k",
-    min_mireds = "min_mirs", min_temp = "min_temp", mode = "mode", mode_command_template = "mode_cmd_tpl",
-    mode_command_topic = "mode_cmd_t", mode_state_template = "mode_stat_tpl", mode_state_topic = "mode_stat_t",
-    model = "mdl", model_id = "mdl_id", modes = "modes", name = "name", object_id = "obj_id", off_delay = "off_dly",
-    on_command_type = "on_cmd_type", optimistic = "opt", options = "ops", origin = "o",
-    oscillation_command_template = "osc_cmd_tpl", oscillation_command_topic = "osc_cmd_t",
-    oscillation_state_topic = "osc_stat_t", oscillation_value_template = "osc_val_tpl", pattern = "ptrn",
-    payload = "pl", payload_arm_away = "pl_arm_away", payload_arm_custom_bypass = "pl_arm_custom_b",
-    payload_arm_home = "pl_arm_home", payload_arm_night = "pl_arm_nite", payload_arm_vacation = "pl_arm_vacation",
-    payload_available = "pl_avail", payload_clean_spot = "pl_cln_sp", payload_close = "pl_cls",
-    payload_direction_forward = "pl_dir_fwd", payload_direction_reverse = "pl_dir_rev", payload_disarm = "pl_disarm",
-    payload_home = "pl_home", payload_install = "pl_inst", payload_locate = "pl_loc", payload_lock = "pl_lock",
-    payload_not_available = "pl_not_avail", payload_not_home = "pl_not_home", payload_off = "pl_off",
-    payload_on = "pl_on", payload_open = "pl_open", payload_oscillation_off = "pl_osc_off",
-    payload_oscillation_on = "pl_osc_on", payload_pause = "pl_paus", payload_press = "pl_prs", payload_reset = "pl_rst",
-    payload_reset_humidity = "pl_rst_hum", payload_reset_mode = "pl_rst_mode", payload_reset_percentage = "pl_rst_pct",
-    payload_reset_preset_mode = "pl_rst_pr_mode", payload_return_to_base = "pl_ret", payload_start = "pl_strt",
-    payload_start_pause = "pl_stpa", payload_stop = "pl_stop", payload_stop_tilt = "pl_stop_tilt",
-    payload_trigger = "pl_trig", payload_turn_off = "pl_toff", payload_turn_on = "pl_ton", payload_unlock = "pl_unlk",
-    percentage_command_template = "pct_cmd_tpl", percentage_command_topic = "pct_cmd_t",
-    percentage_state_topic = "pct_stat_t", percentage_value_template = "pct_val_tpl", platform = "p",
-    position_closed = "pos_clsd", position_open = "pos_open", position_template = "pos_tpl", position_topic = "pos_t",
-    preset_mode_command_template = "pr_mode_cmd_tpl", preset_mode_command_topic = "pr_mode_cmd_t",
-    preset_mode_state_topic = "pr_mode_stat_t", preset_mode_value_template = "pr_mode_val_tpl",
-    preset_modes = "pr_modes", red_template = "r_tpl", release_summary = "rel_s", release_url = "rel_u",
-    reports_position = "pos", retain = "ret", rgb_command_template = "rgb_cmd_tpl", rgb_command_topic = "rgb_cmd_t",
-    rgb_state_topic = "rgb_stat_t", rgb_value_template = "rgb_val_tpl", rgbw_command_template = "rgbw_cmd_tpl",
-    rgbw_command_topic = "rgbw_cmd_t", rgbw_state_topic = "rgbw_stat_t", rgbw_value_template = "rgbw_val_tpl",
-    rgbww_command_template = "rgbww_cmd_tpl", rgbww_command_topic = "rgbww_cmd_t", rgbww_state_topic = "rgbww_stat_t",
-    rgbww_value_template = "rgbww_val_tpl", schema = "schema", send_command_topic = "send_cmd_t",
-    send_if_off = "send_if_off", serial_number = "sn", set_fan_speed_topic = "set_fan_spd_t",
-    set_position_template = "set_pos_tpl", set_position_topic = "set_pos_t", source_type = "src_type",
-    speed_range_max = "spd_rng_max", speed_range_min = "spd_rng_min", state_class = "stat_cla",
-    state_closed = "stat_clsd", state_closing = "stat_closing", state_jammed = "stat_jam", state_locked = "stat_locked",
-    state_locking = "stat_locking", state_off = "stat_off", state_on = "stat_on", state_open = "stat_open",
-    state_opening = "stat_opening", state_stopped = "stat_stopped", state_template = "stat_tpl", state_topic = "stat_t",
-    state_unlocked = "stat_unlocked", state_unlocking = "stat_unlocking", state_value_template = "stat_val_tpl",
-    step = "step", subtype = "stype", suggested_area = "sa", suggested_display_precision = "sug_dsp_prc",
-    support_duration = "sup_dur", support_url = "url", support_volume_set = "sup_vol",
-    supported_color_modes = "sup_clrm", supported_features = "sup_feat", sw_version = "sw",
-    swing_mode_command_template = "swing_mode_cmd_tpl", swing_mode_command_topic = "swing_mode_cmd_t",
-    swing_mode_state_template = "swing_mode_stat_tpl", swing_mode_state_topic = "swing_mode_stat_t",
-    target_humidity_command_template = "hum_cmd_tpl", target_humidity_command_topic = "hum_cmd_t",
-    target_humidity_state_template = "hum_state_tpl", target_humidity_state_topic = "hum_stat_t",
-    temperature_command_template = "temp_cmd_tpl", temperature_command_topic = "temp_cmd_t",
-    temperature_high_command_template = "temp_hi_cmd_tpl", temperature_high_command_topic = "temp_hi_cmd_t",
-    temperature_high_state_template = "temp_hi_stat_tpl", temperature_high_state_topic = "temp_hi_stat_t",
-    temperature_low_command_template = "temp_lo_cmd_tpl", temperature_low_command_topic = "temp_lo_cmd_t",
-    temperature_low_state_template = "temp_lo_stat_tpl", temperature_low_state_topic = "temp_lo_stat_t",
-    temperature_state_template = "temp_stat_tpl", temperature_state_topic = "temp_stat_t",
-    temperature_unit = "temp_unit", tilt_closed_value = "tilt_clsd_val", tilt_command_template = "tilt_cmd_tpl",
-    tilt_command_topic = "tilt_cmd_t", tilt_max = "tilt_max", tilt_min = "tilt_min",
-    tilt_opened_value = "tilt_opnd_val", tilt_optimistic = "tilt_opt", tilt_status_template = "tilt_status_tpl",
-    tilt_status_topic = "tilt_status_t", title = "tit", topic = "t", transition = "trns", type = "type",
-    unique_id = "uniq_id", unit_of_measurement = "unit_of_meas", url_template = "url_tpl", url_topic = "url_t",
-    value_template = "val_tpl", white_command_topic = "whit_cmd_t", white_scale = "whit_scl",
-    xy_command_template = "xy_cmd_tpl", xy_command_topic = "xy_cmd_t", xy_state_topic = "xy_stat_t",
-    xy_value_template = "xy_val_tpl";
-};
+static constexpr std::string_view action_template = "act_tpl";
+static constexpr std::string_view action_topic = "act_t";
+static constexpr std::string_view automation_type = "atype";
+static constexpr std::string_view aux_command_topic = "aux_cmd_t";
+static constexpr std::string_view aux_state_template = "aux_stat_tpl";
+static constexpr std::string_view aux_state_topic = "aux_stat_t";
+static constexpr std::string_view availability = "avty";
+static constexpr std::string_view availability_mode = "avty_mode";
+static constexpr std::string_view availability_template = "avty_tpl";
+static constexpr std::string_view availability_topic = "avty_t";
+static constexpr std::string_view available_tones = "av_tones";
+static constexpr std::string_view away_mode_command_topic = "away_mode_cmd_t";
+static constexpr std::string_view away_mode_state_template = "away_mode_stat_tpl";
+static constexpr std::string_view away_mode_state_topic = "away_mode_stat_t";
+static constexpr std::string_view blue_template = "b_tpl";
+static constexpr std::string_view brightness_command_template = "bri_cmd_tpl";
+static constexpr std::string_view brightness_command_topic = "bri_cmd_t";
+static constexpr std::string_view brightness_scale = "bri_scl";
+static constexpr std::string_view brightness_state_topic = "bri_stat_t";
+static constexpr std::string_view brightness_template = "bri_tpl";
+static constexpr std::string_view brightness_value_template = "bri_val_tpl";
+static constexpr std::string_view code_arm_required = "cod_arm_req";
+static constexpr std::string_view code_disarm_required = "cod_dis_req";
+static constexpr std::string_view code_trigger_required = "cod_trig_req";
+static constexpr std::string_view color_mode = "clrm";
+static constexpr std::string_view color_mode_state_topic = "clrm_stat_t";
+static constexpr std::string_view color_mode_value_template = "clrm_val_tpl";
+static constexpr std::string_view color_temp_command_template = "clr_temp_cmd_tpl";
+static constexpr std::string_view color_temp_command_topic = "clr_temp_cmd_t";
+static constexpr std::string_view color_temp_kelvin = "clr_temp_k";
+static constexpr std::string_view color_temp_state_topic = "clr_temp_stat_t";
+static constexpr std::string_view color_temp_template = "clr_temp_tpl";
+static constexpr std::string_view color_temp_value_template = "clr_temp_val_tpl";
+static constexpr std::string_view command_off_template = "cmd_off_tpl";
+static constexpr std::string_view command_on_template = "cmd_on_tpl";
+static constexpr std::string_view command_template = "cmd_tpl";
+static constexpr std::string_view command_topic = "cmd_t";
+static constexpr std::string_view components = "cmps";
+static constexpr std::string_view configuration_url = "cu";
+static constexpr std::string_view connections = "cns";
+static constexpr std::string_view content_type = "cont_type";
+static constexpr std::string_view current_temperature_template = "curr_temp_tpl";
+static constexpr std::string_view current_temperature_topic = "curr_temp_t";
+static constexpr std::string_view device = "dev";
+static constexpr std::string_view device_class = "dev_cla";
+static constexpr std::string_view direction_command_template = "dir_cmd_tpl";
+static constexpr std::string_view direction_command_topic = "dir_cmd_t";
+static constexpr std::string_view direction_state_topic = "dir_stat_t";
+static constexpr std::string_view direction_value_template = "dir_val_tpl";
+static constexpr std::string_view display_precision = "dsp_prc";
+static constexpr std::string_view effect_command_template = "fx_cmd_tpl";
+static constexpr std::string_view effect_command_topic = "fx_cmd_t";
+static constexpr std::string_view effect_list = "fx_list";
+static constexpr std::string_view effect_state_topic = "fx_stat_t";
+static constexpr std::string_view effect_template = "fx_tpl";
+static constexpr std::string_view effect_value_template = "fx_val_tpl";
+static constexpr std::string_view enabled_by_default = "en";
+static constexpr std::string_view encoding = "e";
+static constexpr std::string_view entity_category = "ent_cat";
+static constexpr std::string_view entity_picture = "ent_pic";
+static constexpr std::string_view event_types = "evt_typ";
+static constexpr std::string_view expire_after = "exp_aft";
+static constexpr std::string_view fan_mode_command_template = "fan_mode_cmd_tpl";
+static constexpr std::string_view fan_mode_command_topic = "fan_mode_cmd_t";
+static constexpr std::string_view fan_mode_state_template = "fan_mode_stat_tpl";
+static constexpr std::string_view fan_mode_state_topic = "fan_mode_stat_t";
+static constexpr std::string_view fan_speed_list = "fanspd_lst";
+static constexpr std::string_view flash = "flsh";
+static constexpr std::string_view flash_time_long = "flsh_tlng";
+static constexpr std::string_view flash_time_short = "flsh_tsht";
+static constexpr std::string_view force_update = "frc_upd";
+static constexpr std::string_view green_template = "g_tpl";
+static constexpr std::string_view hs_command_template = "hs_cmd_tpl";
+static constexpr std::string_view hs_command_topic = "hs_cmd_t";
+static constexpr std::string_view hs_state_topic = "hs_stat_t";
+static constexpr std::string_view hs_value_template = "hs_val_tpl";
+static constexpr std::string_view hw_version = "hw";
+static constexpr std::string_view icon = "ic";
+static constexpr std::string_view identifiers = "ids";
+static constexpr std::string_view image_encoding = "img_e";
+static constexpr std::string_view image_topic = "img_t";
+static constexpr std::string_view initial = "init";
+static constexpr std::string_view json_attributes = "json_attr";
+static constexpr std::string_view json_attributes_template = "json_attr_tpl";
+static constexpr std::string_view json_attributes_topic = "json_attr_t";
+static constexpr std::string_view last_reset_topic = "lrst_t";
+static constexpr std::string_view last_reset_value_template = "lrst_val_tpl";
+static constexpr std::string_view latest_version_template = "l_ver_tpl";
+static constexpr std::string_view latest_version_topic = "l_ver_t";
+static constexpr std::string_view manufacturer = "mf";
+static constexpr std::string_view max = "max";
+static constexpr std::string_view max_humidity = "max_hum";
+static constexpr std::string_view max_kelvin = "max_k";
+static constexpr std::string_view max_mireds = "max_mirs";
+static constexpr std::string_view max_temp = "max_temp";
+static constexpr std::string_view migrate_discovery = "migr_discvry";
+static constexpr std::string_view min = "min";
+static constexpr std::string_view min_humidity = "min_hum";
+static constexpr std::string_view min_kelvin = "min_k";
+static constexpr std::string_view min_mireds = "min_mirs";
+static constexpr std::string_view min_temp = "min_temp";
+static constexpr std::string_view mode = "mode";
+static constexpr std::string_view mode_command_template = "mode_cmd_tpl";
+static constexpr std::string_view mode_command_topic = "mode_cmd_t";
+static constexpr std::string_view mode_state_template = "mode_stat_tpl";
+static constexpr std::string_view mode_state_topic = "mode_stat_t";
+static constexpr std::string_view model = "mdl";
+static constexpr std::string_view model_id = "mdl_id";
+static constexpr std::string_view modes = "modes";
+static constexpr std::string_view name = "name";
+static constexpr std::string_view object_id = "obj_id";
+static constexpr std::string_view off_delay = "off_dly";
+static constexpr std::string_view on_command_type = "on_cmd_type";
+static constexpr std::string_view optimistic = "opt";
+static constexpr std::string_view options = "ops";
+static constexpr std::string_view origin = "o";
+static constexpr std::string_view oscillation_command_template = "osc_cmd_tpl";
+static constexpr std::string_view oscillation_command_topic = "osc_cmd_t";
+static constexpr std::string_view oscillation_state_topic = "osc_stat_t";
+static constexpr std::string_view oscillation_value_template = "osc_val_tpl";
+static constexpr std::string_view pattern = "ptrn";
+static constexpr std::string_view payload = "pl";
+static constexpr std::string_view payload_arm_away = "pl_arm_away";
+static constexpr std::string_view payload_arm_custom_bypass = "pl_arm_custom_b";
+static constexpr std::string_view payload_arm_home = "pl_arm_home";
+static constexpr std::string_view payload_arm_night = "pl_arm_nite";
+static constexpr std::string_view payload_arm_vacation = "pl_arm_vacation";
+static constexpr std::string_view payload_available = "pl_avail";
+static constexpr std::string_view payload_clean_spot = "pl_cln_sp";
+static constexpr std::string_view payload_close = "pl_cls";
+static constexpr std::string_view payload_direction_forward = "pl_dir_fwd";
+static constexpr std::string_view payload_direction_reverse = "pl_dir_rev";
+static constexpr std::string_view payload_disarm = "pl_disarm";
+static constexpr std::string_view payload_home = "pl_home";
+static constexpr std::string_view payload_install = "pl_inst";
+static constexpr std::string_view payload_locate = "pl_loc";
+static constexpr std::string_view payload_lock = "pl_lock";
+static constexpr std::string_view payload_not_available = "pl_not_avail";
+static constexpr std::string_view payload_not_home = "pl_not_home";
+static constexpr std::string_view payload_off = "pl_off";
+static constexpr std::string_view payload_on = "pl_on";
+static constexpr std::string_view payload_open = "pl_open";
+static constexpr std::string_view payload_oscillation_off = "pl_osc_off";
+static constexpr std::string_view payload_oscillation_on = "pl_osc_on";
+static constexpr std::string_view payload_pause = "pl_paus";
+static constexpr std::string_view payload_press = "pl_prs";
+static constexpr std::string_view payload_reset = "pl_rst";
+static constexpr std::string_view payload_reset_humidity = "pl_rst_hum";
+static constexpr std::string_view payload_reset_mode = "pl_rst_mode";
+static constexpr std::string_view payload_reset_percentage = "pl_rst_pct";
+static constexpr std::string_view payload_reset_preset_mode = "pl_rst_pr_mode";
+static constexpr std::string_view payload_return_to_base = "pl_ret";
+static constexpr std::string_view payload_start = "pl_strt";
+static constexpr std::string_view payload_start_pause = "pl_stpa";
+static constexpr std::string_view payload_stop = "pl_stop";
+static constexpr std::string_view payload_stop_tilt = "pl_stop_tilt";
+static constexpr std::string_view payload_trigger = "pl_trig";
+static constexpr std::string_view payload_turn_off = "pl_toff";
+static constexpr std::string_view payload_turn_on = "pl_ton";
+static constexpr std::string_view payload_unlock = "pl_unlk";
+static constexpr std::string_view percentage_command_template = "pct_cmd_tpl";
+static constexpr std::string_view percentage_command_topic = "pct_cmd_t";
+static constexpr std::string_view percentage_state_topic = "pct_stat_t";
+static constexpr std::string_view percentage_value_template = "pct_val_tpl";
+static constexpr std::string_view platform = "p";
+static constexpr std::string_view position_closed = "pos_clsd";
+static constexpr std::string_view position_open = "pos_open";
+static constexpr std::string_view position_template = "pos_tpl";
+static constexpr std::string_view position_topic = "pos_t";
+static constexpr std::string_view preset_mode_command_template = "pr_mode_cmd_tpl";
+static constexpr std::string_view preset_mode_command_topic = "pr_mode_cmd_t";
+static constexpr std::string_view preset_mode_state_topic = "pr_mode_stat_t";
+static constexpr std::string_view preset_mode_value_template = "pr_mode_val_tpl";
+static constexpr std::string_view preset_modes = "pr_modes";
+static constexpr std::string_view red_template = "r_tpl";
+static constexpr std::string_view release_summary = "rel_s";
+static constexpr std::string_view release_url = "rel_u";
+static constexpr std::string_view reports_position = "pos";
+static constexpr std::string_view retain = "ret";
+static constexpr std::string_view rgb_command_template = "rgb_cmd_tpl";
+static constexpr std::string_view rgb_command_topic = "rgb_cmd_t";
+static constexpr std::string_view rgb_state_topic = "rgb_stat_t";
+static constexpr std::string_view rgb_value_template = "rgb_val_tpl";
+static constexpr std::string_view rgbw_command_template = "rgbw_cmd_tpl";
+static constexpr std::string_view rgbw_command_topic = "rgbw_cmd_t";
+static constexpr std::string_view rgbw_state_topic = "rgbw_stat_t";
+static constexpr std::string_view rgbw_value_template = "rgbw_val_tpl";
+static constexpr std::string_view rgbww_command_template = "rgbww_cmd_tpl";
+static constexpr std::string_view rgbww_command_topic = "rgbww_cmd_t";
+static constexpr std::string_view rgbww_state_topic = "rgbww_stat_t";
+static constexpr std::string_view rgbww_value_template = "rgbww_val_tpl";
+static constexpr std::string_view schema = "schema";
+static constexpr std::string_view send_command_topic = "send_cmd_t";
+static constexpr std::string_view send_if_off = "send_if_off";
+static constexpr std::string_view serial_number = "sn";
+static constexpr std::string_view set_fan_speed_topic = "set_fan_spd_t";
+static constexpr std::string_view set_position_template = "set_pos_tpl";
+static constexpr std::string_view set_position_topic = "set_pos_t";
+static constexpr std::string_view source_type = "src_type";
+static constexpr std::string_view speed_range_max = "spd_rng_max";
+static constexpr std::string_view speed_range_min = "spd_rng_min";
+static constexpr std::string_view state_class = "stat_cla";
+static constexpr std::string_view state_closed = "stat_clsd";
+static constexpr std::string_view state_closing = "stat_closing";
+static constexpr std::string_view state_jammed = "stat_jam";
+static constexpr std::string_view state_locked = "stat_locked";
+static constexpr std::string_view state_locking = "stat_locking";
+static constexpr std::string_view state_off = "stat_off";
+static constexpr std::string_view state_on = "stat_on";
+static constexpr std::string_view state_open = "stat_open";
+static constexpr std::string_view state_opening = "stat_opening";
+static constexpr std::string_view state_stopped = "stat_stopped";
+static constexpr std::string_view state_template = "stat_tpl";
+static constexpr std::string_view state_topic = "stat_t";
+static constexpr std::string_view state_unlocked = "stat_unlocked";
+static constexpr std::string_view state_unlocking = "stat_unlocking";
+static constexpr std::string_view state_value_template = "stat_val_tpl";
+static constexpr std::string_view step = "step";
+static constexpr std::string_view subtype = "stype";
+static constexpr std::string_view suggested_area = "sa";
+static constexpr std::string_view suggested_display_precision = "sug_dsp_prc";
+static constexpr std::string_view support_duration = "sup_dur";
+static constexpr std::string_view support_url = "url";
+static constexpr std::string_view support_volume_set = "sup_vol";
+static constexpr std::string_view supported_color_modes = "sup_clrm";
+static constexpr std::string_view supported_features = "sup_feat";
+static constexpr std::string_view sw_version = "sw";
+static constexpr std::string_view swing_mode_command_template = "swing_mode_cmd_tpl";
+static constexpr std::string_view swing_mode_command_topic = "swing_mode_cmd_t";
+static constexpr std::string_view swing_mode_state_template = "swing_mode_stat_tpl";
+static constexpr std::string_view swing_mode_state_topic = "swing_mode_stat_t";
+static constexpr std::string_view target_humidity_command_template = "hum_cmd_tpl";
+static constexpr std::string_view target_humidity_command_topic = "hum_cmd_t";
+static constexpr std::string_view target_humidity_state_template = "hum_state_tpl";
+static constexpr std::string_view target_humidity_state_topic = "hum_stat_t";
+static constexpr std::string_view temperature_command_template = "temp_cmd_tpl";
+static constexpr std::string_view temperature_command_topic = "temp_cmd_t";
+static constexpr std::string_view temperature_high_command_template = "temp_hi_cmd_tpl";
+static constexpr std::string_view temperature_high_command_topic = "temp_hi_cmd_t";
+static constexpr std::string_view temperature_high_state_template = "temp_hi_stat_tpl";
+static constexpr std::string_view temperature_high_state_topic = "temp_hi_stat_t";
+static constexpr std::string_view temperature_low_command_template = "temp_lo_cmd_tpl";
+static constexpr std::string_view temperature_low_command_topic = "temp_lo_cmd_t";
+static constexpr std::string_view temperature_low_state_template = "temp_lo_stat_tpl";
+static constexpr std::string_view temperature_low_state_topic = "temp_lo_stat_t";
+static constexpr std::string_view temperature_state_template = "temp_stat_tpl";
+static constexpr std::string_view temperature_state_topic = "temp_stat_t";
+static constexpr std::string_view temperature_unit = "temp_unit";
+static constexpr std::string_view tilt_closed_value = "tilt_clsd_val";
+static constexpr std::string_view tilt_command_template = "tilt_cmd_tpl";
+static constexpr std::string_view tilt_command_topic = "tilt_cmd_t";
+static constexpr std::string_view tilt_max = "tilt_max";
+static constexpr std::string_view tilt_min = "tilt_min";
+static constexpr std::string_view tilt_opened_value = "tilt_opnd_val";
+static constexpr std::string_view tilt_optimistic = "tilt_opt";
+static constexpr std::string_view tilt_status_template = "tilt_status_tpl";
+static constexpr std::string_view tilt_status_topic = "tilt_status_t";
+static constexpr std::string_view title = "tit";
+static constexpr std::string_view topic = "t";
+static constexpr std::string_view transition = "trns";
+static constexpr std::string_view type = "type";
+static constexpr std::string_view unique_id = "uniq_id";
+static constexpr std::string_view unit_of_measurement = "unit_of_meas";
+static constexpr std::string_view url_template = "url_tpl";
+static constexpr std::string_view url_topic = "url_t";
+static constexpr std::string_view value_template = "val_tpl";
+static constexpr std::string_view white_command_topic = "whit_cmd_t";
+static constexpr std::string_view white_scale = "whit_scl";
+static constexpr std::string_view xy_command_template = "xy_cmd_tpl";
+static constexpr std::string_view xy_command_topic = "xy_cmd_t";
+static constexpr std::string_view xy_state_topic = "xy_stat_t";
+static constexpr std::string_view xy_value_template = "xy_val_tpl";
+}; // namespace HomeAssistantAbbreviations
 
 #endif // EXTENSION_HOMEASSISTANT

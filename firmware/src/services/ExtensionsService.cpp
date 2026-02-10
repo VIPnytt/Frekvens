@@ -33,7 +33,7 @@ void ExtensionsService::transmit()
         list.add(extension->name);
     }
     lastMillis = millis();
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
 void ExtensionsService::onTask(void *parameter)

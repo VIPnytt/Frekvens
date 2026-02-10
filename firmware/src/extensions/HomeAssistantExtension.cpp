@@ -21,15 +21,15 @@ void HomeAssistantExtension::configure()
 {
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
     {
-        const std::string id = std::regex_replace(name, std::regex("\\s+"), "").append("_main"),
-                          topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
+        const std::string id = std::regex_replace(name, std::regex(R"(\s+)"), "").append("_main");
+        const std::string topicDisplay = std::string("frekvens/" HOSTNAME "/").append(Display.name);
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::brightness_command_template] = "{\"brightness\":{{value}}}";
+        component[HomeAssistantAbbreviations::brightness_command_template] = R"({"brightness":{{value}}})";
         component[HomeAssistantAbbreviations::brightness_command_topic] = topicDisplay + "/set";
         component[HomeAssistantAbbreviations::brightness_state_topic] = topicDisplay;
         component[HomeAssistantAbbreviations::brightness_value_template] = "{{value_json.brightness}}";
         component[HomeAssistantAbbreviations::command_topic] = topicDisplay + "/set";
-        component[HomeAssistantAbbreviations::effect_command_template] = "{\"mode\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::effect_command_template] = R"({"mode":"{{value}}"})";
         component[HomeAssistantAbbreviations::effect_command_topic] =
             std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set");
         JsonArray effectList = component[HomeAssistantAbbreviations::effect_list].to<JsonArray>();
@@ -115,18 +115,18 @@ void HomeAssistantExtension::transmit()
 {
     JsonDocument doc;
     doc[Display.name]["power"] = Display.getPower() ? payloadOn : payloadOff;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void HomeAssistantExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void HomeAssistantExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
     // Display: Power
-    if (!strcmp(source, Display.name) && doc["power"].is<bool>())
+    if (!strcmp(source, Display.name) && payload["power"].is<bool>())
     {
         pending = true;
     }
     // Remove
-    else if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "remove"))
+    else if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "remove"))
     {
         undiscover();
     }

@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class JaggedWaveformMode : public ModeModule
+class JaggedWaveformMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
@@ -70,7 +70,7 @@ private:
     };
 
 public:
-    JaggedWaveformMode() : ModeModule("Jagged waveform") {};
+    explicit JaggedWaveformMode() : ModeModule("Jagged waveform") {};
 
     void handle() override;
 };

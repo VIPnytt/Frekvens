@@ -4,30 +4,35 @@
 
 #include "modules/ExtensionModule.h"
 
-class MicrophoneExtension : public ExtensionModule
+class MicrophoneExtension final : public ExtensionModule
 {
 private:
-    bool active = false, detected = false, pending = false;
+    bool active = false;
+    bool detected = false;
+    bool pending = false;
 
-    uint16_t levelMax = UINT8_MAX, mic = 0, threshold = INT8_MAX;
+    uint16_t levelMax = UINT8_MAX;
+    uint16_t mic = 0;
+    uint16_t threshold = INT8_MAX;
 
-    unsigned long lastMillis = 0, _lastMillis = 0;
+    unsigned long lastMillis = 0;
+    unsigned long _lastMillis = 0;
 
     void transmit();
 
 public:
-    MicrophoneExtension();
+    explicit MicrophoneExtension();
 
     void configure() override;
     void begin() override;
     void handle() override;
 
-    bool getActive();
+    [[nodiscard]] bool getActive() const;
     void setActive(bool active);
     void setThreshold(uint16_t _threshold);
-    bool isTriggered() const;
+    [[nodiscard]] bool isTriggered() const;
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 extern MicrophoneExtension *Microphone;

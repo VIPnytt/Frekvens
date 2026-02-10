@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class ScanMode : public ModeModule
+class ScanMode final : public ModeModule
 {
 private:
     uint8_t column = 0;
@@ -12,7 +12,7 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    ScanMode() : ModeModule("Scan") {};
+    explicit ScanMode() : ModeModule("Scan") {};
 
     void handle() override;
 };

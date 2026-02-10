@@ -20,7 +20,7 @@ void SnakeMode::configure()
     {
         const std::string id = std::string(name).append("_clock");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"clock\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"clock":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -73,7 +73,7 @@ void SnakeMode::handle()
         move();
         break;
     case 2:
-        end();
+        blink();
         break;
     case 3:
         clean();
@@ -85,17 +85,19 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    const uint8_t x = random(GRID_COLUMNS), y = random(clock ? 5 : 0, GRID_ROWS);
+    const uint8_t x = random(GRID_COLUMNS);
+    const uint8_t y = random(clock ? 5 : 0, GRID_ROWS);
     snake = {{x, y}};
     Display.setPixel(x, y);
     setDot();
     stage = 1;
 }
 
-bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
+std::optional<SnakeMode::Pixel> SnakeMode::next() const
 {
-    std::queue<Pixel> frontier;
+    Pixel start = snake.back();
     std::map<Pixel, Pixel> from;
+    std::queue<Pixel> frontier;
     frontier.push(start);
     from[start] = start;
     bool pathFound = false;
@@ -103,8 +105,7 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     {
         Pixel current = frontier.front();
         frontier.pop();
-
-        if (current == goal)
+        if (current == dot)
         {
             pathFound = true;
             break;
@@ -137,13 +138,12 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     }
     if (pathFound)
     {
-        Pixel step = goal;
-        while (!(from[step] == start))
+        Pixel step = dot;
+        while (from[step] != start)
         {
             step = from[step];
         }
-        next = step;
-        return true;
+        return step;
     }
     std::vector<Pixel> fallback;
     if (start.y > (clock ? 5 : 0))
@@ -166,29 +166,27 @@ bool SnakeMode::findPath(Pixel start, Pixel goal, Pixel &next)
     {
         if (std::find(snake.begin(), snake.end(), option) == snake.end())
         {
-            next = option;
-            return true;
+            return option;
         }
     }
-    return false;
+    return std::nullopt;
 }
 
 void SnakeMode::move()
 {
     if (millis() - lastMillis > INT8_MAX + snake.size())
     {
-        Pixel nextStep;
-        if (findPath(snake.back(), dot, nextStep))
+        std::optional<SnakeMode::Pixel> step = next();
+        if (step.has_value())
         {
-            if (nextStep == dot)
+            snake.push_back(step.value());
+            if (snake.back() == dot)
             {
-                snake.push_back(nextStep);
-                Display.setPixel(nextStep.x, nextStep.y, 1);
+                Display.setPixel(dot.x, dot.y);
                 setDot();
             }
             else
             {
-                snake.push_back(nextStep);
                 uint8_t i = 0;
                 for (const Pixel &part : snake)
                 {
@@ -196,28 +194,28 @@ void SnakeMode::move()
                     ++i;
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0);
-                snake.erase(snake.begin());
+                snake.pop_front();
             }
         }
         else
         {
             lastMillis = millis();
-            blink = 0;
+            n = 0;
             stage = 2;
         }
         lastMillis = millis();
     }
 }
 
-void SnakeMode::end()
+void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
         for (const Pixel &piece : snake)
         {
-            Display.setPixel(piece.x, piece.y, blink % 2 == 0 ? 0 : UINT8_MAX);
+            Display.setPixel(piece.x, piece.y, n % 2 == 0 ? 0 : UINT8_MAX);
         }
-        if (++blink >= 6)
+        if (++n >= 6)
         {
             stage = 3;
         }
@@ -244,12 +242,13 @@ void SnakeMode::setDot()
 {
     do
     {
-        dot = {(uint8_t)random(GRID_COLUMNS), (uint8_t)random(clock ? 5 : 0, GRID_ROWS)};
-    } while (Display.getPixel(dot.x, dot.y));
+        dot.x = random(GRID_COLUMNS);
+        dot.y = random(clock ? 5 : 0, GRID_ROWS);
+    } while (Display.getPixel(dot.x, dot.y) != 0);
     Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
 }
 
-void SnakeMode::setClock(const bool _clock)
+void SnakeMode::setClock(bool _clock)
 {
     if (_clock != clock)
     {
@@ -275,15 +274,15 @@ void SnakeMode::transmit()
 {
     JsonDocument doc;
     doc["clock"] = clock;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(const JsonDocument doc, const char *const source)
+void SnakeMode::onReceive(JsonObjectConst payload, const char *source)
 {
     // Clock
-    if (doc["clock"].is<bool>())
+    if (payload["clock"].is<bool>())
     {
-        setClock(doc["clock"].as<bool>());
+        setClock(payload["clock"].as<bool>());
     }
 }
 

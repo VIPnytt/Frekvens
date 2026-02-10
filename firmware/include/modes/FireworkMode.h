@@ -5,12 +5,17 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class FireworkMode : public ModeModule
+class FireworkMode final : public ModeModule
 {
 private:
     unsigned long lastMillis = 0;
 
-    uint8_t brightness = UINT8_MAX, maxRadius = 1, radius = 0, rocketX = 0, rocketY = GRID_ROWS, stage = 0;
+    uint8_t brightness = UINT8_MAX;
+    uint8_t maxRadius = 1;
+    uint8_t radius = 0;
+    uint8_t rocketX = 0;
+    uint8_t rocketY = GRID_ROWS;
+    uint8_t stage = 0;
 
     void pad();
     void launching();
@@ -18,7 +23,7 @@ private:
     void fading();
 
 public:
-    FireworkMode() : ModeModule("Firework") {};
+    explicit FireworkMode() : ModeModule("Firework") {};
 
     void handle() override;
 };

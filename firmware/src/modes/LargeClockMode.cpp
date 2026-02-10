@@ -35,7 +35,7 @@ void LargeClockMode::configure()
     {
         Storage.end();
     }
-    if (!font)
+    if (font == nullptr)
     {
         font = FontMediumBold;
     }
@@ -44,7 +44,7 @@ void LargeClockMode::configure()
     {
         const std::string id = std::string(name).append("_font");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"font\":\"{{value}}\"}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"font":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -64,7 +64,7 @@ void LargeClockMode::configure()
     {
         const std::string id = std::string(name).append("_ticking");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"ticking\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"ticking":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -97,39 +97,42 @@ void LargeClockMode::handle()
             Display.clearFrame();
             {
                 TextHandler h1 = TextHandler(std::to_string(hour / 10), font);
-                h1.draw(GRID_COLUMNS / 2 - 1 - (7 - h1.getWidth()) / 2 - h1.getWidth(),
-                        GRID_ROWS / 2 - 1 - (7 - h1.getHeight()) / 2 - h1.getHeight());
+                h1.draw((GRID_COLUMNS / 2) - 1 - ((7 - h1.getWidth()) / 2) - h1.getWidth(),
+                        (GRID_ROWS / 2) - 1 - ((7 - h1.getHeight()) / 2) - h1.getHeight());
             }
             {
                 TextHandler h2 = TextHandler(std::to_string(hour % 10), font);
-                h2.draw(GRID_COLUMNS / 2 + 1 + (7 - h2.getWidth()) / 2,
-                        GRID_ROWS / 2 - 1 + (7 - h2.getHeight()) / 2 - h2.getHeight());
+                h2.draw((GRID_COLUMNS / 2) + 1 + ((7 - h2.getWidth()) / 2),
+                        (GRID_ROWS / 2) - 1 + ((7 - h2.getHeight()) / 2) - h2.getHeight());
             }
             {
                 TextHandler m1 = TextHandler(std::to_string(minute / 10), font);
-                m1.draw(GRID_COLUMNS / 2 - 1 - (7 - m1.getWidth()) / 2 - m1.getWidth(),
-                        GRID_ROWS / 2 + 1 - (7 - m1.getHeight()) / 2);
+                m1.draw((GRID_COLUMNS / 2) - 1 - ((7 - m1.getWidth()) / 2) - m1.getWidth(),
+                        (GRID_ROWS / 2) + 1 - ((7 - m1.getHeight()) / 2));
             }
             {
                 TextHandler m2 = TextHandler(std::to_string(minute % 10), font);
-                m2.draw(GRID_COLUMNS / 2 + 1 + (7 - m2.getWidth()) / 2, GRID_ROWS / 2 + 1 + (7 - m2.getHeight()) / 2);
+                m2.draw((GRID_COLUMNS / 2) + 1 + ((7 - m2.getWidth()) / 2),
+                        (GRID_ROWS / 2) + 1 + ((7 - m2.getHeight()) / 2));
             }
             pending = false;
         }
         if (ticking && second != local.tm_sec)
         {
-            Display.setPixel(
-                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, 0);
+            Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
+                             (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                             0);
             second = local.tm_sec;
-            Display.setPixel(
-                GRID_COLUMNS / 2 - 8 + (second + 2) / 4, second % 2 ? GRID_ROWS / 2 : GRID_ROWS / 2 - 1, INT8_MAX);
+            Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
+                             (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                             INT8_MAX);
         }
     }
 }
 
-void LargeClockMode::setFont(const char *const fontName)
+void LargeClockMode::setFont(const char *fontName)
 {
-    if (!font || strcmp(font->name, fontName))
+    if (font == nullptr || strcmp(font->name, fontName) != 0)
     {
         for (FontModule *_font : fonts)
         {
@@ -149,7 +152,7 @@ void LargeClockMode::setFont(const char *const fontName)
     }
 }
 
-void LargeClockMode::setTicking(const bool _ticking)
+void LargeClockMode::setTicking(bool _ticking)
 {
     if (_ticking != ticking)
     {
@@ -173,20 +176,20 @@ void LargeClockMode::transmit()
         _fonts.add(_font->name);
     }
     doc["ticking"] = ticking;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void LargeClockMode::onReceive(const JsonDocument doc, const char *const source)
+void LargeClockMode::onReceive(JsonObjectConst payload, const char *source)
 {
     // Font
-    if (doc["font"].is<const char *>())
+    if (payload["font"].is<const char *>())
     {
-        setFont(doc["font"].as<const char *>());
+        setFont(payload["font"].as<const char *>());
     }
     // Ticking
-    if (doc["ticking"].is<bool>())
+    if (payload["ticking"].is<bool>())
     {
-        setTicking(doc["ticking"].as<bool>());
+        setTicking(payload["ticking"].as<bool>());
     }
 }
 

@@ -44,7 +44,7 @@ void PlaylistExtension::configure()
     {
         const std::string id = std::string(name).append("_active");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"active\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
         component[HomeAssistantAbbreviations::json_attributes_template] =
@@ -164,26 +164,26 @@ void PlaylistExtension::transmit()
         _item["duration"] = mode.duration;
         _item["mode"] = mode.mode;
     }
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PlaylistExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
     // Modes: Mode
-    if (active && !strcmp(source, Modes.name) && doc["mode"].is<std::string>() &&
-        doc["mode"].as<std::string>() != playlist[step].mode)
+    if (active && !strcmp(source, Modes.name) && payload["mode"].is<std::string>() &&
+        payload["mode"].as<std::string>() != playlist[step].mode)
     {
         setActive(false);
     }
 }
 
-void PlaylistExtension::onReceive(const JsonDocument doc, const char *const source)
+void PlaylistExtension::onReceive(JsonObjectConst payload, const char *source)
 {
     // Playlist
-    if (doc["playlist"].is<JsonArrayConst>())
+    if (payload["playlist"].is<JsonArrayConst>())
     {
         std::vector<Mode> _playlist;
-        for (const JsonVariantConst item : doc["playlist"].as<JsonArrayConst>())
+        for (const JsonVariantConst item : payload["playlist"].as<JsonArrayConst>())
         {
             if (item["mode"].is<std::string>() && item["duration"].is<uint16_t>())
             {
@@ -196,9 +196,9 @@ void PlaylistExtension::onReceive(const JsonDocument doc, const char *const sour
         setPlaylist(_playlist);
     }
     // Active
-    if (doc["active"].is<bool>())
+    if (payload["active"].is<bool>())
     {
-        setActive(doc["active"].as<bool>());
+        setActive(payload["active"].as<bool>());
     }
 }
 

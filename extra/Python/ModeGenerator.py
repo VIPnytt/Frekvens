@@ -20,8 +20,8 @@ class ModeGenerator:
         self.id = "".join(self.name.split()).capitalize()
 
     def create(self) -> list[str]:
-        with open(self.path, "r", encoding="utf-8") as animation:
-            rows = csv.reader(animation)
+        with open(self.path, encoding="utf-8") as f:
+            rows = csv.reader(f)
             if sum(1 for _ in rows) <= self.rows:
                 return [
                     self._drawing_h(),
@@ -45,7 +45,7 @@ class ModeGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {self.id}Mode : public ModeModule",
+            f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
             "    unsigned long lastMillis = 0;",
@@ -66,7 +66,7 @@ class ModeGenerator:
                 "    };",
                 "",
                 "public:",
-                f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',
+                f'    explicit {self.id}Mode() : ModeModule("{self.name}") {{}};',
                 "",
                 "    void handle() override;",
                 "};",
@@ -78,8 +78,8 @@ class ModeGenerator:
         return f"{self.id}Mode.h"
 
     def _animation_cpp(self) -> str:
-        with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as cppMode:
-            cppMode.write(
+        with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
+            f.write(
                 "\n".join(
                     [
                         f'#include "modes/{self.id}Mode.h"',
@@ -125,7 +125,7 @@ class ModeGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"class {self.id}Mode : public ModeModule",
+            f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
             "    std::vector<uint16_t> frame = {",
@@ -145,7 +145,7 @@ class ModeGenerator:
                 "    };",
                 "",
                 "public:",
-                f'    {self.id}Mode() : ModeModule("{self.name}") {{}};',
+                f'    explicit {self.id}Mode() : ModeModule("{self.name}") {{}};',
                 "",
                 "    void begin() override;",
                 "};",
@@ -157,8 +157,8 @@ class ModeGenerator:
         return f"{self.id}Mode.h"
 
     def _drawing_cpp(self) -> str:
-        with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as cppMode:
-            cppMode.write(
+        with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
+            f.write(
                 "\n".join(
                     [
                         f'#include "modes/{self.id}Mode.h"',

@@ -4,7 +4,7 @@
 
 #include "modules/ModeModule.h"
 
-class LinesMode : public ModeModule
+class LinesMode final : public ModeModule
 {
 private:
     uint8_t x = 0;
@@ -12,7 +12,7 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    LinesMode() : ModeModule("Lines") {};
+    explicit LinesMode() : ModeModule("Lines") {};
 
     void handle() override;
 };

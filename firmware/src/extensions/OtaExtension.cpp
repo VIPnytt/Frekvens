@@ -57,11 +57,11 @@ void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,
                           size_t len, bool final)
 {
-    if (!index)
+    if (index == 0)
     {
         onStart();
     }
-    if ((!index && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
+    if ((index == 0 && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
         Update.write(data, len) != len || (final && !Update.end(true)))
     {
         ESP_LOGE(Ota->name, "%s", Update.errorString());

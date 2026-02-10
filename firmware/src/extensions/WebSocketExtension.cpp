@@ -17,43 +17,42 @@ void WebSocketExtension::begin()
 
 void WebSocketExtension::handle() { server->cleanupClients(); }
 
-void WebSocketExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
-    JsonDocument _doc;
-    _doc[source] = doc;
-    const size_t length = measureJson(_doc);
-    std::vector<char> payload(length + 1);
-    serializeJson(_doc, payload.data(), length + 1);
-    server->textAll(payload.data(), length);
+    JsonDocument doc;
+    doc[source].set(payload);
+    const size_t length = measureJson(doc);
+    std::vector<char> message(length + 1);
+    serializeJson(doc, message.data(), length + 1);
+    server->textAll(message.data(), length);
 }
 
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
-                                 uint8_t *data, size_t len)
+                                 const uint8_t *data, size_t len)
 {
     switch (type)
     {
     case AwsEventType::WS_EVT_CONNECT:
     {
-        const JsonDocument doc = Device.getTransmits();
-        const size_t length = measureJson(doc);
-        std::vector<char> payload(length + 1);
-        serializeJson(doc, payload.data(), length + 1);
-        client->text(payload.data(), length);
+        const JsonObjectConst transmits = Device.getTransmits();
+        const size_t length = measureJson(transmits);
+        std::vector<char> message(length + 1);
+        serializeJson(transmits, message.data(), length + 1);
+        client->text(message.data(), length);
     }
     break;
     case AwsEventType::WS_EVT_DATA:
     {
-        AwsFrameInfo *info = (AwsFrameInfo *)arg;
-        if (info->opcode == AwsFrameType::WS_TEXT)
+        if (static_cast<AwsFrameInfo *>(arg)->opcode == AwsFrameType::WS_TEXT)
         {
             JsonDocument doc;
             if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
             {
-                for (const JsonPairConst &pair : doc.as<JsonObjectConst>())
+                for (const JsonPairConst pair : doc.as<JsonObjectConst>())
                 {
                     if (pair.value().is<JsonObjectConst>())
                     {
-                        Device.receive(pair.value(), WebSocket->name, pair.key().c_str());
+                        Device.receive(pair.value().as<JsonObjectConst>(), WebSocket->name, pair.key().c_str());
                     }
                 }
             }

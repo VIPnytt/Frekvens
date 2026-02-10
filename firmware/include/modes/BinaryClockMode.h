@@ -4,19 +4,21 @@
 
 #include "modules/ModeModule.h"
 
-class BinaryClockMode : public ModeModule
+class BinaryClockMode final : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
     bool pending = false;
 
-    uint8_t hour, minute, second;
+    int hour = 24;
+    int minute = 60;
+    int second = 60;
 
     void draw(uint8_t col, uint8_t value);
 
 public:
-    BinaryClockMode() : ModeModule("Binary clock") {};
+    explicit BinaryClockMode() : ModeModule("Binary clock") {};
 
     void begin() override;
     void handle() override;

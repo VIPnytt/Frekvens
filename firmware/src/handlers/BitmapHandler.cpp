@@ -42,7 +42,7 @@ void BitmapHandler::draw(uint8_t x, uint8_t y, uint8_t brightness)
             msbMax = msb;
         }
     }
-    for (uint8_t _x = 0; _x <= msbMax; ++_x)
+    for (uint16_t _x = 0; _x <= msbMax; ++_x)
     {
         for (uint8_t _y = 0; _y < height; ++_y)
         {

@@ -5,13 +5,13 @@
 #include "modules/ExtensionModule.h"
 #include "services/WebServerService.h"
 
-class WebAppExtension : public ExtensionModule
+class WebAppExtension final : public ExtensionModule
 {
 private:
     static void onHeadRoot(AsyncWebServerRequest *request);
 
 public:
-    WebAppExtension();
+    explicit WebAppExtension();
 
     void configure() override;
     void begin() override;

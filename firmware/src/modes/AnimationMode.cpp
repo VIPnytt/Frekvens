@@ -47,9 +47,9 @@ void AnimationMode::handle()
     }
 }
 
-void AnimationMode::setFrame(uint8_t index, uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::setFrame(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
-    lastMillis = millis() + GRID_COLUMNS * GRID_ROWS * 2;
+    lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS * 2);
     Preferences Storage;
     Storage.begin(name);
     Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
@@ -84,7 +84,7 @@ void AnimationMode::setInterval(uint16_t interval)
     }
 }
 
-void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
 {
     JsonDocument doc;
     doc["interval"] = interval;
@@ -94,21 +94,21 @@ void AnimationMode::transmit(const uint8_t index, const uint8_t frame[GRID_COLUM
         _frame.add(frame[i]);
     }
     doc["index"] = index;
-    Device.transmit(doc, name, false);
+    Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
+void AnimationMode::onReceive(JsonObjectConst payload, const char *source)
 {
     // Action: pull
-    if (doc["action"].is<const char *>() && !strcmp(doc["action"].as<const char *>(), "pull"))
+    if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "pull"))
     {
-        lastMillis = millis() + GRID_COLUMNS * GRID_ROWS;
+        lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS);
         index = 0;
         pending = true;
     }
     // Frame
-    if (doc["frame"].is<JsonArrayConst>() && doc["frame"].size() == GRID_COLUMNS * GRID_ROWS &&
-        doc["index"].is<uint8_t>())
+    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS &&
+        payload["index"].is<uint8_t>())
     {
         uint8_t frame[GRID_COLUMNS * GRID_ROWS];
 #if GRID_COLUMNS * GRID_ROWS > (1 << 8)
@@ -116,7 +116,7 @@ void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
 #else
         uint8_t i = 0;
 #endif // GRID_COLUMNS * GRID_ROWS > (1 << 8)
-        for (const JsonVariantConst pixel : doc["frame"].as<JsonArrayConst>())
+        for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())
             {
@@ -124,17 +124,17 @@ void AnimationMode::onReceive(const JsonDocument doc, const char *const source)
             }
             ++i;
         }
-        setFrame(doc["index"].as<uint8_t>(), frame);
+        setFrame(payload["index"].as<uint8_t>(), frame);
     }
     // Frames
-    if (doc["frames"].is<uint8_t>())
+    if (payload["frames"].is<uint8_t>())
     {
-        setFrames(doc["frames"].as<uint8_t>());
+        setFrames(payload["frames"].as<uint8_t>());
     }
     // Interval
-    if (doc["interval"].is<uint16_t>() && interval != doc["interval"].as<uint16_t>())
+    if (payload["interval"].is<uint16_t>() && interval != payload["interval"].as<uint16_t>())
     {
-        setInterval(doc["interval"].as<uint16_t>());
+        setInterval(payload["interval"].as<uint16_t>());
     }
 }
 

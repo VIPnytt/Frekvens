@@ -5,10 +5,10 @@
 
 #include <vector>
 
-class DeviceService : public ServiceModule
+class DeviceService final : public ServiceModule
 {
 private:
-    DeviceService() : ServiceModule("Device") {};
+    explicit DeviceService() : ServiceModule("Device") {};
 
     bool operational = false;
 
@@ -18,7 +18,7 @@ private:
 
     void transmit();
 
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 
 public:
     TaskHandle_t taskHandle = nullptr;
@@ -29,10 +29,10 @@ public:
     void setPower(bool power);
     void restore();
 
-    void transmit(JsonDocument doc, const char *const source, bool retain = true);
-    void receive(const JsonDocument doc, const char *const source, const char *const destination);
+    void transmit(JsonObjectConst payload, const char *source, bool retain = true);
+    void receive(JsonObjectConst payload, const char *source, const char *destination) const;
 
-    const JsonDocument getTransmits() const;
+    [[nodiscard]] JsonObjectConst getTransmits() const;
 
     static DeviceService &getInstance();
 };

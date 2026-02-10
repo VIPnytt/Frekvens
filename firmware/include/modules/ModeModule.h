@@ -5,12 +5,9 @@
 class ModeModule
 {
 protected:
-    ModeModule(const char *const name) : name(name) {};
+    explicit ModeModule(const char *name) : name(name) {};
 
 public:
-    ModeModule(const ModeModule &) = delete;
-    ModeModule &operator=(const ModeModule &) = delete;
-
     const char *const name;
 
     virtual void configure();
@@ -18,5 +15,5 @@ public:
     virtual void handle();
     virtual void end();
 
-    virtual void onReceive(const JsonDocument doc, const char *source);
+    virtual void onReceive(JsonObjectConst payload, const char *source);
 };

@@ -4,10 +4,10 @@
 
 #include "modules/ModeModule.h"
 
-class BrightMode : public ModeModule
+class BrightMode final : public ModeModule
 {
 public:
-    BrightMode() : ModeModule("Bright") {};
+    explicit BrightMode() : ModeModule("Bright") {};
 
     void begin() override;
 };

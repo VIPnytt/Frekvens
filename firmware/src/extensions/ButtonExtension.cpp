@@ -173,7 +173,7 @@ void ButtonExtension::event(const char *key, const char *value)
 {
     JsonDocument doc;
     doc["event"][key] = value;
-    Device.transmit(doc, Button->name, false);
+    Device.transmit(doc.as<JsonObjectConst>(), Button->name, false);
 }
 
 #endif // EXTENSION_BUTTON

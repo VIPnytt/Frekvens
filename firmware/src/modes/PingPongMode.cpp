@@ -18,7 +18,7 @@ void PingPongMode::configure()
     {
         const std::string id = std::string(name).append("_clock");
         JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = "{\"clock\":{{value}}}";
+        component[HomeAssistantAbbreviations::command_template] = R"({"clock":{{value}}})";
         component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
         component[HomeAssistantAbbreviations::enabled_by_default] = false;
         component[HomeAssistantAbbreviations::entity_category] = "config";
@@ -51,7 +51,11 @@ void PingPongMode::begin()
     Display.clearFrame();
     paddleA.clear();
     paddleB.clear();
+#if GRID_COLUMNS == GRID_ROWS
+    const uint8_t _paddle = random(clock ? 5 : 0, GRID_COLUMNS - 3);
+#else
     const uint8_t _paddle = random(clock ? 5 : 0, clock ? GRID_ROWS - 3 : GRID_COLUMNS - 3);
+#endif // GRID_COLUMNS == GRID_ROWS
     for (uint8_t i = 0; i < 3; ++i)
     {
         paddleA.push_back(_paddle + i);
@@ -109,13 +113,13 @@ void PingPongMode::handle()
         deg = 360 - deg; // Invert Y
     }
     Display.setPixel(x, y, 0);
-    xDec += cos(deg * DEG_TO_RAD) * speed;
-    yDec -= sin(deg * DEG_TO_RAD) * speed;
-    x = xDec + .5f;
-    y = yDec + .5f;
+    xDec += cosf(deg * DEG_TO_RAD) * speed;
+    yDec -= sinf(deg * DEG_TO_RAD) * speed;
+    x = lroundf(xDec);
+    y = lroundf(yDec);
     Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
-    const float aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec)),
-                bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec)
+    const float aRad = atanf(clock ? (xDec - 1) / abs(paddleA[1] - yDec) : (yDec - 1) / abs(paddleB[1] - xDec));
+    const float bRad = atanf(clock ? (GRID_COLUMNS - 2 - xDec) / abs(paddleB[1] - yDec)
                                    : (GRID_ROWS - 2 - yDec) / abs(paddleA[1] - xDec));
     if (!clock && xDec < paddleA.front() && bRad < 1 && paddleA.front() > 0)
     {
@@ -183,7 +187,7 @@ void PingPongMode::handle()
     }
 }
 
-void PingPongMode::setClock(const bool _clock)
+void PingPongMode::setClock(bool _clock)
 {
     if (_clock != clock)
     {
@@ -206,15 +210,15 @@ void PingPongMode::transmit()
 {
     JsonDocument doc;
     doc["clock"] = clock;
-    Device.transmit(doc, name);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PingPongMode::onReceive(const JsonDocument doc, const char *const source)
+void PingPongMode::onReceive(JsonObjectConst payload, const char *source)
 {
     // Clock
-    if (doc["clock"].is<bool>())
+    if (payload["clock"].is<bool>())
     {
-        setClock(doc["clock"].as<bool>());
+        setClock(payload["clock"].as<bool>());
     }
 }
 

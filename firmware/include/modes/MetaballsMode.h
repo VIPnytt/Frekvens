@@ -5,27 +5,31 @@
 #include "config/constants.h"
 #include "modules/ModeModule.h"
 
-class MetaballsMode : public ModeModule
+class MetaballsMode final : public ModeModule
 {
 private:
-    static constexpr float radius = min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / (float)PITCH_VERTICAL,
-                                               GRID_ROWS *PITCH_VERTICAL / (float)PITCH_HORIZONTAL) /
-                                    PI,
-                           radiusSq = radius * radius, speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
+    static constexpr float radius = min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
+                                               GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
+                                    std::numbers::pi;
+    static constexpr float radiusSq = radius * radius;
+    static constexpr float speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
 
     static constexpr uint8_t multiplier = 1 << 3;
 
     struct Ball
     {
-        float x, y, xVelocity, yVelocity;
+        float x;
+        float y;
+        float xVelocity;
+        float yVelocity;
     };
 
-    uint8_t contributions[1 << 8];
+    uint8_t contributions[1 << 8] = {0};
 
-    Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)];
+    Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)] = {};
 
 public:
-    MetaballsMode() : ModeModule("Metaballs") {};
+    explicit MetaballsMode() : ModeModule("Metaballs") {};
 
     void configure() override;
     void handle() override;

@@ -42,7 +42,7 @@ void AlexaExtension::handle() { fauxmo.handle(); }
 
 void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value)
 {
-    if (!strcmp(deviceName, NAME))
+    if (strcmp(deviceName, NAME) == 0)
     {
         Display.setBrightness(static_cast<uint8_t>(value));
         Display.setPower(state);
@@ -59,22 +59,24 @@ void AlexaExtension::onGet(AsyncWebServerRequest *request)
 
 void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
-    if (!Alexa->fauxmo.process(request->client(), false, request->url(), (char *)data))
+    if (!Alexa->fauxmo.process(
+            request->client(), false, request->url(), String(reinterpret_cast<const char *>(data), len)))
     {
         request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }
 }
 
-void AlexaExtension::onTransmit(const JsonDocument &doc, const char *const source)
+void AlexaExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
     // Display: Brightness
     // Display: Power
-    if (!strcmp(source, Display.name) && (doc["brightness"].is<uint8_t>() || doc["power"].is<bool>()))
+    if (!strcmp(source, Display.name) && (payload["brightness"].is<uint8_t>() || payload["power"].is<bool>()))
     {
         fauxmo.setState(NAME,
-                        doc["power"].is<bool>() ? doc["power"].as<bool>() : Display.getPower(),
-                        static_cast<unsigned char>(doc["brightness"].is<uint8_t>() ? doc["brightness"].as<uint8_t>()
-                                                                                   : Display.getBrightness()));
+                        payload["power"].is<bool>() ? payload["power"].as<bool>() : Display.getPower(),
+                        static_cast<unsigned char>(payload["brightness"].is<uint8_t>()
+                                                       ? payload["brightness"].as<uint8_t>()
+                                                       : Display.getBrightness()));
     }
 }
 

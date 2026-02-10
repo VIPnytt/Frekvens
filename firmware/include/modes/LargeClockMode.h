@@ -7,30 +7,33 @@
 
 #include <vector>
 
-class LargeClockMode : public ModeModule
+class LargeClockMode final : public ModeModule
 {
 private:
-    tm local;
+    tm local = {};
 
-    bool pending = false, ticking = false;
+    bool pending = false;
+    bool ticking = false;
 
-    uint8_t hour, minute, second = 0;
+    int hour = 24;
+    int minute = 60;
+    int second = 0;
 
     FontModule *font = nullptr;
 
     std::vector<FontModule *> fonts = {};
 
-    void setFont(const char *const fontName);
-    void setTicking(const bool _ticking);
+    void setFont(const char *fontName);
+    void setTicking(bool _ticking);
     void transmit();
 
 public:
-    LargeClockMode() : ModeModule("Large clock") {};
+    explicit LargeClockMode() : ModeModule("Large clock") {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(const JsonDocument doc, const char *const source) override;
+    void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
 #endif // MODE_LARGECLOCK
