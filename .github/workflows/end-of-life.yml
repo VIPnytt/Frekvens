@@ -1,0 +1,47 @@
+name: End of life
+
+on:
+  schedule:
+    - cron: 0 12 1 * *
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    name: Node.js
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - node-version: 20
+          - node-version: 25
+
+    steps:
+      - name: End-of-Life
+        uses: sindrel/endoflife-github-action@6931ca61221cebfe107b0c3349979cb7075ff270 # v1.0.2
+        with:
+          product: nodejs
+          version: ${{ matrix.node-version }}
+          fail_on_eol: true
+
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - python-version: 3.11
+          - python-version: 3.14
+
+    steps:
+      - name: End-of-Life
+        uses: sindrel/endoflife-github-action@6931ca61221cebfe107b0c3349979cb7075ff270 # v1.0.2
+        with:
+          product: python
+          version: ${{ matrix.python-version }}
+          fail_on_eol: true
