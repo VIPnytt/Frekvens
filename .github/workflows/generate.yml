@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - python-version: 3.11
+          - python-version: 3.10
           - python-version: 3.14
 
     steps:
@@ -128,7 +128,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - python-version: 3.11
+          - python-version: 3.10
           - python-version: 3.14
 
     steps:
@@ -265,7 +265,7 @@ jobs:
     strategy:
       matrix:
         toolchain:
-          - python-version: 3.11
+          - python-version: 3.10
           - python-version: 3.14
 
     steps:
