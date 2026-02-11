@@ -226,7 +226,7 @@ jobs:
           step-summary: true
           style: ""
           tidy-checks: ""
-          tidy-review: true
+          tidy-review: false
 
       - name: Summary
         env:
