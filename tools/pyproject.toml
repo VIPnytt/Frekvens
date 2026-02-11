@@ -3,7 +3,7 @@ name = "frekvens"
 description = "Toolbox for the Frekvens project."
 version = "2.2.1.dev0"
 license = "MIT"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     'httpx==0.28.1',
 ]
