@@ -139,11 +139,15 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
+      - name: PlatformIO version
+        id: platformio
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+
       - name: Set up Cache for PlatformIO
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
@@ -228,11 +232,15 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
+      - name: PlatformIO version
+        id: platformio
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+
       - name: Set up Cache for PlatformIO
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
@@ -368,11 +376,15 @@ jobs:
       - name: Set up PlatformIO
         run: pip install -r .github/platformio/requirements.txt
 
+      - name: PlatformIO version
+        id: platformio
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+
       - name: Set up Cache for PlatformIO
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ needs.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
           path: |
             .platformio/.cache/downloads
             .platformio/.cache/http
