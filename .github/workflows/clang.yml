@@ -84,6 +84,18 @@ jobs:
 
         environment: ${{ fromJson(needs.platformio.outputs.environments) }}
 
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+          - environment: adafruit_qtpy_esp32s3_n4r2
+          - environment: adafruit_qtpy_esp32s3_nopsram
+          - environment: lolin_d32
+          - environment: lolin_d32_pro
+          - environment: lolin_s3_mini
+          - environment: seeed_xiao_esp32c3
+          - environment: seeed_xiao_esp32c6
+          - environment: seeed_xiao_esp32s3
+          - environment: wemos_d1_mini32
+
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
