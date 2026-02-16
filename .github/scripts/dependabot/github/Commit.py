@@ -67,7 +67,8 @@ class CommitArchive:
             )
             for fragment in fragments
         ]
-    
+
+
 class CommitBall:
     ctx: GitHub.Context
     regex: re.Pattern[str]
