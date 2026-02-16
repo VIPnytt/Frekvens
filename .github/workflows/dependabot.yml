@@ -1,4 +1,4 @@
-name: PlatformIO
+name: Dependabot custom
 
 on:
   schedule:
@@ -12,6 +12,9 @@ permissions:
 
 env:
   milestone: 10
+  semver-major-days: 90
+  semver-minor-days: 21
+  semver-patch-days: 3
 
 jobs:
   idle:
@@ -33,15 +36,15 @@ jobs:
             });
             const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
             core.info(`Active: ${active}`);
-            core.setOutput("active", active);
+            core.setOutput('active', active);
 
-  github-commits:
-    name: GitHub commits
+  github-check:
+    name: GitHub check
     needs: idle
     runs-on: ubuntu-latest
     if: needs.idle.outputs.active
     outputs:
-      dependency-fragments: ${{ steps.commits.outputs.fragments }}
+      dependency-fragments: ${{ steps.pending.outputs.fragments }}
 
     steps:
       - name: Checkout
@@ -52,27 +55,32 @@ jobs:
         with:
           python-version: 3.14
           cache: pip
-          cache-dependency-path: .github/scripts/platformio/requirements.txt
+          cache-dependency-path: .github/scripts/dependabot/requirements.txt
 
       - name: Set up Python packages
-        run: pip install -r .github/scripts/platformio/requirements.txt
+        run: pip install -r .github/scripts/dependabot/requirements.txt
 
-      - name: Frekvens GitHub Commit
-        id: commits
+      - name: Frekvens GitHub dependabot
+        id: pending
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "fragments=$(python .github/scripts/platformio/GitHubCommit.py)" >> "$GITHUB_OUTPUT"
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          SEMVER_MAJOR_DAYS: ${{ env.semver-major-days }}
+          SEMVER_MINOR_DAYS: ${{ env.semver-minor-days }}
+          SEMVER_PATCH_DAYS: ${{ env.semver-patch-days }}
+        run: echo "fragments=$(python -m GitHub)" >> "$GITHUB_OUTPUT"
+        working-directory: .github/scripts/dependabot/github
 
-  github-commit-dependency:
-    name: GitHub commit dependency
-    needs: github-commits
+  github-update:
+    name: GitHub update
+    needs: github-check
     runs-on: ubuntu-latest
-    if: needs.github-commits.outputs.dependency-fragments != '[]'
+    if: needs.github-check.outputs.dependency-fragments != '[]'
 
     strategy:
+      max-parallel: 1
       matrix:
-        fragments: ${{ fromJson(needs.github-commits.outputs.dependency-fragments) }}
+        fragments: ${{ fromJson(needs.github-check.outputs.dependency-fragments) }}
 
     steps:
       - name: Checkout
@@ -88,6 +96,7 @@ jobs:
               repo: context.repo.repo,
               state: 'all',
               head: `${context.repo.owner}:dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}`,
+              per_page: 100,
             });
             core.info(`Head PRs: ${prs.length}`);
             core.setOutput('exists', prs.length);
@@ -105,7 +114,8 @@ jobs:
           body: |
             Bumps [${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}) from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}.
             - [Releases](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/releases)
-            - [Compare changes](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/compare/${{ matrix.fragments.commit_old }}...${{ matrix.fragments.commit_new }})
+            - [Tags](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/tags)
+            - [Compare changes](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/compare/${{ matrix.fragments.commit_old || matrix.fragments.tag_old }}...${{ matrix.fragments.commit_new || matrix.fragments.tag_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
           labels: |
@@ -154,13 +164,13 @@ jobs:
               }
             }
 
-  platformio-registry:
-    name: PlatformIO Registry
+  platformio-check:
+    name: PlatformIO check
     needs: idle
     runs-on: ubuntu-latest
     if: needs.idle.outputs.active
     outputs:
-      dependency-fragments: ${{ steps.registry.outputs.fragments }}
+      dependency-fragments: ${{ steps.pending.outputs.fragments }}
 
     steps:
       - name: Checkout
@@ -173,25 +183,31 @@ jobs:
           cache: pip
           cache-dependency-path: |
             .github/platformio/requirements.txt
-            .github/scripts/platformio/requirements.txt
+            .github/scripts/dependabot/requirements.txt
 
       - name: Set up Python packages
-        run: pip install -r .github/platformio/requirements.txt -r .github/scripts/platformio/requirements.txt
+        run: pip install -r .github/platformio/requirements.txt -r .github/scripts/dependabot/requirements.txt
 
-      - name: Frekvens PlatfomIO Registry
-        id: registry
-        run: |
-          echo "fragments=$(python .github/scripts/platformio/PlatformIoRegistry.py)" >> "$GITHUB_OUTPUT"
+      - name: Frekvens PlatfomIO dependabot
+        id: pending
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          SEMVER_MAJOR_DAYS: ${{ env.semver-major-days }}
+          SEMVER_MINOR_DAYS: ${{ env.semver-minor-days }}
+          SEMVER_PATCH_DAYS: ${{ env.semver-patch-days }}
+        run: echo "fragments=$(python -m PlatformIo)" >> "$GITHUB_OUTPUT"
+        working-directory: .github/scripts/dependabot/platformio
 
-  platformio-registry-dependency:
-    name: PlatformIO Registry dependency
-    needs: platformio-registry
+  platformio-update:
+    name: PlatformIO update
+    needs: platformio-check
     runs-on: ubuntu-latest
-    if: needs.platformio-registry.outputs.dependency-fragments != '[]'
+    if: needs.platformio-check.outputs.dependency-fragments != '[]'
 
     strategy:
+      max-parallel: 1
       matrix:
-        fragments: ${{ fromJson(needs.platformio-registry.outputs.dependency-fragments) }}
+        fragments: ${{ fromJson(needs.platformio-check.outputs.dependency-fragments) }}
 
     steps:
       - name: Checkout
@@ -222,8 +238,8 @@ jobs:
         with:
           author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           body: |
-            Bumps [${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}) from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}.
-            - [Releases](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}/versions)
+            Bumps [${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}?version=${{ matrix.fragments.version_new }}) from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}.
+            - [Versions](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}/versions?version=${{ matrix.fragments.version_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
           labels: |
