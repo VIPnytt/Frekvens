@@ -18,8 +18,10 @@ class Deprecated:
         self._e131()
         self._gameoflifeclock()
         self._largetickingclock()
+        self._largeclock()
         self._pingpongclock()
         self._smalltickingclock()
+        self._smallclock()
         self._snakeclock()
 
     def _artnet(self) -> None:
@@ -63,6 +65,13 @@ class Deprecated:
                 self.project.dotenv["MODE_GAMEOFLIFE"] = self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
             del self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
 
+    def _largeclock(self) -> None:
+        if "MODE_LARGECLOCK" in self.project.dotenv:
+            logging.warning('Deprecation: MODE_LARGECLOCK "Large clock" is deprecated. Use MODE_CLOCK "Clock" instead.')
+            if "MODE_CLOCK" not in self.project.dotenv:
+                self.project.dotenv["MODE_CLOCK"] = self.project.dotenv["MODE_LARGECLOCK"]
+            del self.project.dotenv["MODE_LARGECLOCK"]
+
     def _largetickingclock(self) -> None:
         if "MODE_LARGETICKINGCLOCK" in self.project.dotenv:
             logging.warning(
@@ -80,6 +89,13 @@ class Deprecated:
             if "MODE_PINGPONG" not in self.project.dotenv:
                 self.project.dotenv["MODE_PINGPONG"] = self.project.dotenv["MODE_PINGPONGCLOCK"]
             del self.project.dotenv["MODE_PINGPONGCLOCK"]
+
+    def _smallclock(self) -> None:
+        if "MODE_SMALLCLOCK" in self.project.dotenv:
+            logging.warning('Deprecation: MODE_SMALLCLOCK "Small clock" is deprecated. Use MODE_CLOCK "Clock" instead.')
+            if "MODE_CLOCK" not in self.project.dotenv:
+                self.project.dotenv["MODE_CLOCK"] = self.project.dotenv["MODE_SMALLCLOCK"]
+            del self.project.dotenv["MODE_SMALLCLOCK"]
 
     def _smalltickingclock(self) -> None:
         if "MODE_SMALLTICKINGCLOCK" in self.project.dotenv:

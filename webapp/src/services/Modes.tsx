@@ -12,6 +12,7 @@ import {
     MODE_BREAKOUTCLOCK,
     MODE_BRIGHT,
     MODE_CIRCLE,
+    MODE_CLOCK,
     MODE_COUNTDOWN,
     MODE_DRAW,
     MODE_EQUALIZER,
@@ -23,7 +24,6 @@ import {
     MODE_HOMEASSISTANTWEATHER,
     MODE_HOMETHERMOMETER,
     MODE_JAGGEDWAVEFORM,
-    MODE_LARGECLOCK,
     MODE_LEAFFALL,
     MODE_LINES,
     MODE_METABALLS,
@@ -35,7 +35,6 @@ import {
     MODE_RAIN,
     MODE_RING,
     MODE_SCAN,
-    MODE_SMALLCLOCK,
     MODE_SMOOTHWAVEFORM,
     MODE_SNAKE,
     MODE_STARS,
@@ -61,6 +60,11 @@ import { Main as ModeBlinkMain, name as ModeBlinkName } from "../modes/Blink";
 import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from "../modes/BreakoutClock";
 import { Main as ModeBrightMain, name as ModeBrightName } from "../modes/Bright";
 import { Main as ModeCircleMain, name as ModeCircleName } from "../modes/Circle";
+import {
+    Main as ModeClockMain,
+    name as ModeClockName,
+    Sidebar as ModeClockSidebar,
+} from "../modes/Clock";
 import {
     Actions as ModeCountdownActions,
     Link as ModeCountdownLink,
@@ -90,11 +94,6 @@ import {
     name as ModeHomeThermometerName,
 } from "../modes/HomeThermometer";
 import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from "../modes/JaggedWaveform";
-import {
-    Main as ModeLargeClockMain,
-    name as ModeLargeClockName,
-    Sidebar as ModeLargeClockSidebar,
-} from "../modes/LargeClock";
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from "../modes/LeafFall";
 import { Main as ModeLinesMain, name as ModeLinesName } from "../modes/Lines";
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from "../modes/Metaballs";
@@ -106,11 +105,6 @@ import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from "..
 import { Main as ModeRainMain, name as ModeRainName } from "../modes/Rain";
 import { Main as ModeRingMain, name as ModeRingName } from "../modes/Ring";
 import { Main as ModeScanMain, name as ModeScanName } from "../modes/Scan";
-import {
-    Main as ModeSmallClockMain,
-    name as ModeSmallClockName,
-    Sidebar as ModeSmallClockSidebar,
-} from "../modes/SmallClock";
 import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from "../modes/SmoothWaveform";
 import { Main as ModeSnakeMain, name as ModeSnakeName, Sidebar as ModeSnakeSidebar } from "../modes/Snake";
 import { Main as ModeStarsMain, name as ModeStarsName } from "../modes/Stars";
@@ -182,6 +176,11 @@ export const Main: Component = () => (
                 <ModeCircleMain />
             </Match>
         )}
+        {MODE_CLOCK && (
+            <Match when={getMode() === ModeClockName}>
+                <ModeClockMain />
+            </Match>
+        )}
         {MODE_COUNTDOWN && (
             <Match when={getMode() === ModeCountdownName}>
                 <ModeCountdownMain />
@@ -237,11 +236,6 @@ export const Main: Component = () => (
                 <ModeJaggedWaveformMain />
             </Match>
         )}
-        {MODE_LARGECLOCK && (
-            <Match when={getMode() === ModeLargeClockName}>
-                <ModeLargeClockMain />
-            </Match>
-        )}
         {MODE_LEAFFALL && (
             <Match when={getMode() === ModeLeafFallName}>
                 <ModeLeafFallMain />
@@ -295,11 +289,6 @@ export const Main: Component = () => (
         {MODE_SCAN && (
             <Match when={getMode() === ModeScanName}>
                 <ModeScanMain />
-            </Match>
-        )}
-        {MODE_SMALLCLOCK && (
-            <Match when={getMode() === ModeSmallClockName}>
-                <ModeSmallClockMain />
             </Match>
         )}
         {MODE_SMOOTHWAVEFORM && (
@@ -391,24 +380,19 @@ export const Sidebar: Component = () => {
                         <ModeDrawSidebar />
                     </Match>
                 )}
+                {MODE_CLOCK && (
+                    <Match when={getMode() === ModeClockName}>
+                        <ModeClockSidebar />
+                    </Match>
+                )}
                 {MODE_GAMEOFLIFE && (
                     <Match when={getMode() === ModeGameOfLifeName}>
                         <ModeGameOfLifeSidebar />
                     </Match>
                 )}
-                {MODE_LARGECLOCK && (
-                    <Match when={getMode() === ModeLargeClockName}>
-                        <ModeLargeClockSidebar />
-                    </Match>
-                )}
                 {MODE_PINGPONG && (
                     <Match when={getMode() === ModePingPongName}>
                         <ModePingPongSidebar />
-                    </Match>
-                )}
-                {MODE_SMALLCLOCK && (
-                    <Match when={getMode() === ModeSmallClockName}>
-                        <ModeSmallClockSidebar />
                     </Match>
                 )}
                 {MODE_SNAKE && (

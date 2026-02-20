@@ -9,6 +9,7 @@
 #include "modes/BreakoutClockMode.h"
 #include "modes/BrightMode.h"
 #include "modes/CircleMode.h"
+#include "modes/ClockMode.h"
 #include "modes/CountdownMode.h"
 #include "modes/DrawMode.h"
 #include "modes/EqualizerMode.h"
@@ -79,6 +80,9 @@ private:
 #endif
 #if MODE_CIRCLE
         new CircleMode(),
+#endif
+#if MODE_CLOCK
+        new ClockMode(),
 #endif
 #if MODE_COUNTDOWN
         new CountdownMode(),
