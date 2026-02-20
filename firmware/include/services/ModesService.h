@@ -117,9 +117,6 @@ private:
 #if MODE_JAGGEDWAVEFORM
         new JaggedWaveformMode(),
 #endif
-#if MODE_LARGECLOCK
-        new LargeClockMode(),
-#endif
 #if MODE_LEAFFALL
         new LeafFallMode(),
 #endif
@@ -152,9 +149,6 @@ private:
 #endif
 #if MODE_SCAN
         new ScanMode(),
-#endif
-#if MODE_SMALLCLOCK
-        new SmallClockMode(),
 #endif
 #if MODE_SMOOTHWAVEFORM
         new SmoothWaveformMode(),
