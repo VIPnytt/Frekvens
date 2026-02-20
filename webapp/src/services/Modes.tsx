@@ -60,11 +60,7 @@ import { Main as ModeBlinkMain, name as ModeBlinkName } from "../modes/Blink";
 import { Main as ModeBreakoutClockMain, name as ModeBreakoutClockName } from "../modes/BreakoutClock";
 import { Main as ModeBrightMain, name as ModeBrightName } from "../modes/Bright";
 import { Main as ModeCircleMain, name as ModeCircleName } from "../modes/Circle";
-import {
-    Main as ModeClockMain,
-    name as ModeClockName,
-    Sidebar as ModeClockSidebar,
-} from "../modes/Clock";
+import { Main as ModeClockMain, name as ModeClockName, Sidebar as ModeClockSidebar } from "../modes/Clock";
 import {
     Actions as ModeCountdownActions,
     Link as ModeCountdownLink,
