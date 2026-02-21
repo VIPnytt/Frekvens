@@ -17,10 +17,10 @@
 void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
 {
     // Segment boundaries (number of steps in each segment)
-    const uint8_t SEG1 = GRID_COLUMNS / 2u;        // top-right half
-    const uint8_t SEG2 = SEG1 + GRID_ROWS - 1u;    // right edge (y 1..GRID_ROWS-1)
-    const uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1u; // bottom edge (x GRID_COLUMNS-2..0)
-    const uint8_t SEG4 = SEG3 + GRID_ROWS - 1u;    // left edge (y GRID_ROWS-2..0)
+    static constexpr uint8_t SEG1 = GRID_COLUMNS / 2u;        // top-right half
+    static constexpr uint8_t SEG2 = SEG1 + GRID_ROWS - 1u;    // right edge (y 1..GRID_ROWS-1)
+    static constexpr uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1u; // bottom edge (x GRID_COLUMNS-2..0)
+    static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1u;    // left edge (y GRID_ROWS-2..0)
     // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
 
     uint8_t x;
