@@ -6,6 +6,7 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumBoldFont.h"
 #include "fonts/MediumFont.h"
+#include "fonts/MediumFont2.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -17,6 +18,7 @@ void LargeClockMode::configure()
 {
     fonts = {
         FontMedium,
+        FontMedium2,
         FontMediumBold,
     };
     Preferences Storage;
