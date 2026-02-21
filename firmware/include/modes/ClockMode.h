@@ -13,7 +13,7 @@ private:
     tm local = {};
 
     bool pending = false;
-    bool ticking = true;
+    bool ticking = false;
 
     int hour = 24;
     int minute = 60;
