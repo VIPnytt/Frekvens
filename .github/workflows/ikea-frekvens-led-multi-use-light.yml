@@ -58,6 +58,57 @@ jobs:
           - node-version: 25
             python-version: 3.14
 
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: adafruit_qtpy_esp32s3_n4r2
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: adafruit_qtpy_esp32s3_nopsram
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: lolin_d32
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: lolin_d32_pro
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: lolin_s3_mini
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32c3
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32c6
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32s3
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
+          - environment: wemos_d1_mini32
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -123,6 +174,47 @@ jobs:
         toolchain:
           - python-version: "3.10"
           - python-version: 3.14
+
+        exclude:
+          - environment: adafruit_qtpy_esp32s2
+            toolchain:
+              python-version: "3.10"
+
+          - environment: adafruit_qtpy_esp32s3_n4r2
+            toolchain:
+              python-version: "3.10"
+
+          - environment: adafruit_qtpy_esp32s3_nopsram
+            toolchain:
+              python-version: "3.10"
+
+          - environment: lolin_d32
+            toolchain:
+              python-version: "3.10"
+
+          - environment: lolin_d32_pro
+            toolchain:
+              python-version: "3.10"
+
+          - environment: lolin_s3_mini
+            toolchain:
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32c3
+            toolchain:
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32c6
+            toolchain:
+              python-version: "3.10"
+
+          - environment: seeed_xiao_esp32s3
+            toolchain:
+              python-version: "3.10"
+
+          - environment: wemos_d1_mini32
+            toolchain:
+              python-version: "3.10"
 
     steps:
       - name: Checkout
@@ -200,6 +292,12 @@ jobs:
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
+
+          - environment: adafruit_qtpy_esp32s3_nopsram
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
           - environment: esp32-c6-devkitm-1
@@ -209,6 +307,12 @@ jobs:
           - environment: lolin_s3_mini
           - environment: seeed_xiao_esp32c3
           - environment: seeed_xiao_esp32c6
+
+          - environment: seeed_xiao_esp32s3
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
           - environment: wemos_d1_mini32
 
     steps:
@@ -347,6 +451,12 @@ jobs:
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
+
+          - environment: adafruit_qtpy_esp32s3_nopsram
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
           - environment: esp32-c6-devkitm-1
@@ -356,6 +466,12 @@ jobs:
           - environment: lolin_s3_mini
           - environment: seeed_xiao_esp32c3
           - environment: seeed_xiao_esp32c6
+
+          - environment: seeed_xiao_esp32s3
+            toolchain:
+              node-version: 20
+              python-version: "3.10"
+
           - environment: wemos_d1_mini32
 
     steps:
