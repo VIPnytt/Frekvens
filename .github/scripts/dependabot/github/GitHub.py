@@ -5,6 +5,7 @@ import logging
 import os
 import packaging.version
 import pathlib
+import re
 import typing
 
 
@@ -20,19 +21,21 @@ class Context:
     def __init__(self) -> None:
         self.client = httpx.Client(
             base_url="https://api.github.com",
+            follow_redirects=True,
             headers={
                 "Accept": "application/vnd.github+json",
                 "Authorization": f"Bearer {os.environ.get('GITHUB_TOKEN')}",
                 "User-Agent": "Frekvens (+https://github.com/VIPnytt/Frekvens)",
                 "X-GitHub-Api-Version": "2022-11-28",
             },
+            max_redirects=1,
         )
         self.logger = logging.getLogger("Frekvens")
-        self.major = int(os.environ.get("SEMVER_MAJOR_DAYS", 0))
-        self.minor = int(os.environ.get("SEMVER_MINOR_DAYS", 0))
+        self.major = int(os.environ.get("semver-major-days", 0))
+        self.minor = int(os.environ.get("semver-minor-days", 0))
         self.now = datetime.datetime.now(datetime.timezone.utc)
-        self.patch = int(os.environ.get("SEMVER_PATCH_DAYS", 0))
-        self.workspace = pathlib.Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd())).resolve()
+        self.patch = int(os.environ.get("semver-patch-days", 0))
+        self.workspace = pathlib.Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 
     def __enter__(self):
         return self
@@ -41,14 +44,21 @@ class Context:
         self.client.close()
 
 
+class Client:
+    ctx: Context
+    regex: re.Pattern[str]
+
+    def __init__(self, ctx: Context) -> None:
+        self.ctx = ctx
+
+
 class HandlerFragment(typing.TypedDict):
-    commit_new: str
+    owner: str
+    repo: str
     tag_new: str
 
 
 class BaseFragment(HandlerFragment):
-    owner: str
-    repo: str
     string_old: str
     tag_old: str
 
@@ -81,6 +91,13 @@ class Handler:
     repo: str
     tag: str
     version: packaging.version.Version
+
+    def __init__(self, ctx: Context, owner: str, repo: str) -> None:
+        self.ctx = ctx
+        data = self.ctx.client.get(f"/repos/{owner}/{repo}").raise_for_status().json()
+        self.owner = data["owner"]["login"]
+        self.repo = data["name"]
+        self.releases = self.ctx.client.get(f"/repos/{self.owner}/{self.repo}/releases").raise_for_status().json()
 
     def parse_release(self, release: ReleaseData) -> packaging.version.Version | None:
         if release["tag_name"] in self.ignore:
@@ -173,19 +190,21 @@ class Handler:
 
 
 def main() -> None:
+    import Asset  # noqa: E402
     import Commit  # noqa: E402
-    import Download  # noqa: E402
     import Tag  # noqa: E402
 
     logging.basicConfig()
     logging.getLogger("Frekvens").setLevel(logging.INFO)
     with Context() as ctx:
         results = []
-        results.extend(Commit.CommitArchive(ctx).matrix())
-        results.extend(Commit.CommitBall(ctx).matrix())
-        results.extend(Tag.TagArchive(ctx).matrix())
-        results.extend(Tag.TagBall(ctx).matrix())
-        results.extend(Download.DownloadRelease(ctx).matrix())
+        results.extend(Asset.Release(ctx).matrix())
+        results.extend(Commit.Archive(ctx).matrix())
+        results.extend(Commit.Ball(ctx).matrix())
+        results.extend(Commit.Git(ctx).matrix())
+        results.extend(Tag.Archive(ctx).matrix())
+        results.extend(Tag.Ball(ctx).matrix())
+        results.extend(Tag.Git(ctx).matrix())
         print(json.dumps(results))
 
 

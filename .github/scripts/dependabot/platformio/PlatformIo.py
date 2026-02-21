@@ -5,6 +5,7 @@ import logging
 import os
 import packaging.version
 import pathlib
+import re
 import typing
 
 
@@ -20,17 +21,19 @@ class Context:
     def __init__(self) -> None:
         self.client = httpx.Client(
             base_url="https://api.registry.platformio.org",
+            follow_redirects=True,
             headers={
                 "Accept": "application/json",
                 "User-Agent": "Frekvens (+https://github.com/VIPnytt/Frekvens)",
             },
+            max_redirects=1,
         )
         self.logger = logging.getLogger("Frekvens")
-        self.major = int(os.environ.get("SEMVER_MAJOR_DAYS", 0))
-        self.minor = int(os.environ.get("SEMVER_MINOR_DAYS", 0))
+        self.major = int(os.environ.get("semver-major-days", 0))
+        self.minor = int(os.environ.get("semver-minor-days", 0))
         self.now = datetime.datetime.now(datetime.timezone.utc)
-        self.patch = int(os.environ.get("SEMVER_PATCH_DAYS", 0))
-        self.workspace = pathlib.Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd())).resolve()
+        self.patch = int(os.environ.get("semver-patch-days", 0))
+        self.workspace = pathlib.Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 
     def __enter__(self):
         return self
@@ -39,15 +42,23 @@ class Context:
         self.client.close()
 
 
+class Client:
+    ctx: Context
+    regex: re.Pattern[str]
+
+    def __init__(self, ctx: Context) -> None:
+        self.ctx = ctx
+
+
 class HandlerFragment(typing.TypedDict):
+    name: str
+    owner: str
+    type: str
     version_new: str
 
 
 class BaseFragment(HandlerFragment):
-    name: str
-    owner: str
     string_old: str
-    type: str
     version_old: str
 
 
@@ -69,6 +80,7 @@ class ReleaseData(typing.TypedDict):
     files: list[FileData]
     name: str
     released_at: str
+    type: str
 
 
 class Handler:
@@ -83,14 +95,11 @@ class Handler:
 
     def __init__(self, ctx: Context, type: str, owner: str, name: str) -> None:
         self.ctx = ctx
-        self.name = name
-        self.owner = owner
-        self.type = type
-        self.releases = (
-            self.ctx.client.get(f"/v3/packages/{self.owner}/{self.type}/{self.name}")
-            .raise_for_status()
-            .json()["versions"]
-        )
+        data = self.ctx.client.get(f"/v3/packages/{owner}/{type}/{name}").raise_for_status().json()
+        self.name = data["name"]
+        self.owner = data["owner"]["username"]
+        self.releases = data["versions"]
+        self.type = data["type"]
 
     def parse_release(self, release: ReleaseData) -> packaging.version.Version | None:
         if release["name"] in self.ignore:
@@ -181,15 +190,15 @@ class Handler:
 
 
 def main() -> None:
-    import Download  # noqa: E402
+    import File  # noqa: E402
     import Package  # noqa: E402
 
     logging.basicConfig()
     logging.getLogger("Frekvens").setLevel(logging.INFO)
     with Context() as ctx:
         results = []
-        results.extend(Download.DownloadRegistry(ctx).matrix())
-        results.extend(Package.PackageRegistry(ctx).matrix())
+        results.extend(File.Download(ctx).matrix())
+        results.extend(Package.Registry(ctx).matrix())
         print(json.dumps(results))
 
 
