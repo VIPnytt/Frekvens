@@ -132,6 +132,16 @@ MODE_CIRCLE='true'
 
 See also [Ring](#-ring).
 
+## ⏱️ Clock
+
+Clock with font selection and optional seconds indicator.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+MODE_CLOCK='true'
+```
+
 ## ⏳ Countdown
 
 Start a countdown timer.
@@ -317,16 +327,6 @@ MODE_JAGGEDWAVEFORM='true'
 ```
 
 See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
-
-## ⏱️ Clock
-
-Clock with font selection and optional seconds indicator.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_CLOCK='true'
-```
 
 ## 🍂 Leaf fall
 
