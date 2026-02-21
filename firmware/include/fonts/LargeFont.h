@@ -123,7 +123,7 @@ private:
         },
     };
 
-    const std::vector<SymbolExtended> unicode = {
+    inline static const std::vector<SymbolExtended> unicode = {
         {
             0x3C0, // π GREEK SMALL LETTER PI
             {

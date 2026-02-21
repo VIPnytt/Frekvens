@@ -630,7 +630,7 @@ private:
         },
     };
 
-    const std::vector<SymbolExtended> unicode = {
+    inline static const std::vector<SymbolExtended> unicode = {
         {
             0xB0, // ° DEGREE SIGN
             {
