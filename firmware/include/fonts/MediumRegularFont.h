@@ -2,7 +2,7 @@
 
 #include "modules/FontModule.h"
 
-class MediumFont2 final : public FontModule
+class MediumRegularFont final : public FontModule
 {
 private:
     const std::vector<Symbol> ascii = {
@@ -106,7 +106,7 @@ private:
                 0b111110,
                 0b000011,
                 0b110011,
-                0b111110,
+                0b011110,
             },
             0,
             0,
@@ -261,9 +261,9 @@ private:
     };
 
 public:
-    explicit MediumFont2();
+    explicit MediumRegularFont();
 
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern MediumFont2 *FontMedium2;
+extern MediumRegularFont *FontMediumRegular;

@@ -18,7 +18,7 @@ void LargeClockMode::configure()
 {
     fonts = {
         FontMedium,
-        FontMedium2,
+        FontMediumRegular,
         FontMediumBold,
     };
     Preferences Storage;
