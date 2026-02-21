@@ -11,11 +11,10 @@ import {
     EXTENSION_PLAYLIST,
     EXTENSION_SIGNAL,
     MODE_ANIMATION,
+    MODE_CLOCK,
     MODE_COUNTDOWN,
     MODE_DRAW,
     MODE_HOMETHERMOMETER,
-    MODE_LARGECLOCK,
-    MODE_SMALLCLOCK,
     MODE_STREAM,
     MODE_TICKER,
 } from "../config/modules";
@@ -26,11 +25,10 @@ import { name as ExtensionPhotocellName, receiver as ExtensionPhotocellReceiver 
 import { name as ExtensionPlaylistName, receiver as ExtensionPlaylistReceiver } from "../extensions/Playlist";
 import { name as ExtensionSignalName, receiver as ExtensionSignalReceiver } from "../extensions/Signal";
 import { name as ModeAnimationName, receiver as ModeAnimationReceiver } from "../modes/Animation";
+import { name as ModeClockName, receiver as ModeClockReceiver } from "../modes/Clock";
 import { name as ModeCountdownName, receiver as ModeCountdownReceiver } from "../modes/Countdown";
 import { name as ModeDrawName, receiver as ModeDrawReceiver } from "../modes/Draw";
 import { name as ModeHomeThermometerName, receiver as ModeHomeThermometerReceiver } from "../modes/HomeThermometer";
-import { name as ModeLargeClockName, receiver as ModeLargeClockReceiver } from "../modes/LargeClock";
-import { name as ModeSmallClockName, receiver as ModeSmallClockReceiver } from "../modes/SmallClock";
 import { name as ModeStreamName, receiver as ModeStreamReceiver } from "../modes/Stream";
 import { name as ModeTickerName, receiver as ModeTickerReceiver } from "../modes/Ticker";
 import { name as ConnectivityName, receiver as ConnectivityReceiver } from "../services/Connectivity";
@@ -75,14 +73,13 @@ export const WebSocketmessages: ParentComponent = (props) => {
             EXTENSION_PLAYLIST && json[ExtensionPlaylistName] && ExtensionPlaylistReceiver(json[ExtensionPlaylistName]);
             EXTENSION_SIGNAL && json[ExtensionSignalName] && ExtensionSignalReceiver(json[ExtensionSignalName]);
             MODE_ANIMATION && json[ModeAnimationName] && ModeAnimationReceiver(json[ModeAnimationName]);
+            MODE_CLOCK && json[ModeClockName] && ModeClockReceiver(json[ModeClockName]);
             MODE_COUNTDOWN && json[ModeCountdownName] && ModeCountdownReceiver(json[ModeCountdownName]);
             MODE_DRAW && json[ModeDrawName] && ModeDrawReceiver(json[ModeDrawName]);
             MODE_HOMETHERMOMETER &&
                 json[ModeHomeThermometerName] &&
                 ModeHomeThermometerReceiver(json[ModeHomeThermometerName]);
-            MODE_LARGECLOCK && json[ModeLargeClockName] && ModeLargeClockReceiver(json[ModeLargeClockName]);
             MODE_TICKER && json[ModeTickerName] && ModeTickerReceiver(json[ModeTickerName]);
-            MODE_SMALLCLOCK && json[ModeSmallClockName] && ModeSmallClockReceiver(json[ModeSmallClockName]);
             MODE_STREAM && json[ModeStreamName] && ModeStreamReceiver(json[ModeStreamName]);
         });
     });

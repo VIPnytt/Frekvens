@@ -17,82 +17,52 @@ class Deprecated:
         self._distributeddisplayprotocol()
         self._e131()
         self._gameoflifeclock()
+        self._largeclock()
         self._largetickingclock()
         self._pingpongclock()
+        self._smallclock()
         self._smalltickingclock()
         self._snakeclock()
 
     def _artnet(self) -> None:
-        if "MODE_ARTNET" in self.project.dotenv:
-            logging.warning('Deprecation: MODE_ARTNET "Art-Net" is deprecated. Use MODE_STREAM "Stream" instead.')
-            if "MODE_STREAM" not in self.project.dotenv:
-                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_ARTNET"]
-            del self.project.dotenv["MODE_ARTNET"]
+        self._migrate("MODE_ARTNET", "Art-Net", "MODE_STREAM", "Stream")
 
     def _boldclock(self) -> None:
-        if "MODE_BOLDCLOCK" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_BOLDCLOCK "Bold clock" is deprecated. Use MODE_LARGECLOCK "Large clock" instead.'
-            )
-            if "MODE_LARGECLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv["MODE_BOLDCLOCK"]
-            del self.project.dotenv["MODE_BOLDCLOCK"]
+        self._migrate_to_clock("MODE_BOLDCLOCK", "Bold clock")
 
     def _distributeddisplayprotocol(self) -> None:
-        if "MODE_DISTRIBUTEDDISPLAYPROTOCOL" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_DISTRIBUTEDDISPLAYPROTOCOL "Distributed Display Protocol" is deprecated. Use MODE_STREAM "Stream" instead.'
-            )
-            if "MODE_STREAM" not in self.project.dotenv:
-                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_DISTRIBUTEDDISPLAYPROTOCOL"]
-            del self.project.dotenv["MODE_DISTRIBUTEDDISPLAYPROTOCOL"]
+        self._migrate("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", "MODE_STREAM", "Stream")
 
     def _e131(self) -> None:
-        if "MODE_E131" in self.project.dotenv:
-            logging.warning('Deprecation: MODE_E131 "E1.31" is deprecated. Use MODE_STREAM "Stream" instead.')
-            if "MODE_STREAM" not in self.project.dotenv:
-                self.project.dotenv["MODE_STREAM"] = self.project.dotenv["MODE_E131"]
-            del self.project.dotenv["MODE_E131"]
+        self._migrate("MODE_E131", "E1.31", "MODE_STREAM", "Stream")
 
     def _gameoflifeclock(self) -> None:
-        if "MODE_GAMEOFLIFECLOCK" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_GAMEOFLIFECLOCK "Game of Life clock" is deprecated. Use MODE_GAMEOFLIFE "Game of Life" instead.'
-            )
-            if "MODE_GAMEOFLIFE" not in self.project.dotenv:
-                self.project.dotenv["MODE_GAMEOFLIFE"] = self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
-            del self.project.dotenv["MODE_GAMEOFLIFECLOCK"]
+        self._migrate("MODE_GAMEOFLIFECLOCK", "Game of Life clock", "MODE_GAMEOFLIFE", "Game of Life")
+
+    def _largeclock(self) -> None:
+        self._migrate_to_clock("MODE_LARGECLOCK", "Large clock")
 
     def _largetickingclock(self) -> None:
-        if "MODE_LARGETICKINGCLOCK" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_LARGETICKINGCLOCK "Large ticking clock" is deprecated. Use MODE_LARGECLOCK "Large clock" instead.'
-            )
-            if "MODE_LARGECLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_LARGECLOCK"] = self.project.dotenv["MODE_LARGETICKINGCLOCK"]
-            del self.project.dotenv["MODE_LARGETICKINGCLOCK"]
+        self._migrate_to_clock("MODE_LARGETICKINGCLOCK", "Large ticking clock")
+
+    def _migrate(self, old_key: str, old_name: str, new_key: str, new_name: str) -> None:
+        if old_key in self.project.dotenv:
+            logging.warning(f'Deprecation: {old_key} "{old_name}" is deprecated. Use {new_key} "{new_name}" instead.')
+            if new_key not in self.project.dotenv:
+                self.project.dotenv[new_key] = self.project.dotenv[old_key]
+            del self.project.dotenv[old_key]
+
+    def _migrate_to_clock(self, old_key: str, old_name: str) -> None:
+        self._migrate(old_key, old_name, "MODE_CLOCK", "Clock")
 
     def _pingpongclock(self) -> None:
-        if "MODE_PINGPONGCLOCK" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_PINGPONGCLOCK "Ping-Pong clock" is deprecated. Use MODE_PINGPONG "Ping-pong" instead.'
-            )
-            if "MODE_PINGPONG" not in self.project.dotenv:
-                self.project.dotenv["MODE_PINGPONG"] = self.project.dotenv["MODE_PINGPONGCLOCK"]
-            del self.project.dotenv["MODE_PINGPONGCLOCK"]
+        self._migrate("MODE_PINGPONGCLOCK", "Ping-Pong clock", "MODE_PINGPONG", "Ping-pong")
+
+    def _smallclock(self) -> None:
+        self._migrate_to_clock("MODE_SMALLCLOCK", "Small clock")
 
     def _smalltickingclock(self) -> None:
-        if "MODE_SMALLTICKINGCLOCK" in self.project.dotenv:
-            logging.warning(
-                'Deprecation: MODE_SMALLTICKINGCLOCK "Small ticking clock" is deprecated. Use MODE_SMALLCLOCK "Small clock" instead.'
-            )
-            if "MODE_SMALLCLOCK" not in self.project.dotenv:
-                self.project.dotenv["MODE_SMALLCLOCK"] = self.project.dotenv["MODE_SMALLTICKINGCLOCK"]
-            del self.project.dotenv["MODE_SMALLTICKINGCLOCK"]
+        self._migrate_to_clock("MODE_SMALLTICKINGCLOCK", "Small ticking clock")
 
     def _snakeclock(self) -> None:
-        if "MODE_SNAKECLOCK" in self.project.dotenv:
-            logging.warning('Deprecation: MODE_SNAKECLOCK "Snake clock" is deprecated. Use MODE_SNAKE "Snake" instead.')
-            if "MODE_SNAKE" not in self.project.dotenv:
-                self.project.dotenv["MODE_SNAKE"] = self.project.dotenv["MODE_SNAKECLOCK"]
-            del self.project.dotenv["MODE_SNAKECLOCK"]
+        self._migrate("MODE_SNAKECLOCK", "Snake clock", "MODE_SNAKE", "Snake")
