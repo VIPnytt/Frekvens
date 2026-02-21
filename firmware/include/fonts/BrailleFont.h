@@ -7,7 +7,7 @@
 class BrailleFont final : public FontModule
 {
 private:
-    const std::vector<Symbol> ascii = {
+    inline static const std::vector<Symbol> ascii = {
         {
             // 0x20, SPACE
             {},
