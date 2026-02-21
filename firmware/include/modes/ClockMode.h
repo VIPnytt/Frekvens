@@ -25,7 +25,7 @@ private:
 
     std::vector<FontModule *> fonts = {};
 
-    void borderPixel(int s, uint8_t brightness);
+    void borderPixel(uint8_t sec, uint8_t brightness);
     void setFont(const char *fontName);
     void setTicking(bool _ticking);
     void transmit();

@@ -14,42 +14,42 @@
 
 #include <Preferences.h>
 
-void ClockMode::borderPixel(int s, uint8_t brightness)
+void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
 {
     // Segment boundaries (number of steps in each segment)
-    const int SEG1 = GRID_COLUMNS / 2;        // top-right half
-    const int SEG2 = SEG1 + GRID_ROWS - 1;    // right edge (y 1..GRID_ROWS-1)
-    const int SEG3 = SEG2 + GRID_COLUMNS - 1; // bottom edge (x GRID_COLUMNS-2..0)
-    const int SEG4 = SEG3 + GRID_ROWS - 1;    // left edge (y GRID_ROWS-2..0)
+    const uint8_t SEG1 = GRID_COLUMNS / 2u;        // top-right half
+    const uint8_t SEG2 = SEG1 + GRID_ROWS - 1u;    // right edge (y 1..GRID_ROWS-1)
+    const uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1u; // bottom edge (x GRID_COLUMNS-2..0)
+    const uint8_t SEG4 = SEG3 + GRID_ROWS - 1u;    // left edge (y GRID_ROWS-2..0)
     // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
 
-    int16_t x;
-    int8_t y;
+    uint8_t x;
+    uint8_t y;
 
-    if (s < SEG1)
+    if (sec < SEG1)
     {
-        x = GRID_COLUMNS / 2 + s;
-        y = 0;
+        x = (GRID_COLUMNS / 2u) + sec;
+        y = 0u;
     }
-    else if (s < SEG2)
+    else if (sec < SEG2)
     {
-        x = GRID_COLUMNS - 1;
-        y = s - GRID_COLUMNS / 2 + 1;
+        x = GRID_COLUMNS - 1u;
+        y = sec - (GRID_COLUMNS / 2u) + 1u;
     }
-    else if (s < SEG3)
+    else if (sec < SEG3)
     {
-        x = SEG2 + GRID_COLUMNS - 2 - s;
-        y = GRID_ROWS - 1;
+        x = SEG2 + GRID_COLUMNS - 2u - sec;
+        y = GRID_ROWS - 1u;
     }
-    else if (s < SEG4)
+    else if (sec < SEG4)
     {
-        x = 0;
-        y = SEG3 + GRID_ROWS - 2 - s;
+        x = 0u;
+        y = SEG3 + GRID_ROWS - 2u - sec;
     }
     else
     {
-        x = s - SEG4 + 1;
-        y = 0;
+        x = sec - SEG4 + 1u;
+        y = 0u;
     }
 
     Display.setPixel(x, y, brightness);
@@ -178,7 +178,7 @@ void ClockMode::handle()
             {
                 // Small font: sweep a pixel clockwise around the grid border
                 borderPixel(second, 0);
-                second = local.tm_sec;
+                second = static_cast<uint8_t>(local.tm_sec);
                 borderPixel(second, INT8_MAX);
             }
             else
@@ -187,7 +187,7 @@ void ClockMode::handle()
                 Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
                                  (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                                  0);
-                second = local.tm_sec;
+                second = static_cast<uint8_t>(local.tm_sec);
                 Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
                                  (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                                  INT8_MAX);
