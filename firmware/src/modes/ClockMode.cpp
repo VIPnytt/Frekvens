@@ -142,34 +142,23 @@ void ClockMode::handle()
             hour = local.tm_hour;
             minute = local.tm_min;
             Display.clearFrame();
+
             TextHandler h1(std::to_string(hour / 10), font);
             TextHandler h2(std::to_string(hour % 10), font);
             TextHandler m1(std::to_string(minute / 10), font);
             TextHandler m2(std::to_string(minute % 10), font);
-            if (cellSize <= 5)
-            {
-                // Small font: each digit right/left-aligned to the center with a 1-pixel gap,
-                // matching the original SmallClockMode layout.
-                const int8_t yTop = (GRID_ROWS / 2) - h1.getHeight() - 1;
-                const int8_t yBot = (GRID_ROWS / 2);
-                h1.draw((GRID_COLUMNS / 2) - h1.getWidth() - 1, yTop);
-                h2.draw((GRID_COLUMNS / 2) + 1, yTop);
-                m1.draw((GRID_COLUMNS / 2) - m1.getWidth() - 1, yBot);
-                m2.draw((GRID_COLUMNS / 2) + 1, yBot);
-            }
-            else
-            {
-                // Large font: each digit centered within a cellSize×cellSize cell,
-                // matching the original LargeClockMode layout.
-                h1.draw((GRID_COLUMNS / 2) - 1 - ((cellSize - h1.getWidth()) / 2) - h1.getWidth(),
-                        (GRID_ROWS / 2) - 1 - ((cellSize - h1.getHeight()) / 2) - h1.getHeight());
-                h2.draw((GRID_COLUMNS / 2) + 1 + ((cellSize - h2.getWidth()) / 2),
-                        (GRID_ROWS / 2) - 1 + ((cellSize - h2.getHeight()) / 2) - h2.getHeight());
-                m1.draw((GRID_COLUMNS / 2) - 1 - ((cellSize - m1.getWidth()) / 2) - m1.getWidth(),
-                        (GRID_ROWS / 2) + 1 - ((cellSize - m1.getHeight()) / 2));
-                m2.draw((GRID_COLUMNS / 2) + 1 + ((cellSize - m2.getWidth()) / 2),
-                        (GRID_ROWS / 2) + 1 + ((cellSize - m2.getHeight()) / 2));
-            }
+
+            // Small font: digits flush to the center gap (no cell padding).
+            // Large font: digits centred in a cellSize-wide cell on each side of the gap.
+            const int8_t yTop = (GRID_ROWS / 2) - 1 - cellSize;
+            const int8_t yBot = (cellSize <= 5) ? (GRID_ROWS / 2) : (GRID_ROWS / 2) + 1;
+
+            auto xPad = [&](int8_t w) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - w) / 2; };
+
+            h1.draw((GRID_COLUMNS / 2) - 1 - xPad(h1.getWidth()) - h1.getWidth(), yTop);
+            h2.draw((GRID_COLUMNS / 2) + 1 + xPad(h2.getWidth()), yTop);
+            m1.draw((GRID_COLUMNS / 2) - 1 - xPad(m1.getWidth()) - m1.getWidth(), yBot);
+            m2.draw((GRID_COLUMNS / 2) + 1 + xPad(m2.getWidth()), yBot);
             pending = false;
         }
         if (ticking && second != local.tm_sec)
