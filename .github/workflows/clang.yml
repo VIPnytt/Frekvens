@@ -241,7 +241,7 @@ jobs:
 
       - name: Summary
         env:
-          clang-threshold: 251
+          clang-threshold: 247
         run: |
           echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
