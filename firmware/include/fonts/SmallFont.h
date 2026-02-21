@@ -9,7 +9,7 @@
 class SmallFont final : public FontModule
 {
 private:
-    const std::vector<Symbol> ascii = {
+    inline static const std::vector<Symbol> ascii = {
         {
             // 0x20, SPACE
             {},
@@ -1230,7 +1230,7 @@ private:
         },
     };
 
-    const std::vector<SymbolExtended> unicode = {
+    inline static const std::vector<SymbolExtended> unicode = {
         {
             0xB0, // ° DEGREE SIGN
             {
