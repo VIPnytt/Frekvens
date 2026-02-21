@@ -1,18 +1,17 @@
 name: Labeler
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
-
-permissions:
-  contents: read
-  pull-requests: write
 
 jobs:
   pr-labeler:
     name: Pull request
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout

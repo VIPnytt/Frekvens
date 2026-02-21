@@ -1,6 +1,6 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Game of Life](#-game-of-life) | [Large clock](#️-large-clock) | [Ping-pong](#-ping-pong) | [Small clock](#%EF%B8%8F-small-clock) | [Snake](#️-snake)
+**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Clock](#️-clock) | [Game of Life](#-game-of-life) | [Ping-pong](#-ping-pong) | [Snake](#️-snake)
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong)| [Snake](#-snake)
 
@@ -131,6 +131,16 @@ MODE_CIRCLE='true'
 ```
 
 See also [Ring](#-ring).
+
+## ⏱️ Clock
+
+Clock with font selection and optional seconds indicator.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+MODE_CLOCK='true'
+```
 
 ## ⏳ Countdown
 
@@ -318,18 +328,6 @@ MODE_JAGGEDWAVEFORM='true'
 
 See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
 
-## ⏱️ Large clock
-
-Clock with optional seconds indicator.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_LARGECLOCK='true'
-```
-
-See also [Small clock](#%EF%B8%8F-small-clock).
-
 ## 🍂 Leaf fall
 
 Autumn-inspired.
@@ -486,18 +484,6 @@ MODE_SCAN='true'
 ```
 
 See also [Lines](#-lines).
-
-## ⏱️ Small clock
-
-Clock with optional seconds indicator.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_SMALLCLOCK='true'
-```
-
-See also [Large clock](#%EF%B8%8F-large-clock).
 
 ## 〰️ Smooth waveform
 

@@ -21,7 +21,7 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### Key Highlights
 
-- **42 display modes**:
+- **41 display modes**:
   - Animations
   - Clocks
   - Interactive tools

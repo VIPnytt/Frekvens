@@ -6,7 +6,7 @@ import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
 
-export const name = "Large clock";
+export const name = "Clock";
 
 const [getFont, setFont] = createSignal<string>("");
 const [getFonts, setFonts] = createSignal<string[]>([]);

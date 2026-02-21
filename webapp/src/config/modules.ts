@@ -18,6 +18,7 @@ export const MODE_BLINDS: boolean = import.meta.env.VITE_MODE_BLINDS === "true";
 export const MODE_BREAKOUTCLOCK: boolean = import.meta.env.VITE_MODE_BREAKOUTCLOCK === "true";
 export const MODE_BRIGHT: boolean = import.meta.env.VITE_MODE_BRIGHT === "true";
 export const MODE_CIRCLE: boolean = import.meta.env.VITE_MODE_CIRCLE === "true";
+export const MODE_CLOCK: boolean = import.meta.env.VITE_MODE_CLOCK === "true";
 export const MODE_COUNTDOWN: boolean = import.meta.env.VITE_MODE_COUNTDOWN === "true";
 export const MODE_DRAW: boolean = import.meta.env.VITE_MODE_DRAW === "true";
 export const MODE_EQUALIZER: boolean = import.meta.env.VITE_MODE_EQUALIZER === "true";
@@ -29,7 +30,6 @@ export const MODE_GOOGLEWEATHER: boolean = import.meta.env.VITE_MODE_GOOGLEWEATH
 export const MODE_HOMEASSISTANTWEATHER: boolean = import.meta.env.VITE_MODE_HOMEASSISTANTWEATHER === "true";
 export const MODE_HOMETHERMOMETER: boolean = import.meta.env.VITE_MODE_HOMETHERMOMETER === "true";
 export const MODE_JAGGEDWAVEFORM: boolean = import.meta.env.VITE_MODE_JAGGEDWAVEFORM === "true";
-export const MODE_LARGECLOCK: boolean = import.meta.env.VITE_MODE_LARGECLOCK === "true";
 export const MODE_LEAFFALL: boolean = import.meta.env.VITE_MODE_LEAFFALL === "true";
 export const MODE_LINES: boolean = import.meta.env.VITE_MODE_LINES === "true";
 export const MODE_METABALLS: boolean = import.meta.env.VITE_MODE_METABALLS === "true";
@@ -41,7 +41,6 @@ export const MODE_PIXELSEQUENCE: boolean = import.meta.env.VITE_MODE_PIXELSEQUEN
 export const MODE_RAIN: boolean = import.meta.env.VITE_MODE_RAIN === "true";
 export const MODE_RING: boolean = import.meta.env.VITE_MODE_RING === "true";
 export const MODE_SCAN: boolean = import.meta.env.VITE_MODE_SCAN === "true";
-export const MODE_SMALLCLOCK: boolean = import.meta.env.VITE_MODE_SMALLCLOCK === "true";
 export const MODE_SMOOTHWAVEFORM: boolean = import.meta.env.VITE_MODE_SMOOTHWAVEFORM === "true";
 export const MODE_SNAKE: boolean = import.meta.env.VITE_MODE_SNAKE === "true";
 export const MODE_STARS: boolean = import.meta.env.VITE_MODE_STARS === "true";
