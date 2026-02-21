@@ -51,7 +51,7 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    const std::vector<ModeModule *> modes = {
+    std::vector<ModeModule *> modes = {
 #if MODE_ANIMATION
         new AnimationMode(),
 #endif
@@ -179,6 +179,10 @@ private:
 
     unsigned long lastMillis = 0;
 
+    ModeModule *mode = nullptr;
+
+    TaskHandle_t taskHandle = nullptr;
+
     ModeModule *scheduled = nullptr;
 
     void setMode(ModeModule *mode, bool power = true);
@@ -189,10 +193,6 @@ private:
 public:
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 
-    ModeModule *mode = nullptr;
-
-    TaskHandle_t taskHandle = nullptr;
-
     void configure();
     void begin();
     void handle();
@@ -200,6 +200,7 @@ public:
     void setMode(const char *name);
     void setModeNext();
     void setModePrevious();
+    [[nodiscard]] TaskHandle_t getTaskHandle() const;
     [[nodiscard]] const std::vector<ModeModule *> &getAll() const;
     void onReceive(JsonObjectConst payload, const char *source) override;
 
