@@ -65,6 +65,11 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
+    DisplayService(const DisplayService &) = delete;
+    DisplayService &operator=(const DisplayService &) = delete;
+    DisplayService(DisplayService &&) = delete;
+    DisplayService &operator=(DisplayService &&) = delete;
+
     hw_timer_t *timer = nullptr;
 
     void configure();

@@ -29,6 +29,11 @@ private:
     void transmit();
 
 public:
+    FontsService(const FontsService &) = delete;
+    FontsService &operator=(const FontsService &) = delete;
+    FontsService(FontsService &&) = delete;
+    FontsService &operator=(FontsService &&) = delete;
+
     void begin();
     [[nodiscard]] const std::vector<FontModule *> &getAll() const;
 
