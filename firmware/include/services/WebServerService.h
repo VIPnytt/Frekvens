@@ -16,6 +16,7 @@ public:
     WebServerService &operator=(const WebServerService &) = delete;
     WebServerService(WebServerService &&) = delete;
     WebServerService &operator=(WebServerService &&) = delete;
+    ~WebServerService() = default;
 
     AsyncWebServer *http = new AsyncWebServer(80);
 

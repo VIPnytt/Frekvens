@@ -25,6 +25,7 @@ public:
     DeviceService &operator=(const DeviceService &) = delete;
     DeviceService(DeviceService &&) = delete;
     DeviceService &operator=(DeviceService &&) = delete;
+    ~DeviceService() = default;
 
     TaskHandle_t taskHandle = nullptr;
 

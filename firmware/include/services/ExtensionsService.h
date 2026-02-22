@@ -92,6 +92,7 @@ public:
     ExtensionsService &operator=(const ExtensionsService &) = delete;
     ExtensionsService(ExtensionsService &&) = delete;
     ExtensionsService &operator=(ExtensionsService &&) = delete;
+    ~ExtensionsService() = default;
 
     TaskHandle_t taskHandle = nullptr;
 

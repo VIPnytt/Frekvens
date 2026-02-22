@@ -69,6 +69,7 @@ public:
     DisplayService &operator=(const DisplayService &) = delete;
     DisplayService(DisplayService &&) = delete;
     DisplayService &operator=(DisplayService &&) = delete;
+    ~DisplayService() = default;
 
     hw_timer_t *timer = nullptr;
 
