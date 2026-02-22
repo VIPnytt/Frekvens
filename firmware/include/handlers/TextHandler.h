@@ -1,11 +1,12 @@
 #pragma once
 
 #include "modules/FontModule.h"
+#include "modules/HandlerModule.h"
 
 #include <string>
 #include <string_view>
 
-class TextHandler
+class TextHandler : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "TextHandler";
@@ -26,7 +27,7 @@ private:
     static const char *encode(uint32_t codepoint, char *out);
 
 public:
-    explicit TextHandler(std::string text, FontModule *font);
+    explicit TextHandler(std::string text, FontModule *font) : HandlerModule() {};
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(int16_t x, int8_t y, uint8_t brightness = UINT8_MAX);

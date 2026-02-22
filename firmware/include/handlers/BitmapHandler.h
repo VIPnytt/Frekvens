@@ -1,9 +1,11 @@
 #pragma once
 
+#include "modules/HandlerModule.h"
+
 #include <string_view>
 #include <vector>
 
-class BitmapHandler
+class BitmapHandler : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "BitmapHandler";
@@ -14,7 +16,7 @@ private:
     uint8_t width = 0;
 
 public:
-    explicit BitmapHandler(std::vector<uint16_t> bitmap);
+    explicit BitmapHandler(std::vector<uint16_t> bitmap) : HandlerModule() {};
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX);
