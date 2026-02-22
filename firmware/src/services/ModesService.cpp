@@ -181,6 +181,8 @@ void ModesService::setMode(ModeModule *mode, bool power)
 
 const std::vector<ModeModule *> &ModesService::getAll() const { return modes; }
 
+TaskHandle_t ModesService::getTaskHandle() const { return taskHandle; }
+
 void ModesService::setModeNext()
 {
     const char *const _name = mode == nullptr ? scheduled->name : mode->name;
