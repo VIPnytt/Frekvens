@@ -64,7 +64,7 @@ void InfraredExtension::handle()
     }
 }
 
-void InfraredExtension::parse()
+void InfraredExtension::parse() // NOLINT(readability-make-member-function-const)
 {
     const unsigned long t = millis() - lastMillis;
     for (const Code &code : codes)

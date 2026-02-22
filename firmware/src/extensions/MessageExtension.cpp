@@ -141,7 +141,7 @@ void MessageExtension::handle()
     }
 }
 
-void MessageExtension::addMessage(std::string message)
+void MessageExtension::addMessage(std::string message) // NOLINT(readability-make-member-function-const)
 {
     for (uint8_t i = 0; i <= repeat; ++i)
     {
