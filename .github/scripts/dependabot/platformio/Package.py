@@ -13,7 +13,7 @@ class Registry(PlatformIo.Client):
     def __init__(self, ctx: PlatformIo.Context) -> None:
         super().__init__(ctx)
         self.regex = re.compile(
-            r"^(?P<owner>[^/\s]+)/(?P<name>[^/\s]+?)\s*@\s*(?:^|~|>=|=)?\s*(?P<version>[^^~>=<!,</\s]*)\S*$"
+            r"^(?P<owner>[^/\s]+)/(?P<name>[^/\s]+?)\s*@\s*(?:\^|~|>=|=)?\s*(?P<version>[^\^~>=<!,/\s]*)\S*$"
         )
 
     def matrix(self) -> list[PlatformIo.ResultFragment]:

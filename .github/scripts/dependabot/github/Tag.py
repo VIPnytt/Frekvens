@@ -68,7 +68,7 @@ class Ball(GitHub.Client):
     def __init__(self, ctx: GitHub.Context) -> None:
         super().__init__(ctx)
         self.regex = re.compile(
-            r"https://api\.github\.com/repos/(?P<owner>[^/;\s]+)/(?P<repo>[^/;\s]+)/(?:tar|zip)ball/(?P<tag>[^/;\s;]+)(?:\s*;\s*[0-9a-f]{7,40})?$",
+            r"https://api\.github\.com/repos/(?P<owner>[^/;\s]+)/(?P<repo>[^/;\s]+)/(?:tar|zip)ball/(?P<tag>[^/;\s]+)(?:\s*;\s*[0-9a-f]{7,40})?$",
             re.MULTILINE,
         )
 
