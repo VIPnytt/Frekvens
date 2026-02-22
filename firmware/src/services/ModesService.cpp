@@ -113,7 +113,7 @@ void ModesService::setActive(bool active)
     }
 }
 
-void ModesService::setMode(const char *name)
+void ModesService::setMode(const char *name) // NOLINT(readability-make-member-function-const)
 {
     if (mode == nullptr || strcmp(mode->name, name) != 0)
     {

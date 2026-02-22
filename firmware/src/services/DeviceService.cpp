@@ -244,6 +244,7 @@ void DeviceService::transmit()
     transmit(doc.as<JsonObjectConst>(), name);
 }
 
+// NOLINTNEXTLINE(readability-make-member-function-const)
 void DeviceService::transmit(JsonObjectConst payload, const char *source, bool retain)
 {
     if (retain)
