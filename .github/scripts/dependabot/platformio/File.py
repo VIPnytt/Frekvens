@@ -17,14 +17,12 @@ class ResultFragment(BaseFragment, PlatformIo.ResultFragment):
     pass
 
 
-class DownloadRegistry:
-    ctx: PlatformIo.Context
-    regex: re.Pattern[str]
-
+class Download(PlatformIo.Client):
     def __init__(self, ctx: PlatformIo.Context) -> None:
-        self.ctx = ctx
+        super().__init__(ctx)
         self.regex = re.compile(
-            r"https://dl\.registry\.platformio\.org/download/(?P<owner>[^/\s]+)/(?P<type>[^/\s]+)/(?P<name>[^/\s]+)/(?P<version>[^/\s]+)/(?P<file>[^/\s;]+)(?:\s*;\s*sha256:[0-9a-f]{64})?"
+            r"https://dl\.registry\.platformio\.org/download/(?P<owner>[^/;\s]+)/(?P<type>[^/;\s]+)/(?P<name>[^/;\s]+)/(?P<version>[^/;\s]+)/(?P<file>[^/;\s]+)(?:\s*;\s*sha256:[0-9a-f]{64})?$",
+            re.MULTILINE,
         )
 
     def matrix(self) -> list[ResultFragment]:
@@ -52,11 +50,11 @@ class DownloadRegistry:
                 if pending:
                     fragments.append(
                         {
-                            "owner": match["owner"],
-                            "name": match["name"],
+                            "owner": pending["owner"],
+                            "name": pending["name"],
                             "version_old": match["version"],
                             "version_new": pending["version_new"],
-                            "type": match["type"],
+                            "type": pending["type"],
                             "file_new": pending["file_new"],
                             "checksum_new": pending["checksum_new"],
                             "string_old": string,
@@ -69,8 +67,8 @@ class DownloadRegistry:
                     "name": fragment["name"],
                     "version_old": fragment["version_old"],
                     "version_new": fragment["version_new"],
-                    "type": fragment["type"],
                     "file_new": fragment["file_new"],
+                    "type": fragment["type"],
                     "checksum_new": fragment["checksum_new"],
                     "string_old": fragment["string_old"],
                     "string_new": f"{fragment['file_new']} ; sha256:{fragment['checksum_new']}",
@@ -93,8 +91,11 @@ class Handler(PlatformIo.Handler):
                 if _file:
                     return HandlerFragment(
                         {
-                            "file_new": _file["download_url"],
                             "checksum_new": _file["checksum"]["sha256"],
+                            "file_new": _file["download_url"],
+                            "name": self.name,
+                            "owner": self.owner,
+                            "type": self.type,
                             "version_new": release["name"],
                         }
                     )
@@ -105,6 +106,6 @@ class Handler(PlatformIo.Handler):
 
     def parse_files(self, release: PlatformIo.ReleaseData) -> PlatformIo.FileData | None:
         for file in release["files"]:
-            if file["name"] == self.file.replace(self.tag, release["name"], 1):
+            if file["name"] == self.file or file["name"] == self.file.replace(self.tag, release["name"], 1):
                 return file
         return None
