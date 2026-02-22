@@ -7,8 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 env:
   milestone: 10
@@ -65,9 +64,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
-          SEMVER_MAJOR_DAYS: ${{ env.semver-major-days }}
-          SEMVER_MINOR_DAYS: ${{ env.semver-minor-days }}
-          SEMVER_PATCH_DAYS: ${{ env.semver-patch-days }}
         run: echo "fragments=$(python -m GitHub)" >> "$GITHUB_OUTPUT"
         working-directory: .github/scripts/dependabot/github
 
@@ -76,6 +72,9 @@ jobs:
     needs: github-check
     runs-on: ubuntu-latest
     if: needs.github-check.outputs.dependency-fragments != '[]'
+    permissions:
+      contents: write
+      pull-requests: write
 
     strategy:
       max-parallel: 1
@@ -192,9 +191,6 @@ jobs:
         id: pending
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-          SEMVER_MAJOR_DAYS: ${{ env.semver-major-days }}
-          SEMVER_MINOR_DAYS: ${{ env.semver-minor-days }}
-          SEMVER_PATCH_DAYS: ${{ env.semver-patch-days }}
         run: echo "fragments=$(python -m PlatformIo)" >> "$GITHUB_OUTPUT"
         working-directory: .github/scripts/dependabot/platformio
 
@@ -203,6 +199,9 @@ jobs:
     needs: platformio-check
     runs-on: ubuntu-latest
     if: needs.platformio-check.outputs.dependency-fragments != '[]'
+    permissions:
+      contents: write
+      pull-requests: write
 
     strategy:
       max-parallel: 1

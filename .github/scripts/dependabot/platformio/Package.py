@@ -6,16 +6,14 @@ import re
 import subprocess
 
 
-class PackageRegistry:
-    ctx: PlatformIo.Context
+class Registry(PlatformIo.Client):
     fragments: list[PlatformIo.BaseFragment]
-    regex: re.Pattern[str]
     seen: dict[str, set[str]]
 
     def __init__(self, ctx: PlatformIo.Context) -> None:
-        self.ctx = ctx
+        super().__init__(ctx)
         self.regex = re.compile(
-            r"^(?P<owner>[^/]+)/(?P<name>[^/]+?)\s*@\s*(?:[\^~>=<!]{,2})\s*(?P<version>\d+\.\d+\.\d+\S*?)(?:,.*)?$"
+            r"^(?P<owner>[^/\s]+)/(?P<name>[^/\s]+?)\s*@\s*(?:\^|~|>=|=)?\s*(?P<version>[^\^~>=<!,/\s]*)\S*$"
         )
 
     def matrix(self) -> list[PlatformIo.ResultFragment]:
@@ -71,8 +69,8 @@ class PackageRegistry:
                 self.fragments.append(
                     PlatformIo.BaseFragment(
                         {
-                            "owner": match["owner"],
-                            "name": match["name"],
+                            "owner": pending["owner"],
+                            "name": pending["name"],
                             "version_old": match["version"],
                             "version_new": pending["version_new"],
                             "type": type,
@@ -92,6 +90,9 @@ class Handler(PlatformIo.Handler):
                 self.ctx.logger.info("Update available: %s/%s @ %s", self.owner, self.name, release["name"])
                 return PlatformIo.HandlerFragment(
                     {
+                        "type": self.type,
+                        "owner": self.owner,
+                        "name": self.name,
                         "version_new": release["name"],
                     }
                 )
