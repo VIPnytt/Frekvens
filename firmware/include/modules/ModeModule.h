@@ -8,6 +8,13 @@ protected:
     explicit ModeModule(const char *name) : name(name) {};
 
 public:
+    virtual ~ModeModule() = default;
+
+    ModeModule(const ModeModule &) = delete;
+    ModeModule &operator=(const ModeModule &) = delete;
+    ModeModule(ModeModule &&) = delete;
+    ModeModule &operator=(ModeModule &&) = delete;
+
     const char *const name;
 
     virtual void configure();

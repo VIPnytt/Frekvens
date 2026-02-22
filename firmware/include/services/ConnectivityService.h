@@ -36,12 +36,6 @@ private:
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 public:
-    ConnectivityService(const ConnectivityService &) = delete;
-    ConnectivityService &operator=(const ConnectivityService &) = delete;
-    ConnectivityService(ConnectivityService &&) = delete;
-    ConnectivityService &operator=(ConnectivityService &&) = delete;
-    ~ConnectivityService() = default;
-
     static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
 
     void configure();

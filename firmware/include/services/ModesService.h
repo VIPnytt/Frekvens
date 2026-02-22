@@ -191,12 +191,6 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    ModesService(const ModesService &) = delete;
-    ModesService &operator=(const ModesService &) = delete;
-    ModesService(ModesService &&) = delete;
-    ModesService &operator=(ModesService &&) = delete;
-    ~ModesService() = default;
-
     static constexpr uint16_t stackSize = 1 << 13; // 8 kB
 
     void configure();

@@ -21,12 +21,6 @@ private:
     void onReceive(JsonObjectConst payload, const char *source) override;
 
 public:
-    DeviceService(const DeviceService &) = delete;
-    DeviceService &operator=(const DeviceService &) = delete;
-    DeviceService(DeviceService &&) = delete;
-    DeviceService &operator=(DeviceService &&) = delete;
-    ~DeviceService() = default;
-
     TaskHandle_t taskHandle = nullptr;
 
     void begin();

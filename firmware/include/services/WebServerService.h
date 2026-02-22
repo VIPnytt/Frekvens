@@ -12,12 +12,6 @@ private:
     static void onNotFound(AsyncWebServerRequest *request);
 
 public:
-    WebServerService(const WebServerService &) = delete;
-    WebServerService &operator=(const WebServerService &) = delete;
-    WebServerService(WebServerService &&) = delete;
-    WebServerService &operator=(WebServerService &&) = delete;
-    ~WebServerService() = default;
-
     AsyncWebServer *http = new AsyncWebServer(80);
 
     void configure() const;
