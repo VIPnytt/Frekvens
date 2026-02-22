@@ -125,13 +125,13 @@ void ConnectivityService::initStation()
     wifi_config_t config;
     if (esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config) == ESP_OK)
     {
-        const char *ssid_ptr =
-            reinterpret_cast<const char *>(config.sta.ssid); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+        const char *ssid_ptr = reinterpret_cast<const char *>(config.sta.ssid);
         const std::string_view ssid(ssid_ptr, strnlen(ssid_ptr, sizeof(config.sta.ssid)));
         if (!ssid.empty())
         {
-            const char *key_ptr = reinterpret_cast<const char *>(
-                config.sta.password); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+            const char *key_ptr = reinterpret_cast<const char *>(config.sta.password);
             const std::string_view key(key_ptr, strnlen(key_ptr, sizeof(config.sta.password)));
             doc[ssid] = key.length() ? key : nullptr;
         }
