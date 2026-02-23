@@ -169,22 +169,12 @@ void InfraredExtension::setActive(bool active)
     {
         this->active = active;
         this->active ? IrReceiver.start() : IrReceiver.stop();
-
         Preferences Storage;
         Storage.begin(name);
         Storage.putBool("active", this->active);
         Storage.end();
-
         transmit();
-
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
     }
 }
 
