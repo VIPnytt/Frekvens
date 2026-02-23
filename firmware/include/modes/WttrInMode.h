@@ -17,7 +17,7 @@ private:
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
-    std::vector<const char *> urls = {
+    std::vector<const char *> urls{
         "https://wttr.in/?format=j2",
 #ifdef LOCATION
         "https://wttr.in/" LOCATION "?format=j2",
@@ -28,36 +28,25 @@ private:
     };
 
     // https://github.com/chubin/wttr.in/blob/master/lib/constants.py
-    const std::vector<WeatherHandler::Codeset16> codesets = {
-        {
-            WeatherHandler::Conditions::CLEAR,
-            {113},
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY,
-            {119, 122},
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY_PARTLY,
-            {116},
-        },
-        {
-            WeatherHandler::Conditions::FOG,
-            {143, 248, 260},
-        },
-        {
-            WeatherHandler::Conditions::RAIN,
-            {176, 293, 296, 299, 302, 305, 308, 311, 314, 353, 356, 359, 386, 389, 263, 266, 281, 284, 185},
-        },
-        {
-            WeatherHandler::Conditions::SNOW,
-            {179, 227, 323, 326, 329, 332, 335, 338, 368, 371, 392, 395, 230, 350},
-        },
-        {
-            WeatherHandler::Conditions::THUNDER,
-            {200, 386, 389, 392, 395},
-        },
-    };
+    static constexpr std::array<uint16_t, 1> codesClear{113};
+    static constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
+    static constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
+    static constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
+    static constexpr std::array<uint16_t, 19> codesRain{
+        176, 293, 296, 299, 302, 305, 308, 311, 314, 353, 356, 359, 386, 389, 263, 266, 281, 284, 185};
+    static constexpr std::array<uint16_t, 14> codesSnow{
+        179, 227, 323, 326, 329, 332, 335, 338, 368, 371, 392, 395, 230, 350};
+    static constexpr std::array<uint16_t, 5> codesThunder{200, 386, 389, 392, 395};
+
+    static constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
+        {WeatherHandler::Conditions::CLEAR, codesClear},
+        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
+        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Conditions::FOG, codesFog},
+        {WeatherHandler::Conditions::RAIN, codesRain},
+        {WeatherHandler::Conditions::SNOW, codesSnow},
+        {WeatherHandler::Conditions::THUNDER, codesThunder},
+    }};
 
     void update();
 

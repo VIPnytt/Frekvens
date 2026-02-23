@@ -7,9 +7,9 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
+void WeatherHandler::parse(std::string_view code, std::span<const Codeset> codesets)
 {
-    for (const WeatherHandler::Codeset codeset : codesets)
+    for (const WeatherHandler::Codeset &codeset : codesets)
     {
         if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
         {
@@ -17,12 +17,12 @@ void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
             return;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %s", code.c_str());
+    ESP_LOGD(_name.data(), "unknown condition code %s", static_cast<int>(code.size()), code.data());
 }
 
-void WeatherHandler::parse(uint8_t code, std::vector<Codeset8> codesets)
+void WeatherHandler::parse(uint8_t code, std::span<const Codeset8> codesets)
 {
-    for (const WeatherHandler::Codeset8 codeset : codesets)
+    for (const WeatherHandler::Codeset8 &codeset : codesets)
     {
         if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
         {
@@ -33,9 +33,9 @@ void WeatherHandler::parse(uint8_t code, std::vector<Codeset8> codesets)
     ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
-void WeatherHandler::parse(uint16_t code, std::vector<Codeset16> codesets)
+void WeatherHandler::parse(uint16_t code, std::span<const Codeset16> codesets)
 {
-    for (const WeatherHandler::Codeset16 codeset : codesets)
+    for (const WeatherHandler::Codeset16 &codeset : codesets)
     {
         if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
         {
@@ -54,7 +54,16 @@ void WeatherHandler::setSign(Conditions condition)
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
         sign = conditionClear;
 #else
-        sign = Display.getRatio() > 1.0f ? conditionClearTall : conditionClearWide;
+    {
+        if (Display.getRatio() > 1.0f)
+        {
+            sign = conditionClearTall;
+        }
+        else
+        {
+            sign = conditionClearWide;
+        }
+    }
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
         return;
     case Conditions::CLOUDY:
@@ -86,12 +95,10 @@ void WeatherHandler::setSign(Conditions condition)
 
 void WeatherHandler::draw()
 {
-    TextHandler text = TextHandler(std::to_string(temperature) + "°", FontMini);
+    TextHandler text(std::to_string(temperature) + "°", FontMini);
     BitmapHandler bitmap(sign);
-
     const uint8_t textHeight = text.getHeight();
     const uint8_t marginsY = max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
-
     Display.clearFrame();
     bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
     text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
