@@ -41,13 +41,13 @@ private:
     };
 
     // https://open-meteo.com/en/docs#weather_variable_documentation
-    static inline constexpr std::array<uint8_t, 1> codesClear{0};
-    static inline constexpr std::array<uint8_t, 1> codesCloudy{3};
-    static inline constexpr std::array<uint8_t, 2> codesCloudyPartly{1, 2};
-    static inline constexpr std::array<uint8_t, 2> codesFog{45, 48};
-    static inline constexpr std::array<uint8_t, 13> codesRain{51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82};
-    static inline constexpr std::array<uint8_t, 6> codesSnow{71, 73, 75, 77, 85, 86};
-    static inline constexpr std::array<uint8_t, 3> codesThunder{95, 96, 99};
+    static constexpr std::array<uint8_t, 1> codesClear{0};
+    static constexpr std::array<uint8_t, 1> codesCloudy{3};
+    static constexpr std::array<uint8_t, 2> codesCloudyPartly{1, 2};
+    static constexpr std::array<uint8_t, 2> codesFog{45, 48};
+    static constexpr std::array<uint8_t, 13> codesRain{51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82};
+    static constexpr std::array<uint8_t, 6> codesSnow{71, 73, 75, 77, 85, 86};
+    static constexpr std::array<uint8_t, 3> codesThunder{95, 96, 99};
 
     static constexpr std::array<WeatherHandler::Codeset8, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},

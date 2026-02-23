@@ -28,13 +28,13 @@ private:
     };
 
     // https://www.worldweatheronline.com/weather-api/api/docs/weather-icons.aspx
-    static inline constexpr std::array<uint16_t, 1> codesClear{113};
-    static inline constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
-    static inline constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
-    static inline constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
-    static inline constexpr std::array<uint16_t, 9> codesRain{176, 263, 266, 293, 296, 299, 302, 305, 308};
-    static inline constexpr std::array<uint16_t, 11> codesSnow{179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320};
-    static inline constexpr std::array<uint16_t, 1> codesThunder{200};
+    static constexpr std::array<uint16_t, 1> codesClear{113};
+    static constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
+    static constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
+    static constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
+    static constexpr std::array<uint16_t, 9> codesRain{176, 263, 266, 293, 296, 299, 302, 305, 308};
+    static constexpr std::array<uint16_t, 11> codesSnow{179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320};
+    static constexpr std::array<uint16_t, 1> codesThunder{200};
 
     static constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
