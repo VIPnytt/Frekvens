@@ -20,8 +20,9 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    esp_crt_bundle_set(Certificates::x509_crt_bundle_start,
-                       Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+#ifdef BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
+    esp_crt_bundle_set(Certificates::bundle, Certificates::size);
+#endif // BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
     WiFi.enableIPv6();
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);

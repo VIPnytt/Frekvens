@@ -49,8 +49,14 @@ public:
 
 extern ConnectivityService &Connectivity;
 
+#ifdef BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
 namespace Certificates
 {
-extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+// NOLINTBEGIN(hicpp-no-assembler)
+extern const uint8_t x509_crt_bundle_start asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+extern const uint8_t x509_crt_bundle_end asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+// NOLINTEND(hicpp-no-assembler)
+inline const uint8_t *const bundle = &x509_crt_bundle_start;
+inline const size_t size = static_cast<size_t>(&x509_crt_bundle_end - &x509_crt_bundle_start);
 } // namespace Certificates
+#endif // BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE

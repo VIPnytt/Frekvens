@@ -53,8 +53,8 @@ class Certificate:
         bundle_path = pathlib.Path("firmware/certs/bundle")
         bundle_path.mkdir(parents=True, exist_ok=True)
         ca_roots = "ca_roots.pem"
-        with open(bundle_path / ca_roots, "w", encoding="utf-8") as pem:
-            pem.write(self._get_pem())
+        with open(bundle_path / ca_roots, "w", encoding="utf-8") as f:
+            f.write(self._get_pem())
 
     def finalize(self) -> None:
         self.certificates = []
@@ -64,16 +64,26 @@ class Certificate:
                 self.add_der(bundle_path / bundle_file)
             elif bundle_file.endswith(".pem"):
                 self._add_pem(bundle_path / bundle_file)
-        embed = pathlib.Path("firmware/embed")
-        embed.mkdir(parents=True, exist_ok=True)
+        embed_path = pathlib.Path("firmware/embed")
         x509_crt_bundle = "x509_crt_bundle.bin"
-        with open(embed / x509_crt_bundle, "wb") as bin:
-            raw = self._get_bin()
-            bin.write(raw if raw else b"\x00")
+        raw = self._get_bin()
+        if raw:
+            embed_path.mkdir(parents=True, exist_ok=True)
+            with open(embed_path / x509_crt_bundle, "wb") as f:
+                f.write(raw)
+        else:
+            board = self.project.env.BoardConfig()
+            embed_files = board.get("build.embed_files", [])
+            if not isinstance(embed_files, list):
+                embed_files = [embed_files]
+            posix_path = (embed_path / x509_crt_bundle).as_posix()
+            if posix_path in embed_files:
+                new_files = [file for file in embed_files if file != posix_path]
+                board.update("build.embed_files", new_files)
 
     def add_der(self, path: pathlib.Path | str) -> None:
-        with open(path, "rb") as der:
-            self.certificates.append(cryptography.x509.load_der_x509_certificate(der.read()))
+        with open(path, "rb") as f:
+            self.certificates.append(cryptography.x509.load_der_x509_certificate(f.read()))
 
     def _add_host(self, hostname: str, port: int = 443) -> bool:
         with socket.create_connection((hostname, port)) as sock:
@@ -95,10 +105,10 @@ class Certificate:
         return False
 
     def _add_pem(self, path: pathlib.Path | str) -> None:
-        with open(path, encoding="utf-8") as pem:
+        with open(path, encoding="utf-8") as f:
             certificate = ""
             encoded = False
-            for line in [line.rstrip("\r\n") for line in pem.readlines()]:
+            for line in [line.rstrip("\r\n") for line in f.readlines()]:
                 if line == "-----BEGIN CERTIFICATE-----" and encoded is False:
                     certificate = ""
                     encoded = True

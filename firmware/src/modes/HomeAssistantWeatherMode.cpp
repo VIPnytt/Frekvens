@@ -32,8 +32,7 @@ void HomeAssistantWeatherMode::update()
     lastMillis = millis();
 #ifdef HOMEASSISTANT_PROTOCOL
     NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start,
-                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    client.setCACertBundle(Certificates::bundle, Certificates::size);
     HTTPClient http;
     http.begin(client, urls.back().c_str());
 #else
