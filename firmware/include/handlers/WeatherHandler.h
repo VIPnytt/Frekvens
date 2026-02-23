@@ -8,7 +8,7 @@
 class WeatherHandler : public HandlerModule
 {
 public:
-    explicit WeatherHandler() : HandlerModule() {};
+    WeatherHandler() = default;
 
     enum Conditions
     {
