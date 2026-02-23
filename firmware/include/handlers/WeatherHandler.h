@@ -2,6 +2,7 @@
 
 #include "modules/HandlerModule.h"
 
+#include <span>
 #include <string>
 #include <vector>
 
@@ -25,28 +26,28 @@ public:
 
     struct Codeset
     {
-        const Conditions condition;
-        const std::vector<std::string> codes = {};
+        Conditions condition{};
+        std::span<const std::string_view> codes{};
     };
 
     struct Codeset8
     {
-        const Conditions condition;
-        const std::vector<uint8_t> codes = {};
+        Conditions condition{};
+        std::span<const uint8_t> codes{};
     };
 
     struct Codeset16
     {
-        const Conditions condition;
-        const std::vector<uint16_t> codes = {};
+        Conditions condition{};
+        std::span<const uint16_t> codes{};
     };
 
-    std::vector<uint16_t> sign = {};
+    std::span<const uint16_t> sign{};
     int16_t temperature = 0;
 
-    void parse(std::string code, std::vector<Codeset> codesets);
-    void parse(uint8_t code, std::vector<Codeset8> codesets);
-    void parse(uint16_t code, std::vector<Codeset16> codesets);
+    void parse(std::string_view code, std::span<const Codeset> codesets);
+    void parse(uint8_t code, std::span<const Codeset8> codesets);
+    void parse(uint16_t code, std::span<const Codeset16> codesets);
     void draw();
 
 private:

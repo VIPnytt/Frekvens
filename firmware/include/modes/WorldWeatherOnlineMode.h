@@ -16,7 +16,7 @@ private:
     unsigned long lastMillis = 0;
 
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
-    std::vector<const char *> urls = {
+    std::vector<const char *> urls{
 #ifdef LOCATION
         "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION
         "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
@@ -28,36 +28,23 @@ private:
     };
 
     // https://www.worldweatheronline.com/weather-api/api/docs/weather-icons.aspx
-    const std::vector<WeatherHandler::Codeset16> codesets = {
-        {
-            WeatherHandler::Conditions::CLEAR,
-            {113},
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY,
-            {119, 122},
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY_PARTLY,
-            {116},
-        },
-        {
-            WeatherHandler::Conditions::FOG,
-            {143, 248, 260},
-        },
-        {
-            WeatherHandler::Conditions::RAIN,
-            {176, 263, 266, 293, 296, 299, 302, 305, 308},
-        },
-        {
-            WeatherHandler::Conditions::SNOW,
-            {179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320},
-        },
-        {
-            WeatherHandler::Conditions::THUNDER,
-            {200},
-        },
-    };
+    static inline constexpr std::array<uint16_t, 1> codesClear{113};
+    static inline constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
+    static inline constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
+    static inline constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
+    static inline constexpr std::array<uint16_t, 9> codesRain{176, 263, 266, 293, 296, 299, 302, 305, 308};
+    static inline constexpr std::array<uint16_t, 11> codesSnow{179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320};
+    static inline constexpr std::array<uint16_t, 1> codesThunder{200};
+
+    static inline constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
+        {WeatherHandler::Conditions::CLEAR, codesClear},
+        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
+        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Conditions::FOG, codesFog},
+        {WeatherHandler::Conditions::RAIN, codesRain},
+        {WeatherHandler::Conditions::SNOW, codesSnow},
+        {WeatherHandler::Conditions::THUNDER, codesThunder},
+    }};
 
     void update();
 
