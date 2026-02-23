@@ -8,6 +8,7 @@
 #include "services/FontsService.h"
 
 #include <Preferences.h>
+#include <memory>
 
 void ModesService::configure()
 {
