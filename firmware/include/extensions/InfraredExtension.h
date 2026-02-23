@@ -18,62 +18,62 @@ class InfraredExtension final : public ExtensionModule
 private:
     struct Code
     {
-        const decode_type_t protocol{};
-        const std::span<const uint16_t> displayBrightnessDecrease{};
-        const std::span<const uint16_t> displayBrightnessIncrease{};
-        const std::span<const uint16_t> displayPowerToggle{};
+        decode_type_t protocol{};
+        std::span<const uint16_t> displayBrightnessDecrease{};
+        std::span<const uint16_t> displayBrightnessIncrease{};
+        std::span<const uint16_t> displayPowerToggle{};
 #if EXTENSION_MICROPHONE
-        const std::span<const uint16_t> extensionMicrophoneToggle{};
+        std::span<const uint16_t> extensionMicrophoneToggle{};
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-        const std::span<const uint16_t> extensionPhotocellToggle{};
+        std::span<const uint16_t> extensionPhotocellToggle{};
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-        const std::span<const uint16_t> extensionPlaylistStart{};
-        const std::span<const uint16_t> extensionPlaylistStop{};
+        std::span<const uint16_t> extensionPlaylistStart{};
+        std::span<const uint16_t> extensionPlaylistStop{};
 #endif // EXTENSION_PLAYLIST
-        const std::span<const uint16_t> modeNext{};
-        const std::span<const uint16_t> modePrevious{};
+        std::span<const uint16_t> modeNext{};
+        std::span<const uint16_t> modePrevious{};
     };
 
 #ifdef DECODE_RC5
-    static constexpr std::array<const uint16_t, 1> rc5DisplayBrightnessDecrease{0x11}; // Philips: Volume-
-    static constexpr std::array<const uint16_t, 1> rc5DisplayBrightnessIncrease{0x10}; // Philips: Volume+
-    static constexpr std::array<const uint16_t, 1> rc5DisplayPowerToggle{0xC};         // Philips: Power
-    static constexpr std::array<const uint16_t, 1> rc5ExtensionMicrophoneToggle{0xD};  // Philips: Mute
-    static constexpr std::array<const uint16_t, 1> rc5ExtensionPhotocellToggle{0x47};  // Philips: Dim
-    static constexpr std::array<const uint16_t, 1> rc5ExtensionPlaylistStart{0x35};    // Philips: Play/pause
-    static constexpr std::array<const uint16_t, 1> rc5ExtensionPlaylistStop{0x36};     // Philips: Stop
-    static constexpr std::array<const uint16_t, 2> rc5ModeNext{
+    static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessDecrease{0x11}; // Philips: Volume-
+    static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessIncrease{0x10}; // Philips: Volume+
+    static constexpr std::array<uint16_t, 1> rc5DisplayPowerToggle{0xC};         // Philips: Power
+    static constexpr std::array<uint16_t, 1> rc5ExtensionMicrophoneToggle{0xD};  // Philips: Mute
+    static constexpr std::array<uint16_t, 1> rc5ExtensionPhotocellToggle{0x47};  // Philips: Dim
+    static constexpr std::array<uint16_t, 1> rc5ExtensionPlaylistStart{0x35};    // Philips: Play/pause
+    static constexpr std::array<uint16_t, 1> rc5ExtensionPlaylistStop{0x36};     // Philips: Stop
+    static constexpr std::array<uint16_t, 2> rc5ModeNext{
         0x1E, // Philips: Album next
         0x20, // Philips: Title next
     };
-    static constexpr std::array<const uint16_t, 2> rc5ModePrevious{
+    static constexpr std::array<uint16_t, 2> rc5ModePrevious{
         0x1F, // Philips: Album previous
         0x21, // Philips: Title previous
     };
 #endif // DECODE_RC5
 
 #ifdef DECODE_SONY
-    static constexpr std::array<const uint16_t, 1> sonyDisplayBrightnessDecrease{0x13}; // Sony: Volume-
-    static constexpr std::array<const uint16_t, 1> sonyDisplayBrightnessIncrease{0x12}; // Sony: Volume+
-    static constexpr std::array<const uint16_t, 2> sonyDisplayPowerToggle{
+    static constexpr std::array<uint16_t, 1> sonyDisplayBrightnessDecrease{0x13}; // Sony: Volume-
+    static constexpr std::array<uint16_t, 1> sonyDisplayBrightnessIncrease{0x12}; // Sony: Volume+
+    static constexpr std::array<uint16_t, 2> sonyDisplayPowerToggle{
         0x15,   // Sony: Power
         0x7115, // Sony: Power
     };
-    static constexpr std::array<const uint16_t, 1> sonyExtensionMicrophoneToggle{0x14}; // Sony: Mute
-    static constexpr std::array<const uint16_t, 1> sonyExtensionPhotocellToggle{0x78};  // Sony: Scene
-    static constexpr std::array<const uint16_t, 1> sonyExtensionPlaylistStart{0x711A};  // Sony: Play
-    static constexpr std::array<const uint16_t, 2> sonyExtensionPlaylistStop{
+    static constexpr std::array<uint16_t, 1> sonyExtensionMicrophoneToggle{0x14}; // Sony: Mute
+    static constexpr std::array<uint16_t, 1> sonyExtensionPhotocellToggle{0x78};  // Sony: Scene
+    static constexpr std::array<uint16_t, 1> sonyExtensionPlaylistStart{0x711A};  // Sony: Play
+    static constexpr std::array<uint16_t, 2> sonyExtensionPlaylistStop{
         0x7118, // Sony: Stop
         0x7119, // Sony: Pause
     };
-    static constexpr std::array<const uint16_t, 3> sonyModeNext{
+    static constexpr std::array<uint16_t, 3> sonyModeNext{
         0x10,   // Sony: Program+
         0x711C, // Sony: Fast forward
         0x7156, // Sony: Next
     };
-    static constexpr std::array<const uint16_t, 3> sonyModePrevious{
+    static constexpr std::array<uint16_t, 3> sonyModePrevious{
         0x11,   // Sony: Program-
         0x711B, // Sony: Rewind
         0x7157, // Sony: Previous
