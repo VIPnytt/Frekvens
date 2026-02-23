@@ -49,7 +49,7 @@ private:
     static inline constexpr std::array<uint8_t, 6> codesSnow{71, 73, 75, 77, 85, 86};
     static inline constexpr std::array<uint8_t, 3> codesThunder{95, 96, 99};
 
-    static inline constexpr std::array<WeatherHandler::Codeset8, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset8, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},

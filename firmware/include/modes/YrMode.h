@@ -23,7 +23,7 @@ private:
     };
 
     // https://github.com/metno/weathericons/tree/main/weather
-    static inline constexpr std::array<std::string_view, 6> codesClear{
+    static constexpr std::array<std::string_view, 6> codesClear{
         "clearsky_day",
         "clearsky_night",
         "clearsky_polartwilight",
@@ -31,18 +31,18 @@ private:
         "fair_night",
         "fair_polartwilight",
     };
-    static inline constexpr std::array<std::string_view, 1> codesCloudy{
+    static constexpr std::array<std::string_view, 1> codesCloudy{
         "cloudy",
     };
-    static inline constexpr std::array<std::string_view, 3> codesCloudyPartly{
+    static constexpr std::array<std::string_view, 3> codesCloudyPartly{
         "partlycloudy_day",
         "partlycloudy_night",
         "partlycloudy_polartwilight",
     };
-    static inline constexpr std::array<std::string_view, 1> codesFog{
+    static constexpr std::array<std::string_view, 1> codesFog{
         "fog",
     };
-    static inline constexpr std::array<std::string_view, 12> codesRain{
+    static constexpr std::array<std::string_view, 12> codesRain{
         "heavyrain",
         "heavyrainshowers_day",
         "heavyrainshowers_night",
@@ -56,7 +56,7 @@ private:
         "rainshowers_night",
         "rainshowers_polartwilight",
     };
-    static inline constexpr std::array<std::string_view, 24> codesSnow{
+    static constexpr std::array<std::string_view, 24> codesSnow{
         "heavysleet",
         "heavysleetshowers_day",
         "heavysleetshowers_night",
@@ -82,7 +82,7 @@ private:
         "snowshowers_night",
         "snowshowers_polartwilight",
     };
-    static inline constexpr std::array<std::string_view, 42> codesThunder{
+    static constexpr std::array<std::string_view, 42> codesThunder{
         "heavyrainandthunder",
         "heavyrainshowersandthunder_day",
         "heavyrainshowersandthunder_night",
@@ -127,7 +127,7 @@ private:
         "snowshowersandthunder_polartwilight",
     };
 
-    static inline constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},

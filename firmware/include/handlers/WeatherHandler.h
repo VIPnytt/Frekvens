@@ -42,7 +42,7 @@ public:
         std::span<const uint16_t> codes{};
     };
 
-    std::span<const uint16_t> sign{};
+    std::vector<uint16_t> sign{};
     int16_t temperature = 0;
 
     void parse(std::string_view code, std::span<const Codeset> codesets);

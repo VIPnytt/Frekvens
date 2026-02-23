@@ -38,7 +38,7 @@ private:
         179, 227, 323, 326, 329, 332, 335, 338, 368, 371, 392, 395, 230, 350};
     static inline constexpr std::array<uint16_t, 5> codesThunder{200, 386, 389, 392, 395};
 
-    static inline constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},

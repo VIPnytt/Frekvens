@@ -29,18 +29,18 @@ private:
     };
 
     // https://developers.google.com/maps/documentation/weather/weather-condition-icons
-    static inline constexpr std::array<std::string_view, 2> codesClear{
+    static constexpr std::array<std::string_view, 2> codesClear{
         "CLEAR",
         "MOSTLY_CLEAR",
     };
-    static inline constexpr std::array<std::string_view, 1> codesCloudy{
+    static constexpr std::array<std::string_view, 1> codesCloudy{
         "CLOUDY",
     };
-    static inline constexpr std::array<std::string_view, 2> codesCloudyPartly{
+    static constexpr std::array<std::string_view, 2> codesCloudyPartly{
         "MOSTLY_CLOUDY",
         "PARTLY_CLOUDY",
     };
-    static inline constexpr std::array<std::string_view, 11> codesRain{
+    static constexpr std::array<std::string_view, 11> codesRain{
         "CHANCE_OF_SHOWERS",
         "HEAVY_RAIN",
         "HEAVY_RAIN_SHOWERS",
@@ -53,7 +53,7 @@ private:
         "RAIN_SHOWERS",
         "SCATTERED_SHOWERS",
     };
-    static inline constexpr std::array<std::string_view, 14> codesSnow{
+    static constexpr std::array<std::string_view, 14> codesSnow{
         "CHANCE_OF_SNOW_SHOWERS",
         "HAIL",
         "HAIL_SHOWERS",
@@ -69,7 +69,7 @@ private:
         "SNOW_PERIODICALLY_HEAVY",
         "SNOW_SHOWERS",
     };
-    static inline constexpr std::array<std::string_view, 7> codesThunder{
+    static constexpr std::array<std::string_view, 7> codesThunder{
         "HEAVY_SNOW_STORM",
         "HEAVY_THUNDERSTORM",
         "LIGHT_THUNDERSTORM_RAIN",
@@ -78,13 +78,13 @@ private:
         "THUNDERSHOWER",
         "THUNDERSTORM",
     };
-    static inline constexpr std::array<std::string_view, 3> codesWind{
+    static constexpr std::array<std::string_view, 3> codesWind{
         "BLOWING_SNOW",
         "WIND_AND_RAIN",
         "WINDY",
     };
 
-    static inline constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
@@ -92,7 +92,7 @@ private:
         {WeatherHandler::Conditions::SNOW, codesSnow},
         {WeatherHandler::Conditions::THUNDER, codesThunder},
         {WeatherHandler::Conditions::WIND, codesWind},
-}};
+    }};
 
     void update();
 

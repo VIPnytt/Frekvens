@@ -51,41 +51,41 @@ private:
     };
 
     // https://www.home-assistant.io/integrations/weather/#condition-mapping
-    static inline constexpr std::array<std::string_view, 2> codesClear{
+    static constexpr std::array<std::string_view, 2> codesClear{
         "clear-night",
         "sunny",
     };
-    static inline constexpr std::array<std::string_view, 1> codesCloudy{
+    static constexpr std::array<std::string_view, 1> codesCloudy{
         "cloudy",
     };
-    static inline constexpr std::array<std::string_view, 1> codesCloudyPartly{
+    static constexpr std::array<std::string_view, 1> codesCloudyPartly{
         "partlycloudy",
     };
-    static inline constexpr std::array<std::string_view, 1> codesException{
+    static constexpr std::array<std::string_view, 1> codesException{
         "exceptional",
     };
-    static inline constexpr std::array<std::string_view, 1> codesFog{
+    static constexpr std::array<std::string_view, 1> codesFog{
         "fog",
     };
-    static inline constexpr std::array<std::string_view, 2> codesRain{
+    static constexpr std::array<std::string_view, 2> codesRain{
         "pouring",
         "rainy",
     };
-    static inline constexpr std::array<std::string_view, 3> codesSnow{
+    static constexpr std::array<std::string_view, 3> codesSnow{
         "hail",
         "snowy",
         "snowy-rainy",
     };
-    static inline constexpr std::array<std::string_view, 2> codesThunder{
+    static constexpr std::array<std::string_view, 2> codesThunder{
         "lighting",
         "lightning-rainy",
     };
-    static inline constexpr std::array<std::string_view, 2> codesWind{
+    static constexpr std::array<std::string_view, 2> codesWind{
         "windy",
         "windy-variant",
     };
 
-    static inline constexpr std::array<WeatherHandler::Codeset, 9> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset, 9> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
