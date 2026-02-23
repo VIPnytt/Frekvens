@@ -1,9 +1,11 @@
 #pragma once
 
+#include "modules/HandlerModule.h"
+
 #include <string_view>
 #include <vector>
 
-class BitmapHandler
+class BitmapHandler : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "BitmapHandler";

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "modules/FontModule.h"
+#include "modules/HandlerModule.h"
 
 #include <string>
 #include <string_view>
 
-class TextHandler
+class TextHandler : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "TextHandler";

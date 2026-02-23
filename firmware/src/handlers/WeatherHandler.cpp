@@ -7,8 +7,6 @@
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
 
-WeatherHandler::WeatherHandler() = default;
-
 void WeatherHandler::parse(std::string code, std::vector<Codeset> codesets)
 {
     for (const WeatherHandler::Codeset codeset : codesets)
@@ -89,7 +87,7 @@ void WeatherHandler::setSign(Conditions condition)
 void WeatherHandler::draw()
 {
     TextHandler text = TextHandler(std::to_string(temperature) + "°", FontMini);
-    BitmapHandler bitmap = BitmapHandler(sign);
+    BitmapHandler bitmap(sign);
 
     const uint8_t textHeight = text.getHeight();
     const uint8_t marginsY = max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;

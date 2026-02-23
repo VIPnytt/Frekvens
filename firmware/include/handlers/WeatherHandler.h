@@ -1,12 +1,14 @@
 #pragma once
 
+#include "modules/HandlerModule.h"
+
 #include <string>
 #include <vector>
 
-class WeatherHandler
+class WeatherHandler : public HandlerModule
 {
 public:
-    explicit WeatherHandler();
+    WeatherHandler() = default;
 
     enum Conditions
     {

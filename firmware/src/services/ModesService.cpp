@@ -8,6 +8,7 @@
 #include "services/FontsService.h"
 
 #include <Preferences.h>
+#include <memory>
 
 void ModesService::configure()
 {
@@ -156,24 +157,22 @@ void ModesService::setMode(ModeModule *mode, bool power)
         }
     }
     uint8_t height = 0;
-    std::vector<TextHandler> lines;
+    std::vector<std::unique_ptr<TextHandler>> lines;
     for (const std::string &word : words)
     {
-        TextHandler line = TextHandler(word, FontMicro);
-        height += line.getHeight();
-        lines.push_back(line);
+        height += lines.emplace_back(std::make_unique<TextHandler>(word, FontMicro))->getHeight();
         if (height >= GRID_ROWS)
         {
             break;
         }
     }
-    const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (words.size() + 1));
-    uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (words.size() - 1) * margin) / 2);
+    const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
+    uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
     Display.clearFrame();
-    for (TextHandler &line : lines)
+    for (std::unique_ptr<TextHandler> &line : lines)
     {
-        line.draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line.getWidth())) / 2, y);
-        y += line.getHeight() + margin;
+        line->draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line->getWidth())) / 2, y);
+        y += line->getHeight() + margin;
     }
     Display.flush();
     Display.setPower(power);
