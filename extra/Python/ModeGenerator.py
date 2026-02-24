@@ -53,7 +53,7 @@ class ModeGenerator:
             "",
             "    uint8_t index = 0;",
             "",
-            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {math.floor(count / self.rows)}> frames{{",
+            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {math.floor(count / self.rows)}> frames{{{{",
         ]
         with open(self.path) as animation:
             for i, row in enumerate(csv.reader(animation)):
@@ -64,7 +64,7 @@ class ModeGenerator:
                     frames.append("        },")
         frames.extend(
             [
-                "    };",
+                "    }};",
                 "",
                 "public:",
                 f'    explicit {self.id}Mode() : ModeModule("{self.name}") {{}};',
