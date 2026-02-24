@@ -8,6 +8,7 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
+#include <span>
 
 void StreamMode::configure()
 {
@@ -98,7 +99,9 @@ void StreamMode::onPacket(AsyncUDPPacket packet)
         (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
         (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
     {
-        Display.setFrame(packet.data() + len - (GRID_COLUMNS * GRID_ROWS));
+        Display.setFrame(std::span<const uint8_t>{packet.data(), len}
+                             .subspan(len - (GRID_COLUMNS * GRID_ROWS), GRID_COLUMNS * GRID_ROWS)
+                             .data());
     }
 }
 

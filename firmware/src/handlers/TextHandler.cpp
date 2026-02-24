@@ -38,8 +38,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
                 }
                 else
                 {
-                    char buffer[5];
-                    ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint, buffer));
+                    ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
                 }
             }
             if (_width > tracking)
@@ -156,37 +155,30 @@ uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character) const
     return msbMax;
 }
 
-const char *TextHandler::encode(uint32_t codepoint, char *buffer)
+std::array<char, 5> TextHandler::encode(uint32_t codepoint)
 {
+    std::array<char, 5> out{};
     if (codepoint <= 0x7F)
     {
-        buffer[0] = codepoint;
-        buffer[1] = '\0';
+        out.at(0) = static_cast<char>(codepoint);
     }
     else if (codepoint <= 0x7FF)
     {
-        buffer[0] = 0xC0 | (codepoint >> 6U);
-        buffer[1] = 0x80 | (codepoint & 0x3F);
-        buffer[2] = '\0';
+        out.at(0) = static_cast<char>(0xC0 | (codepoint >> 6U));
+        out.at(1) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
     else if (codepoint <= 0xFFFF)
     {
-        buffer[0] = 0xE0 | (codepoint >> 12U);
-        buffer[1] = 0x80 | ((codepoint >> 6U) & 0x3F);
-        buffer[2] = 0x80 | (codepoint & 0x3F);
-        buffer[3] = '\0';
+        out.at(0) = static_cast<char>(0xE0 | (codepoint >> 12U));
+        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
+        out.at(2) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
     else if (codepoint <= 0x10FFFF)
     {
-        buffer[0] = 0xF0 | (codepoint >> 18U);
-        buffer[1] = 0x80 | ((codepoint >> 12U) & 0x3F);
-        buffer[2] = 0x80 | ((codepoint >> 6U) & 0x3F);
-        buffer[3] = 0x80 | (codepoint & 0x3F);
-        buffer[4] = '\0';
+        out.at(0) = static_cast<char>(0xF0 | (codepoint >> 18U));
+        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 12U) & 0x3FU));
+        out.at(2) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
+        out.at(3) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
-    else
-    {
-        buffer[0] = '\0';
-    }
-    return buffer;
+    return out;
 }
