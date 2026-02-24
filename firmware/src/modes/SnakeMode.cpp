@@ -2,7 +2,7 @@
 
 #include "modes/SnakeMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)

@@ -5,8 +5,8 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/MqttExtension.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ModesService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ModesService.h"   // NOLINT(misc-include-cleaner)
 
 #include <WiFi.h>
 #include <regex>

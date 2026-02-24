@@ -106,8 +106,8 @@ void RtcExtension::transmit()
 
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
-    time_t timer = tv->tv_sec;
-    tm *local = gmtime(&timer);
+    const time_t timer = tv->tv_sec;
+    const tm *local = gmtime(&timer);
     RtcDateTime dt = RtcDateTime(
         local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
     Rtc->rtc.SetDateTime(dt);

@@ -2,15 +2,15 @@
 
 #include "modes/CircleMode.h"
 
-#include "extensions/MicrophoneExtension.h"
-#include "services/DisplayService.h"
+#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"        // NOLINT(misc-include-cleaner)
 
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1UL << 6U)) && Microphone->isTriggered())
+    if (millis() - lastMillis > (1UL << 6U) && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > (1UL << 6U)))
+    if (millis() - lastMillis > (1UL << 6U))
 #endif // EXTENSION_MICROPHONE
     {
         uint8_t _radius = radius;

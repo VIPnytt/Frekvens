@@ -2,6 +2,8 @@
 
 #include "extensions/WebAppExtension.h"
 
+#include "services/WebServerService.h"
+
 #include <HTTPClient.h>
 #include <LittleFS.h>
 

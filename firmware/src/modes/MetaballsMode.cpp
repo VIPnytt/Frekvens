@@ -9,7 +9,7 @@ void MetaballsMode::configure()
 {
     for (uint16_t i = 0; i < std::size(contributions); ++i)
     {
-        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1U << 6U)) >> 16;
+        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1U << 6U)) >> 16U;
     }
     for (Ball &ball : balls)
     {
@@ -57,7 +57,8 @@ void MetaballsMode::handle()
                         if (distanceSq < radiusSq)
                         {
                             brightness = min<uint8_t>(
-                                brightness + contributions[(uint8_t)(distanceSq * UINT8_MAX / radiusSq)], UINT8_MAX);
+                                brightness + contributions[static_cast<uint8_t>(distanceSq * UINT8_MAX / radiusSq)],
+                                UINT8_MAX);
                             if (brightness >= UINT8_MAX)
                             {
                                 break;

@@ -2,7 +2,7 @@
 
 #include "modes/ClockMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumBoldFont.h"
 #include "fonts/MediumFont.h"
@@ -17,10 +17,10 @@
 void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
 {
     // Segment boundaries (number of steps in each segment)
-    static constexpr uint8_t SEG1 = GRID_COLUMNS / 2u;        // top-right half
-    static constexpr uint8_t SEG2 = SEG1 + GRID_ROWS - 1u;    // right edge (y 1..GRID_ROWS-1)
-    static constexpr uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1u; // bottom edge (x GRID_COLUMNS-2..0)
-    static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1u;    // left edge (y GRID_ROWS-2..0)
+    static constexpr uint8_t SEG1 = GRID_COLUMNS / 2U;        // top-right half
+    static constexpr uint8_t SEG2 = SEG1 + GRID_ROWS - 1U;    // right edge (y 1..GRID_ROWS-1)
+    static constexpr uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1U; // bottom edge (x GRID_COLUMNS-2..0)
+    static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1U;    // left edge (y GRID_ROWS-2..0)
     // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
 
     uint8_t x;
@@ -28,28 +28,28 @@ void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
 
     if (sec < SEG1)
     {
-        x = (GRID_COLUMNS / 2u) + sec;
-        y = 0u;
+        x = (GRID_COLUMNS / 2U) + sec;
+        y = 0U;
     }
     else if (sec < SEG2)
     {
-        x = GRID_COLUMNS - 1u;
-        y = sec - (GRID_COLUMNS / 2u) + 1u;
+        x = GRID_COLUMNS - 1U;
+        y = sec - (GRID_COLUMNS / 2U) + 1U;
     }
     else if (sec < SEG3)
     {
-        x = SEG2 + GRID_COLUMNS - 2u - sec;
-        y = GRID_ROWS - 1u;
+        x = SEG2 + GRID_COLUMNS - 2U - sec;
+        y = GRID_ROWS - 1U;
     }
     else if (sec < SEG4)
     {
-        x = 0u;
-        y = SEG3 + GRID_ROWS - 2u - sec;
+        x = 0U;
+        y = SEG3 + GRID_ROWS - 2U - sec;
     }
     else
     {
-        x = sec - SEG4 + 1u;
-        y = 0u;
+        x = sec - SEG4 + 1U;
+        y = 0U;
     }
 
     Display.setPixel(x, y, brightness);
@@ -229,7 +229,7 @@ void ClockMode::setTicking(bool _ticking)
 
 void ClockMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["font"] = font->name;
     JsonArray _fonts = doc["fonts"].to<JsonArray>();
     for (const FontModule *_font : fonts)
@@ -240,7 +240,8 @@ void ClockMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ClockMode::onReceive(JsonObjectConst payload, const char *source)
+void ClockMode::onReceive(JsonObjectConst payload,
+                          const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<const char *>())

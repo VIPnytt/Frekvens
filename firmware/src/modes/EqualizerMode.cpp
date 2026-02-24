@@ -35,7 +35,7 @@ void EqualizerMode::handle()
                 bar.target = random(GRID_ROWS);
 #endif // EXTENSION_MICROPHONE
             }
-            else if (random(1u << 3) == 0)
+            else if (random(1U << 3U) == 0)
             {
                 const uint8_t maxX = minX + width - 1;
                 if (bar.level < bar.target)

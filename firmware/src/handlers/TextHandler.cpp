@@ -165,22 +165,22 @@ const char *TextHandler::encode(uint32_t codepoint, char *buffer)
     }
     else if (codepoint <= 0x7FF)
     {
-        buffer[0] = 0xC0 | (codepoint >> 6);
+        buffer[0] = 0xC0 | (codepoint >> 6U);
         buffer[1] = 0x80 | (codepoint & 0x3F);
         buffer[2] = '\0';
     }
     else if (codepoint <= 0xFFFF)
     {
-        buffer[0] = 0xE0 | (codepoint >> 12);
-        buffer[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+        buffer[0] = 0xE0 | (codepoint >> 12U);
+        buffer[1] = 0x80 | ((codepoint >> 6U) & 0x3F);
         buffer[2] = 0x80 | (codepoint & 0x3F);
         buffer[3] = '\0';
     }
     else if (codepoint <= 0x10FFFF)
     {
-        buffer[0] = 0xF0 | (codepoint >> 18);
-        buffer[1] = 0x80 | ((codepoint >> 12) & 0x3F);
-        buffer[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+        buffer[0] = 0xF0 | (codepoint >> 18U);
+        buffer[1] = 0x80 | ((codepoint >> 12U) & 0x3F);
+        buffer[2] = 0x80 | ((codepoint >> 6U) & 0x3F);
         buffer[3] = 0x80 | (codepoint & 0x3F);
         buffer[4] = '\0';
     }

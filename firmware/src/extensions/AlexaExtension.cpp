@@ -2,7 +2,6 @@
 
 #include "extensions/AlexaExtension.h"
 
-#include "config/constants.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
 

@@ -15,7 +15,7 @@ void BinaryEpochMode::handle()
         {
             const uint8_t x = GRID_COLUMNS - 2 - (i % (GRID_COLUMNS / 2) * 2);
             const uint8_t y = GRID_ROWS - 4 - (i / (GRID_COLUMNS / 2) * 4);
-            Display.drawRectangle(x, y, x + 1, y + 3, true, (epoch & (1u << i)) == 0 ? 0 : UINT8_MAX);
+            Display.drawRectangle(x, y, x + 1, y + 3, true, (epoch & (1U << i)) == 0 ? 0 : UINT8_MAX);
         }
     }
 }

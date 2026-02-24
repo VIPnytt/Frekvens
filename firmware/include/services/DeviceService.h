@@ -2,7 +2,7 @@
 
 #include "modules/ServiceModule.h"
 
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
 class DeviceService final : public ServiceModule
 {

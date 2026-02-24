@@ -24,7 +24,7 @@ private:
         float yVelocity;
     };
 
-    uint8_t contributions[1 << 8]{0};
+    uint8_t contributions[1U << 8U]{0};
 
     Ball balls[GRID_COLUMNS * GRID_ROWS / (1U << 6U)]{};
 
