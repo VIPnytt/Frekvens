@@ -19,7 +19,7 @@ void WebSocketExtension::handle() { server->cleanupClients(); }
 
 void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc[source].set(payload);
     const size_t length = measureJson(doc);
     std::vector<char> message(length + 1);
@@ -27,6 +27,7 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
     server->textAll(message.data(), length);
 }
 
+// NOLINTNEXTLINE(misc-unused-parameters)
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                                  const uint8_t *data, size_t len)
 {
@@ -45,7 +46,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
     {
         if (static_cast<AwsFrameInfo *>(arg)->opcode == AwsFrameType::WS_TEXT)
         {
-            JsonDocument doc;
+            JsonDocument doc; // NOLINT(misc-const-correctness)
             if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
             {
                 for (const JsonPairConst pair : doc.as<JsonObjectConst>())

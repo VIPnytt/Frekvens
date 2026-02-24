@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTBEGIN(misc-include-cleaner)
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
 #include "modes/BinaryClockMode.h"
@@ -43,6 +44,7 @@
 #include "modes/YrMode.h"
 #include "modules/ModeModule.h"
 #include "modules/ServiceModule.h"
+// NOLINTEND(misc-include-cleaner)
 
 #include <vector>
 
@@ -51,7 +53,7 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    std::vector<ModeModule *> modes = {
+    inline static const std::vector<ModeModule *> modes{
 #if MODE_ANIMATION
         new AnimationMode(),
 #endif

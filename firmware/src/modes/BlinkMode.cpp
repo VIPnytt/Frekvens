@@ -8,9 +8,9 @@
 void BlinkMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1 << 10) && Microphone->isTriggered())
+    if (millis() - lastMillis > (1UL << 10) && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > (1 << 10))
+    if (millis() - lastMillis > (1UL << 10))
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();

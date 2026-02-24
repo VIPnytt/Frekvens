@@ -2,16 +2,16 @@
 
 #include "extensions/InfraredExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "extensions/MicrophoneExtension.h"
-#include "extensions/PhotocellExtension.h"
-#include "extensions/PlaylistExtension.h"
+#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/PhotocellExtension.h"  // NOLINT(misc-include-cleaner)
+#include "extensions/PlaylistExtension.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ModesService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ModesService.h"   // NOLINT(misc-include-cleaner)
 
-#include <IRremote.hpp>
+#include <IRremote.hpp> // NOLINT(misc-include-cleaner)
 #include <Preferences.h>
 
 InfraredExtension *Infrared = nullptr;
@@ -88,16 +88,16 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1 << 10) && std::find(code.displayPowerToggle.begin(),
-                                                code.displayPowerToggle.end(),
-                                                IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
+            else if (t > (1UL << 10) && std::find(code.displayPowerToggle.begin(),
+                                                  code.displayPowerToggle.end(),
+                                                  IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
                 Display.setPower(!Display.getPower());
                 lastMillis = millis();
                 return;
             }
 #if EXTENSION_MICROPHONE
-            else if (t > (1 << 10) &&
+            else if (t > (1UL << 10) &&
                      std::find(code.extensionMicrophoneToggle.begin(),
                                code.extensionMicrophoneToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
@@ -108,7 +108,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            else if (t > (1 << 10) &&
+            else if (t > (1UL << 10) &&
                      std::find(code.extensionPhotocellToggle.begin(),
                                code.extensionPhotocellToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
@@ -119,24 +119,25 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (t > (1 << 10) && std::find(code.extensionPlaylistStart.begin(),
-                                                code.extensionPlaylistStart.end(),
-                                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
+            else if (t > (1UL << 10) &&
+                     std::find(code.extensionPlaylistStart.begin(),
+                               code.extensionPlaylistStart.end(),
+                               IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
             {
                 Playlist->setActive(true);
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1 << 10) && std::find(code.extensionPlaylistStop.begin(),
-                                                code.extensionPlaylistStop.end(),
-                                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
+            else if (t > (1UL << 10) && std::find(code.extensionPlaylistStop.begin(),
+                                                  code.extensionPlaylistStop.end(),
+                                                  IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
             {
                 Playlist->setActive(false);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (t > (1 << 9) &&
+            else if (t > (1UL << 9) &&
                      std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) !=
                          code.modeNext.end())
             {
@@ -144,7 +145,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1 << 9) &&
+            else if (t > (1UL << 9) &&
                      std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) !=
                          code.modePrevious.end())
             {
@@ -180,12 +181,12 @@ void InfraredExtension::setActive(bool active)
 
 void InfraredExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"] = active;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void InfraredExtension::onReceive(JsonObjectConst payload, const char *source)
+void InfraredExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

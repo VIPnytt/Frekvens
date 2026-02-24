@@ -1,8 +1,6 @@
 #include "services/ExtensionsService.h"
 
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ModesService.h"
 
 void ExtensionsService::configure()
 {
@@ -26,7 +24,7 @@ const std::vector<ExtensionModule *> &ExtensionsService::getAll() const { return
 
 void ExtensionsService::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray list = doc["list"].to<JsonArray>();
     for (const ExtensionModule *extension : modules)
     {
@@ -36,7 +34,7 @@ void ExtensionsService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ExtensionsService::onTask(void *parameter)
+void ExtensionsService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
 {
     for (;;)
     {

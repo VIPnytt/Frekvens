@@ -4,8 +4,6 @@
 #include "extensions/MqttExtension.h"
 #include "extensions/ServerSentEventsExtension.h"
 #include "extensions/WebSocketExtension.h"
-#include "fonts/LargeFont.h"
-#include "handlers/TextHandler.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
@@ -13,10 +11,6 @@
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
 
-#include <HTTPClient.h>
-#include <NetworkClientSecure.h>
-#include <Preferences.h>
-#include <nvs.h>
 #include <nvs_flash.h>
 #include <regex>
 
@@ -32,16 +26,16 @@ void DeviceService::begin()
     gpio_deep_sleep_hold_dis();
 #endif // SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
 #ifdef PIN_INT
-    gpio_pullup_en((gpio_num_t)PIN_INT);
-    gpio_hold_en((gpio_num_t)PIN_INT);
+    gpio_pullup_en(static_cast<gpio_num_t>(PIN_INT));
+    gpio_hold_en(static_cast<gpio_num_t>(PIN_INT));
 #endif // PIN_INT
 #ifdef PIN_SW1
-    gpio_pullup_en((gpio_num_t)PIN_SW1);
-    gpio_hold_en((gpio_num_t)PIN_SW1);
+    gpio_pullup_en(static_cast<gpio_num_t>(PIN_SW1));
+    gpio_hold_en(static_cast<gpio_num_t>(PIN_SW1));
 #endif // PIN_SW1
 #ifdef PIN_SW2
-    gpio_pullup_en((gpio_num_t)PIN_SW2);
-    gpio_hold_en((gpio_num_t)PIN_SW2);
+    gpio_pullup_en(static_cast<gpio_num_t>(PIN_SW2));
+    gpio_hold_en(static_cast<gpio_num_t>(PIN_SW2));
 #endif // PIN_SW2
 #if defined(PIN_INT) || defined(PIN_SW1) || defined(PIN_SW2)
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
@@ -174,15 +168,8 @@ void DeviceService::handle()
 
 void DeviceService::setPower(bool power)
 {
-    if (power)
-    {
-        ESP_LOGI(name, "rebooting...");
-    }
-    else
-    {
-        ESP_LOGW(name, "powering off...");
-    }
-    JsonDocument doc;
+    ESP_LOGI(name, "%s...", power ? "rebooting" : "powering off");
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"] = power ? "reboot" : "power";
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
@@ -233,7 +220,7 @@ JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonOb
 
 void DeviceService::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["board"] = ARDUINO_BOARD;
     doc["model"] = MODEL;
     doc["name"] = NAME;
@@ -266,7 +253,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
     if (operational)
     {
         ESP_LOGV(source, "receiving");
-        ServiceModule *services[] = {
+        ServiceModule *services[]{
             &Connectivity,
             &Device,
             &Display,
@@ -299,7 +286,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
     }
 }
 
-void DeviceService::onReceive(JsonObjectConst payload, const char *source)
+void DeviceService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {

@@ -2,7 +2,7 @@
 
 #if MODE_BREAKOUTCLOCK
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <deque>
@@ -15,9 +15,9 @@ private:
     float xDec = GRID_COLUMNS / 2.0f;
     float yDec = GRID_ROWS - 2.0f;
 
-    std::deque<uint8_t> paddle = {};
+    std::deque<uint8_t> paddle{};
 
-    tm local = {};
+    tm local{};
 
     int hour = 24;
     int minute = 60;

@@ -2,7 +2,7 @@
 
 #include "extensions/MicrophoneExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -109,7 +109,7 @@ void MicrophoneExtension::handle()
                 detected = true;
                 if (lastMillis - _lastMillis > UINT16_MAX)
                 {
-                    JsonDocument doc;
+                    JsonDocument doc; // NOLINT(misc-const-correctness)
                     doc["event"] = "sound";
                     Device.transmit(doc.as<JsonObjectConst>(), name, false);
                     _lastMillis = lastMillis;
@@ -150,14 +150,7 @@ void MicrophoneExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
     }
 }
 
@@ -178,14 +171,14 @@ bool MicrophoneExtension::isTriggered() const { return detected || !active; }
 
 void MicrophoneExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"] = active;
     doc["max"] = levelMax;
     doc["threshold"] = threshold;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(JsonObjectConst payload, const char *source)
+void MicrophoneExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

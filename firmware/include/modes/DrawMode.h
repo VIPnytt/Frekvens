@@ -2,7 +2,7 @@
 
 #if MODE_DRAW
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class DrawMode final : public ModeModule
@@ -11,7 +11,7 @@ private:
     bool pending = false;
     bool render = false;
 
-    uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t drawing[GRID_COLUMNS * GRID_ROWS]{0};
 
     void load(bool cache = false);
     void save(bool cache = false);

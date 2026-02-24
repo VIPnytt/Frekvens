@@ -5,7 +5,8 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
-#include "services/ModesService.h"
+#include "services/DisplayService.h"
+#include "services/FontsService.h"
 
 #include <Preferences.h>
 
@@ -133,13 +134,13 @@ void TickerMode::setMessage(std::string _message)
 
 void TickerMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["font"] = font->name;
     doc["message"] = message;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void TickerMode::onReceive(JsonObjectConst payload, const char *source)
+void TickerMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<const char *>())

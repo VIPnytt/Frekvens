@@ -4,7 +4,7 @@
 
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 #include <Preferences.h>
@@ -15,7 +15,7 @@ PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist") { Playlist 
 
 void PlaylistExtension::configure()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
     Storage.begin(name, true);
     if (Storage.isKey("modes"))
@@ -118,22 +118,15 @@ void PlaylistExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         transmit();
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
     }
 }
 
-void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
+void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
 {
     setActive(false);
     playlist.clear();
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray items = doc.to<JsonArray>();
     for (const Mode mode : modes)
     {
@@ -155,7 +148,7 @@ void PlaylistExtension::setPlaylist(std::vector<PlaylistExtension::Mode> modes)
 
 void PlaylistExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"] = active;
     JsonArray _playlist = doc["playlist"].to<JsonArray>();
     for (const PlaylistExtension::Mode &mode : playlist)
@@ -177,7 +170,7 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
     }
 }
 
-void PlaylistExtension::onReceive(JsonObjectConst payload, const char *source)
+void PlaylistExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())

@@ -2,7 +2,7 @@
 
 #if MODE_PINGPONG
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <deque>
@@ -18,10 +18,10 @@ private:
     float xDec = .0f;
     float yDec = .0f;
 
-    std::deque<uint8_t> paddleA = {};
-    std::deque<uint8_t> paddleB = {};
+    std::deque<uint8_t> paddleA{};
+    std::deque<uint8_t> paddleB{};
 
-    tm local = {};
+    tm local{};
 
     int hour = 24;
     int minute = 60;

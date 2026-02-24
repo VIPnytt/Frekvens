@@ -3,11 +3,10 @@
 #include "modes/PingPongMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 
@@ -208,12 +207,12 @@ void PingPongMode::setClock(bool _clock)
 
 void PingPongMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["clock"] = clock;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PingPongMode::onReceive(JsonObjectConst payload, const char *source)
+void PingPongMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

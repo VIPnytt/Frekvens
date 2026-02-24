@@ -40,7 +40,7 @@ void SignalExtension::handle()
             signals.erase(signals.begin());
             lastMillis = millis();
             Display.flush();
-            JsonDocument doc;
+            JsonDocument doc; // NOLINT(misc-const-correctness)
             doc["event"] = "signal";
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
@@ -68,12 +68,12 @@ void SignalExtension::setDuration(uint8_t seconds)
 
 void SignalExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["duration"] = duration;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(JsonObjectConst payload, const char *source)
+void SignalExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())

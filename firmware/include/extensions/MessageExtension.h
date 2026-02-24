@@ -2,10 +2,9 @@
 
 #if EXTENSION_MESSAGE
 
-#include "config/constants.h"
-#include "handlers/TextHandler.h"
+#include "config/constants.h"     // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
-#include "services/FontsService.h"
 
 #include <bits/unique_ptr.h>
 
@@ -17,7 +16,7 @@ private:
 
     int8_t offsetY = 0;
 
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{0};
     uint8_t repeat = 3;
 
     int16_t offsetX = GRID_COLUMNS;
@@ -27,9 +26,9 @@ private:
 
     FontModule *font = nullptr;
 
-    std::vector<std::string> messages = {};
+    std::vector<std::string> messages{};
 
-    std::unique_ptr<TextHandler> text = {};
+    std::unique_ptr<TextHandler> text{};
 
     void addMessage(std::string message);
 

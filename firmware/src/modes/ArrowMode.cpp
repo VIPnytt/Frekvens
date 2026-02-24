@@ -2,7 +2,7 @@
 
 #include "modes/ArrowMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h"
 #include "services/DisplayService.h"

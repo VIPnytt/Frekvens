@@ -1,7 +1,7 @@
 #include "services/DisplayService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "handlers/BitmapHandler.h"
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/ModesService.h"
 
@@ -27,10 +27,10 @@ void DisplayService::configure()
 
     timer = timerBegin(1'000'000);
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1'000'000 / (1 << 8) / frameRate, true, 0);
+    timerAlarm(timer, 1'000'000 / (1u << 8) / frameRate, true, 0);
     timerStart(timer);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0f / PWM_WIDTH / static_cast<float>(1 << depth)), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0f / PWM_WIDTH / static_cast<float>(1u << depth)), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -41,7 +41,7 @@ void DisplayService::configure()
     Storage.begin(name, true);
     const uint8_t _brightness = Storage.isKey("brightness") ? Storage.getUShort("brightness") : UINT8_MAX;
     const Orientation _orientation =
-        Storage.isKey("orientation") ? (Orientation)Storage.getUShort("orientation") : orientation;
+        Storage.isKey("orientation") ? static_cast<Orientation>(Storage.getUShort("orientation")) : orientation;
     Storage.end();
     setOrientation(_orientation);
     setBrightness(_brightness);
@@ -193,14 +193,14 @@ void DisplayService::setPower(bool _power)
         ledcFadeGamma(
             PIN_OE,
             0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-            (1 << 5) * brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
+            (1u << 5) * brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
         ledcFade(
             PIN_OE,
             0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-            (1 << 5) * brightness); // -2 offset due to `ledcFade` stability issues.
+            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
+            (1u << 5) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
         pending = true;
@@ -211,16 +211,16 @@ void DisplayService::setPower(bool _power)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGammaWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
+            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
             0,
-            (1 << 3) * brightness,
+            (1u << 3) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
         ledcFadeWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
+            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
             0,
-            (1 << 3) * brightness,
+            (1u << 3) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
@@ -251,18 +251,18 @@ void DisplayService::setBrightness(uint8_t _brightness)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2))
+        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2))
               : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(brightness -
-                       _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
+        (1u << 4) * abs(brightness -
+                        _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
     ledcFade(
         PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2))
+        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2))
               : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
+        (1u << 4) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
@@ -372,7 +372,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 void DisplayService::transmit()
 {
     const bool rotated = (orientation % 2) != 0;
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"] = brightness;
 #if GRID_COLUMNS == GRID_ROWS
     doc["columns"] = GRID_COLUMNS;
@@ -389,7 +389,7 @@ void DisplayService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void DisplayService::onReceive(JsonObjectConst payload, const char *source)
+void DisplayService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Brightness
     if (payload["brightness"].is<uint8_t>())

@@ -2,7 +2,7 @@
 
 #include "extensions/ButtonExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
@@ -120,7 +120,7 @@ void ButtonExtension::handle()
         event("mode", "short");
         modeShort = false;
     }
-    else if (modeState && millis() - modeMillis > (1 << 10))
+    else if (modeState && millis() - modeMillis > (1UL << 10))
     {
         modeMillis = millis();
         if (!modeLong)
@@ -171,7 +171,7 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 
 void ButtonExtension::event(const char *key, const char *value)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;
     Device.transmit(doc.as<JsonObjectConst>(), Button->name, false);
 }

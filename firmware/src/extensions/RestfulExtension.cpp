@@ -43,10 +43,11 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
+// NOLINTNEXTLINE(misc-unused-parameters)
 void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
                                size_t total)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     if (request->contentType() == "application/json" && !deserializeJson(doc, data, len))
     {
         Device.receive(doc.as<JsonObjectConst>(), Restful->name, request->url().substring(prefixLength).c_str());

@@ -4,6 +4,8 @@
  * https://github.com/VIPnytt/Frekvens/wiki
  */
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 /**
  * Device
  */
@@ -30,3 +32,5 @@
 #include "config/modes.h"
 #include "config/services.h"
 #include "config/version.h"
+
+// NOLINTEND(misc-include-cleaner)

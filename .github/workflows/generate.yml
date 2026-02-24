@@ -203,7 +203,7 @@ jobs:
           mv DynamicMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/DynamicMode.h"' firmware/include/services/ModesService.h
-          sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
+          sed -i '/^    inline static const std::vector<ModeModule \*> modes{$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
 
       - name: PlatformIO build
         run: |
@@ -324,7 +324,7 @@ jobs:
           mv StaticMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/StaticMode.h"' firmware/include/services/ModesService.h
-          sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new StaticMode(),' firmware/include/services/ModesService.h
+          sed -i '/^    inline static const std::vector<ModeModule \*> modes{$/a\        new StaticMode(),' firmware/include/services/ModesService.h
 
       - name: PlatformIO build
         run: |

@@ -11,7 +11,7 @@ class HomeAssistantExtension final : public ExtensionModule
 private:
     bool pending = false;
 
-    const std::string discoveryTopic = std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
+    inline static const std::string discoveryTopic = std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
 
     static constexpr std::string_view payloadOff = R"({"power":false})";
     static constexpr std::string_view payloadOn = R"({"power":true})";
@@ -21,7 +21,7 @@ private:
 public:
     explicit HomeAssistantExtension();
 
-    const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
+    inline static const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 
     JsonDocument *discovery = new JsonDocument();
 

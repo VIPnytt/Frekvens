@@ -18,7 +18,7 @@ void EqualizerMode::begin()
 
 void EqualizerMode::handle()
 {
-    if (millis() - lastMillis > (1 << 4))
+    if (millis() - lastMillis > (1UL << 4))
     {
         lastMillis = millis();
 #if EXTENSION_MICROPHONE
@@ -35,7 +35,7 @@ void EqualizerMode::handle()
                 bar.target = random(GRID_ROWS);
 #endif // EXTENSION_MICROPHONE
             }
-            else if (random(1 << 3) == 0)
+            else if (random(1u << 3) == 0)
             {
                 const uint8_t maxX = minX + width - 1;
                 if (bar.level < bar.target)

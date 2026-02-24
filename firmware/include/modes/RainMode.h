@@ -2,7 +2,7 @@
 
 #if MODE_RAIN
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class RainMode final : public ModeModule

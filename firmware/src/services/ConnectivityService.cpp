@@ -1,10 +1,7 @@
 #include "services/ConnectivityService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/WebServerService.h"
 
 #include <ESPmDNS.h>
 #include <Preferences.h>
@@ -112,7 +109,7 @@ void ConnectivityService::handle()
 
 void ConnectivityService::initStation()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
     Storage.begin(name);
     if (Storage.isKey("Wi-Fi"))
@@ -181,7 +178,7 @@ void ConnectivityService::connect(const char *ssid, const char *key)
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD(Connectivity.name, "connected");
     ESP_LOGV(Connectivity.name, "%d dBm", WiFi.RSSI());
@@ -219,7 +216,7 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGI(Connectivity.name, "IPv4 %s", WiFi.localIP().toString().c_str());
     if (!Connectivity.routable)
@@ -228,7 +225,7 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     const char *const ipv6 = WiFi.globalIPv6().toString().c_str();
     if (strcmp(ipv6, "") != 0)
@@ -246,7 +243,7 @@ void ConnectivityService::onRoutable()
     Connectivity.routable = true;
     if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
-        JsonDocument doc;
+        JsonDocument doc; // NOLINT(misc-const-correctness)
         doc["event"] = "connected";
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
         ESP_LOGD(Connectivity.name, "terminating Wi-Fi hotspot");
@@ -264,21 +261,21 @@ void ConnectivityService::onRoutable()
         MDNS.addService("ws", "tcp", 80);
 #endif // EXTENSION_WEBSOCKET
     }
-    timeval tv = {};
+    timeval tv{};
     sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     const int16_t n = WiFi.scanComplete();
     if (n > 0)
     {
-        JsonDocument doc;
+        JsonDocument doc; // NOLINT(misc-const-correctness)
         JsonArray scan = doc["scan"].to<JsonArray>();
         for (int16_t i = 0; i < n; ++i)
         {
             JsonObject _scan = scan.add<JsonObject>();
-            _scan["encrypted"] = (bool)WiFi.encryptionType(i);
+            _scan["encrypted"] = WiFi.encryptionType(i) == wifi_auth_mode_t::WIFI_AUTH_OPEN;
             _scan["rssi"] = WiFi.RSSI(i);
             _scan["ssid"] = WiFi.SSID(i);
         }
@@ -288,7 +285,7 @@ void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
 
 void ConnectivityService::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["host"] = HOSTNAME ".local";
     doc["rssi"] = WiFi.RSSI();
     {
@@ -319,7 +316,7 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload, const char *source)
+void ConnectivityService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Connect
     if (payload["ssid"].is<const char *>())

@@ -2,10 +2,9 @@
 
 #include "extensions/HeapExtension.h"
 
-#include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 HeapExtension *Heap = nullptr;
@@ -97,7 +96,7 @@ void HeapExtension::handle()
 
 void HeapExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["extensions"] = Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle);
     doc["heap"] = ESP.getHeapSize() - ESP.getFreeHeap();
     doc["main"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle);

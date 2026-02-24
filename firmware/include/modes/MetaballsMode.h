@@ -2,7 +2,7 @@
 
 #if MODE_METABALLS
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class MetaballsMode final : public ModeModule
@@ -24,9 +24,9 @@ private:
         float yVelocity;
     };
 
-    uint8_t contributions[1 << 8] = {0};
+    uint8_t contributions[1 << 8]{0};
 
-    Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)] = {};
+    Ball balls[GRID_COLUMNS * GRID_ROWS / (1u << 6)]{};
 
 public:
     explicit MetaballsMode() : ModeModule("Metaballs") {};

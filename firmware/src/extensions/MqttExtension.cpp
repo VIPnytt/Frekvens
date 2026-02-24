@@ -2,9 +2,7 @@
 
 #include "extensions/MqttExtension.h"
 
-#include "config/constants.h"
-#include "extensions/HomeAssistantExtension.h"
-#include "services/ConnectivityService.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
 #include <WiFi.h>
@@ -69,10 +67,11 @@ void MqttExtension::onConnect(bool sessionPresent)
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
 }
 
+// NOLINTNEXTLINE(misc-unused-parameters)
 void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
                               const uint8_t *payload, size_t len, size_t index, size_t total)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     if (deserializeJson(doc, payload, len))
     {
         return;
@@ -82,7 +81,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
                    std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD(Mqtt->name, "disconnected");
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));

@@ -1,14 +1,13 @@
-#include "config/constants.h"
-
 #if MODE_HOMETHERMOMETER
 
-#include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
 #include "modes/HomeThermometerMode.h"
+
+#include "config/constants.h"
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 #include <nvs.h>
@@ -102,7 +101,7 @@ void HomeThermometerMode::update()
 
 void HomeThermometerMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
     Storage.begin(std::string(name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str(), true);
     if (Storage.isKey("indoor"))
@@ -120,7 +119,7 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::onReceive(JsonObjectConst payload, const char *source)
+void HomeThermometerMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["indoor"].is<float>())
     {

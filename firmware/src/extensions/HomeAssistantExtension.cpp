@@ -2,13 +2,12 @@
 
 #include "extensions/HomeAssistantExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ModesService.h"
-#include "services/WebServerService.h"
+#include "services/ModesService.h" // NOLINT(misc-include-cleaner)
 
 #include <WiFi.h>
 #include <regex>
@@ -113,7 +112,7 @@ void HomeAssistantExtension::undiscover()
 
 void HomeAssistantExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc[Display.name]["power"] = Display.getPower() ? payloadOn : payloadOff;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

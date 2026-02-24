@@ -2,8 +2,6 @@
 
 #include "extensions/WebAppExtension.h"
 
-#include "services/DeviceService.h"
-
 #include <HTTPClient.h>
 #include <LittleFS.h>
 

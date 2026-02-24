@@ -2,7 +2,7 @@
 
 #if MODE_WORLDWEATHERONLINE
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 

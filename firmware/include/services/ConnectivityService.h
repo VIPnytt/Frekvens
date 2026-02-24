@@ -1,9 +1,9 @@
 #pragma once
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
-#include <DNSServer.h>
+#include <DNSServer.h> // NOLINT(misc-include-cleaner)
 #include <WiFiMulti.h>
 
 class ConnectivityService final : public ServiceModule

@@ -83,7 +83,7 @@ void DrawMode::save(bool cache)
 
 void DrawMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray frame = doc["frame"].to<JsonArray>();
     for (const uint8_t pixel : drawing)
     {
@@ -92,7 +92,7 @@ void DrawMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void DrawMode::onReceive(JsonObjectConst payload, const char *source)
+void DrawMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {
@@ -122,11 +122,11 @@ void DrawMode::onReceive(JsonObjectConst payload, const char *source)
     // Frame
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS)
     {
-#if GRID_COLUMNS * GRID_ROWS > (1 << 8)
+#if GRID_COLUMNS * GRID_ROWS > (1u << 8)
         uint16_t i = 0;
 #else
         uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1 << 8)
+#endif // GRID_COLUMNS * GRID_ROWS > (1u << 8)
         for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())

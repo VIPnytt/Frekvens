@@ -1,11 +1,10 @@
 #include "services/ModesService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MicroFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MicroFont.h"      // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 #include <memory>
@@ -73,7 +72,7 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled != nullptr && millis() - lastMillis > (1 << 11))
+    if (scheduled != nullptr && millis() - lastMillis > (1UL << 11))
     {
         mode = scheduled;
         scheduled = nullptr;
@@ -88,7 +87,7 @@ void ModesService::handle()
     }
 }
 
-void ModesService::onTask(void *parameter)
+void ModesService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
 {
     for (;;)
     {
@@ -141,7 +140,7 @@ void ModesService::setMode(ModeModule *mode, bool power)
     lastMillis = millis();
     scheduled = mode;
     const std::string _name = mode->name;
-    std::vector<std::string> words = {""};
+    std::vector<std::string> words{""};
     uint8_t _line = 0;
     for (std::size_t i = 0; i < _name.length(); ++i)
     {
@@ -224,7 +223,7 @@ void ModesService::setModePrevious()
 
 void ModesService::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray list = doc["list"].to<JsonArray>();
     for (const ModeModule *_mode : modes)
     {
@@ -237,7 +236,7 @@ void ModesService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ModesService::onReceive(JsonObjectConst payload, const char *source)
+void ModesService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Mode
     if (payload["mode"].is<const char *>())

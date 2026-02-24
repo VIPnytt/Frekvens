@@ -30,7 +30,7 @@ void OpenWeatherMode::handle()
 void OpenWeatherMode::update()
 {
     lastMillis = millis();
-    NetworkClientSecure client;
+    NetworkClientSecure client; // NOLINT(misc-const-correctness)
     client.setCACertBundle(Certificates::x509_crt_bundle_start,
                            Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
@@ -43,17 +43,18 @@ void OpenWeatherMode::update()
         NetworkClient &stream = http.getStream();
         const int contentLength = http.getSize();
         const unsigned long _lastMillis = millis();
-        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13))
         {
             vTaskDelay(1);
         }
-        JsonDocument filter;
+        JsonDocument filter; // NOLINT(misc-const-correctness)
         filter["current"]["temp"] = true;
         filter["current"]["weather"]["id"] = true;
         filter["main"]["temp"] = true;
         filter["weather"][0]["id"] = true;
-        JsonDocument doc;
-        const bool isError = (bool)deserializeJson(doc, stream, DeserializationOption::Filter(filter));
+        JsonDocument doc; // NOLINT(misc-const-correctness)
+        const bool isError = deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ==
+                             ArduinoJson::V742PB22::DeserializationError::Code::Ok;
         if (!isError && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
         {
             // API 3.0
@@ -73,14 +74,14 @@ void OpenWeatherMode::update()
         else
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1 << 14);
+            lastMillis = millis() - interval + (1UL << 14);
             ESP_LOGD(name, "unprocessable data");
         }
     }
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1 << 12);
+        lastMillis = millis() - interval + (1UL << 12);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -88,7 +89,7 @@ void OpenWeatherMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1 << 15);
+        lastMillis = millis() - interval + (1UL << 15);
     }
 }
 

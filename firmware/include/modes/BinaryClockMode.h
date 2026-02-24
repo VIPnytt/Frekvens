@@ -7,7 +7,7 @@
 class BinaryClockMode final : public ModeModule
 {
 private:
-    tm local = {};
+    tm local{};
 
     bool pending = false;
 

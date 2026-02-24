@@ -1,6 +1,6 @@
 #include "handlers/TextHandler.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(font)

@@ -3,10 +3,7 @@
 #include "extensions/ServerSentEventsExtension.h"
 
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
 #include "services/WebServerService.h"
-
-#include <HTTPClient.h>
 
 ServerSentEventsExtension *ServerSentEvents = nullptr;
 

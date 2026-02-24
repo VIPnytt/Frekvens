@@ -7,7 +7,7 @@
 class GameOfLifeMode final : public ModeModule
 {
 private:
-    tm local = {};
+    tm local{};
 
     bool clock = true;
     bool pending = false;

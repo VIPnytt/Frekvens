@@ -2,7 +2,7 @@
 
 #if MODE_EQUALIZER
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class EqualizerMode final : public ModeModule
@@ -16,7 +16,7 @@ private:
         uint8_t target = GRID_ROWS - 1;
     };
 
-    Bar bars[GRID_COLUMNS / (width + 1)] = {0};
+    Bar bars[GRID_COLUMNS / (width + 1)]{0};
 
     unsigned long lastMillis = 0;
 

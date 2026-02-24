@@ -2,10 +2,8 @@
 
 #include "extensions/OtaExtension.h"
 
-#include "fonts/LargeFont.h"
-#include "handlers/TextHandler.h"
-#include "services/ConnectivityService.h"
-#include "services/DeviceService.h"
+#include "fonts/LargeFont.h"      // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
@@ -38,7 +36,7 @@ void OtaExtension::begin()
 #endif // OTA_KEY
 }
 
-void OtaExtension::handle() { ArduinoOTA.handle(); }
+void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
 
 void OtaExtension::onStart()
 {
@@ -48,7 +46,7 @@ void OtaExtension::onStart()
     TextHandler("U", FontLarge).draw();
     Display.flush();
     Display.setPower(true);
-    timerWrite(Display.timer, 1'000'000 / (1 << 8)); // 1 fps
+    timerWrite(Display.timer, 1'000'000 / (1u << 8)); // 1 fps
 }
 
 void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }

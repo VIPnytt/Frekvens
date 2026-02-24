@@ -2,13 +2,11 @@
 
 #include "modes/StreamMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
-#include <ESPmDNS.h>
 #include <Preferences.h>
 
 void StreamMode::configure()
@@ -77,12 +75,12 @@ void StreamMode::set(uint16_t _port)
 
 void StreamMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["port"] = port;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void StreamMode::onReceive(JsonObjectConst payload, const char *source)
+void StreamMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Port
     if (payload["port"].is<uint16_t>())

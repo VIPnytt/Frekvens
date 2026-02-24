@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTBEGIN(misc-include-cleaner)
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
 #include "extensions/HeapExtension.h"
@@ -19,6 +20,7 @@
 #include "extensions/WebSocketExtension.h"
 #include "modules/ExtensionModule.h"
 #include "modules/ServiceModule.h"
+// NOLINTEND(misc-include-cleaner)
 
 #include <vector>
 
@@ -27,7 +29,7 @@ class ExtensionsService final : public ServiceModule
 private:
     explicit ExtensionsService() : ServiceModule("Extensions") {};
 
-    const std::vector<ExtensionModule *> modules = {
+    inline static const std::vector<ExtensionModule *> modules{
 #if EXTENSION_ALEXA
         new AlexaExtension(),
 #endif

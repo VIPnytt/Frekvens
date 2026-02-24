@@ -1,11 +1,10 @@
 #include "handlers/WeatherHandler.h"
 
-#include "config/constants.h"
-#include "fonts/MiniFont.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"   // NOLINT(misc-include-cleaner)
 #include "handlers/BitmapHandler.h"
 #include "handlers/TextHandler.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 void WeatherHandler::parse(std::string_view code, std::span<const Codeset> codesets)
 {

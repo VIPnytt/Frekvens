@@ -30,7 +30,7 @@ void YrMode::handle()
 void YrMode::update()
 {
     lastMillis = millis();
-    NetworkClientSecure client;
+    NetworkClientSecure client; // NOLINT(misc-const-correctness)
     client.setCACertBundle(Certificates::x509_crt_bundle_start,
                            Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
@@ -43,20 +43,20 @@ void YrMode::update()
         NetworkClient &stream = http.getStream();
         const int contentLength = http.getSize();
         const unsigned long _lastMillis = millis();
-        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13))
         {
             vTaskDelay(1);
         }
-        JsonDocument filter;
+        JsonDocument filter; // NOLINT(misc-const-correctness)
         filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"] = true;
         filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"] = true;
-        JsonDocument doc;
+        JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
             !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() ||
             !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1 << 14);
+            lastMillis = millis() - interval + (1UL << 14);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -71,7 +71,7 @@ void YrMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1 << 12);
+        lastMillis = millis() - interval + (1UL << 12);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -79,7 +79,7 @@ void YrMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1 << 15);
+        lastMillis = millis() - interval + (1UL << 15);
     }
 }
 

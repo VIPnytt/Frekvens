@@ -2,7 +2,7 @@
 
 #if EXTENSION_BUTTON
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
 class ButtonExtension final : public ExtensionModule

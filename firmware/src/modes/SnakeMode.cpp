@@ -4,8 +4,8 @@
 
 #include "config/constants.h"
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -272,12 +272,12 @@ void SnakeMode::setClock(bool _clock)
 
 void SnakeMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["clock"] = clock;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(JsonObjectConst payload, const char *source)
+void SnakeMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

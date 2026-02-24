@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
 #include <vector>
@@ -24,7 +24,7 @@ private:
         deg270,
     };
 
-    const uint8_t depth =
+    inline static const uint8_t depth =
         min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
     static constexpr std::array<uint16_t, 12> hi{
@@ -52,8 +52,8 @@ private:
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
 
     uint8_t brightness = 0;
-    uint8_t _frame[GRID_COLUMNS * GRID_ROWS] = {0};
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
+    uint8_t _frame[GRID_COLUMNS * GRID_ROWS]{0};
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{0};
     uint8_t pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
 
     Orientation orientation = Orientation::deg0;

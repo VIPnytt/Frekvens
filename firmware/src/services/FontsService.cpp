@@ -10,7 +10,7 @@ const std::vector<FontModule *> &FontsService::getAll() const { return modules; 
 
 void FontsService::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray list = doc["list"].to<JsonArray>();
     for (const FontModule *font : modules)
     {

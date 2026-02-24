@@ -22,10 +22,10 @@ void RtcExtension::configure()
 #endif
     if (rtc.IsDateTimeValid())
     {
-        tm local = {};
+        tm local{};
         if (!getLocalTime(&local))
         {
-            struct timeval tv = {};
+            struct timeval tv{};
             tv.tv_sec = rtc.GetDateTime().Unix64Time();
             settimeofday(&tv, nullptr);
             ESP_LOGD(name, "sync");
@@ -98,7 +98,7 @@ IRAM_ATTR void RtcExtension::onInterrupt() { Rtc->pending = true; }
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
 void RtcExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["temperature"] = rtc.GetTemperature().AsFloatDegC();
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

@@ -6,6 +6,7 @@
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/FontsService.h"
 #include "services/ModesService.h"
 
 #include <Preferences.h>
@@ -128,7 +129,7 @@ void MessageExtension::handle()
                 active = true;
             }
             lastMillis = millis();
-            JsonDocument doc;
+            JsonDocument doc; // NOLINT(misc-const-correctness)
             doc["event"] = messages.front();
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
@@ -186,13 +187,13 @@ void MessageExtension::setRepeat(uint8_t count)
 
 void MessageExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["font"] = font->name;
     doc["repeat"] = repeat;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MessageExtension::onReceive(JsonObjectConst payload, const char *source)
+void MessageExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<const char *>())

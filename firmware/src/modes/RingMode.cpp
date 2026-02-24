@@ -3,7 +3,7 @@
 #include "modes/RingMode.h"
 
 #include "extensions/MicrophoneExtension.h"
-#include "handlers/BitmapHandler.h"
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 void RingMode::handle()

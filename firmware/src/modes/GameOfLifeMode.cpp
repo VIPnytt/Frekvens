@@ -2,13 +2,12 @@
 
 #include "modes/GameOfLifeMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 
@@ -63,8 +62,8 @@ void GameOfLifeMode::handle()
             TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
             pending = false;
         }
-        bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))] = {false};
-        for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1 << 4); ++i)
+        bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))]{false};
+        for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1u << 4); ++i)
         {
             seeds[random(1, GRID_COLUMNS - 1) +
                   (random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0)))] = true;
@@ -121,12 +120,12 @@ void GameOfLifeMode::setClock(bool _clock)
 
 void GameOfLifeMode::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["clock"] = clock;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void GameOfLifeMode::onReceive(JsonObjectConst payload, const char *source)
+void GameOfLifeMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

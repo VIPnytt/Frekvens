@@ -2,10 +2,9 @@
 
 #include "modes/BreakoutClockMode.h"
 
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 void BreakoutClockMode::begin()
 {

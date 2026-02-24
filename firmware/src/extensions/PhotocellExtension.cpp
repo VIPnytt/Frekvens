@@ -2,7 +2,7 @@
 
 #include "extensions/PhotocellExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -81,7 +81,7 @@ void PhotocellExtension::handle()
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
         const uint8_t _brightness =
-            static_cast<uint8_t>(powf(raw / static_cast<float>((1 << 12) - 1), gamma) * UINT8_MAX);
+            static_cast<uint8_t>(powf(raw / static_cast<float>((1u << 12) - 1), gamma) * UINT8_MAX);
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
@@ -114,14 +114,7 @@ void PhotocellExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
     }
 }
 
@@ -139,14 +132,14 @@ void PhotocellExtension::setGamma(float _gamma)
 
 void PhotocellExtension::transmit()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"] = active;
     doc["illuminance"] = raw;
     Device.transmit(doc.as<JsonObjectConst>(), name);
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload, const char *source)
+void PhotocellExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -163,8 +156,8 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
         const uint8_t _brightness = payload["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(logf(_brightness / static_cast<float>(1 << 8)) /
-                     logf((raw + 1) / static_cast<float>((1 << 12) + 1)));
+            setGamma(logf(_brightness / static_cast<float>(1u << 8)) /
+                     logf((raw + 1) / static_cast<float>((1u << 12) + 1)));
         }
     }
 }

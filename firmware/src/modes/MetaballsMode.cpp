@@ -9,7 +9,7 @@ void MetaballsMode::configure()
 {
     for (uint16_t i = 0; i < std::size(contributions); ++i)
     {
-        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1 << 6)) >> 16;
+        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1u << 6)) >> 16;
     }
     for (Ball &ball : balls)
     {

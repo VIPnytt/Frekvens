@@ -2,13 +2,12 @@
 
 #include "modes/CountdownMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MediumFont.h"
+#include "fonts/MediumFont.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 #include <iomanip>
@@ -93,7 +92,7 @@ void CountdownMode::handle()
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 done = true;
-                JsonDocument doc;
+                JsonDocument doc; // NOLINT(misc-const-correctness)
                 doc["event"] = "done";
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
@@ -120,12 +119,12 @@ void CountdownMode::transmit()
     time_t timer = std::chrono::system_clock::to_time_t(epoch);
     tm local = *std::localtime(&timer);
     std::strftime(timestamp, sizeof(timestamp), "%FT%T", &local);
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["timestamp"] = timestamp;
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload, const char *source)
+void CountdownMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["time"].is<uint32_t>())
     {
@@ -134,7 +133,7 @@ void CountdownMode::onReceive(JsonObjectConst payload, const char *source)
     }
     else if (payload["timestamp"].is<const char *>())
     {
-        tm local = {};
+        tm local{};
         strptime(payload["timestamp"].as<const char *>(), "%FT%T", &local);
         local.tm_isdst = -1;
         epoch = std::chrono::system_clock::from_time_t(mktime(&local));

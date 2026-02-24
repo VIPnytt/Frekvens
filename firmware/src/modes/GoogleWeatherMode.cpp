@@ -30,7 +30,7 @@ void GoogleWeatherMode::handle()
 void GoogleWeatherMode::update()
 {
     lastMillis = millis();
-    NetworkClientSecure client;
+    NetworkClientSecure client; // NOLINT(misc-const-correctness)
     client.setCACertBundle(Certificates::x509_crt_bundle_start,
                            Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
     HTTPClient http;
@@ -40,15 +40,15 @@ void GoogleWeatherMode::update()
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
-        JsonDocument filter;
+        JsonDocument filter; // NOLINT(misc-const-correctness)
         filter["temperature"]["degrees"] = true;
         filter["weatherCondition"]["type"] = true;
-        JsonDocument doc;
+        JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) ||
             !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1 << 14);
+            lastMillis = millis() - interval + (1UL << 14);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -60,7 +60,7 @@ void GoogleWeatherMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1 << 12);
+        lastMillis = millis() - interval + (1UL << 12);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -68,7 +68,7 @@ void GoogleWeatherMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1 << 15);
+        lastMillis = millis() - interval + (1UL << 15);
     }
 }
 
