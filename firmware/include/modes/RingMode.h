@@ -4,6 +4,8 @@
 
 #include "modules/ModeModule.h"
 
+#include <array>
+
 class RingMode final : public ModeModule
 {
 private:
@@ -13,7 +15,7 @@ private:
 
     uint8_t index = 0;
 
-    const std::vector<std::vector<uint16_t>> ring = {
+    static constexpr std::array<std::array<const uint16_t, 16>, 6> ring{{
         {
             0b1110000000000111,
             0b1100001111000011,
@@ -122,7 +124,7 @@ private:
             0b1100001111000011,
             0b1110000000000111,
         },
-    };
+    }};
 
 public:
     explicit RingMode() : ModeModule("Ring") {};

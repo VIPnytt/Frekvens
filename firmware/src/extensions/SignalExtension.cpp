@@ -2,6 +2,7 @@
 
 #include "extensions/SignalExtension.h"
 
+#include "handlers/BitmapHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"

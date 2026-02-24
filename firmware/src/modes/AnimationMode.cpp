@@ -3,7 +3,6 @@
 #include "modes/AnimationMode.h"
 
 #include "extensions/MicrophoneExtension.h"
-#include "handlers/BitmapHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
