@@ -292,7 +292,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
     pending = true;
 }
 
-void DisplayService::getFrame(std::span<uint8_t> frameCurrent)
+void DisplayService::getFrame(std::span<uint8_t> frameCurrent) const
 {
     for (size_t i = 0; i < frameCurrent.size(); ++i)
     {

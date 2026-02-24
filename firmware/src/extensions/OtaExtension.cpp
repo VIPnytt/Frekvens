@@ -6,6 +6,7 @@
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
+#include "services/WebServerService.h"
 
 #include <ESPmDNS.h>
 #include <HTTPClient.h>

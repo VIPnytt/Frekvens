@@ -10,6 +10,7 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
+#include <vector>
 
 void GameOfLifeMode::configure()
 {
@@ -62,7 +63,7 @@ void GameOfLifeMode::handle()
             TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
             pending = false;
         }
-        bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))]{false};
+        std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)), false);
         for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1U << 4U); ++i)
         {
             seeds[random(1, GRID_COLUMNS - 1) +

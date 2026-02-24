@@ -84,7 +84,7 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(std::span<uint8_t> frameCurrent);
+    void getFrame(std::span<uint8_t> frameCurrent) const;
     void setFrame(std::span<const uint8_t> frameNext);
 
     void clearFrame(uint8_t _brightness = 0);

@@ -3,7 +3,7 @@
 #include "modes/MetaballsMode.h"
 
 #include "extensions/MicrophoneExtension.h"
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 void MetaballsMode::configure()
 {

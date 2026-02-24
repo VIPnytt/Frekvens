@@ -6,6 +6,7 @@
 #include "services/DeviceService.h"
 
 #include <WiFi.h>
+#include <array>
 
 MqttExtension *Mqtt = nullptr;
 
@@ -18,7 +19,7 @@ void MqttExtension::configure()
     client.onDisconnect(&onDisconnect);
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
-    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
+    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
 #ifdef MQTT_PORT
     client.setServer(MQTT_HOST, MQTT_PORT);
 #else
@@ -49,7 +50,7 @@ void MqttExtension::disconnect()
     lastMillis = millis();
     if (client.connected())
     {
-        client.publish("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
+        client.publish("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
         client.loop();
         client.disconnect();
     }

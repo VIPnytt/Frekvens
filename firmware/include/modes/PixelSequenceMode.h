@@ -5,10 +5,12 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
+#include <array>
+
 class PixelSequenceMode final : public ModeModule
 {
 private:
-    static constexpr uint8_t pixelOrder[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
+    static constexpr std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixelOrder{LED_MAP};
 
     bool lit = true;
 

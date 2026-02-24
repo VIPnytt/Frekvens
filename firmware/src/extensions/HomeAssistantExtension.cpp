@@ -9,6 +9,7 @@
 #include "services/ModesService.h"   // NOLINT(misc-include-cleaner)
 
 #include <WiFi.h>
+#include <array>
 #include <regex>
 
 HomeAssistantExtension *HomeAssistant = nullptr;
@@ -105,7 +106,7 @@ void HomeAssistantExtension::handle()
 
 void HomeAssistantExtension::undiscover()
 {
-    Mqtt->client.publish(discoveryTopic.c_str(), 1, true, (const uint8_t[]){0}, 0);
+    Mqtt->client.publish(discoveryTopic.c_str(), 1, true, std::array<uint8_t, 1>{0}.data(), 0);
     ESP_LOGW(name, "discovery packet removed");
 }
 
