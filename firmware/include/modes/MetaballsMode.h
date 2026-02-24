@@ -26,7 +26,7 @@ private:
         float yVelocity;
     };
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{0};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{};
     std::array<Ball, GRID_COLUMNS * GRID_ROWS / (1U << 6U)> balls{};
 
 public:

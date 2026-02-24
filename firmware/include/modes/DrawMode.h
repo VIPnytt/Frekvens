@@ -5,13 +5,15 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
+#include <array>
+
 class DrawMode final : public ModeModule
 {
 private:
     bool pending = false;
     bool render = false;
 
-    uint8_t drawing[GRID_COLUMNS * GRID_ROWS]{0};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> drawing{};
 
     void load(bool cache = false);
     void save(bool cache = false);

@@ -53,8 +53,8 @@ private:
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
 
     uint8_t brightness = 0;
-    uint8_t _frame[GRID_COLUMNS * GRID_ROWS]{0};
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{0};
+    uint8_t _frame[GRID_COLUMNS * GRID_ROWS]{};
+    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{};
     uint8_t pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
 
     Orientation orientation = Orientation::deg0;

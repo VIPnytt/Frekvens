@@ -7,6 +7,7 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
+#include <array>
 
 void AnimationMode::begin()
 {
@@ -27,8 +28,8 @@ void AnimationMode::handle()
         if (Storage.isKey(std::to_string(index).c_str()))
         {
             lastMillis = millis();
-            uint8_t frame[GRID_COLUMNS * GRID_ROWS];
-            Storage.getBytes(std::to_string(index).c_str(), frame, sizeof(frame));
+            std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+            Storage.getBytes(std::to_string(index).c_str(), frame.data(), frame.size());
             Storage.end();
             Display.setFrame(frame);
             if (pending)
@@ -46,12 +47,12 @@ void AnimationMode::handle()
     }
 }
 
-void AnimationMode::setFrame(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::setFrame(uint8_t index, std::span<const uint8_t> frame)
 {
-    lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS * 2);
+    lastMillis = millis() + (frame.size() * 2);
     Preferences Storage;
     Storage.begin(name);
-    Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
+    Storage.putBytes(std::to_string(index).c_str(), frame.data(), frame.size());
     Storage.end();
     this->index = 0;
     pending = true;
@@ -83,12 +84,12 @@ void AnimationMode::setInterval(uint16_t interval)
     }
 }
 
-void AnimationMode::transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["interval"] = interval;
     JsonArray _frame = doc["frame"].to<JsonArray>();
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    for (uint16_t i = 0; i < frame.size(); ++i)
     {
         _frame.add(frame[i]);
     }

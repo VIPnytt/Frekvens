@@ -47,13 +47,13 @@ void DrawMode::load(bool cache)
     const char *const key = cache ? "cache" : "saved";
     if (cache && Storage.isKey("cache"))
     {
-        Storage.getBytes("cache", static_cast<void *>(drawing), sizeof(drawing));
+        Storage.getBytes(key, drawing.data(), drawing.size());
         pending = true;
         render = true;
     }
     else if (Storage.isKey("saved"))
     {
-        Storage.getBytes("saved", static_cast<void *>(drawing), sizeof(drawing));
+        Storage.putBytes(key, drawing.data(), drawing.size());
         pending = true;
         render = true;
     }
@@ -68,7 +68,7 @@ void DrawMode::save(bool cache)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putBytes(cache ? "cache" : "saved", static_cast<void *>(drawing), sizeof(drawing));
+            Storage.putBytes(cache ? "cache" : "saved", drawing.data(), drawing.size());
             Storage.end();
             pending = true;
             if (!cache)
@@ -100,7 +100,7 @@ void DrawMode::onReceive(JsonObjectConst payload,
         // Clear
         if (strcmp(action, "clear") == 0)
         {
-            memset(drawing, 0, sizeof(drawing));
+            drawing.fill(0);
             render = true;
         }
         // Load

@@ -16,7 +16,7 @@ private:
 
     uint8_t duration = 30;
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{0};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
     std::vector<std::vector<uint16_t>> signals;
 

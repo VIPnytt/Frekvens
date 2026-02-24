@@ -26,7 +26,7 @@ private:
 
     FontModule *font = nullptr;
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{0};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
     std::unique_ptr<TextHandler> text{};
 
