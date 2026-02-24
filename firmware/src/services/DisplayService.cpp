@@ -190,17 +190,20 @@ void DisplayService::setPower(bool _power)
     if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGamma(
-            PIN_OE,
-            0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
-            (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        ledcFadeGamma(PIN_OE,
+                      0,
+                      max<uint16_t>(brightness,
+                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                        ((1U << depth) - 2)),
+                      (1U << 5U) *
+                          brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-        ledcFade(
-            PIN_OE,
-            0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
-            (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
+        ledcFade(PIN_OE,
+                 0,
+                 max<uint16_t>(brightness,
+                               powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                   ((1U << depth) - 2)),
+                 (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
         pending = true;
@@ -211,14 +214,18 @@ void DisplayService::setPower(bool _power)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGammaWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
+            max<uint16_t>(brightness,
+                          powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                              ((1U << depth) - 2)),
             0,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
         ledcFadeWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
+            max<uint16_t>(brightness,
+                          powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                              ((1U << depth) - 2)),
             0,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
@@ -344,8 +351,8 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     {
         for (uint16_t _y = yMin; _y <= yMax; ++_y)
         {
-            const float xDistance = xRatio * (_x - x);
-            const float yDistance = yRatio * (_y - y);
+            const float xDistance = xRatio * (static_cast<float>(_x) - x);
+            const float yDistance = yRatio * (static_cast<float>(_y) - y);
             const float distance = sqrtf((xDistance * xDistance) + (yDistance * yDistance));
             if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {

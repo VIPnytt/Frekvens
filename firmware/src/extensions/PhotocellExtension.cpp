@@ -81,7 +81,7 @@ void PhotocellExtension::handle()
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
         const uint8_t _brightness =
-            static_cast<uint8_t>(powf(raw / static_cast<float>((1U << 12U) - 1), gamma) * UINT8_MAX);
+            static_cast<uint8_t>(powf(static_cast<float>(raw) / static_cast<float>((1U << 12U) - 1), gamma) * UINT8_MAX);
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
@@ -157,7 +157,7 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
         const uint8_t _brightness = payload["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(logf(_brightness / static_cast<float>(1U << 8U)) /
+            setGamma(logf(static_cast<float>(_brightness) / static_cast<float>(1U << 8U)) /
                      logf((raw + 1) / static_cast<float>((1U << 12U) + 1)));
         }
     }
