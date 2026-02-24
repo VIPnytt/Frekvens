@@ -96,7 +96,8 @@ void AnimationMode::transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * G
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void AnimationMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void AnimationMode::onReceive(JsonObjectConst payload,
+                              const char *source) // NOLINT(misc-unused-parameters)
 {
     // Action: pull
     if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "pull"))
@@ -110,11 +111,11 @@ void AnimationMode::onReceive(JsonObjectConst payload, const char *source) // NO
         payload["index"].is<uint8_t>())
     {
         uint8_t frame[GRID_COLUMNS * GRID_ROWS];
-#if GRID_COLUMNS * GRID_ROWS > (1u << 8)
+#if GRID_COLUMNS * GRID_ROWS > (1U << 8U)
         uint16_t i = 0;
 #else
         uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1u << 8)
+#endif // GRID_COLUMNS * GRID_ROWS > (1U << 8U)
         for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())

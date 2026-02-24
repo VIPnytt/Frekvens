@@ -9,9 +9,9 @@
 void WaveformMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1UL << 9) && Microphone->isTriggered())
+    if (millis() - lastMillis > (1UL << 9U) && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > (1UL << 9))
+    if (millis() - lastMillis > (1UL << 9U))
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();

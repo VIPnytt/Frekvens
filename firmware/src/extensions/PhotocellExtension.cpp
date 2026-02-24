@@ -139,7 +139,8 @@ void PhotocellExtension::transmit()
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void PhotocellExtension::onReceive(JsonObjectConst payload,
+                                   const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -156,7 +157,7 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
         const uint8_t _brightness = payload["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(logf(_brightness / static_cast<float>(1u << 8)) /
+            setGamma(logf(_brightness / static_cast<float>(1U << 8U)) /
                      logf((raw + 1) / static_cast<float>((1u << 12) + 1)));
         }
     }

@@ -92,7 +92,7 @@ private:
 public:
     TaskHandle_t taskHandle = nullptr;
 
-    static constexpr uint16_t stackSize = 1 << 12; // 4 kB
+    static constexpr uint16_t stackSize = 1U << 12U; // 4 kB
 
     void configure();
     void begin();

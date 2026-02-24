@@ -4,7 +4,6 @@
 
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ModesService.h"
 
 #include <Preferences.h>
 
@@ -92,7 +91,8 @@ void DrawMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void DrawMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void DrawMode::onReceive(JsonObjectConst payload,
+                         const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {
@@ -122,11 +122,11 @@ void DrawMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(
     // Frame
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS)
     {
-#if GRID_COLUMNS * GRID_ROWS > (1u << 8)
+#if GRID_COLUMNS * GRID_ROWS > (1U << 8U)
         uint16_t i = 0;
 #else
         uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1u << 8)
+#endif // GRID_COLUMNS * GRID_ROWS > (1U << 8U)
         for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())

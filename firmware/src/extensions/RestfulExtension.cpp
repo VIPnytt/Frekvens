@@ -43,9 +43,9 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
-// NOLINTNEXTLINE(misc-unused-parameters)
-void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
-                               size_t total)
+void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
+                               size_t index, // NOLINT(misc-unused-parameters)
+                               size_t total) // NOLINT(misc-unused-parameters)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     if (request->contentType() == "application/json" && !deserializeJson(doc, data, len))

@@ -124,7 +124,8 @@ void CountdownMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void CountdownMode::onReceive(JsonObjectConst payload,
+                              const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["time"].is<uint32_t>())
     {

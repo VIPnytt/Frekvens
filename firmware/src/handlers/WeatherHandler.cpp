@@ -54,7 +54,7 @@ void WeatherHandler::setSign(Conditions condition)
         sign = conditionClear;
 #else
     {
-        if (Display.getRatio() > 1.0f)
+        if (Display.getRatio() > 1.0F)
         {
             sign = conditionClearTall;
         }

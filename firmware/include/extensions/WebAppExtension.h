@@ -3,7 +3,8 @@
 #if EXTENSION_WEBAPP
 
 #include "modules/ExtensionModule.h"
-#include "services/WebServerService.h"
+
+#include <ESPAsyncWebServer.h>
 
 class WebAppExtension final : public ExtensionModule
 {

@@ -27,9 +27,9 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
     server->textAll(message.data(), length);
 }
 
-// NOLINTNEXTLINE(misc-unused-parameters)
-void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
-                                 const uint8_t *data, size_t len)
+void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-parameters)
+                                 AsyncWebSocketClient *client, AwsEventType type, void *arg, const uint8_t *data,
+                                 size_t len)
 {
     switch (type)
     {

@@ -178,7 +178,8 @@ void ConnectivityService::connect(const char *ssid, const char *key)
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                      WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD(Connectivity.name, "connected");
     ESP_LOGV(Connectivity.name, "%d dBm", WiFi.RSSI());
@@ -202,7 +203,8 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info) /
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
+                                         WiFiEventInfo_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mDNS)
@@ -216,7 +218,8 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGI(Connectivity.name, "IPv4 %s", WiFi.localIP().toString().c_str());
     if (!Connectivity.routable)
@@ -225,7 +228,8 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info) // NOL
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv6(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     const char *const ipv6 = WiFi.globalIPv6().toString().c_str();
     if (strcmp(ipv6, "") != 0)
@@ -265,7 +269,8 @@ void ConnectivityService::onRoutable()
     sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     const int16_t n = WiFi.scanComplete();
     if (n > 0)
@@ -297,7 +302,7 @@ void ConnectivityService::transmit()
             std::vector<uint8_t> buf(len);
             Storage.getBytes("saved", buf.data(), len);
             Storage.end();
-            JsonDocument _saved;
+            JsonDocument _saved; // NOLINT(misc-const-correctness)
             if (!deserializeJson(_saved, buf.data(), len))
             {
                 JsonArray saved = doc["saved"].to<JsonArray>();
@@ -316,7 +321,8 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onReceive(JsonObjectConst payload,
+                                    const char *source) // NOLINT(misc-unused-parameters)
 {
     // Connect
     if (payload["ssid"].is<const char *>())

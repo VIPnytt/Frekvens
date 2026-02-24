@@ -4,8 +4,8 @@
 
 #include "config/constants.h"     // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
-#include "modules/ModeModule.h"
 #include "modules/FontModule.h"
+#include "modules/ModeModule.h"
 
 #include <bits/unique_ptr.h>
 

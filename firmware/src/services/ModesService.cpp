@@ -72,7 +72,7 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled != nullptr && millis() - lastMillis > (1UL << 11))
+    if (scheduled != nullptr && millis() - lastMillis > (1UL << 11U))
     {
         mode = scheduled;
         scheduled = nullptr;
@@ -236,7 +236,8 @@ void ModesService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ModesService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void ModesService::onReceive(JsonObjectConst payload,
+                             const char *source) // NOLINT(misc-unused-parameters)
 {
     // Mode
     if (payload["mode"].is<const char *>())

@@ -80,7 +80,8 @@ void StreamMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void StreamMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void StreamMode::onReceive(JsonObjectConst payload,
+                           const char *source) // NOLINT(misc-unused-parameters)
 {
     // Port
     if (payload["port"].is<uint16_t>())

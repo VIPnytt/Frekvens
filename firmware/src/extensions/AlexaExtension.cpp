@@ -40,7 +40,8 @@ void AlexaExtension::begin()
 
 void AlexaExtension::handle() { fauxmo.handle(); }
 
-void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value)
+void AlexaExtension::onSetState(unsigned char deviceId, // NOLINT(misc-unused-parameters)
+                                const char *deviceName, bool state, unsigned char value)
 {
     if (strcmp(deviceName, NAME) == 0)
     {
@@ -57,7 +58,9 @@ void AlexaExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
-void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len,
+                           size_t index, // NOLINT(misc-unused-parameters)
+                           size_t total) // NOLINT(misc-unused-parameters)
 {
     if (!Alexa->fauxmo.process(
             request->client(),

@@ -88,16 +88,16 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 10) && std::find(code.displayPowerToggle.begin(),
-                                                  code.displayPowerToggle.end(),
-                                                  IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
+            else if (t > (1UL << 10U) && std::find(code.displayPowerToggle.begin(),
+                                                   code.displayPowerToggle.end(),
+                                                   IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
                 Display.setPower(!Display.getPower());
                 lastMillis = millis();
                 return;
             }
 #if EXTENSION_MICROPHONE
-            else if (t > (1UL << 10) &&
+            else if (t > (1UL << 10U) &&
                      std::find(code.extensionMicrophoneToggle.begin(),
                                code.extensionMicrophoneToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
@@ -108,7 +108,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            else if (t > (1UL << 10) &&
+            else if (t > (1UL << 10U) &&
                      std::find(code.extensionPhotocellToggle.begin(),
                                code.extensionPhotocellToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
@@ -119,7 +119,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (t > (1UL << 10) &&
+            else if (t > (1UL << 10U) &&
                      std::find(code.extensionPlaylistStart.begin(),
                                code.extensionPlaylistStart.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
@@ -128,16 +128,17 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 10) && std::find(code.extensionPlaylistStop.begin(),
-                                                  code.extensionPlaylistStop.end(),
-                                                  IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
+            else if (t > (1UL << 10U) &&
+                     std::find(code.extensionPlaylistStop.begin(),
+                               code.extensionPlaylistStop.end(),
+                               IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
             {
                 Playlist->setActive(false);
                 lastMillis = millis();
                 return;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (t > (1UL << 9) &&
+            else if (t > (1UL << 9U) &&
                      std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) !=
                          code.modeNext.end())
             {
@@ -145,7 +146,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 9) &&
+            else if (t > (1UL << 9U) &&
                      std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) !=
                          code.modePrevious.end())
             {
@@ -186,7 +187,8 @@ void InfraredExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void InfraredExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void InfraredExtension::onReceive(JsonObjectConst payload,
+                                  const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

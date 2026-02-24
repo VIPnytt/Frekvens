@@ -4,7 +4,7 @@
 
 #include "modules/ExtensionModule.h"
 
-#include <ESPAsyncWebServer.h>
+#include <AsyncWebSocket.h>
 
 class WebSocketExtension final : public ExtensionModule
 {

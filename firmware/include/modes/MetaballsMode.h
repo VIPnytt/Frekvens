@@ -14,7 +14,7 @@ private:
     static constexpr float radiusSq = radius * radius;
     static constexpr float speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
 
-    static constexpr uint8_t multiplier = 1 << 3;
+    static constexpr uint8_t multiplier = 1U << 3U;
 
     struct Ball
     {
@@ -26,7 +26,7 @@ private:
 
     uint8_t contributions[1 << 8]{0};
 
-    Ball balls[GRID_COLUMNS * GRID_ROWS / (1u << 6)]{};
+    Ball balls[GRID_COLUMNS * GRID_ROWS / (1U << 6U)]{};
 
 public:
     explicit MetaballsMode() : ModeModule("Metaballs") {};

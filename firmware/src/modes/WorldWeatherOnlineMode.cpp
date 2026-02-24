@@ -43,7 +43,7 @@ void WorldWeatherOnlineMode::update()
         NetworkClient &stream = http.getStream();
         const int contentLength = http.getSize();
         const unsigned long _lastMillis = millis();
-        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13))
+        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13U))
         {
             vTaskDelay(1);
         }
@@ -67,7 +67,7 @@ void WorldWeatherOnlineMode::update()
               doc["data"]["current_condition"][0]["weatherCode"].is<std::string>()))
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1UL << 14);
+            lastMillis = millis() - interval + (1UL << 14U);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -83,7 +83,7 @@ void WorldWeatherOnlineMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1UL << 12);
+        lastMillis = millis() - interval + (1UL << 12U);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -91,7 +91,7 @@ void WorldWeatherOnlineMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1UL << 15);
+        lastMillis = millis() - interval + (1UL << 15U);
     }
 }
 

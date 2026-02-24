@@ -193,7 +193,8 @@ void MessageExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MessageExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void MessageExtension::onReceive(JsonObjectConst payload,
+                                 const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<const char *>())

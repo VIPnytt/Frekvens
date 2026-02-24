@@ -178,7 +178,8 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void MicrophoneExtension::onReceive(JsonObjectConst payload,
+                                    const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

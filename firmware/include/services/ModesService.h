@@ -193,7 +193,7 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
+    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
 
     void configure();
     void begin();

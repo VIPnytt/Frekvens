@@ -3,9 +3,9 @@
 #if EXTENSION_OTA
 
 #include "modules/ExtensionModule.h"
-#include "services/WebServerService.h"
 
 #include <ArduinoOTA.h>
+#include <ESPAsyncWebServer.h>
 
 class OtaExtension final : public ExtensionModule
 {

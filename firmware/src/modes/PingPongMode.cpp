@@ -193,7 +193,7 @@ void PingPongMode::setClock(bool _clock)
         clock = _clock;
         if (clock && yDec <= 5)
         {
-            yDec = 5.5f;
+            yDec = 5.5F;
         }
         Display.clearFrame();
         Preferences Storage;
@@ -212,7 +212,8 @@ void PingPongMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PingPongMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void PingPongMode::onReceive(JsonObjectConst payload,
+                             const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

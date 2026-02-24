@@ -63,7 +63,7 @@ void GameOfLifeMode::handle()
             pending = false;
         }
         bool seeds[GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0))]{false};
-        for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1u << 4); ++i)
+        for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1U << 4U); ++i)
         {
             seeds[random(1, GRID_COLUMNS - 1) +
                   (random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0)))] = true;
@@ -125,7 +125,8 @@ void GameOfLifeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void GameOfLifeMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void GameOfLifeMode::onReceive(JsonObjectConst payload,
+                               const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

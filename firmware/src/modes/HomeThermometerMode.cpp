@@ -2,7 +2,7 @@
 
 #include "modes/HomeThermometerMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
@@ -119,7 +119,8 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void HomeThermometerMode::onReceive(JsonObjectConst payload,
+                                    const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["indoor"].is<float>())
     {

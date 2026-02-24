@@ -2,7 +2,7 @@
 
 #if MODE_ANIMATION
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <vector>

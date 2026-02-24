@@ -45,13 +45,13 @@ void DeviceService::begin()
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
 
 #if SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_INT, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_INT), LOW);
     esp_sleep_enable_ext1_wakeup(1ULL << PIN_SW1, ESP_EXT1_WAKEUP_ALL_LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW2)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_INT, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_INT), LOW);
     esp_sleep_enable_ext1_wakeup(1ULL << PIN_SW2, ESP_EXT1_WAKEUP_ALL_LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_SW1) && defined(PIN_SW2)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_SW1, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_SW1), LOW);
     esp_sleep_enable_ext1_wakeup(1ULL << PIN_SW2, ESP_EXT1_WAKEUP_ALL_LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_INT) && defined(PIN_SW1) && defined(PIN_SW2)
     esp_sleep_enable_ext1_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2), ESP_EXT1_WAKEUP_ANY_LOW);
@@ -62,11 +62,11 @@ void DeviceService::begin()
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_SW1) && defined(PIN_SW2)
     esp_sleep_enable_ext1_wakeup((1ULL << PIN_SW1) | (1ULL << PIN_SW2), ESP_EXT1_WAKEUP_ANY_LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_INT)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_INT, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_INT), LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_SW1)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_SW1, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_SW1), LOW);
 #elif SOC_PM_SUPPORT_EXT_WAKEUP && defined(PIN_SW2)
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)PIN_SW2, LOW);
+    esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PIN_SW2), LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1) && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << PIN_INT) | (1ULL << PIN_SW1) | (1ULL << PIN_SW2),
                                       ESP_GPIO_WAKEUP_GPIO_LOW);
@@ -286,7 +286,8 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
     }
 }
 
-void DeviceService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void DeviceService::onReceive(JsonObjectConst payload,
+                              const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {

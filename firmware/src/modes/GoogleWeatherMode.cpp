@@ -48,7 +48,7 @@ void GoogleWeatherMode::update()
             !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1UL << 14);
+            lastMillis = millis() - interval + (1UL << 14U);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -60,7 +60,7 @@ void GoogleWeatherMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1UL << 12);
+        lastMillis = millis() - interval + (1UL << 12U);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -68,7 +68,7 @@ void GoogleWeatherMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1UL << 15);
+        lastMillis = millis() - interval + (1UL << 15U);
     }
 }
 

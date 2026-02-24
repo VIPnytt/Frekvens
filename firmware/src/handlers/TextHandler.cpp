@@ -21,7 +21,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
             }
             height = yMax - yMin;
         }
-        tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0f));
+        tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             i = 0;
             uint8_t _width = 0;

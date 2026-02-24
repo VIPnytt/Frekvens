@@ -85,7 +85,7 @@ class ModeGenerator:
                     [
                         f'#include "modes/{self.id}Mode.h"',
                         "",
-                        '#include "config/constants.h"',
+                        '#include "config/constants.h" // NOLINT(misc-include-cleaner)',
                         '#include "handlers/BitmapHandler.h"',
                         '#include "services/DisplayService.h"',
                         "",
@@ -157,7 +157,7 @@ class ModeGenerator:
                     [
                         f'#include "modes/{self.id}Mode.h"',
                         "",
-                        '#include "config/constants.h"',
+                        '#include "config/constants.h" // NOLINT(misc-include-cleaner)',
                         '#include "handlers/BitmapHandler.h"',
                         '#include "services/DisplayService.h"',
                         "",

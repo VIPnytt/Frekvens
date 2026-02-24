@@ -18,7 +18,7 @@ private:
         bool direction = true;
     };
 
-    Star stars[GRID_COLUMNS * GRID_ROWS / (1u << 4)];
+    Star stars[GRID_COLUMNS * GRID_ROWS / (1U << 4U)];
 
 public:
     explicit StarsMode() : ModeModule("Stars") {};

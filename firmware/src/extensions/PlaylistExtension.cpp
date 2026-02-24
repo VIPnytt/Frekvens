@@ -170,7 +170,8 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
     }
 }
 
-void PlaylistExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void PlaylistExtension::onReceive(JsonObjectConst payload,
+                                  const char *source) // NOLINT(misc-unused-parameters)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())

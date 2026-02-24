@@ -8,9 +8,9 @@
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1UL << 6) && Microphone->isTriggered())
+    if (millis() - lastMillis > (1UL << 6U)) && Microphone->isTriggered())
 #else
-    if (millis() - lastMillis > (1UL << 6))
+    if (millis() - lastMillis > (1UL << 6U)))
 #endif // EXTENSION_MICROPHONE
     {
         uint8_t _radius = radius;

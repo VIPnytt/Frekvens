@@ -116,7 +116,7 @@ class FontGenerator:
             f"class {unique}Font final : public FontModule",
             "{",
             "private:",
-            "    const std::vector<Symbol> ascii = {",
+            "    static inline const std::vector<Symbol> ascii{",
         ]
         for cp in range(0x20, 0x80):
             character = chr(cp)
@@ -156,7 +156,7 @@ class FontGenerator:
             [
                 "    };",
                 "",
-                "    const std::vector<SymbolExtended> unicode = {",
+                "    static inline const std::vector<SymbolExtended> unicode{",
             ]
         )
         for character, _bitmap in bitmaps.items():

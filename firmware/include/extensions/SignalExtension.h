@@ -2,7 +2,7 @@
 
 #if EXTENSION_SIGNAL
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
 class SignalExtension final : public ExtensionModule

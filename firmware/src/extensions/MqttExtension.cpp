@@ -67,9 +67,10 @@ void MqttExtension::onConnect(bool sessionPresent)
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
 }
 
-// NOLINTNEXTLINE(misc-unused-parameters)
-void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
-                              const uint8_t *payload, size_t len, size_t index, size_t total)
+void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
+                              const char *topic, const uint8_t *payload, size_t len,
+                              size_t index, // NOLINT(misc-unused-parameters)
+                              size_t total) // NOLINT(misc-unused-parameters)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     if (deserializeJson(doc, payload, len))
@@ -81,7 +82,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
                    std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
     ESP_LOGD(Mqtt->name, "disconnected");
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));

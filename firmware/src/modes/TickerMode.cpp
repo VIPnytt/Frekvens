@@ -6,7 +6,7 @@
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 
@@ -140,7 +140,8 @@ void TickerMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void TickerMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void TickerMode::onReceive(JsonObjectConst payload,
+                           const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<const char *>())

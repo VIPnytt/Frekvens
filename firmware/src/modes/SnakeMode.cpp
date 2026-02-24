@@ -245,7 +245,7 @@ void SnakeMode::setDot()
         dot.x = random(GRID_COLUMNS);
         dot.y = random(clock ? 5 : 0, GRID_ROWS);
     } while (Display.getPixel(dot.x, dot.y) != 0);
-    Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
+    Display.setPixel(dot.x, dot.y, random(1, 1U << 8U));
 }
 
 void SnakeMode::setClock(bool _clock)
@@ -277,7 +277,8 @@ void SnakeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void SnakeMode::onReceive(JsonObjectConst payload,
+                          const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

@@ -46,7 +46,7 @@ void OtaExtension::onStart()
     TextHandler("U", FontLarge).draw();
     Display.flush();
     Display.setPower(true);
-    timerWrite(Display.timer, 1'000'000 / (1u << 8)); // 1 fps
+    timerWrite(Display.timer, 1'000'000 / (1U << 8U)); // 1 fps
 }
 
 void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }

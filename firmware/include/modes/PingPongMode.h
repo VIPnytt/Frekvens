@@ -15,8 +15,8 @@ private:
     bool clock = true;
     bool pending = false;
 
-    float xDec = .0f;
-    float yDec = .0f;
+    float xDec = .0F;
+    float yDec = .0F;
 
     std::deque<uint8_t> paddleA{};
     std::deque<uint8_t> paddleB{};

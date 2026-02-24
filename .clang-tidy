@@ -17,7 +17,6 @@ Checks: >
   -fuchsia-default-arguments-declarations,
   -fuchsia-overloaded-operator,
   -google-runtime-int,
-  -hicpp-uppercase-literal-suffix,
   -hicpp-use-auto,
   -hicpp-vararg,
   -llvm-header-guard,
@@ -33,7 +32,6 @@ Checks: >
   -readability-magic-numbers,
   -readability-misplaced-array-index,
   -readability-static-accessed-through-instance,
-  -readability-uppercase-literal-suffix
 CheckOptions:
   - key: misc-include-cleaner.MissingIncludes
     value: false

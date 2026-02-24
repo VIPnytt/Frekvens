@@ -73,7 +73,8 @@ void SignalExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void SignalExtension::onReceive(JsonObjectConst payload,
+                                const char *source) // NOLINT(misc-unused-parameters)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())

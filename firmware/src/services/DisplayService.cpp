@@ -27,10 +27,10 @@ void DisplayService::configure()
 
     timer = timerBegin(1'000'000);
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1'000'000 / (1u << 8) / frameRate, true, 0);
+    timerAlarm(timer, 1'000'000 / (1U << 8U) / frameRate, true, 0);
     timerStart(timer);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0f / PWM_WIDTH / static_cast<float>(1u << depth)), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / PWM_WIDTH / static_cast<float>(1u << depth)), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -254,15 +254,16 @@ void DisplayService::setBrightness(uint8_t _brightness)
         power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2))
               : 0,
         max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
-        (1u << 4) * abs(brightness -
-                        _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        (1U << 4U) *
+            abs(brightness -
+                _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
     ledcFade(
         PIN_OE,
         power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2))
               : 0,
         max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1u << depth) - 2)),
-        (1u << 4) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+        (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
@@ -346,7 +347,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
             const float xDistance = xRatio * (_x - x);
             const float yDistance = yRatio * (_y - y);
             const float distance = sqrtf((xDistance * xDistance) + (yDistance * yDistance));
-            if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5f))
+            if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
                 setPixel(_x, _y, brightness);
             }
@@ -389,7 +390,8 @@ void DisplayService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void DisplayService::onReceive(JsonObjectConst payload, const char *source) // NOLINT(misc-unused-parameters)
+void DisplayService::onReceive(JsonObjectConst payload,
+                               const char *source) // NOLINT(misc-unused-parameters)
 {
     // Brightness
     if (payload["brightness"].is<uint8_t>())

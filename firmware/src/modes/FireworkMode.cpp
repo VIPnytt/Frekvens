@@ -38,7 +38,7 @@ void FireworkMode::pad()
 
 void FireworkMode::launching()
 {
-    if (millis() - lastMillis > (1UL << 6))
+    if (millis() - lastMillis > (1UL << 6U))
     {
         if (rocketY < GRID_ROWS)
         {

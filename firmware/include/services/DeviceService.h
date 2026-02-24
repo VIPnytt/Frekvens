@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
 #include "modules/ServiceModule.h"
 
-#include <vector>
+#include <ArduinoJson.h>
 
 class DeviceService final : public ServiceModule
 {
