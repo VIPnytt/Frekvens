@@ -62,7 +62,7 @@ void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename
     if ((index == 0 && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
         Update.write(data, len) != len || (final && !Update.end(true)))
     {
-        ESP_LOGE(Ota->name, "%s", Update.errorString());
+        ESP_LOGE(Ota->name, "%s", Update.errorString()); // NOLINT(cppcoreguidelines-pro-type-vararg)
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
     }
     else if (final)

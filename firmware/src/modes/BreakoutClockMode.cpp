@@ -24,8 +24,10 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
-    const uint8_t nextX = static_cast<uint8_t>(lroundf(xDec + (cosf(deg * static_cast<float>(DEG_TO_RAD)) * speed)));
-    const uint8_t nextY = static_cast<uint8_t>(std::lroundf(yDec - (sinf(deg * static_cast<float>(DEG_TO_RAD)) * speed)));
+    const uint8_t nextX =
+        static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
+    const uint8_t nextY = static_cast<uint8_t>(
+        std::lroundf(yDec - (sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
     if (y <= 0 && deg < 180)
     {
         // Top
@@ -64,8 +66,8 @@ void BreakoutClockMode::handle()
         }
     }
     Display.setPixel(x, y, 0);
-    xDec += cosf(deg * static_cast<float>(DEG_TO_RAD)) * speed;
-    yDec -= sinf(deg * static_cast<float>(DEG_TO_RAD)) * speed;
+    xDec += cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
+    yDec -= sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
     x = lroundf(xDec);
     y = lroundf(yDec);
     Display.setPixel(x, y);

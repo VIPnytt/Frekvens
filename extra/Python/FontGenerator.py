@@ -236,7 +236,7 @@ class FontGenerator:
                         "    {",
                         "        return ascii[character - 0x20];",
                         "    }",
-                        "    else if (character >= 0x80 && character <= 0x10FFFF)",
+                        "    if (character >= 0x80 && character <= 0x10FFFF)",
                         "    {",
                         "        for (const SymbolExtended &extended : unicode)",
                         "        {",

@@ -258,19 +258,26 @@ void DisplayService::setBrightness(uint8_t _brightness)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2))
+        power ? max<uint16_t>(brightness,
+                              powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                  ((1U << depth) - 2))
               : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
+        max<uint16_t>(_brightness,
+                      powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                          ((1U << depth) - 2)),
         (1U << 4U) *
             abs(brightness -
                 _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-    ledcFade(
-        PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2))
-              : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1U << depth) - 2)),
-        (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+    ledcFade(PIN_OE,
+             power ? max<uint16_t>(brightness,
+                                   powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                       ((1U << depth) - 2))
+                   : 0,
+             max<uint16_t>(_brightness,
+                           powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                               ((1U << depth) - 2)),
+             (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {

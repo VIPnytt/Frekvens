@@ -112,8 +112,8 @@ void PingPongMode::handle()
         deg = 360 - deg; // Invert Y
     }
     Display.setPixel(x, y, 0);
-    xDec += cosf(deg * static_cast<float>(DEG_TO_RAD)) * speed;
-    yDec -= sinf(deg * static_cast<float>(DEG_TO_RAD)) * speed;
+    xDec += cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
+    yDec -= sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
     x = lroundf(xDec);
     y = lroundf(yDec);
     Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
