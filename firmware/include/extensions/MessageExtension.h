@@ -6,6 +6,7 @@
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
+#include <array>
 #include <bits/unique_ptr.h>
 
 class MessageExtension final : public ExtensionModule
@@ -16,7 +17,6 @@ private:
 
     int8_t offsetY = 0;
 
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{0};
     uint8_t repeat = 3;
 
     int16_t offsetX = GRID_COLUMNS;
@@ -26,9 +26,11 @@ private:
 
     FontModule *font = nullptr;
 
-    std::vector<std::string> messages{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{0};
 
     std::unique_ptr<TextHandler> text{};
+
+    std::vector<std::string> messages{};
 
     void addMessage(std::string message);
 

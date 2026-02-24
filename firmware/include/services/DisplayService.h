@@ -3,6 +3,7 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
+#include <span>
 #include <vector>
 
 class DisplayService final : public ServiceModule
@@ -83,8 +84,8 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS]);
-    void setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS]);
+    void getFrame(std::span<uint8_t> frameCurrent);
+    void setFrame(std::span<const uint8_t> frameNext);
 
     void clearFrame(uint8_t _brightness = 0);
     void invertFrame();

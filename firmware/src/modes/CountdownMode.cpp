@@ -10,8 +10,10 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
+#include <array>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 
 void CountdownMode::configure()
 {
@@ -115,12 +117,12 @@ void CountdownMode::save()
 
 void CountdownMode::transmit()
 {
-    char timestamp[32];
+    std::array<char, 32> buffer{};
     time_t timer = std::chrono::system_clock::to_time_t(epoch);
     tm local = *std::localtime(&timer);
-    std::strftime(timestamp, sizeof(timestamp), "%FT%T", &local);
+    std::strftime(buffer.data(), buffer.size(), "%FT%T", &local);
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["timestamp"] = timestamp;
+    doc["timestamp"] = std::string_view(buffer.data());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

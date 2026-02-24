@@ -5,6 +5,8 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
+#include <array>
+
 class MetaballsMode final : public ModeModule
 {
 private:
@@ -24,9 +26,8 @@ private:
         float yVelocity;
     };
 
-    uint8_t contributions[1U << 8U]{0};
-
-    Ball balls[GRID_COLUMNS * GRID_ROWS / (1U << 6U)]{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{0};
+    std::array<Ball, GRID_COLUMNS * GRID_ROWS / (1U << 6U)> balls{};
 
 public:
     explicit MetaballsMode() : ModeModule("Metaballs") {};

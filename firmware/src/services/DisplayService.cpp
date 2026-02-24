@@ -292,17 +292,17 @@ void DisplayService::setBrightness(uint8_t _brightness)
     pending = true;
 }
 
-void DisplayService::getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::getFrame(std::span<uint8_t> frameCurrent)
 {
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    for (size_t i = 0; i < frameCurrent.size(); ++i)
     {
         frameCurrent[i] = frame[pixel[i]];
     }
 }
 
-void DisplayService::setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::setFrame(std::span<const uint8_t> frameNext)
 {
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    for (size_t i = 0; i < frameNext.size(); ++i)
     {
         _frame[pixel[i]] = frameNext[i];
     }

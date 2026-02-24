@@ -11,6 +11,7 @@
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
 
+#include <array>
 #include <nvs_flash.h>
 #include <regex>
 
@@ -263,7 +264,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
     if (operational)
     {
         ESP_LOGV(source, "receiving");
-        ServiceModule *services[]{
+        const std::array<ServiceModule *, 4> services{
             &Connectivity,
             &Device,
             &Display,

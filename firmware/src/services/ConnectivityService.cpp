@@ -5,6 +5,7 @@
 
 #include <ESPmDNS.h>
 #include <Preferences.h>
+#include <array>
 #include <esp_crt_bundle.h>
 #include <esp_sntp.h>
 #include <esp_wifi.h>
@@ -185,14 +186,14 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
     ESP_LOGV(Connectivity.name, "%d dBm", WiFi.RSSI());
     ESP_LOGI(Connectivity.name, HOSTNAME ".local");
 #ifndef WIFI_COUNTRY
-    char country[3];
-    if (esp_wifi_get_country_code(country) == ESP_OK)
+    std::array<char, 3> country{};
+    if (esp_wifi_get_country_code(country.data()) == ESP_OK)
     {
         Preferences Storage;
         Storage.begin(_name.data());
-        if (strcmp(country, "01") != 0)
+        if (strncmp(country.data(), "01", 2) != 0)
         {
-            Storage.putString("country", country);
+            Storage.putString("country", country.data());
         }
         else if (Storage.isKey("country"))
         {

@@ -5,6 +5,8 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
+#include <array>
+
 class SignalExtension final : public ExtensionModule
 {
 private:
@@ -13,7 +15,8 @@ private:
     unsigned long lastMillis = 0;
 
     uint8_t duration = 30;
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{0};
+
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{0};
 
     std::vector<std::vector<uint16_t>> signals;
 

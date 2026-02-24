@@ -20,8 +20,6 @@ private:
 
     std::unordered_map<uint8_t, Dot> flies{};
 
-    uint8_t drawing[GRID_COLUMNS * GRID_ROWS]{0};
-
 public:
     explicit FliesMode() : ModeModule("Flies") {};
 
