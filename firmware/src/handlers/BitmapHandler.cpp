@@ -3,7 +3,7 @@
 #include "config/constants.h"
 #include "services/DisplayService.h"
 
-BitmapHandler::BitmapHandler(std::vector<uint16_t> bitmap) : bitmap(bitmap)
+BitmapHandler::BitmapHandler(std::span<const uint16_t> bitmap) : bitmap(bitmap)
 {
     if (!bitmap.empty())
     {

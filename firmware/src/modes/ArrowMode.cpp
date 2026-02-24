@@ -18,7 +18,7 @@ void ArrowMode::handle()
         lastMillis = millis();
 
         Display.clearFrame();
-        BitmapHandler bitmap = BitmapHandler(arrow[index]);
+        BitmapHandler bitmap(arrow[index]);
         bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, GRID_ROWS - bitmap.getHeight());
 
         direction ? ++index : --index;
