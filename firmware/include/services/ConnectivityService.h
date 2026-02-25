@@ -5,6 +5,7 @@
 
 #include <DNSServer.h> // NOLINT(misc-include-cleaner)
 #include <WiFiMulti.h>
+#include <span>
 
 class ConnectivityService final : public ServiceModule
 {
@@ -41,16 +42,11 @@ public:
     void configure();
     void begin();
     void handle();
-
     void onReceive(JsonObjectConst payload, const char *source) override;
+
+    [[nodiscard]] static std::span<const uint8_t> certificates() noexcept;
 
     static ConnectivityService &getInstance();
 };
 
 extern ConnectivityService &Connectivity;
-
-namespace Certificates
-{
-extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
-} // namespace Certificates

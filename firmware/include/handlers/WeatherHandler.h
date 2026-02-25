@@ -5,7 +5,7 @@
 #include <span>
 #include <string>
 
-class WeatherHandler : public HandlerModule
+class WeatherHandler final : public HandlerModule
 {
 public:
     WeatherHandler() = default;

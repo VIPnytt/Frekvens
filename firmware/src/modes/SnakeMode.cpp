@@ -139,9 +139,9 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     if (pathFound)
     {
         Pixel step = dot;
-        while (from[step] != start)
+        while (from.at(step) != start)
         {
-            step = from[step];
+            step = from.at(step);
         }
         return step;
     }
@@ -187,11 +187,10 @@ void SnakeMode::move()
             }
             else
             {
-                uint8_t i = 0;
-                for (const Pixel &part : snake)
+                const uint8_t step = UINT8_MAX / snake.size();
+                for (std::size_t i = 0; i < snake.size(); ++i)
                 {
-                    Display.setPixel(part.x, part.y, UINT8_MAX / snake.size() * (i + 1));
-                    ++i;
+                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1));
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0);
                 snake.pop_front();

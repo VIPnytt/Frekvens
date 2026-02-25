@@ -5,7 +5,7 @@
 #include <span>
 #include <string_view>
 
-class BitmapHandler : public HandlerModule
+class BitmapHandler final : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "BitmapHandler";

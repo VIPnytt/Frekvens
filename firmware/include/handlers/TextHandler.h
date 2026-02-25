@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-class TextHandler : public HandlerModule
+class TextHandler final : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "TextHandler";

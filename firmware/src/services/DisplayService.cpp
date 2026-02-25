@@ -92,40 +92,44 @@ void DisplayService::handle()
 
 IRAM_ATTR void DisplayService::onTimer()
 {
-    static uint8_t filter = 0;
-    static uint8_t bytes[((GRID_COLUMNS * GRID_ROWS) + 7) / 8];
-    const uint8_t *frame = Display.frame;
-    uint16_t outIndex = 0;
-    uint8_t bitMask = 0x80;
-    uint8_t outByte = 0;
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    static DRAM_ATTR uint8_t filter = 0;
+    static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
+    const uint8_t thr = filter;
+    const uint8_t *__restrict__ p = Display.frame.data();
+    size_t idx = 0;
+    for (size_t b = 0; b < GRID_COLUMNS * GRID_ROWS / 8; ++b)
     {
-        if (frame[i] > filter)
-        {
-            outByte |= bitMask;
-        }
-        bitMask >>= 1U;
-        if (bitMask == 0)
-        {
-            bytes[outIndex++] = outByte;
-            outByte = 0;
-            bitMask = 0x80;
-        }
+        uint8_t out = 0;
+        out |= (p[idx++] > thr) ? 0x80 : 0;
+        out |= (p[idx++] > thr) ? 0x40 : 0;
+        out |= (p[idx++] > thr) ? 0x20 : 0;
+        out |= (p[idx++] > thr) ? 0x10 : 0;
+        out |= (p[idx++] > thr) ? 0x08 : 0;
+        out |= (p[idx++] > thr) ? 0x04 : 0;
+        out |= (p[idx++] > thr) ? 0x02 : 0;
+        out |= (p[idx++] > thr) ? 0x01 : 0;
+        bytes[b] = out;
     }
-#if GRID_COLUMNS * GRID_ROWS % 8
-    bytes[outIndex] = outByte;
-#endif // GRID_COLUMNS * GRID_ROWS % 8
-    ++filter;
+    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+    {
+        uint8_t out = 0;
+        for (size_t k = 0; k < GRID_COLUMNS * GRID_ROWS % 8; ++k)
+        {
+            out |= (p[idx++] > thr) ? (0x80U >> k) : 0;
+        }
+        bytes[GRID_COLUMNS * GRID_ROWS / 8] = out;
+    }
+    filter = static_cast<uint8_t>(thr + 1);
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
-    SPI.transferBytes(bytes, nullptr, sizeof(bytes));
+    SPI.transferBytes(bytes.data(), nullptr, bytes.size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
 }
 
 void DisplayService::flush()
 {
-    if (memcmp(frame, _frame, sizeof(_frame)) != 0)
+    if (frame != _frame)
     {
-        memcpy(frame, _frame, sizeof(_frame));
+        frame = _frame;
     }
 }
 
@@ -135,45 +139,45 @@ DisplayService::Orientation DisplayService::getOrientation() const { return orie
 
 void DisplayService::setOrientation(Orientation _orientation)
 {
-    std::vector<uint8_t> _pixel(GRID_COLUMNS * GRID_ROWS);
-    switch ((_orientation - orientation + 4) % 4)
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _pixel{};
+    switch ((static_cast<uint8_t>(_orientation) + 4U - static_cast<uint8_t>(orientation)) % 4U)
     {
-    case Orientation::deg180:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
-        {
-            _pixel[i] = pixel[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
-                              (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
-        }
-        break;
 #if GRID_COLUMNS == GRID_ROWS
-    case Orientation::deg90:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    case static_cast<uint8_t>(Orientation::deg90):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
         {
             _pixel[i] = pixel[((GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1))) << __builtin_ctz(GRID_COLUMNS)) |
                               (i >> __builtin_ctz(GRID_COLUMNS))];
         }
         break;
-    case Orientation::deg270:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    case static_cast<uint8_t>(Orientation::deg270):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
         {
             _pixel[i] = pixel[((i & (GRID_COLUMNS - 1)) << __builtin_ctz(GRID_COLUMNS)) |
                               (GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS)))];
         }
         break;
 #endif // GRID_COLUMNS == GRID_ROWS
+    case static_cast<uint8_t>(Orientation::deg180):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
+        {
+            _pixel[i] = pixel[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
+                              (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
+        }
+        break;
     default:
         return;
     }
-    ESP_LOGI(name, "orientation %d°", _orientation * 90);
-    memcpy(pixel, _pixel.data(), _pixel.size());
+    ESP_LOGI(name, "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
+    pixel = _pixel;
     orientation = _orientation;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    ratio = (orientation % 2) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
-                                   : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
+    ratio = (static_cast<uint8_t>(orientation) % 2U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+                                                          : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     Preferences Storage;
     Storage.begin(name);
-    Storage.putUShort("orientation", orientation);
+    Storage.putUShort("orientation", static_cast<uint8_t>(orientation));
     Storage.end();
     pending = true;
 }
@@ -238,7 +242,7 @@ void DisplayService::onPowerOff()
     Display.power = false;
     Display.pending = true;
     Modes.setActive(false);
-    memset(Display.frame, 0, sizeof(Display.frame));
+    Display.frame.fill(0);
 }
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
@@ -308,7 +312,7 @@ void DisplayService::setFrame(std::span<const uint8_t> frameNext)
     }
 }
 
-void DisplayService::clearFrame(uint8_t brightness) { memset(_frame, brightness, sizeof(_frame)); }
+void DisplayService::clearFrame(uint8_t brightness) { _frame.fill(brightness); }
 
 void DisplayService::invertFrame()
 {
@@ -386,7 +390,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = (orientation % 2) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) % 2U) != 0U;
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"] = brightness;
 #if GRID_COLUMNS == GRID_ROWS
@@ -394,7 +398,7 @@ void DisplayService::transmit()
 #else
     doc["columns"] = rotated ? GRID_ROWS : GRID_COLUMNS;
 #endif // GRID_COLUMNS == GRID_ROWS
-    doc["orientation"] = orientation * 90;
+    doc["orientation"] = static_cast<uint8_t>(orientation) * 90U;
     doc["power"] = power;
 #if GRID_COLUMNS == GRID_ROWS
     doc["rows"] = GRID_ROWS;
@@ -415,7 +419,8 @@ void DisplayService::onReceive(JsonObjectConst payload,
     // Orientation
     if (payload["orientation"].is<uint16_t>())
     {
-        setOrientation((Orientation)(payload["orientation"].as<uint16_t>() / 90));
+        setOrientation(
+            static_cast<Orientation>(static_cast<uint8_t>((payload["orientation"].as<uint16_t>() / 90U) & 3U)));
     }
     // Power
     if (payload["power"].is<bool>())

@@ -120,13 +120,9 @@ void DrawMode::onReceive(JsonObjectConst payload,
         }
     }
     // Frame
-    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS)
+    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == drawing.size())
     {
-#if GRID_COLUMNS * GRID_ROWS > (1U << 8U)
-        uint16_t i = 0;
-#else
-        uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1U << 8U)
+        size_t i = 0;
         for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())

@@ -18,8 +18,8 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    esp_crt_bundle_set(Certificates::x509_crt_bundle_start,
-                       Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    const std::span<const uint8_t> bundle = certificates();
+    esp_crt_bundle_set(bundle.data(), bundle.size());
     WiFi.enableIPv6();
     WiFi.setHostname(HOSTNAME);
     WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
@@ -337,6 +337,16 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
         ESP_LOGD(name, "scanning for Wi-Fi networks...");
         WiFi.scanNetworks(true);
     }
+}
+
+std::span<const uint8_t> ConnectivityService::certificates() noexcept
+{
+    extern const uint8_t x509_crt_bundle_start[]                            // NOLINT(cppcoreguidelines-avoid-c-arrays)
+        asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start"); // NOLINT(hicpp-no-assembler)
+    extern const uint8_t x509_crt_bundle_end[]                              // NOLINT(cppcoreguidelines-avoid-c-arrays)
+        asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");   // NOLINT(hicpp-no-assembler)
+    return std::span<const uint8_t>(&x509_crt_bundle_start[0],
+                                    static_cast<size_t>(&x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]));
 }
 
 ConnectivityService &ConnectivityService::getInstance()

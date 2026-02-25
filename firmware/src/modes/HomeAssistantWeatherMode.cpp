@@ -32,8 +32,8 @@ void HomeAssistantWeatherMode::update()
     lastMillis = millis();
 #ifdef HOMEASSISTANT_PROTOCOL
     NetworkClientSecure client; // NOLINT(misc-const-correctness)
-    client.setCACertBundle(Certificates::x509_crt_bundle_start,
-                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    const std::span<const uint8_t> bundle = ConnectivityService::certificates();
+    client.setCACertBundle(bundle.data(), bundle.size());
     HTTPClient http;
     http.begin(client, urls.back().c_str());
 #else

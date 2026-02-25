@@ -3,6 +3,7 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
+#include <array>
 #include <span>
 #include <vector>
 
@@ -17,7 +18,7 @@ private:
     static constexpr uint8_t frameRate = 60;
 #endif // FRAME_RATE
 
-    enum Orientation
+    enum class Orientation : uint8_t
     {
         deg0,
         deg90,
@@ -53,9 +54,10 @@ private:
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
 
     uint8_t brightness = 0;
-    uint8_t _frame[GRID_COLUMNS * GRID_ROWS]{};
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS]{};
-    uint8_t pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
+
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixel{LED_MAP};
 
     Orientation orientation = Orientation::deg0;
 

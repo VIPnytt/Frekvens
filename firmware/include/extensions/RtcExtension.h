@@ -36,13 +36,13 @@ public:
     explicit RtcExtension();
 
 #ifdef RTC_DS1307
-    RtcDS1307<TwoWire> rtc = RtcDS1307(Wire);
+    RtcDS1307 rtc(Wire);
 #elif defined(RTC_DS3231)
-    RtcDS3231<TwoWire> rtc = RtcDS3231(Wire);
+    RtcDS3231 rtc(Wire);
 #elif defined(RTC_DS3232)
-    RtcDS3232<TwoWire> rtc = RtcDS3232(Wire);
+    RtcDS3232 rtc(Wire);
 #elif defined(RTC_PCF8563)
-    RtcPCF8563<TwoWire> rtc = RtcPCF8563(Wire);
+    RtcPCF8563 rtc(Wire);
 #endif // RTC_DS1307
 
     void configure() override;

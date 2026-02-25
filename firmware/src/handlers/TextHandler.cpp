@@ -24,26 +24,26 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             i = 0;
-            uint8_t _width = 0;
+            width = 0;
             for (uint32_t codepoint; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
                 if (!character.bitmap.empty())
                 {
-                    _width += calcMsbMax(character) + 1 + character.offsetX + tracking;
+                    width += calcMsbMax(character) + 1 + character.offsetX + tracking;
                 }
                 else if (character.offsetX > 0)
                 {
-                    _width += character.offsetX + tracking;
+                    width += character.offsetX + tracking;
                 }
                 else
                 {
                     ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
                 }
             }
-            if (_width > tracking)
+            if (width > tracking)
             {
-                width = _width - tracking;
+                width -= tracking;
             }
         }
     }
@@ -97,42 +97,42 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte = text[i++];
+    const uint8_t byte = static_cast<uint8_t>(text[i++]);
     if (byte <= 0x7F)
     {
         buffer = byte;
         return true;
     }
     uint8_t bytes = 0;
-    if ((byte & 0xE0) == 0xC0)
+    if ((byte & 0xE0U) == 0xC0U)
     {
-        buffer = byte & 0x1F;
+        buffer = byte & 0x1FU;
         bytes = 1;
     }
-    else if ((byte & 0xF0) == 0xE0)
+    else if ((byte & 0xF0U) == 0xE0U)
     {
-        buffer = byte & 0x0F;
+        buffer = byte & 0x0FU;
         bytes = 2;
     }
-    else if ((byte & 0xF8) == 0xF0)
+    else if ((byte & 0xF8U) == 0xF0U)
     {
-        buffer = byte & 0x07;
+        buffer = byte & 0x07U;
         bytes = 3;
     }
     else
     {
-        buffer = 0xFFFD;
+        buffer = 0xFFFDU;
         return true;
     }
     while (bytes-- && i < text.length())
     {
         const uint8_t cont = text[i++];
-        if ((cont & 0xC0) != 0x80)
+        if ((cont & 0xC0U) != 0x80U)
         {
-            buffer = 0xFFFD;
+            buffer = 0xFFFDU;
             break;
         }
-        buffer = (buffer << 6) | (cont & 0x3F);
+        buffer = (buffer << 6U) | (cont & 0x3FU);
     }
     return true;
 }

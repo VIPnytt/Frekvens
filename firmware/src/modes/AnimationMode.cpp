@@ -111,12 +111,8 @@ void AnimationMode::onReceive(JsonObjectConst payload,
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS &&
         payload["index"].is<uint8_t>())
     {
-        uint8_t frame[GRID_COLUMNS * GRID_ROWS];
-#if GRID_COLUMNS * GRID_ROWS > (1U << 8U)
-        uint16_t i = 0;
-#else
-        uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1U << 8U)
+        std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+        size_t i = 0;
         for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
         {
             if (pixel.is<uint8_t>())
