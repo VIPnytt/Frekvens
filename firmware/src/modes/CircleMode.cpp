@@ -13,14 +13,12 @@ void CircleMode::handle()
     if (millis() - lastMillis > (1UL << 6U))
 #endif // EXTENSION_MICROPHONE
     {
-        uint8_t _radius = radius;
         bool _lit = lit;
-        do
+        for (uint8_t _radius = radius; _radius <= maxRadius; _radius += 3)
         {
-            Display.drawEllipse(x, y, _radius, 1.25, false, _lit ? UINT8_MAX : 0);
+            Display.drawEllipse(x, y, _radius, 1.25F, false, _lit ? UINT8_MAX : 0);
             _lit = !_lit;
-            _radius += 3;
-        } while (_radius <= maxRadius);
+        }
         lastMillis = millis();
         ++radius;
         if (radius > 3)

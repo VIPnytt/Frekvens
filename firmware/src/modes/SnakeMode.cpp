@@ -239,7 +239,7 @@ void SnakeMode::clean()
 
 void SnakeMode::setDot()
 {
-    do
+    do // NOLINT(cppcoreguidelines-avoid-do-while)
     {
         dot.x = random(GRID_COLUMNS);
         dot.y = random(clock ? 5 : 0, GRID_ROWS);

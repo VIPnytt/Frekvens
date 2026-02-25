@@ -118,7 +118,7 @@ void PlaylistExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         transmit();
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 

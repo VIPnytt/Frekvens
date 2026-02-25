@@ -2,6 +2,7 @@
 
 #include "modules/HandlerModule.h"
 
+#include <cstdint>
 #include <span>
 #include <string>
 
@@ -10,7 +11,7 @@ class WeatherHandler final : public HandlerModule
 public:
     WeatherHandler() = default;
 
-    enum Conditions
+    enum class Conditions : std::uint8_t
     {
         CLEAR,
         CLOUDY,

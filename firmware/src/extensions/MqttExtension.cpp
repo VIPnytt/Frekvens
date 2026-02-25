@@ -85,10 +85,9 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
-    // NOLINTBEGIN(cppcoreguidelines-avoid-do-while)
-    ESP_LOGD(Mqtt->name, "disconnected");
+    ESP_LOGD(Mqtt->name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
-    // NOLINTEND(cppcoreguidelines-avoid-do-while)
 }
 
 void MqttExtension::onTransmit(JsonObjectConst payload, const char *source)

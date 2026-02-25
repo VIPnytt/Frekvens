@@ -76,7 +76,7 @@ void ModesService::handle()
     {
         mode = scheduled;
         scheduled = nullptr;
-        ESP_LOGI(name, "%s", mode->name); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGI(name, "%s", mode->name); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         mode->begin();
         setActive(true);
         transmit();
