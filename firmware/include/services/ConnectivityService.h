@@ -49,4 +49,4 @@ public:
     static ConnectivityService &getInstance();
 };
 
-extern ConnectivityService &Connectivity;
+extern ConnectivityService &Connectivity; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

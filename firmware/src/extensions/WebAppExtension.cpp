@@ -7,7 +7,7 @@
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
-WebAppExtension *WebApp = nullptr;
+WebAppExtension *WebApp = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 WebAppExtension::WebAppExtension() : ExtensionModule("Web app") { WebApp = this; }
 

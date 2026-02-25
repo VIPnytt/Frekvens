@@ -25,4 +25,4 @@ FontsService &FontsService::getInstance()
     return instance;
 }
 
-FontsService &Fonts = Fonts.getInstance();
+FontsService &Fonts = FontsService::getInstance();

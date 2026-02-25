@@ -40,6 +40,6 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern PhotocellExtension *Photocell;
+extern PhotocellExtension *Photocell; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PHOTOCELL

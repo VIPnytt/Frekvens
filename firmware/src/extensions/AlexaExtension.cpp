@@ -7,7 +7,7 @@
 
 #include <HTTPClient.h>
 
-AlexaExtension *Alexa = nullptr;
+AlexaExtension *Alexa = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 AlexaExtension::AlexaExtension() : ExtensionModule("Alexa") { Alexa = this; }
 
@@ -19,7 +19,7 @@ void AlexaExtension::begin()
     fauxmo.onSetState(&onSetState);
 
     WebServer.http->on(
-        AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServer.onEmpty, nullptr, &onSet);
+        AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, nullptr, &onSet);
     WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights"),
                        WebRequestMethod::HTTP_GET,
                        &onGet);
@@ -28,7 +28,7 @@ void AlexaExtension::begin()
                        &onGet);
     WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state"),
                        WebRequestMethod::HTTP_PUT,
-                       &WebServer.onEmpty,
+                       &WebServerService::onEmpty,
                        nullptr,
                        &onSet);
     WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGet);

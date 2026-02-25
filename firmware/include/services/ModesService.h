@@ -209,4 +209,4 @@ public:
     static ModesService &getInstance();
 };
 
-extern ModesService &Modes;
+extern ModesService &Modes; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

@@ -20,6 +20,6 @@ public:
     void transmit();
 };
 
-extern HeapExtension *Heap;
+extern HeapExtension *Heap; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_HEAP

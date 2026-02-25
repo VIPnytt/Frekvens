@@ -35,15 +35,15 @@ private:
 public:
     explicit RtcExtension();
 
-#if defined(RTC_DS1307)
-    RtcDS1307 rtc{Wire};
+#ifdef RTC_DS1307
+    RtcDS1307<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3231)
-    RtcDS3231 rtc{Wire};
+    RtcDS3231<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3232)
-    RtcDS3232 rtc{Wire};
+    RtcDS3232<TwoWire> rtc{Wire};
 #elif defined(RTC_PCF8563)
-    RtcPCF8563 rtc{Wire};
-#endif // defined(RTC_DS1307)
+    RtcPCF8563<TwoWire> rtc{Wire};
+#endif // RTC_DS1307
 
     void configure() override;
 #if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
@@ -51,6 +51,6 @@ public:
 #endif
 };
 
-extern RtcExtension *Rtc;
+extern RtcExtension *Rtc; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_RTC

@@ -14,7 +14,7 @@
 #include <IRremote.hpp> // NOLINT(misc-include-cleaner)
 #include <Preferences.h>
 
-InfraredExtension *Infrared = nullptr;
+InfraredExtension *Infrared = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 InfraredExtension::InfraredExtension() : ExtensionModule("Infrared") { Infrared = this; }
 

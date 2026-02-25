@@ -43,6 +43,6 @@ public:
     void handle() override;
 };
 
-extern ButtonExtension *Button;
+extern ButtonExtension *Button; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_BUTTON

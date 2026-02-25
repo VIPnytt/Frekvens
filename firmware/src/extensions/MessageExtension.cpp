@@ -11,7 +11,7 @@
 
 #include <Preferences.h>
 
-MessageExtension *Message = nullptr;
+MessageExtension *Message = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MessageExtension::MessageExtension() : ExtensionModule("Message") { Message = this; }
 

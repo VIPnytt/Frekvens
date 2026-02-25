@@ -32,6 +32,6 @@ public:
     void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
-extern SignalExtension *Signal;
+extern SignalExtension *Signal; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_SIGNAL

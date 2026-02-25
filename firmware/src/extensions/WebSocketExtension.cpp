@@ -5,7 +5,7 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
-WebSocketExtension *WebSocket = nullptr;
+WebSocketExtension *WebSocket = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket") { WebSocket = this; }
 

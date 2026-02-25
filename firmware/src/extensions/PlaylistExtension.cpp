@@ -9,7 +9,7 @@
 
 #include <Preferences.h>
 
-PlaylistExtension *Playlist = nullptr;
+PlaylistExtension *Playlist = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist") { Playlist = this; }
 

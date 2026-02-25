@@ -9,7 +9,7 @@
 
 #include <Preferences.h>
 
-SignalExtension *Signal = nullptr;
+SignalExtension *Signal = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 SignalExtension::SignalExtension() : ExtensionModule("Signal") { Signal = this; }
 

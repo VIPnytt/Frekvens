@@ -36,4 +36,4 @@ public:
     static DeviceService &getInstance();
 };
 
-extern DeviceService &Device;
+extern DeviceService &Device; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

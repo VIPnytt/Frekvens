@@ -4,7 +4,6 @@
 #include "modules/ServiceModule.h"
 
 #include <array>
-#include <cstdint>
 #include <span>
 #include <vector>
 
@@ -19,7 +18,7 @@ private:
     static constexpr uint8_t frameRate = 60;
 #endif // FRAME_RATE
 
-    enum class Orientation : std::uint8_t
+    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
     {
         deg0,
         deg90,
@@ -108,4 +107,4 @@ public:
     static DisplayService &getInstance();
 };
 
-extern DisplayService &Display;
+extern DisplayService &Display; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

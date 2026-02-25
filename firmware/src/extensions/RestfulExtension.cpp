@@ -8,7 +8,7 @@
 #include <HTTPClient.h>
 #include <vector>
 
-RestfulExtension *Restful = nullptr;
+RestfulExtension *Restful = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 RestfulExtension::RestfulExtension() : ExtensionModule("RESTful") { Restful = this; }
 
@@ -16,7 +16,7 @@ void RestfulExtension::begin()
 {
     WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
     WebServer.http->on(
-        AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServer.onEmpty, nullptr, &onPatch);
+        AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServerService::onEmpty, nullptr, &onPatch);
 }
 
 void RestfulExtension::onGet(AsyncWebServerRequest *request)

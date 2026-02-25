@@ -35,7 +35,7 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern HomeAssistantExtension *HomeAssistant;
+extern HomeAssistantExtension *HomeAssistant; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 namespace HomeAssistantAbbreviations
 {

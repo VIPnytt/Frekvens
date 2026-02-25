@@ -51,6 +51,6 @@ public:
     void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
-extern MessageExtension *Message;
+extern MessageExtension *Message; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MESSAGE

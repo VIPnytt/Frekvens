@@ -9,7 +9,7 @@
 
 #include <Preferences.h>
 
-MicrophoneExtension *Microphone = nullptr;
+MicrophoneExtension *Microphone = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MicrophoneExtension::MicrophoneExtension() : ExtensionModule("Microphone") { Microphone = this; }
 

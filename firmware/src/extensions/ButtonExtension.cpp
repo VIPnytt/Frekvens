@@ -7,7 +7,7 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
-ButtonExtension *Button = nullptr;
+ButtonExtension *Button = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 ButtonExtension::ButtonExtension() : ExtensionModule("Button") { Button = this; }
 

@@ -18,6 +18,6 @@ public:
     void begin() override;
 };
 
-extern WebAppExtension *WebApp;
+extern WebAppExtension *WebApp; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_WEBAPP

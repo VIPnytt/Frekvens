@@ -433,4 +433,4 @@ DisplayService &DisplayService::getInstance()
     return instance;
 }
 
-DisplayService &Display = Display.getInstance();
+DisplayService &Display = DisplayService::getInstance();

@@ -102,4 +102,4 @@ public:
     static ExtensionsService &getInstance();
 };
 
-extern ExtensionsService &Extensions;
+extern ExtensionsService &Extensions; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

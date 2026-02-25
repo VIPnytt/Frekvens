@@ -8,7 +8,7 @@
 
 #include <esp_sntp.h>
 
-RtcExtension *Rtc = nullptr;
+RtcExtension *Rtc = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 RtcExtension::RtcExtension() : ExtensionModule("RTC") { Rtc = this; }
 

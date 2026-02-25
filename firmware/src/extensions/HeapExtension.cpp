@@ -7,7 +7,7 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-HeapExtension *Heap = nullptr;
+HeapExtension *Heap = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 HeapExtension::HeapExtension() : ExtensionModule("Heap") { Heap = this; }
 

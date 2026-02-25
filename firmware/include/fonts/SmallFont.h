@@ -1461,4 +1461,4 @@ public:
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern SmallFont *FontSmall;
+extern SmallFont *FontSmall; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

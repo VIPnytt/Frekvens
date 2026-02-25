@@ -9,7 +9,7 @@
 
 #include <Preferences.h>
 
-PhotocellExtension *Photocell = nullptr;
+PhotocellExtension *Photocell = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 PhotocellExtension::PhotocellExtension() : ExtensionModule("Photocell") { Photocell = this; }
 

@@ -52,4 +52,4 @@ ExtensionsService &ExtensionsService::getInstance()
     return instance;
 }
 
-ExtensionsService &Extensions = Extensions.getInstance();
+ExtensionsService &Extensions = ExtensionsService::getInstance();

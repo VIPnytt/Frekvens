@@ -20,9 +20,9 @@ void ConnectivityService::configure()
 #endif // PIN_SW2
     const std::span<const uint8_t> bundle = certificates();
     esp_crt_bundle_set(bundle.data(), bundle.size());
+    WiFiClass::setHostname(HOSTNAME);
+    WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIPv6();
-    WiFi.setHostname(HOSTNAME);
-    WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
     WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     WiFi.onEvent(&onIPv4, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
@@ -101,7 +101,7 @@ void ConnectivityService::handle()
         {
             transmit();
         }
-        else if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_STA)
+        else if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_STA)
         {
             multi.run();
         }
@@ -153,7 +153,7 @@ void ConnectivityService::initStation()
 void ConnectivityService::initHotspot()
 {
     ESP_LOGV(name, "initializing Wi-Fi hotspot");
-    WiFi.mode(wifi_mode_t::WIFI_MODE_AP);
+    WiFiClass::mode(wifi_mode_t::WIFI_MODE_AP);
     WiFi.softAP(NAME);
     if (!dns)
     {
@@ -169,9 +169,9 @@ void ConnectivityService::initHotspot()
 
 void ConnectivityService::connect(const char *ssid, const char *key)
 {
-    if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
+    if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
-        WiFi.mode(wifi_mode_t::WIFI_MODE_APSTA);
+        WiFiClass::mode(wifi_mode_t::WIFI_MODE_APSTA);
     }
     multi.setStrictMode(true);
     multi.APlistClean();
@@ -246,14 +246,14 @@ void ConnectivityService::onIPv6(WiFiEvent_t event,    // NOLINT(misc-unused-par
 void ConnectivityService::onRoutable()
 {
     Connectivity.routable = true;
-    if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
+    if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
         doc["event"] = "connected";
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
         ESP_LOGD(Connectivity.name, "terminating Wi-Fi hotspot");
         Connectivity.dns.reset();
-        WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
+        WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     }
     if (!Connectivity.mDNS && MDNS.begin(HOSTNAME))
     {
@@ -341,9 +341,9 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 
 std::span<const uint8_t> ConnectivityService::certificates() noexcept
 {
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
     extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
     extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
     return std::span<const uint8_t>(&x509_crt_bundle_start[0],
                                     static_cast<size_t>(&x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]));
@@ -355,4 +355,4 @@ ConnectivityService &ConnectivityService::getInstance()
     return instance;
 }
 
-ConnectivityService &Connectivity = Connectivity.getInstance();
+ConnectivityService &Connectivity = ConnectivityService::getInstance();

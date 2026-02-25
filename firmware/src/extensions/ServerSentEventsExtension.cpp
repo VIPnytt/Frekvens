@@ -5,7 +5,7 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
-ServerSentEventsExtension *ServerSentEvents = nullptr;
+ServerSentEventsExtension *ServerSentEvents = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 ServerSentEventsExtension::ServerSentEventsExtension() : ExtensionModule("Server-Sent Events")
 {

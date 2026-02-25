@@ -1,6 +1,6 @@
 #include "fonts/SmallFont.h"
 
-SmallFont *FontSmall = nullptr;
+SmallFont *FontSmall = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 SmallFont::SmallFont() : FontModule("Small") { FontSmall = this; }
 

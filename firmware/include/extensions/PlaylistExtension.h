@@ -40,6 +40,6 @@ private:
     void transmit();
 };
 
-extern PlaylistExtension *Playlist;
+extern PlaylistExtension *Playlist; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PLAYLIST

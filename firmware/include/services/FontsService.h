@@ -35,4 +35,4 @@ public:
     static FontsService &getInstance();
 };
 
-extern FontsService &Fonts;
+extern FontsService &Fonts; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

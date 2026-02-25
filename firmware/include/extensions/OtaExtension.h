@@ -28,6 +28,6 @@ public:
     void handle() override;
 };
 
-extern OtaExtension *Ota;
+extern OtaExtension *Ota; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_OTA

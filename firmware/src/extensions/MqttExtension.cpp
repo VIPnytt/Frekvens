@@ -8,7 +8,7 @@
 #include <WiFi.h>
 #include <array>
 
-MqttExtension *Mqtt = nullptr;
+MqttExtension *Mqtt = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MqttExtension::MqttExtension() : ExtensionModule("MQTT") { Mqtt = this; }
 

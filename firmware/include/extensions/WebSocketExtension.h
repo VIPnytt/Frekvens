@@ -23,6 +23,6 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern WebSocketExtension *WebSocket;
+extern WebSocketExtension *WebSocket; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_WEBSOCKET

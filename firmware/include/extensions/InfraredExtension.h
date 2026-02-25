@@ -150,6 +150,6 @@ public:
     void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
-extern InfraredExtension *Infrared;
+extern InfraredExtension *Infrared; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_INFRARED

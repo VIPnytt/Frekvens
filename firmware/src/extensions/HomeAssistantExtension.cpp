@@ -12,7 +12,7 @@
 #include <array>
 #include <regex>
 
-HomeAssistantExtension *HomeAssistant = nullptr;
+HomeAssistantExtension *HomeAssistant = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assistant") { HomeAssistant = this; }
 
