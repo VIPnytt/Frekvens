@@ -25,4 +25,4 @@ FontsService &FontsService::getInstance()
     return instance;
 }
 
-FontsService &Fonts = FontsService::getInstance();
+FontsService &Fonts = FontsService::getInstance(); // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

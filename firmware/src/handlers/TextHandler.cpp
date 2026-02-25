@@ -10,7 +10,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
         {
             uint8_t yMax = 0;
             uint8_t yMin = 0;
-            for (uint32_t codepoint; nextCodepoint(codepoint);)
+            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
                 if (!character.bitmap.empty())
@@ -25,7 +25,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
         {
             i = 0;
             width = 0;
-            for (uint32_t codepoint; nextCodepoint(codepoint);)
+            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
                 if (!character.bitmap.empty())
@@ -57,7 +57,7 @@ void TextHandler::draw(uint8_t brightness)
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
 {
     i = 0;
-    for (uint32_t codepoint; nextCodepoint(codepoint);)
+    for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
     {
         FontModule::Symbol character = font->getChar(codepoint);
         const uint8_t _height = character.bitmap.size();

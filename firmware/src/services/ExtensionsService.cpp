@@ -52,4 +52,5 @@ ExtensionsService &ExtensionsService::getInstance()
     return instance;
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ExtensionsService &Extensions = ExtensionsService::getInstance();

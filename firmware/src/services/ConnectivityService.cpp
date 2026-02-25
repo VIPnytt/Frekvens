@@ -355,4 +355,5 @@ ConnectivityService &ConnectivityService::getInstance()
     return instance;
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ConnectivityService &Connectivity = ConnectivityService::getInstance();

@@ -10,7 +10,7 @@ void WebServerService::begin() const { http->onNotFound(&onNotFound); }
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {
 #if EXTENSION_WEBAPP
-    if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP && request->host() != WiFi.softAPIP().toString())
+    if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP && request->host() != WiFi.softAPIP().toString())
     {
         ESP_LOGV(WebServer.name, "redirecting"); // NOLINT(cppcoreguidelines-avoid-do-while)
         request->redirect("http://" + WiFi.softAPIP().toString(), t_http_codes::HTTP_CODE_FOUND);
@@ -32,4 +32,5 @@ WebServerService &WebServerService::getInstance()
     return instance;
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 WebServerService &WebServer = WebServerService::getInstance();

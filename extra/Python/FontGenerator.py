@@ -208,7 +208,7 @@ class FontGenerator:
                     "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                     "};",
                     "",
-                    f"extern {unique}Font *Font{unique};",
+                    f"extern {unique}Font *Font{unique}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
                     "",
                 ]
             )
@@ -226,7 +226,7 @@ class FontGenerator:
                         "// @warning Automatically generated file",
                         "//",
                         "",
-                        f"{unique}Font *Font{unique} = nullptr;",
+                        f"{unique}Font *Font{unique} = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
                         "",
                         f'{unique}Font::{unique}Font() : FontModule("{name}") {{ Font{unique} = this; }}',
                         "",
