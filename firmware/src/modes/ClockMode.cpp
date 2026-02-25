@@ -209,7 +209,7 @@ void ClockMode::setFont(const char *fontName)
                 return;
             }
         }
-        ESP_LOGD(name, "unsupported font %s", fontName);
+        ESP_LOGD(name, "unsupported font %s", fontName); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 

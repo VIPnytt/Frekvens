@@ -41,7 +41,7 @@ void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines
 
 void OtaExtension::onStart()
 {
-    ESP_LOGI(Ota->name, "updating");
+    ESP_LOGI(Ota->name, "updating"); // NOLINT(cppcoreguidelines-avoid-do-while)
     Modes.setActive(false);
     Display.clearFrame();
     TextHandler("U", FontLarge).draw();
@@ -50,7 +50,10 @@ void OtaExtension::onStart()
     timerWrite(Display.timer, 1'000'000 / (1U << 8U)); // 1 fps
 }
 
-void OtaExtension::onEnd() { ESP_LOGI(Ota->name, "complete"); }
+void OtaExtension::onEnd()
+{
+    ESP_LOGI(Ota->name, "complete"); // NOLINT(cppcoreguidelines-avoid-do-while)
+}
 
 #ifndef OTA_KEY
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,

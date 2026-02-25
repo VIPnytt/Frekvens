@@ -52,7 +52,7 @@ void StreamMode::begin()
     if (udp->listen(port))
     {
         udp->onPacket(&onPacket);
-        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port);
+        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 
@@ -68,7 +68,7 @@ void StreamMode::set(uint16_t _port)
         if (udp)
         {
             udp->listen(port);
-            ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port);
+            ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
         transmit();
     }

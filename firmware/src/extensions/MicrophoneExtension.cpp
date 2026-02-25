@@ -114,7 +114,7 @@ void MicrophoneExtension::handle()
                     Device.transmit(doc.as<JsonObjectConst>(), name, false);
                     _lastMillis = lastMillis;
                 }
-                ESP_LOGV(name, "sound, level %d", level);
+                ESP_LOGV(name, "sound, level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
             }
             else if (level > levelMax)
             {
@@ -129,7 +129,7 @@ void MicrophoneExtension::handle()
         else if (detected && millis() - lastMillis > INT8_MAX)
         {
             detected = false;
-            ESP_LOGV(name, "silence, level %d", level);
+            ESP_LOGV(name, "silence, level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -150,7 +150,7 @@ void MicrophoneExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 

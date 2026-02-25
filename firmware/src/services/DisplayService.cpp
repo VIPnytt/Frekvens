@@ -92,22 +92,20 @@ void DisplayService::handle()
 
 IRAM_ATTR void DisplayService::onTimer()
 {
-    static DRAM_ATTR uint8_t filter = 0;
     static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
-    const uint8_t threshold = filter;
-    const uint8_t *__restrict__ frame_ptr = Display.frame.data();
+    static DRAM_ATTR uint8_t threshold = 0;
     size_t pixel = 0;
     for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
     {
         uint8_t byte = 0;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x80U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x40U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x20U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x10U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x08U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x04U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x02U : 0U;
-        byte |= (frame_ptr[pixel++] > threshold) ? 0x01U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x80U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x40U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x20U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x10U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x08U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x04U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x02U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x01U : 0U;
         bytes[i] = byte;
     }
     if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
@@ -115,11 +113,11 @@ IRAM_ATTR void DisplayService::onTimer()
         uint8_t byte = 0;
         for (size_t remainder = 0; remainder < GRID_COLUMNS * GRID_ROWS % 8; ++remainder)
         {
-            byte |= (frame_ptr[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
+            byte |= (Display.frame[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
         }
         bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
     }
-    filter = static_cast<uint8_t>(threshold + 1);
+    threshold += 1;
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
     SPI.transferBytes(bytes.data(), nullptr, bytes.size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
@@ -348,7 +346,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     const float yRatio =
         static_cast<float>(2 * PITCH_VERTICAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
 #else
-    const bool rotated = (orientation % 2) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) % 2) != 0;
     const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                          (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
     const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /

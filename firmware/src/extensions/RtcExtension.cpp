@@ -28,12 +28,12 @@ void RtcExtension::configure()
             struct timeval tv{};
             tv.tv_sec = rtc.GetDateTime().Unix64Time();
             settimeofday(&tv, nullptr);
-            ESP_LOGD(name, "sync");
+            ESP_LOGD(name, "sync"); // NOLINT(cppcoreguidelines-pro-type-vararg)
         }
     }
     else
     {
-        ESP_LOGW(name, "out of sync");
+        ESP_LOGW(name, "out of sync"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
 
@@ -111,7 +111,7 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
     RtcDateTime dt = RtcDateTime(
         local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
     Rtc->rtc.SetDateTime(dt);
-    ESP_LOGV(Rtc->name, "NTP sync");
+    ESP_LOGV(Rtc->name, "NTP sync"); // NOLINT(cppcoreguidelines-pro-type-vararg)
 }
 
 #endif // EXTENSION_RTC

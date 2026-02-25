@@ -40,7 +40,7 @@ void MqttExtension::handle()
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();
-            ESP_LOGD(Mqtt->name, "queue dropped");
+            ESP_LOGD(Mqtt->name, "queue dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -58,7 +58,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent)
 {
-    ESP_LOGD(Mqtt->name, "connected");
+    ESP_LOGD(Mqtt->name, "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     if (!sessionPresent ||
         (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
@@ -85,8 +85,10 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
+    // NOLINTBEGIN(cppcoreguidelines-avoid-do-while)
     ESP_LOGD(Mqtt->name, "disconnected");
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
+    // NOLINTEND(cppcoreguidelines-avoid-do-while)
 }
 
 void MqttExtension::onTransmit(JsonObjectConst payload, const char *source)

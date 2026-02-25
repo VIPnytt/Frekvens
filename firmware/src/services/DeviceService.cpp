@@ -19,8 +19,8 @@ void DeviceService::begin()
 {
     Serial.begin(MONITOR_SPEED);
     vTaskDelay(INT8_MAX);
-    ESP_LOGI(name, "Frekvens " VERSION);
-    ESP_LOGD(name, MANUFACTURER " " MODEL);
+    ESP_LOGI(name, "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD(name, MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-avoid-do-while)
 
 #if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
@@ -104,7 +104,7 @@ void DeviceService::begin()
     Modes.configure();
 
     operational = true;
-    ESP_LOGV(name, "operational");
+    ESP_LOGV(name, "operational"); // NOLINT(cppcoreguidelines-avoid-do-while)
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
@@ -163,7 +163,7 @@ void DeviceService::begin()
 
     transmit();
 
-    ESP_LOGD(name, "ready");
+    ESP_LOGD(name, "ready"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void DeviceService::handle()
@@ -179,8 +179,8 @@ void DeviceService::handle()
 
 void DeviceService::setPower(bool power)
 {
-    ESP_LOGI(name, "%s...", power ? "rebooting" : "powering off");
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    ESP_LOGI(name, "%s...", power ? "rebooting" : "powering off"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    JsonDocument doc;                                              // NOLINT(misc-const-correctness)
     doc["event"] = power ? "reboot" : "power";
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
@@ -202,7 +202,7 @@ void DeviceService::setPower(bool power)
 
 void DeviceService::restore()
 {
-    ESP_LOGW(name, "restoring...");
+    ESP_LOGW(name, "restoring..."); // NOLINT(cppcoreguidelines-avoid-do-while)
     Modes.setActive(false);
     Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
@@ -251,7 +251,7 @@ void DeviceService::transmit(JsonObjectConst payload, const char *source, bool r
     }
     if (operational)
     {
-        ESP_LOGV(source, "transmitting");
+        ESP_LOGV(source, "transmitting"); // NOLINT(cppcoreguidelines-avoid-do-while)
         for (ExtensionModule *extension : Extensions.getAll())
         {
             extension->onTransmit(payload, source);
@@ -263,7 +263,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
 {
     if (operational)
     {
-        ESP_LOGV(source, "receiving");
+        ESP_LOGV(source, "receiving"); // NOLINT(cppcoreguidelines-avoid-do-while)
         const std::array<ServiceModule *, 4> services{
             &Connectivity,
             &Device,

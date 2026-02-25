@@ -141,13 +141,13 @@ void HomeThermometerMode::setTemperature(const char *where, int16_t temperature)
     pending = true;
     transmit();
 #if TEMPERATURE_KELVIN
-    ESP_LOGD(name, "%s %d°K", where, temperature);
+    ESP_LOGD(name, "%s %d°K", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #elif TEMPERATURE_CELSIUS
-    ESP_LOGD(name, "%s %d°C", where, temperature);
+    ESP_LOGD(name, "%s %d°C", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #elif TEMPERATURE_FAHRENHEIT
-    ESP_LOGD(name, "%s %d°F", where, temperature);
+    ESP_LOGD(name, "%s %d°F", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #else
-    ESP_LOGD(name, "%s %d°", where, temperature);
+    ESP_LOGD(name, "%s %d°", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #endif // TEMPERATURE_KELVIN
 }
 
