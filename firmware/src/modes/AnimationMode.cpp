@@ -56,7 +56,7 @@ void AnimationMode::setFrame(uint8_t index, std::span<const uint8_t> frame)
     Storage.end();
     this->index = 0;
     pending = true;
-    ESP_LOGV(name, "frame #%d saved", index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGV(name, "frame #%d saved", index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void AnimationMode::setFrames(uint8_t count)

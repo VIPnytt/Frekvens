@@ -20,8 +20,10 @@ Checks: >
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
   -portability-avoid-pragma-once,
+  -readability-convert-member-functions-to-static,
   -readability-identifier-length,
-  -readability-magic-numbers
+  -readability-magic-numbers,
+  -readability-misplaced-array-index
 CheckOptions:
   - key: misc-include-cleaner.MissingIncludes
     value: false

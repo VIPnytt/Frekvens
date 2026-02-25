@@ -281,7 +281,7 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
         for (int16_t i = 0; i < n; ++i)
         {
             JsonObject _scan = scan.add<JsonObject>();
-            _scan["encrypted"] = WiFi.encryptionType(i) == wifi_auth_mode_t::WIFI_AUTH_OPEN;
+            _scan["encrypted"] = WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN;
             _scan["rssi"] = WiFi.RSSI(i);
             _scan["ssid"] = WiFi.SSID(i);
         }
