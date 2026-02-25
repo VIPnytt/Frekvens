@@ -12,7 +12,7 @@ void DrawMode::begin()
     load(true);
     if (!render)
     {
-        for (const uint8_t pixel : drawing)
+        for (const uint8_t pixel : frame)
         {
             if (pixel > 0)
             {
@@ -28,7 +28,7 @@ void DrawMode::handle()
 {
     if (render)
     {
-        Display.setFrame(drawing);
+        Display.setFrame(frame);
         render = false;
     }
     else if (pending)
@@ -47,13 +47,13 @@ void DrawMode::load(bool cache)
     const char *const key = cache ? "cache" : "saved";
     if (cache && Storage.isKey("cache"))
     {
-        Storage.getBytes(key, drawing.data(), drawing.size());
+        Storage.getBytes(key, frame.data(), frame.size());
         pending = true;
         render = true;
     }
     else if (Storage.isKey("saved"))
     {
-        Storage.putBytes(key, drawing.data(), drawing.size());
+        Storage.putBytes(key, frame.data(), frame.size());
         pending = true;
         render = true;
     }
@@ -62,13 +62,13 @@ void DrawMode::load(bool cache)
 
 void DrawMode::save(bool cache)
 {
-    for (const uint8_t pixel : drawing)
+    for (const uint8_t pixel : frame)
     {
         if (pixel > 0)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putBytes(cache ? "cache" : "saved", drawing.data(), drawing.size());
+            Storage.putBytes(cache ? "cache" : "saved", frame.data(), frame.size());
             Storage.end();
             pending = true;
             if (!cache)
@@ -84,7 +84,7 @@ void DrawMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     JsonArray frame = doc["frame"].to<JsonArray>();
-    for (const uint8_t pixel : drawing)
+    for (const uint8_t pixel : frame)
     {
         frame.add(pixel);
     }
@@ -100,7 +100,7 @@ void DrawMode::onReceive(JsonObjectConst payload,
         // Clear
         if (strcmp(action, "clear") == 0)
         {
-            drawing.fill(0);
+            frame.fill(0);
             render = true;
         }
         // Load
@@ -120,16 +120,15 @@ void DrawMode::onReceive(JsonObjectConst payload,
         }
     }
     // Frame
-    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == drawing.size())
+    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == frame.size())
     {
-        size_t i = 0;
-        for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
+        const JsonArrayConst _frame = payload["frame"].as<JsonArrayConst>();
+        for (size_t i = 0; i < frame.size(); ++i)
         {
-            if (pixel.is<uint8_t>())
+            if (_frame[i].is<uint8_t>())
             {
-                drawing[i] = pixel.as<uint8_t>();
+                frame[i] = _frame[i].as<uint8_t>();
             }
-            ++i;
         }
         render = true;
     }
@@ -140,7 +139,7 @@ void DrawMode::onReceive(JsonObjectConst payload,
         {
             if (pixel["x"].is<uint8_t>() && pixel["y"].is<uint8_t>() && pixel["brightness"].is<uint8_t>())
             {
-                drawing[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] =
+                frame[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] =
                     pixel["brightness"].as<uint8_t>();
             }
         }

@@ -159,11 +159,14 @@ void ModesService::setMode(ModeModule *mode, bool power)
     std::vector<std::unique_ptr<TextHandler>> lines;
     for (const std::string &word : words)
     {
-        height += lines.emplace_back(std::make_unique<TextHandler>(word, FontMicro))->getHeight();
-        if (height >= GRID_ROWS)
+        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, FontMicro);
+        const uint8_t lineHeight = handler->getHeight();
+        if (height + lineHeight >= GRID_ROWS)
         {
             break;
         }
+        height += lineHeight;
+        lines.emplace_back(std::move(handler));
     }
     const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
     uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);

@@ -13,7 +13,7 @@ private:
     bool pending = false;
     bool render = false;
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> drawing{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
     void load(bool cache = false);
     void save(bool cache = false);

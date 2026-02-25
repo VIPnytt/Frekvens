@@ -94,32 +94,32 @@ IRAM_ATTR void DisplayService::onTimer()
 {
     static DRAM_ATTR uint8_t filter = 0;
     static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
-    const uint8_t thr = filter;
-    const uint8_t *__restrict__ p = Display.frame.data();
-    size_t idx = 0;
-    for (size_t b = 0; b < GRID_COLUMNS * GRID_ROWS / 8; ++b)
+    const uint8_t threshold = filter;
+    const uint8_t *__restrict__ frame_ptr = Display.frame.data();
+    size_t pixel = 0;
+    for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
     {
-        uint8_t out = 0;
-        out |= (p[idx++] > thr) ? 0x80 : 0;
-        out |= (p[idx++] > thr) ? 0x40 : 0;
-        out |= (p[idx++] > thr) ? 0x20 : 0;
-        out |= (p[idx++] > thr) ? 0x10 : 0;
-        out |= (p[idx++] > thr) ? 0x08 : 0;
-        out |= (p[idx++] > thr) ? 0x04 : 0;
-        out |= (p[idx++] > thr) ? 0x02 : 0;
-        out |= (p[idx++] > thr) ? 0x01 : 0;
-        bytes[b] = out;
+        uint8_t byte = 0;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x80U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x40U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x20U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x10U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x08U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x04U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x02U : 0U;
+        byte |= (frame_ptr[pixel++] > threshold) ? 0x01U : 0U;
+        bytes[i] = byte;
     }
     if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
     {
-        uint8_t out = 0;
-        for (size_t k = 0; k < GRID_COLUMNS * GRID_ROWS % 8; ++k)
+        uint8_t byte = 0;
+        for (size_t remainder = 0; remainder < GRID_COLUMNS * GRID_ROWS % 8; ++remainder)
         {
-            out |= (p[idx++] > thr) ? (0x80U >> k) : 0;
+            byte |= (frame_ptr[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
         }
-        bytes[GRID_COLUMNS * GRID_ROWS / 8] = out;
+        bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
     }
-    filter = static_cast<uint8_t>(thr + 1);
+    filter = static_cast<uint8_t>(threshold + 1);
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
     SPI.transferBytes(bytes.data(), nullptr, bytes.size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);

@@ -27,7 +27,7 @@ void MetaballsMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
 #if PITCH_HORIZONTAL != PITCH_VERTICAL
-        const bool rotated = (Display.getOrientation() % 2) != 0;
+        const bool rotated = (static_cast<uint8_t>(Display.getOrientation()) % 2) != 0;
         const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                              static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
         const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /

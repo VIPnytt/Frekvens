@@ -5,7 +5,6 @@ Checks: >
   -bugprone-easily-swappable-parameters,
   -cert-dcl58-cpp,
   -cert-err58-cpp,
-  -cppcoreguidelines-avoid-do-while,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-init-variables,

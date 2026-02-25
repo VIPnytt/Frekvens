@@ -140,16 +140,11 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
 uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character) const
 {
     uint8_t msbMax = 0;
-    for (uint8_t bitset : character.bitmap)
+    for (const uint8_t bitset : character.bitmap)
     {
-        uint8_t msb = 0;
-        while (bitset >>= 1)
+        if (bitset != 0)
         {
-            ++msb;
-        }
-        if (msb > msbMax)
-        {
-            msbMax = msb;
+            msbMax = max(msbMax, static_cast<uint8_t>(std::bit_width(bitset) - 1));
         }
     }
     return msbMax;

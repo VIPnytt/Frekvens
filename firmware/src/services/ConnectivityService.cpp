@@ -341,10 +341,10 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 
 std::span<const uint8_t> ConnectivityService::certificates() noexcept
 {
-    extern const uint8_t x509_crt_bundle_start[]                            // NOLINT(cppcoreguidelines-avoid-c-arrays)
-        asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start"); // NOLINT(hicpp-no-assembler)
-    extern const uint8_t x509_crt_bundle_end[]                              // NOLINT(cppcoreguidelines-avoid-c-arrays)
-        asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");   // NOLINT(hicpp-no-assembler)
+    // NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays,hicpp-no-assembler)
+    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+    // NOLINTEND(cppcoreguidelines-avoid-c-arrays,hicpp-no-assembler)
     return std::span<const uint8_t>(&x509_crt_bundle_start[0],
                                     static_cast<size_t>(&x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]));
 }

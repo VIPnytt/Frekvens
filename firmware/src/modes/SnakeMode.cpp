@@ -138,7 +138,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step = dot;
+        Pixel step{dot};
         while (from.at(step) != start)
         {
             step = from.at(step);
