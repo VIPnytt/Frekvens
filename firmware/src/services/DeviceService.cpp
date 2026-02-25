@@ -327,4 +327,5 @@ DeviceService &DeviceService::getInstance()
     return instance;
 }
 
-DeviceService &Device = DeviceService::getInstance(); // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+DeviceService &Device = DeviceService::getInstance();

@@ -32,5 +32,5 @@ WebServerService &WebServerService::getInstance()
     return instance;
 }
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
 WebServerService &WebServer = WebServerService::getInstance();

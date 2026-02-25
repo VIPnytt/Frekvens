@@ -433,4 +433,5 @@ DisplayService &DisplayService::getInstance()
     return instance;
 }
 
-DisplayService &Display = DisplayService::getInstance(); // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+DisplayService &Display = DisplayService::getInstance();

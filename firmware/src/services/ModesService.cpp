@@ -255,4 +255,5 @@ ModesService &ModesService::getInstance()
     return instance;
 }
 
-ModesService &Modes = ModesService::getInstance(); // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+ModesService &Modes = ModesService::getInstance();

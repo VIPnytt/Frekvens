@@ -25,4 +25,5 @@ FontsService &FontsService::getInstance()
     return instance;
 }
 
-FontsService &Fonts = FontsService::getInstance(); // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+FontsService &Fonts = FontsService::getInstance();
