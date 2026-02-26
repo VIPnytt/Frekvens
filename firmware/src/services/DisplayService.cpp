@@ -374,13 +374,33 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill,
                                    uint8_t brightness)
 {
-    for (uint8_t x = minX; x <= maxX; ++x)
+    if (fill)
     {
-        for (uint8_t y = minY; y <= maxY; ++y)
+        for (uint16_t x = minX; x <= maxX; ++x)
         {
-            if (fill || x == minX || y == minY || x == maxX || y == maxY)
+            for (uint16_t y = minY; y <= maxY; ++y)
             {
-                setPixel(x, y, brightness);
+                setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
+            }
+        }
+        return;
+    }
+    for (uint16_t x = minX; x <= maxX; ++x)
+    {
+        setPixel(static_cast<uint8_t>(x), minY, brightness);
+        if (maxY != minY)
+        {
+            setPixel(static_cast<uint8_t>(x), maxY, brightness);
+        }
+    }
+    if (maxY > minY + 1)
+    {
+        for (uint16_t y = static_cast<uint16_t>(minY) + 1; y <= static_cast<uint16_t>(maxY) - 1; ++y)
+        {
+            setPixel(minX, static_cast<uint8_t>(y), brightness);
+            if (maxX != minX)
+            {
+                setPixel(maxX, static_cast<uint8_t>(y), brightness);
             }
         }
     }

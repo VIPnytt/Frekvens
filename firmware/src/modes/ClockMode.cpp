@@ -23,8 +23,8 @@ void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
     static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1U;    // left edge (y GRID_ROWS-2..0)
     // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
 
-    uint8_t x;
-    uint8_t y;
+    uint8_t x = 0;
+    uint8_t y = 0;
 
     if (sec < SEG1)
     {
@@ -137,10 +137,10 @@ void ClockMode::drawDigits()
 {
     Display.clearFrame();
 
-    TextHandler h1(std::to_string(hour / 10), font);
-    TextHandler h2(std::to_string(hour % 10), font);
-    TextHandler m1(std::to_string(minute / 10), font);
-    TextHandler m2(std::to_string(minute % 10), font);
+    TextHandler hh1(std::to_string(hour / 10), font);
+    TextHandler hh2(std::to_string(hour % 10), font);
+    TextHandler mm1(std::to_string(minute / 10), font);
+    TextHandler mm2(std::to_string(minute % 10), font);
 
     // Small font: digits flush to the center gap (no cell padding).
     // Large font: digits centred in a cellSize-wide cell on each side of the gap.
@@ -149,10 +149,10 @@ void ClockMode::drawDigits()
 
     auto xPad = [this](uint8_t w) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - w) / 2; };
 
-    h1.draw((GRID_COLUMNS / 2) - 1 - xPad(h1.getWidth()) - h1.getWidth(), yTop);
-    h2.draw((GRID_COLUMNS / 2) + 1 + xPad(h2.getWidth()), yTop);
-    m1.draw((GRID_COLUMNS / 2) - 1 - xPad(m1.getWidth()) - m1.getWidth(), yBot);
-    m2.draw((GRID_COLUMNS / 2) + 1 + xPad(m2.getWidth()), yBot);
+    hh1.draw((GRID_COLUMNS / 2) - 1 - xPad(hh1.getWidth()) - hh1.getWidth(), yTop);
+    hh2.draw((GRID_COLUMNS / 2) + 1 + xPad(hh2.getWidth()), yTop);
+    mm1.draw((GRID_COLUMNS / 2) - 1 - xPad(mm1.getWidth()) - mm1.getWidth(), yBot);
+    mm2.draw((GRID_COLUMNS / 2) + 1 + xPad(mm2.getWidth()), yBot);
 }
 
 void ClockMode::handle()

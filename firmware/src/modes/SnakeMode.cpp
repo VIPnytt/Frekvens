@@ -199,7 +199,7 @@ void SnakeMode::move()
         else
         {
             lastMillis = millis();
-            n = 0;
+            blinkCount = 0;
             stage = 2;
         }
         lastMillis = millis();
@@ -212,9 +212,9 @@ void SnakeMode::blink()
     {
         for (const Pixel &piece : snake)
         {
-            Display.setPixel(piece.x, piece.y, n % 2 == 0 ? 0 : UINT8_MAX);
+            Display.setPixel(piece.x, piece.y, blinkCount % 2 == 0 ? 0 : UINT8_MAX);
         }
-        if (++n >= 6)
+        if (++blinkCount >= 6)
         {
             stage = 3;
         }

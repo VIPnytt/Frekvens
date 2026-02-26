@@ -1,5 +1,6 @@
 Checks: >
   *,
+  -altera-id-dependent-backward-branch,
   -altera-struct-pack-align,
   -altera-unroll-loops,
   -cppcoreguidelines-avoid-magic-numbers,
@@ -25,13 +26,13 @@ Checks: >
   -readability-misplaced-array-index
 CheckOptions:
   - key: bugprone-easily-swappable-parameters.IgnoredParameterNames
-    value: x;y
+    value: index;len;total;x;y
   - key: cppcoreguidelines-macro-usage.CheckCapsOnly
     value: true
   - key: misc-include-cleaner.MissingIncludes
     value: false
   - key: readability-identifier-length.IgnoredParameterNames
-    value: ^(x|y)$
+    value: ^(tv|x|y)$
   - key: readability-identifier-length.IgnoredVariableNames
     value: ^(id|tv|x|y)$
   - key: readability-identifier-length.IgnoredLoopCounterNames

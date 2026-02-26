@@ -41,7 +41,7 @@ void MessageExtension::configure()
     }
     {
         const std::string id{std::string(name).append("_notify")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;;
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"message":"{{value}}"})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::name].set("");
@@ -51,7 +51,7 @@ void MessageExtension::configure()
     }
     {
         const std::string id{std::string(name).append("_repeat")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;;
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template] = R"({"repeat":"{{value}}"})";
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);

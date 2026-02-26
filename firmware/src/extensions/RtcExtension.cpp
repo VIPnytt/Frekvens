@@ -45,7 +45,7 @@ void RtcExtension::configure()
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
         const std::string id{std::string(name).append("_temperature")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;;;
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::device_class].set("temperature");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);

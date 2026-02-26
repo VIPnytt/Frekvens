@@ -63,15 +63,14 @@ void AnimationMode::setFrames(uint8_t count)
 {
     Preferences Storage;
     Storage.begin(name);
-    char key[4];
-    for (uint8_t _index = count; _index >= 2; ++_index)
+    for (uint8_t i = count; i >= 2; ++i)
     {
-        snprintf(key, sizeof(key), "%u", static_cast<unsigned>(_index));
-        if (!Storage.isKey(key))
+        const std::string key = std::to_string(i);
+        if (!Storage.isKey(key.c_str()))
         {
             break;
         }
-        Storage.remove(key);
+        Storage.remove(key.c_str());
     }
     Storage.end();
 }

@@ -29,7 +29,7 @@ void MicrophoneExtension::configure()
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
         const std::string id{std::string(name).append("_active")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
