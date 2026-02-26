@@ -65,7 +65,7 @@ jobs:
           mv DejaVuSansFont.h firmware/include/fonts
 
           sed -i '/^#pragma once$/a\#include "fonts/DejaVuSansFont.h"' firmware/include/services/FontsService.h
-          sed -i '/^    const std::vector<FontModule \*> modules = {$/a\        new DejaVuSansFont(),' firmware/include/services/FontsService.h
+          sed -i '/^    const std::vector<FontModule \*> modules{$/a\        new DejaVuSansFont(),' firmware/include/services/FontsService.h
 
       - name: PlatformIO build
         run: |

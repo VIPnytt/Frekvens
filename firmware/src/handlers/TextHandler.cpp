@@ -97,7 +97,8 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte = static_cast<uint8_t>(text[i++]);
+    const uint8_t byte = static_cast<uint8_t>(text[i]);
+    i++;
     if (byte <= 0x7F)
     {
         buffer = byte;
@@ -126,7 +127,8 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     }
     while (bytes-- && i < text.length())
     {
-        const uint8_t cont = text[i++];
+        const uint8_t cont = text[i];
+        i++;
         if ((cont & 0xC0U) != 0x80U)
         {
             buffer = 0xFFFDU;

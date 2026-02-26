@@ -14,7 +14,7 @@
 
 #include <Preferences.h>
 
-void ClockMode::borderPixel(uint8_t sec, uint8_t brightness)
+void ClockMode::borderPixel(uint8_t sec, uint8_t brightness) // NOLINT(bugprone-easily-swappable-parameters)
 {
     // Segment boundaries (number of steps in each segment)
     static constexpr uint8_t SEG1 = GRID_COLUMNS / 2U;        // top-right half
