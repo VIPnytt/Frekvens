@@ -107,50 +107,50 @@ void DeviceService::begin()
     ESP_LOGV(name, "operational"); // NOLINT(cppcoreguidelines-avoid-do-while)
 
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_reboot");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::device_class] = "restart";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::name] = "Reboot";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_press] = "reboot";
-        component[HomeAssistantAbbreviations::platform] = "button";
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        const std::string id{std::string(name).append("_reboot")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::device_class].set("restart");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::name].set("Reboot");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_press].set("reboot");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
     }
     {
-        const std::string id = std::string(name).append("_power");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"action":"{{value}}"})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:power";
-        component[HomeAssistantAbbreviations::name] = "Power off";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_press] = "power";
-        component[HomeAssistantAbbreviations::platform] = "button";
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
+        const std::string id{std::string(name).append("_power")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:power");
+        component[HomeAssistantAbbreviations::name].set("Power off");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_press].set("power");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
     }
     {
-        const std::string id = std::string(name).append("_temperature");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::device_class] = "temperature";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "diagnostic";
-        component[HomeAssistantAbbreviations::expire_after] = UINT8_MAX;
-        component[HomeAssistantAbbreviations::force_update] = true;
-        component[HomeAssistantAbbreviations::name] = "Internal temperature";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "sensor";
-        component[HomeAssistantAbbreviations::state_class] = "measurement";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::unit_of_measurement] = "°C";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.temperature}}";
+        const std::string id{std::string(name).append("_temperature")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("temperature");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set("Internal temperature");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 

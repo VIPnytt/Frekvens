@@ -47,39 +47,43 @@ void AnimationMode::handle()
     }
 }
 
-void AnimationMode::setFrame(uint8_t index, std::span<const uint8_t> frame)
+void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2);
     Preferences Storage;
     Storage.begin(name);
-    Storage.putBytes(std::to_string(index).c_str(), frame.data(), frame.size());
+    Storage.putBytes(std::to_string(_index).c_str(), frame.data(), frame.size());
     Storage.end();
     this->index = 0;
     pending = true;
-    ESP_LOGV(name, "frame #%d saved", index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name, "frame #%d saved", _index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void AnimationMode::setFrames(uint8_t count)
 {
     Preferences Storage;
     Storage.begin(name);
-    uint8_t i = count;
-    while (i > 1 && Storage.isKey(std::to_string(i).c_str()))
+    char key[4];
+    for (uint8_t _index = count; _index >= 2; ++_index)
     {
-        Storage.remove(std::to_string(i).c_str());
-        ++i;
+        snprintf(key, sizeof(key), "%u", static_cast<unsigned>(_index));
+        if (!Storage.isKey(key))
+        {
+            break;
+        }
+        Storage.remove(key);
     }
     Storage.end();
 }
 
-void AnimationMode::setInterval(uint16_t interval)
+void AnimationMode::setInterval(uint16_t _interval)
 {
-    if (interval != this->interval)
+    if (_interval != interval)
     {
-        this->interval = interval;
+        interval = _interval;
         Preferences Storage;
         Storage.begin(name);
-        Storage.putUShort("interval", this->interval);
+        Storage.putUShort("interval", interval);
         Storage.end();
     }
 }
@@ -88,7 +92,7 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["interval"].set(interval);
-    JsonArray _frame = doc["frame"].to<JsonArray>();
+    JsonArray _frame{doc["frame"].to<JsonArray>()};
     for (uint16_t i = 0; i < frame.size(); ++i)
     {
         _frame.add(frame[i]);

@@ -26,52 +26,52 @@ void MicrophoneExtension::configure()
     Storage.end();
 
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
     {
-        const std::string id = std::string(name).append("_sound");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::automation_type] = "trigger";
-        component[HomeAssistantAbbreviations::payload] = "sound";
-        component[HomeAssistantAbbreviations::platform] = "device_automation";
-        component[HomeAssistantAbbreviations::subtype] = name;
-        component[HomeAssistantAbbreviations::topic] = topic;
-        component[HomeAssistantAbbreviations::type] = "sound detected";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.event}}";
+        const std::string id{std::string(name).append("_sound")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::automation_type].set("trigger");
+        component[HomeAssistantAbbreviations::payload].set("sound");
+        component[HomeAssistantAbbreviations::platform].set("device_automation");
+        component[HomeAssistantAbbreviations::subtype].set(name);
+        component[HomeAssistantAbbreviations::topic].set(topic);
+        component[HomeAssistantAbbreviations::type].set("sound detected");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.event}}");
     }
     {
-        const std::string id = std::string(name).append("_threshold");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        const std::string id{std::string(name).append("_threshold")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template] = R"({"threshold":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
-        component[HomeAssistantAbbreviations::max] = levelMax;
-        component[HomeAssistantAbbreviations::min] = 1;
-        component[HomeAssistantAbbreviations::mode] = "slider";
-        component[HomeAssistantAbbreviations::name] = "Threshold";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "number";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.threshold}}";
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
+        component[HomeAssistantAbbreviations::max].set(levelMax);
+        component[HomeAssistantAbbreviations::min].set(1);
+        component[HomeAssistantAbbreviations::mode].set("slider");
+        component[HomeAssistantAbbreviations::name].set("Threshold");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("number");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.threshold}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }

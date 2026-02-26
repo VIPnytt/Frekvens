@@ -25,7 +25,7 @@ const std::vector<ExtensionModule *> &ExtensionsService::getAll() const { return
 void ExtensionsService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    JsonArray list = doc["list"].to<JsonArray>();
+    JsonArray list{doc["list"].to<JsonArray>()};
     for (const ExtensionModule *extension : modules)
     {
         list.add(extension->name);

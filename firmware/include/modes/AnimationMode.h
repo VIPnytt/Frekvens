@@ -18,9 +18,9 @@ private:
 
     unsigned long lastMillis = 0;
 
-    void setFrame(uint8_t index, std::span<const uint8_t> frame);
+    void setFrame(uint8_t _index, std::span<const uint8_t> frame);
     void setFrames(uint8_t count);
-    void setInterval(uint16_t interval);
+    void setInterval(uint16_t _interval);
 
     void transmit(uint8_t index, std::span<const uint8_t> frame);
 

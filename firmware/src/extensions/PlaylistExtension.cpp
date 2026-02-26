@@ -40,26 +40,26 @@ void PlaylistExtension::configure()
         Storage.end();
     }
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
-        component[HomeAssistantAbbreviations::json_attributes_template] =
-            "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}";
-        component[HomeAssistantAbbreviations::json_attributes_topic] = topic;
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};;
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
+        component[HomeAssistantAbbreviations::json_attributes_template].set(
+            "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}");
+        component[HomeAssistantAbbreviations::json_attributes_topic].set(topic);
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -127,7 +127,7 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     setActive(false);
     playlist.clear();
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    JsonArray items = doc.to<JsonArray>();
+    JsonArray items{doc.to<JsonArray>()};
     for (const Mode mode : modes)
     {
         JsonObject item;
@@ -150,10 +150,10 @@ void PlaylistExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"].set(active);
-    JsonArray _playlist = doc["playlist"].to<JsonArray>();
+    JsonArray _playlist{doc["playlist"].to<JsonArray>()};
     for (const PlaylistExtension::Mode &mode : playlist)
     {
-        JsonObject _item = _playlist.add<JsonObject>();
+        JsonObject _item{_playlist.add<JsonObject>()};
         _item["duration"].set(mode.duration);
         _item["mode"].set(mode.mode);
     }

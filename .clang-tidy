@@ -15,6 +15,7 @@ Checks: >
   -llvmlibc-callee-namespace,
   -llvmlibc-implementation-in-namespace,
   -llvmlibc-inline-function-decl,
+  -misc-use-internal-linkage,
   -modernize-macro-to-enum,
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
@@ -29,10 +30,10 @@ CheckOptions:
     value: true
   - key: misc-include-cleaner.MissingIncludes
     value: false
-  - key: misc-use-internal-linkage.AnalyzeVariables
-    value: false
   - key: readability-identifier-length.IgnoredParameterNames
     value: ^(x|y)$
   - key: readability-identifier-length.IgnoredVariableNames
-    value: ^(id|x|y)$
+    value: ^(id|tv|x|y)$
+  - key: readability-identifier-length.IgnoredLoopCounterNames
+    value: ^(i|x|y)$
 FormatStyle: file

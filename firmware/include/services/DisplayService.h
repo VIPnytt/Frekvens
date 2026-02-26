@@ -29,7 +29,7 @@ private:
     inline static const uint8_t depth =
         min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
-    static constexpr std::array<uint16_t, 12> hi{
+    static constexpr std::array<uint16_t, 12> splash{
         0b1000001001,
         0b1000000001,
         0b1110001001,

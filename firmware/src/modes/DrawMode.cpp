@@ -83,7 +83,7 @@ void DrawMode::save(bool cache)
 void DrawMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    JsonArray frame = doc["frame"].to<JsonArray>();
+    JsonArray frame{doc["frame"].to<JsonArray>()};
     for (const uint8_t pixel : frame)
     {
         frame.add(pixel);

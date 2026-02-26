@@ -68,22 +68,22 @@ void ConnectivityService::configure()
 void ConnectivityService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_rssi");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::device_class] = "signal_strength";
-        component[HomeAssistantAbbreviations::entity_category] = "diagnostic";
-        component[HomeAssistantAbbreviations::expire_after] = UINT8_MAX;
-        component[HomeAssistantAbbreviations::force_update] = true;
-        component[HomeAssistantAbbreviations::name] = "Wi-Fi signal";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "sensor";
-        component[HomeAssistantAbbreviations::state_class] = "measurement";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::unit_of_measurement] = "dBm";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.rssi}}";
+        const std::string id{std::string(name).append("_rssi")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("signal_strength");
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("dBm");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -273,14 +273,14 @@ void ConnectivityService::onRoutable()
 void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
                                  WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
-    const int16_t n = WiFi.scanComplete();
-    if (n > 0)
+    const int16_t count = WiFi.scanComplete();
+    if (count > 0)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        JsonArray scan = doc["scan"].to<JsonArray>();
-        for (int16_t i = 0; i < n; ++i)
+        JsonArray scan{doc["scan"].to<JsonArray>()};
+        for (int16_t i = 0; i < count; ++i)
         {
-            JsonObject _scan = scan.add<JsonObject>();
+            JsonObject _scan{scan.add<JsonObject>()};
             _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
             _scan["rssi"].set(WiFi.RSSI(i));
             _scan["ssid"].set(WiFi.SSID(i));
@@ -306,7 +306,7 @@ void ConnectivityService::transmit()
             JsonDocument _saved; // NOLINT(misc-const-correctness)
             if (!deserializeJson(_saved, buf.data(), len))
             {
-                JsonArray saved = doc["saved"].to<JsonArray>();
+                JsonArray saved{doc["saved"].to<JsonArray>()};
                 for (const JsonPairConst pair : _saved.as<JsonObjectConst>())
                 {
                     saved.add(pair.key());

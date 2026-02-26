@@ -24,24 +24,24 @@ void InfraredExtension::configure()
     IrReceiver.setReceivePin(PIN_IR);
 
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:remote-tv";
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:remote-tv");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -66,20 +66,20 @@ void InfraredExtension::handle()
 
 void InfraredExtension::parse() // NOLINT(readability-make-member-function-const)
 {
-    const unsigned long t = millis() - lastMillis;
+    const unsigned long delta = millis() - lastMillis;
     for (const Code &code : codes)
     {
         if (code.protocol == IrReceiver.decodedIRData.protocol)
         {
-            if (t > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(),
-                                          code.displayBrightnessDecrease.end(),
-                                          IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
+            if (delta > INT8_MAX && std::find(code.displayBrightnessDecrease.begin(),
+                                              code.displayBrightnessDecrease.end(),
+                                              IrReceiver.decodedIRData.command) != code.displayBrightnessDecrease.end())
             {
                 Display.setBrightness(max(1, Display.getBrightness() - 5));
                 lastMillis = millis();
                 return;
             }
-            else if (t > INT8_MAX &&
+            else if (delta > INT8_MAX &&
                      std::find(code.displayBrightnessIncrease.begin(),
                                code.displayBrightnessIncrease.end(),
                                IrReceiver.decodedIRData.command) != code.displayBrightnessIncrease.end())
@@ -88,16 +88,17 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 10U) && std::find(code.displayPowerToggle.begin(),
-                                                   code.displayPowerToggle.end(),
-                                                   IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
+            else if (delta > (1UL << 10U) &&
+                     std::find(code.displayPowerToggle.begin(),
+                               code.displayPowerToggle.end(),
+                               IrReceiver.decodedIRData.command) != code.displayPowerToggle.end())
             {
                 Display.setPower(!Display.getPower());
                 lastMillis = millis();
                 return;
             }
 #if EXTENSION_MICROPHONE
-            else if (t > (1UL << 10U) &&
+            else if (delta > (1UL << 10U) &&
                      std::find(code.extensionMicrophoneToggle.begin(),
                                code.extensionMicrophoneToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
@@ -108,7 +109,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_MICROPHONE
 #if EXTENSION_PHOTOCELL
-            else if (t > (1UL << 10U) &&
+            else if (delta > (1UL << 10U) &&
                      std::find(code.extensionPhotocellToggle.begin(),
                                code.extensionPhotocellToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
@@ -119,7 +120,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
             }
 #endif // EXTENSION_PHOTOCELL
 #if EXTENSION_PLAYLIST
-            else if (t > (1UL << 10U) &&
+            else if (delta > (1UL << 10U) &&
                      std::find(code.extensionPlaylistStart.begin(),
                                code.extensionPlaylistStart.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
@@ -128,7 +129,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 10U) &&
+            else if (delta > (1UL << 10U) &&
                      std::find(code.extensionPlaylistStop.begin(),
                                code.extensionPlaylistStop.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
@@ -138,7 +139,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 return;
             }
 #endif // EXTENSION_PLAYLIST
-            else if (t > (1UL << 9U) &&
+            else if (delta > (1UL << 9U) &&
                      std::find(code.modeNext.begin(), code.modeNext.end(), IrReceiver.decodedIRData.command) !=
                          code.modeNext.end())
             {
@@ -146,7 +147,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                 lastMillis = millis();
                 return;
             }
-            else if (t > (1UL << 9U) &&
+            else if (delta > (1UL << 9U) &&
                      std::find(code.modePrevious.begin(), code.modePrevious.end(), IrReceiver.decodedIRData.command) !=
                          code.modePrevious.end())
             {

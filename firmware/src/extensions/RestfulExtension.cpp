@@ -22,7 +22,7 @@ void RestfulExtension::begin()
 void RestfulExtension::onGet(AsyncWebServerRequest *request)
 {
     const String module = request->url().substring(prefixLength);
-    const JsonObjectConst transmits = Device.getTransmits();
+    const JsonObjectConst transmits{Device.getTransmits()};
     if (module.isEmpty())
     {
         const size_t length = measureJson(transmits);
