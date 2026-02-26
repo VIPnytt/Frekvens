@@ -171,7 +171,7 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #endif // PIN_SW2
 }
 
-void ButtonExtension::event(const char *key, const char *value)
+void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugprone-easily-swappable-parameters)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;

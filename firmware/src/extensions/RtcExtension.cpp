@@ -108,9 +108,8 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
     const time_t timer = tv->tv_sec;
     const tm *local = gmtime(&timer);
-    RtcDateTime dt = RtcDateTime(
-        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
-    Rtc->rtc.SetDateTime(dt);
+    Rtc->rtc.SetDateTime(RtcDateTime(
+        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec));
     ESP_LOGV(Rtc->name, "NTP sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 

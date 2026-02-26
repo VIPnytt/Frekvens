@@ -259,6 +259,7 @@ void DeviceService::transmit(JsonObjectConst payload, const char *source, bool r
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DeviceService::receive(JsonObjectConst payload, const char *source, const char *destination) const
 {
     if (operational)

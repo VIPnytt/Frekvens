@@ -13,7 +13,7 @@ private:
     bool pending = false;
 
     uint8_t active = 0;
-    
+
     int hour = 24;
     int minute = 60;
 

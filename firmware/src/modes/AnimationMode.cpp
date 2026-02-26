@@ -47,6 +47,7 @@ void AnimationMode::handle()
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2);

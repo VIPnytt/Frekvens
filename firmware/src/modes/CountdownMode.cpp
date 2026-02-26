@@ -72,24 +72,24 @@ void CountdownMode::handle()
         {
             Display.clearFrame();
             {
-                TextHandler tl = TextHandler(std::to_string(upper / 10), FontMedium);
-                tl.draw((GRID_COLUMNS / 2) - 1 - ((7 - tl.getWidth()) / 2) - tl.getWidth(),
-                        (GRID_ROWS / 2) - 1 - ((7 - tl.getHeight()) / 2) - tl.getHeight());
+                TextHandler topLeft = TextHandler(std::to_string(upper / 10), FontMedium);
+                topLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - topLeft.getWidth()) / 2) - topLeft.getWidth(),
+                             (GRID_ROWS / 2) - 1 - ((7 - topLeft.getHeight()) / 2) - topLeft.getHeight());
             }
             {
-                TextHandler tr = TextHandler(std::to_string(upper % 10), FontMedium);
-                tr.draw((GRID_COLUMNS / 2) + 1 + ((7 - tr.getWidth()) / 2),
-                        (GRID_ROWS / 2) - 1 + ((7 - tr.getHeight()) / 2) - tr.getHeight());
+                TextHandler topRight = TextHandler(std::to_string(upper % 10), FontMedium);
+                topRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - topRight.getWidth()) / 2),
+                              (GRID_ROWS / 2) - 1 + ((7 - topRight.getHeight()) / 2) - topRight.getHeight());
             }
             {
-                TextHandler bl = TextHandler(std::to_string(lower / 10), FontMedium);
-                bl.draw((GRID_COLUMNS / 2) - 1 - ((7 - bl.getWidth()) / 2) - bl.getWidth(),
-                        (GRID_ROWS / 2) + 1 - ((7 - bl.getHeight()) / 2));
+                TextHandler bottomLeft = TextHandler(std::to_string(lower / 10), FontMedium);
+                bottomLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - bottomLeft.getWidth()) / 2) - bottomLeft.getWidth(),
+                                (GRID_ROWS / 2) + 1 - ((7 - bottomLeft.getHeight()) / 2));
             }
             {
-                TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);
-                br.draw((GRID_COLUMNS / 2) + 1 + ((7 - br.getWidth()) / 2),
-                        (GRID_ROWS / 2) + 1 + ((7 - br.getHeight()) / 2));
+                TextHandler bottomRight = TextHandler(std::to_string(lower % 10), FontMedium);
+                bottomRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - bottomRight.getWidth()) / 2),
+                                 (GRID_ROWS / 2) + 1 + ((7 - bottomRight.getHeight()) / 2));
             }
             if (seconds == 0 && minutes == 0 && hours == 0)
             {

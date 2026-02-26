@@ -338,6 +338,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
     _frame[pixel[x + (y * GRID_COLUMNS)]] = brightness;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
@@ -371,6 +372,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill,
                                    uint8_t brightness)
 {

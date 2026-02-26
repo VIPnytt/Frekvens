@@ -6,6 +6,7 @@
 #include "handlers/TextHandler.h"
 #include "services/DisplayService.h"
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void WeatherHandler::parse(std::string_view code, std::span<const Codeset> codesets)
 {
     for (const WeatherHandler::Codeset &codeset : codesets)
@@ -19,6 +20,7 @@ void WeatherHandler::parse(std::string_view code, std::span<const Codeset> codes
     ESP_LOGD(_name.data(), "unknown condition code %s", static_cast<int>(code.size()), code.data());
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void WeatherHandler::parse(uint8_t code, std::span<const Codeset8> codesets)
 {
     for (const WeatherHandler::Codeset8 &codeset : codesets)
@@ -32,6 +34,7 @@ void WeatherHandler::parse(uint8_t code, std::span<const Codeset8> codesets)
     ESP_LOGD(_name.data(), "unknown condition code %d", code);
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void WeatherHandler::parse(uint16_t code, std::span<const Codeset16> codesets)
 {
     for (const WeatherHandler::Codeset16 &codeset : codesets)
