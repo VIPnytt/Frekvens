@@ -19,16 +19,20 @@ Checks: >
   -modernize-use-auto,
   -modernize-use-trailing-return-type,
   -portability-avoid-pragma-once,
-  -readability-convert-member-functions-to-static
+  -readability-convert-member-functions-to-static,
+  -readability-magic-numbers,
+  -readability-misplaced-array-index
 CheckOptions:
   - key: bugprone-easily-swappable-parameters.IgnoredParameterNames
     value: x;y
+  - key: cppcoreguidelines-macro-usage.CheckCapsOnly
+    value: true
   - key: misc-include-cleaner.MissingIncludes
     value: false
   - key: misc-use-internal-linkage.AnalyzeVariables
     value: false
-  - key: readability-identifier-length.IgnoredVariableNames
+  - key: readability-identifier-length.IgnoredParameterNames
     value: ^(x|y)$
-  - key: readability-magic-numbers.IgnorePowersOf2IntegerValues
-    value: true
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: ^(id|x|y)$
 FormatStyle: file
