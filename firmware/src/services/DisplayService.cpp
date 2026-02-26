@@ -390,18 +390,18 @@ void DisplayService::transmit()
 {
     const bool rotated = (static_cast<uint8_t>(orientation) % 2U) != 0U;
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["brightness"] = brightness;
+    doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
-    doc["columns"] = GRID_COLUMNS;
+    doc["columns"].set(GRID_COLUMNS);
 #else
-    doc["columns"] = rotated ? GRID_ROWS : GRID_COLUMNS;
+    doc["columns"].set(rotated ? GRID_ROWS : GRID_COLUMNS);
 #endif // GRID_COLUMNS == GRID_ROWS
-    doc["orientation"] = static_cast<uint8_t>(orientation) * 90U;
-    doc["power"] = power;
+    doc["orientation"].set(static_cast<uint8_t>(orientation) * 90U);
+    doc["power"].set(power);
 #if GRID_COLUMNS == GRID_ROWS
-    doc["rows"] = GRID_ROWS;
+    doc["rows"].set(GRID_ROWS);
 #else
-    doc["rows"] = rotated ? GRID_COLUMNS : GRID_ROWS;
+    doc["rows"].set(rotated ? GRID_COLUMNS : GRID_ROWS);
 #endif // GRID_COLUMNS == GRID_ROWS
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

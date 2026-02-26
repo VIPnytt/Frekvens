@@ -130,7 +130,7 @@ void MessageExtension::handle()
             }
             lastMillis = millis();
             JsonDocument doc; // NOLINT(misc-const-correctness)
-            doc["event"] = messages.front();
+            doc["event"].set(messages.front());
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
         else if (active)
@@ -188,8 +188,8 @@ void MessageExtension::setRepeat(uint8_t count)
 void MessageExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["font"] = font->name;
-    doc["repeat"] = repeat;
+    doc["font"].set(font->name);
+    doc["repeat"].set(repeat);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

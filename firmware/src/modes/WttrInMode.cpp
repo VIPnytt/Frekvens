@@ -49,11 +49,11 @@ void WttrInMode::update()
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
 #if TEMPERATURE_FAHRENHEIT
-        filter["current_condition"][0]["temp_F"] = true;
+        filter["current_condition"][0]["temp_F"].set(true);
 #else
-        filter["current_condition"][0]["temp_C"] = true;
+        filter["current_condition"][0]["temp_C"].set(true);
 #endif // TEMPERATURE_FAHRENHEIT
-        filter["current_condition"][0]["weatherCode"] = true;
+        filter["current_condition"][0]["weatherCode"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
 #if TEMPERATURE_FAHRENHEIT

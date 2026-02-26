@@ -133,8 +133,8 @@ void PhotocellExtension::setGamma(float _gamma)
 void PhotocellExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["active"] = active;
-    doc["illuminance"] = raw;
+    doc["active"].set(active);
+    doc["illuminance"].set(raw);
     Device.transmit(doc.as<JsonObjectConst>(), name);
     lastMillis = millis();
 }

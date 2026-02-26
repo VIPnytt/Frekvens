@@ -122,7 +122,7 @@ void GameOfLifeMode::setClock(bool _clock)
 void GameOfLifeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["clock"] = clock;
+    doc["clock"].set(clock);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

@@ -97,12 +97,12 @@ void HeapExtension::handle()
 void HeapExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["extensions"] = Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle);
-    doc["heap"] = ESP.getHeapSize() - ESP.getFreeHeap();
-    doc["main"] = CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle);
+    doc["extensions"].set(Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle));
+    doc["heap"].set(ESP.getHeapSize() - ESP.getFreeHeap());
+    doc["main"].set(CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle));
     if (Modes.getTaskHandle() != nullptr)
     {
-        doc["modes"] = Modes.stackSize - uxTaskGetStackHighWaterMark(Modes.getTaskHandle());
+        doc["modes"].set(Modes.stackSize - uxTaskGetStackHighWaterMark(Modes.getTaskHandle()));
     }
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

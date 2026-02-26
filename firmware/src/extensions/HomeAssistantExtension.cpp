@@ -113,7 +113,7 @@ void HomeAssistantExtension::undiscover()
 void HomeAssistantExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc[Display.name]["power"] = Display.getPower() ? payloadOn : payloadOff;
+    doc[Display.name]["power"].set(Display.getPower() ? payloadOn : payloadOff);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

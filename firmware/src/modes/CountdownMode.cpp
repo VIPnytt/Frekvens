@@ -95,7 +95,7 @@ void CountdownMode::handle()
             {
                 done = true;
                 JsonDocument doc; // NOLINT(misc-const-correctness)
-                doc["event"] = "done";
+                doc["event"].set("done");
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
         }
@@ -122,7 +122,7 @@ void CountdownMode::transmit()
     tm local = *std::localtime(&timer);
     std::strftime(buffer.data(), buffer.size(), "%FT%T", &local);
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["timestamp"] = std::string_view(buffer.data());
+    doc["timestamp"].set(std::string_view(buffer.data()));
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

@@ -83,7 +83,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
                    std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD(Mqtt->name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)

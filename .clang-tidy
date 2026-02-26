@@ -6,7 +6,6 @@ Checks: >
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-macro-to-enum,
   -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-pro-bounds-constant-array-index,
   -fuchsia-default-arguments-calls,
   -fuchsia-default-arguments-declarations,
   -fuchsia-overloaded-operator,
@@ -27,5 +26,7 @@ Checks: >
   -readability-misplaced-array-index
 CheckOptions:
   - key: misc-include-cleaner.MissingIncludes
+    value: false
+  - key: misc-use-internal-linkage.AnalyzeFunctions
     value: false
 FormatStyle: file

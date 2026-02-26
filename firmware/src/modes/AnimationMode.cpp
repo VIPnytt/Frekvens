@@ -87,13 +87,13 @@ void AnimationMode::setInterval(uint16_t interval)
 void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["interval"] = interval;
+    doc["interval"].set(interval);
     JsonArray _frame = doc["frame"].to<JsonArray>();
     for (uint16_t i = 0; i < frame.size(); ++i)
     {
         _frame.add(frame[i]);
     }
-    doc["index"] = index;
+    doc["index"].set(index);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 

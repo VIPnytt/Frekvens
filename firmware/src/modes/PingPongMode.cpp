@@ -208,7 +208,7 @@ void PingPongMode::setClock(bool _clock)
 void PingPongMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["clock"] = clock;
+    doc["clock"].set(clock);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

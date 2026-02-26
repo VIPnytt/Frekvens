@@ -181,7 +181,7 @@ void DeviceService::setPower(bool power)
 {
     ESP_LOGI(name, "%s...", power ? "rebooting" : "powering off"); // NOLINT(cppcoreguidelines-avoid-do-while)
     JsonDocument doc;                                              // NOLINT(misc-const-correctness)
-    doc["event"] = power ? "reboot" : "power";
+    doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
     Display.setPower(false);
@@ -232,12 +232,12 @@ JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonOb
 void DeviceService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["board"] = ARDUINO_BOARD;
-    doc["model"] = MODEL;
-    doc["name"] = NAME;
-    doc["repository"] = "https://github.com/VIPnytt/Frekvens";
-    doc["temperature"] = temperatureRead();
-    doc["version"] = VERSION;
+    doc["board"].set(ARDUINO_BOARD);
+    doc["model"].set(MODEL);
+    doc["name"].set(NAME);
+    doc["repository"].set("https://github.com/VIPnytt/Frekvens");
+    doc["temperature"].set(temperatureRead());
+    doc["version"].set(VERSION);
     lastMillis = millis();
     transmit(doc.as<JsonObjectConst>(), name);
 }

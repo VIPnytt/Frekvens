@@ -106,11 +106,11 @@ void HomeThermometerMode::transmit()
     Storage.begin(std::string(name).substr(0, NVS_KEY_NAME_MAX_SIZE - 1).c_str(), true);
     if (Storage.isKey("indoor"))
     {
-        doc["indoor"] = Storage.getShort("indoor");
+        doc["indoor"].set(Storage.getShort("indoor"));
     }
     if (Storage.isKey("outdoor"))
     {
-        doc["outdoor"] = Storage.getShort("outdoor");
+        doc["outdoor"].set(Storage.getShort("outdoor"));
     }
     Storage.end();
     if (doc.size() != 0)

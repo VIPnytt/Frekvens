@@ -234,7 +234,7 @@ void ModesService::transmit()
     }
     if (mode != nullptr)
     {
-        doc["mode"] = mode->name;
+        doc["mode"].set(mode->name);
     }
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

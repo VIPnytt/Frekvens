@@ -49,11 +49,11 @@ void WorldWeatherOnlineMode::update()
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
 #if TEMPERATURE_FAHRENHEIT
-        filter["data"]["current_condition"][0]["temp_F"] = true;
+        filter["data"]["current_condition"][0]["temp_F"].set(true);
 #else
-        filter["data"]["current_condition"][0]["temp_C"] = true;
+        filter["data"]["current_condition"][0]["temp_C"].set(true);
 #endif // TEMPERATURE_FAHRENHEIT
-        filter["data"]["current_condition"][0]["weatherCode"] = true;
+        filter["data"]["current_condition"][0]["weatherCode"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
 #if TEMPERATURE_FAHRENHEIT

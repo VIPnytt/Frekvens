@@ -48,8 +48,8 @@ void YrMode::update()
             vTaskDelay(1);
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
-        filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"] = true;
-        filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"] = true;
+        filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].set(true);
+        filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
             !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() ||

@@ -55,8 +55,8 @@ void HomeAssistantWeatherMode::update()
             vTaskDelay(1);
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
-        filter["attributes"]["temperature"] = true;
-        filter["state"] = true;
+        filter["attributes"]["temperature"].set(true);
+        filter["state"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
             !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())

@@ -135,8 +135,8 @@ void TickerMode::setMessage(std::string _message)
 void TickerMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["font"] = font->name;
-    doc["message"] = message;
+    doc["font"].set(font->name);
+    doc["message"].set(message);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

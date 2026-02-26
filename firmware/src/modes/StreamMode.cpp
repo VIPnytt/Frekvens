@@ -77,7 +77,7 @@ void StreamMode::set(uint16_t _port)
 void StreamMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["port"] = port;
+    doc["port"].set(port);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

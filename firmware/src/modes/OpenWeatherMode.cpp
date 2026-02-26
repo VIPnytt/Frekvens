@@ -48,10 +48,10 @@ void OpenWeatherMode::update()
             vTaskDelay(1);
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
-        filter["current"]["temp"] = true;
-        filter["current"]["weather"]["id"] = true;
-        filter["main"]["temp"] = true;
-        filter["weather"][0]["id"] = true;
+        filter["current"]["temp"].set(true);
+        filter["current"]["weather"]["id"].set(true);
+        filter["main"]["temp"].set(true);
+        filter["weather"][0]["id"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         const bool isError = deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ==
                              ArduinoJson::V742PB22::DeserializationError::Code::Ok;

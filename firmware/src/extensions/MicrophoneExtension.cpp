@@ -110,7 +110,7 @@ void MicrophoneExtension::handle()
                 if (lastMillis - _lastMillis > UINT16_MAX)
                 {
                     JsonDocument doc; // NOLINT(misc-const-correctness)
-                    doc["event"] = "sound";
+                    doc["event"].set("sound");
                     Device.transmit(doc.as<JsonObjectConst>(), name, false);
                     _lastMillis = lastMillis;
                 }
@@ -172,9 +172,9 @@ bool MicrophoneExtension::isTriggered() const { return detected || !active; }
 void MicrophoneExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["active"] = active;
-    doc["max"] = levelMax;
-    doc["threshold"] = threshold;
+    doc["active"].set(active);
+    doc["max"].set(levelMax);
+    doc["threshold"].set(threshold);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

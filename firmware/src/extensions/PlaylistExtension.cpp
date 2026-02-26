@@ -131,8 +131,8 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     for (const Mode mode : modes)
     {
         JsonObject item;
-        item["duration"] = mode.duration;
-        item["mode"] = mode.mode;
+        item["duration"].set(mode.duration);
+        item["mode"].set(mode.mode);
         items.add(item);
         playlist.push_back(mode);
     }
@@ -149,13 +149,13 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
 void PlaylistExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["active"] = active;
+    doc["active"].set(active);
     JsonArray _playlist = doc["playlist"].to<JsonArray>();
     for (const PlaylistExtension::Mode &mode : playlist)
     {
         JsonObject _item = _playlist.add<JsonObject>();
-        _item["duration"] = mode.duration;
-        _item["mode"] = mode.mode;
+        _item["duration"].set(mode.duration);
+        _item["mode"].set(mode.mode);
     }
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

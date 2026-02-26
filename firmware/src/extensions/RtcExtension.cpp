@@ -99,7 +99,7 @@ IRAM_ATTR void RtcExtension::onInterrupt() { Rtc->pending = true; }
 void RtcExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["temperature"] = rtc.GetTemperature().AsFloatDegC();
+    doc["temperature"].set(rtc.GetTemperature().AsFloatDegC());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232)

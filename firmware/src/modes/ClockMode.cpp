@@ -230,13 +230,13 @@ void ClockMode::setTicking(bool _ticking)
 void ClockMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["font"] = font->name;
+    doc["font"].set(font->name);
     JsonArray _fonts = doc["fonts"].to<JsonArray>();
     for (const FontModule *_font : fonts)
     {
         _fonts.add(_font->name);
     }
-    doc["ticking"] = ticking;
+    doc["ticking"].set(ticking);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

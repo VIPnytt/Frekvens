@@ -272,7 +272,7 @@ void SnakeMode::setClock(bool _clock)
 void SnakeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["clock"] = clock;
+    doc["clock"].set(clock);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

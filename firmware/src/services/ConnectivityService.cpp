@@ -249,7 +249,7 @@ void ConnectivityService::onRoutable()
     if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        doc["event"] = "connected";
+        doc["event"].set("connected");
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
         ESP_LOGD(Connectivity.name, "terminating Wi-Fi hotspot");
         Connectivity.dns.reset();
@@ -281,9 +281,9 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
         for (int16_t i = 0; i < n; ++i)
         {
             JsonObject _scan = scan.add<JsonObject>();
-            _scan["encrypted"] = WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN;
-            _scan["rssi"] = WiFi.RSSI(i);
-            _scan["ssid"] = WiFi.SSID(i);
+            _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            _scan["rssi"].set(WiFi.RSSI(i));
+            _scan["ssid"].set(WiFi.SSID(i));
         }
         Device.transmit(doc.as<JsonObjectConst>(), _name.data(), false);
     }
@@ -292,8 +292,8 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
 void ConnectivityService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["host"] = HOSTNAME ".local";
-    doc["rssi"] = WiFi.RSSI();
+    doc["host"].set(HOSTNAME ".local");
+    doc["rssi"].set(WiFi.RSSI());
     {
         Preferences Storage;
         Storage.begin(name, true);
@@ -318,7 +318,7 @@ void ConnectivityService::transmit()
             Storage.end();
         }
     }
-    doc["ssid"] = WiFi.SSID();
+    doc["ssid"].set(WiFi.SSID());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

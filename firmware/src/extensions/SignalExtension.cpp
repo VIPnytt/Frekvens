@@ -41,7 +41,7 @@ void SignalExtension::handle()
             lastMillis = millis();
             Display.flush();
             JsonDocument doc; // NOLINT(misc-const-correctness)
-            doc["event"] = "signal";
+            doc["event"].set("signal");
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
         else if (active)
@@ -69,7 +69,7 @@ void SignalExtension::setDuration(uint8_t seconds)
 void SignalExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["duration"] = duration;
+    doc["duration"].set(duration);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
