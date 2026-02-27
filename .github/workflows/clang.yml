@@ -234,15 +234,13 @@ jobs:
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
-          passive-reviews: true
           step-summary: true
           style: ""
           tidy-checks: ""
-          tidy-review: false
 
       - name: Summary
         env:
-          clang-threshold: 191
+          clang-threshold: 111
         run: |
           echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"

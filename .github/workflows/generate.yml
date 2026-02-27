@@ -110,7 +110,7 @@ jobs:
 
       - name: Clang summary
         env:
-          clang-threshold: 1
+          clang-threshold: 0
         run: |
           echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
