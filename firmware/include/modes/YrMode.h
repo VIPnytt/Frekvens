@@ -64,7 +64,7 @@ private:
         "heavysnow",
         "heavysnowshowers_day",
         "heavysnowshowers_night",
-        "heavysnowshowers_polartwilight"
+        "heavysnowshowers_polartwilight",
         "lightsleet",
         "lightsleetshowers_day",
         "lightsleetshowers_night",
