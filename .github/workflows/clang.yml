@@ -1,7 +1,7 @@
 name: Clang
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 env:
   clang-version: 21
@@ -42,6 +41,9 @@ jobs:
   format:
     name: Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -75,6 +77,9 @@ jobs:
     name: Tidy
     needs: platformio
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     strategy:
       matrix:
