@@ -2,10 +2,10 @@
 
 #if MODE_ANIMATION
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
-#include <vector>
+#include <span>
 
 class AnimationMode final : public ModeModule
 {
@@ -18,11 +18,11 @@ private:
 
     unsigned long lastMillis = 0;
 
-    void setFrame(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void setFrame(uint8_t _index, std::span<const uint8_t> frame);
     void setFrames(uint8_t count);
-    void setInterval(uint16_t interval);
+    void setInterval(uint16_t _interval);
 
-    void transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS]);
+    void transmit(uint8_t index, std::span<const uint8_t> frame);
 
 public:
     explicit AnimationMode() : ModeModule("Animation") {};

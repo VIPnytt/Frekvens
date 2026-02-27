@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTBEGIN(misc-include-cleaner)
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
 #include "modes/BinaryClockMode.h"
@@ -43,6 +44,7 @@
 #include "modes/YrMode.h"
 #include "modules/ModeModule.h"
 #include "modules/ServiceModule.h"
+// NOLINTEND(misc-include-cleaner)
 
 #include <vector>
 
@@ -51,7 +53,8 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    std::vector<ModeModule *> modes = {
+    // NOLINTNEXTLINE(cert-err58-cpp)
+    inline static const std::vector<ModeModule *> modes{
 #if MODE_ANIMATION
         new AnimationMode(),
 #endif
@@ -191,7 +194,7 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
+    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
 
     void configure();
     void begin();
@@ -207,4 +210,4 @@ public:
     static ModesService &getInstance();
 };
 
-extern ModesService &Modes;
+extern ModesService &Modes; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

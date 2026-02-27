@@ -5,12 +5,12 @@
 #include <span>
 #include <string>
 
-class WeatherHandler : public HandlerModule
+class WeatherHandler final : public HandlerModule
 {
 public:
     WeatherHandler() = default;
 
-    enum Conditions
+    enum class Conditions : uint8_t // NOLINT(performance-enum-size)
     {
         CLEAR,
         CLOUDY,
@@ -41,7 +41,6 @@ public:
         std::span<const uint16_t> codes{};
     };
 
-    std::span<const uint16_t> sign{};
     int16_t temperature = 0;
 
     void parse(std::string_view code, std::span<const Codeset> codesets);
@@ -150,6 +149,8 @@ private:
         0b10000000000,
         0b10000000000,
     };
+
+    std::span<const uint16_t> sign{};
 
     void setSign(Conditions condition);
 };

@@ -2,7 +2,7 @@
 
 #include "fonts/BrailleFont.h"
 
-BrailleFont *FontBraille = nullptr;
+BrailleFont *FontBraille = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 BrailleFont::BrailleFont() : FontModule("Braille") { FontBraille = this; }
 

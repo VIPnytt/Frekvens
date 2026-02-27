@@ -2,14 +2,14 @@
 
 #include "extensions/SignalExtension.h"
 
-#include "handlers/BitmapHandler.h"
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
 #include <Preferences.h>
 
-SignalExtension *Signal = nullptr;
+SignalExtension *Signal = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 SignalExtension::SignalExtension() : ExtensionModule("Signal") { Signal = this; }
 
@@ -40,8 +40,8 @@ void SignalExtension::handle()
             signals.erase(signals.begin());
             lastMillis = millis();
             Display.flush();
-            JsonDocument doc;
-            doc["event"] = "signal";
+            JsonDocument doc; // NOLINT(misc-const-correctness)
+            doc["event"].set("signal");
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
         else if (active)
@@ -68,12 +68,13 @@ void SignalExtension::setDuration(uint8_t seconds)
 
 void SignalExtension::transmit()
 {
-    JsonDocument doc;
-    doc["duration"] = duration;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["duration"].set(duration);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(JsonObjectConst payload, const char *source)
+void SignalExtension::onReceive(JsonObjectConst payload,
+                                const char *source) // NOLINT(misc-unused-parameters)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())

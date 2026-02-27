@@ -34,6 +34,6 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern MqttExtension *Mqtt;
+extern MqttExtension *Mqtt; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MQTT

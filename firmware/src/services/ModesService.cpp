@@ -1,11 +1,10 @@
 #include "services/ModesService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MicroFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MicroFont.h"      // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 #include <memory>
@@ -13,24 +12,24 @@
 void ModesService::configure()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_mode");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"mode":"{{value}}"})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::icon] = "mdi:format-list-bulleted";
-        component[HomeAssistantAbbreviations::name] = "Mode";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
+        const std::string id{std::string(name).append("_mode")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"mode":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
+        component[HomeAssistantAbbreviations::name].set("Mode");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const ModeModule *mode : modes)
         {
             options.add(mode->name);
         }
-        component[HomeAssistantAbbreviations::platform] = "select";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.mode}}";
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.mode}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 
@@ -73,11 +72,11 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled != nullptr && millis() - lastMillis > (1 << 11))
+    if (scheduled != nullptr && millis() - lastMillis > (1UL << 11U))
     {
         mode = scheduled;
         scheduled = nullptr;
-        ESP_LOGI(name, "%s", mode->name);
+        ESP_LOGI(name, "%s", mode->name); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         mode->begin();
         setActive(true);
         transmit();
@@ -88,7 +87,7 @@ void ModesService::handle()
     }
 }
 
-void ModesService::onTask(void *parameter)
+void ModesService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
 {
     for (;;)
     {
@@ -141,7 +140,7 @@ void ModesService::setMode(ModeModule *mode, bool power)
     lastMillis = millis();
     scheduled = mode;
     const std::string _name = mode->name;
-    std::vector<std::string> words = {""};
+    std::vector<std::string> words{""};
     uint8_t _line = 0;
     for (std::size_t i = 0; i < _name.length(); ++i)
     {
@@ -160,11 +159,14 @@ void ModesService::setMode(ModeModule *mode, bool power)
     std::vector<std::unique_ptr<TextHandler>> lines;
     for (const std::string &word : words)
     {
-        height += lines.emplace_back(std::make_unique<TextHandler>(word, FontMicro))->getHeight();
-        if (height >= GRID_ROWS)
+        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, FontMicro);
+        const uint8_t lineHeight = handler->getHeight();
+        if (height + lineHeight >= GRID_ROWS)
         {
             break;
         }
+        height += lineHeight;
+        lines.emplace_back(std::move(handler));
     }
     const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
     uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
@@ -224,20 +226,21 @@ void ModesService::setModePrevious()
 
 void ModesService::transmit()
 {
-    JsonDocument doc;
-    JsonArray list = doc["list"].to<JsonArray>();
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonArray list{doc["list"].to<JsonArray>()};
     for (const ModeModule *_mode : modes)
     {
         list.add(_mode->name);
     }
     if (mode != nullptr)
     {
-        doc["mode"] = mode->name;
+        doc["mode"].set(mode->name);
     }
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ModesService::onReceive(JsonObjectConst payload, const char *source)
+void ModesService::onReceive(JsonObjectConst payload,
+                             const char *source) // NOLINT(misc-unused-parameters)
 {
     // Mode
     if (payload["mode"].is<const char *>())
@@ -252,4 +255,5 @@ ModesService &ModesService::getInstance()
     return instance;
 }
 
-ModesService &Modes = Modes.getInstance();
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+ModesService &Modes = ModesService::getInstance();

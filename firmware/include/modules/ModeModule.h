@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
 class ModeModule
 {

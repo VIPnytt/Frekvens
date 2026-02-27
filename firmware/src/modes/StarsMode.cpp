@@ -30,7 +30,7 @@ void StarsMode::handle()
                 } while (Display.getPixel(star.x, star.y) > 0);
                 ++star.brightness;
                 star.direction = true;
-                star.delay = random(1 << 4);
+                star.delay = random(1U << 4U);
             }
             Display.setPixel(star.x, star.y, star.brightness);
             star.lastMillis = millis();

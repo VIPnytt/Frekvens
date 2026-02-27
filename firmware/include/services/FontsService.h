@@ -14,7 +14,7 @@ class FontsService final : public ServiceModule
 private:
     explicit FontsService() : ServiceModule("Fonts") {};
 
-    const std::vector<FontModule *> modules = {
+    const std::vector<FontModule *> modules{
 #if FONT_BRAILLE
         new BrailleFont(),
 #endif
@@ -35,4 +35,4 @@ public:
     static FontsService &getInstance();
 };
 
-extern FontsService &Fonts;
+extern FontsService &Fonts; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

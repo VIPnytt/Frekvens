@@ -22,4 +22,4 @@ public:
     static WebServerService &getInstance();
 };
 
-extern WebServerService &WebServer;
+extern WebServerService &WebServer; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

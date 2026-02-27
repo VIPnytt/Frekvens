@@ -10,7 +10,7 @@
 class ClockMode final : public ModeModule
 {
 private:
-    tm local = {};
+    tm local{};
 
     bool pending = false;
     bool ticking = false;
@@ -23,7 +23,7 @@ private:
 
     FontModule *font = nullptr;
 
-    std::vector<FontModule *> fonts = {};
+    std::vector<FontModule *> fonts{};
 
     void borderPixel(uint8_t sec, uint8_t brightness);
     void drawDigits();

@@ -2,37 +2,38 @@
 
 #include "modes/CountdownMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MediumFont.h"
+#include "fonts/MediumFont.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
+#include <array>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 
 void CountdownMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_timestamp");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"timestamp":"{{value}}"})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:timer-sand-full";
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::pattern] =
-            R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)";
-        component[HomeAssistantAbbreviations::platform] = "text";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.timestamp}}";
+        const std::string id{std::string(name).append("_timestamp")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"timestamp":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:timer-sand-full");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::pattern].set(
+            R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)");
+        component[HomeAssistantAbbreviations::platform].set("text");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.timestamp}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 
@@ -71,30 +72,30 @@ void CountdownMode::handle()
         {
             Display.clearFrame();
             {
-                TextHandler tl = TextHandler(std::to_string(upper / 10), FontMedium);
-                tl.draw((GRID_COLUMNS / 2) - 1 - ((7 - tl.getWidth()) / 2) - tl.getWidth(),
-                        (GRID_ROWS / 2) - 1 - ((7 - tl.getHeight()) / 2) - tl.getHeight());
+                TextHandler topLeft = TextHandler(std::to_string(upper / 10), FontMedium);
+                topLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - topLeft.getWidth()) / 2) - topLeft.getWidth(),
+                             (GRID_ROWS / 2) - 1 - ((7 - topLeft.getHeight()) / 2) - topLeft.getHeight());
             }
             {
-                TextHandler tr = TextHandler(std::to_string(upper % 10), FontMedium);
-                tr.draw((GRID_COLUMNS / 2) + 1 + ((7 - tr.getWidth()) / 2),
-                        (GRID_ROWS / 2) - 1 + ((7 - tr.getHeight()) / 2) - tr.getHeight());
+                TextHandler topRight = TextHandler(std::to_string(upper % 10), FontMedium);
+                topRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - topRight.getWidth()) / 2),
+                              (GRID_ROWS / 2) - 1 + ((7 - topRight.getHeight()) / 2) - topRight.getHeight());
             }
             {
-                TextHandler bl = TextHandler(std::to_string(lower / 10), FontMedium);
-                bl.draw((GRID_COLUMNS / 2) - 1 - ((7 - bl.getWidth()) / 2) - bl.getWidth(),
-                        (GRID_ROWS / 2) + 1 - ((7 - bl.getHeight()) / 2));
+                TextHandler bottomLeft = TextHandler(std::to_string(lower / 10), FontMedium);
+                bottomLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - bottomLeft.getWidth()) / 2) - bottomLeft.getWidth(),
+                                (GRID_ROWS / 2) + 1 - ((7 - bottomLeft.getHeight()) / 2));
             }
             {
-                TextHandler br = TextHandler(std::to_string(lower % 10), FontMedium);
-                br.draw((GRID_COLUMNS / 2) + 1 + ((7 - br.getWidth()) / 2),
-                        (GRID_ROWS / 2) + 1 + ((7 - br.getHeight()) / 2));
+                TextHandler bottomRight = TextHandler(std::to_string(lower % 10), FontMedium);
+                bottomRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - bottomRight.getWidth()) / 2),
+                                 (GRID_ROWS / 2) + 1 + ((7 - bottomRight.getHeight()) / 2));
             }
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 done = true;
-                JsonDocument doc;
-                doc["event"] = "done";
+                JsonDocument doc; // NOLINT(misc-const-correctness)
+                doc["event"].set("done");
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
         }
@@ -116,16 +117,17 @@ void CountdownMode::save()
 
 void CountdownMode::transmit()
 {
-    char timestamp[32];
+    std::array<char, 32> buffer{};
     time_t timer = std::chrono::system_clock::to_time_t(epoch);
     tm local = *std::localtime(&timer);
-    std::strftime(timestamp, sizeof(timestamp), "%FT%T", &local);
-    JsonDocument doc;
-    doc["timestamp"] = timestamp;
+    std::strftime(buffer.data(), buffer.size(), "%FT%T", &local);
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["timestamp"].set(std::string_view(buffer.data()));
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload, const char *source)
+void CountdownMode::onReceive(JsonObjectConst payload,
+                              const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["time"].is<uint32_t>())
     {
@@ -134,7 +136,7 @@ void CountdownMode::onReceive(JsonObjectConst payload, const char *source)
     }
     else if (payload["timestamp"].is<const char *>())
     {
-        tm local = {};
+        tm local{};
         strptime(payload["timestamp"].as<const char *>(), "%FT%T", &local);
         local.tm_isdst = -1;
         epoch = std::chrono::system_clock::from_time_t(mktime(&local));

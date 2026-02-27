@@ -2,11 +2,12 @@
 
 #include "modes/AnimationMode.h"
 
-#include "extensions/MicrophoneExtension.h"
+#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
+#include <array>
 
 void AnimationMode::begin()
 {
@@ -27,8 +28,8 @@ void AnimationMode::handle()
         if (Storage.isKey(std::to_string(index).c_str()))
         {
             lastMillis = millis();
-            uint8_t frame[GRID_COLUMNS * GRID_ROWS];
-            Storage.getBytes(std::to_string(index).c_str(), frame, sizeof(frame));
+            std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+            Storage.getBytes(std::to_string(index).c_str(), frame.data(), frame.size());
             Storage.end();
             Display.setFrame(frame);
             if (pending)
@@ -46,57 +47,62 @@ void AnimationMode::handle()
     }
 }
 
-void AnimationMode::setFrame(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
-    lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS * 2);
+    lastMillis = millis() + (frame.size() * 2);
     Preferences Storage;
     Storage.begin(name);
-    Storage.putBytes(std::to_string(index).c_str(), frame, GRID_COLUMNS * GRID_ROWS);
+    Storage.putBytes(std::to_string(_index).c_str(), frame.data(), frame.size());
     Storage.end();
     this->index = 0;
     pending = true;
-    ESP_LOGV(name, "frame #%d saved", index + 1);
+    ESP_LOGV(name, "frame #%d saved", _index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void AnimationMode::setFrames(uint8_t count)
 {
     Preferences Storage;
     Storage.begin(name);
-    uint8_t i = count;
-    while (i > 1 && Storage.isKey(std::to_string(i).c_str()))
+    for (uint8_t i = count; i >= 2; ++i)
     {
-        Storage.remove(std::to_string(i).c_str());
-        ++i;
+        const std::string key = std::to_string(i);
+        if (!Storage.isKey(key.c_str()))
+        {
+            break;
+        }
+        Storage.remove(key.c_str());
     }
     Storage.end();
 }
 
-void AnimationMode::setInterval(uint16_t interval)
+void AnimationMode::setInterval(uint16_t _interval)
 {
-    if (interval != this->interval)
+    if (_interval != interval)
     {
-        this->interval = interval;
+        interval = _interval;
         Preferences Storage;
         Storage.begin(name);
-        Storage.putUShort("interval", this->interval);
+        Storage.putUShort("interval", interval);
         Storage.end();
     }
 }
 
-void AnimationMode::transmit(uint8_t index, const uint8_t frame[GRID_COLUMNS * GRID_ROWS])
+void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
-    JsonDocument doc;
-    doc["interval"] = interval;
-    JsonArray _frame = doc["frame"].to<JsonArray>();
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["interval"].set(interval);
+    JsonArray _frame{doc["frame"].to<JsonArray>()};
+    for (uint16_t i = 0; i < frame.size(); ++i)
     {
         _frame.add(frame[i]);
     }
-    doc["index"] = index;
+    doc["index"].set(index);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void AnimationMode::onReceive(JsonObjectConst payload, const char *source)
+void AnimationMode::onReceive(JsonObjectConst payload,
+                              const char *source) // NOLINT(misc-unused-parameters)
 {
     // Action: pull
     if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "pull"))
@@ -109,19 +115,14 @@ void AnimationMode::onReceive(JsonObjectConst payload, const char *source)
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS &&
         payload["index"].is<uint8_t>())
     {
-        uint8_t frame[GRID_COLUMNS * GRID_ROWS];
-#if GRID_COLUMNS * GRID_ROWS > (1 << 8)
-        uint16_t i = 0;
-#else
-        uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1 << 8)
-        for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
+        std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+        const JsonArrayConst _frame = payload["frame"].as<JsonArrayConst>();
+        for (size_t i = 0; i < frame.size(); ++i)
         {
-            if (pixel.is<uint8_t>())
+            if (_frame[i].is<uint8_t>())
             {
-                frame[i] = pixel.as<uint8_t>();
+                frame[i] = _frame[i].as<uint8_t>();
             }
-            ++i;
         }
         setFrame(payload["index"].as<uint8_t>(), frame);
     }

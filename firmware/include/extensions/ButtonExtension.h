@@ -2,7 +2,7 @@
 
 #if EXTENSION_BUTTON
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
 class ButtonExtension final : public ExtensionModule
@@ -43,6 +43,6 @@ public:
     void handle() override;
 };
 
-extern ButtonExtension *Button;
+extern ButtonExtension *Button; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_BUTTON

@@ -3,13 +3,13 @@
 #include "modes/MetaballsMode.h"
 
 #include "extensions/MicrophoneExtension.h"
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 void MetaballsMode::configure()
 {
-    for (uint16_t i = 0; i < std::size(contributions); ++i)
+    for (uint16_t i = 0; i < contributions.size(); ++i)
     {
-        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1 << 6)) >> 16;
+        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (1U << 6U)) >> 16U;
     }
     for (Ball &ball : balls)
     {
@@ -27,7 +27,7 @@ void MetaballsMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
 #if PITCH_HORIZONTAL != PITCH_VERTICAL
-        const bool rotated = (Display.getOrientation() % 2) != 0;
+        const bool rotated = (static_cast<uint8_t>(Display.getOrientation()) % 2) != 0;
         const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                              static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
         const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
@@ -57,7 +57,8 @@ void MetaballsMode::handle()
                         if (distanceSq < radiusSq)
                         {
                             brightness = min<uint8_t>(
-                                brightness + contributions[(uint8_t)(distanceSq * UINT8_MAX / radiusSq)], UINT8_MAX);
+                                brightness + contributions[static_cast<uint8_t>(distanceSq * UINT8_MAX / radiusSq)],
+                                UINT8_MAX);
                             if (brightness >= UINT8_MAX)
                             {
                                 break;

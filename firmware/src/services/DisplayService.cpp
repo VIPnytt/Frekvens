@@ -1,7 +1,7 @@
 #include "services/DisplayService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "handlers/BitmapHandler.h"
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/ModesService.h"
 
@@ -27,10 +27,10 @@ void DisplayService::configure()
 
     timer = timerBegin(1'000'000);
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1'000'000 / (1 << 8) / frameRate, true, 0);
+    timerAlarm(timer, 1'000'000 / (1U << 8U) / frameRate, true, 0);
     timerStart(timer);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0f / PWM_WIDTH / static_cast<float>(1 << depth)), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / PWM_WIDTH / static_cast<float>(1U << depth)), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -41,30 +41,30 @@ void DisplayService::configure()
     Storage.begin(name, true);
     const uint8_t _brightness = Storage.isKey("brightness") ? Storage.getUShort("brightness") : UINT8_MAX;
     const Orientation _orientation =
-        Storage.isKey("orientation") ? (Orientation)Storage.getUShort("orientation") : orientation;
+        Storage.isKey("orientation") ? static_cast<Orientation>(Storage.getUShort("orientation")) : orientation;
     Storage.end();
     setOrientation(_orientation);
     setBrightness(_brightness);
 
-    BitmapHandler(hi).draw();
+    BitmapHandler(splash).draw();
     flush();
 }
 
 void DisplayService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_orientation");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"orientation":{{value.replace('°','')}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:rotate-right-variant";
-        component[HomeAssistantAbbreviations::name] = "Orientation";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        JsonArray options = component[HomeAssistantAbbreviations::options].to<JsonArray>();
+        const std::string id{std::string(name).append("_orientation")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"orientation":{{value.replace('°','')}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
+        component[HomeAssistantAbbreviations::name].set("Orientation");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         options.add("0°");
 #if GRID_COLUMNS == GRID_ROWS
         options.add("90°");
@@ -73,10 +73,10 @@ void DisplayService::begin()
 #if GRID_COLUMNS == GRID_ROWS
         options.add("270°");
 #endif // GRID_COLUMNS == GRID_ROWS
-        component[HomeAssistantAbbreviations::platform] = "select";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.orientation}}°";
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -92,40 +92,42 @@ void DisplayService::handle()
 
 IRAM_ATTR void DisplayService::onTimer()
 {
-    static uint8_t filter = 0;
-    static uint8_t bytes[((GRID_COLUMNS * GRID_ROWS) + 7) / 8];
-    const uint8_t *frame = Display.frame;
-    uint16_t outIndex = 0;
-    uint8_t bitMask = 0x80;
-    uint8_t outByte = 0;
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
+    static DRAM_ATTR uint8_t threshold = 0;
+    size_t pixel = 0;
+    for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
     {
-        if (frame[i] > filter)
-        {
-            outByte |= bitMask;
-        }
-        bitMask >>= 1;
-        if (bitMask == 0)
-        {
-            bytes[outIndex++] = outByte;
-            outByte = 0;
-            bitMask = 0x80;
-        }
+        uint8_t byte = 0;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x80U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x40U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x20U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x10U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x08U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x04U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x02U : 0U;
+        byte |= (Display.frame[pixel++] > threshold) ? 0x01U : 0U;
+        bytes[i] = byte;
     }
-#if GRID_COLUMNS * GRID_ROWS % 8
-    bytes[outIndex] = outByte;
-#endif // GRID_COLUMNS * GRID_ROWS % 8
-    ++filter;
+    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+    {
+        uint8_t byte = 0;
+        for (size_t remainder = 0; remainder < GRID_COLUMNS * GRID_ROWS % 8; ++remainder)
+        {
+            byte |= (Display.frame[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
+        }
+        bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
+    }
+    threshold += 1;
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
-    SPI.transferBytes(bytes, nullptr, sizeof(bytes));
+    SPI.transferBytes(bytes.data(), nullptr, bytes.size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
 }
 
 void DisplayService::flush()
 {
-    if (memcmp(frame, _frame, sizeof(_frame)) != 0)
+    if (frame != _frame)
     {
-        memcpy(frame, _frame, sizeof(_frame));
+        frame = _frame;
     }
 }
 
@@ -135,45 +137,45 @@ DisplayService::Orientation DisplayService::getOrientation() const { return orie
 
 void DisplayService::setOrientation(Orientation _orientation)
 {
-    std::vector<uint8_t> _pixel(GRID_COLUMNS * GRID_ROWS);
-    switch ((_orientation - orientation + 4) % 4)
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _pixel{};
+    switch ((static_cast<uint8_t>(_orientation) + 4U - static_cast<uint8_t>(orientation)) % 4U)
     {
-    case Orientation::deg180:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
-        {
-            _pixel[i] = pixel[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
-                              (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
-        }
-        break;
 #if GRID_COLUMNS == GRID_ROWS
-    case Orientation::deg90:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    case static_cast<uint8_t>(Orientation::deg90):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
         {
             _pixel[i] = pixel[((GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1))) << __builtin_ctz(GRID_COLUMNS)) |
                               (i >> __builtin_ctz(GRID_COLUMNS))];
         }
         break;
-    case Orientation::deg270:
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    case static_cast<uint8_t>(Orientation::deg270):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
         {
             _pixel[i] = pixel[((i & (GRID_COLUMNS - 1)) << __builtin_ctz(GRID_COLUMNS)) |
                               (GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS)))];
         }
         break;
 #endif // GRID_COLUMNS == GRID_ROWS
+    case static_cast<uint8_t>(Orientation::deg180):
+        for (std::size_t i = 0; i < _pixel.size(); ++i)
+        {
+            _pixel[i] = pixel[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
+                              (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
+        }
+        break;
     default:
         return;
     }
-    ESP_LOGI(name, "orientation %d°", _orientation * 90);
-    memcpy(pixel, _pixel.data(), _pixel.size());
+    ESP_LOGI(name, "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
+    pixel = _pixel;
     orientation = _orientation;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    ratio = (orientation % 2) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
-                                   : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
+    ratio = (static_cast<uint8_t>(orientation) % 2U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+                                                          : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     Preferences Storage;
     Storage.begin(name);
-    Storage.putUShort("orientation", orientation);
+    Storage.putUShort("orientation", static_cast<uint8_t>(orientation));
     Storage.end();
     pending = true;
 }
@@ -190,17 +192,20 @@ void DisplayService::setPower(bool _power)
     if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-        ledcFadeGamma(
-            PIN_OE,
-            0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-            (1 << 5) * brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        ledcFadeGamma(PIN_OE,
+                      0,
+                      max<uint16_t>(brightness,
+                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                        ((1U << depth) - 2)),
+                      (1U << 5U) *
+                          brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-        ledcFade(
-            PIN_OE,
-            0,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-            (1 << 5) * brightness); // -2 offset due to `ledcFade` stability issues.
+        ledcFade(PIN_OE,
+                 0,
+                 max<uint16_t>(brightness,
+                               powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                   ((1U << depth) - 2)),
+                 (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
         pending = true;
@@ -211,16 +216,20 @@ void DisplayService::setPower(bool _power)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGammaWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
+            max<uint16_t>(brightness,
+                          powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                              ((1U << depth) - 2)),
             0,
-            (1 << 3) * brightness,
+            (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
         ledcFadeWithInterrupt(
             PIN_OE,
-            max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
+            max<uint16_t>(brightness,
+                          powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                              ((1U << depth) - 2)),
             0,
-            (1 << 3) * brightness,
+            (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
@@ -231,7 +240,7 @@ void DisplayService::onPowerOff()
     Display.power = false;
     Display.pending = true;
     Modes.setActive(false);
-    memset(Display.frame, 0, sizeof(Display.frame));
+    Display.frame.fill(0);
 }
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
@@ -251,18 +260,26 @@ void DisplayService::setBrightness(uint8_t _brightness)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2))
+        power ? max<uint16_t>(brightness,
+                              powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                  ((1U << depth) - 2))
               : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(brightness -
-                       _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        max<uint16_t>(_brightness,
+                      powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                          ((1U << depth) - 2)),
+        (1U << 4U) *
+            abs(brightness -
+                _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-    ledcFade(
-        PIN_OE,
-        power ? max<uint16_t>(brightness, powf(brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2))
-              : 0,
-        max<uint16_t>(_brightness, powf(_brightness / static_cast<float>(UINT8_MAX), GAMMA) * ((1 << depth) - 2)),
-        (1 << 4) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+    ledcFade(PIN_OE,
+             power ? max<uint16_t>(brightness,
+                                   powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                       ((1U << depth) - 2))
+                   : 0,
+             max<uint16_t>(_brightness,
+                           powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                               ((1U << depth) - 2)),
+             (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
@@ -277,23 +294,23 @@ void DisplayService::setBrightness(uint8_t _brightness)
     pending = true;
 }
 
-void DisplayService::getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::getFrame(std::span<uint8_t> frameCurrent) const
 {
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    for (size_t i = 0; i < frameCurrent.size(); ++i)
     {
         frameCurrent[i] = frame[pixel[i]];
     }
 }
 
-void DisplayService::setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS])
+void DisplayService::setFrame(std::span<const uint8_t> frameNext)
 {
-    for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+    for (size_t i = 0; i < frameNext.size(); ++i)
     {
         _frame[pixel[i]] = frameNext[i];
     }
 }
 
-void DisplayService::clearFrame(uint8_t brightness) { memset(_frame, brightness, sizeof(_frame)); }
+void DisplayService::clearFrame(uint8_t brightness) { _frame.fill(brightness); }
 
 void DisplayService::invertFrame()
 {
@@ -321,6 +338,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
     _frame[pixel[x + (y * GRID_COLUMNS)]] = brightness;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
@@ -329,7 +347,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     const float yRatio =
         static_cast<float>(2 * PITCH_VERTICAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
 #else
-    const bool rotated = (orientation % 2) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) % 2) != 0;
     const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                          (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
     const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
@@ -343,10 +361,10 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     {
         for (uint16_t _y = yMin; _y <= yMax; ++_y)
         {
-            const float xDistance = xRatio * (_x - x);
-            const float yDistance = yRatio * (_y - y);
+            const float xDistance = xRatio * (static_cast<float>(_x) - x);
+            const float yDistance = yRatio * (static_cast<float>(_y) - y);
             const float distance = sqrtf((xDistance * xDistance) + (yDistance * yDistance));
-            if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5f))
+            if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
                 setPixel(_x, _y, brightness);
             }
@@ -354,16 +372,37 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill,
                                    uint8_t brightness)
 {
-    for (uint8_t x = minX; x <= maxX; ++x)
+    if (fill)
     {
-        for (uint8_t y = minY; y <= maxY; ++y)
+        for (uint16_t x = minX; x <= maxX; ++x)
         {
-            if (fill || x == minX || y == minY || x == maxX || y == maxY)
+            for (uint16_t y = minY; y <= maxY; ++y)
             {
-                setPixel(x, y, brightness);
+                setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
+            }
+        }
+        return;
+    }
+    for (uint16_t x = minX; x <= maxX; ++x)
+    {
+        setPixel(static_cast<uint8_t>(x), minY, brightness);
+        if (maxY != minY)
+        {
+            setPixel(static_cast<uint8_t>(x), maxY, brightness);
+        }
+    }
+    if (maxY > minY + 1)
+    {
+        for (uint16_t y = static_cast<uint16_t>(minY) + 1; y <= static_cast<uint16_t>(maxY) - 1; ++y)
+        {
+            setPixel(minX, static_cast<uint8_t>(y), brightness);
+            if (maxX != minX)
+            {
+                setPixel(maxX, static_cast<uint8_t>(y), brightness);
             }
         }
     }
@@ -371,25 +410,26 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = (orientation % 2) != 0;
-    JsonDocument doc;
-    doc["brightness"] = brightness;
+    const bool rotated = (static_cast<uint8_t>(orientation) % 2U) != 0U;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
-    doc["columns"] = GRID_COLUMNS;
+    doc["columns"].set(GRID_COLUMNS);
 #else
-    doc["columns"] = rotated ? GRID_ROWS : GRID_COLUMNS;
+    doc["columns"].set(rotated ? GRID_ROWS : GRID_COLUMNS);
 #endif // GRID_COLUMNS == GRID_ROWS
-    doc["orientation"] = orientation * 90;
-    doc["power"] = power;
+    doc["orientation"].set(static_cast<uint8_t>(orientation) * 90U);
+    doc["power"].set(power);
 #if GRID_COLUMNS == GRID_ROWS
-    doc["rows"] = GRID_ROWS;
+    doc["rows"].set(GRID_ROWS);
 #else
-    doc["rows"] = rotated ? GRID_COLUMNS : GRID_ROWS;
+    doc["rows"].set(rotated ? GRID_COLUMNS : GRID_ROWS);
 #endif // GRID_COLUMNS == GRID_ROWS
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void DisplayService::onReceive(JsonObjectConst payload, const char *source)
+void DisplayService::onReceive(JsonObjectConst payload,
+                               const char *source) // NOLINT(misc-unused-parameters)
 {
     // Brightness
     if (payload["brightness"].is<uint8_t>())
@@ -399,7 +439,8 @@ void DisplayService::onReceive(JsonObjectConst payload, const char *source)
     // Orientation
     if (payload["orientation"].is<uint16_t>())
     {
-        setOrientation((Orientation)(payload["orientation"].as<uint16_t>() / 90));
+        setOrientation(
+            static_cast<Orientation>(static_cast<uint8_t>((payload["orientation"].as<uint16_t>() / 90U) & 3U)));
     }
     // Power
     if (payload["power"].is<bool>())
@@ -414,4 +455,5 @@ DisplayService &DisplayService::getInstance()
     return instance;
 }
 
-DisplayService &Display = Display.getInstance();
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+DisplayService &Display = DisplayService::getInstance();

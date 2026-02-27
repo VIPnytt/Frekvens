@@ -2,7 +2,7 @@
 
 #if MODE_FLIES
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <unordered_map>
@@ -18,9 +18,7 @@ private:
 
     bool pending = false;
 
-    std::unordered_map<uint8_t, Dot> flies = {};
-
-    uint8_t drawing[GRID_COLUMNS * GRID_ROWS] = {0};
+    std::unordered_map<uint8_t, Dot> flies{};
 
 public:
     explicit FliesMode() : ModeModule("Flies") {};

@@ -2,7 +2,7 @@
 
 #include "modes/NoiseMode.h"
 
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 void NoiseMode::handle()
 {
@@ -13,7 +13,7 @@ void NoiseMode::handle()
             Display.setPixel(dot.x, dot.y, 0);
             dot.x = random(GRID_COLUMNS);
             dot.y = random(GRID_ROWS);
-            dot.delay = random(1 << 6, INT8_MAX);
+            dot.delay = random(1U << 6U, INT8_MAX);
             Display.setPixel(dot.x, dot.y);
             dot.lastMillis = millis();
         }

@@ -1,6 +1,6 @@
 #include "fonts/MicroFont.h"
 
-MicroFont *FontMicro = nullptr;
+MicroFont *FontMicro = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MicroFont::MicroFont() : FontModule("Micro") { FontMicro = this; }
 

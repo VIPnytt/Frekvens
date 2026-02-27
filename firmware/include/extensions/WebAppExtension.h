@@ -3,7 +3,8 @@
 #if EXTENSION_WEBAPP
 
 #include "modules/ExtensionModule.h"
-#include "services/WebServerService.h"
+
+#include <ESPAsyncWebServer.h>
 
 class WebAppExtension final : public ExtensionModule
 {
@@ -17,6 +18,6 @@ public:
     void begin() override;
 };
 
-extern WebAppExtension *WebApp;
+extern WebAppExtension *WebApp; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_WEBAPP

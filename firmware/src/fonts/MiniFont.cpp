@@ -1,6 +1,6 @@
 #include "fonts/MiniFont.h"
 
-MiniFont *FontMini = nullptr;
+MiniFont *FontMini = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MiniFont::MiniFont() : FontModule("Mini") { FontMini = this; }
 

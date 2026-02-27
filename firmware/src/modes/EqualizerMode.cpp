@@ -18,15 +18,15 @@ void EqualizerMode::begin()
 
 void EqualizerMode::handle()
 {
-    if (millis() - lastMillis > (1 << 4))
+    if (millis() - lastMillis > (1UL << 4U))
     {
         lastMillis = millis();
 #if EXTENSION_MICROPHONE
         const bool play = Microphone->isTriggered();
 #endif // EXTENSION_MICROPHONE
-        uint8_t minX = 0;
-        for (Bar &bar : bars)
+        for (size_t i = 0; i < bars.size(); ++i)
         {
+            Bar &bar = bars[i];
             if (bar.target == bar.level)
             {
 #if EXTENSION_MICROPHONE
@@ -35,8 +35,9 @@ void EqualizerMode::handle()
                 bar.target = random(GRID_ROWS);
 #endif // EXTENSION_MICROPHONE
             }
-            else if (random(1 << 3) == 0)
+            else if (random(1U << 3U) == 0)
             {
+                const uint8_t minX = static_cast<uint8_t>(i * (width + 1));
                 const uint8_t maxX = minX + width - 1;
                 if (bar.level < bar.target)
                 {
@@ -53,7 +54,6 @@ void EqualizerMode::handle()
                 Display.drawRectangle(
                     minX, bar.level, maxX, GRID_ROWS - 1, true, UINT8_MAX * (GRID_ROWS - bar.level) / GRID_ROWS);
             }
-            minX += width + 1;
         }
     }
 }

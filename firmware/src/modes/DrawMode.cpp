@@ -4,7 +4,6 @@
 
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ModesService.h"
 
 #include <Preferences.h>
 
@@ -13,7 +12,7 @@ void DrawMode::begin()
     load(true);
     if (!render)
     {
-        for (const uint8_t pixel : drawing)
+        for (const uint8_t pixel : frame)
         {
             if (pixel > 0)
             {
@@ -29,7 +28,7 @@ void DrawMode::handle()
 {
     if (render)
     {
-        Display.setFrame(drawing);
+        Display.setFrame(frame);
         render = false;
     }
     else if (pending)
@@ -48,13 +47,13 @@ void DrawMode::load(bool cache)
     const char *const key = cache ? "cache" : "saved";
     if (cache && Storage.isKey("cache"))
     {
-        Storage.getBytes("cache", static_cast<void *>(drawing), sizeof(drawing));
+        Storage.getBytes(key, frame.data(), frame.size());
         pending = true;
         render = true;
     }
     else if (Storage.isKey("saved"))
     {
-        Storage.getBytes("saved", static_cast<void *>(drawing), sizeof(drawing));
+        Storage.putBytes(key, frame.data(), frame.size());
         pending = true;
         render = true;
     }
@@ -63,13 +62,13 @@ void DrawMode::load(bool cache)
 
 void DrawMode::save(bool cache)
 {
-    for (const uint8_t pixel : drawing)
+    for (const uint8_t pixel : frame)
     {
         if (pixel > 0)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putBytes(cache ? "cache" : "saved", static_cast<void *>(drawing), sizeof(drawing));
+            Storage.putBytes(cache ? "cache" : "saved", frame.data(), frame.size());
             Storage.end();
             pending = true;
             if (!cache)
@@ -83,16 +82,17 @@ void DrawMode::save(bool cache)
 
 void DrawMode::transmit()
 {
-    JsonDocument doc;
-    JsonArray frame = doc["frame"].to<JsonArray>();
-    for (const uint8_t pixel : drawing)
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonArray frame{doc["frame"].to<JsonArray>()};
+    for (const uint8_t pixel : frame)
     {
         frame.add(pixel);
     }
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void DrawMode::onReceive(JsonObjectConst payload, const char *source)
+void DrawMode::onReceive(JsonObjectConst payload,
+                         const char *source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {
@@ -100,7 +100,7 @@ void DrawMode::onReceive(JsonObjectConst payload, const char *source)
         // Clear
         if (strcmp(action, "clear") == 0)
         {
-            memset(drawing, 0, sizeof(drawing));
+            frame.fill(0);
             render = true;
         }
         // Load
@@ -120,20 +120,15 @@ void DrawMode::onReceive(JsonObjectConst payload, const char *source)
         }
     }
     // Frame
-    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == GRID_COLUMNS * GRID_ROWS)
+    if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == frame.size())
     {
-#if GRID_COLUMNS * GRID_ROWS > (1 << 8)
-        uint16_t i = 0;
-#else
-        uint8_t i = 0;
-#endif // GRID_COLUMNS * GRID_ROWS > (1 << 8)
-        for (const JsonVariantConst pixel : payload["frame"].as<JsonArrayConst>())
+        const JsonArrayConst _frame = payload["frame"].as<JsonArrayConst>();
+        for (size_t i = 0; i < frame.size(); ++i)
         {
-            if (pixel.is<uint8_t>())
+            if (_frame[i].is<uint8_t>())
             {
-                drawing[i] = pixel.as<uint8_t>();
+                frame[i] = _frame[i].as<uint8_t>();
             }
-            ++i;
         }
         render = true;
     }
@@ -144,7 +139,7 @@ void DrawMode::onReceive(JsonObjectConst payload, const char *source)
         {
             if (pixel["x"].is<uint8_t>() && pixel["y"].is<uint8_t>() && pixel["brightness"].is<uint8_t>())
             {
-                drawing[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] =
+                frame[pixel["x"].as<uint8_t>() + pixel["y"].as<uint8_t>() * GRID_COLUMNS] =
                     pixel["brightness"].as<uint8_t>();
             }
         }

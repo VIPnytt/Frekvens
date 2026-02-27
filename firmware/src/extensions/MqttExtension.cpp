@@ -2,14 +2,13 @@
 
 #include "extensions/MqttExtension.h"
 
-#include "config/constants.h"
-#include "extensions/HomeAssistantExtension.h"
-#include "services/ConnectivityService.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
 #include <WiFi.h>
+#include <array>
 
-MqttExtension *Mqtt = nullptr;
+MqttExtension *Mqtt = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MqttExtension::MqttExtension() : ExtensionModule("MQTT") { Mqtt = this; }
 
@@ -20,7 +19,7 @@ void MqttExtension::configure()
     client.onDisconnect(&onDisconnect);
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
-    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
+    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
 #ifdef MQTT_PORT
     client.setServer(MQTT_HOST, MQTT_PORT);
 #else
@@ -41,7 +40,7 @@ void MqttExtension::handle()
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();
-            ESP_LOGD(Mqtt->name, "queue dropped");
+            ESP_LOGD(Mqtt->name, "queue dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -51,7 +50,7 @@ void MqttExtension::disconnect()
     lastMillis = millis();
     if (client.connected())
     {
-        client.publish("frekvens/" HOSTNAME "/availability", 1, true, (const uint8_t[]){0}, 0);
+        client.publish("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
         client.loop();
         client.disconnect();
     }
@@ -59,7 +58,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent)
 {
-    ESP_LOGD(Mqtt->name, "connected");
+    ESP_LOGD(Mqtt->name, "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     if (!sessionPresent ||
         (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
@@ -69,10 +68,12 @@ void MqttExtension::onConnect(bool sessionPresent)
     Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
 }
 
-void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
-                              const uint8_t *payload, size_t len, size_t index, size_t total)
+void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
+                              const char *topic, const uint8_t *payload, size_t len,
+                              size_t index, // NOLINT(misc-unused-parameters)
+                              size_t total) // NOLINT(misc-unused-parameters)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     if (deserializeJson(doc, payload, len))
     {
         return;
@@ -82,9 +83,10 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
                    std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD(Mqtt->name, "disconnected");
+    ESP_LOGD(Mqtt->name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
     ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 

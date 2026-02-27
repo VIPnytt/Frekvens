@@ -8,7 +8,7 @@
 
 #include <esp_sntp.h>
 
-RtcExtension *Rtc = nullptr;
+RtcExtension *Rtc = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 RtcExtension::RtcExtension() : ExtensionModule("RTC") { Rtc = this; }
 
@@ -22,18 +22,18 @@ void RtcExtension::configure()
 #endif
     if (rtc.IsDateTimeValid())
     {
-        tm local = {};
+        tm local{};
         if (!getLocalTime(&local))
         {
-            struct timeval tv = {};
+            struct timeval tv{};
             tv.tv_sec = rtc.GetDateTime().Unix64Time();
             settimeofday(&tv, nullptr);
-            ESP_LOGD(name, "sync");
+            ESP_LOGD(name, "sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
     }
     else
     {
-        ESP_LOGW(name, "out of sync");
+        ESP_LOGW(name, "out of sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
 
@@ -42,22 +42,22 @@ void RtcExtension::configure()
 #endif
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_temperature");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::device_class] = "temperature";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::expire_after] = UINT8_MAX;
-        component[HomeAssistantAbbreviations::force_update] = true;
-        component[HomeAssistantAbbreviations::name] = std::string(name).append(" temperature");
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "sensor";
-        component[HomeAssistantAbbreviations::state_class] = "measurement";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::unit_of_measurement] = "°C";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.temperature}}";
+        const std::string id{std::string(name).append("_temperature")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("temperature");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" temperature"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 #endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 }
@@ -98,20 +98,19 @@ IRAM_ATTR void RtcExtension::onInterrupt() { Rtc->pending = true; }
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
 void RtcExtension::transmit()
 {
-    JsonDocument doc;
-    doc["temperature"] = rtc.GetTemperature().AsFloatDegC();
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["temperature"].set(rtc.GetTemperature().AsFloatDegC());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232)
 
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
-    time_t timer = tv->tv_sec;
-    tm *local = gmtime(&timer);
-    RtcDateTime dt = RtcDateTime(
-        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec);
-    Rtc->rtc.SetDateTime(dt);
-    ESP_LOGV(Rtc->name, "NTP sync");
+    const time_t timer = tv->tv_sec;
+    const tm *local = gmtime(&timer);
+    Rtc->rtc.SetDateTime(RtcDateTime(
+        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec));
+    ESP_LOGV(Rtc->name, "NTP sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 #endif // EXTENSION_RTC

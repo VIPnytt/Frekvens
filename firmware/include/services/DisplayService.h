@@ -1,8 +1,10 @@
 #pragma once
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
+#include <array>
+#include <span>
 #include <vector>
 
 class DisplayService final : public ServiceModule
@@ -16,7 +18,7 @@ private:
     static constexpr uint8_t frameRate = 60;
 #endif // FRAME_RATE
 
-    enum Orientation
+    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
     {
         deg0,
         deg90,
@@ -24,10 +26,11 @@ private:
         deg270,
     };
 
-    const uint8_t depth =
+    // NOLINTNEXTLINE(cert-err58-cpp)
+    inline static const uint8_t depth =
         min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
 
-    static constexpr std::array<uint16_t, 12> hi{
+    static constexpr std::array<uint16_t, 12> splash{
         0b1000001001,
         0b1000000001,
         0b1110001001,
@@ -52,9 +55,10 @@ private:
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
 
     uint8_t brightness = 0;
-    uint8_t _frame[GRID_COLUMNS * GRID_ROWS] = {0};
-    uint8_t frame[GRID_COLUMNS * GRID_ROWS] = {0};
-    uint8_t pixel[GRID_COLUMNS * GRID_ROWS] = LED_MAP;
+
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixel{LED_MAP};
 
     Orientation orientation = Orientation::deg0;
 
@@ -83,8 +87,8 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(uint8_t frameCurrent[GRID_COLUMNS * GRID_ROWS]);
-    void setFrame(const uint8_t frameNext[GRID_COLUMNS * GRID_ROWS]);
+    void getFrame(std::span<uint8_t> frameCurrent) const;
+    void setFrame(std::span<const uint8_t> frameNext);
 
     void clearFrame(uint8_t _brightness = 0);
     void invertFrame();
@@ -104,4 +108,4 @@ public:
     static DisplayService &getInstance();
 };
 
-extern DisplayService &Display;
+extern DisplayService &Display; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

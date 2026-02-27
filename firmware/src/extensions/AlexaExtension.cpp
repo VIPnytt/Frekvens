@@ -2,13 +2,12 @@
 
 #include "extensions/AlexaExtension.h"
 
-#include "config/constants.h"
 #include "services/DisplayService.h"
 #include "services/WebServerService.h"
 
 #include <HTTPClient.h>
 
-AlexaExtension *Alexa = nullptr;
+AlexaExtension *Alexa = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 AlexaExtension::AlexaExtension() : ExtensionModule("Alexa") { Alexa = this; }
 
@@ -20,7 +19,7 @@ void AlexaExtension::begin()
     fauxmo.onSetState(&onSetState);
 
     WebServer.http->on(
-        AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServer.onEmpty, nullptr, &onSet);
+        AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, nullptr, &onSet);
     WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights"),
                        WebRequestMethod::HTTP_GET,
                        &onGet);
@@ -29,7 +28,7 @@ void AlexaExtension::begin()
                        &onGet);
     WebServer.http->on(AsyncURIMatcher::exact("/api/2WLEDHardQrI3WHYTHoMcXHgEspsM8ZZRpSKtBQr/lights/1/state"),
                        WebRequestMethod::HTTP_PUT,
-                       &WebServer.onEmpty,
+                       &WebServerService::onEmpty,
                        nullptr,
                        &onSet);
     WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGet);
@@ -40,7 +39,8 @@ void AlexaExtension::begin()
 
 void AlexaExtension::handle() { fauxmo.handle(); }
 
-void AlexaExtension::onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value)
+void AlexaExtension::onSetState(unsigned char deviceId, // NOLINT(misc-unused-parameters)
+                                const char *deviceName, bool state, unsigned char value)
 {
     if (strcmp(deviceName, NAME) == 0)
     {
@@ -57,7 +57,9 @@ void AlexaExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
-void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len,
+                           size_t index, // NOLINT(misc-unused-parameters)
+                           size_t total) // NOLINT(misc-unused-parameters)
 {
     if (!Alexa->fauxmo.process(
             request->client(),

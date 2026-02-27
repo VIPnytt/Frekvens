@@ -2,12 +2,12 @@
 
 #include "extensions/WebAppExtension.h"
 
-#include "services/DeviceService.h"
+#include "services/WebServerService.h"
 
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
-WebAppExtension *WebApp = nullptr;
+WebAppExtension *WebApp = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 WebAppExtension::WebAppExtension() : ExtensionModule("Web app") { WebApp = this; }
 
@@ -15,7 +15,7 @@ void WebAppExtension::configure()
 {
     if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))
     {
-        ESP_LOGE(name, "Filesystem Image not found");
+        ESP_LOGE(name, "Filesystem Image not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
     WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
 }

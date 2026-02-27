@@ -4,7 +4,7 @@
 
 #include "modules/ExtensionModule.h"
 
-#include <ESPAsyncWebServer.h>
+#include <AsyncWebSocket.h>
 
 class WebSocketExtension final : public ExtensionModule
 {
@@ -23,6 +23,6 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern WebSocketExtension *WebSocket;
+extern WebSocketExtension *WebSocket; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_WEBSOCKET

@@ -2,14 +2,14 @@
 
 #include "extensions/PhotocellExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
 
-PhotocellExtension *Photocell = nullptr;
+PhotocellExtension *Photocell = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 PhotocellExtension::PhotocellExtension() : ExtensionModule("Photocell") { Photocell = this; }
 
@@ -17,37 +17,37 @@ void PhotocellExtension::configure()
 {
     pinMode(PIN_LDR, ANALOG);
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::icon] = "mdi:brightness-auto";
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:brightness-auto");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
     {
-        const std::string id = std::string(name).append("_illuminance");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "diagnostic";
-        component[HomeAssistantAbbreviations::icon] = "mdi:brightness-5";
-        component[HomeAssistantAbbreviations::name] = "Illuminance";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "sensor";
-        component[HomeAssistantAbbreviations::state_class] = "measurement";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.illuminance}}";
+        const std::string id{std::string(name).append("_illuminance")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::icon].set("mdi:brightness-5");
+        component[HomeAssistantAbbreviations::name].set("Illuminance");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.illuminance}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -80,8 +80,8 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
-        const uint8_t _brightness =
-            static_cast<uint8_t>(powf(raw / static_cast<float>((1 << 12) - 1), gamma) * UINT8_MAX);
+        const uint8_t _brightness = static_cast<uint8_t>(
+            powf(static_cast<float>(raw) / static_cast<float>((1U << 12U) - 1), gamma) * UINT8_MAX);
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
@@ -114,14 +114,7 @@ void PhotocellExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 
@@ -139,14 +132,15 @@ void PhotocellExtension::setGamma(float _gamma)
 
 void PhotocellExtension::transmit()
 {
-    JsonDocument doc;
-    doc["active"] = active;
-    doc["illuminance"] = raw;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["active"].set(active);
+    doc["illuminance"].set(raw);
     Device.transmit(doc.as<JsonObjectConst>(), name);
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload, const char *source)
+void PhotocellExtension::onReceive(JsonObjectConst payload,
+                                   const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -163,8 +157,8 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
         const uint8_t _brightness = payload["brightness"].as<uint8_t>();
         if (_brightness != brightness)
         {
-            setGamma(logf(_brightness / static_cast<float>(1 << 8)) /
-                     logf((raw + 1) / static_cast<float>((1 << 12) + 1)));
+            setGamma(logf(static_cast<float>(_brightness) / static_cast<float>(1U << 8U)) /
+                     logf(static_cast<float>(raw + 1) / static_cast<float>((1U << 12U) + 1)));
         }
     }
 }

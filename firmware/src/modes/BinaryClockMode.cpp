@@ -2,7 +2,7 @@
 
 #include "modes/BinaryClockMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 void BinaryClockMode::begin() { pending = true; }
@@ -39,7 +39,7 @@ void BinaryClockMode::draw(uint8_t y, uint8_t value)
     for (uint8_t i = 0; i < 6; ++i)
     {
         const uint8_t x = (GRID_COLUMNS / 2) + 4 - (i * 2);
-        Display.drawRectangle(x, y, x + 1, y + 3, true, (value & (1 << i)) != 0 ? UINT8_MAX : 0);
+        Display.drawRectangle(x, y, x + 1, y + 3, true, (value & (1U << i)) != 0 ? UINT8_MAX : 0);
     }
 }
 

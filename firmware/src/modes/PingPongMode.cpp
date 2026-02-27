@@ -3,36 +3,35 @@
 #include "modes/PingPongMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 
 void PingPongMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_clock");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"clock":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:table-tennis";
-        component[HomeAssistantAbbreviations::name] = std::string(name).append(" clock");
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.clock}}";
+        const std::string id{std::string(name).append("_clock")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"clock":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:table-tennis");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" clock"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
@@ -113,8 +112,8 @@ void PingPongMode::handle()
         deg = 360 - deg; // Invert Y
     }
     Display.setPixel(x, y, 0);
-    xDec += cosf(deg * DEG_TO_RAD) * speed;
-    yDec -= sinf(deg * DEG_TO_RAD) * speed;
+    xDec += cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
+    yDec -= sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
     x = lroundf(xDec);
     y = lroundf(yDec);
     Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
@@ -194,7 +193,7 @@ void PingPongMode::setClock(bool _clock)
         clock = _clock;
         if (clock && yDec <= 5)
         {
-            yDec = 5.5f;
+            yDec = 5.5F;
         }
         Display.clearFrame();
         Preferences Storage;
@@ -208,12 +207,13 @@ void PingPongMode::setClock(bool _clock)
 
 void PingPongMode::transmit()
 {
-    JsonDocument doc;
-    doc["clock"] = clock;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["clock"].set(clock);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PingPongMode::onReceive(JsonObjectConst payload, const char *source)
+void PingPongMode::onReceive(JsonObjectConst payload,
+                             const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

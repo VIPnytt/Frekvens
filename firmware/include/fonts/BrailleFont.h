@@ -347,6 +347,6 @@ public:
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern BrailleFont *FontBraille;
+extern BrailleFont *FontBraille; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // FONT_BRAILLE

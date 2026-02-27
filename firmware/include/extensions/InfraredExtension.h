@@ -2,7 +2,7 @@
 
 #if EXTENSION_INFRARED
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
 #define USE_IRREMOTE_HPP_AS_PLAIN_INCLUDE
@@ -150,6 +150,6 @@ public:
     void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
-extern InfraredExtension *Infrared;
+extern InfraredExtension *Infrared; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_INFRARED

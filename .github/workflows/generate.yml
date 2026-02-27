@@ -65,7 +65,7 @@ jobs:
           mv DejaVuSansFont.h firmware/include/fonts
 
           sed -i '/^#pragma once$/a\#include "fonts/DejaVuSansFont.h"' firmware/include/services/FontsService.h
-          sed -i '/^    const std::vector<FontModule \*> modules = {$/a\        new DejaVuSansFont(),' firmware/include/services/FontsService.h
+          sed -i '/^    const std::vector<FontModule \*> modules{$/a\        new DejaVuSansFont(),' firmware/include/services/FontsService.h
 
       - name: PlatformIO build
         run: |
@@ -110,7 +110,7 @@ jobs:
 
       - name: Clang summary
         env:
-          clang-threshold: 3
+          clang-threshold: 0
         run: |
           echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
@@ -203,7 +203,7 @@ jobs:
           mv DynamicMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/DynamicMode.h"' firmware/include/services/ModesService.h
-          sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
+          sed -i '/^    inline static const std::vector<ModeModule \*> modes{$/a\        new DynamicMode(),' firmware/include/services/ModesService.h
 
       - name: PlatformIO build
         run: |
@@ -324,7 +324,7 @@ jobs:
           mv StaticMode.h firmware/include/modes
 
           sed -i '/^#pragma once$/a\#include "modes/StaticMode.h"' firmware/include/services/ModesService.h
-          sed -i '/^    const std::vector<ModeModule \*> modes = {$/a\        new StaticMode(),' firmware/include/services/ModesService.h
+          sed -i '/^    inline static const std::vector<ModeModule \*> modes{$/a\        new StaticMode(),' firmware/include/services/ModesService.h
 
       - name: PlatformIO build
         run: |

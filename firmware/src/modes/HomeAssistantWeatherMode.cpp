@@ -5,7 +5,7 @@
 #include "services/ConnectivityService.h"
 
 #include <HTTPClient.h>
-#include <NetworkClientSecure.h>
+#include <NetworkClientSecure.h> // NOLINT(misc-include-cleaner)
 
 void HomeAssistantWeatherMode::begin()
 {
@@ -31,9 +31,9 @@ void HomeAssistantWeatherMode::update()
 {
     lastMillis = millis();
 #ifdef HOMEASSISTANT_PROTOCOL
-    NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start,
-                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    NetworkClientSecure client; // NOLINT(misc-const-correctness)
+    const std::span<const uint8_t> bundle = ConnectivityService::certificates();
+    client.setCACertBundle(bundle.data(), bundle.size());
     HTTPClient http;
     http.begin(client, urls.back().c_str());
 #else
@@ -50,19 +50,19 @@ void HomeAssistantWeatherMode::update()
         NetworkClient &stream = http.getStream();
         const int contentLength = http.getSize();
         const unsigned long _lastMillis = millis();
-        while (stream.available() < contentLength && millis() - _lastMillis < (1 << 13))
+        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13U))
         {
             vTaskDelay(1);
         }
-        JsonDocument filter;
-        filter["attributes"]["temperature"] = true;
-        filter["state"] = true;
-        JsonDocument doc;
+        JsonDocument filter; // NOLINT(misc-const-correctness)
+        filter["attributes"]["temperature"].set(true);
+        filter["state"].set(true);
+        JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
             !doc["attributes"]["temperature"].is<float>() || !doc["state"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1 << 14);
+            lastMillis = millis() - interval + (1UL << 14U);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -74,7 +74,7 @@ void HomeAssistantWeatherMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1 << 12);
+        lastMillis = millis() - interval + (1UL << 12U);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -82,7 +82,7 @@ void HomeAssistantWeatherMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1 << 15);
+        lastMillis = millis() - interval + (1UL << 15U);
     }
 }
 

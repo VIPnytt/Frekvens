@@ -1,6 +1,6 @@
 #include "handlers/TextHandler.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(font)
@@ -10,7 +10,7 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
         {
             uint8_t yMax = 0;
             uint8_t yMin = 0;
-            for (uint32_t codepoint; nextCodepoint(codepoint);)
+            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
                 if (!character.bitmap.empty())
@@ -21,30 +21,29 @@ TextHandler::TextHandler(std::string text, FontModule *font) : text(text), font(
             }
             height = yMax - yMin;
         }
-        tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0f));
+        tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             i = 0;
-            uint8_t _width = 0;
-            for (uint32_t codepoint; nextCodepoint(codepoint);)
+            width = 0;
+            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character = font->getChar(codepoint);
                 if (!character.bitmap.empty())
                 {
-                    _width += calcMsbMax(character) + 1 + character.offsetX + tracking;
+                    width += calcMsbMax(character) + 1 + character.offsetX + tracking;
                 }
                 else if (character.offsetX > 0)
                 {
-                    _width += character.offsetX + tracking;
+                    width += character.offsetX + tracking;
                 }
                 else
                 {
-                    char buffer[5];
-                    ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint, buffer));
+                    ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
                 }
             }
-            if (_width > tracking)
+            if (width > tracking)
             {
-                width = _width - tracking;
+                width -= tracking;
             }
         }
     }
@@ -58,7 +57,7 @@ void TextHandler::draw(uint8_t brightness)
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
 {
     i = 0;
-    for (uint32_t codepoint; nextCodepoint(codepoint);)
+    for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
     {
         FontModule::Symbol character = font->getChar(codepoint);
         const uint8_t _height = character.bitmap.size();
@@ -98,42 +97,44 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte = text[i++];
+    const uint8_t byte = static_cast<uint8_t>(text[i]);
+    i++;
     if (byte <= 0x7F)
     {
         buffer = byte;
         return true;
     }
     uint8_t bytes = 0;
-    if ((byte & 0xE0) == 0xC0)
+    if ((byte & 0xE0U) == 0xC0U)
     {
-        buffer = byte & 0x1F;
+        buffer = byte & 0x1FU;
         bytes = 1;
     }
-    else if ((byte & 0xF0) == 0xE0)
+    else if ((byte & 0xF0U) == 0xE0U)
     {
-        buffer = byte & 0x0F;
+        buffer = byte & 0x0FU;
         bytes = 2;
     }
-    else if ((byte & 0xF8) == 0xF0)
+    else if ((byte & 0xF8U) == 0xF0U)
     {
-        buffer = byte & 0x07;
+        buffer = byte & 0x07U;
         bytes = 3;
     }
     else
     {
-        buffer = 0xFFFD;
+        buffer = 0xFFFDU;
         return true;
     }
     while (bytes-- && i < text.length())
     {
-        const uint8_t cont = text[i++];
-        if ((cont & 0xC0) != 0x80)
+        const uint8_t cont = text[i];
+        i++;
+        if ((cont & 0xC0U) != 0x80U)
         {
-            buffer = 0xFFFD;
+            buffer = 0xFFFDU;
             break;
         }
-        buffer = (buffer << 6) | (cont & 0x3F);
+        buffer = (buffer << 6U) | (cont & 0x3FU);
     }
     return true;
 }
@@ -141,52 +142,40 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
 uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character) const
 {
     uint8_t msbMax = 0;
-    for (uint8_t bitset : character.bitmap)
+    for (const uint8_t bitset : character.bitmap)
     {
-        uint8_t msb = 0;
-        while (bitset >>= 1)
+        if (bitset != 0)
         {
-            ++msb;
-        }
-        if (msb > msbMax)
-        {
-            msbMax = msb;
+            msbMax = max(msbMax, static_cast<uint8_t>(std::bit_width(bitset) - 1));
         }
     }
     return msbMax;
 }
 
-const char *TextHandler::encode(uint32_t codepoint, char *buffer)
+std::array<char, 5> TextHandler::encode(uint32_t codepoint)
 {
+    std::array<char, 5> out{};
     if (codepoint <= 0x7F)
     {
-        buffer[0] = codepoint;
-        buffer[1] = '\0';
+        out.at(0) = static_cast<char>(codepoint);
     }
     else if (codepoint <= 0x7FF)
     {
-        buffer[0] = 0xC0 | (codepoint >> 6);
-        buffer[1] = 0x80 | (codepoint & 0x3F);
-        buffer[2] = '\0';
+        out.at(0) = static_cast<char>(0xC0 | (codepoint >> 6U));
+        out.at(1) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
     else if (codepoint <= 0xFFFF)
     {
-        buffer[0] = 0xE0 | (codepoint >> 12);
-        buffer[1] = 0x80 | ((codepoint >> 6) & 0x3F);
-        buffer[2] = 0x80 | (codepoint & 0x3F);
-        buffer[3] = '\0';
+        out.at(0) = static_cast<char>(0xE0 | (codepoint >> 12U));
+        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
+        out.at(2) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
     else if (codepoint <= 0x10FFFF)
     {
-        buffer[0] = 0xF0 | (codepoint >> 18);
-        buffer[1] = 0x80 | ((codepoint >> 12) & 0x3F);
-        buffer[2] = 0x80 | ((codepoint >> 6) & 0x3F);
-        buffer[3] = 0x80 | (codepoint & 0x3F);
-        buffer[4] = '\0';
+        out.at(0) = static_cast<char>(0xF0 | (codepoint >> 18U));
+        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 12U) & 0x3FU));
+        out.at(2) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
+        out.at(3) = static_cast<char>(0x80 | (codepoint & 0x3FU));
     }
-    else
-    {
-        buffer[0] = '\0';
-    }
-    return buffer;
+    return out;
 }

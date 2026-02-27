@@ -3,10 +3,11 @@
 #include "modules/FontModule.h"
 #include "modules/HandlerModule.h"
 
+#include <array>
 #include <string>
 #include <string_view>
 
-class TextHandler : public HandlerModule
+class TextHandler final : public HandlerModule
 {
 private:
     static constexpr std::string_view _name = "TextHandler";
@@ -24,7 +25,7 @@ private:
 
     bool nextCodepoint(uint32_t &out);
 
-    static const char *encode(uint32_t codepoint, char *out);
+    static std::array<char, 5> encode(uint32_t codepoint);
 
 public:
     explicit TextHandler(std::string text, FontModule *font);

@@ -1,8 +1,6 @@
 #include "services/ExtensionsService.h"
 
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ModesService.h"
 
 void ExtensionsService::configure()
 {
@@ -26,8 +24,8 @@ const std::vector<ExtensionModule *> &ExtensionsService::getAll() const { return
 
 void ExtensionsService::transmit()
 {
-    JsonDocument doc;
-    JsonArray list = doc["list"].to<JsonArray>();
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonArray list{doc["list"].to<JsonArray>()};
     for (const ExtensionModule *extension : modules)
     {
         list.add(extension->name);
@@ -36,7 +34,7 @@ void ExtensionsService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ExtensionsService::onTask(void *parameter)
+void ExtensionsService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
 {
     for (;;)
     {
@@ -54,4 +52,5 @@ ExtensionsService &ExtensionsService::getInstance()
     return instance;
 }
 
-ExtensionsService &Extensions = Extensions.getInstance();
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+ExtensionsService &Extensions = ExtensionsService::getInstance();

@@ -35,6 +35,6 @@ public:
     void onReceive(JsonObjectConst payload, const char *source) override;
 };
 
-extern MicrophoneExtension *Microphone;
+extern MicrophoneExtension *Microphone; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MICROPHONE
