@@ -100,13 +100,10 @@ jobs:
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
-          format-review: true
           ignore: "*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h"
-          passive-reviews: true
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true
 
       - name: Clang summary
         env:
@@ -237,13 +234,10 @@ jobs:
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
-          format-review: true
           ignore: "*|!firmware/src/modes/DynamicMode.cpp|!firmware/include/modes/DynamicMode.h"
-          passive-reviews: true
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true
 
       - name: Clang summary
         env:
@@ -358,13 +352,10 @@ jobs:
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
-          format-review: true
           ignore: "*|!firmware/src/modes/StaticMode.cpp|!firmware/include/modes/StaticMode.h"
-          passive-reviews: true
           step-summary: true
           style: file
           tidy-checks: ""
-          tidy-review: true
 
       - name: Clang summary
         env:
