@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 env:
   clang-version: 21
@@ -55,8 +54,6 @@ jobs:
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
-          format-review: true
-          passive-reviews: true
           step-summary: true
           style: file
           tidy-checks: -*

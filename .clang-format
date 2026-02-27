@@ -2,6 +2,7 @@
 Language: Cpp
 AccessModifierOffset: -4
 BinPackArguments: false
+BinPackLongBracedList: false
 BreakBeforeBraces: Allman
 BreakStringLiterals: false
 ColumnLimit: 120
