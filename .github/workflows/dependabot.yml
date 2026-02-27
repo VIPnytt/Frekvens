@@ -17,7 +17,7 @@ env:
 
 jobs:
   idle:
-    name: Idle check
+    name: Repository checks
     runs-on: ubuntu-latest
     outputs:
       active: ${{ steps.idle.outputs.active }}
@@ -34,8 +34,25 @@ jobs:
               branch: 'main',
             });
             const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
-            core.info(`Active: ${active}`);
+            core.info(`Repository is active: ${active}`);
             core.setOutput('active', active);
+
+      - name: GitHub Script milestone check
+        if: steps.idle.outputs.active
+        id: milestone
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const { data: milestone } = await github.rest.issues.getMilestone({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              milestone_number: ${{ env.milestone }},
+            });
+            if (milestone.state !== 'open') {
+              throw new Error(`Milestone #${{ env.milestone }} is ${milestone.state}`);
+            } else {
+               core.info(`Milestone #${{ env.milestone }} is ${milestone.state}``);
+            }
 
   github-check:
     name: GitHub check
