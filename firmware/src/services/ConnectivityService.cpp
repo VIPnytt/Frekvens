@@ -304,7 +304,7 @@ void ConnectivityService::transmit()
             Storage.getBytes("saved", buf.data(), len);
             Storage.end();
             JsonDocument _saved; // NOLINT(misc-const-correctness)
-            if (!deserializeJson(_saved, buf.data(), len))
+            if (deserializeJson(_saved, buf.data(), len) == DeserializationError::Code::Ok)
             {
                 JsonArray saved{doc["saved"].to<JsonArray>()};
                 for (const JsonPairConst pair : _saved.as<JsonObjectConst>())

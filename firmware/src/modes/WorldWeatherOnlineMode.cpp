@@ -55,7 +55,7 @@ void WorldWeatherOnlineMode::update()
 #endif // TEMPERATURE_FAHRENHEIT
         filter["data"]["current_condition"][0]["weatherCode"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) != DeserializationError::Code::Ok ||
 #if TEMPERATURE_FAHRENHEIT
             !(doc["data"]["current_condition"][0]["temp_F"].is<float>() ||
               doc["data"]["current_condition"][0]["temp_F"].is<std::string>()) ||

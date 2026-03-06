@@ -24,15 +24,17 @@ void PlaylistExtension::configure()
         std::vector<uint8_t> buffer(length);
         Storage.getBytes("modes", buffer.data(), length);
         Storage.end();
-        deserializeJson(doc, buffer.data(), length);
-        JsonArrayConst modes = doc.as<JsonArrayConst>();
-        playlist.reserve(modes.size());
-        for (JsonVariantConst item : modes)
+        if (deserializeJson(doc, buffer.data(), length) == DeserializationError::Code::Ok)
         {
-            PlaylistExtension::Mode mode;
-            mode.duration = item["duration"].as<uint16_t>();
-            mode.mode = item["mode"].as<std::string>();
-            playlist.push_back(mode);
+            JsonArrayConst modes = doc.as<JsonArrayConst>();
+            playlist.reserve(modes.size());
+            for (JsonVariantConst item : modes)
+            {
+                PlaylistExtension::Mode mode;
+                mode.duration = item["duration"].as<uint16_t>();
+                mode.mode = item["mode"].as<std::string>();
+                playlist.push_back(mode);
+            }
         }
     }
     else

@@ -74,13 +74,12 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
                               size_t total) // NOLINT(misc-unused-parameters)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    if (deserializeJson(doc, payload, len))
+    if (deserializeJson(doc, payload, len) == DeserializationError::Code::Ok)
     {
-        return;
+        Device.receive(doc.as<JsonObjectConst>(),
+                       Mqtt->name,
+                       std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
     }
-    Device.receive(doc.as<JsonObjectConst>(),
-                   Mqtt->name,
-                   std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
 }
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
