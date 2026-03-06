@@ -47,7 +47,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-p
         if (static_cast<AwsFrameInfo *>(arg)->opcode == AwsFrameType::WS_TEXT)
         {
             JsonDocument doc; // NOLINT(misc-const-correctness)
-            if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
+            if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok && doc.is<JsonObjectConst>())
             {
                 for (const JsonPairConst pair : doc.as<JsonObjectConst>())
                 {

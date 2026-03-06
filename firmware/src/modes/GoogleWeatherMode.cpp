@@ -44,7 +44,8 @@ void GoogleWeatherMode::update()
         filter["temperature"]["degrees"].set(true);
         filter["weatherCondition"]["type"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) ||
+        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) !=
+                DeserializationError::Code::Ok ||
             !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
         {
             urls.pop_back();
