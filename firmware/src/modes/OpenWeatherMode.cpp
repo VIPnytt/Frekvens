@@ -53,9 +53,9 @@ void OpenWeatherMode::update()
         filter["main"]["temp"].set(true);
         filter["weather"][0]["id"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        const bool isError = deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ==
-                             ArduinoJson::V742PB22::DeserializationError::Code::Ok;
-        if (!isError && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
+        const bool deserialized =
+            deserializeJson(doc, stream, DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok;
+        if (deserialized && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
         {
             // API 3.0
             WeatherHandler weather = WeatherHandler();
@@ -63,7 +63,7 @@ void OpenWeatherMode::update()
             weather.parse(doc["current"]["weather"]["id"].as<uint16_t>(), codesets);
             weather.draw();
         }
-        else if (!isError && doc["main"]["temp"].is<float>() && doc["weather"][0]["id"].is<uint16_t>())
+        else if (deserialized && doc["main"]["temp"].is<float>() && doc["weather"][0]["id"].is<uint16_t>())
         {
             // API 2.5
             WeatherHandler weather = WeatherHandler();

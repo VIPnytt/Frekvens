@@ -51,7 +51,7 @@ void YrMode::update()
         filter["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].set(true);
         filter["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) != DeserializationError::Code::Ok ||
             !doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].is<float>() ||
             !doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string>())
         {

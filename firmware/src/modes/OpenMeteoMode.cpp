@@ -51,7 +51,7 @@ void OpenMeteoMode::update()
         filter["current"]["temperature_2m"].set(true);
         filter["current"]["weather_code"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
-        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) ||
+        if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) != DeserializationError::Code::Ok ||
             !doc["current"]["temperature_2m"].is<float>() || !doc["current"]["weather_code"].is<uint8_t>())
         {
             urls.pop_back();
