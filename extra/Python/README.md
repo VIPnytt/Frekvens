@@ -15,7 +15,7 @@ python extra/Python/FontGenerator.py -i DejaVuSans --size 8
 Installation of dependencies:
 
 ```bash
-pip install -r extra/Python/requirements.txt
+pip install .[font]
 ```
 
 ## 🏭 Mode generator

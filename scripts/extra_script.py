@@ -22,11 +22,11 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
         env = SCons.Script.Environment()
 
     if not env.IsCleanTarget():
-        env.Execute(
-            "pip install -r scripts/requirements.txt"
-            if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]) or "CI" in os.environ
-            else "pip install -q -r scripts/requirements.txt"
-        )
+        command = "uv sync --only-group scripts --inexact"
+        if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]) or "CI" in os.environ:
+            command += " --verbose"
+        if env.Execute(command):
+            env.Execute(f"pip install uv && {command}")
 
     sys.path.append(env["PROJECT_DIR"])
 
