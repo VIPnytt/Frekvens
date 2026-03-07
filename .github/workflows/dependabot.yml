@@ -19,6 +19,7 @@ jobs:
   repository-check:
     name: Repository check
     runs-on: ubuntu-latest
+
     outputs:
       active: ${{ steps.idle.outputs.active }}
       milestone: ${{ steps.milestone.outputs.number }}
@@ -32,14 +33,14 @@ jobs:
             const { data: branch } = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: 'main',
+              branch: context.ref.replace('refs/heads/', ''),
             });
             const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
             core.info(`Repository active: ${active}`);
             core.setOutput('active', active);
 
       - name: GitHub Script milestone check
-        if: steps.idle.outputs.active
+        if: ${{ fromJSON(steps.idle.outputs.active) }}
         id: milestone
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
@@ -64,7 +65,7 @@ jobs:
               }
             } catch (e) {
               if (e.status === 404) {
-                core.error(`Milestone ID ${process.env.milestone} not found`);
+                core.error(`Milestone ${process.env.milestone} not found`);
                 core.setOutput('number', '');
               } else {
                 throw e;
@@ -75,7 +76,8 @@ jobs:
     name: GitHub check
     needs: repository-check
     runs-on: ubuntu-latest
-    if: needs.repository-check.outputs.active
+    if: ${{ fromJSON(needs.repository-check.outputs.active) }}
+
     outputs:
       dependency-fragments: ${{ steps.pending.outputs.fragments }}
 
@@ -107,23 +109,20 @@ jobs:
       - repository-check
       - github-check
     runs-on: ubuntu-latest
-    if: needs.github-check.outputs.dependency-fragments != '[]'
+    if: ${{ fromJSON(needs.github-check.outputs.dependency-fragments)[0] != null }}
+
     permissions:
       contents: write
       pull-requests: write
 
     strategy:
-      max-parallel: 1
       matrix:
         fragments: ${{ fromJson(needs.github-check.outputs.dependency-fragments) }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - name: GitHub Script head check
+      - name: GitHub Script pull request check
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        id: head
+        id: lookup
         with:
           script: |
             const { data: prs } = await github.rest.pulls.list({
@@ -131,17 +130,22 @@ jobs:
               repo: context.repo.repo,
               state: 'all',
               head: `${context.repo.owner}:dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}`,
-              per_page: 100,
+              base: context.ref,
             });
-            core.info(`Head PRs: ${prs.length}`);
-            core.setOutput('exists', prs.length);
+            const needed = prs.length === 0;
+            core.info(`Pull request needed: ${needed}`);
+            core.setOutput('needed', needed);
+
+      - name: Checkout
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Update platformio.ini
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         run: sed -i "s|${{ matrix.fragments.string_old }}|${{ matrix.fragments.string_new }}|g" platformio.ini
 
       - name: Create Pull Request
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         id: pr
         with:
@@ -156,11 +160,11 @@ jobs:
           labels: |
             dependencies
             firmware
-          milestone: ${{ needs.repository-check.outputs.milestone || 0 }}
+          milestone: ${{ needs.repository-check.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
 
       - name: GitHub Script close superseded
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
@@ -170,11 +174,13 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
+                base: context.ref,
                 per_page: 100,
               }
             )) {
               if (
-                pr.number !== ${{ steps.pr.outputs.pull-request-number }} &&
+                pr.number !== Number(${{ steps.pr.outputs.pull-request-number }}) &&
+                pr.user.type === 'Bot' &&
                 pr.head.ref.startsWith('dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-')
               ) {
                 await github.rest.issues.createComment({
@@ -203,7 +209,8 @@ jobs:
     name: PlatformIO check
     needs: repository-check
     runs-on: ubuntu-latest
-    if: needs.repository-check.outputs.active
+    if: ${{ fromJSON(needs.repository-check.outputs.active) }}
+
     outputs:
       dependency-fragments: ${{ steps.pending.outputs.fragments }}
 
@@ -236,23 +243,20 @@ jobs:
       - repository-check
       - platformio-check
     runs-on: ubuntu-latest
-    if: needs.platformio-check.outputs.dependency-fragments != '[]'
+    if: ${{ fromJSON(needs.platformio-check.outputs.dependency-fragments)[0] != null }}
+
     permissions:
       contents: write
       pull-requests: write
 
     strategy:
-      max-parallel: 1
       matrix:
         fragments: ${{ fromJson(needs.platformio-check.outputs.dependency-fragments) }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
-
-      - name: GitHub Script head check
+      - name: GitHub Script pull request check
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        id: head
+        id: lookup
         with:
           script: |
             const { data: prs } = await github.rest.pulls.list({
@@ -260,16 +264,22 @@ jobs:
               repo: context.repo.repo,
               state: 'all',
               head: `${context.repo.owner}:dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-${{ matrix.fragments.version_new }}`,
+              base: context.ref,
             });
-            core.info(`Head PRs: ${prs.length}`);
-            core.setOutput('exists', prs.length);
+            const needed = prs.length === 0;
+            core.info(`Pull request needed: ${needed}`);
+            core.setOutput('needed', needed);
+
+      - name: Checkout
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Update platformio.ini
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         run: sed -i "s|${{ matrix.fragments.string_old }}|${{ matrix.fragments.string_new }}|g" platformio.ini
 
       - name: Create Pull Request
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         id: pr
         with:
@@ -282,11 +292,11 @@ jobs:
           labels: |
             dependencies
             firmware
-          milestone: ${{ needs.repository-check.outputs.milestone || 0 }}
+          milestone: ${{ needs.repository-check.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
 
       - name: GitHub Script close superseded
-        if: steps.head.outputs.exists == false
+        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
@@ -296,11 +306,12 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
+                base: context.ref,
                 per_page: 100,
               }
             )) {
               if (
-                pr.number !== ${{ steps.pr.outputs.pull-request-number }} &&
+                pr.number !== Number(${{ steps.pr.outputs.pull-request-number }}) &&
                 pr.user.type === 'Bot' &&
                 pr.head.ref.startsWith('dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-')
               ) {
