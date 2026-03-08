@@ -1,6 +1,5 @@
 # PlatformIO pre-build extra script
 
-import os
 import SCons.Script
 import sys
 import typing
@@ -23,7 +22,7 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
 
     if not env.IsCleanTarget():
         command = "uv sync --only-group scripts --inexact"
-        if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]) or "CI" in os.environ:
+        if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]):
             command += " --verbose"
         if env.Execute(command):
             env.Execute(f"pip install uv && {command}")
