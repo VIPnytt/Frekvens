@@ -22,7 +22,7 @@ jobs:
       matrix:
         toolchain:
           - python-version: "3.10"
-          - python-version: 3.14
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -118,7 +118,7 @@ jobs:
       matrix:
         toolchain:
           - python-version: "3.10"
-          - python-version: 3.14
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -130,7 +130,7 @@ jobs:
           python-version: ${{ matrix.toolchain.python-version }}
 
       - name: Set up PlatformIO
-        run: uv sync --only-group platformio --inexact
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
@@ -248,7 +248,7 @@ jobs:
       matrix:
         toolchain:
           - python-version: "3.10"
-          - python-version: 3.14
+          - python-version: 3.13
 
     steps:
       - name: Checkout
@@ -260,7 +260,7 @@ jobs:
           python-version: ${{ matrix.toolchain.python-version }}
 
       - name: Set up PlatformIO
-        run: uv sync --only-group platformio --inexact
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
