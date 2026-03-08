@@ -28,7 +28,7 @@ uv = [
 
 [build-system]
 requires = [
-    "setuptools>=82",
+    "setuptools",
 ]
 build-backend = "setuptools.build_meta"
 
