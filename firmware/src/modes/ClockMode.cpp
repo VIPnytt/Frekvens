@@ -11,7 +11,6 @@
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 
