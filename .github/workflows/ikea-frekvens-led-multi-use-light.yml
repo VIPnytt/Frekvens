@@ -39,7 +39,7 @@ jobs:
 
       - name: PlatformIO environments
         id: config
-        run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(uv run pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default
@@ -128,7 +128,7 @@ jobs:
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -155,7 +155,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run pio run -e ${{ matrix.environment }}
 
   minimal:
     name: Minimal
@@ -224,7 +224,7 @@ jobs:
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -262,7 +262,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run pio run -e ${{ matrix.environment }}
 
   typical:
     name: Typical
@@ -326,7 +326,7 @@ jobs:
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -416,7 +416,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run pio run -e ${{ matrix.environment }}
 
   extensive:
     name: Extensive
@@ -480,7 +480,7 @@ jobs:
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -597,4 +597,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run pio run -e ${{ matrix.environment }}

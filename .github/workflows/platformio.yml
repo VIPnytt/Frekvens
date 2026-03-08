@@ -29,7 +29,7 @@ jobs:
 
       - name: PlatformIO lint
         run: |
-          OUTPUT=$(pio project config --lint --json-output)
+          OUTPUT=$(uv run pio project config --lint --json-output)
           echo "$OUTPUT"
           if [ "$OUTPUT" != "{'errors': [], 'warnings': []}" ]; then
             exit 1
