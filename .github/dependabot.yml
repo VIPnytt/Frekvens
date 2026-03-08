@@ -11,91 +11,6 @@ updates:
     schedule:
       interval: weekly
 
-  - package-ecosystem: pip
-    directory: /.github/platformio
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - dependencies
-      - no-changelog
-    milestone: 10
-    schedule:
-      interval: weekly
-    versioning-strategy: increase
-
-  - package-ecosystem: pip
-    directory: /.github/ruff
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - dependencies
-      - no-changelog
-    milestone: 10
-    schedule:
-      interval: weekly
-    versioning-strategy: increase
-
-  - package-ecosystem: pip
-    directory: /.github/scripts/platformio
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - dependencies
-      - no-changelog
-    milestone: 10
-    schedule:
-      interval: weekly
-    versioning-strategy: increase
-
-  - package-ecosystem: pip
-    directory: /extra/Python
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - dependencies
-      - extra
-    milestone: 10
-    schedule:
-      interval: daily
-    versioning-strategy: increase
-
-  - package-ecosystem: pip
-    directory: /scripts
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-      exclude:
-        - tzdata
-    labels:
-      - dependencies
-    milestone: 10
-    schedule:
-      interval: daily
-    versioning-strategy: increase
-
-  - package-ecosystem: pip
-    directory: /tools
-    cooldown:
-      semver-major-days: 90
-      semver-minor-days: 21
-      semver-patch-days: 3
-    labels:
-      - dependencies
-      - tools
-    milestone: 10
-    schedule:
-      interval: daily
-    versioning-strategy: increase
-
   - package-ecosystem: npm
     directory: /webapp
     cooldown:
@@ -105,6 +20,20 @@ updates:
     labels:
       - dependencies
       - frontend
+    milestone: 10
+    schedule:
+      interval: daily
+    versioning-strategy: increase
+
+  - package-ecosystem: uv
+    directory: /
+    cooldown:
+      semver-major-days: 90
+      semver-minor-days: 21
+      semver-patch-days: 3
+    labels:
+      - dependencies
+      - tools
     milestone: 10
     schedule:
       interval: daily
