@@ -34,7 +34,7 @@ jobs:
           python-version: ${{ matrix.toolchain.python-version }}
 
       - name: Set up Python dependencies
-        run: vu sync --extra font --only-group platformio
+        run: uv sync --extra font --only-group platformio
 
       - name: PlatformIO version
         id: platformio
@@ -130,7 +130,7 @@ jobs:
           python-version: ${{ matrix.toolchain.python-version }}
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
@@ -260,7 +260,7 @@ jobs:
           python-version: ${{ matrix.toolchain.python-version }}
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio

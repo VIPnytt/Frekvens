@@ -30,7 +30,7 @@ jobs:
           python-version: 3.14
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO environments
         id: config
@@ -101,7 +101,7 @@ jobs:
           python-version: 3.14
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio

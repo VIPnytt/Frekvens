@@ -91,7 +91,7 @@ jobs:
           python-version: 3.14
 
       - name: Set up Python packages
-        run: vu sync --only-group dependabot
+        run: uv sync --only-group dependabot
 
       - name: Frekvens GitHub dependabot
         id: pending
@@ -222,7 +222,7 @@ jobs:
           python-version: 3.14
 
       - name: Set up Python packages
-        run: vu sync --only-group dependabot --only-group platformio
+        run: uv sync --only-group dependabot --only-group platformio
 
       - name: Frekvens PlatfomIO dependabot
         id: pending

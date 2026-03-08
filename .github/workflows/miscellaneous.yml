@@ -217,7 +217,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio

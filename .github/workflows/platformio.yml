@@ -25,7 +25,7 @@ jobs:
           python-version: 3.14
 
       - name: Set up PlatformIO
-        run: vu sync --only-group platformio
+        run: uv sync --only-group platformio
 
       - name: PlatformIO lint
         run: |
