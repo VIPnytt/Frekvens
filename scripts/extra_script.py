@@ -25,7 +25,7 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
         if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]):
             command += " --verbose"
         if env.Execute(command):
-            env.Execute(f"pip install uv && {command}")
+            env.Execute(f"pip install .[uv] && {command}")
 
     sys.path.append(env["PROJECT_DIR"])
 
