@@ -72,7 +72,7 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Frames.csv
 
-          python -m frekvens.AnimationSplitter -i Frames.csv
+          uv run -m frekvens.AnimationSplitter -i Frames.csv
 
       - name: Frame comparison
         run: |
@@ -143,7 +143,7 @@ jobs:
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -156,7 +156,7 @@ jobs:
           sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Home thermometer updater
-        run: python -m frekvens.HomeThermometerUpdater 127.0.0.1 --indoor=22 --outdoor=8
+        run: uv run -m frekvens.HomeThermometerUpdater 127.0.0.1 --indoor=22 --outdoor=8
 
   mode-switcher:
     name: Mode switcher
@@ -182,7 +182,7 @@ jobs:
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -195,7 +195,7 @@ jobs:
           sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Mode switcher
-        run: python -m frekvens.ModeSwitcher 127.0.0.1 --mode=Test
+        run: uv run -m frekvens.ModeSwitcher 127.0.0.1 --mode=Test
 
   x509_crt_bundle:
     name: x509 certificate bundle
@@ -275,5 +275,5 @@ jobs:
 
       - name: Bundle comparison
         run: |
-          python lib/esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py -i firmware/certs/bundle && \
+          uv run lib/esp-idf/components/mbedtls/esp_crt_bundle/gen_crt_bundle.py -i firmware/certs/bundle && \
           cmp x509_crt_bundle firmware/embed/x509_crt_bundle.bin

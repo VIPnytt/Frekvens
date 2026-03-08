@@ -40,7 +40,7 @@ jobs:
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -91,7 +91,7 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Animation.csv
 
-          timeout --preserve-status -s INT 10s python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Animation.csv
+          timeout --preserve-status -s INT 10s uv run -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Animation.csv
 
   drawing:
     name: Drawing
@@ -122,7 +122,7 @@ jobs:
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -157,4 +157,4 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Drawing.csv
 
-          python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Drawing.csv
+          uv run -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Drawing.csv

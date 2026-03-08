@@ -51,7 +51,7 @@ jobs:
 
       - name: Font generator
         run: |
-          python extra/Python/FontGenerator.py -i DejaVuSans --size 8
+          uv run extra/Python/FontGenerator.py -i DejaVuSans --size 8
 
           mv DejaVuSansFont.cpp firmware/src/fonts
           mv DejaVuSansFont.h firmware/include/fonts
@@ -182,7 +182,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          python extra/Python/ModeGenerator.py -i Dynamic.csv
+          uv run extra/Python/ModeGenerator.py -i Dynamic.csv
 
           mv DynamicMode.cpp firmware/src/modes
           mv DynamicMode.h firmware/include/modes
@@ -296,7 +296,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          python extra/Python/ModeGenerator.py -i Static.csv
+          uv run extra/Python/ModeGenerator.py -i Static.csv
 
           mv StaticMode.cpp firmware/src/modes
           mv StaticMode.h firmware/include/modes
