@@ -100,6 +100,9 @@ jobs:
         with:
           python-version: 3.14
 
+      - name: Set up Python
+        run: uv python install
+
       - name: Set up PlatformIO
         run: uv sync --only-group platformio --inexact
 

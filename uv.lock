@@ -544,7 +544,7 @@ wheels = [
 [[package]]
 name = "frekvens"
 version = "2.2.1.dev0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "httpx" },
 ]
@@ -554,6 +554,9 @@ font = [
     { name = "fonttools" },
     { name = "matplotlib" },
     { name = "pillow" },
+]
+uv = [
+    { name = "uv" },
 ]
 
 [package.dev-dependencies]
@@ -575,9 +578,6 @@ scripts = [
     { name = "tzdata" },
     { name = "tzlocal" },
 ]
-uv = [
-    { name = "uv" },
-]
 
 [package.metadata]
 requires-dist = [
@@ -585,8 +585,9 @@ requires-dist = [
     { name = "httpx", specifier = "==0.28.1" },
     { name = "matplotlib", marker = "extra == 'font'", specifier = "==3.10.8" },
     { name = "pillow", marker = "extra == 'font'", specifier = "==12.1.1" },
+    { name = "uv", marker = "extra == 'uv'", specifier = "==0.10.9" },
 ]
-provides-extras = ["font"]
+provides-extras = ["font", "uv"]
 
 [package.metadata.requires-dev]
 dependabot = [
@@ -603,7 +604,6 @@ scripts = [
     { name = "tzdata", specifier = "==2025.3" },
     { name = "tzlocal", specifier = "==5.3.1" },
 ]
-uv = [{ name = "uv", specifier = "==0.10.9" }]
 
 [[package]]
 name = "h11"
