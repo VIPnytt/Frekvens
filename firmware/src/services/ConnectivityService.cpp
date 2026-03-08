@@ -1,13 +1,11 @@
 #include "services/ConnectivityService.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/WebServerService.h"
 
 #include <ESPmDNS.h>
 #include <Preferences.h>
+#include <array>
 #include <esp_crt_bundle.h>
 #include <esp_sntp.h>
 #include <esp_wifi.h>
@@ -20,11 +18,11 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    esp_crt_bundle_set(Certificates::x509_crt_bundle_start,
-                       Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    const std::span<const uint8_t> bundle = certificates();
+    esp_crt_bundle_set(bundle.data(), bundle.size());
+    WiFiClass::setHostname(HOSTNAME);
+    WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIPv6();
-    WiFi.setHostname(HOSTNAME);
-    WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
     WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
     WiFi.onEvent(&onIPv4, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
@@ -70,22 +68,22 @@ void ConnectivityService::configure()
 void ConnectivityService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_rssi");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::device_class] = "signal_strength";
-        component[HomeAssistantAbbreviations::entity_category] = "diagnostic";
-        component[HomeAssistantAbbreviations::expire_after] = UINT8_MAX;
-        component[HomeAssistantAbbreviations::force_update] = true;
-        component[HomeAssistantAbbreviations::name] = "Wi-Fi signal";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "sensor";
-        component[HomeAssistantAbbreviations::state_class] = "measurement";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::unit_of_measurement] = "dBm";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.rssi}}";
+        const std::string id{std::string(name).append("_rssi")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("signal_strength");
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("dBm");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -103,7 +101,7 @@ void ConnectivityService::handle()
         {
             transmit();
         }
-        else if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_STA)
+        else if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_STA)
         {
             multi.run();
         }
@@ -112,7 +110,7 @@ void ConnectivityService::handle()
 
 void ConnectivityService::initStation()
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
     Storage.begin(name);
     if (Storage.isKey("Wi-Fi"))
@@ -125,10 +123,12 @@ void ConnectivityService::initStation()
     wifi_config_t config;
     if (esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config) == ESP_OK)
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
         const char *ssid_ptr = reinterpret_cast<const char *>(config.sta.ssid);
         const std::string_view ssid(ssid_ptr, strnlen(ssid_ptr, sizeof(config.sta.ssid)));
         if (!ssid.empty())
         {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
             const char *key_ptr = reinterpret_cast<const char *>(config.sta.password);
             const std::string_view key(key_ptr, strnlen(key_ptr, sizeof(config.sta.password)));
             doc[ssid] = key.length() ? key : nullptr;
@@ -153,7 +153,7 @@ void ConnectivityService::initStation()
 void ConnectivityService::initHotspot()
 {
     ESP_LOGV(name, "initializing Wi-Fi hotspot");
-    WiFi.mode(wifi_mode_t::WIFI_MODE_AP);
+    WiFiClass::mode(wifi_mode_t::WIFI_MODE_AP);
     WiFi.softAP(NAME);
     if (!dns)
     {
@@ -167,11 +167,11 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *ssid, const char *key)
+void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(bugprone-easily-swappable-parameters)
 {
-    if (WiFi.getMode() == wifi_mode_t::WIFI_MODE_AP)
+    if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
-        WiFi.mode(wifi_mode_t::WIFI_MODE_APSTA);
+        WiFiClass::mode(wifi_mode_t::WIFI_MODE_APSTA);
     }
     multi.setStrictMode(true);
     multi.APlistClean();
@@ -179,20 +179,21 @@ void ConnectivityService::connect(const char *ssid, const char *key)
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                      WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD(Connectivity.name, "connected");
     ESP_LOGV(Connectivity.name, "%d dBm", WiFi.RSSI());
     ESP_LOGI(Connectivity.name, HOSTNAME ".local");
 #ifndef WIFI_COUNTRY
-    char country[3];
-    if (esp_wifi_get_country_code(country) == ESP_OK)
+    std::array<char, 3> country{};
+    if (esp_wifi_get_country_code(country.data()) == ESP_OK)
     {
         Preferences Storage;
         Storage.begin(_name.data());
-        if (strcmp(country, "01") != 0)
+        if (strncmp(country.data(), "01", 2) != 0)
         {
-            Storage.putString("country", country);
+            Storage.putString("country", country.data());
         }
         else if (Storage.isKey("country"))
         {
@@ -203,7 +204,8 @@ void ConnectivityService::onConnected(WiFiEvent_t event, WiFiEventInfo_t info)
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
+                                         WiFiEventInfo_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mDNS)
@@ -217,7 +219,8 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGI(Connectivity.name, "IPv4 %s", WiFi.localIP().toString().c_str());
     if (!Connectivity.routable)
@@ -226,7 +229,8 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info)
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onIPv6(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     const char *const ipv6 = WiFi.globalIPv6().toString().c_str();
     if (strcmp(ipv6, "") != 0)
@@ -242,14 +246,14 @@ void ConnectivityService::onIPv6(WiFiEvent_t event, WiFiEventInfo_t info)
 void ConnectivityService::onRoutable()
 {
     Connectivity.routable = true;
-    if (WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
+    if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
     {
-        JsonDocument doc;
-        doc["event"] = "connected";
+        JsonDocument doc; // NOLINT(misc-const-correctness)
+        doc["event"].set("connected");
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
         ESP_LOGD(Connectivity.name, "terminating Wi-Fi hotspot");
         Connectivity.dns.reset();
-        WiFi.mode(wifi_mode_t::WIFI_MODE_STA);
+        WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     }
     if (!Connectivity.mDNS && MDNS.begin(HOSTNAME))
     {
@@ -262,23 +266,24 @@ void ConnectivityService::onRoutable()
         MDNS.addService("ws", "tcp", 80);
 #endif // EXTENSION_WEBSOCKET
     }
-    timeval tv = {};
+    timeval tv{};
     sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
+void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
-    const int16_t n = WiFi.scanComplete();
-    if (n > 0)
+    const int16_t count = WiFi.scanComplete();
+    if (count > 0)
     {
-        JsonDocument doc;
-        JsonArray scan = doc["scan"].to<JsonArray>();
-        for (int16_t i = 0; i < n; ++i)
+        JsonDocument doc; // NOLINT(misc-const-correctness)
+        JsonArray scan{doc["scan"].to<JsonArray>()};
+        for (int16_t i = 0; i < count; ++i)
         {
-            JsonObject _scan = scan.add<JsonObject>();
-            _scan["encrypted"] = (bool)WiFi.encryptionType(i);
-            _scan["rssi"] = WiFi.RSSI(i);
-            _scan["ssid"] = WiFi.SSID(i);
+            JsonObject _scan{scan.add<JsonObject>()};
+            _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            _scan["rssi"].set(WiFi.RSSI(i));
+            _scan["ssid"].set(WiFi.SSID(i));
         }
         Device.transmit(doc.as<JsonObjectConst>(), _name.data(), false);
     }
@@ -286,9 +291,9 @@ void ConnectivityService::onScan(WiFiEvent_t event, WiFiEventInfo_t info)
 
 void ConnectivityService::transmit()
 {
-    JsonDocument doc;
-    doc["host"] = HOSTNAME ".local";
-    doc["rssi"] = WiFi.RSSI();
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["host"].set(HOSTNAME ".local");
+    doc["rssi"].set(WiFi.RSSI());
     {
         Preferences Storage;
         Storage.begin(name, true);
@@ -298,10 +303,10 @@ void ConnectivityService::transmit()
             std::vector<uint8_t> buf(len);
             Storage.getBytes("saved", buf.data(), len);
             Storage.end();
-            JsonDocument _saved;
-            if (!deserializeJson(_saved, buf.data(), len))
+            JsonDocument _saved; // NOLINT(misc-const-correctness)
+            if (deserializeJson(_saved, buf.data(), len) == DeserializationError::Code::Ok)
             {
-                JsonArray saved = doc["saved"].to<JsonArray>();
+                JsonArray saved{doc["saved"].to<JsonArray>()};
                 for (const JsonPairConst pair : _saved.as<JsonObjectConst>())
                 {
                     saved.add(pair.key());
@@ -313,11 +318,12 @@ void ConnectivityService::transmit()
             Storage.end();
         }
     }
-    doc["ssid"] = WiFi.SSID();
+    doc["ssid"].set(WiFi.SSID());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload, const char *source)
+void ConnectivityService::onReceive(JsonObjectConst payload,
+                                    const char *source) // NOLINT(misc-unused-parameters)
 {
     // Connect
     if (payload["ssid"].is<const char *>())
@@ -333,10 +339,21 @@ void ConnectivityService::onReceive(JsonObjectConst payload, const char *source)
     }
 }
 
+std::span<const uint8_t> ConnectivityService::certificates() noexcept
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
+    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
+    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+    return std::span<const uint8_t>(&x509_crt_bundle_start[0],
+                                    static_cast<size_t>(&x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]));
+}
+
 ConnectivityService &ConnectivityService::getInstance()
 {
     static ConnectivityService instance;
     return instance;
 }
 
-ConnectivityService &Connectivity = Connectivity.getInstance();
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+ConnectivityService &Connectivity = ConnectivityService::getInstance();

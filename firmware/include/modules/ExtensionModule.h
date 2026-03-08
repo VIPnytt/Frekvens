@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
 class ExtensionModule
 {
@@ -8,6 +8,13 @@ protected:
     explicit ExtensionModule(const char *name) : name(name) {};
 
 public:
+    virtual ~ExtensionModule() = default;
+
+    ExtensionModule(const ExtensionModule &) = delete;
+    ExtensionModule &operator=(const ExtensionModule &) = delete;
+    ExtensionModule(ExtensionModule &&) = delete;
+    ExtensionModule &operator=(ExtensionModule &&) = delete;
+
     const char *const name;
 
     virtual void configure();

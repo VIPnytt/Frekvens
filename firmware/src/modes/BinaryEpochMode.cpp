@@ -2,12 +2,12 @@
 
 #include "modes/BinaryEpochMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 void BinaryEpochMode::handle()
 {
-    time_t _epoch = time(nullptr);
+    const time_t _epoch = time(nullptr);
     if (epoch != _epoch)
     {
         epoch = _epoch;
@@ -15,7 +15,15 @@ void BinaryEpochMode::handle()
         {
             const uint8_t x = GRID_COLUMNS - 2 - (i % (GRID_COLUMNS / 2) * 2);
             const uint8_t y = GRID_ROWS - 4 - (i / (GRID_COLUMNS / 2) * 4);
-            Display.drawRectangle(x, y, x + 1, y + 3, true, (epoch & (1 << i)) == 0 ? 0 : UINT8_MAX);
+            Display.drawRectangle(
+                x,
+                y,
+                x + 1,
+                y + 3,
+                true,
+                ((static_cast<std::make_unsigned_t<time_t>>(epoch) >> i) & std::make_unsigned_t<time_t>{1}) == 0
+                    ? 0
+                    : UINT8_MAX);
         }
     }
 }

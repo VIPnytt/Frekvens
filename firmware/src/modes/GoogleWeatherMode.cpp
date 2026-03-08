@@ -30,9 +30,9 @@ void GoogleWeatherMode::handle()
 void GoogleWeatherMode::update()
 {
     lastMillis = millis();
-    NetworkClientSecure client;
-    client.setCACertBundle(Certificates::x509_crt_bundle_start,
-                           Certificates::x509_crt_bundle_end - Certificates::x509_crt_bundle_start);
+    NetworkClientSecure client; // NOLINT(misc-const-correctness)
+    const std::span<const uint8_t> bundle = ConnectivityService::certificates();
+    client.setCACertBundle(bundle.data(), bundle.size());
     HTTPClient http;
     http.begin(client, urls.back());
     http.addHeader("Accept", "application/json");
@@ -40,15 +40,16 @@ void GoogleWeatherMode::update()
     const int code = http.GET();
     if (code == t_http_codes::HTTP_CODE_OK)
     {
-        JsonDocument filter;
-        filter["temperature"]["degrees"] = true;
-        filter["weatherCondition"]["type"] = true;
-        JsonDocument doc;
-        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) ||
+        JsonDocument filter; // NOLINT(misc-const-correctness)
+        filter["temperature"]["degrees"].set(true);
+        filter["weatherCondition"]["type"].set(true);
+        JsonDocument doc; // NOLINT(misc-const-correctness)
+        if (deserializeJson(doc, http.getString(), DeserializationOption::Filter(filter)) !=
+                DeserializationError::Code::Ok ||
             !doc["temperature"]["degrees"].is<float>() || !doc["weatherCondition"]["type"].is<std::string>())
         {
             urls.pop_back();
-            lastMillis = millis() - interval + (1 << 14);
+            lastMillis = millis() - interval + (1UL << 14U);
             ESP_LOGD(name, "unprocessable data");
             return;
         }
@@ -60,7 +61,7 @@ void GoogleWeatherMode::update()
     else if (code >= 400 && code < 500)
     {
         urls.pop_back();
-        lastMillis = millis() - interval + (1 << 12);
+        lastMillis = millis() - interval + (1UL << 12U);
         if (urls.empty())
         {
             ESP_LOGE(name, "unable to fetch weather");
@@ -68,7 +69,7 @@ void GoogleWeatherMode::update()
     }
     else if (code < 0)
     {
-        lastMillis = millis() - interval + (1 << 15);
+        lastMillis = millis() - interval + (1UL << 15U);
     }
 }
 

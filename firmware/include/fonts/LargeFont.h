@@ -149,4 +149,4 @@ public:
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern LargeFont *FontLarge;
+extern LargeFont *FontLarge; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

@@ -2,7 +2,7 @@
 
 #if MODE_HOMEASSISTANTWEATHER
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
 #include "modules/ModeModule.h"
 
@@ -32,7 +32,7 @@ private:
     unsigned long lastMillis = 0;
 
     // https://developers.home-assistant.io/docs/api/rest
-    std::vector<std::string> urls = {
+    std::vector<std::string> urls{
         std::string(protocol)
             .append("//")
             .append(host)
@@ -51,68 +51,51 @@ private:
     };
 
     // https://www.home-assistant.io/integrations/weather/#condition-mapping
-    const std::vector<WeatherHandler::Codeset> codesets = {
-        {
-            WeatherHandler::Conditions::CLEAR,
-            {
-                "clear-night",
-                "sunny",
-            },
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY,
-            {
-                "cloudy",
-            },
-        },
-        {
-            WeatherHandler::Conditions::CLOUDY_PARTLY,
-            {
-                "partlycloudy",
-            },
-        },
-        {
-            WeatherHandler::Conditions::EXCEPTION,
-            {
-                "exceptional",
-            },
-        },
-        {
-            WeatherHandler::Conditions::FOG,
-            {
-                "fog",
-            },
-        },
-        {
-            WeatherHandler::Conditions::RAIN,
-            {
-                "pouring",
-                "rainy",
-            },
-        },
-        {
-            WeatherHandler::Conditions::SNOW,
-            {
-                "hail",
-                "snowy",
-                "snowy-rainy",
-            },
-        },
-        {
-            WeatherHandler::Conditions::THUNDER,
-            {
-                "lighting",
-                "lightning-rainy",
-            },
-        },
-        {
-            WeatherHandler::Conditions::WIND,
-            {
-                "windy",
-                "windy-variant",
-            },
-        },
+    static constexpr std::array<std::string_view, 2> codesClear{
+        "clear-night",
+        "sunny",
     };
+    static constexpr std::array<std::string_view, 1> codesCloudy{
+        "cloudy",
+    };
+    static constexpr std::array<std::string_view, 1> codesCloudyPartly{
+        "partlycloudy",
+    };
+    static constexpr std::array<std::string_view, 1> codesException{
+        "exceptional",
+    };
+    static constexpr std::array<std::string_view, 1> codesFog{
+        "fog",
+    };
+    static constexpr std::array<std::string_view, 2> codesRain{
+        "pouring",
+        "rainy",
+    };
+    static constexpr std::array<std::string_view, 3> codesSnow{
+        "hail",
+        "snowy",
+        "snowy-rainy",
+    };
+    static constexpr std::array<std::string_view, 2> codesThunder{
+        "lighting",
+        "lightning-rainy",
+    };
+    static constexpr std::array<std::string_view, 2> codesWind{
+        "windy",
+        "windy-variant",
+    };
+
+    static constexpr std::array<WeatherHandler::Codeset, 9> codesets{{
+        {WeatherHandler::Conditions::CLEAR, codesClear},
+        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
+        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Conditions::EXCEPTION, codesException},
+        {WeatherHandler::Conditions::FOG, codesFog},
+        {WeatherHandler::Conditions::RAIN, codesRain},
+        {WeatherHandler::Conditions::SNOW, codesSnow},
+        {WeatherHandler::Conditions::THUNDER, codesThunder},
+        {WeatherHandler::Conditions::WIND, codesWind},
+    }};
 
     void update();
 

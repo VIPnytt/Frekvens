@@ -17,14 +17,12 @@ class ResultFragment(BaseFragment, GitHub.ResultFragment):
     pass
 
 
-class DownloadRelease:
-    ctx: GitHub.Context
-    regex: re.Pattern[str]
-
+class Release(GitHub.Client):
     def __init__(self, ctx: GitHub.Context) -> None:
-        self.ctx = ctx
+        super().__init__(ctx)
         self.regex = re.compile(
-            r"https://github\.com/(?P<owner>[^/\s]+)/(?P<repo>[^/\s]+)/releases/download/(?P<tag>[^/\s]+)/(?P<asset>[^/\s;]+)(?:\s*;\s*sha256:[0-9a-f]{64})?"
+            r"https://github\.com/(?P<owner>[^/;\s]+)/(?P<repo>[^/;\s]+)/releases/download/(?P<tag>[^/;\s]+)/(?P<asset>[^/;\s]+)(?:\s*;\s*sha256:[0-9a-f]{64})?$",
+            re.MULTILINE,
         )
 
     def matrix(self) -> list[ResultFragment]:
@@ -46,11 +44,10 @@ class DownloadRelease:
                 if pending:
                     fragments.append(
                         {
-                            "owner": match["owner"],
-                            "repo": match["repo"],
+                            "owner": pending["owner"],
+                            "repo": pending["repo"],
                             "tag_old": match["tag"],
                             "tag_new": pending["tag_new"],
-                            "commit_new": pending["commit_new"],
                             "asset_new": pending["asset_new"],
                             "digest_new": pending["digest_new"],
                             "string_old": string,
@@ -63,7 +60,6 @@ class DownloadRelease:
                     "repo": fragment["repo"],
                     "tag_old": fragment["tag_old"],
                     "tag_new": fragment["tag_new"],
-                    "commit_new": fragment["commit_new"],
                     "asset_new": fragment["asset_new"],
                     "digest_new": fragment["digest_new"],
                     "version_old": fragment["tag_old"].removeprefix("v"),
@@ -78,12 +74,6 @@ class DownloadRelease:
 
 class Handler(GitHub.Handler):
     asset: str
-
-    def __init__(self, ctx: GitHub.Context, owner: str, repo: str) -> None:
-        self.ctx = ctx
-        self.owner = owner
-        self.repo = repo
-        self.releases = self.ctx.client.get(f"/repos/{self.owner}/{self.repo}/releases").raise_for_status().json()
 
     def check(self, tag: str, asset: str) -> HandlerFragment | None:
         self.asset = asset
@@ -101,12 +91,9 @@ class Handler(GitHub.Handler):
                         return HandlerFragment(
                             {
                                 "asset_new": _asset["browser_download_url"],
-                                "commit_new": self.ctx.client.get(
-                                    f"/repos/{self.owner}/{self.repo}/commits/{release['tag_name']}"
-                                )
-                                .raise_for_status()
-                                .json()["sha"],
                                 "digest_new": _asset["digest"],
+                                "owner": self.owner,
+                                "repo": self.repo,
                                 "tag_new": release["tag_name"],
                             }
                         )
@@ -122,7 +109,7 @@ class Handler(GitHub.Handler):
 
     def parse_assets(self, release: GitHub.ReleaseData) -> GitHub.AssetData | None:
         for asset in release["assets"]:
-            if asset["name"] == self.asset.replace(
+            if asset["name"] == self.asset or asset["name"] == self.asset.replace(
                 self.tag.removeprefix("v"), release["tag_name"].removeprefix("v"), 1
             ):
                 return asset

@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTBEGIN(misc-include-cleaner)
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
 #include "modes/BinaryClockMode.h"
@@ -43,6 +44,7 @@
 #include "modes/YrMode.h"
 #include "modules/ModeModule.h"
 #include "modules/ServiceModule.h"
+// NOLINTEND(misc-include-cleaner)
 
 #include <vector>
 
@@ -51,7 +53,8 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    const std::vector<ModeModule *> modes = {
+    // NOLINTNEXTLINE(cert-err58-cpp)
+    inline static const std::vector<ModeModule *> modes{
 #if MODE_ANIMATION
         new AnimationMode(),
 #endif
@@ -179,6 +182,10 @@ private:
 
     unsigned long lastMillis = 0;
 
+    ModeModule *mode = nullptr;
+
+    TaskHandle_t taskHandle = nullptr;
+
     ModeModule *scheduled = nullptr;
 
     void setMode(ModeModule *mode, bool power = true);
@@ -187,11 +194,7 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    static constexpr uint16_t stackSize = 1 << 13; // 8 kB
-
-    ModeModule *mode = nullptr;
-
-    TaskHandle_t taskHandle = nullptr;
+    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
 
     void configure();
     void begin();
@@ -200,10 +203,11 @@ public:
     void setMode(const char *name);
     void setModeNext();
     void setModePrevious();
+    [[nodiscard]] TaskHandle_t getTaskHandle() const;
     [[nodiscard]] const std::vector<ModeModule *> &getAll() const;
     void onReceive(JsonObjectConst payload, const char *source) override;
 
     static ModesService &getInstance();
 };
 
-extern ModesService &Modes;
+extern ModesService &Modes; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

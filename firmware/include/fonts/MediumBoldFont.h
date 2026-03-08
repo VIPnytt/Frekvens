@@ -266,4 +266,4 @@ public:
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern MediumBoldFont *FontMediumBold;
+extern MediumBoldFont *FontMediumBold; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

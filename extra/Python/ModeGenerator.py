@@ -4,6 +4,7 @@
 
 import argparse
 import csv
+import math
 import os
 
 
@@ -21,25 +22,25 @@ class ModeGenerator:
 
     def create(self) -> list[str]:
         with open(self.path, encoding="utf-8") as f:
-            rows = csv.reader(f)
-            if sum(1 for _ in rows) <= self.rows:
+            count = sum(1 for _ in csv.reader(f))
+            if count <= self.rows:
                 return [
-                    self._drawing_h(),
+                    self._drawing_h(count),
                     self._drawing_cpp(),
                 ]
             else:
                 return [
-                    self._animation_h(),
+                    self._animation_h(count),
                     self._animation_cpp(),
                 ]
 
-    def _animation_h(self) -> str:
+    def _animation_h(self, count: int) -> str:
         frames = [
             "#pragma once",
             "",
             '#include "modules/ModeModule.h"',
             "",
-            "#include <vector>",
+            "#include <array>",
             "",
             "//",
             "// @warning Automatically generated file",
@@ -52,7 +53,7 @@ class ModeGenerator:
             "",
             "    uint8_t index = 0;",
             "",
-            "    std::vector<std::vector<uint16_t>> frames = {",
+            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {math.floor(count / self.rows)}> frames{{{{",
         ]
         with open(self.path) as animation:
             for i, row in enumerate(csv.reader(animation)):
@@ -63,7 +64,7 @@ class ModeGenerator:
                     frames.append("        },")
         frames.extend(
             [
-                "    };",
+                "    }};",
                 "",
                 "public:",
                 f'    explicit {self.id}Mode() : ModeModule("{self.name}") {{}};',
@@ -84,7 +85,7 @@ class ModeGenerator:
                     [
                         f'#include "modes/{self.id}Mode.h"',
                         "",
-                        '#include "config/constants.h"',
+                        '#include "config/constants.h" // NOLINT(misc-include-cleaner)',
                         '#include "handlers/BitmapHandler.h"',
                         '#include "services/DisplayService.h"',
                         "",
@@ -98,7 +99,7 @@ class ModeGenerator:
                         "    {",
                         "        lastMillis = millis();",
                         "        Display.clearFrame();",
-                        "        BitmapHandler bitmap = BitmapHandler(frames[index]);",
+                        "        BitmapHandler bitmap(frames[index]);",
                         "        bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0);",
                         "        ++index;",
                         "        if (index >= frames.size())",
@@ -113,13 +114,13 @@ class ModeGenerator:
             )
         return f"{self.id}Mode.cpp"
 
-    def _drawing_h(self) -> str:
+    def _drawing_h(self, count: int) -> str:
         frame = [
             "#pragma once",
             "",
             '#include "modules/ModeModule.h"',
             "",
-            "#include <vector>",
+            "#include <array>",
             "",
             "//",
             "// @warning Automatically generated file",
@@ -128,17 +129,10 @@ class ModeGenerator:
             f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
-            "    std::vector<uint16_t> frame = {",
+            f"    static constexpr std::array<uint16_t, {count}> frame{{",
         ]
         with open(self.path) as drawing:
-            for i, row in enumerate(csv.reader(drawing)):
-                if i > 0 and i % self.rows == 0:
-                    frame.extend(
-                        [
-                            "    },",
-                            "    {",
-                        ]
-                    )
+            for row in csv.reader(drawing):
                 frame.append("        0b" + "".join("1" if int(column) > 0 else "0" for column in row) + ",")
         frame.extend(
             [
@@ -163,7 +157,7 @@ class ModeGenerator:
                     [
                         f'#include "modes/{self.id}Mode.h"',
                         "",
-                        '#include "config/constants.h"',
+                        '#include "config/constants.h" // NOLINT(misc-include-cleaner)',
                         '#include "handlers/BitmapHandler.h"',
                         '#include "services/DisplayService.h"',
                         "",
@@ -174,7 +168,7 @@ class ModeGenerator:
                         f"void {self.id}Mode::begin()",
                         "{",
                         "    Display.clearFrame();",
-                        "    BitmapHandler bitmap = BitmapHandler(frame);",
+                        "    BitmapHandler bitmap(frame);",
                         "    bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0);",
                         "}",
                         "",

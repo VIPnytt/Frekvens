@@ -11,7 +11,7 @@ private:
     bool direction = false;
     bool pending = false;
 
-    float gamma = 1.0f;
+    float gamma = 1.0F;
 
     uint8_t brightness = UINT8_MAX;
 
@@ -40,6 +40,6 @@ public:
     void onTransmit(JsonObjectConst payload, const char *source) override;
 };
 
-extern PhotocellExtension *Photocell;
+extern PhotocellExtension *Photocell; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PHOTOCELL

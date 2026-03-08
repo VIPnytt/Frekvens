@@ -20,6 +20,6 @@ public:
     void begin() override;
 };
 
-extern RestfulExtension *Restful;
+extern RestfulExtension *Restful; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_RESTFUL

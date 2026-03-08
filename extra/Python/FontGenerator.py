@@ -116,7 +116,7 @@ class FontGenerator:
             f"class {unique}Font final : public FontModule",
             "{",
             "private:",
-            "    const std::vector<Symbol> ascii = {",
+            "    static inline const std::vector<Symbol> ascii{",
         ]
         for cp in range(0x20, 0x80):
             character = chr(cp)
@@ -156,7 +156,7 @@ class FontGenerator:
             [
                 "    };",
                 "",
-                "    const std::vector<SymbolExtended> unicode = {",
+                "    static inline const std::vector<SymbolExtended> unicode{",
             ]
         )
         for character, _bitmap in bitmaps.items():
@@ -208,7 +208,7 @@ class FontGenerator:
                     "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                     "};",
                     "",
-                    f"extern {unique}Font *Font{unique};",
+                    f"extern {unique}Font *Font{unique}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
                     "",
                 ]
             )
@@ -226,7 +226,7 @@ class FontGenerator:
                         "// @warning Automatically generated file",
                         "//",
                         "",
-                        f"{unique}Font *Font{unique} = nullptr;",
+                        f"{unique}Font *Font{unique} = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
                         "",
                         f'{unique}Font::{unique}Font() : FontModule("{name}") {{ Font{unique} = this; }}',
                         "",
@@ -236,7 +236,7 @@ class FontGenerator:
                         "    {",
                         "        return ascii[character - 0x20];",
                         "    }",
-                        "    else if (character >= 0x80 && character <= 0x10FFFF)",
+                        "    if (character >= 0x80 && character <= 0x10FFFF)",
                         "    {",
                         "        for (const SymbolExtended &extended : unicode)",
                         "        {",

@@ -10,8 +10,8 @@ const std::vector<FontModule *> &FontsService::getAll() const { return modules; 
 
 void FontsService::transmit()
 {
-    JsonDocument doc;
-    JsonArray list = doc["list"].to<JsonArray>();
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonArray list{doc["list"].to<JsonArray>()};
     for (const FontModule *font : modules)
     {
         list.add(font->name);
@@ -25,4 +25,5 @@ FontsService &FontsService::getInstance()
     return instance;
 }
 
-FontsService &Fonts = Fonts.getInstance();
+// NOLINTNEXTLINE(cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
+FontsService &Fonts = FontsService::getInstance();

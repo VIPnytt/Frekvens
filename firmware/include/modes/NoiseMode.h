@@ -2,8 +2,10 @@
 
 #if MODE_NOISE
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <array>
 
 class NoiseMode final : public ModeModule
 {
@@ -16,7 +18,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Dot dots[GRID_COLUMNS * GRID_ROWS / 9];
+    std::array<Dot, GRID_COLUMNS * GRID_ROWS / 9> dots{};
 
 public:
     explicit NoiseMode() : ModeModule("Noise") {};

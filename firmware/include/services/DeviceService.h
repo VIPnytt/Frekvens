@@ -1,9 +1,8 @@
 #pragma once
 
-#include "config/constants.h"
 #include "modules/ServiceModule.h"
 
-#include <vector>
+#include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
 class DeviceService final : public ServiceModule
 {
@@ -37,4 +36,4 @@ public:
     static DeviceService &getInstance();
 };
 
-extern DeviceService &Device;
+extern DeviceService &Device; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

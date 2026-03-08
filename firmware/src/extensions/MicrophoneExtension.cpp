@@ -2,14 +2,14 @@
 
 #include "extensions/MicrophoneExtension.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
 
-MicrophoneExtension *Microphone = nullptr;
+MicrophoneExtension *Microphone = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MicrophoneExtension::MicrophoneExtension() : ExtensionModule("Microphone") { Microphone = this; }
 
@@ -26,52 +26,52 @@ void MicrophoneExtension::configure()
     Storage.end();
 
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_active");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"active":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
-        component[HomeAssistantAbbreviations::name] = name;
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.active}}";
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
     {
-        const std::string id = std::string(name).append("_sound");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::automation_type] = "trigger";
-        component[HomeAssistantAbbreviations::payload] = "sound";
-        component[HomeAssistantAbbreviations::platform] = "device_automation";
-        component[HomeAssistantAbbreviations::subtype] = name;
-        component[HomeAssistantAbbreviations::topic] = topic;
-        component[HomeAssistantAbbreviations::type] = "sound detected";
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.event}}";
+        const std::string id{std::string(name).append("_sound")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::automation_type].set("trigger");
+        component[HomeAssistantAbbreviations::payload].set("sound");
+        component[HomeAssistantAbbreviations::platform].set("device_automation");
+        component[HomeAssistantAbbreviations::subtype].set(name);
+        component[HomeAssistantAbbreviations::topic].set(topic);
+        component[HomeAssistantAbbreviations::type].set("sound detected");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.event}}");
     }
     {
-        const std::string id = std::string(name).append("_threshold");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
+        const std::string id{std::string(name).append("_threshold")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template] = R"({"threshold":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:microphone";
-        component[HomeAssistantAbbreviations::max] = levelMax;
-        component[HomeAssistantAbbreviations::min] = 1;
-        component[HomeAssistantAbbreviations::mode] = "slider";
-        component[HomeAssistantAbbreviations::name] = "Threshold";
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::platform] = "number";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.threshold}}";
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
+        component[HomeAssistantAbbreviations::max].set(levelMax);
+        component[HomeAssistantAbbreviations::min].set(1);
+        component[HomeAssistantAbbreviations::mode].set("slider");
+        component[HomeAssistantAbbreviations::name].set("Threshold");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("number");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.threshold}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -109,12 +109,12 @@ void MicrophoneExtension::handle()
                 detected = true;
                 if (lastMillis - _lastMillis > UINT16_MAX)
                 {
-                    JsonDocument doc;
-                    doc["event"] = "sound";
+                    JsonDocument doc; // NOLINT(misc-const-correctness)
+                    doc["event"].set("sound");
                     Device.transmit(doc.as<JsonObjectConst>(), name, false);
                     _lastMillis = lastMillis;
                 }
-                ESP_LOGV(name, "sound, level %d", level);
+                ESP_LOGV(name, "sound, level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
             }
             else if (level > levelMax)
             {
@@ -129,7 +129,7 @@ void MicrophoneExtension::handle()
         else if (detected && millis() - lastMillis > INT8_MAX)
         {
             detected = false;
-            ESP_LOGV(name, "silence, level %d", level);
+            ESP_LOGV(name, "silence, level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -150,14 +150,7 @@ void MicrophoneExtension::setActive(bool active)
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
-        if (this->active)
-        {
-            ESP_LOGI(name, "active");
-        }
-        else
-        {
-            ESP_LOGI(name, "inactive");
-        }
+        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 
@@ -178,14 +171,15 @@ bool MicrophoneExtension::isTriggered() const { return detected || !active; }
 
 void MicrophoneExtension::transmit()
 {
-    JsonDocument doc;
-    doc["active"] = active;
-    doc["max"] = levelMax;
-    doc["threshold"] = threshold;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["active"].set(active);
+    doc["max"].set(levelMax);
+    doc["threshold"].set(threshold);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(JsonObjectConst payload, const char *source)
+void MicrophoneExtension::onReceive(JsonObjectConst payload,
+                                    const char *source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

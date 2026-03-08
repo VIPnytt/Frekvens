@@ -2,11 +2,10 @@
 
 #if MODE_TICKER
 
-#include "config/constants.h"
-#include "handlers/TextHandler.h"
+#include "config/constants.h"     // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "modules/FontModule.h"
 #include "modules/ModeModule.h"
-#include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <bits/unique_ptr.h>
 

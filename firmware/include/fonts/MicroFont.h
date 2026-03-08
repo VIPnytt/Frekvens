@@ -649,4 +649,4 @@ public:
     [[nodiscard]] Symbol getChar(uint32_t character) const override;
 };
 
-extern MicroFont *FontMicro;
+extern MicroFont *FontMicro; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

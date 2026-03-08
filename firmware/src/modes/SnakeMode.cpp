@@ -2,10 +2,10 @@
 
 #include "modes/SnakeMode.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -16,25 +16,25 @@
 void SnakeMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic = std::string("frekvens/" HOSTNAME "/").append(name);
+    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
-        const std::string id = std::string(name).append("_clock");
-        JsonObject component = (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>();
-        component[HomeAssistantAbbreviations::command_template] = R"({"clock":{{value}}})";
-        component[HomeAssistantAbbreviations::command_topic] = topic + "/set";
-        component[HomeAssistantAbbreviations::enabled_by_default] = false;
-        component[HomeAssistantAbbreviations::entity_category] = "config";
-        component[HomeAssistantAbbreviations::icon] = "mdi:snake";
-        component[HomeAssistantAbbreviations::name] = std::string(name).append(" clock");
-        component[HomeAssistantAbbreviations::object_id] = HOSTNAME "_" + id;
-        component[HomeAssistantAbbreviations::payload_off] = "false";
-        component[HomeAssistantAbbreviations::payload_on] = "true";
-        component[HomeAssistantAbbreviations::platform] = "switch";
-        component[HomeAssistantAbbreviations::state_off] = "False";
-        component[HomeAssistantAbbreviations::state_on] = "True";
-        component[HomeAssistantAbbreviations::state_topic] = topic;
-        component[HomeAssistantAbbreviations::unique_id] = HomeAssistant->uniquePrefix + id;
-        component[HomeAssistantAbbreviations::value_template] = "{{value_json.clock}}";
+        const std::string id{std::string(name).append("_clock")};
+        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"clock":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:snake");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" clock"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
@@ -138,10 +138,10 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step = dot;
-        while (from[step] != start)
+        Pixel step{dot};
+        while (from.at(step) != start)
         {
-            step = from[step];
+            step = from.at(step);
         }
         return step;
     }
@@ -187,11 +187,10 @@ void SnakeMode::move()
             }
             else
             {
-                uint8_t i = 0;
-                for (const Pixel &part : snake)
+                const uint8_t step = UINT8_MAX / snake.size();
+                for (std::size_t i = 0; i < snake.size(); ++i)
                 {
-                    Display.setPixel(part.x, part.y, UINT8_MAX / snake.size() * (i + 1));
-                    ++i;
+                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1));
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0);
                 snake.pop_front();
@@ -200,7 +199,7 @@ void SnakeMode::move()
         else
         {
             lastMillis = millis();
-            n = 0;
+            blinkCount = 0;
             stage = 2;
         }
         lastMillis = millis();
@@ -213,9 +212,9 @@ void SnakeMode::blink()
     {
         for (const Pixel &piece : snake)
         {
-            Display.setPixel(piece.x, piece.y, n % 2 == 0 ? 0 : UINT8_MAX);
+            Display.setPixel(piece.x, piece.y, blinkCount % 2 == 0 ? 0 : UINT8_MAX);
         }
-        if (++n >= 6)
+        if (++blinkCount >= 6)
         {
             stage = 3;
         }
@@ -240,12 +239,12 @@ void SnakeMode::clean()
 
 void SnakeMode::setDot()
 {
-    do
+    do // NOLINT(cppcoreguidelines-avoid-do-while)
     {
         dot.x = random(GRID_COLUMNS);
         dot.y = random(clock ? 5 : 0, GRID_ROWS);
     } while (Display.getPixel(dot.x, dot.y) != 0);
-    Display.setPixel(dot.x, dot.y, random(1, 1 << 8));
+    Display.setPixel(dot.x, dot.y, random(1, 1U << 8U));
 }
 
 void SnakeMode::setClock(bool _clock)
@@ -272,12 +271,13 @@ void SnakeMode::setClock(bool _clock)
 
 void SnakeMode::transmit()
 {
-    JsonDocument doc;
-    doc["clock"] = clock;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["clock"].set(clock);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(JsonObjectConst payload, const char *source)
+void SnakeMode::onReceive(JsonObjectConst payload,
+                          const char *source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

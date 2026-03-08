@@ -1,9 +1,9 @@
 #include "handlers/BitmapHandler.h"
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
-BitmapHandler::BitmapHandler(std::vector<uint16_t> bitmap) : bitmap(bitmap)
+BitmapHandler::BitmapHandler(std::span<const uint16_t> bitmap) : bitmap(bitmap)
 {
     if (!bitmap.empty())
     {

@@ -2,7 +2,7 @@
 
 #if MODE_FIREWORK
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class FireworkMode final : public ModeModule

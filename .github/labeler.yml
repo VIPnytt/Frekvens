@@ -3,6 +3,10 @@ bug:
     - ^fix
     - bugfix
 
+chore:
+  - head-branch:
+    - ^chore
+
 dependencies:
   - head-branch:
     - ^dependabot/

@@ -20,6 +20,6 @@ public:
     static void onConnect(AsyncEventSourceClient *client);
 };
 
-extern ServerSentEventsExtension *ServerSentEvents;
+extern ServerSentEventsExtension *ServerSentEvents; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_SERVERSENTEVENTS

@@ -2,8 +2,10 @@
 
 #if MODE_STARS
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <array>
 
 class StarsMode final : public ModeModule
 {
@@ -18,7 +20,7 @@ private:
         bool direction = true;
     };
 
-    Star stars[GRID_COLUMNS * GRID_ROWS / (1 << 4)];
+    std::array<Star, GRID_COLUMNS * GRID_ROWS / (1U << 4U)> stars{};
 
 public:
     explicit StarsMode() : ModeModule("Stars") {};

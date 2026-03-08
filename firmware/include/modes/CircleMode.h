@@ -2,20 +2,21 @@
 
 #if MODE_CIRCLE
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 class CircleMode final : public ModeModule
 {
 private:
-    static constexpr float x = (GRID_COLUMNS - 1) / 2.0f;
-    static constexpr float y = (GRID_ROWS - 1) / 2.0f;
+    static constexpr float x = (GRID_COLUMNS - 1) / 2.0F;
+    static constexpr float y = (GRID_ROWS - 1) / 2.0F;
 
-    const uint8_t maxRadius = 3 + ceilf((max(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
-                                             GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
-                                             M_SQRT2 +
-                                         M_SQRT1_2) /
-                                        2.0f);
+    inline static const uint8_t maxRadius =
+        3 + ceilf((max(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
+                       GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
+                       M_SQRT2 +
+                   M_SQRT1_2) /
+                  2.0F);
 
     bool lit = true;
 

@@ -17,7 +17,7 @@ void PixelSequenceMode::handle()
         {
             if (pixelOrder[i] == address)
             {
-                Display.setPixel(i % GRID_COLUMNS, i / GRID_ROWS, lit ? UINT8_MAX : 0);
+                Display.setPixel(i % GRID_COLUMNS, i / GRID_COLUMNS, lit ? UINT8_MAX : 0);
                 break;
             }
         }

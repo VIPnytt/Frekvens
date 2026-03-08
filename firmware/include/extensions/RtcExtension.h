@@ -2,13 +2,13 @@
 
 #if EXTENSION_RTC
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
-#include <RtcDS1307.h>
-#include <RtcDS3231.h>
+#include <RtcDS1307.h> // NOLINT(misc-include-cleaner)
+#include <RtcDS3231.h> // NOLINT(misc-include-cleaner)
 #include <RtcDS3232.h>
-#include <RtcPCF8563.h>
+#include <RtcPCF8563.h> // NOLINT(misc-include-cleaner)
 #include <Wire.h>
 
 class RtcExtension final : public ExtensionModule
@@ -36,14 +36,14 @@ public:
     explicit RtcExtension();
 
 #ifdef RTC_DS1307
-    RtcDS1307<TwoWire> rtc = RtcDS1307(Wire);
+    RtcDS1307<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3231)
-    RtcDS3231<TwoWire> rtc = RtcDS3231(Wire);
+    RtcDS3231<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3232)
-    RtcDS3232<TwoWire> rtc = RtcDS3232(Wire);
+    RtcDS3232<TwoWire> rtc{Wire};
 #elif defined(RTC_PCF8563)
-    RtcPCF8563<TwoWire> rtc = RtcPCF8563(Wire);
-#endif
+    RtcPCF8563<TwoWire> rtc{Wire};
+#endif // RTC_DS1307
 
     void configure() override;
 #if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
@@ -51,6 +51,6 @@ public:
 #endif
 };
 
-extern RtcExtension *Rtc;
+extern RtcExtension *Rtc; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_RTC

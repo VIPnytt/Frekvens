@@ -1,5 +1,6 @@
 #pragma once
 
+// NOLINTBEGIN(misc-include-cleaner)
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
 #include "extensions/HeapExtension.h"
@@ -19,6 +20,7 @@
 #include "extensions/WebSocketExtension.h"
 #include "modules/ExtensionModule.h"
 #include "modules/ServiceModule.h"
+// NOLINTEND(misc-include-cleaner)
 
 #include <vector>
 
@@ -27,7 +29,8 @@ class ExtensionsService final : public ServiceModule
 private:
     explicit ExtensionsService() : ServiceModule("Extensions") {};
 
-    const std::vector<ExtensionModule *> modules = {
+    // NOLINTNEXTLINE(cert-err58-cpp)
+    inline static const std::vector<ExtensionModule *> modules{
 #if EXTENSION_ALEXA
         new AlexaExtension(),
 #endif
@@ -90,7 +93,7 @@ private:
 public:
     TaskHandle_t taskHandle = nullptr;
 
-    static constexpr uint16_t stackSize = 1 << 12; // 4 kB
+    static constexpr uint16_t stackSize = 1U << 12U; // 4 kB
 
     void configure();
     void begin();
@@ -100,4 +103,4 @@ public:
     static ExtensionsService &getInstance();
 };
 
-extern ExtensionsService &Extensions;
+extern ExtensionsService &Extensions; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)

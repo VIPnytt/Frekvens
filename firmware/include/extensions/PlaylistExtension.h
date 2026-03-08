@@ -4,6 +4,7 @@
 
 #include "modules/ExtensionModule.h"
 
+#include <span>
 #include <vector>
 
 class PlaylistExtension final : public ExtensionModule
@@ -33,12 +34,12 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::vector<Mode> playlist = {};
+    std::vector<Mode> playlist{};
 
-    void setPlaylist(std::vector<Mode> modes);
+    void setPlaylist(std::span<Mode> modes);
     void transmit();
 };
 
-extern PlaylistExtension *Playlist;
+extern PlaylistExtension *Playlist; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PLAYLIST

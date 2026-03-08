@@ -1,6 +1,6 @@
 #include "fonts/LargeFont.h"
 
-LargeFont *FontLarge = nullptr;
+LargeFont *FontLarge = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 LargeFont::LargeFont() : FontModule("Large") { FontLarge = this; }
 

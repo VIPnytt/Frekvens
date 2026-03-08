@@ -5,7 +5,7 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
-WebSocketExtension *WebSocket = nullptr;
+WebSocketExtension *WebSocket = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket") { WebSocket = this; }
 
@@ -19,7 +19,7 @@ void WebSocketExtension::handle() { server->cleanupClients(); }
 
 void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc[source].set(payload);
     const size_t length = measureJson(doc);
     std::vector<char> message(length + 1);
@@ -27,8 +27,9 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
     server->textAll(message.data(), length);
 }
 
-void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
-                                 const uint8_t *data, size_t len)
+void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-parameters)
+                                 AsyncWebSocketClient *client, AwsEventType type, void *arg, const uint8_t *data,
+                                 size_t len)
 {
     switch (type)
     {
@@ -45,8 +46,8 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
     {
         if (static_cast<AwsFrameInfo *>(arg)->opcode == AwsFrameType::WS_TEXT)
         {
-            JsonDocument doc;
-            if (!deserializeJson(doc, data, len) && doc.is<JsonObjectConst>())
+            JsonDocument doc; // NOLINT(misc-const-correctness)
+            if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok && doc.is<JsonObjectConst>())
             {
                 for (const JsonPairConst pair : doc.as<JsonObjectConst>())
                 {

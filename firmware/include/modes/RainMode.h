@@ -2,8 +2,10 @@
 
 #if MODE_RAIN
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <array>
 
 class RainMode final : public ModeModule
 {
@@ -18,7 +20,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Drop drops[GRID_COLUMNS / 3];
+    std::array<Drop, GRID_COLUMNS / 3> drops{};
 
 public:
     explicit RainMode() : ModeModule("Rain") {};

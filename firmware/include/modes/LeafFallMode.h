@@ -2,8 +2,10 @@
 
 #if MODE_LEAFFALL
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <array>
 
 class LeafFallMode final : public ModeModule
 {
@@ -17,7 +19,7 @@ private:
         unsigned long lastMillis = 0;
     };
 
-    Leaf leaves[GRID_COLUMNS * GRID_ROWS / 20];
+    std::array<Leaf, GRID_COLUMNS * GRID_ROWS / 20> leaves{};
 
 public:
     explicit LeafFallMode() : ModeModule("Leaf fall") {};

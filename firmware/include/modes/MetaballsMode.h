@@ -2,8 +2,10 @@
 
 #if MODE_METABALLS
 
-#include "config/constants.h"
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <array>
 
 class MetaballsMode final : public ModeModule
 {
@@ -14,7 +16,7 @@ private:
     static constexpr float radiusSq = radius * radius;
     static constexpr float speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
 
-    static constexpr uint8_t multiplier = 1 << 3;
+    static constexpr uint8_t multiplier = 1U << 3U;
 
     struct Ball
     {
@@ -24,9 +26,8 @@ private:
         float yVelocity;
     };
 
-    uint8_t contributions[1 << 8] = {0};
-
-    Ball balls[GRID_COLUMNS * GRID_ROWS / (1 << 6)] = {};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{};
+    std::array<Ball, GRID_COLUMNS * GRID_ROWS / (1U << 6U)> balls{};
 
 public:
     explicit MetaballsMode() : ModeModule("Metaballs") {};
