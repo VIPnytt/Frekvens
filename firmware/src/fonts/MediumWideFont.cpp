@@ -2,7 +2,7 @@
 
 MediumWideFont *FontMediumWide = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-MediumWideFont::MediumWideFont() : FontModule("Medium Wide") { FontMediumWide = this; }
+MediumWideFont::MediumWideFont() : FontModule("Medium wide") { FontMediumWide = this; }
 
 FontModule::Symbol MediumWideFont::getChar(uint32_t character) const
 {
