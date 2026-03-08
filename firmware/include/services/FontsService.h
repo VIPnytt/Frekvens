@@ -4,7 +4,7 @@
 #include "fonts/LargeFont.h"
 #include "fonts/MediumBoldFont.h"
 #include "fonts/MediumFont.h"
-#include "fonts/MediumRegularFont.h"
+#include "fonts/MediumWideFont.h"
 #include "fonts/MicroFont.h"
 #include "fonts/MiniFont.h"
 #include "fonts/SmallFont.h"
@@ -23,8 +23,8 @@ private:
         new MiniFont(),
         new SmallFont(),
         new MediumFont(),
-        new MediumRegularFont(),
         new MediumBoldFont(),
+        new MediumWideFont(),
         new LargeFont(),
     };
 
