@@ -31,7 +31,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up Frekvens tools
-        run: uv sync
+        run: uv sync --no-dev
 
       - name: Animation splitter
         run: |
@@ -139,7 +139,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up Frekvens tools
-        run: uv sync
+        run: uv sync --no-dev
 
       - name: Set up HTTP server
         run: |
@@ -178,7 +178,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up Frekvens tools
-        run: uv sync
+        run: uv sync --no-dev
 
       - name: Set up HTTP server
         run: |

@@ -14,16 +14,15 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/VIPnytt/Frekvens"
 Documentation = "https://github.com/VIPnytt/Frekvens/wiki"
-Repository = "https://github.com/VIPnytt/Frekvens.git"
 
 [project.optional-dependencies]
+bootstrap = [
+    "uv==0.10.9",
+]
 font = [
     "fonttools==4.61.1",
     "matplotlib==3.10.8",
     "pillow==12.1.1",
-]
-uv = [
-    "uv==0.10.9",
 ]
 
 [build-system]
@@ -42,11 +41,11 @@ dependabot = [
     "httpx==0.28.1",
     "packaging==25.0.0",
 ]
+dev = [
+    "ruff==0.15.4",
+]
 platformio = [
     "platformio==6.1.19",
-]
-ruff = [
-    "ruff==0.15.4",
 ]
 scripts = [
     "cryptography==46.0.5",

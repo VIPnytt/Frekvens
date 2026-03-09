@@ -8,14 +8,15 @@ Converts `.ttf` or `.otf` font files into C++ source files that can easily be ad
 
 Usage:
 
-```bash
+```sh
 python extra/Python/FontGenerator.py -i DejaVuSans --size 8
 ```
 
 Installation of dependencies:
 
-```bash
-pip install .[font]
+```sh
+pip install .[bootstrap]
+uv sync --extra font --inexact
 ```
 
 ## 🏭 Mode generator

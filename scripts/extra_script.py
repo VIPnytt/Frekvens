@@ -1,6 +1,7 @@
 # PlatformIO pre-build extra script
 
 import SCons.Script
+import subprocess
 import sys
 import typing
 
@@ -21,11 +22,13 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
         env = SCons.Script.Environment()
 
     if not env.IsCleanTarget():
-        command = "uv sync --only-group scripts --inexact"
-        if int(SCons.Script.ARGUMENTS["PIOVERBOSE"]):
-            command += " --verbose"
-        if env.Execute(command):
-            env.Execute(f"pip install .[uv] && {command}")
+        dependencies = subprocess.run(
+            [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
+            stderr=subprocess.DEVNULL,
+        )
+        if dependencies.returncode:
+            subprocess.run([sys.executable, "-m", "pip", "install", ".[bootstrap]"], check=True)
+            subprocess.run(dependencies.args, check=True)
 
     sys.path.append(env["PROJECT_DIR"])
 
