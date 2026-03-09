@@ -22,13 +22,16 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
         env = SCons.Script.Environment()
 
     if not env.IsCleanTarget():
-        dependencies = subprocess.run(
+        uv = subprocess.run(
             [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
             stderr=subprocess.DEVNULL,
         )
-        if dependencies.returncode:
-            subprocess.run([sys.executable, "-m", "pip", "install", ".[bootstrap]"], check=True)
-            subprocess.run(dependencies.args, check=True)
+        if uv.returncode:
+            pip = subprocess.run([sys.executable, "-m", "pip", "install", ".[bootstrap]"], stderr=subprocess.DEVNULL)
+            if pip.returncode:
+                subprocess.run([sys.executable, "-m", "ensurepip"], check=True)
+                subprocess.run(pip.args, check=True)
+            subprocess.run(uv.args, check=True)
 
     sys.path.append(env["PROJECT_DIR"])
 
