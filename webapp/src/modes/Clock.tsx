@@ -48,14 +48,17 @@ export const Sidebar: Component = () => {
     };
 
     return (
-        <SidebarSection title={name}>
-            <select
-                class="mt-3 w-full"
-                value={getFont()}
-                onchange={(e) => handleFont(e.currentTarget.value)}
-            >
-                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
-            </select>
+        <SidebarSection title={"Options"}>
+            <div class="space-y-1">
+                <p class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Font</p>
+                <select
+                    class="w-full"
+                    value={getFont()}
+                    onchange={(e) => handleFont(e.currentTarget.value)}
+                >
+                    <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
+                </select>
+            </div>
             <label class="flex items-center gap-3 cursor-pointer">
                 <input
                     type="checkbox"

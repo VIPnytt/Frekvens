@@ -6,11 +6,11 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumBoldFont.h"
 #include "fonts/MediumFont.h"
+#include "fonts/MediumWideFont.h"
 #include "fonts/MiniFont.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
 
 #include <Preferences.h>
 
@@ -61,6 +61,7 @@ void ClockMode::configure()
         FontMini,
         FontMedium,
         FontMediumBold,
+        FontMediumWide,
     };
 
     Preferences Storage;
