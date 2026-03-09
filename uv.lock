@@ -550,9 +550,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-bootstrap = [
-    { name = "uv" },
-]
 font = [
     { name = "fonttools" },
     { name = "matplotlib" },
@@ -578,6 +575,9 @@ scripts = [
     { name = "tzdata" },
     { name = "tzlocal" },
 ]
+uv = [
+    { name = "uv" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -585,9 +585,8 @@ requires-dist = [
     { name = "httpx", specifier = "==0.28.1" },
     { name = "matplotlib", marker = "extra == 'font'", specifier = "==3.10.8" },
     { name = "pillow", marker = "extra == 'font'", specifier = "==12.1.1" },
-    { name = "uv", marker = "extra == 'bootstrap'", specifier = "==0.10.9" },
 ]
-provides-extras = ["bootstrap", "font"]
+provides-extras = ["font"]
 
 [package.metadata.requires-dev]
 dependabot = [
@@ -604,6 +603,7 @@ scripts = [
     { name = "tzdata", specifier = "==2025.3" },
     { name = "tzlocal", specifier = "==5.3.1" },
 ]
+uv = [{ name = "uv", specifier = "==0.10.9" }]
 
 [[package]]
 name = "h11"

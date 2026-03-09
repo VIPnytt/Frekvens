@@ -15,7 +15,7 @@ python extra/Python/FontGenerator.py -i DejaVuSans --size 8
 Installation of dependencies:
 
 ```sh
-pip install .[bootstrap]
+pip install uv
 uv sync --extra font --inexact
 ```
 

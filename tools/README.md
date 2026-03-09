@@ -5,6 +5,7 @@ Optional utilities that are not considered part of the core functionality but ma
 Installation of Python dependency packages:
 
 ```sh
+pip install uv
 uv sync --inexact
 ```
 
