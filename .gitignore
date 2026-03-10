@@ -1,5 +1,6 @@
 __pycache__
 /.env*
+/.nodeenv
 /.pio
 /.platformio
 /.ruff_cache

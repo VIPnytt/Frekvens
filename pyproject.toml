@@ -47,6 +47,7 @@ platformio = [
 scripts = [
     "cryptography==46.0.5",
     "httpx==0.28.1",
+    "nodeenv==1.10.0",
     "packaging==25.0.0",
     "python-dotenv==1.2.2",
     "tzdata==2025.3",

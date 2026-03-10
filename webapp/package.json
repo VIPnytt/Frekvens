@@ -16,6 +16,9 @@
         "lint": "biome lint ./src",
         "start": "vite"
     },
+    "engines": {
+        "node": ">=20"
+    },
     "dependencies": {
         "@mdi/js": "7.4.47",
         "@solid-primitives/event-listener": "2.4.5",
