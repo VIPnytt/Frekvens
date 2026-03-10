@@ -28,21 +28,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            .github/platformio/requirements.txt
-            extra/Python/requirements.txt
-            scripts/requirements.txt
+          activate-environment: true
 
-      - name: Set up Frekvens extra
-        run: pip install -r extra/Python/requirements.txt
-
-      - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
+      - name: Set up Python dependencies
+        run: uv sync --extra font --group platformio --no-dev
 
       - name: PlatformIO version
         id: platformio
@@ -90,9 +84,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -106,6 +102,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |
@@ -132,17 +129,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            .github/platformio/requirements.txt
-            scripts/requirements.txt
+          activate-environment: true
 
       - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
@@ -224,9 +219,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -240,6 +237,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |
@@ -266,17 +264,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
+          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            .github/platformio/requirements.txt
-            scripts/requirements.txt
+          activate-environment: true
 
       - name: Set up PlatformIO
-        run: pip install -r .github/platformio/requirements.txt
+        run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
@@ -342,9 +338,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -358,6 +356,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |

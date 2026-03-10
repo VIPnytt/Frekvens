@@ -1,0 +1,64 @@
+[project]
+name = "frekvens"
+description = "Toolbox for the Frekvens project."
+version = "2.2.1.dev0"
+license = "MIT"
+classifiers = [
+    "Private :: Do Not Upload",
+]
+requires-python = ">=3.10"
+dependencies = [
+    'httpx==0.28.1',
+]
+
+[project.urls]
+Homepage = "https://github.com/VIPnytt/Frekvens"
+Documentation = "https://github.com/VIPnytt/Frekvens/wiki"
+
+[project.optional-dependencies]
+font = [
+    "fonttools==4.61.1",
+    "matplotlib==3.10.8",
+    "pillow==12.1.1",
+]
+
+[build-system]
+requires = [
+    "setuptools",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = [
+    "tools/src",
+]
+
+[dependency-groups]
+dependabot = [
+    "httpx==0.28.1",
+    "packaging==25.0.0",
+]
+dev = [
+    "ruff==0.15.4",
+]
+platformio = [
+    "platformio==6.1.19",
+]
+scripts = [
+    "cryptography==46.0.5",
+    "httpx==0.28.1",
+    "packaging==25.0.0",
+    "python-dotenv==1.2.2",
+    "tzdata==2025.3",
+    "tzlocal==5.3.1",
+]
+uv = [
+    "uv==0.10.9",
+]
+
+[tool.ruff]
+extend-exclude = [
+    ".pio",
+    ".platformio.py",
+]
+line-length = 120
