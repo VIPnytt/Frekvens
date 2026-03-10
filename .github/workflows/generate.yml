@@ -23,6 +23,7 @@ jobs:
         toolchain:
           - python-version: "3.10"
           - python-version: 3.13
+          - python-version: 3.14
 
     steps:
       - name: Checkout
@@ -84,9 +85,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -100,6 +103,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |
@@ -121,6 +125,7 @@ jobs:
         toolchain:
           - python-version: "3.10"
           - python-version: 3.13
+          - python-version: 3.14
 
     steps:
       - name: Checkout
@@ -216,9 +221,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -232,6 +239,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |
@@ -253,6 +261,7 @@ jobs:
         toolchain:
           - python-version: "3.10"
           - python-version: 3.13
+          - python-version: 3.14
 
     steps:
       - name: Checkout
@@ -332,9 +341,11 @@ jobs:
           pio run -e esp32dev
 
       - name: PlatformIO compilation database
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         run: pio run -e esp32dev -t compiledb
 
       - name: Clang
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
         id: clang
         env:
@@ -348,6 +359,7 @@ jobs:
           tidy-checks: ""
 
       - name: Clang summary
+        if: ${{ matrix.toolchain.python-version != 3.14 }}
         env:
           clang-threshold: 0
         run: |
