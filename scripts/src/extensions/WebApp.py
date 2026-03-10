@@ -84,16 +84,17 @@ class WebApp:
             )
 
     def _npm_build(self) -> None:
-        node_dir = (pathlib.Path(".nodeenv") / ("Scripts" if os.name == "nt" else "bin")).resolve()
-        npm = shutil.which("npm")
-        if not npm:
-            npm = shutil.which("npm", path=node_dir)
-            if not npm:
-                subprocess.run([sys.executable, "-m", "nodeenv", f"--node={self._node_version() or 'lts'}", ".nodeenv"])
-                npm = shutil.which("npm", path=node_dir) or "npm"
         env = os.environ.copy()
-        if npm != "npm" and pathlib.Path(npm).parent == node_dir:
-            env["PATH"] = f"{node_dir}{os.pathsep}{env['PATH']}"
+        env["PATH"] = os.pathsep.join(
+            [
+                str((pathlib.Path(".nodeenv") / ("Scripts" if os.name == "nt" else "bin")).resolve()),
+                env["PATH"],
+            ]
+        )
+        npm = shutil.which("npm", path=env["PATH"])
+        if not npm:
+            subprocess.run([sys.executable, "-m", "nodeenv", f"--node={self._node_version() or 'lts'}", ".nodeenv"])
+            npm = shutil.which("npm", path=env["PATH"]) or "npm"
         build = subprocess.run([npm, "run", "build"], cwd=self.path, env=env, stderr=subprocess.DEVNULL)
         if build.returncode:
             subprocess.run([npm, "install"], check=True, cwd=self.path, env=env)
@@ -107,9 +108,10 @@ class WebApp:
     def _node_version(self) -> str | None:
         with open(self.path / "package.json", encoding="utf-8") as f:
             package = json.load(f)
-        match = re.search(r"\d+", package["engines"]["node"])
+        match = re.search(r"\d+(?:\.\d+){,2}", package["engines"]["node"])
         if match:
-            prefix = f"{match.group()}."
+            full = match.group()
+            prefix = f"{full}."
             for version in reversed(
                 subprocess.run(
                     [sys.executable, "-m", "nodeenv", "--list"],
@@ -117,7 +119,7 @@ class WebApp:
                     text=True,
                 ).stderr.split()
             ):
-                if version.startswith(prefix):
+                if full == version or version.startswith(prefix):
                     return version
         return None
 
