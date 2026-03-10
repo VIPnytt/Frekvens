@@ -95,10 +95,10 @@ class WebApp:
         if not npm:
             subprocess.run([sys.executable, "-m", "nodeenv", f"--node={self._node_version() or 'lts'}", ".nodeenv"])
             npm = shutil.which("npm", path=env["PATH"]) or "npm"
-        build = subprocess.run([npm, "run", "build"], cwd=self.path, env=env, stderr=subprocess.DEVNULL)
+        build = subprocess.run([npm, "run", "build"], stderr=subprocess.DEVNULL, cwd=self.path, env=env)
         if build.returncode:
-            subprocess.run([npm, "install"], check=True, cwd=self.path, env=env)
-            subprocess.run(build.args, check=True, cwd=self.path, env=env)
+            subprocess.run([npm, "install"], cwd=self.path, env=env, check=True)
+            subprocess.run(build.args, cwd=self.path, env=env, check=True)
         data_dir = pathlib.Path("data") / "webapp"
         data_dir.mkdir(parents=True, exist_ok=True)
         with open(self.path / "dist" / "index.html", "rb") as html:
