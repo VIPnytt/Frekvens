@@ -90,6 +90,7 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: 3.14
+          activate-environment: true
 
       - name: Set up Python packages
         run: uv sync --only-group dependabot
@@ -99,7 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_WORKSPACE: ${{ github.workspace }}
-        run: echo "fragments=$(uv run -m GitHub)" >> "$GITHUB_OUTPUT"
+        run: echo "fragments=$(python -m GitHub)" >> "$GITHUB_OUTPUT"
         working-directory: .github/scripts/dependabot/github
 
   github-update:
@@ -222,6 +223,7 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: 3.14
+          activate-environment: true
 
       - name: Set up Python packages
         run: uv sync --only-group dependabot --only-group platformio
@@ -230,7 +232,7 @@ jobs:
         id: pending
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-        run: echo "fragments=$(uv run -m PlatformIo)" >> "$GITHUB_OUTPUT"
+        run: echo "fragments=$(python -m PlatformIo)" >> "$GITHUB_OUTPUT"
         working-directory: .github/scripts/dependabot/platformio
 
   platformio-update:

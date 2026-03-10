@@ -33,13 +33,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up Python dependencies
         run: uv sync --extra font --group platformio --no-dev
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -52,7 +53,7 @@ jobs:
 
       - name: Font generator
         run: |
-          uv run extra/Python/FontGenerator.py -i DejaVuSans --size 8
+          python extra/Python/FontGenerator.py -i DejaVuSans --size 8
 
           mv DejaVuSansFont.cpp firmware/src/fonts
           mv DejaVuSansFont.h firmware/include/fonts
@@ -80,10 +81,10 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e esp32dev
+          pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        run: uv run pio run -e esp32dev -t compiledb
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
@@ -130,13 +131,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -184,7 +186,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          uv run extra/Python/ModeGenerator.py -i Dynamic.csv
+          python extra/Python/ModeGenerator.py -i Dynamic.csv
 
           mv DynamicMode.cpp firmware/src/modes
           mv DynamicMode.h firmware/include/modes
@@ -211,10 +213,10 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e esp32dev
+          pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        run: uv run pio run -e esp32dev -t compiledb
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7
@@ -261,13 +263,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -299,7 +302,7 @@ jobs:
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
           EOL
 
-          uv run extra/Python/ModeGenerator.py -i Static.csv
+          python extra/Python/ModeGenerator.py -i Static.csv
 
           mv StaticMode.cpp firmware/src/modes
           mv StaticMode.h firmware/include/modes
@@ -326,10 +329,10 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e esp32dev
+          pio run -e esp32dev
 
       - name: PlatformIO compilation database
-        run: uv run pio run -e esp32dev -t compiledb
+        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
         uses: cpp-linter/cpp-linter-action@b6edc0625e3941baa1797f4b4326adeab6890c97 # v2.16.7

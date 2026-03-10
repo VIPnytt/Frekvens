@@ -24,13 +24,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: 3.14
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO lint
         run: |
-          OUTPUT=$(uv run pio project config --lint --json-output)
+          OUTPUT=$(pio project config --lint --json-output)
           echo "$OUTPUT"
           if [ "$OUTPUT" != "{'errors': [], 'warnings': []}" ]; then
             exit 1

@@ -34,13 +34,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: 3.14
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO environments
         id: config
-        run: echo "environments=$(uv run pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default
@@ -124,13 +125,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -156,7 +158,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e ${{ matrix.environment }}
+          pio run -e ${{ matrix.environment }}
 
   minimal:
     name: Minimal
@@ -220,13 +222,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -263,7 +266,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e ${{ matrix.environment }}
+          pio run -e ${{ matrix.environment }}
 
   typical:
     name: Typical
@@ -322,13 +325,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -415,7 +419,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run pio run -e ${{ matrix.environment }}
+          pio run -e ${{ matrix.environment }}
 
   extensive:
     name: Extensive
@@ -474,13 +478,14 @@ jobs:
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
+          activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
       - name: PlatformIO version
         id: platformio
-        run: echo "version=$(uv run pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -596,4 +601,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          uv run pio run -e ${{ matrix.environment }}
+          pio run -e ${{ matrix.environment }}
