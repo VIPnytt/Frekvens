@@ -39,7 +39,7 @@ dependabot = [
     "packaging==25.0.0",
 ]
 dev = [
-    "ruff==0.15.4",
+    "ruff==0.15.5",
 ]
 nodejs = [
     "nodejs-wheel==24.14.0",
