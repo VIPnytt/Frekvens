@@ -85,10 +85,6 @@ Each display model has its own hardware setup guide:
 
 - **From the Releases page** – If you prefer a direct download, grab a `zip` or `tar.gz` archive from the [releases page](https://github.com/vipnytt/frekvens/releases/latest).
 
-### Dependencies
-
-To enable the Web UI, [Node.js](https://nodejs.org/en/download) is required. The latest *LTS* version is recommended, but any newer version will work.
-
 ### PlatformIO
 
 Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini) file. If your board is not already listed, check the [PlatformIO Boards](https://registry.platformio.org/platforms/platformio/espressif32/boards) reference or the [pioarduino board database](https://github.com/pioarduino/platform-espressif32/tree/main/boards).

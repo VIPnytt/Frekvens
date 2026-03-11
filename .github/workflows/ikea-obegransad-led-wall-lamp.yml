@@ -19,11 +19,12 @@ permissions:
   contents: read
 
 jobs:
-  platformio:
-    name: PlatformIO environments
+  config:
+    name: Workflow configuration
     runs-on: ubuntu-latest
     outputs:
-      environments: ${{ steps.config.outputs.environments }}
+      node-cache: ${{ steps.nodejs.outputs.cache }}
+      pio-environments: ${{ steps.platformio.outputs.environments }}
 
     steps:
       - name: Checkout
@@ -36,112 +37,85 @@ jobs:
           python-version: 3.14
           activate-environment: true
 
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+      - name: Set up Python packages
+        run: uv sync --only-group nodejs --only-group platformio
+
+      - name: Node.js cache
+        id: nodejs
+        run: echo "cache=$(npm config get cache)" >> "$GITHUB_OUTPUT"
 
       - name: PlatformIO environments
-        id: config
+        id: platformio
         run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default
-    needs: platformio
+    needs: config
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
-        toolchain:
-          - node-version: 20
-            python-version: "3.10"
-
-          - node-version: 25
-            python-version: 3.14
+        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        include:
+          - python-version: "3.10"
+          - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_n4r2
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_d32
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_d32_pro
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_s3_mini
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32c3
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32c6
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32s3
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: wemos_d1_mini32
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Set up Cache for Node.js
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          node-version: ${{ matrix.toolchain.node-version }}
-          cache: npm
-          cache-dependency-path: webapp/package-lock.json
+          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          path: ${{ needs.config.outputs.node-cache }}
+
+      - name: Set up Cache for PlatformIO
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          path: .platformio/.cache
 
       - name: Set up uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
+          python-version: ${{ matrix.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
-
-      - name: PlatformIO version
-        id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Cache for PlatformIO
-        continue-on-error: true
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
-        with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
-          path: |
-            .platformio/.cache/downloads
-            .platformio/.cache/http
 
       - name: PlatformIO build
         run: |
@@ -162,83 +136,67 @@ jobs:
 
   minimal:
     name: Minimal
-    needs: platformio
+    needs: config
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
-        toolchain:
+        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        include:
           - python-version: "3.10"
           - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_n4r2
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_d32
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_d32_pro
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: lolin_s3_mini
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32c3
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32c6
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: seeed_xiao_esp32s3
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: wemos_d1_mini32
-            toolchain:
-              python-version: "3.10"
+            python-version: "3.10"
 
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
-        with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
-
-      - name: PlatformIO version
-        id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
-
       - name: Set up Cache for PlatformIO
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
-          path: |
-            .platformio/.cache/downloads
-            .platformio/.cache/http
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          path: .platformio/.cache
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
+        with:
+          version-file: pyproject.toml
+          python-version: ${{ matrix.python-version }}
+          activate-environment: true
+
+      - name: Set up PlatformIO
+        run: uv sync --only-group platformio
 
       - name: PlatformIO build
         run: |
@@ -270,27 +228,22 @@ jobs:
 
   typical:
     name: Typical
-    needs: platformio
+    needs: config
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
-        toolchain:
-          - node-version: 20
-            python-version: "3.10"
-
-          - node-version: 25
-            python-version: 3.14
+        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        include:
+          - python-version: "3.10"
+          - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -303,9 +256,7 @@ jobs:
           - environment: seeed_xiao_esp32c6
 
           - environment: seeed_xiao_esp32s3
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: wemos_d1_mini32
 
@@ -313,35 +264,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Set up Cache for Node.js
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          node-version: ${{ matrix.toolchain.node-version }}
-          cache: npm
-          cache-dependency-path: webapp/package-lock.json
+          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          path: ${{ needs.config.outputs.node-cache }}
+
+      - name: Set up Cache for PlatformIO
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          path: .platformio/.cache
 
       - name: Set up uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
+          python-version: ${{ matrix.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
-
-      - name: PlatformIO version
-        id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Cache for PlatformIO
-        continue-on-error: true
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
-        with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
-          path: |
-            .platformio/.cache/downloads
-            .platformio/.cache/http
 
       - name: PlatformIO build
         run: |
@@ -423,27 +366,22 @@ jobs:
 
   extensive:
     name: Extensive
-    needs: platformio
+    needs: config
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
-        toolchain:
-          - node-version: 20
-            python-version: "3.10"
-
-          - node-version: 25
-            python-version: 3.14
+        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        include:
+          - python-version: "3.10"
+          - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -456,9 +394,7 @@ jobs:
           - environment: seeed_xiao_esp32c6
 
           - environment: seeed_xiao_esp32s3
-            toolchain:
-              node-version: 20
-              python-version: "3.10"
+            python-version: "3.10"
 
           - environment: wemos_d1_mini32
 
@@ -466,35 +402,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Set up Cache for Node.js
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          node-version: ${{ matrix.toolchain.node-version }}
-          cache: npm
-          cache-dependency-path: webapp/package-lock.json
+          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          path: ${{ needs.config.outputs.node-cache }}
+
+      - name: Set up Cache for PlatformIO
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          path: .platformio/.cache
 
       - name: Set up uv
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
+          python-version: ${{ matrix.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
-
-      - name: PlatformIO version
-        id: platformio
-        run: echo "version=$(pio --version | awk '{print $NF}')" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Cache for PlatformIO
-        continue-on-error: true
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
-        with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ steps.platformio.outputs.version }}-${{ hashFiles('platformio.ini') }}
-          path: |
-            .platformio/.cache/downloads
-            .platformio/.cache/http
 
       - name: PlatformIO build'
         run: |
