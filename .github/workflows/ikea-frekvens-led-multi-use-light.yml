@@ -56,40 +56,50 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
-        include:
+        toolchain:
           - python-version: "3.10"
           - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_n4r2
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_d32
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_d32_pro
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_s3_mini
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32c3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32c6
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32s3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: wemos_d1_mini32
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
     steps:
       - name: Checkout
@@ -111,7 +121,7 @@ jobs:
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
@@ -143,40 +153,50 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
-        include:
+        toolchain:
           - python-version: "3.10"
           - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_n4r2
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_d32
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_d32_pro
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: lolin_s3_mini
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32c3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32c6
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: seeed_xiao_esp32s3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: wemos_d1_mini32
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
     steps:
       - name: Checkout
@@ -193,7 +213,7 @@ jobs:
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
@@ -236,7 +256,7 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
-        include:
+        toolchain:
           - python-version: "3.10"
           - python-version: 3.14
 
@@ -245,7 +265,8 @@ jobs:
           - environment: adafruit_qtpy_esp32s3_n4r2
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -258,7 +279,8 @@ jobs:
           - environment: seeed_xiao_esp32c6
 
           - environment: seeed_xiao_esp32s3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: wemos_d1_mini32
 
@@ -282,7 +304,7 @@ jobs:
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
@@ -377,7 +399,7 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
-        include:
+        toolchain:
           - python-version: "3.10"
           - python-version: 3.14
 
@@ -386,7 +408,8 @@ jobs:
           - environment: adafruit_qtpy_esp32s3_n4r2
 
           - environment: adafruit_qtpy_esp32s3_nopsram
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -399,7 +422,8 @@ jobs:
           - environment: seeed_xiao_esp32c6
 
           - environment: seeed_xiao_esp32s3
-            python-version: "3.10"
+            toolchain:
+              python-version: "3.10"
 
           - environment: wemos_d1_mini32
 
@@ -423,7 +447,7 @@ jobs:
         uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
         with:
           version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.toolchain.python-version }}
           activate-environment: true
 
       - name: Set up PlatformIO
