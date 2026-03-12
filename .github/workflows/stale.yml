@@ -2,7 +2,7 @@ name: Stale
 
 on:
   schedule:
-    - cron: 0 12 * * 1-5
+    - cron: 37 5 * * 1-5
 
   workflow_dispatch:
 

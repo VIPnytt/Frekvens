@@ -108,13 +108,13 @@ jobs:
       - name: Set up Cache for Node.js
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
           path: ${{ needs.config.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
           path: .platformio/.cache
 
       - name: Set up uv
@@ -206,7 +206,7 @@ jobs:
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
           path: .platformio/.cache
 
       - name: Set up uv
@@ -291,13 +291,13 @@ jobs:
       - name: Set up Cache for Node.js
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
           path: ${{ needs.config.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
           path: .platformio/.cache
 
       - name: Set up uv
@@ -434,13 +434,13 @@ jobs:
       - name: Set up Cache for Node.js
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: node-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
           path: ${{ needs.config.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
           path: .platformio/.cache
 
       - name: Set up uv
