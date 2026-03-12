@@ -567,6 +567,9 @@ dev = [
 nodejs = [
     { name = "nodejs-wheel" },
 ]
+packaging = [
+    { name = "packaging" },
+]
 platformio = [
     { name = "platformio" },
 ]
@@ -599,6 +602,7 @@ dependabot = [
 ]
 dev = [{ name = "ruff", specifier = "==0.15.5" }]
 nodejs = [{ name = "nodejs-wheel", specifier = "==24.14.0" }]
+packaging = [{ name = "packaging", specifier = "==25.0.0" }]
 platformio = [{ name = "platformio", specifier = "==6.1.19" }]
 scripts = [
     { name = "cryptography", specifier = "==46.0.5" },
