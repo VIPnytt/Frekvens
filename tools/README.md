@@ -4,8 +4,9 @@ Optional utilities that are not considered part of the core functionality but ma
 
 Installation of Python dependency packages:
 
-```bash
-pip install tools/
+```sh
+pip install uv
+uv sync --inexact
 ```
 
 ## ✂️ Animation splitter

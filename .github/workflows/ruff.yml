@@ -22,7 +22,7 @@ jobs:
       - name: Ruff check
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v3.5.1
         with:
-          version-file: .github/ruff/requirements.txt
+          version-file: pyproject.toml
           args: check --diff --output-format github
 
   format:
@@ -36,5 +36,5 @@ jobs:
       - name: Ruff format
         uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v3.5.1
         with:
-          version-file: .github/ruff/requirements.txt
+          version-file: pyproject.toml
           args: format --diff --output-format github

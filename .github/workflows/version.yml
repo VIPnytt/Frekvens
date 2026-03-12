@@ -1,7 +1,15 @@
-name: PlatformIO
+name: Version
 
 on:
+  merge_group:
+    types:
+      - checks_requested
+
   pull_request:
+    branches:
+      - main
+
+  push:
     branches:
       - main
 
@@ -11,8 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint
+  consistency:
+    name: Consistency
     runs-on: ubuntu-latest
 
     steps:
@@ -26,13 +34,8 @@ jobs:
           python-version: 3.14
           activate-environment: true
 
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+      - name: Set up Python packages
+        run: uv sync --only-group packaging
 
-      - name: PlatformIO lint
-        run: |
-          OUTPUT=$(pio project config --lint --json-output)
-          echo "$OUTPUT"
-          if [ "$OUTPUT" != "{'errors': [], 'warnings': []}" ]; then
-            exit 1
-          fi
+      - name: Version check
+        run: python .github/scripts/version.py
