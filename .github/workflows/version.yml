@@ -1,0 +1,38 @@
+name: Version
+
+on:
+  merge_group:
+    types:
+      - checks_requested
+
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  consistency:
+    name: Consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
+        with:
+          version-file: pyproject.toml
+          python-version: 3.14
+          activate-environment: true
+
+      - name: Version check
+        run: python .github/scripts/version.py
