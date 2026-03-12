@@ -259,7 +259,7 @@ jobs:
         continue-on-error: true
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
-          key: platformio-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
           path: .platformio/.cache
 
       - name: Set up uv
