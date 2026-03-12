@@ -2,7 +2,7 @@ name: Dependabot Updates PlatformIO
 
 on:
   schedule:
-    - cron: 0 7 * * 1-5
+    - cron: 9 5 * * 1-5
 
   workflow_dispatch:
 
@@ -161,7 +161,7 @@ jobs:
             dependencies
             firmware
           milestone: ${{ needs.repository-check.outputs.milestone }}
-          title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
+          title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
       - name: GitHub Script close superseded
         if: ${{ fromJSON(steps.lookup.outputs.needed) }}
@@ -291,7 +291,7 @@ jobs:
             dependencies
             firmware
           milestone: ${{ needs.repository-check.outputs.milestone }}
-          title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
+          title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
       - name: GitHub Script close superseded
         if: ${{ fromJSON(steps.lookup.outputs.needed) }}

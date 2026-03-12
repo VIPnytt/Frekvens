@@ -2,7 +2,7 @@ name: End of life
 
 on:
   schedule:
-    - cron: 0 12 1 * *
+    - cron: 24 7 31 * *
 
   workflow_dispatch:
 
@@ -10,9 +10,53 @@ permissions:
   contents: read
 
 jobs:
+  idle-check:
+    name: Idle check
+    runs-on: ubuntu-latest
+
+    outputs:
+      active: ${{ steps.idle.outputs.active }}
+
+    steps:
+      - name: GitHub Script idle check
+        id: idle
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const { data: branch } = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: context.ref.replace('refs/heads/', ''),
+            });
+            const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
+            core.info(`Repository active: ${active}`);
+            core.setOutput('active', active);
+
+  node:
+    name: Node.js
+    needs: idle-check
+    runs-on: ubuntu-latest
+    if: ${{ fromJSON(needs.idle-check.outputs.active) }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - node-version: 24
+
+    steps:
+      - name: End-of-Life
+        uses: sindrel/endoflife-github-action@6931ca61221cebfe107b0c3349979cb7075ff270 # v1.0.2
+        with:
+          product: nodejs
+          version: ${{ matrix.node-version }}
+          fail_on_eol: true
+
   python:
     name: Python
+    needs: idle-check
     runs-on: ubuntu-latest
+    if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
       fail-fast: false
