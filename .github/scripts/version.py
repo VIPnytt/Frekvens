@@ -5,14 +5,14 @@ import re
 import tomllib
 
 
-def package_lock_json() -> str:
-    path = pathlib.Path("webapp") / "package-lock.json"
-    return json.loads(path.read_text())["packages"][""]["version"]
-
-
 def package_json() -> str:
     path = pathlib.Path("webapp") / "package.json"
     return json.loads(path.read_text()).get("version")
+
+
+def package_lock_json() -> str:
+    path = pathlib.Path("webapp") / "package-lock.json"
+    return json.loads(path.read_text())["packages"][""]["version"]
 
 
 def pyproject_toml() -> str:
