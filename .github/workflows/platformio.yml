@@ -30,7 +30,7 @@ jobs:
         run: uv sync --only-group platformio
 
       - name: PlatformIO package install
-        run: pip pkg install
+        run: pio pkg install
 
       - name: Unpinned dependency check
         run: python .github/scripts/dependencies.py
