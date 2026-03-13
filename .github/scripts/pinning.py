@@ -53,13 +53,13 @@ def main() -> None:
         if not line.endswith(")") or " (required: " not in line:
             continue
         _package, _, _requirement = line.partition(" (required: ")
-        package = _package.lstrip(" ─│└├")
+        package = _package.removeprefix("Platform ").lstrip(" ─│└├")
         requirement = _requirement.removesuffix(")")
         key = (package, requirement)
         if key in seen:
             continue
         seen.add(key)
-        print(line[4:] if len(line) > 4 else line)
+        print(line)
         if (
             requirement.endswith(f"/{package}")
             or any(pattern.match(requirement) for pattern in allowed)
