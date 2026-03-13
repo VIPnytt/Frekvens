@@ -11,6 +11,27 @@ permissions:
   contents: read
 
 jobs:
+  dependency-check:
+    name: Dependency check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098 # v7.3.1
+        with:
+          version-file: pyproject.toml
+          python-version: 3.14
+          activate-environment: true
+
+      - name: Set up Python packages
+        run: uv sync --only-group platformio
+
+      - name: Unpinned dependency check
+        run: python .github/scripts/dependencies.py
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
