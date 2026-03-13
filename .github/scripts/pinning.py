@@ -17,7 +17,7 @@ def main() -> None:
             r"^https://github\.com/[^/]+/[^/]+/releases/download/[^/]+/[^/]+$",  # GitHub release asset
         )
     )
-    suspect = tuple(
+    neutral = tuple(
         re.compile(pattern)
         for pattern in (
             r"^git\+https://github\.com/[^/]+/[^/]+\.git#([^/]+)$",  # GitHub git https tag
@@ -26,7 +26,7 @@ def main() -> None:
             r"^https://github\.com/[^/]+/[^/]+/archive/refs/tags/([^/]+)\.(?:tar\.gz|zip)$",  # GitHub archive tag
         )
     )
-    flagged = tuple(
+    banned = tuple(
         re.compile(pattern)
         for pattern in (
             r"^git\+https://github\.com/[^/]+/[^/]+\.git$",  # GitHub git https
@@ -41,7 +41,7 @@ def main() -> None:
         "master",
     }
     fail = False
-    seen: set[str] = set()
+    seen: set[tuple[str, str]] = set()
     for line in subprocess.run(
         ["pio", "pkg", "list"],
         env={**os.environ, "PYTHONIOENCODING": "utf-8"} if os.name == "nt" else None,
@@ -50,13 +50,16 @@ def main() -> None:
         encoding="utf-8",
         text=True,
     ).stdout.splitlines():
-        if line in seen or not line.endswith(")") or " (required: " not in line:
+        if not line.endswith(")") or " (required: " not in line:
             continue
-        seen.add(line)
-        print(line)
         _package, _, _requirement = line.partition(" (required: ")
         package = _package.lstrip(" ─│└├")
         requirement = _requirement.removesuffix(")")
+        key = (package, requirement)
+        if key in seen:
+            continue
+        seen.add(key)
+        print(line[4:] if len(line) > 4 else line)
         if (
             requirement.endswith(f"/{package}")
             or any(pattern.match(requirement) for pattern in allowed)
@@ -64,7 +67,7 @@ def main() -> None:
         ):
             continue
         match = None
-        for pattern in suspect:
+        for pattern in neutral:
             match = pattern.match(requirement)
             if match:
                 break
@@ -77,7 +80,7 @@ def main() -> None:
                 print(f"::debug::Invalid version: {ref}")
         if (
             (ref is not None and ref.lower() in blacklist)
-            or any(pattern.match(requirement) for pattern in flagged)
+            or any(pattern.match(requirement) for pattern in banned)
             or any(char in requirement for char in "!,<=>^~")
         ):
             print(f"::error::Unpinned dependency: {requirement}")
