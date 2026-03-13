@@ -26,8 +26,11 @@ jobs:
           python-version: 3.14
           activate-environment: true
 
-      - name: Set up Python packages
+      - name: Set up PlatformIO
         run: uv sync --only-group platformio
+
+      - name: PlatformIO package install
+        run: pip pkg install
 
       - name: Unpinned dependency check
         run: python .github/scripts/dependencies.py
