@@ -131,10 +131,9 @@ class Pinning:
         return pinned
 
 
-def main() -> None:
-    if not Pinning().check():
-        raise SystemExit(1)
+def main() -> int:
+    return 0 if Pinning().check() else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
