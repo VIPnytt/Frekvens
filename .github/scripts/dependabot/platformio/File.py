@@ -28,38 +28,37 @@ class Download(PlatformIo.Client):
     def matrix(self) -> list[ResultFragment]:
         seen: set[str] = set()
         fragments: list[BaseFragment] = []
-        with open(self.ctx.workspace / "platformio.ini", encoding="utf-8") as f:
-            for match in self.regex.finditer(f.read()):
-                string = match.group(0)
-                if string in seen:
-                    continue
-                seen.add(string)
-                try:
-                    pending = Handler(self.ctx, match["type"], match["owner"], match["name"]).check(
-                        match["version"], match["file"]
-                    )
-                except (httpx.HTTPError, packaging.version.InvalidVersion):
-                    self.ctx.logger.error(
-                        "Update check failed: %s/%s @ %s",
-                        match["owner"],
-                        match["name"],
-                        match["version"],
-                        exc_info=True,
-                    )
-                    continue
-                if pending:
-                    fragments.append(
-                        {
-                            "owner": pending["owner"],
-                            "name": pending["name"],
-                            "version_old": match["version"],
-                            "version_new": pending["version_new"],
-                            "type": pending["type"],
-                            "file_new": pending["file_new"],
-                            "checksum_new": pending["checksum_new"],
-                            "string_old": string,
-                        }
-                    )
+        for match in self.regex.finditer((self.ctx.workspace / "platformio.ini").read_text()):
+            string = match.group(0)
+            if string in seen:
+                continue
+            seen.add(string)
+            try:
+                pending = Handler(self.ctx, match["type"], match["owner"], match["name"]).check(
+                    match["version"], match["file"]
+                )
+            except (httpx.HTTPError, packaging.version.InvalidVersion):
+                self.ctx.logger.error(
+                    "Update check failed: %s/%s @ %s",
+                    match["owner"],
+                    match["name"],
+                    match["version"],
+                    exc_info=True,
+                )
+                continue
+            if pending:
+                fragments.append(
+                    {
+                        "owner": pending["owner"],
+                        "name": pending["name"],
+                        "version_old": match["version"],
+                        "version_new": pending["version_new"],
+                        "type": pending["type"],
+                        "file_new": pending["file_new"],
+                        "checksum_new": pending["checksum_new"],
+                        "string_old": string,
+                    }
+                )
         return [
             ResultFragment(
                 {

@@ -4,35 +4,34 @@
 
 import argparse
 import csv
-import math
-import os
+import pathlib
 
 
 class ModeGenerator:
     id: str
     name: str
-    path: str
+    path: pathlib.Path
     rows: int
 
-    def __init__(self, path: str, rows: int = 16) -> None:
-        self.path = path
+    def __init__(self, path: pathlib.Path | str, rows: int = 16) -> None:
+        self.path = pathlib.Path(path)
         self.rows = rows
-        self.name = os.path.splitext(os.path.basename(path))[0]
+        self.name = self.path.stem
         self.id = "".join(self.name.split()).capitalize()
 
     def create(self) -> list[str]:
-        with open(self.path, encoding="utf-8") as f:
+        with self.path.open(newline="") as f:
             count = sum(1 for _ in csv.reader(f))
-            if count <= self.rows:
-                return [
-                    self._drawing_h(count),
-                    self._drawing_cpp(),
-                ]
-            else:
-                return [
-                    self._animation_h(count),
-                    self._animation_cpp(),
-                ]
+        if count <= self.rows:
+            return [
+                self._drawing_h(count),
+                self._drawing_cpp(),
+            ]
+        else:
+            return [
+                self._animation_h(count),
+                self._animation_cpp(),
+            ]
 
     def _animation_h(self, count: int) -> str:
         frames = [
@@ -53,13 +52,13 @@ class ModeGenerator:
             "",
             "    uint8_t index = 0;",
             "",
-            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {math.floor(count / self.rows)}> frames{{{{",
+            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {count // self.rows}> frames{{{{",
         ]
-        with open(self.path) as animation:
+        with self.path.open(newline="") as animation:
             for i, row in enumerate(csv.reader(animation)):
                 if i % self.rows == 0:
                     frames.append("        {")
-                frames.append("            0b" + "".join("1" if int(column) > 0 else "0" for column in row) + ",")
+                frames.append(f"            0b{self._bits(row)},")
                 if i % self.rows == self.rows - 1:
                     frames.append("        },")
         frames.extend(
@@ -74,8 +73,8 @@ class ModeGenerator:
                 "",
             ]
         )
-        with open(f"{self.id}Mode.h", "w", encoding="utf-8") as hMode:
-            hMode.write("\n".join(frames))
+        with open(f"{self.id}Mode.h", "w", encoding="utf-8") as f:
+            f.write("\n".join(frames))
         return f"{self.id}Mode.h"
 
     def _animation_cpp(self) -> str:
@@ -131,9 +130,9 @@ class ModeGenerator:
             "private:",
             f"    static constexpr std::array<uint16_t, {count}> frame{{",
         ]
-        with open(self.path) as drawing:
+        with self.path.open(newline="") as drawing:
             for row in csv.reader(drawing):
-                frame.append("        0b" + "".join("1" if int(column) > 0 else "0" for column in row) + ",")
+                frame.append(f"        0b{self._bits(row)},")
         frame.extend(
             [
                 "    };",
@@ -146,8 +145,8 @@ class ModeGenerator:
                 "",
             ]
         )
-        with open(f"{self.id}Mode.h", "w", encoding="utf-8") as hMode:
-            hMode.write("\n".join(frame))
+        with open(f"{self.id}Mode.h", "w", encoding="utf-8") as f:
+            f.write("\n".join(frame))
         return f"{self.id}Mode.h"
 
     def _drawing_cpp(self) -> str:
@@ -176,6 +175,10 @@ class ModeGenerator:
                 )
             )
         return f"{self.id}Mode.cpp"
+
+    @staticmethod
+    def _bits(row: list[str]) -> str:
+        return "".join("1" if int(column) > 0 else "0" for column in row)
 
 
 def main() -> None:

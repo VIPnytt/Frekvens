@@ -5,6 +5,7 @@
 import argparse
 import csv
 import httpx
+import pathlib
 import socket
 import time
 import typing
@@ -38,10 +39,10 @@ class StreamCsv:
         else:
             raise ValueError("Unsupported port number.")
 
-    def parse(self, path: str) -> list[list[list[int]]]:
-        with open(path, encoding="utf-8", newline="") as graphic:
-            rows = [[int(pixel) for pixel in row] for row in csv.reader(graphic)]
-            return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
+    def parse(self, path: pathlib.Path | str) -> list[list[list[int]]]:
+        with open(path, newline="") as f:
+            rows = [[int(pixel) for pixel in row] for row in csv.reader(f)]
+        return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
 
     def send(
         self,
