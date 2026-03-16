@@ -5,7 +5,7 @@
 
 ## 💻 Resolution
 
-Most [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) are designed for flexible display resolutions, the easiest way to getting started is to re-use the config of an existing device, eg. [IKEA Frekvens](https:/github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/ikeaFrekvens.h) or [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/ikeaObegransad.h), but only change what’s different.
+Most [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) are designed for flexible display resolutions, the easiest way to getting started is to re-use the config of an existing device, eg. [IKEA Frekvens](https:/github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/IkeaFrekvens.h) or [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/IkeaObegransad.h), but only change what’s different.
 
 Example:
 

@@ -45,10 +45,10 @@ Article number: `504.203.53`
 ### Power supply schema
 
 ```text
-              ┌──────┐
-100-240 V AC ─┤ L  + ├─ +4 V DC
-     Neutral ─┤ N  - ├─ 0 V DC
-              └──────┘
+              ┌───────┐
+100-240 V AC ─┤ L   + ├─ +4 V DC
+     Neutral ─┤ N   - ├─ 0 V DC
+              └───────┘
 ```
 
 ### ESP32 schema

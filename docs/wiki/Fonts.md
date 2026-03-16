@@ -2,7 +2,7 @@
 
 Character support may vary, but additional fonts and characters can be added easily — either by hand or through auto-generation.
 
-[Braille](#️-braille) | [Micro](#-micro) | [Mini](#-mini) | [Small](#️-small) | [Medium](#️-medium) | [Medium bold](#🅱%EF%B8%8F-medium-bold) | [Large](#️-large)
+[Braille](#️-braille) | [Micro](#-micro) | [Mini](#-mini) | [Small](#️-small) | [Medium](#️-medium) | [Medium bold](#🅱%EF%B8%8F-medium-bold) | [Medium wide](#-medium-wide) | [Large](#️-large)
 
 ## 👁️ Braille
 
@@ -30,13 +30,13 @@ Small yet clear font suitable for most general-purpose display needs.
 
 Clean and versatile font with a slightly larger footprint.
 
-See also [Medium bold](#🅱%EF%B8%8F-medium-bold).
-
 ## 🅱️ Medium bold
 
-Bold and legible style based on the medium font.
+Bold style based on the medium font.
 
-See also [Medium](#%EF%B8%8F-medium).
+## ↔️ Medium wide
+
+Wide and legible style based on the medium font.
 
 ## ⬆️ Large
 
