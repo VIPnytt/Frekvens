@@ -1,8 +1,6 @@
 #include "services/FontsService.h"
 
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
-#include "services/ModesService.h"
 
 void FontsService::begin() { transmit(); }
 

@@ -5,9 +5,9 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
 #include "fonts/MediumBoldFont.h"
-#include "fonts/MediumFont.h"
-#include "fonts/MediumWideFont.h"
-#include "fonts/MiniFont.h"
+#include "fonts/MediumFont.h"     // NOLINT(misc-include-cleaner)
+#include "fonts/MediumWideFont.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -148,7 +148,7 @@ void ClockMode::drawDigits()
     const int8_t yTop = (GRID_ROWS / 2) - 1 - cellSize;
     const int8_t yBot = (cellSize <= 5) ? (GRID_ROWS / 2) : (GRID_ROWS / 2) + 1;
 
-    auto xPad = [this](uint8_t w) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - w) / 2; };
+    auto xPad = [this](uint8_t width) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - width) / 2; };
 
     hh1.draw((GRID_COLUMNS / 2) - 1 - xPad(hh1.getWidth()) - hh1.getWidth(), yTop);
     hh2.draw((GRID_COLUMNS / 2) + 1 + xPad(hh2.getWidth()), yTop);

@@ -303,7 +303,7 @@ void DeviceService::onReceive(JsonObjectConst payload,
 {
     if (payload["action"].is<const char *>())
     {
-        const char *const action = payload["action"].as<const char *>();
+        const char *const action = payload["action"].as<const char *>(); // NOLINT(cppcoreguidelines-init-variables)
         // Power off
         if (strcmp(action, "power") == 0)
         {

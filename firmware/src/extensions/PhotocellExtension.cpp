@@ -154,7 +154,7 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, const char *source)
     // Display: Brightness
     if (active && !strcmp(source, Display.name) && payload["brightness"].is<uint8_t>())
     {
-        const uint8_t _brightness = payload["brightness"].as<uint8_t>();
+        const uint8_t _brightness = payload["brightness"].as<uint8_t>(); // NOLINT(cppcoreguidelines-init-variables)
         if (_brightness != brightness)
         {
             setGamma(logf(static_cast<float>(_brightness) / static_cast<float>(1U << 8U)) /

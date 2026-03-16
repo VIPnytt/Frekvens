@@ -7,7 +7,7 @@ BitmapHandler::BitmapHandler(std::span<const uint16_t> bitmap) : bitmap(bitmap)
 {
     if (!bitmap.empty())
     {
-        uint8_t msbMax = 0;
+        uint8_t msbMax = 0; // NOLINT(misc-const-correctness)
         for (uint16_t bitset : bitmap)
         {
             uint8_t msb = 0;
@@ -29,7 +29,7 @@ void BitmapHandler::draw(uint8_t brightness) { draw((GRID_COLUMNS - width) / 2, 
 
 void BitmapHandler::draw(uint8_t x, uint8_t y, uint8_t brightness)
 {
-    uint8_t msbMax = 0;
+    uint8_t msbMax = 0; // NOLINT(misc-const-correctness)
     for (uint16_t bitset : bitmap)
     {
         uint8_t msb = 0;

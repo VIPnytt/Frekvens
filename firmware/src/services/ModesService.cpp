@@ -155,7 +155,7 @@ void ModesService::setMode(ModeModule *mode, bool power)
             words[_line].push_back(_name[i]);
         }
     }
-    uint8_t height = 0;
+    uint8_t height = 0; // NOLINT(misc-const-correctness)
     std::vector<std::unique_ptr<TextHandler>> lines;
     for (const std::string &word : words)
     {

@@ -12,7 +12,7 @@ FontModule::Symbol BrailleFont::getChar(uint32_t character) const
     {
         return ascii[character - 0x20];
     }
-    else if (character >= 0x61 && character <= 0x7A)
+    if (character >= 0x61 && character <= 0x7A)
     {
         return ascii[character - 0x40];
     }

@@ -5,7 +5,7 @@
 class LargeFont final : public FontModule
 {
 private:
-    inline static const std::vector<Symbol> ascii = {
+    inline static const std::vector<Symbol> ascii{
         {
             // 0x20, SPACE
             {},
@@ -123,7 +123,7 @@ private:
         },
     };
 
-    inline static const std::vector<SymbolExtended> unicode = {
+    inline static const std::vector<SymbolExtended> unicode{
         {
             0x3C0, // π GREEK SMALL LETTER PI
             {

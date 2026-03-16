@@ -25,7 +25,7 @@ void RtcExtension::configure()
         tm local{};
         if (!getLocalTime(&local))
         {
-            struct timeval tv{};
+            struct timeval tv{}; // NOLINT(misc-const-correctness)
             tv.tv_sec = rtc.GetDateTime().Unix64Time();
             settimeofday(&tv, nullptr);
             ESP_LOGD(name, "sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)

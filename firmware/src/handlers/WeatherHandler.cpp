@@ -17,7 +17,7 @@ void WeatherHandler::parse(std::string_view code, std::span<const Codeset> codes
             return;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %s", static_cast<int>(code.size()), code.data());
+    ESP_LOGD(_name.data(), "unknown condition code %s", code.data());
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
@@ -67,31 +67,31 @@ void WeatherHandler::setSign(Conditions condition)
         }
     }
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-        return;
+        break;
     case Conditions::CLOUDY:
         sign = conditionCloudy;
-        return;
+        break;
     case Conditions::CLOUDY_PARTLY:
         sign = conditionCloudyPartly;
-        return;
+        break;
     case Conditions::EXCEPTION:
         sign = conditionExceptional;
-        return;
+        break;
     case Conditions::FOG:
         sign = conditionFog;
-        return;
+        break;
     case Conditions::RAIN:
         sign = conditionRain;
-        return;
+        break;
     case Conditions::SNOW:
         sign = conditionSnow;
-        return;
+        break;
     case Conditions::THUNDER:
         sign = conditionThunder;
-        return;
+        break;
     case Conditions::WIND:
         sign = conditionWind;
-        return;
+        break;
     }
 }
 
