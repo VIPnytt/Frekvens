@@ -39,7 +39,7 @@ dependabot = [
     "httpx==0.28.1",
 ]
 dev = [
-    "ruff==0.15.5",
+    "ruff==0.15.6",
 ]
 nodejs = [
     "nodejs-wheel==24.14.0",
