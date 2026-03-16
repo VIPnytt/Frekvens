@@ -7,7 +7,7 @@ updates:
     labels:
       - dependencies
       - no-changelog
-    milestone: 10
+    milestone: 11
     schedule:
       interval: weekly
 
@@ -20,7 +20,7 @@ updates:
     labels:
       - dependencies
       - frontend
-    milestone: 10
+    milestone: 11
     schedule:
       interval: daily
     versioning-strategy: increase
@@ -36,7 +36,7 @@ updates:
     labels:
       - dependencies
       - tools
-    milestone: 10
+    milestone: 11
     schedule:
       interval: daily
     versioning-strategy: increase
