@@ -12,7 +12,7 @@ The default VS Code Javascript/Typescript formatter is used.
 
 The project supports Biome for linting Typescript files. To check all files run:
 
-```bash
+```sh
 cd webapp
 npm install
 npm run lint
@@ -22,7 +22,7 @@ Automatic fixes for findings are currently disabled in the script to keep commit
 
 When working on a specific file run
 
-```bash
+```sh
 npx biome lint --write <./src/path/to/file>
 ```
 
