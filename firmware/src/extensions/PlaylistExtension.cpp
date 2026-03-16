@@ -132,10 +132,9 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     JsonArray items{doc.to<JsonArray>()};
     for (const Mode mode : modes)
     {
-        JsonObject item;
+        JsonObject item{items.add<JsonObject>()};
         item["duration"].set(mode.duration);
         item["mode"].set(mode.mode);
-        items.add(item);
         playlist.push_back(mode);
     }
     const size_t length = measureJson(doc);

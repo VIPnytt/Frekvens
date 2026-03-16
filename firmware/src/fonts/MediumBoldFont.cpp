@@ -1,6 +1,6 @@
 #include "fonts/MediumBoldFont.h"
 
-MediumBoldFont *FontMediumBold = nullptr;
+MediumBoldFont *FontMediumBold = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 MediumBoldFont::MediumBoldFont() : FontModule("Medium bold") { FontMediumBold = this; }
 

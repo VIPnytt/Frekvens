@@ -76,9 +76,11 @@ void GameOfLifeMode::handle()
             for (uint8_t y = (clock ? 5 : 0); y < GRID_ROWS; ++y)
             {
                 uint8_t count = 0;
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 for (uint8_t _x = static_cast<uint8_t>(std::max<int16_t>(x - 1, 0)); _x <= x + 1 && _x < GRID_COLUMNS;
                      ++_x)
                 {
+                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                     for (uint8_t _y = static_cast<uint8_t>(std::max<int16_t>(clock ? 5 : 0, y - 1));
                          _y <= y + 1 && _y < GRID_ROWS;
                          ++_y)
@@ -90,6 +92,7 @@ void GameOfLifeMode::handle()
                         }
                     }
                 }
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const bool lit = seeds[x + (y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(x, y) != 0;
                 if (lit && (count < 2 || count > 3))
                 {

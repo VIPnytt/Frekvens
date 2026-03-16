@@ -15,17 +15,20 @@ void LinesMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        for (uint8_t y = 0; y < GRID_ROWS; ++y)
+        for (uint8_t offset = 0; offset < GRID_COLUMNS + 2; offset += 4)
         {
-            for (uint8_t n = 0; n < GRID_COLUMNS + 2; n += 4)
+            if (x + offset < GRID_COLUMNS)
             {
-                if (x + n < GRID_COLUMNS)
+                for (uint8_t y = 0; y < GRID_ROWS; ++y)
                 {
-                    Display.setPixel(x + n, y);
+                    Display.setPixel(x + offset, y);
                 }
-                if (x + n - 2 >= 0 && x + n - 2 < GRID_COLUMNS)
+            }
+            if (x + offset - 2 >= 0 && x + offset - 2 < GRID_COLUMNS)
+            {
+                for (uint8_t y = 0; y < GRID_ROWS; ++y)
                 {
-                    Display.setPixel(x + n - 2, y, 0);
+                    Display.setPixel(x + offset - 2, y, 0);
                 }
             }
         }

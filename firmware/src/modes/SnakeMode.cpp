@@ -187,7 +187,7 @@ void SnakeMode::move()
             }
             else
             {
-                const uint8_t step = UINT8_MAX / snake.size();
+                const uint8_t step = UINT8_MAX / snake.size(); // NOLINT(cppcoreguidelines-init-variables)
                 for (std::size_t i = 0; i < snake.size(); ++i)
                 {
                     Display.setPixel(snake[i].x, snake[i].y, step * (i + 1));

@@ -63,7 +63,7 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
         const uint8_t _height = character.bitmap.size();
         if (_height != 0)
         {
-            const uint8_t msbMax = calcMsbMax(character);
+            const uint8_t msbMax = calcMsbMax(character); // NOLINT(cppcoreguidelines-init-variables)
             for (uint16_t _x = 0; _x <= msbMax; ++_x)
             {
                 for (uint8_t _y = 0; _y < _height; ++_y)
@@ -97,7 +97,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte = static_cast<uint8_t>(text[i]);
+    const uint8_t byte = static_cast<uint8_t>(text[i]); // NOLINT(cppcoreguidelines-init-variables)
     i++;
     if (byte <= 0x7F)
     {
@@ -127,7 +127,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     }
     while (bytes-- && i < text.length())
     {
-        const uint8_t cont = text[i];
+        const uint8_t cont = text[i]; // NOLINT(cppcoreguidelines-init-variables)
         i++;
         if ((cont & 0xC0U) != 0x80U)
         {
@@ -141,7 +141,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
 
 uint8_t TextHandler::calcMsbMax(const FontModule::Symbol &character) const
 {
-    uint8_t msbMax = 0;
+    uint8_t msbMax = 0; // NOLINT(misc-const-correctness)
     for (const uint8_t bitset : character.bitmap)
     {
         if (bitset != 0)
