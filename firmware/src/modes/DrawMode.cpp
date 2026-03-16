@@ -44,8 +44,16 @@ void DrawMode::load(bool cache)
 {
     Preferences Storage;
     Storage.begin(name, true);
-    const char *key = (cache && Storage.isKey("cache")) ? "cache" : (Storage.isKey("saved") ? "saved" : nullptr);
-    if (key)
+    const char *key = nullptr;
+    if (cache && Storage.isKey("cache"))
+    {
+        key = "cache";
+    }
+    else if (Storage.isKey("saved"))
+    {
+        key = "saved";
+    }
+    if (key != nullptr)
     {
         Storage.getBytes(key, frame.data(), frame.size());
         pending = true;
