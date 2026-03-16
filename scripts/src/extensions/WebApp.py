@@ -1,6 +1,5 @@
 import dotenv
 import gzip
-import json
 import nodejs_wheel
 import os
 import pathlib
@@ -9,7 +8,6 @@ import subprocess
 import typing
 import warnings
 
-from ..config.version import VERSION
 from .WebSocket import WebSocket
 
 if typing.TYPE_CHECKING:
@@ -25,15 +23,20 @@ class WebApp:
     def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
-    def initialize(self) -> None:
-        with open(self.path / "package.json", encoding="utf-8") as f:
-            package = json.load(f)
-            if package["version"] != VERSION:
-                raise ValueError(f"{self.NAME} version mismatch")
-        with open(self.path / "package-lock.json", encoding="utf-8") as f_lock:
-            lock = json.load(f_lock)
-            if lock["version"] != VERSION or lock["packages"][""]["version"] != VERSION:
-                raise ValueError(f"{self.NAME} version mismatch")
+    def validate(self) -> None:
+        if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] == "false":
+            self.project.webapp = None
+        elif "no_fs" in str(self.project.partition.table):
+            if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
+                warnings.warn(
+                    f"{self.ENV_OPTION}: Partition table has no filesystem support.",
+                    UserWarning,
+                )
+        elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
+            warnings.warn(
+                f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
+                UserWarning,
+            )
 
     def finalize(self) -> None:
         options = [
@@ -67,21 +70,6 @@ class WebApp:
                     dotenv.unset_key(self.path / ".env", option)
         self._npm_build()
 
-    def validate(self) -> None:
-        if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] == "false":
-            self.project.webapp = None
-        elif "no_fs" in self.project.partition.table:
-            if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
-                warnings.warn(
-                    f"{self.ENV_OPTION}: Partition table has no filesystem support.",
-                    UserWarning,
-                )
-        elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
-            warnings.warn(
-                f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
-                UserWarning,
-            )
-
     def _npm_build(self) -> None:
         build_cmd = ["run", "build"]
         install_cmd = ["install"]
@@ -95,9 +83,8 @@ class WebApp:
                 subprocess.run(["npm", *build_cmd], cwd=self.path, check=True)
         data_dir = pathlib.Path("data") / "webapp"
         data_dir.mkdir(parents=True, exist_ok=True)
-        with open(self.path / "dist" / "index.html", "rb") as html:
-            with gzip.open(data_dir / "index.html.gz", "wb") as gz:
-                shutil.copyfileobj(html, gz)
+        with gzip.open(data_dir / "index.html.gz", "wb") as gz:
+            gz.write((self.path / "dist" / "index.html").read_bytes())
 
     @staticmethod
     def clean() -> None:

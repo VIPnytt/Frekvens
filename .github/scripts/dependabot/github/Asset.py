@@ -28,31 +28,28 @@ class Release(GitHub.Client):
     def matrix(self) -> list[ResultFragment]:
         seen: set[str] = set()
         fragments: list[BaseFragment] = []
-        with open(self.ctx.workspace / "platformio.ini", encoding="utf-8") as f:
-            for match in self.regex.finditer(f.read()):
-                string = match.group(0)
-                if string in seen:
-                    continue
-                seen.add(string)
-                try:
-                    pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"], match["asset"])
-                except (httpx.HTTPError, packaging.version.InvalidVersion):
-                    self.ctx.logger.error(
-                        "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
-                    )
-                    continue
-                if pending:
-                    fragments.append(
-                        {
-                            "owner": pending["owner"],
-                            "repo": pending["repo"],
-                            "tag_old": match["tag"],
-                            "tag_new": pending["tag_new"],
-                            "asset_new": pending["asset_new"],
-                            "digest_new": pending["digest_new"],
-                            "string_old": string,
-                        }
-                    )
+        for match in self.regex.finditer((self.ctx.workspace / "platformio.ini").read_text()):
+            string = match.group(0)
+            if string in seen:
+                continue
+            seen.add(string)
+            try:
+                pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"], match["asset"])
+            except (httpx.HTTPError, packaging.version.InvalidVersion):
+                self.ctx.logger.error("Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"])
+                continue
+            if pending:
+                fragments.append(
+                    {
+                        "owner": pending["owner"],
+                        "repo": pending["repo"],
+                        "tag_old": match["tag"],
+                        "tag_new": pending["tag_new"],
+                        "asset_new": pending["asset_new"],
+                        "digest_new": pending["digest_new"],
+                        "string_old": string,
+                    }
+                )
         return [
             ResultFragment(
                 {

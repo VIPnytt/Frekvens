@@ -4,7 +4,7 @@
 
 import argparse
 import csv
-import os
+import pathlib
 
 
 class AnimationSplitter:
@@ -13,21 +13,19 @@ class AnimationSplitter:
     def __init__(self, rows: int = 16) -> None:
         self.rows = rows
 
-    def split(self, path: str) -> list[str]:
-        directory, filename = os.path.split(path)
-        name, extension = os.path.splitext(filename)
+    def split(self, path: pathlib.Path | str) -> list[str]:
+        _path = pathlib.Path(path)
         paths: list[str] = []
-        for i, rows in enumerate(self._parse(path), 1):
-            paths.append(os.path.join(directory, f"{name}-{i}{extension}"))
-            with open(paths[-1], "w", encoding="utf-8", newline="") as frame:
-                writer = csv.writer(frame)
-                writer.writerows(rows)
+        for i, frame_rows in enumerate(self._parse(_path), 1):
+            output = _path.with_name(f"{_path.stem}-{i}{_path.suffix}")
+            with output.open("w", newline="") as f:
+                csv.writer(f).writerows(frame_rows)
         return paths
 
-    def _parse(self, path: str) -> list[list[list[int]]]:
-        with open(path, encoding="utf-8", newline="") as graphic:
-            rows = [[int(cell) for cell in row] for row in csv.reader(graphic)]
-            return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
+    def _parse(self, path: pathlib.Path) -> list[list[list[int]]]:
+        with path.open(newline="") as f:
+            rows = [[int(cell) for cell in row] for row in csv.reader(f)]
+        return [rows[i : i + self.rows] for i in range(0, len(rows), self.rows)]
 
 
 def main() -> None:

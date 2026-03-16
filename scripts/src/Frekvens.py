@@ -84,12 +84,7 @@ class Frekvens:
         if self.dependency:
             self.dependency.initialize()
         self.deprecated.initialize()
-        if self.firmware:
-            self.firmware.initialize()
-        self.tools.initialize()
         self.partition.initialize()
-        if self.webapp:
-            self.webapp.initialize()
 
     def configure(self) -> None:
         if self.certificate:

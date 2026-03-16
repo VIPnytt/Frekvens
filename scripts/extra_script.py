@@ -1,5 +1,6 @@
 # PlatformIO pre-build extra script
 
+import pathlib
 import re
 import SCons.Script
 import subprocess
@@ -28,10 +29,9 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
             stderr=subprocess.DEVNULL,
         )
         if uv.returncode:
-            with open("pyproject.toml", encoding="utf-8") as f:
-                match = re.search(r'"(?P<package>uv==\d+\.\d+\.\d+)"', f.read())
+            match = re.search(r'"(uv==\d+\.\d+\.\d+)"', pathlib.Path("pyproject.toml").read_text())
             pip = subprocess.run(
-                [sys.executable, "-m", "pip", "install", match["package"] if match else "uv"],
+                [sys.executable, "-m", "pip", "install", match.group(1) if match else "uv"],
                 stderr=subprocess.DEVNULL,
             )
             if pip.returncode:

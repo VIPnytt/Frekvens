@@ -6,7 +6,7 @@ import argparse
 import fontTools.ttLib
 import logging
 import matplotlib.font_manager
-import os
+import pathlib
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -15,12 +15,12 @@ import unicodedata
 
 class FontGenerator:
     count: int
-    path: str
+    path: pathlib.Path
     size: int
 
-    def __init__(self, path: str, size: int = 8) -> None:
+    def __init__(self, path: pathlib.Path | str, size: int = 8) -> None:
         self.count = 0
-        self.path = path
+        self.path = pathlib.Path(path)
         self.size = size
 
     def _character_to_description(self, character: str) -> str | None:
@@ -41,9 +41,16 @@ class FontGenerator:
     def _characters_to_bitmaps(self, characters: list[str], index: int = 0) -> dict[str, list[str]]:
         bitmaps = {}
         font = PIL.ImageFont.truetype(self.path, self.size, index)
+        probe = PIL.Image.new("1", (1, 1), 0)
+        draw = PIL.ImageDraw.Draw(probe)
         for character in characters:
-            bbox = PIL.ImageDraw.Draw(PIL.Image.new("1", (1, 1), 0)).textbbox((0, 0), character, font=font)
-            img = PIL.Image.new("1", (int(bbox[2] - bbox[0]), int(bbox[3] - bbox[1])), 0)
+            bbox = draw.textbbox((0, 0), character, font=font)
+            width = max(0, int(bbox[2] - bbox[0]))
+            height = max(0, int(bbox[3] - bbox[1]))
+            if width == 0 or height == 0:
+                bitmaps[character] = []
+                continue
+            img = PIL.Image.new("1", (width, height), 0)
             PIL.ImageDraw.Draw(img).text((-bbox[0], -bbox[1]), character, fill=1, font=font)
             bitmaps[character] = [
                 "".join("1" if img.getpixel((x, y)) else "0" for x in range(img.width)) for y in range(img.height)
@@ -73,30 +80,29 @@ class FontGenerator:
         return stripped, left, height - 1 - bottom
 
     def _font_to_characters(self) -> list[str]:
-        font = fontTools.ttLib.TTFont(self.path)
-        unicode: set[int] = set()
-        for table in font["cmap"].tables:
-            if table.isUnicode():
-                unicode.update(table.cmap.keys())
+        codepoints: set[int] = set()
+        with fontTools.ttLib.TTFont(self.path) as font:
+            for table in font["cmap"].tables:
+                if table.isUnicode():
+                    codepoints.update(table.cmap.keys())
         characters = []
-        for codepoint in sorted(unicode):
+        for codepoint in sorted(codepoints):
             try:
                 characters.append(chr(codepoint))
             except ValueError:
                 continue
-        font.close()
         return characters
 
     def source(self) -> list[str]:
-        unique = os.path.splitext(os.path.basename(self.path))[0]
+        self.count = 0
+        unique = self.path.stem
         name = unique
-        font = fontTools.ttLib.TTFont(self.path)
-        for record in font["name"].names:
-            if record.nameID == 4:
-                name = record.toUnicode()
-            elif record.nameID == 6:
-                unique = record.toUnicode()
-        font.close()
+        with fontTools.ttLib.TTFont(self.path) as font:
+            for record in font["name"].names:
+                if record.nameID == 4:
+                    name = record.toUnicode()
+                elif record.nameID == 6:
+                    unique = record.toUnicode()
         return [
             self._source_h(unique),
             self._source_cpp(unique, name),
@@ -141,7 +147,7 @@ class FontGenerator:
                 else:
                     font.append("            {},")
                     if cp == 0x20:
-                        offsetX = round(self.size / 2)
+                        offsetX = self.size // 2
                 font.extend(
                     [
                         f"            {offsetX},",
@@ -159,10 +165,10 @@ class FontGenerator:
                 "    static inline const std::vector<SymbolExtended> unicode{",
             ]
         )
-        for character, _bitmap in bitmaps.items():
-            bitmap, offsetX, offsetY = self._crop(_bitmap)
+        for character in sorted(bitmaps):
+            bitmap, offsetX, offsetY = self._crop(bitmaps[character])
             cp = ord(character)
-            if cp >= 0x80 and cp <= 0x10FFFF:
+            if 0x80 <= cp <= 0x10FFFF:
                 comment = self._character_to_description(character)
                 if self.count >= 2**10:
                     font.append("        /*")
@@ -184,7 +190,7 @@ class FontGenerator:
                 else:
                     font.append("                {},")
                 if cp == 0xA0:
-                    offsetX = round(self.size / 2)
+                    offsetX = self.size // 2
                 font.extend(
                     [
                         f"                {offsetX},",
@@ -197,21 +203,21 @@ class FontGenerator:
                     font.append("        */")
                 else:
                     self.count += 1
-        font.append("    };")
+        font.extend(
+            [
+                "    };",
+                "",
+                "public:",
+                f"    explicit {unique}Font();",
+                "",
+                "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
+                "};",
+                "",
+                f"extern {unique}Font *Font{unique}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
+                "",
+            ]
+        )
         with open(f"{unique}Font.h", "w", encoding="utf-8") as f:
-            font.extend(
-                [
-                    "",
-                    "public:",
-                    f"    explicit {unique}Font();",
-                    "",
-                    "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
-                    "};",
-                    "",
-                    f"extern {unique}Font *Font{unique}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
-                    "",
-                ]
-            )
             f.write("\n".join(font))
         return f"{unique}Font.h"
 
@@ -258,7 +264,7 @@ class FontGenerator:
     def find(query: str) -> list[str]:
         fonts = matplotlib.font_manager.findSystemFonts()
         if query:
-            return [font for font in fonts if query.lower() in os.path.basename(font).lower()]
+            return [font for font in fonts if query.lower() in pathlib.Path(font).name.lower()]
         return fonts
 
 
@@ -267,27 +273,29 @@ def main() -> None:
     parser.add_argument("-i", "--input", help="Font path", required=True, type=str)
     parser.add_argument("--size", help="Font size", type=int)
     args = parser.parse_args()
+    input_path = pathlib.Path(args.input)
     kwargs = {
         key: value
         for key, value in {
-            "path": args.input,
+            "path": input_path,
             "size": args.size,
         }.items()
         if value is not None
     }
     paths: list[str] = []
-    if os.path.isfile(args.input):
+    if input_path.is_file():
         paths = FontGenerator(**kwargs).source()
     else:
         fonts = FontGenerator.find(args.input)
         for font in fonts:
-            if os.path.splitext(os.path.basename(font))[0].lower() == args.input.lower():
-                paths = FontGenerator(font).source() if args.size is None else FontGenerator(font, args.size).source()
+            path = pathlib.Path(font)
+            if path.stem.lower() == args.input.lower():
+                paths = FontGenerator(path).source() if args.size is None else FontGenerator(path, args.size).source()
                 break
     if not paths:
         raise FileNotFoundError(f"Font not found: '{args.input}'")
-    for path in paths:
-        print(path)
+    for _path in paths:
+        print(_path)
 
 
 if __name__ == "__main__":

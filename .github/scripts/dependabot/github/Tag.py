@@ -23,30 +23,29 @@ class Archive(GitHub.Client):
     def matrix(self) -> list[GitHub.ResultFragment]:
         seen: set[str] = set()
         fragments: list[BaseFragment] = []
-        with open(self.ctx.workspace / "platformio.ini", encoding="utf-8") as f:
-            for match in self.regex.finditer(f.read()):
-                string = match.group(0)
-                if string in seen:
-                    continue
-                seen.add(string)
-                try:
-                    pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
-                except (httpx.HTTPError, packaging.version.InvalidVersion):
-                    self.ctx.logger.error(
-                        "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
-                    )
-                    continue
-                if pending:
-                    fragments.append(
-                        {
-                            "owner": match["owner"],
-                            "repo": match["repo"],
-                            "tag_old": match["tag"],
-                            "tag_new": pending["tag_new"],
-                            "commit_new": pending["commit_new"],
-                            "string_old": string,
-                        }
-                    )
+        for match in self.regex.finditer((self.ctx.workspace / "platformio.ini").read_text()):
+            string = match.group(0)
+            if string in seen:
+                continue
+            seen.add(string)
+            try:
+                pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
+            except (httpx.HTTPError, packaging.version.InvalidVersion):
+                self.ctx.logger.error(
+                    "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
+                )
+                continue
+            if pending:
+                fragments.append(
+                    {
+                        "owner": match["owner"],
+                        "repo": match["repo"],
+                        "tag_old": match["tag"],
+                        "tag_new": pending["tag_new"],
+                        "commit_new": pending["commit_new"],
+                        "string_old": string,
+                    }
+                )
         return [
             GitHub.ResultFragment(
                 {
@@ -75,32 +74,31 @@ class Ball(GitHub.Client):
     def matrix(self) -> list[GitHub.ResultFragment]:
         seen: set[str] = set()
         fragments: list[BaseFragment] = []
-        with open(self.ctx.workspace / "platformio.ini", encoding="utf-8") as f:
-            for match in self.regex.finditer(f.read()):
-                string = match.group(0)
-                if string in seen:
-                    continue
-                seen.add(string)
-                if len(match["tag"]) == 40 and all("0" <= char <= "9" or "a" <= char <= "f" for char in match["tag"]):
-                    continue
-                try:
-                    pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
-                except (httpx.HTTPError, packaging.version.InvalidVersion):
-                    self.ctx.logger.error(
-                        "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
-                    )
-                    continue
-                if pending:
-                    fragments.append(
-                        {
-                            "owner": match["owner"],
-                            "repo": match["repo"],
-                            "tag_old": match["tag"],
-                            "tag_new": pending["tag_new"],
-                            "commit_new": pending["commit_new"],
-                            "string_old": string,
-                        }
-                    )
+        for match in self.regex.finditer((self.ctx.workspace / "platformio.ini").read_text()):
+            string = match.group(0)
+            if string in seen:
+                continue
+            seen.add(string)
+            if len(match["tag"]) == 40 and all("0" <= char <= "9" or "a" <= char <= "f" for char in match["tag"]):
+                continue
+            try:
+                pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
+            except (httpx.HTTPError, packaging.version.InvalidVersion):
+                self.ctx.logger.error(
+                    "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
+                )
+                continue
+            if pending:
+                fragments.append(
+                    {
+                        "owner": match["owner"],
+                        "repo": match["repo"],
+                        "tag_old": match["tag"],
+                        "tag_new": pending["tag_new"],
+                        "commit_new": pending["commit_new"],
+                        "string_old": string,
+                    }
+                )
         return [
             GitHub.ResultFragment(
                 {
@@ -129,32 +127,31 @@ class Git(GitHub.Client):
     def matrix(self) -> list[GitHub.ResultFragment]:
         seen: set[str] = set()
         fragments: list[BaseFragment] = []
-        with open(self.ctx.workspace / "platformio.ini", encoding="utf-8") as f:
-            for match in self.regex.finditer(f.read()):
-                string = match.group(0)
-                if string in seen:
-                    continue
-                seen.add(string)
-                if len(match["tag"]) == 40 and all("0" <= char <= "9" or "a" <= char <= "f" for char in match["tag"]):
-                    continue
-                try:
-                    pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
-                except (httpx.HTTPError, packaging.version.InvalidVersion):
-                    self.ctx.logger.error(
-                        "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
-                    )
-                    continue
-                if pending:
-                    fragments.append(
-                        {
-                            "owner": pending["owner"],
-                            "repo": pending["repo"],
-                            "tag_old": match["tag"],
-                            "tag_new": pending["tag_new"],
-                            "commit_new": pending["commit_new"],
-                            "string_old": string,
-                        }
-                    )
+        for match in self.regex.finditer((self.ctx.workspace / "platformio.ini").read_text()):
+            string = match.group(0)
+            if string in seen:
+                continue
+            seen.add(string)
+            if len(match["tag"]) == 40 and all("0" <= char <= "9" or "a" <= char <= "f" for char in match["tag"]):
+                continue
+            try:
+                pending = Handler(self.ctx, match["owner"], match["repo"]).check(match["tag"])
+            except (httpx.HTTPError, packaging.version.InvalidVersion):
+                self.ctx.logger.error(
+                    "Update check failed: %s/%s @ %s", match["owner"], match["repo"], match["tag"], exc_info=True
+                )
+                continue
+            if pending:
+                fragments.append(
+                    {
+                        "owner": pending["owner"],
+                        "repo": pending["repo"],
+                        "tag_old": match["tag"],
+                        "tag_new": pending["tag_new"],
+                        "commit_new": pending["commit_new"],
+                        "string_old": string,
+                    }
+                )
         return [
             GitHub.ResultFragment(
                 {
