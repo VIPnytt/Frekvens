@@ -44,14 +44,8 @@ void DrawMode::load(bool cache)
 {
     Preferences Storage;
     Storage.begin(name, true);
-    const char *const key = cache ? "cache" : "saved";
-    if (cache && Storage.isKey("cache"))
-    {
-        Storage.getBytes(key, frame.data(), frame.size());
-        pending = true;
-        render = true;
-    }
-    else if (Storage.isKey("saved"))
+    const char *key = (cache && Storage.isKey("cache")) ? "cache" : (Storage.isKey("saved") ? "saved" : nullptr);
+    if (key)
     {
         Storage.getBytes(key, frame.data(), frame.size());
         pending = true;
@@ -92,7 +86,7 @@ void DrawMode::onReceive(JsonObjectConst payload,
 {
     if (payload["action"].is<const char *>())
     {
-        const char *const action = payload["action"].as<const char *>();
+        const char *const action = payload["action"].as<const char *>(); // NOLINT(cppcoreguidelines-init-variables)
         // Clear
         if (strcmp(action, "clear") == 0)
         {
