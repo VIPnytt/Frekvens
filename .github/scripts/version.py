@@ -4,6 +4,8 @@ import pathlib
 import re
 import tomllib
 
+from ...scripts.src.config.version import VERSION
+
 
 def package_json() -> str:
     path = pathlib.Path("webapp") / "package.json"
@@ -35,6 +37,7 @@ def version_h() -> str:
 def main() -> None:
     versions = {
         "firmware/include/config/version.h": version_h(),
+        "scripts/src/config/version.py": VERSION,
         "webapp/package.json": package_json(),
         "webapp/package-lock.json": package_lock_json(),
         "pyproject.toml": pyproject_toml(),
