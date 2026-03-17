@@ -1,7 +1,7 @@
 [project]
 name = "frekvens"
 description = "Toolbox for the Frekvens project."
-version = "2.3.0"
+version = "2.3.1.dev0"
 license = "MIT"
 classifiers = [
     "Private :: Do Not Upload",
