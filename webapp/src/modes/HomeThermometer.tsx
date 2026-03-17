@@ -56,6 +56,7 @@ export const MainSecondary: Component = () => {
                         <div class="text-sm mb-3">
                             <a
                                 href={`https://github.com/VIPnytt/Frekvens/wiki/${ModesName}#-${name.toLowerCase().replace(/\s+/g, "-")}`}
+                                rel="noopener"
                                 target="_blank"
                             >
                                 Get started by configuring your <span class="italic">smart-home system</span> to send
