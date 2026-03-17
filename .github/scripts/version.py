@@ -4,8 +4,6 @@ import pathlib
 import re
 import tomllib
 
-from ...scripts.src.config.version import VERSION
-
 
 def package_json() -> str:
     path = pathlib.Path("webapp") / "package.json"
@@ -34,10 +32,16 @@ def version_h() -> str:
     return match.group(1) if match else ""
 
 
+def version_py() -> str:
+    path = pathlib.Path("scripts") / "src" / "config" / "version.py"
+    match = re.search(r'^VERSION:\sstr\s=\s"([^"]+)"$', path.read_text(), re.MULTILINE)
+    return match.group(1) if match else ""
+
+
 def main() -> None:
     versions = {
         "firmware/include/config/version.h": version_h(),
-        "scripts/src/config/version.py": VERSION,
+        "scripts/src/config/version.py": version_py(),
         "webapp/package.json": package_json(),
         "webapp/package-lock.json": package_lock_json(),
         "pyproject.toml": pyproject_toml(),
