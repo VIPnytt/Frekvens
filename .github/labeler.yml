@@ -1,7 +1,6 @@
 bug:
   - head-branch:
     - ^fix/
-    - bugfix
 
 chore:
   - head-branch:
@@ -10,8 +9,6 @@ chore:
 dependencies:
   - head-branch:
     - ^dependabot/
-    - ^deps/
-    - ^platformio_dependabot/
 
 documentation:
   - changed-files:
@@ -25,7 +22,6 @@ documentation:
 enhancement:
   - head-branch:
     - ^feat/
-    - feature
 
 extra:
   - changed-files:
@@ -44,7 +40,7 @@ firmware:
       - firmware/**/*
 
   - head-branch:
-    - ^platformio_dependabot/
+    - ^dependabot/platformio/
 
 frontend:
   - changed-files:
@@ -52,10 +48,12 @@ frontend:
       - webapp/**/*
 
   - head-branch:
+    - ^dependabot/npm_and_yarn/
     - ^dependabot/uv/nodejs-wheel-
 
 no-changelog:
   - head-branch:
+    - ^dependabot/github_actions/
     - ^dependabot/npm_and_yarn/webapp/biomejs/biome-
     - ^dependabot/npm_and_yarn/webapp/types/
     - ^dependabot/uv/platformio-

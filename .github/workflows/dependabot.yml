@@ -157,9 +157,7 @@ jobs:
             - [Compare changes](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/compare/${{ matrix.fragments.commit_old || matrix.fragments.tag_old }}...${{ matrix.fragments.commit_new || matrix.fragments.tag_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
-          labels: |
-            dependencies
-            firmware
+          labels: dependencies
           milestone: ${{ needs.repository-check.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
@@ -287,9 +285,7 @@ jobs:
             - [Versions](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}/versions?version=${{ matrix.fragments.version_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
-          labels: |
-            dependencies
-            firmware
+          labels: dependencies
           milestone: ${{ needs.repository-check.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
