@@ -35,7 +35,6 @@ updates:
         - tzdata
     labels:
       - dependencies
-      - tools
     milestone: 11
     schedule:
       interval: daily
