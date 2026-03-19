@@ -1,32 +1,38 @@
 bug:
   - head-branch:
-    - ^fix
-    - bugfix
+    - ^fix/
 
 chore:
   - head-branch:
-    - ^chore
+    - ^chore/
 
 dependencies:
   - head-branch:
     - ^dependabot/
-    - ^platformio_dependabot/
 
 documentation:
   - changed-files:
     - any-glob-to-any-file:
-      - docs/**
+      - docs/**/*
       - "**/*.md"
+
+  - head-branch:
+    - ^docs/
 
 enhancement:
   - head-branch:
-    - ^feat
-    - feature
+    - ^feat/
 
 extra:
   - changed-files:
     - any-glob-to-any-file:
       - extra/**/*
+
+    - head-branch:
+      - ^dependabot/uv/fonttools-
+      - ^dependabot/uv/matplotlib-
+      - ^dependabot/uv/pillow-
+      - ^dependabot/uv/ruff-
 
 firmware:
   - changed-files:
@@ -34,18 +40,48 @@ firmware:
       - firmware/**/*
 
   - head-branch:
-    - ^platformio_dependabot/
+    - ^dependabot/platformio/
 
 frontend:
   - changed-files:
     - any-glob-to-any-file:
       - webapp/**/*
 
+  - head-branch:
+    - ^dependabot/npm_and_yarn/
+    - ^dependabot/uv/nodejs-wheel-
+
 no-changelog:
   - head-branch:
+    - ^dependabot/github_actions/
+    - ^dependabot/npm_and_yarn/webapp/biomejs/biome-
     - ^dependabot/npm_and_yarn/webapp/types/
+    - ^dependabot/uv/platformio-
+    - ^dependabot/uv/ruff-
+    - ^dependabot/uv/scons-
+    - ^dependabot/uv/uv-
 
 tools:
   - changed-files:
     - any-glob-to-any-file:
       - tools/**/*
+
+  - head-branch:
+    - ^dependabot/uv/httpx-
+
+scripts:
+  - changed-files:
+    - any-glob-to-any-file:
+      - scripts/**/*
+
+  - head-branch:
+    - ^dependabot/uv/cryptography-
+    - ^dependabot/uv/httpx-
+    - ^dependabot/uv/nodejs-
+    - ^dependabot/uv/packaging-
+    - ^dependabot/uv/platformio-
+    - ^dependabot/uv/python-dotenv-
+    - ^dependabot/uv/ruff-
+    - ^dependabot/uv/scons-
+    - ^dependabot/uv/tzdata-
+    - ^dependabot/uv/tzlocal-

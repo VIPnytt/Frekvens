@@ -6,7 +6,6 @@ updates:
       default-days: 90
     labels:
       - dependencies
-      - no-changelog
     milestone: 11
     schedule:
       interval: weekly
@@ -19,7 +18,6 @@ updates:
       semver-patch-days: 3
     labels:
       - dependencies
-      - frontend
     milestone: 11
     schedule:
       interval: daily
@@ -35,7 +33,6 @@ updates:
         - tzdata
     labels:
       - dependencies
-      - tools
     milestone: 11
     schedule:
       interval: daily
