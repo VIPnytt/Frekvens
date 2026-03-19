@@ -35,11 +35,15 @@ where = [
 
 [dependency-groups]
 dependabot = [
+    { include-group = "httpx" },
     { include-group = "packaging" },
-    "httpx==0.28.1",
 ]
 dev = [
-    "ruff==0.15.6",
+    { include-group = "nodejs" },
+    { include-group = "ruff" },
+]
+httpx = [
+    "httpx==0.28.1",
 ]
 nodejs = [
     "nodejs-wheel==24.14.0",
@@ -50,9 +54,16 @@ packaging = [
 platformio = [
     "platformio==6.1.19",
 ]
+ruff = [
+    "ruff==0.15.6",
+]
+scons = [
+    "scons==4.10.1",
+]
 scripts = [
-    { include-group = "dependabot" },
+    { include-group = "httpx" },
     { include-group = "nodejs" },
+    { include-group = "packaging" },
     "cryptography==46.0.5",
     "python-dotenv==1.2.2",
     "tzdata==2025.3",
