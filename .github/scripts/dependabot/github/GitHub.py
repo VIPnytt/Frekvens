@@ -118,16 +118,7 @@ class Handler:
         elif (release["prerelease"] or version.is_prerelease) and not self.version.is_prerelease:
             self.ctx.logger.info("Skipping: %s/%s @ %s", self.owner, self.repo, release["tag_name"])
             return False
-        elif (
-            (
-                version.major == self.version.major
-                and version.minor == self.version.minor
-                and version.micro == self.version.micro
-            )
-            or self.is_mature_patch(version)
-            or self.is_mature_minor(version)
-            or self.is_mature_major(version)
-        ):
+        elif self.is_mature_major(version) and self.is_mature_minor(version) and self.is_mature_patch(version):
             return True
         self.ctx.logger.info("On cooldown: %s/%s @ %s", self.owner, self.repo, release["tag_name"])
         return False
@@ -143,7 +134,9 @@ class Handler:
             return 0
 
     def is_mature_major(self, version: packaging.version.Version) -> bool:
-        if version.major > self.version.major:
+        if version.major == self.version.major:
+            return True
+        elif version.major > self.version.major:
             for release in self.releases:
                 v_release = self.parse_release(release)
                 if (
@@ -156,7 +149,11 @@ class Handler:
         return False
 
     def is_mature_minor(self, version: packaging.version.Version) -> bool:
-        if version.major == self.version.major and version.minor > self.version.minor:
+        if version.major == self.version.major and version.minor == self.version.minor:
+            return True
+        elif version.major > self.version.major or (
+            version.major == self.version.major and version.minor > self.version.minor
+        ):
             for release in self.releases:
                 v_release = self.parse_release(release)
                 if (
@@ -173,7 +170,17 @@ class Handler:
         if (
             version.major == self.version.major
             and version.minor == self.version.minor
-            and version.micro > self.version.micro
+            and version.micro == self.version.micro
+        ):
+            return True
+        elif (
+            version.major > self.version.major
+            or (version.major == self.version.major and version.minor > self.version.minor)
+            or (
+                version.major == self.version.major
+                and version.minor == self.version.minor
+                and version.micro > self.version.micro
+            )
         ):
             for release in self.releases:
                 v_release = self.parse_release(release)
