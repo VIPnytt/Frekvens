@@ -28,11 +28,11 @@ extra:
     - any-glob-to-any-file:
       - extra/**/*
 
-    - head-branch:
-      - ^dependabot/uv/fonttools-
-      - ^dependabot/uv/matplotlib-
-      - ^dependabot/uv/pillow-
-      - ^dependabot/uv/ruff-
+  - head-branch:
+    - ^dependabot/uv/fonttools-
+    - ^dependabot/uv/matplotlib-
+    - ^dependabot/uv/pillow-
+    - ^dependabot/uv/ruff-
 
 firmware:
   - changed-files:
