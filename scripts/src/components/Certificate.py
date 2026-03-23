@@ -32,6 +32,9 @@ if typing.TYPE_CHECKING:
 
 
 class Certificate:
+    PEM_CERT_BEGIN = "-----BEGIN CERTIFICATE-----"
+    PEM_CERT_END = "-----END CERTIFICATE-----"
+    PEM_PKCS7_BEGIN = "-----BEGIN PKCS7-----"
     PROVIDERS: dict[str, list[str]] = {
         GoogleWeather.ENV_OPTION: GoogleWeather.HOST_WHITELIST,
         OpenMeteo.ENV_OPTION: OpenMeteo.HOST_WHITELIST,
@@ -112,10 +115,10 @@ class Certificate:
         lines: list[str] = []
         inside = False
         for line in path.read_text().splitlines():
-            if line == "-----BEGIN CERTIFICATE-----":
+            if line == self.PEM_CERT_BEGIN:
                 lines = [line]
                 inside = True
-            elif line == "-----END CERTIFICATE-----" and inside:
+            elif line == self.PEM_CERT_END and inside:
                 lines.append(line)
                 certificate = cryptography.x509.load_pem_x509_certificate("\n".join(lines).encode())
                 self._append_certificate(certificate)
@@ -192,7 +195,7 @@ class Certificate:
             ).value,
         )
         for value in aia:
-            if value.access_method.dotted_string != "1.3.6.1.5.5.7.48.2":
+            if value.access_method != cryptography.x509.oid.AuthorityInformationAccessOID.CA_ISSUERS:
                 continue
             location = value.access_location.value
             if not isinstance(location, str) or not location.startswith(("http://", "https://")):
@@ -217,10 +220,10 @@ class Certificate:
 
     def _parse_certificates(self, hostname: str, location: str, data: bytes) -> list[cryptography.x509.Certificate]:
         candidates: list[cryptography.x509.Certificate] = []
-        if b"-----BEGIN CERTIFICATE-----" in data:
+        if self.PEM_CERT_BEGIN.encode() in data:
             candidates.append(cryptography.x509.load_pem_x509_certificate(data))
             return candidates
-        if b"-----BEGIN PKCS7-----" in data:
+        if self.PEM_PKCS7_BEGIN.encode() in data:
             logging.info("%s: Parsing PKCS#7 (PEM) from %s", hostname, location)
             return cryptography.hazmat.primitives.serialization.pkcs7.load_pem_pkcs7_certificates(data)
         try:
