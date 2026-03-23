@@ -32,7 +32,6 @@ extra:
     - ^dependabot/uv/fonttools-
     - ^dependabot/uv/matplotlib-
     - ^dependabot/uv/pillow-
-    - ^dependabot/uv/ruff-
 
 firmware:
   - changed-files:
@@ -49,9 +48,26 @@ frontend:
 
   - head-branch:
     - ^dependabot/npm_and_yarn/
-    - ^dependabot/uv/nodejs-wheel-
+    - ^dependabot/uv/nodejs-
 
-no-changelog:
+scripts:
+  - changed-files:
+    - any-glob-to-any-file:
+      - scripts/**/*
+
+  - head-branch:
+    - ^dependabot/uv/cryptography-
+    - ^dependabot/uv/httpx-
+    - ^dependabot/uv/nodejs-
+    - ^dependabot/uv/packaging-
+    - ^dependabot/uv/platformio-
+    - ^dependabot/uv/python-dotenv-
+    - ^dependabot/uv/scons-
+    - ^dependabot/uv/tzdata-
+    - ^dependabot/uv/tzlocal-
+    - ^dependabot/uv/uv-
+
+skip-changelog:
   - head-branch:
     - ^dependabot/github_actions/
     - ^dependabot/npm_and_yarn/webapp/biomejs/biome-
@@ -68,20 +84,3 @@ tools:
 
   - head-branch:
     - ^dependabot/uv/httpx-
-
-scripts:
-  - changed-files:
-    - any-glob-to-any-file:
-      - scripts/**/*
-
-  - head-branch:
-    - ^dependabot/uv/cryptography-
-    - ^dependabot/uv/httpx-
-    - ^dependabot/uv/nodejs-
-    - ^dependabot/uv/packaging-
-    - ^dependabot/uv/platformio-
-    - ^dependabot/uv/python-dotenv-
-    - ^dependabot/uv/ruff-
-    - ^dependabot/uv/scons-
-    - ^dependabot/uv/tzdata-
-    - ^dependabot/uv/tzlocal-

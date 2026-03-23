@@ -14,4 +14,4 @@ changelog:
         - "*"
   exclude:
     labels:
-      - "no-changelog"
+      - "skip-changelog"
