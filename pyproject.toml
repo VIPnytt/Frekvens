@@ -55,7 +55,7 @@ platformio = [
     "platformio==6.1.19",
 ]
 ruff = [
-    "ruff==0.15.6",
+    "ruff==0.15.7",
 ]
 scons = [
     "scons==4.10.1",
@@ -70,7 +70,7 @@ scripts = [
     "tzlocal==5.3.1",
 ]
 uv = [
-    "uv==0.10.9",
+    "uv==0.10.12",
 ]
 
 [tool.ruff]
