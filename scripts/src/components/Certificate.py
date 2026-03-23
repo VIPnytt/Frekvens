@@ -127,6 +127,7 @@ class Certificate:
         if (fingerprint := cert.fingerprint(cryptography.hazmat.primitives.hashes.SHA256())) not in self.fingerprints:
             self.certificates.append(cert)
             self.fingerprints.add(fingerprint)
+            logging.info("Added root certificate: %s", self._get_name(cert) or "unknown")
 
     def _get_bin(self) -> bytes:
         offsets: list[int] = []
@@ -244,12 +245,13 @@ class Certificate:
         for candidate in candidates:
             if candidate.subject != cert.issuer:
                 continue
+            bc = None
             try:
                 bc = candidate.extensions.get_extension_for_class(cryptography.x509.BasicConstraints).value
-                if not bc.ca:
-                    continue
             except cryptography.x509.ExtensionNotFound:
-                pass
+                logging.debug("Issuer candidate missing BasicConstraints: %s", self._get_name(candidate) or "unknown")
+            if bc is not None and not bc.ca:
+                continue
             return candidate
         return None
 
