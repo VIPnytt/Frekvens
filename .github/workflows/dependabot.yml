@@ -16,38 +16,45 @@ env:
   semver-patch-days: 3
 
 jobs:
-  repository-check:
-    name: Repository check
-    runs-on: ubuntu-latest
+  context:
+    name: Context
+    runs-on: ubuntu-slim
 
     outputs:
-      active: ${{ steps.idle.outputs.active }}
-      milestone: ${{ steps.milestone.outputs.number }}
+      milestone: ${{ steps.check.outputs.milestone }}
+      open-pull-requests-limit: ${{ steps.check.outputs.open-pull-requests-limit }}
 
     steps:
-      - name: GitHub Script idle check
-        id: idle
+      - name: GitHub Script checks
+        id: check
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const { data: branch } = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: context.ref.replace('refs/heads/', ''),
+              branch: '${{ github.ref_name }}',
             });
-            const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
-            core.info(`Repository active: ${active}`);
-            core.setOutput('active', active);
-
-      - name: GitHub Script milestone check
-        if: ${{ fromJSON(steps.idle.outputs.active) }}
-        id: milestone
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        with:
-          script: |
+            if (new Date() - new Date(branch.commit.commit.committer.date) > 90 * 86400000) {
+              core.info('Branch inactive');
+              core.debug('Milestone: none');
+              core.setOutput('milestone', '');
+              core.debug('Open pull request limit: 0');
+              core.setOutput('open-pull-requests-limit', 0);
+              return;
+            }
+            if (process.env['open-pull-requests-limit'] === undefined) {
+              core.debug('No open pull request limit configured');
+            }
+            const limit = Number(process.env['open-pull-requests-limit'] ?? 5);
+            core.info(`Open pull request limit: ${limit}`);
+            core.setOutput('open-pull-requests-limit', limit);
+            if (limit < 1) {
+              return;
+            }
             if (!process.env.milestone) {
               core.debug('No milestone configured');
-              core.setOutput('number', '');
+              core.setOutput('milestone', '');
               return;
             }
             try {
@@ -58,15 +65,15 @@ jobs:
               });
               if (milestone.state === 'open') {
                 core.info(`Milestone ${milestone.number}: ${milestone.state}`);
-                core.setOutput('number', milestone.number);
+                core.setOutput('milestone', milestone.number);
               } else {
                 core.warning(`Milestone ${milestone.number}: ${milestone.state}`);
-                core.setOutput('number', '');
+                core.setOutput('milestone', '');
               }
             } catch (e) {
               if (e.status === 404) {
                 core.error(`Milestone ${process.env.milestone} not found`);
-                core.setOutput('number', '');
+                core.setOutput('milestone', '');
               } else {
                 throw e;
               }
@@ -74,9 +81,9 @@ jobs:
 
   github-check:
     name: GitHub check
-    needs: repository-check
-    runs-on: ubuntu-latest
-    if: ${{ fromJSON(needs.repository-check.outputs.active) }}
+    needs: context
+    runs-on: ubuntu-slim
+    if: ${{ needs.context.outputs.open-pull-requests-limit > 0 }}
 
     outputs:
       dependency-fragments: ${{ steps.pending.outputs.fragments }}
@@ -106,9 +113,9 @@ jobs:
   github-update:
     name: GitHub update
     needs:
-      - repository-check
+      - context
       - github-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: ${{ fromJSON(needs.github-check.outputs.dependency-fragments)[0] != null }}
 
     permissions:
@@ -116,13 +123,14 @@ jobs:
       pull-requests: write
 
     strategy:
+      max-parallel: 1
       matrix:
-        fragments: ${{ fromJson(needs.github-check.outputs.dependency-fragments) }}
+        fragments: ${{ fromJSON(needs.github-check.outputs.dependency-fragments) }}
 
     steps:
       - name: GitHub Script pull request check
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        id: lookup
+        id: check
         with:
           script: |
             const { data: prs } = await github.rest.pulls.list({
@@ -130,22 +138,54 @@ jobs:
               repo: context.repo.repo,
               state: 'all',
               head: `${context.repo.owner}:dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}`,
-              base: context.ref,
+              base: '${{ github.ref_name }}',
             });
-            const needed = prs.length === 0;
-            core.info(`Pull request needed: ${needed}`);
-            core.setOutput('needed', needed);
+            let create = prs.length === 0;
+            if (create) {
+              let count = 0;
+              let match = false;
+              for (const pr of await github.paginate(
+                github.rest.pulls.list,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'open',
+                  base: '${{ github.ref_name }}',
+                  per_page: 100,
+                }
+              )) {
+                if (
+                  pr.user.type === 'Bot' &&
+                  pr.head.ref.startsWith('dependabot/platformio/')
+                ) {
+                  if (pr.head.ref.startsWith('dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-')) {
+                    match = true;
+                    break;
+                  }
+                  count++;
+                }
+              }
+              if (
+                !match &&
+                count >= ${{ needs.context.outputs.open-pull-requests-limit }}
+              ) {
+                core.debug('Open pull request limit exceeded');
+                create = false;
+              }
+            }
+            core.info(`Create pull request: ${create}`);
+            core.setOutput('create', create);
 
       - name: Checkout
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Update platformio.ini
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         run: sed -i "s|${{ matrix.fragments.string_old }}|${{ matrix.fragments.string_new }}|g" platformio.ini
 
       - name: Create Pull Request
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         id: pr
         with:
@@ -154,15 +194,18 @@ jobs:
             Bumps [${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}) from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}.
             - [Releases](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/releases)
             - [Tags](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/tags)
+            - [Commits](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/commits)
             - [Compare changes](https://github.com/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}/compare/${{ matrix.fragments.commit_old || matrix.fragments.tag_old }}...${{ matrix.fragments.commit_new || matrix.fragments.tag_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
-          labels: dependencies
-          milestone: ${{ needs.repository-check.outputs.milestone }}
+          labels: |
+            dependencies
+            firmware
+          milestone: ${{ needs.context.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.repo }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
       - name: GitHub Script close superseded
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
@@ -172,7 +215,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
-                base: context.ref,
+                base: '${{ github.ref_name }}',
                 per_page: 100,
               }
             )) {
@@ -185,7 +228,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: pr.number,
-                  body: `Superseded by #${{ steps.pr.outputs.pull-request-number }}.`,
+                  body: 'Superseded by #${{ steps.pr.outputs.pull-request-number }}.',
                 });
                 await github.rest.issues.update({
                   owner: context.repo.owner,
@@ -205,9 +248,9 @@ jobs:
 
   platformio-check:
     name: PlatformIO check
-    needs: repository-check
-    runs-on: ubuntu-latest
-    if: ${{ fromJSON(needs.repository-check.outputs.active) }}
+    needs: context
+    runs-on: ubuntu-slim
+    if: ${{ needs.context.outputs.open-pull-requests-limit > 0 }}
 
     outputs:
       dependency-fragments: ${{ steps.pending.outputs.fragments }}
@@ -226,7 +269,7 @@ jobs:
       - name: Set up Python packages
         run: uv sync --only-group dependabot --only-group platformio
 
-      - name: Frekvens PlatfomIO dependabot
+      - name: Frekvens PlatformIO dependabot
         id: pending
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
@@ -235,10 +278,10 @@ jobs:
 
   platformio-update:
     name: PlatformIO update
-    needs: 
-      - repository-check
+    needs:
+      - context
       - platformio-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: ${{ fromJSON(needs.platformio-check.outputs.dependency-fragments)[0] != null }}
 
     permissions:
@@ -246,13 +289,14 @@ jobs:
       pull-requests: write
 
     strategy:
+      max-parallel: 1
       matrix:
-        fragments: ${{ fromJson(needs.platformio-check.outputs.dependency-fragments) }}
+        fragments: ${{ fromJSON(needs.platformio-check.outputs.dependency-fragments) }}
 
     steps:
       - name: GitHub Script pull request check
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        id: lookup
+        id: check
         with:
           script: |
             const { data: prs } = await github.rest.pulls.list({
@@ -260,22 +304,54 @@ jobs:
               repo: context.repo.repo,
               state: 'all',
               head: `${context.repo.owner}:dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-${{ matrix.fragments.version_new }}`,
-              base: context.ref,
+              base: '${{ github.ref_name }}',
             });
-            const needed = prs.length === 0;
-            core.info(`Pull request needed: ${needed}`);
-            core.setOutput('needed', needed);
+            let create = prs.length === 0;
+            if (create) {
+              let count = 0;
+              let match = false;
+              for (const pr of await github.paginate(
+                github.rest.pulls.list,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'open',
+                  base: '${{ github.ref_name }}',
+                  per_page: 100,
+                }
+              )) {
+                if (
+                  pr.user.type === 'Bot' &&
+                  pr.head.ref.startsWith('dependabot/platformio/')
+                ) {
+                  if (pr.head.ref.startsWith('dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-')) {
+                    match = true;
+                    break;
+                  }
+                  count++;
+                }
+              }
+              if (
+                !match &&
+                count >= ${{ needs.context.outputs.open-pull-requests-limit }}
+              ) {
+                core.debug('Open pull request limit exceeded');
+                create = false;
+              }
+            }
+            core.info(`Create pull request: ${create}`);
+            core.setOutput('create', create);
 
       - name: Checkout
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
 
       - name: Update platformio.ini
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         run: sed -i "s|${{ matrix.fragments.string_old }}|${{ matrix.fragments.string_new }}|g" platformio.ini
 
       - name: Create Pull Request
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         id: pr
         with:
@@ -285,12 +361,14 @@ jobs:
             - [Versions](https://registry.platformio.org/${{ matrix.fragments.type }}/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}/versions?version=${{ matrix.fragments.version_new }})
           branch: dependabot/platformio/${{ matrix.fragments.owner }}/${{ matrix.fragments.name }}-${{ matrix.fragments.version_new }}
           commit-message: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }} in /
-          labels: dependencies
-          milestone: ${{ needs.repository-check.outputs.milestone }}
+          labels: |
+            dependencies
+            firmware
+          milestone: ${{ needs.context.outputs.milestone }}
           title: Bump ${{ matrix.fragments.owner }}/${{ matrix.fragments.name }} from ${{ matrix.fragments.version_old }} to ${{ matrix.fragments.version_new }}
 
       - name: GitHub Script close superseded
-        if: ${{ fromJSON(steps.lookup.outputs.needed) }}
+        if: ${{ fromJSON(steps.check.outputs.create) }}
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
@@ -300,7 +378,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
-                base: context.ref,
+                base: '${{ github.ref_name }}',
                 per_page: 100,
               }
             )) {
@@ -313,7 +391,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: pr.number,
-                  body: `Superseded by #${{ steps.pr.outputs.pull-request-number }}.`,
+                  body: 'Superseded by #${{ steps.pr.outputs.pull-request-number }}.',
                 });
                 await github.rest.issues.update({
                   owner: context.repo.owner,
