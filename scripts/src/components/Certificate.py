@@ -230,7 +230,7 @@ class Certificate:
             candidates.append(cryptography.x509.load_der_x509_certificate(data))
             return candidates
         except ValueError:
-            pass
+            logging.debug("%s: Not a DER certificate (%s)", hostname, location)
         try:
             with warnings.catch_warnings(record=True) as caught:
                 warnings.simplefilter("always")
