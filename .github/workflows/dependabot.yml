@@ -9,12 +9,6 @@ on:
 permissions:
   contents: read
 
-env:
-  milestone: 12
-  semver-major-days: 90
-  semver-minor-days: 21
-  semver-patch-days: 3
-
 jobs:
   context:
     name: Context
