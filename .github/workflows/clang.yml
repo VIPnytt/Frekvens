@@ -79,7 +79,7 @@ jobs:
           - IKEA_FREKVENS
           - IKEA_OBEGRANSAD
 
-        environment: ${{ fromJson(needs.platformio.outputs.environments) }}
+        environment: ${{ fromJSON(needs.platformio.outputs.environments) }}
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
