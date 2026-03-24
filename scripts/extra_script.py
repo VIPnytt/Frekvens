@@ -23,7 +23,8 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
     if typing.TYPE_CHECKING:
 
         class Environment(SCons.Script.Environment):
-            def IsCleanTarget(self) -> bool: ...
+            def IsCleanTarget(self) -> bool:
+                pass
 
         env = Environment()
 
