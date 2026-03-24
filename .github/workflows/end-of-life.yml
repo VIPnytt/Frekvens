@@ -12,7 +12,7 @@ permissions:
 jobs:
   idle-check:
     name: Idle check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     outputs:
       active: ${{ steps.idle.outputs.active }}
@@ -26,16 +26,16 @@ jobs:
             const { data: branch } = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: context.ref.replace('refs/heads/', ''),
+              branch: '${{ github.ref_name }}',
             });
-            const active = new Date() - new Date(branch.commit.commit.author.date) <= 90 * 86400000;
-            core.info(`Repository active: ${active}`);
+            const active = new Date() - new Date(branch.commit.commit.committer.date) <= 90 * 86400000;
+            core.info(`Branch active: ${active}`);
             core.setOutput('active', active);
 
   node:
     name: Node.js
     needs: idle-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
@@ -55,14 +55,14 @@ jobs:
   python:
     name: Python
     needs: idle-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          - python-version: "3.10"
+          - python-version: '3.10'
           - python-version: 3.13
           - python-version: 3.14
 

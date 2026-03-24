@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  config:
-    name: Workflow configuration
+  context:
+    name: Context
     runs-on: ubuntu-latest
     outputs:
       node-cache: ${{ steps.nodejs.outputs.cache }}
@@ -50,56 +50,56 @@ jobs:
 
   default:
     name: Default
-    needs: config
+    needs: context
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
         toolchain:
-          - python-version: "3.10"
+          - python-version: '3.10'
           - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: adafruit_qtpy_esp32s3_n4r2
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: adafruit_qtpy_esp32s3_nopsram
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_d32
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_d32_pro
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_s3_mini
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32c3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32c6
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32s3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: wemos_d1_mini32
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
     steps:
       - name: Checkout
@@ -109,7 +109,7 @@ jobs:
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
-          path: ${{ needs.config.outputs.node-cache }}
+          path: ${{ needs.context.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
@@ -146,56 +146,56 @@ jobs:
 
   minimal:
     name: Minimal
-    needs: config
+    needs: context
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
         toolchain:
-          - python-version: "3.10"
+          - python-version: '3.10'
           - python-version: 3.14
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: adafruit_qtpy_esp32s3_n4r2
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: adafruit_qtpy_esp32s3_nopsram
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_d32
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_d32_pro
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: lolin_s3_mini
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32c3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32c6
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: seeed_xiao_esp32s3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: wemos_d1_mini32
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
     steps:
       - name: Checkout
@@ -248,14 +248,14 @@ jobs:
 
   typical:
     name: Typical
-    needs: config
+    needs: context
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
         toolchain:
-          - python-version: "3.10"
+          - python-version: '3.10'
           - python-version: 3.14
 
         exclude:
@@ -264,7 +264,7 @@ jobs:
 
           - environment: adafruit_qtpy_esp32s3_nopsram
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -278,7 +278,7 @@ jobs:
 
           - environment: seeed_xiao_esp32s3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: wemos_d1_mini32
 
@@ -290,7 +290,7 @@ jobs:
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
-          path: ${{ needs.config.outputs.node-cache }}
+          path: ${{ needs.context.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
@@ -388,14 +388,14 @@ jobs:
 
   extensive:
     name: Extensive
-    needs: config
+    needs: context
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.config.outputs.pio-environments) }}
+        environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
         toolchain:
-          - python-version: "3.10"
+          - python-version: '3.10'
           - python-version: 3.14
 
         exclude:
@@ -404,7 +404,7 @@ jobs:
 
           - environment: adafruit_qtpy_esp32s3_nopsram
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
@@ -418,7 +418,7 @@ jobs:
 
           - environment: seeed_xiao_esp32s3
             toolchain:
-              python-version: "3.10"
+              python-version: '3.10'
 
           - environment: wemos_d1_mini32
 
@@ -430,7 +430,7 @@ jobs:
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
-          path: ${{ needs.config.outputs.node-cache }}
+          path: ${{ needs.context.outputs.node-cache }}
 
       - name: Set up Cache for PlatformIO
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
