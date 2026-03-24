@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  milestone: 11
+  milestone: 12
   semver-major-days: 90
   semver-minor-days: 21
   semver-patch-days: 3
