@@ -21,7 +21,11 @@ if SCons.Script.COMMAND_LINE_TARGETS not in [
     Import("env")
 
     if typing.TYPE_CHECKING:
-        env = SCons.Script.Environment()
+
+        class Environment(SCons.Script.Environment):
+            def IsCleanTarget(self) -> bool: ...
+
+        env = Environment()
 
     if not env.IsCleanTarget():
         uv = subprocess.run(
