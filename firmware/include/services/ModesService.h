@@ -53,7 +53,7 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    // NOLINTNEXTLINE(cert-err58-cpp)
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
     inline static const std::vector<ModeModule *> modes{
 #if MODE_ANIMATION
         new AnimationMode(),

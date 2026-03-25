@@ -10,9 +10,6 @@ on:
 permissions:
   contents: read
 
-env:
-  clang-version: 21
-
 jobs:
   font-dejavusans:
     name: DejaVuSans font
@@ -86,7 +83,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -215,7 +212,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -328,7 +325,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
