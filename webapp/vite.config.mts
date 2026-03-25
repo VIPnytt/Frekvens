@@ -7,8 +7,6 @@ import { createHtmlPlugin } from "vite-plugin-html";
 import { viteSingleFile } from "vite-plugin-singlefile";
 import solidPlugin from "vite-plugin-solid";
 
-import { IconUri } from "./src/components/Icon";
-
 export default defineConfig(({ mode }) => ({
     build: {
         minify: mode === "production",
@@ -25,9 +23,7 @@ export default defineConfig(({ mode }) => ({
                         tag: "link",
                         attrs: {
                             rel: "icon",
-                            href: IconUri({
-                                path: mdiDotsGrid,
-                            }),
+                            href: `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="${mdiDotsGrid}"/><style>:root{color:white}@media(prefers-color-scheme:light){:root{color:black}}</style></svg>`)}`,
                         },
                     },
                     {
