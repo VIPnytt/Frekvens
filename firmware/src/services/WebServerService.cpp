@@ -32,5 +32,5 @@ WebServerService &WebServerService::getInstance()
     return instance;
 }
 
-// NOLINTNEXTLINE(bugprone-throwing-static-initialization,cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
 WebServerService &WebServer = WebServerService::getInstance();

@@ -29,7 +29,7 @@ class ExtensionsService final : public ServiceModule
 private:
     explicit ExtensionsService() : ServiceModule("Extensions") {};
 
-    // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
     inline static const std::vector<ExtensionModule *> modules{
 #if EXTENSION_ALEXA
         new AlexaExtension(),
