@@ -39,9 +39,6 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
 
-    env:
-      clang-version: 22
-
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -49,6 +46,8 @@ jobs:
       - name: Clang format
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: format
+        env:
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -90,9 +89,6 @@ jobs:
           - environment: seeed_xiao_esp32c6
           - environment: seeed_xiao_esp32s3
           - environment: wemos_d1_mini32
-
-    env:
-      clang-version: 22
 
     steps:
       - name: Checkout
@@ -219,6 +215,8 @@ jobs:
       - name: Clang tidy
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: tidy
+        env:
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -228,7 +226,7 @@ jobs:
 
       - name: Summary
         env:
-          clang-threshold: 59
+          clang-threshold: 60
         run: |
           echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"

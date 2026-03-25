@@ -21,9 +21,6 @@ jobs:
           - python-version: '3.10'
           - python-version: 3.14
 
-    env:
-      clang-version: 22
-
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -85,6 +82,8 @@ jobs:
         if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
+        env:
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -116,9 +115,6 @@ jobs:
         toolchain:
           - python-version: '3.10'
           - python-version: 3.14
-
-    env:
-      clang-version: 22
 
     steps:
       - name: Checkout
@@ -215,6 +211,8 @@ jobs:
         if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
+        env:
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -246,9 +244,6 @@ jobs:
         toolchain:
           - python-version: '3.10'
           - python-version: 3.14
-
-    env:
-      clang-version: 22
 
     steps:
       - name: Checkout
@@ -329,6 +324,8 @@ jobs:
         if: ${{ matrix.toolchain.python-version != 3.14 }}
         uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
         id: clang
+        env:
+          clang-version: 22
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
