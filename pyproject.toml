@@ -46,7 +46,7 @@ httpx = [
     "httpx==0.28.1",
 ]
 nodejs = [
-    "nodejs-wheel==24.14.0",
+    "nodejs-wheel==24.14.1",
 ]
 packaging = [
     "packaging==26.0",
