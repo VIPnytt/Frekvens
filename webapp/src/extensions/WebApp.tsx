@@ -168,16 +168,17 @@ export const Third: Component = () => (
                         Filesystem: {VERSION}
                     </div>
                     <div class="text-sm">Flash or upload matching versions to restore compatibility.</div>
+                    <div class="hr" />
+                    <div class="hover:underline text-sm tracking-wide">
+                        <a
+                            href="https://github.com/VIPnytt/Frekvens/releases/latest"
+                            rel="noopener"
+                            target="_blank"
+                        >
+                            Download latest stable release
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="text-sm tracking-wide">
-                <a
-                    href="https://github.com/VIPnytt/Frekvens"
-                    rel="noopener"
-                    target="_blank"
-                >
-                    Download the latest version
-                </a>
             </div>
         </div>
         {EXTENSION_OTA && <ExtensionOtaComponent />}
