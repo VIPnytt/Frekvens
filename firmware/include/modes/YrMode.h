@@ -17,9 +17,9 @@ private:
 
     // https://api.met.no/weatherapi/locationforecast/2.0/documentation
     // https://api.met.no/weatherapi/nowcast/2.0/documentation
-    std::vector<const char *> urls{
-        "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE,
-        "https://api.met.no/weatherapi/nowcast/2.0/complete?lat=" LATITUDE "&lon=" LONGITUDE,
+    std::vector<const char *> paths{
+        "/weatherapi/locationforecast/2.0/complete",
+        "/weatherapi/nowcast/2.0/complete",
     };
 
     // https://github.com/metno/weathericons/tree/main/weather

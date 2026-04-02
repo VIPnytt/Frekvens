@@ -18,8 +18,13 @@ void ConnectivityService::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
-    const std::span<const uint8_t> bundle = certificates();
-    esp_crt_bundle_set(bundle.data(), bundle.size());
+#ifdef BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
+    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
+    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
+    esp_crt_bundle_set(&x509_crt_bundle_start[0], &x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]);
+#endif // BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
     WiFiClass::setHostname(HOSTNAME);
     WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIPv6();
@@ -337,16 +342,6 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
         ESP_LOGD(name, "scanning for Wi-Fi networks...");
         WiFi.scanNetworks(true);
     }
-}
-
-std::span<const uint8_t> ConnectivityService::certificates() noexcept
-{
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
-    extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler,modernize-avoid-c-arrays)
-    extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
-    return std::span<const uint8_t>(&x509_crt_bundle_start[0],
-                                    static_cast<size_t>(&x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]));
 }
 
 ConnectivityService &ConnectivityService::getInstance()

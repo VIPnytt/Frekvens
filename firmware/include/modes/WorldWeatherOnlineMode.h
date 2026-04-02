@@ -16,14 +16,12 @@ private:
     unsigned long lastMillis = 0;
 
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
-    std::vector<const char *> urls{
+    std::vector<const char *> queries{
 #ifdef LOCATION
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LOCATION
-        "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
+        "q=" LOCATION "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
 #endif
 #if defined(LATITUDE) && defined(LONGITUDE)
-        "https://api.worldweatheronline.com/premium/v1/weather.ashx?q=" LATITUDE "," LONGITUDE
-        "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
+        "q=" LATITUDE "," LONGITUDE "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
 #endif
     };
 
