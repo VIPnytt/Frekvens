@@ -49,22 +49,22 @@ void WttrInMode::update()
         }
         JsonDocument filter; // NOLINT(misc-const-correctness)
 #if TEMPERATURE_FAHRENHEIT
-        filter["current_condition"][0]["temp_F"].set(true);
+        filter["data"]["current_condition"][0]["temp_F"].set(true);
 #else
-        filter["current_condition"][0]["temp_C"].set(true);
+        filter["data"]["current_condition"][0]["temp_C"].set(true);
 #endif // TEMPERATURE_FAHRENHEIT
-        filter["current_condition"][0]["weatherCode"].set(true);
+        filter["data"]["current_condition"][0]["weatherCode"].set(true);
         JsonDocument doc; // NOLINT(misc-const-correctness)
         if (deserializeJson(doc, stream, DeserializationOption::Filter(filter)) != DeserializationError::Code::Ok ||
 #if TEMPERATURE_FAHRENHEIT
-            !(doc["current_condition"][0]["temp_F"].is<float>() ||
-              doc["current_condition"][0]["temp_F"].is<std::string>()) ||
+            !(doc["data"]["current_condition"][0]["temp_F"].is<float>() ||
+              doc["data"]["current_condition"][0]["temp_F"].is<std::string>()) ||
 #else
-            !(doc["current_condition"][0]["temp_C"].is<float>() ||
-              doc["current_condition"][0]["temp_C"].is<std::string>()) ||
+            !(doc["data"]["current_condition"][0]["temp_C"].is<float>() ||
+              doc["data"]["current_condition"][0]["temp_C"].is<std::string>()) ||
 #endif // TEMPERATURE_FAHRENHEIT
-            !(doc["current_condition"][0]["weatherCode"].is<uint16_t>() ||
-              doc["current_condition"][0]["weatherCode"].is<std::string>()))
+            !(doc["data"]["current_condition"][0]["weatherCode"].is<uint16_t>() ||
+              doc["data"]["current_condition"][0]["weatherCode"].is<std::string>()))
         {
             urls.pop_back();
             lastMillis = millis() - interval + (1UL << 14U);
@@ -73,11 +73,11 @@ void WttrInMode::update()
         }
         WeatherHandler weather;
 #if TEMPERATURE_FAHRENHEIT
-        weather.temperature = round(doc["current_condition"][0]["temp_F"].as<float>());
+        weather.temperature = round(doc["data"]["current_condition"][0]["temp_F"].as<float>());
 #else
-        weather.temperature = round(doc["current_condition"][0]["temp_C"].as<float>());
+        weather.temperature = round(doc["data"]["current_condition"][0]["temp_C"].as<float>());
 #endif // TEMPERATURE_FAHRENHEIT
-        weather.parse(doc["current_condition"][0]["weatherCode"].as<uint16_t>(), codesets);
+        weather.parse(doc["data"]["current_condition"][0]["weatherCode"].as<uint16_t>(), codesets);
         weather.draw();
     }
     else if (code >= 400 && code < 500)
