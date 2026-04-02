@@ -22,7 +22,7 @@ void HomeAssistantWeatherMode::update()
     lastMillis = millis();
     if (paths.empty())
     {
-        ESP_LOGE(name, "unable to fetch weather");
+        ESP_LOGE(name, "unable to fetch weather"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     esp_http_client_config_t config = {
@@ -68,7 +68,7 @@ void HomeAssistantWeatherMode::update()
         {
             paths.pop_back();
             lastMillis = millis() - interval + (1UL << 13U);
-            ESP_LOGV(name, "http status %d", status);
+            ESP_LOGV(name, "http status %d", status); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
         return;
     }
@@ -99,7 +99,7 @@ void HomeAssistantWeatherMode::update()
     {
         paths.pop_back();
         lastMillis = millis() - interval + (1UL << 16U);
-        ESP_LOGD(name, "unprocessable data");
+        ESP_LOGD(name, "unprocessable data"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     WeatherHandler weather;
