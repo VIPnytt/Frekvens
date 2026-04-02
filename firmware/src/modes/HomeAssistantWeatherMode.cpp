@@ -2,9 +2,9 @@
 
 #include "modes/HomeAssistantWeatherMode.h"
 
-#include "services/ConnectivityService.h"
+#include "services/ConnectivityService.h" // NOLINT(misc-include-cleaner)
 
-#include <esp_crt_bundle.h>
+#include <esp_crt_bundle.h> // NOLINT(misc-include-cleaner)
 #include <esp_http_client.h>
 
 void HomeAssistantWeatherMode::begin() { lastMillis = millis() - interval; }
@@ -54,38 +54,29 @@ void HomeAssistantWeatherMode::update()
     }
     esp_http_client_set_header(client, "Accept", "application/json");
     esp_http_client_set_header(client, "Authorization", "Bearer " HOMEASSISTANT_KEY);
-    if (esp_http_client_open(client, 0) != ESP_OK)
+    if (esp_http_client_open(client, 0) != ESP_OK || esp_http_client_fetch_headers(client) < 0)
     {
         esp_http_client_cleanup(client);
         lastMillis = millis() - interval + (1UL << 14U);
         return;
     }
-    const int headerLength = esp_http_client_fetch_headers(client);
-    if (headerLength < 0)
-    {
-        esp_http_client_close(client);
-        esp_http_client_cleanup(client);
-        lastMillis = millis() - interval + (1UL << 13U);
-        return;
-    }
     const int status = esp_http_client_get_status_code(client);
     if (status != 200)
     {
-        esp_http_client_close(client);
         esp_http_client_cleanup(client);
         if (status >= 400 && status < 500)
         {
             paths.pop_back();
-            lastMillis = millis() - interval + (1UL << 12U);
+            lastMillis = millis() - interval + (1UL << 13U);
             ESP_LOGV(name, "http status %d", status);
         }
         return;
     }
-    const int64_t contentLength = esp_http_client_get_content_length(client);
     std::vector<char> body;
-    if (contentLength > 0)
+    const int64_t len = esp_http_client_get_content_length(client);
+    if (len > 0)
     {
-        body.reserve(static_cast<size_t>(contentLength) + 1U);
+        body.reserve(static_cast<size_t>(len) + 1U);
     }
     std::array<char, 1 << 9> buffer{};
     while (true)
@@ -97,7 +88,6 @@ void HomeAssistantWeatherMode::update()
         }
         body.insert(body.end(), buffer.data(), buffer.data() + read);
     }
-    esp_http_client_close(client);
     esp_http_client_cleanup(client);
     body.push_back('\0');
     JsonDocument filter; // NOLINT(misc-const-correctness)
