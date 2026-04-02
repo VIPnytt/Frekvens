@@ -45,7 +45,6 @@ class Frekvens:
         self.tools = Tools(self)
         if COMMAND_LINE_TARGETS not in [
             ["buildfs"],
-            ["compiledb"],
             ["uploadfs"],
             ["uploadfsota"],
         ]:
