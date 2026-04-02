@@ -4,24 +4,14 @@
 
 #include "services/ConnectivityService.h"
 
-#include <HTTPClient.h>
-#include <NetworkClientSecure.h>
+#include <esp_crt_bundle.h>
+#include <esp_http_client.h>
 
-void OpenWeatherMode::begin()
-{
-    if (urls.empty())
-    {
-        ESP_LOGW(name, "unable to fetch weather");
-    }
-    else
-    {
-        lastMillis = millis() - interval;
-    }
-}
+void OpenWeatherMode::begin() { lastMillis = millis() - interval; }
 
 void OpenWeatherMode::handle()
 {
-    if (urls.size() && WiFi.isConnected() && millis() - lastMillis >= interval)
+    if (WiFi.isConnected() && millis() - lastMillis >= interval)
     {
         update();
     }
@@ -30,67 +20,103 @@ void OpenWeatherMode::handle()
 void OpenWeatherMode::update()
 {
     lastMillis = millis();
-    NetworkClientSecure client; // NOLINT(misc-const-correctness)
-    const std::span<const uint8_t> bundle = ConnectivityService::certificates();
-    client.setCACertBundle(bundle.data(), bundle.size());
-    HTTPClient http;
-    http.begin(client, urls.back());
-    http.addHeader("Accept", "application/json");
-    http.setUserAgent(Connectivity.userAgent.data());
-    const int code = http.GET();
-    if (code == t_http_codes::HTTP_CODE_OK)
+    if (parts.empty())
     {
-        NetworkClient &stream = http.getStream();
-        const int contentLength = http.getSize();
-        const unsigned long _lastMillis = millis();
-        while (stream.available() < contentLength && millis() - _lastMillis < (1UL << 13U))
-        {
-            vTaskDelay(1);
-        }
-        JsonDocument filter; // NOLINT(misc-const-correctness)
-        filter["current"]["temp"].set(true);
-        filter["current"]["weather"]["id"].set(true);
-        filter["main"]["temp"].set(true);
-        filter["weather"][0]["id"].set(true);
-        JsonDocument doc; // NOLINT(misc-const-correctness)
-        const bool deserialized =
-            deserializeJson(doc, stream, DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok;
-        if (deserialized && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
-        {
-            // API 3.0
-            WeatherHandler weather = WeatherHandler();
-            weather.temperature = round(doc["current"]["temp"].as<float>());
-            weather.parse(doc["current"]["weather"]["id"].as<uint16_t>(), codesets);
-            weather.draw();
-        }
-        else if (deserialized && doc["main"]["temp"].is<float>() && doc["weather"][0]["id"].is<uint16_t>())
-        {
-            // API 2.5
-            WeatherHandler weather = WeatherHandler();
-            weather.temperature = round(doc["main"]["temp"].as<float>());
-            weather.parse(doc["weather"][0]["id"].as<uint16_t>(), codesets);
-            weather.draw();
-        }
-        else
-        {
-            urls.pop_back();
-            lastMillis = millis() - interval + (1UL << 14U);
-            ESP_LOGD(name, "unprocessable data");
-        }
+        ESP_LOGE(name, "unable to fetch weather");
+        return;
     }
-    else if (code >= 400 && code < 500)
-    {
-        urls.pop_back();
-        lastMillis = millis() - interval + (1UL << 12U);
-        if (urls.empty())
-        {
-            ESP_LOGE(name, "unable to fetch weather");
-        }
-    }
-    else if (code < 0)
+    esp_http_client_config_t config = {
+        .host = "api.openweathermap.org",
+        .port = 443,
+        .path = parts.back().first,
+        .query = parts.back().second,
+        .user_agent = Connectivity.userAgent.data(),
+        .method = esp_http_client_method_t::HTTP_METHOD_GET,
+        .transport_type = esp_http_client_transport_t::HTTP_TRANSPORT_OVER_SSL,
+        .crt_bundle_attach = esp_crt_bundle_attach,
+    };
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+    if (client == nullptr)
     {
         lastMillis = millis() - interval + (1UL << 15U);
+        return;
     }
+    esp_http_client_set_header(client, "Accept", "application/json");
+    if (esp_http_client_open(client, 0) != ESP_OK)
+    {
+        esp_http_client_cleanup(client);
+        lastMillis = millis() - interval + (1UL << 14U);
+        return;
+    }
+    const int headerLength = esp_http_client_fetch_headers(client);
+    if (headerLength < 0)
+    {
+        esp_http_client_close(client);
+        esp_http_client_cleanup(client);
+        lastMillis = millis() - interval + (1UL << 13U);
+        return;
+    }
+    const int status = esp_http_client_get_status_code(client);
+    if (status != 200)
+    {
+        esp_http_client_close(client);
+        esp_http_client_cleanup(client);
+        if (status >= 400 && status < 500)
+        {
+            parts.pop_back();
+            lastMillis = millis() - interval + (1UL << 12U);
+            ESP_LOGV(name, "http status %d", status);
+        }
+        return;
+    }
+    const int64_t contentLength = esp_http_client_get_content_length(client);
+    std::vector<char> body;
+    if (contentLength > 0)
+    {
+        body.reserve(static_cast<size_t>(contentLength) + 1U);
+    }
+    std::array<char, 1 << 9> buffer{};
+    while (true)
+    {
+        const int read = esp_http_client_read(client, buffer.data(), static_cast<int>(buffer.size()));
+        if (read <= 0)
+        {
+            break;
+        }
+        body.insert(body.end(), buffer.data(), buffer.data() + read);
+    }
+    esp_http_client_close(client);
+    esp_http_client_cleanup(client);
+    body.push_back('\0');
+    JsonDocument filter; // NOLINT(misc-const-correctness)
+    filter["current"]["temp"].set(true);
+    filter["current"]["weather"]["id"].set(true);
+    filter["main"]["temp"].set(true);
+    filter["weather"][0]["id"].set(true);
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    const bool deserialized =
+        deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok;
+    if (deserialized && doc["main"]["temp"].is<float>() && doc["weather"][0]["id"].is<uint16_t>())
+    {
+        // API 2.5
+        WeatherHandler weather;
+        weather.temperature = round(doc["main"]["temp"].as<float>());
+        weather.parse(doc["weather"][0]["id"].as<uint16_t>(), codesets);
+        weather.draw();
+        return;
+    }
+    else if (deserialized && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
+    {
+        // API 3.0
+        WeatherHandler weather;
+        weather.temperature = round(doc["current"]["temp"].as<float>());
+        weather.parse(doc["current"]["weather"]["id"].as<uint16_t>(), codesets);
+        weather.draw();
+        return;
+    }
+    parts.pop_back();
+    lastMillis = millis() - interval + (1UL << 16U);
+    ESP_LOGD(name, "unprocessable data");
 }
 
 #endif // MODE_OPENWEATHER

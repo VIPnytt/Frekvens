@@ -13,41 +13,14 @@ class HomeAssistantWeatherMode final : public ModeModule
 private:
     static constexpr uint16_t interval = UINT16_MAX;
 
-#ifdef HOMEASSISTANT_PROTOCOL
-    static constexpr std::string_view protocol = HOMEASSISTANT_PROTOCOL;
-#else
-    static constexpr std::string_view protocol = "http:";
-#endif
-#ifdef HOMEASSISTANT_HOST
-    static constexpr std::string_view host = HOMEASSISTANT_HOST;
-#else
-    static constexpr std::string_view host = "homeassistant.local";
-#endif
-#ifdef HOMEASSISTANT_PORT
-    static constexpr uint16_t port = HOMEASSISTANT_PORT;
-#else
-    static constexpr uint16_t port = 8123;
-#endif
-
     unsigned long lastMillis = 0;
 
     // https://developers.home-assistant.io/docs/api/rest
-    std::vector<std::string> urls{
-        std::string(protocol)
-            .append("//")
-            .append(host)
-            .append(":")
-            .append(std::to_string(port))
-            .append("/api/states/weather.forecast_home"),
+    std::vector<const char *> paths{
+        "/api/states/weather.forecast_home",
 #ifdef HOMEASSISTANT_ENTITY
-        std::string(protocol)
-            .append("//")
-            .append(host)
-            .append(":")
-            .append(std::to_string(port))
-            .append("/api/states/" HOMEASSISTANT_ENTITY),
+        "/api/states/" HOMEASSISTANT_ENTITY,
 #endif
-
     };
 
     // https://www.home-assistant.io/integrations/weather/#condition-mapping

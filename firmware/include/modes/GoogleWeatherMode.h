@@ -16,15 +16,12 @@ private:
     unsigned long lastMillis = 0;
 
     // https://developers.google.com/maps/documentation/weather
-    std::vector<const char *> urls{
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
-        "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
+    std::vector<const char *> queries{
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
 #if TEMPERATURE_CELSIUS
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
-        "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
 #elif TEMPERATURE_FAHRENHEIT
-        "https://weather.googleapis.com/v1/currentConditions:lookup?location.latitude=" LATITUDE
-        "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
 #endif // TEMPERATURE_CELSIUS
     };
 

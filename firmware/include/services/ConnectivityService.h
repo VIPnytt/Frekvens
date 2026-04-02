@@ -44,8 +44,6 @@ public:
     void handle();
     void onReceive(JsonObjectConst payload, const char *source) override;
 
-    [[nodiscard]] static std::span<const uint8_t> certificates() noexcept;
-
     static ConnectivityService &getInstance();
 };
 

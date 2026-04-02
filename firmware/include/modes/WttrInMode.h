@@ -17,13 +17,13 @@ private:
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
-    std::vector<const char *> urls{
-        "https://wttr.in/?format=j2",
+    std::vector<const char *> paths{
+        "/",
 #ifdef LOCATION
-        "https://wttr.in/" LOCATION "?format=j2",
+        "/" LOCATION,
 #endif
 #if defined(LATITUDE) && defined(LONGITUDE)
-        "https://wttr.in/" LATITUDE "," LONGITUDE "?format=j2",
+        "/" LATITUDE "," LONGITUDE,
 #endif
     };
 
