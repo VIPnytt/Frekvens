@@ -19,7 +19,7 @@ Documentation = "https://github.com/VIPnytt/Frekvens/wiki"
 font = [
     "fonttools==4.62.1",
     "matplotlib==3.10.8",
-    "pillow==12.1.1",
+    "pillow==12.2.0",
 ]
 
 [build-system]
