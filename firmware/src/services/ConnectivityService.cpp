@@ -19,11 +19,11 @@ void ConnectivityService::configure()
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif // PIN_SW2
 #ifdef BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-no-assembler)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler)
     extern const uint8_t x509_crt_bundle_start[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_start");
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-no-assembler)
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,hicpp-no-assembler)
     extern const uint8_t x509_crt_bundle_end[] asm("_binary_" BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE "_end");
-    esp_crt_bundle_set(x509_crt_bundle_start, x509_crt_bundle_end - x509_crt_bundle_start);
+    esp_crt_bundle_set(&x509_crt_bundle_start[0], &x509_crt_bundle_end[0] - &x509_crt_bundle_start[0]);
 #endif // BOARD_BUILD__EMBED_FILES__X509_CRT_BUNDLE
     WiFiClass::setHostname(HOSTNAME);
     WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);

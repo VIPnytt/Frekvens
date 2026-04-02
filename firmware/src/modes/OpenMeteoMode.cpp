@@ -22,7 +22,7 @@ void OpenMeteoMode::update()
     lastMillis = millis();
     if (parts.empty())
     {
-        ESP_LOGE(name, "unable to fetch weather"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGE(name, "unable to fetch weather"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     esp_http_client_config_t config = {
@@ -56,7 +56,7 @@ void OpenMeteoMode::update()
         {
             parts.pop_back();
             lastMillis = millis() - interval + (1UL << 13U);
-            ESP_LOGV(name, "http status %d", status); // NOLINT(cppcoreguidelines-pro-type-vararg)
+            ESP_LOGV(name, "http status %d", status); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
         return;
     }
@@ -87,7 +87,7 @@ void OpenMeteoMode::update()
     {
         parts.pop_back();
         lastMillis = millis() - interval + (1UL << 16U);
-        ESP_LOGD(name, "unprocessable data"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGD(name, "unprocessable data"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     WeatherHandler weather;
