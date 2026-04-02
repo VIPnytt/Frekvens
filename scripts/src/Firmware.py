@@ -65,6 +65,10 @@ class Firmware:
                     embed_files = [embed_files]
                 _prefix = option.replace(".", "__").upper()
                 for embed_file in embed_files:
+                    path = pathlib.Path(embed_file)
+                    size = path.stat().st_size
+                    if size == 0 or (size == 1 and path.read_bytes() == b"\x00"):
+                        continue
                     _key = (
                         _prefix
                         + "__"
@@ -74,7 +78,7 @@ class Firmware:
                             re.sub(
                                 r"[^A-Za-z0-9]",
                                 "_",
-                                pathlib.Path(embed_file).stem.upper(),
+                                path.stem.upper(),
                             ),
                         ).strip("_")
                     )

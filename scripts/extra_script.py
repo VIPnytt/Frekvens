@@ -1,51 +1,48 @@
-# PlatformIO pre-build extra script
-
 import pathlib
 import re
-import SCons.Script
 import subprocess
 import sys
 import typing
 
+if typing.TYPE_CHECKING:
+    from .src.components.Types import COMMAND_LINE_TARGETS, Environment, Import  # noqa: E402
+else:
+    from SCons.Script import COMMAND_LINE_TARGETS, Environment, Import  # noqa: E402
 
-if SCons.Script.COMMAND_LINE_TARGETS not in [
-    ["erase"],
-    ["menuconfig"],
-    ["size"],
-]:
-    if typing.TYPE_CHECKING:
 
-        def Import(*vars) -> None:
-            pass
+def main() -> None:
+    if COMMAND_LINE_TARGETS in [
+        ["erase"],
+        ["menuconfig"],
+        ["size"],
+    ]:
+        return
 
-    Import("env")
-
-    if typing.TYPE_CHECKING:
-
-        class Environment(SCons.Script.Environment):
-            def IsCleanTarget(self) -> bool:
-                pass
-
-        env = Environment()
-
-    if not env.IsCleanTarget():
-        uv = subprocess.run(
-            [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
+    uv = subprocess.run(
+        [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
+        stderr=subprocess.DEVNULL,
+    )
+    if uv.returncode:
+        match = re.search(r'"(uv==\d+\.\d+\.\d+)"', pathlib.Path("pyproject.toml").read_text())
+        pip = subprocess.run(
+            [sys.executable, "-m", "pip", "install", match.group(1) if match else "uv"],
             stderr=subprocess.DEVNULL,
         )
-        if uv.returncode:
-            match = re.search(r'"(uv==\d+\.\d+\.\d+)"', pathlib.Path("pyproject.toml").read_text())
-            pip = subprocess.run(
-                [sys.executable, "-m", "pip", "install", match.group(1) if match else "uv"],
-                stderr=subprocess.DEVNULL,
-            )
-            if pip.returncode:
-                subprocess.run([sys.executable, "-m", "ensurepip"], check=True)
-                subprocess.run(pip.args, check=True)
-            subprocess.run(uv.args, check=True)
+        if pip.returncode:
+            subprocess.run([sys.executable, "-m", "ensurepip"], check=True)
+            subprocess.run(pip.args, check=True)
+        subprocess.run(uv.args, check=True)
 
-    sys.path.append(env["PROJECT_DIR"])
+    Import("env")
+    env: Environment = typing.cast(Environment, globals()["env"])
+    from src.Frekvens import Frekvens  # noqa: E402
 
-    from scripts.src.Frekvens import Frekvens  # noqa: E402
+    if env.IsCleanTarget():
+        Frekvens.clean()
+        return
 
-    Frekvens.clean() if env.IsCleanTarget() else Frekvens(env).run()
+    Frekvens(env).run()
+
+
+if __name__ == "SCons.Script":
+    main()
