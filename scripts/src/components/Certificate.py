@@ -32,9 +32,6 @@ if typing.TYPE_CHECKING:
 
 
 class Certificate:
-    PEM_CERT_BEGIN = "-----BEGIN CERTIFICATE-----"
-    PEM_CERT_END = "-----END CERTIFICATE-----"
-    PEM_PKCS7_BEGIN = "-----BEGIN PKCS7-----"
     PROVIDERS: dict[str, list[str]] = {
         GoogleWeather.ENV_OPTION: GoogleWeather.HOST_WHITELIST,
         OpenMeteo.ENV_OPTION: OpenMeteo.HOST_WHITELIST,
@@ -44,49 +41,60 @@ class Certificate:
         Yr.ENV_OPTION: Yr.HOST_WHITELIST,
     }
     certificates: list[cryptography.x509.Certificate]
+    bundle_path = pathlib.Path("firmware") / "certs" / "bundle"
+    embed_path = pathlib.Path("firmware") / "embed"
     fingerprints: set[bytes]
-    path = pathlib.Path("firmware") / "certs" / "bundle"
     project: "Frekvens"
+    x509_filename = "x509_crt_bundle.bin"
 
     def __init__(self, project: "Frekvens") -> None:
         self.certificates = []
         self.fingerprints: set[bytes] = set()
         self.project = project
-        self.path.mkdir(parents=True, exist_ok=True)
+        self.bundle_path.mkdir(parents=True, exist_ok=True)
 
     def configure(self) -> None:
+        if embed_files := self.project.env.GetProjectOption("board_build.embed_files", None):
+            if not isinstance(embed_files, list):
+                embed_files = [embed_files]
+            if not any(pathlib.Path(path) == self.embed_path / self.x509_filename for path in embed_files):
+                return
         self.certificates = []
         self.fingerprints = set()
+        max_attempts = 3
         for option, hosts in self.PROVIDERS.items():
             if self.project.dotenv.get(option) != "true":
                 continue
             for host in hosts:
-                for attempt in range(1, 4):
+                for attempt in range(1, max_attempts + 1):
                     try:
                         self._add_host(host)
                         break
                     except (ConnectionError, ssl.SSLError, TimeoutError) as e:
-                        if attempt >= 3:
-                            raise
-                        if isinstance(e, ssl.SSLCertVerificationError):
-                            logging.warning("%s (attempt #%d): %s", host, attempt, e.verify_message)
-                        else:
-                            logging.warning("%s (attempt #%d): %s", host, attempt, e)
-        with open(self.path / "ca_roots.pem", "w", encoding="utf-8") as f:
+                        logging.warning(
+                            "%s (attempt #%d): %s",
+                            host,
+                            attempt,
+                            e.verify_message if isinstance(e, ssl.SSLCertVerificationError) else e,
+                        )
+                        if attempt == max_attempts:
+                            raise RuntimeError(
+                                f"Failed to retrieve certificate for {host} after {max_attempts} attempts, consider setting {option}='false'.",
+                            ) from e
+        with open(self.bundle_path / "ca_roots.pem", "w", encoding="utf-8") as f:
             f.write(self._get_pem())
 
     def finalize(self) -> None:
         self.certificates = []
         self.fingerprints = set()
-        for bundle in self.path.iterdir():
+        for bundle in self.bundle_path.iterdir():
             if bundle.suffix == ".der":
                 self._append_certificate(cryptography.x509.load_der_x509_certificate(bundle.read_bytes()))
             elif bundle.suffix == ".pem":
                 self._add_pem(bundle)
-        embed = pathlib.Path("firmware") / "embed"
-        embed.mkdir(parents=True, exist_ok=True)
         raw = self._get_bin()
-        with open(embed / "x509_crt_bundle.bin", "wb") as f:
+        self.embed_path.mkdir(parents=True, exist_ok=True)
+        with open(self.embed_path / self.x509_filename, "wb") as f:
             f.write(raw if raw else b"\x00")
 
     def _add_host(self, hostname: str, port: int = 443) -> None:
@@ -115,10 +123,10 @@ class Certificate:
         lines: list[str] = []
         inside = False
         for line in path.read_text().splitlines():
-            if line == self.PEM_CERT_BEGIN:
+            if line == "-----BEGIN CERTIFICATE-----":
                 lines = [line]
                 inside = True
-            elif line == self.PEM_CERT_END and inside:
+            elif line == "-----END CERTIFICATE-----" and inside:
                 lines.append(line)
                 certificate = cryptography.x509.load_pem_x509_certificate("\n".join(lines).encode())
                 self._append_certificate(certificate)
@@ -220,10 +228,10 @@ class Certificate:
 
     def _parse_certificates(self, hostname: str, location: str, data: bytes) -> list[cryptography.x509.Certificate]:
         candidates: list[cryptography.x509.Certificate] = []
-        if self.PEM_CERT_BEGIN.encode() in data:
+        if "-----BEGIN CERTIFICATE-----".encode() in data:
             candidates.append(cryptography.x509.load_pem_x509_certificate(data))
             return candidates
-        if self.PEM_PKCS7_BEGIN.encode() in data:
+        if "-----BEGIN PKCS7-----".encode() in data:
             logging.info("%s: Parsing PKCS#7 (PEM) from %s", hostname, location)
             return cryptography.hazmat.primitives.serialization.pkcs7.load_pem_pkcs7_certificates(data)
         try:

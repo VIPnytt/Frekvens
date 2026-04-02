@@ -6,5 +6,5 @@ Installation of dependencies:
 
 ```sh
 pip install uv
-uv sync --inexact --only-group scripts --only-group scons
+uv sync --inexact --only-group scripts
 ```
