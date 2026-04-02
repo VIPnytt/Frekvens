@@ -10,7 +10,14 @@ else:
     from SCons.Script import COMMAND_LINE_TARGETS, Environment, Import  # noqa: E402
 
 
-def _deps() -> None:
+def main() -> None:
+    if COMMAND_LINE_TARGETS in [
+        ["erase"],
+        ["menuconfig"],
+        ["size"],
+    ]:
+        return
+
     uv = subprocess.run(
         [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
         stderr=subprocess.DEVNULL,
@@ -26,15 +33,6 @@ def _deps() -> None:
             subprocess.run(pip.args, check=True)
         subprocess.run(uv.args, check=True)
 
-
-def main() -> None:
-    if COMMAND_LINE_TARGETS in [
-        ["erase"],
-        ["menuconfig"],
-        ["size"],
-    ]:
-        return
-
     Import("env")
     env: Environment = typing.cast(Environment, globals()["env"])
     from src.Frekvens import Frekvens  # noqa: E402
@@ -43,7 +41,6 @@ def main() -> None:
         Frekvens.clean()
         return
 
-    _deps()
     Frekvens(env).run()
 
 
