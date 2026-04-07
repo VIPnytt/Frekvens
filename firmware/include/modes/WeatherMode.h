@@ -2,14 +2,14 @@
 
 #if MODE_WEATHER
 
-#include "config/constants.h"                         // NOLINT(misc-include-cleaner)
-#include "middlewares/GoogleWeatherMiddleware.h"             // NOLINT(misc-include-cleaner)
-#include "middlewares/HomeAssistantWeatherMiddleware.h"      // NOLINT(misc-include-cleaner)
-#include "middlewares/OpenMeteoMiddleware.h"          // NOLINT(misc-include-cleaner)
-#include "middlewares/OpenWeatherMiddleware.h"        // NOLINT(misc-include-cleaner)
-#include "middlewares/WorldWeatherOnlineMiddleware.h" // NOLINT(misc-include-cleaner)
-#include "middlewares/WttrInMiddleware.h"             // NOLINT(misc-include-cleaner)
-#include "middlewares/YrMiddleware.h"                 // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                           // NOLINT(misc-include-cleaner)
+#include "middlewares/GoogleWeatherMiddleware.h"        // NOLINT(misc-include-cleaner)
+#include "middlewares/HomeAssistantWeatherMiddleware.h" // NOLINT(misc-include-cleaner)
+#include "middlewares/OpenMeteoMiddleware.h"            // NOLINT(misc-include-cleaner)
+#include "middlewares/OpenWeatherMiddleware.h"          // NOLINT(misc-include-cleaner)
+#include "middlewares/WorldWeatherOnlineMiddleware.h"   // NOLINT(misc-include-cleaner)
+#include "middlewares/WttrInMiddleware.h"               // NOLINT(misc-include-cleaner)
+#include "middlewares/YrMiddleware.h"                   // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <array>
