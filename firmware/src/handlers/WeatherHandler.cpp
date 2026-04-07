@@ -2,6 +2,7 @@
 
 #include "config/constants.h"             // NOLINT(misc-include-cleaner)
 #include "services/ConnectivityService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"      // NOLINT(misc-include-cleaner)
 
 #include <esp_crt_bundle.h>  // NOLINT(misc-include-cleaner)
 #include <esp_http_client.h> // NOLINT(misc-include-cleaner)

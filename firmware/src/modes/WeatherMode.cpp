@@ -10,7 +10,7 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
-#include <WiFi.h>
+#include <WiFi.h> // NOLINT(misc-include-cleaner)
 
 void WeatherMode::configure()
 {
@@ -70,6 +70,7 @@ void WeatherMode::handle()
             BitmapHandler bitmap(provider->getSign(condition.value()));
             TextHandler text(std::to_string(temperature.value()) + "°", FontMini);
             const uint8_t textHeight = text.getHeight();
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             const uint8_t marginsY = std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
             Display.clearFrame();
             bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
