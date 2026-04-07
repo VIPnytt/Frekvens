@@ -4,7 +4,6 @@ import pathlib
 import shutil
 import typing
 
-from .components.Certificate import Certificate
 from .components.Dependency import Dependency
 from .components.Deprecated import Deprecated
 from .components.Partition import Partition
@@ -23,7 +22,6 @@ else:
 
 
 class Frekvens:
-    certificate: Certificate | None = None
     dependency: Dependency | None = None
     deprecated: Deprecated
     dotenv: dict[str, str]
@@ -43,12 +41,6 @@ class Frekvens:
         self.ota = Ota(self)
         self.partition = Partition(self)
         self.tools = Tools(self)
-        if COMMAND_LINE_TARGETS not in [
-            ["buildfs"],
-            ["uploadfs"],
-            ["uploadfsota"],
-        ]:
-            self.certificate = Certificate(self)
         if COMMAND_LINE_TARGETS not in [
             ["buildfs"],
             ["compiledb"],
@@ -91,8 +83,6 @@ class Frekvens:
         self.partition.initialize()
 
     def configure(self) -> None:
-        if self.certificate:
-            self.certificate.configure()
         if self.ota:
             self.ota.configure()
         if self.timezone:
@@ -105,8 +95,6 @@ class Frekvens:
             self.webapp.validate()
 
     def finalize(self) -> None:
-        if self.certificate:
-            self.certificate.finalize()
         if self.firmware:
             self.firmware.finalize()
         if self.ota:
@@ -116,8 +104,8 @@ class Frekvens:
 
     @staticmethod
     def clean() -> None:
+        Deprecated.clean()
         Extra.clean()
-        Firmware.clean()
         WebApp.clean()
         Tools.clean()
         for path in [

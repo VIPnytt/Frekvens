@@ -1,8 +1,6 @@
 import decimal
 import numbers
-import os
 import pathlib
-import re
 import typing
 
 if typing.TYPE_CHECKING:
@@ -56,44 +54,3 @@ class Firmware:
                         (option.replace(".", "__").upper(), _value),
                     ]
                 )
-        for option in [
-            "board_build.embed_files",
-            "board_build.embed_txtfiles",
-        ]:
-            if embed_files := self.project.env.GetProjectOption(option, None):
-                if not isinstance(embed_files, list):
-                    embed_files = [embed_files]
-                _prefix = option.replace(".", "__").upper()
-                for embed_file in embed_files:
-                    path = pathlib.Path(embed_file)
-                    size = path.stat().st_size
-                    if size == 0 or (size == 1 and path.read_bytes() == b"\x00"):
-                        continue
-                    _key = (
-                        _prefix
-                        + "__"
-                        + re.sub(
-                            r"_+",
-                            "_",
-                            re.sub(
-                                r"[^A-Za-z0-9]",
-                                "_",
-                                path.stem.upper(),
-                            ),
-                        ).strip("_")
-                    )
-                    self.project.env.Append(
-                        CPPDEFINES=[
-                            (_key, self.project.env.StringifyMacro(re.sub(r"[^A-Za-z0-9]", "_", embed_file))),
-                        ]
-                    )
-
-    @staticmethod
-    def clean() -> None:
-        for file in [
-            "firmware/certs/bundle/ca_roots.pem",
-            "firmware/embed/x509_crt_bundle.bin",
-        ]:
-            if os.path.isfile(file):
-                os.remove(file)
-                print(f"Removing {file}")

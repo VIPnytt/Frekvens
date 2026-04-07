@@ -1,4 +1,6 @@
 import logging
+import os
+import pathlib
 import typing
 
 from ..modes.Clock import Clock
@@ -31,9 +33,42 @@ class Deprecated:
         self.project = project
 
     def initialize(self) -> None:
+        self._env()
+        self._platformio_ini()
+
+    def _env(self) -> None:
         for old_option, old_name, new_option, new_name in self.MIGRATIONS:
             if old_option in self.project.dotenv:
                 logging.warning(f"{old_option} '{old_name}' is deprecated. Use {new_option} '{new_name}' instead.")
                 if new_option not in self.project.dotenv:
                     self.project.dotenv[new_option] = self.project.dotenv[old_option]
                 del self.project.dotenv[old_option]
+
+    def _platformio_ini(self) -> None:
+        option = "board_build.embed_files"
+        path = "firmware/embed/x509_crt_bundle.bin"
+        paths = self.project.env.GetProjectOption(option, None)
+        if paths and ((isinstance(paths, list) and path in paths) or (isinstance(paths, str) and paths == path)):
+            logging.warning("'%s = %s' is deprecated and should be removed from platformio.ini.", option, path)
+            _path = pathlib.Path(path)
+            if not _path.exists():
+                _path.parent.mkdir(parents=True, exist_ok=True)
+                _path.write_bytes(b"\x00")
+
+    @staticmethod
+    def clean() -> None:
+        for file in [
+            "firmware/certs/bundle/ca_roots.pem",
+            "firmware/embed/x509_crt_bundle.bin",
+        ]:
+            if os.path.isfile(file):
+                os.remove(file)
+                print(f"Removing {file}")
+        for directory in [
+            "firmware/certs/bundle",
+            "firmware/certs",
+            "firmware/embed",
+        ]:
+            if os.path.isdir(directory):
+                os.rmdir(directory)
+                print(f"Removing {directory}")
