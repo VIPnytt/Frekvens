@@ -1,4 +1,4 @@
-#if WEATHER_YR
+#if WEATHER_WTTRIN
 
 #include "middlewares/WttrInMiddleware.h"
 
@@ -54,4 +54,4 @@ void WttrInMiddleware::update(std::optional<WeatherHandler::Conditions> &conditi
     lastMillis = millis() - interval + (1U << 13U);
 }
 
-#endif // WEATHER_YR
+#endif // WEATHER_WTTRIN

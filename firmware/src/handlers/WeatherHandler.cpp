@@ -121,7 +121,7 @@ std::span<const uint16_t> WeatherHandler::getSign(Conditions condition)
     {
         if (Display.getRatio() > 1.0F)
         {
-            return conditionClearTall
+            return conditionClearTall;
         }
         return conditionClearWide;
     }

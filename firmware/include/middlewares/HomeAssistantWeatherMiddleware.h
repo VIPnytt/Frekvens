@@ -1,6 +1,6 @@
 #pragma once
 
-#if WEATHER_HOMEASSISTANTWEATHER
+#if WEATHER_HOMEASSISTANT
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
@@ -94,4 +94,4 @@ public:
                 unsigned long &lastMillis) override;
 };
 
-#endif // WEATHER_HOMEASSISTANTWEATHER
+#endif // WEATHER_HOMEASSISTANT

@@ -1,4 +1,4 @@
-#if WEATHER_HOMEASSISTANTWEATHER
+#if WEATHER_HOMEASSISTANT
 
 #include "middlewares/HomeAssistantWeatherMiddleware.h"
 
@@ -40,4 +40,4 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
     lastMillis = millis() - interval + (1U << 13U);
 }
 
-#endif // WEATHER_HOMEASSISTANTWEATHER
+#endif // WEATHER_HOMEASSISTANT

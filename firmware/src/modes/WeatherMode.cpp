@@ -84,18 +84,18 @@ void WeatherMode::setProvider(std::string_view providerName)
 {
     if (provider == nullptr || strcmp(provider->name, providerName.data()) != 0)
     {
-#if WEATHER_GOOGLEWEATHER
+#if WEATHER_GOOGLE
         if (providerName == GoogleWeatherMiddleware::name)
         {
             provider = std::make_unique<GoogleWeatherMiddleware>();
         }
-#endif // WEATHER_GOOGLEWEATHER
-#if WEATHER_HOMEASSISTANTWEATHER
+#endif // WEATHER_GOOGLE
+#if WEATHER_HOMEASSISTANT
         if (providerName == HomeAssistantWeatherMiddleware::name)
         {
             provider = std::make_unique<HomeAssistantWeatherMiddleware>();
         }
-#endif // WEATHER_HOMEASSISTANTWEATHER
+#endif // WEATHER_HOMEASSISTANT
 #if WEATHER_OPENMETEO
         if (providerName == OpenMeteoMiddleware::name)
         {

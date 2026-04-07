@@ -1,6 +1,6 @@
 #pragma once
 
-#if WEATHER_GOOGLEWEATHER
+#if WEATHER_GOOGLE
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
@@ -101,4 +101,4 @@ public:
                 unsigned long &lastMillis) override;
 };
 
-#endif // WEATHER_GOOGLEWEATHER
+#endif // WEATHER_GOOGLE

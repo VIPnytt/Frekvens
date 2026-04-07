@@ -1,4 +1,4 @@
-#if WEATHER_GOOGLEWEATHER
+#if WEATHER_GOOGLE
 
 #include "middlewares/GoogleWeatherMiddleware.h"
 
@@ -40,4 +40,4 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &
     lastMillis = millis() - interval + (1U << 13U);
 }
 
-#endif // WEATHER_GOOGLEWEATHER
+#endif // WEATHER_GOOGLE

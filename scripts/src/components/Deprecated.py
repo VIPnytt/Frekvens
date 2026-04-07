@@ -48,7 +48,9 @@ class Deprecated:
         for old_option, old_name, new_option, new_name in self.MIGRATIONS:
             if old_option in self.project.dotenv:
                 if new_option == Weather.ENV_OPTION:
-                    weather_option = old_option.replace("MODE_", "WEATHER_", 1)
+                    weather_option = f"WEATHER_{old_option.removeprefix('MODE_')}"
+                    if old_name != "Open Weather":
+                        weather_option = weather_option.removesuffix("WEATHER")
                     logging.warning(
                         "%s '%s' is deprecated. Use %s '%s' and %s '%s' instead.",
                         old_option,

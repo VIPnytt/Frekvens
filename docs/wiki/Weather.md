@@ -20,7 +20,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_WEATHER='true'
-WEATHER_GOOGLEWEATHER='true'
+WEATHER_GOOGLE='true'
 ```
 
 > [!NOTE]
