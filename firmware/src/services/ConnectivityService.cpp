@@ -6,7 +6,6 @@
 #include <ESPmDNS.h>
 #include <Preferences.h>
 #include <array>
-#include <esp_crt_bundle.h>
 #include <esp_sntp.h>
 #include <esp_wifi.h>
 
