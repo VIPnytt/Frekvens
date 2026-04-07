@@ -42,6 +42,7 @@ class WebApp:
         options = [
             "HOSTNAME",
             "NAME",
+            "TEMPERATURE_UNIT",
         ]
         prefixes = (
             "EXTENSION_",

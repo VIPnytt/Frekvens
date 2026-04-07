@@ -346,7 +346,6 @@ jobs:
           MODE_LINES='true'
           MODE_METABALLS='true'
           MODE_NOISE='true'
-          MODE_OPENMETEO='true'
           MODE_PINGPONG='true'
           MODE_PIXELSEQUENCE='true'
           MODE_RAIN='true'
@@ -358,9 +357,11 @@ jobs:
           MODE_STREAM='true'
           MODE_TICKER='true'
           MODE_WAVEFORM='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
+          MODE_WEATHER='true'
           NAME='Obegränsad'
+          WEATHER_OPENMETEO='true'
+          WEATHER_WTTRIN='true'
+          WEATHER_YR='true'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -484,16 +485,12 @@ jobs:
           MODE_FLIES='true'
           MODE_GAMEOFLIFE='true'
           MODE_GLITTER='true'
-          MODE_GOOGLEWEATHER='true'
-          MODE_HOMEASSISTANTWEATHER='true'
           MODE_HOMETHERMOMETER='true'
           MODE_JAGGEDWAVEFORM='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
           MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_OPENWEATHER='true'
           MODE_PINGPONG='true'
           MODE_PIXELSEQUENCE='true'
           MODE_RAIN='true'
@@ -505,12 +502,18 @@ jobs:
           MODE_STREAM='true'
           MODE_TICKER='true'
           MODE_WAVEFORM='true'
-          MODE_WORLDWEATHERONLINE='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
+          MODE_WEATHER='true'
           NAME='Obegränsad'
           OTA_KEY='redacted'
+          TEMPERATURE_UNIT='°C'
           TIME_ZONE='Etc/Universal'
+          WEATHER_GOOGLE='true'
+          WEATHER_HOMEASSISTANT='true'
+          WEATHER_OPENMETEO='true'
+          WEATHER_OPENWEATHER='true'
+          WEATHER_WORLDWEATHERONLINE='true'
+          WEATHER_WTTRIN='true'
+          WEATHER_YR='true'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -542,7 +545,6 @@ jobs:
           #define PIN_SDA 10
           #define PIN_SW2 11
           #define RTC_DS3231
-          #define TEMPERATURE_FAHRENHEIT true
           #define WIFI_COUNTRY "01"
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"

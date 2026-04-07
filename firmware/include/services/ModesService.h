@@ -18,16 +18,12 @@
 #include "modes/FliesMode.h"
 #include "modes/GameOfLifeMode.h"
 #include "modes/GlitterMode.h"
-#include "modes/GoogleWeatherMode.h"
-#include "modes/HomeAssistantWeatherMode.h"
 #include "modes/HomeThermometerMode.h"
 #include "modes/JaggedWaveformMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
 #include "modes/NoiseMode.h"
-#include "modes/OpenMeteoMode.h"
-#include "modes/OpenWeatherMode.h"
 #include "modes/PingPongMode.h"
 #include "modes/PixelSequenceMode.h"
 #include "modes/RainMode.h"
@@ -39,9 +35,7 @@
 #include "modes/StreamMode.h"
 #include "modes/TickerMode.h"
 #include "modes/WaveformMode.h"
-#include "modes/WorldWeatherOnlineMode.h"
-#include "modes/WttrInMode.h"
-#include "modes/YrMode.h"
+#include "modes/WeatherMode.h"
 #include "modules/ModeModule.h"
 #include "modules/ServiceModule.h"
 // NOLINTEND(misc-include-cleaner)
@@ -106,12 +100,6 @@ private:
 #if MODE_GLITTER
         new GlitterMode(),
 #endif
-#if MODE_GOOGLEWEATHER
-        new GoogleWeatherMode(),
-#endif
-#if MODE_HOMEASSISTANTWEATHER
-        new HomeAssistantWeatherMode(),
-#endif
 #if MODE_HOMETHERMOMETER
         new HomeThermometerMode(),
 #endif
@@ -129,12 +117,6 @@ private:
 #endif
 #if MODE_NOISE
         new NoiseMode(),
-#endif
-#if MODE_OPENMETEO
-        new OpenMeteoMode(),
-#endif
-#if MODE_OPENWEATHER
-        new OpenWeatherMode(),
 #endif
 #if MODE_PINGPONG
         new PingPongMode(),
@@ -169,14 +151,8 @@ private:
 #if MODE_WAVEFORM
         new WaveformMode(),
 #endif
-#if MODE_WORLDWEATHERONLINE
-        new WorldWeatherOnlineMode(),
-#endif
-#if MODE_WTTRIN
-        new WttrInMode(),
-#endif
-#if MODE_YR
-        new YrMode(),
+#if MODE_WEATHER
+        new WeatherMode(),
 #endif
     };
 

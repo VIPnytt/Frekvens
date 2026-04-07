@@ -17,6 +17,7 @@ import {
     MODE_HOMETHERMOMETER,
     MODE_STREAM,
     MODE_TICKER,
+    MODE_WEATHER,
 } from "../config/modules";
 import { name as ExtensionIrName, receiver as ExtensionIrReceiver } from "../extensions/Infrared";
 import { name as ExtensionMessageName, receiver as ExtensionMessageReceiver } from "../extensions/Message";
@@ -31,6 +32,7 @@ import { name as ModeDrawName, receiver as ModeDrawReceiver } from "../modes/Dra
 import { name as ModeHomeThermometerName, receiver as ModeHomeThermometerReceiver } from "../modes/HomeThermometer";
 import { name as ModeStreamName, receiver as ModeStreamReceiver } from "../modes/Stream";
 import { name as ModeTickerName, receiver as ModeTickerReceiver } from "../modes/Ticker";
+import { name as ModeWeatherName, receiver as ModeWeatherReceiver } from "../modes/Weather";
 import { name as ConnectivityName, receiver as ConnectivityReceiver } from "../services/Connectivity";
 import { name as DeviceName, receiver as DeviceReceiver } from "../services/Device";
 import { name as DisplayName, receiver as DisplayReceiver } from "../services/Display";
@@ -81,6 +83,7 @@ export const WebSocketmessages: ParentComponent = (props) => {
                 ModeHomeThermometerReceiver(json[ModeHomeThermometerName]);
             MODE_TICKER && json[ModeTickerName] && ModeTickerReceiver(json[ModeTickerName]);
             MODE_STREAM && json[ModeStreamName] && ModeStreamReceiver(json[ModeStreamName]);
+            MODE_WEATHER && json[ModeWeatherName] && ModeWeatherReceiver(json[ModeWeatherName]);
         });
     });
     return props.children;

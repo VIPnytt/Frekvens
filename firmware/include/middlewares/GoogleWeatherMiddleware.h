@@ -1,30 +1,17 @@
 #pragma once
 
-#if MODE_GOOGLEWEATHER
+#if WEATHER_GOOGLE
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
-#include "modules/ModeModule.h"
 
+#include <array>
+#include <string_view>
 #include <vector>
 
-class GoogleWeatherMode final : public ModeModule
+class GoogleWeatherMiddleware final : public WeatherHandler
 {
 private:
-    static constexpr uint32_t interval = 900'000; // Update interval: 15 minutes
-
-    unsigned long lastMillis = 0;
-
-    // https://developers.google.com/maps/documentation/weather
-    std::vector<const char *> queries{
-        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
-#if TEMPERATURE_CELSIUS
-        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
-#elif TEMPERATURE_FAHRENHEIT
-        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
-#endif // TEMPERATURE_CELSIUS
-    };
-
     // https://developers.google.com/maps/documentation/weather/weather-condition-icons
     static constexpr std::array<std::string_view, 2> codesClear{
         "CLEAR",
@@ -91,13 +78,27 @@ private:
         {WeatherHandler::Conditions::WIND, codesWind},
     }};
 
-    void update();
+    // https://developers.google.com/maps/documentation/weather
+    inline static std::vector<const char *> queries{
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
+#if TEMPERATURE_CELSIUS
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
+#elif TEMPERATURE_FAHRENHEIT
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
+#endif // TEMPERATURE_CELSIUS
+    };
 
 public:
-    explicit GoogleWeatherMode() : ModeModule("Google Weather") {};
+    static constexpr std::string_view name{"Google"};
 
-    void begin() override;
-    void handle() override;
+    explicit GoogleWeatherMiddleware() : WeatherHandler(name.data())
+    {
+        host = "weather.googleapis.com";
+        path = "/v1/currentConditions:lookup";
+    };
+
+    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+                unsigned long &lastMillis) override;
 };
 
-#endif // MODE_GOOGLEWEATHER
+#endif // WEATHER_GOOGLE

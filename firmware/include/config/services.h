@@ -15,9 +15,6 @@
 // #define LATITUDE "0.000" // °
 // #define LONGITUDE "0.000" // °
 // #define LOCATION "city"
-// #define TEMPERATURE_CELSIUS true
-// #define TEMPERATURE_FAHRENHEIT true
-// #define TEMPERATURE_KELVIN true
 
 /**
  * Wi-Fi

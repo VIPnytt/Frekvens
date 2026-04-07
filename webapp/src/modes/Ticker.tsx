@@ -1,7 +1,6 @@
 import { mdiFormatText } from "@mdi/js";
 import { type Component, createSignal, For } from "solid-js";
 
-import { Toast } from "../components/Toast";
 import { Tooltip } from "../components/Tooltip";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
@@ -18,8 +17,6 @@ export const receiver = (json: { font?: string; message?: string }) => {
     json?.message !== undefined && setMessage(json.message);
 };
 
-const { toast } = Toast();
-
 export const Main: Component = () => <ModesMainComponent icon={mdiFormatText} />;
 
 export const Sidebar: Component = () => {
@@ -32,7 +29,6 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     const handleMessage = (message: string) => {
@@ -44,13 +40,13 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     return (
-        <SidebarSection title={name}>
+        <SidebarSection>
+            <div class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Message</div>
             <input
-                class="w-full"
+                class="mt-1 w-full"
                 maxlength="255"
                 onchange={(e) => handleMessage(e.currentTarget.value)}
                 placeholder="Message"
@@ -58,9 +54,12 @@ export const Sidebar: Component = () => {
                 type="text"
                 value={getMessage()}
             />
+            <div class="mt-3 text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">
+                Font
+            </div>
             <Tooltip text="Character availability may vary">
                 <select
-                    class="mt-3 w-full"
+                    class="mt-1 w-full"
                     value={getFont()}
                     onchange={(e) => handleFont(e.currentTarget.value)}
                 >
