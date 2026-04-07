@@ -1,7 +1,6 @@
 import { type Component, createSignal, For } from "solid-js";
 
-import { ClockIcon } from "../components/Clock";
-import { Toast } from "../components/Toast";
+import { ClockIcon, ClockText } from "../components/Clock";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
@@ -18,9 +17,12 @@ export const receiver = (json: { font?: string; fonts?: string[]; ticking?: bool
     json?.ticking !== undefined && setTicking(json.ticking);
 };
 
-const { toast } = Toast();
-
-export const Main: Component = () => <ModesMainComponent icon={ClockIcon()} />;
+export const Main: Component = () => (
+    <ModesMainComponent
+        icon={ClockIcon()}
+        text={ClockText()}
+    />
+);
 
 export const Sidebar: Component = () => {
     const handleFont = (font: string) => {
@@ -32,7 +34,6 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     const handleTicking = (ticking: boolean) => {
@@ -44,27 +45,23 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     return (
-        <SidebarSection title={"Options"}>
-            <div class="space-y-1">
-                <p class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Font</p>
-                <select
-                    class="w-full"
-                    value={getFont()}
-                    onchange={(e) => handleFont(e.currentTarget.value)}
-                >
-                    <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
-                </select>
-            </div>
-            <label class="flex items-center gap-3 cursor-pointer">
+        <SidebarSection>
+            <div class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Font</div>
+            <select
+                class="mt-1 w-full"
+                onchange={(e) => handleFont(e.currentTarget.value)}
+                value={getFont()}
+            >
+                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
+            </select>
+            <label class="flex items-center gap-3">
                 <input
-                    type="checkbox"
                     checked={getTicking()}
                     onChange={(e) => handleTicking(e.currentTarget.checked)}
-                    class="cursor-pointer w-5 h-5"
+                    type="checkbox"
                 />
                 <span>Ticking</span>
             </label>

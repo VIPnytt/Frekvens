@@ -1,8 +1,7 @@
 import { mdiSnake } from "@mdi/js";
 import { type Component, createSignal } from "solid-js";
 
-import { ClockIcon } from "../components/Clock";
-import { Toast } from "../components/Toast";
+import { ClockText } from "../components/Clock";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
@@ -15,9 +14,12 @@ export const receiver = (json: { clock?: boolean }) => {
     json?.clock !== undefined && setClock(json.clock);
 };
 
-const { toast } = Toast();
-
-export const Main: Component = () => <ModesMainComponent icon={getClock() ? ClockIcon() : mdiSnake} />;
+export const Main: Component = () => (
+    <ModesMainComponent
+        icon={mdiSnake}
+        text={getClock() ? ClockText() : undefined}
+    />
+);
 
 export const Sidebar: Component = () => {
     const handleClock = (clock: boolean) => {
@@ -29,11 +31,10 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     return (
-        <SidebarSection title={name}>
+        <SidebarSection>
             <label class="flex items-center gap-3 cursor-pointer">
                 <input
                     type="checkbox"

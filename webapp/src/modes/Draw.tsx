@@ -66,7 +66,7 @@ export const Sidebar: Component = () => {
     };
 
     return (
-        <SidebarSection title={name}>
+        <SidebarSection>
             <div class="grid grid-cols-2 gap-3">
                 <Tooltip text="Save drawing">
                     <button

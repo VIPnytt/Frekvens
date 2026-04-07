@@ -34,9 +34,9 @@ export const Sidebar: Component = () => {
     };
 
     return (
-        <SidebarSection title={name}>
+        <SidebarSection title="Protocol">
             <select
-                class="mt-3 w-full"
+                class="w-full"
                 value={getPort()}
                 onchange={(e) => handlePort(parseInt(e.currentTarget.value, 10))}
             >
