@@ -14,6 +14,7 @@
 - [Services](https://github.com/VIPnytt/Frekvens/wiki/Services)
 - [Extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions)
 - [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)
+- [Weather](https://github.com/VIPnytt/Frekvens/wiki/Weather)
 - [Fonts](https://github.com/VIPnytt/Frekvens/wiki/Fonts)
 
 ### ➕ Accessories

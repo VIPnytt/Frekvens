@@ -110,7 +110,7 @@ EXTENSION_HOMEASSISTANT='true'
 > [!IMPORTANT]
 > The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
-See also [Home Assistant weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#home-assistant-weather) mode.
+See also [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant) weather.
 
 ## 🔴 Infrared
 
