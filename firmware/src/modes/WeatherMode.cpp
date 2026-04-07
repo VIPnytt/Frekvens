@@ -10,7 +10,7 @@
 #include "services/DisplayService.h"
 
 #include <Preferences.h>
-#include <Wifi.h>
+#include <WiFi.h>
 
 void WeatherMode::configure()
 {
@@ -69,13 +69,11 @@ void WeatherMode::handle()
         {
             BitmapHandler bitmap(provider->getSign(condition.value()));
             TextHandler text(std::to_string(temperature.value()) + "°", FontMini);
-            const int textHeight = static_cast<int>(text.getHeight());
-            const int marginsY =
-                std::max(0, static_cast<int>(GRID_ROWS) - static_cast<int>(bitmap.getHeight()) - textHeight) / 3;
+            const uint8_t textHeight = text.getHeight();
+            const uint8_t marginsY = std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
             Display.clearFrame();
-            bitmap.draw((static_cast<int>(GRID_COLUMNS) - static_cast<int>(bitmap.getWidth())) / 2, marginsY);
-            text.draw((static_cast<int>(GRID_COLUMNS) - static_cast<int>(text.getWidth())) / 2,
-                      static_cast<int>(GRID_ROWS) - marginsY - textHeight);
+            bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
+            text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
             transmit();
         }
     }
