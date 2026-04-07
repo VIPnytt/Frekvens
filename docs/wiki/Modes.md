@@ -10,9 +10,7 @@
 
 **Interactive:** [Animation](#-animation) | [Countdown](#-countdown) | [Draw](#-draw) | [Flies](#-flies) | [Ticker](#🅰%EF%B8%8F-ticker)
 
-**Smart-home:** [Home Assistant Weather](#-home-assistant-weather) | [Home Thermometer](#️-home-thermometer) | [Stream](#-stream)
-
-**Weather:** [Google Weather](%EF%B8%8F-google-weather) | [Home Assistant Weather](#-home-assistant-weather) | [Open Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+**Smart-home:** [Home Thermometer](#️-home-thermometer) | [Stream](#-stream) | [Weather](#-weather)
 
 **Miscellaneous:** [Blink](#️-blink) | [Bright](#-bright) | [Firework](#-firework) | [Glitter](#-glitter) | [Leaf fall](#-leaf-fall) | [Metaballs](#-metaballs) | [Pixel sequence](#-pixel-sequence) | [Waveform](#-waveform)
 
@@ -240,56 +238,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_GLITTER='true'
 ```
 
-## ☁️ Google Weather
-
-Weather service.
-
-Updated every 15 minutes.
-
-Requires a [API-key](https://developers.google.com/maps/documentation/weather/get-api-key), set using the `GOOGLEWEATHER_KEY` variable.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define GOOGLEWEATHER_KEY "secret"
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_GOOGLEWEATHER='true'
-```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
-
-## 🏡 Home Assistant weather
-
-Smart-home integration
-
-Requires an [Long-lived access token](https://my.home-assistant.io/redirect/profile_security/), set using the `HOMEASSISTANT_KEY` variable. Other variables are optional.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define HOMEASSISTANT_KEY "secret"
-```
-
-```h
-#define HOMEASSISTANT_PROTOCOL "http:"
-#define HOMEASSISTANT_HOST "homeassistant.local"
-#define HOMEASSISTANT_PORT 8123
-#define HOMEASSISTANT_ENTITY "weather.forecast_home"
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_HOMEASSISTANT='true'
-```
-
-See also [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#home-assistant) extension.
-
 ## 🌡️ Home thermometer
 
 Smart-home integration.
@@ -375,52 +323,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_NOISE='true'
 ```
-
-## ⛅ Open-Meteo
-
-Weather service.
-
-Updated every 15+ minutes, depending on location.
-
-Commercial usage requires an [API-key](https://open-meteo.com/en/pricing), set using the `OPENMETEO_KEY` variable.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define OPENMETEO_KEY "secret"
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_OPENMETEO='true'
-```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
-
-## ☀️ Open Weather
-
-Weather service.
-
-Updated every 10 minutes.
-
-Requires a [API-key](https://openweathermap.org/api), set using the `OPENWEATHER_KEY` variable.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define OPENWEATHER_KEY "secret"
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_OPENWEATHER='true'
-```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
 
 ## 🏓 Ping-pong
 
@@ -583,63 +485,35 @@ MODE_WAVEFORM='true'
 
 See also [Jagged waveform](#-jagged-waveform) and [Smooth waveform](#️-smooth-waveform).
 
-## 🌍 World Weather Online
+## ⛅ Weather
 
-Weather service.
+Providers available:
 
-Updated every 10-15 minutes.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`.
-- `LOCATION`
-
-Requires a [API-key](https://www.worldweatheronline.com/weather-api/api/docs/), set using the `WORLDWEATHERONLINE_KEY` variable.
+- [Google](https://github.com/VIPnytt/Frekvens/wiki/Weather#-google)
+- [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant)
+- [Open-Meteo](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-meteo)
+- [Open Weather](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-weather)
+- [World Weather Online](https://github.com/VIPnytt/Frekvens/wiki/Weather#-world-weather-online)
+- [Wttr.in](https://github.com/VIPnytt/Frekvens/wiki/Weather#-wttrin)
+- [Yr](https://github.com/VIPnytt/Frekvens/wiki/Weather#-yr)
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define WORLDWEATHERONLINE_KEY "secret"
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_WORLDWEATHERONLINE='true'
+#define LATITUDE "0.000"  // coordinate
+#define LONGITUDE "0.000" // coordinate
+#define LOCATION "city"
 ```
 
 > [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
-
-## ☀️ Wttr.in
-
-Weather service.
-
-Updated hourly.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`.
-- `LOCATION`
-- Auto-detect
+> Provide 3-4 decimals for the most accurate weather reports. A small subset of providers also supports a location name, usually in the form of a city or village.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-MODE_WTTRIN='true'
+MODE_WEATHER='true'
 ```
-
-## 🌧️ Yr
-
-Weather service.
-
-Denmark, Finland, Norway and Sweeden uses [Nowcast](https://api.met.no/weatherapi/nowcast/2.0/documentation), which is updated every 5 minutes. The rest of the world uses [Location Forecast](https://api.met.no/weatherapi/locationforecast/2.0/documentation).
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-MODE_YR='true'
+TEMPERATURE_UNIT='°C' # °C, °F or °K
 ```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.

@@ -51,13 +51,9 @@ void HomeThermometerMode::configure()
             component[HomeAssistantAbbreviations::platform].set("number");
             component[HomeAssistantAbbreviations::state_topic].set(topic);
             component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-#if TEMPERATURE_KELVIN
-            component[HomeAssistantAbbreviations::unit_of_measurement].set("°K");
-#elif TEMPERATURE_CELSIUS
-            component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
-#elif TEMPERATURE_FAHRENHEIT
-            component[HomeAssistantAbbreviations::unit_of_measurement].set("°F");
-#endif // TEMPERATURE_KELVIN
+#ifdef TEMPERATURE_UNIT
+            component[HomeAssistantAbbreviations::unit_of_measurement].set(TEMPERATURE_UNIT);
+#endif // TEMPERATURE_UNIT
             component[HomeAssistantAbbreviations::value_template].set(
                 std::string("{{value_json.").append(where).append("}}"));
         }
@@ -140,15 +136,11 @@ void HomeThermometerMode::setTemperature(const char *where, int16_t temperature)
     Storage.end();
     pending = true;
     transmit();
-#if TEMPERATURE_KELVIN
-    ESP_LOGD(name, "%s %d°K", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
-#elif TEMPERATURE_CELSIUS
-    ESP_LOGD(name, "%s %d°C", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
-#elif TEMPERATURE_FAHRENHEIT
-    ESP_LOGD(name, "%s %d°F", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
+#ifdef TEMPERATURE_UNIT
+    ESP_LOGD(name, "%s %d" TEMPERATURE_UNIT, where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #else
     ESP_LOGD(name, "%s %d°", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
-#endif // TEMPERATURE_KELVIN
+#endif // TEMPERATURE_UNIT
 }
 
 #endif // MODE_HOMETHERMOMETER

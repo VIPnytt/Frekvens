@@ -8,6 +8,7 @@ from ..modes.GameOfLife import GameOfLife
 from ..modes.PingPong import PingPong
 from ..modes.Snake import Snake
 from ..modes.Stream import Stream
+from ..modes.Weather import Weather
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
@@ -20,12 +21,19 @@ class Deprecated:
         ("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_E131", "E1.31", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_GAMEOFLIFECLOCK", "Game of Life clock", GameOfLife.ENV_OPTION, GameOfLife.NAME),
+        ("MODE_GOOGLEWEATHER", "Google weather", Weather.ENV_OPTION, Weather.NAME),
+        ("MODE_HOMEASSISTANTWEATHER", "Home Assistant weather", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_LARGECLOCK", "Large clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_LARGETICKINGCLOCK", "Large ticking clock", Clock.ENV_OPTION, Clock.NAME),
+        ("MODE_OPENMETEO", "Open-Meteo", Weather.ENV_OPTION, Weather.NAME),
+        ("MODE_OPENWEATHER", "Open Weather", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_PINGPONGCLOCK", "Ping-Pong clock", PingPong.ENV_OPTION, PingPong.NAME),
         ("MODE_SMALLCLOCK", "Small clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_SMALLTICKINGCLOCK", "Small ticking clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_SNAKECLOCK", "Snake clock", Snake.ENV_OPTION, Snake.NAME),
+        ("MODE_WORLDWEATHERONLINE", "World Weather Online", Weather.ENV_OPTION, Weather.NAME),
+        ("MODE_WTTRIN", "Wttr.in", Weather.ENV_OPTION, Weather.NAME),
+        ("MODE_YR", "Yr", Weather.ENV_OPTION, Weather.NAME),
     ]
     project: "Frekvens"
 
@@ -39,7 +47,23 @@ class Deprecated:
     def _env(self) -> None:
         for old_option, old_name, new_option, new_name in self.MIGRATIONS:
             if old_option in self.project.dotenv:
-                logging.warning(f"{old_option} '{old_name}' is deprecated. Use {new_option} '{new_name}' instead.")
+                if new_option == Weather.ENV_OPTION:
+                    weather_option = old_option.replace("MODE_", "WEATHER_", 1)
+                    logging.warning(
+                        "%s '%s' is deprecated. Use %s '%s' and %s '%s' instead.",
+                        old_option,
+                        old_name,
+                        new_option,
+                        new_name,
+                        weather_option,
+                        old_name,
+                    )
+                    if weather_option not in self.project.dotenv:
+                        self.project.dotenv[weather_option] = self.project.dotenv[old_option]
+                else:
+                    logging.warning(
+                        "%s '%s' is deprecated. Use %s '%s' instead.", old_option, old_name, new_option, new_name
+                    )
                 if new_option not in self.project.dotenv:
                     self.project.dotenv[new_option] = self.project.dotenv[old_option]
                 del self.project.dotenv[old_option]

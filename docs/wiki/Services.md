@@ -1,6 +1,6 @@
 # ⚙️ Services
 
-[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Modes](#️-modes) | [Web server](#️-web-server)
+[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Web server](#️-web-server)
 
 ## 🌐 Connectivity
 
@@ -105,42 +105,4 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 
 ```h
 #define FRAME_RATE 60 // fps
-```
-
-## 🎛️ Modes
-
-**Weather:**
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define LATITUDE "0.000"  // coordinate
-#define LONGITUDE "0.000" // coordinate
-```
-
-> [!NOTE]
-> Some providers have resolution grid sizes down to 250 m (820 ft), which means 3-4 decimals should be provided for the most accurate weather reports.
-
-A small list of providers also supports location, usually in the form of a city or village.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define LOCATION "city"
-```
-
-Some also require an temperature unit.
-
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
-
-```h
-#define TEMPERATURE_CELSIUS true // °C
-```
-
-```h
-#define TEMPERATURE_FAHRENHEIT true // °F
-```
-
-```h
-#define TEMPERATURE_KELVIN true // °K
 ```

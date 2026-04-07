@@ -151,16 +151,12 @@ jobs:
           MODE_FLIES='true'
           MODE_GAMEOFLIFE='true'
           MODE_GLITTER='true'
-          MODE_GOOGLEWEATHER='true'
-          MODE_HOMEASSISTANTWEATHER='true'
           MODE_HOMETHERMOMETER='true'
           MODE_JAGGEDWAVEFORM='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
           MODE_NOISE='true'
-          MODE_OPENMETEO='true'
-          MODE_OPENWEATHER='true'
           MODE_PINGPONG='true'
           MODE_PIXELSEQUENCE='true'
           MODE_RAIN='true'
@@ -172,17 +168,21 @@ jobs:
           MODE_STREAM='true'
           MODE_TICKER='true'
           MODE_WAVEFORM='true'
-          MODE_WORLDWEATHERONLINE='true'
-          MODE_WTTRIN='true'
-          MODE_YR='true'
+          MODE_WEATHER='true'
           NAME='Frekvens'
+          WEATHER_GOOGLEWEATHER='true'
+          WEATHER_HOMEASSISTANTWEATHER='true'
+          WEATHER_OPENMETEO='true'
+          WEATHER_OPENWEATHER='true'
+          WEATHER_WORLDWEATHERONLINE='true'
+          WEATHER_WTTRIN='true'
+          WEATHER_YR='true'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
           #define CORE_DEBUG_LEVEL ARDUHAL_LOG_LEVEL_VERBOSE
           #define GOOGLEWEATHER_KEY "redacted"
-          #define HOMEASSISTANT_HOST "homeassistant.local"
           #define HOMEASSISTANT_KEY "redacted"
           #define LATITUDE "0.000"
           #define LOCATION "redacted"

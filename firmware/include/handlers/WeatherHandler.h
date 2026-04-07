@@ -1,14 +1,24 @@
 #pragma once
 
-#include "modules/HandlerModule.h"
-
+#include <optional>
 #include <span>
-#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 
-class WeatherHandler final : public HandlerModule
+class WeatherHandler
 {
+private:
+    static constexpr std::string_view _name = "WeatherHandler";
+
 public:
-    WeatherHandler() = default;
+    virtual ~WeatherHandler() = default;
+
+    WeatherHandler(const WeatherHandler &) = delete;
+    WeatherHandler &operator=(const WeatherHandler &) = delete;
+    WeatherHandler(WeatherHandler &&) = delete;
+    WeatherHandler &operator=(WeatherHandler &&) = delete;
 
     enum class Conditions : uint8_t // NOLINT(performance-enum-size)
     {
@@ -23,33 +33,17 @@ public:
         WIND,
     };
 
-    struct Codeset
-    {
-        Conditions condition{};
-        std::span<const std::string_view> codes{};
-    };
+    const char *const name;
 
-    struct Codeset8
-    {
-        Conditions condition{};
-        std::span<const uint8_t> codes{};
-    };
+    const unsigned long interval;
 
-    struct Codeset16
-    {
-        Conditions condition{};
-        std::span<const uint16_t> codes{};
-    };
+    virtual void update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
+                        unsigned long &lastMillis);
 
-    int16_t temperature = 0;
+    [[nodiscard]] std::span<const uint16_t> getSign(Conditions condition);
 
-    void parse(std::string_view code, std::span<const Codeset> codesets);
-    void parse(uint8_t code, std::span<const Codeset8> codesets);
-    void parse(uint16_t code, std::span<const Codeset16> codesets);
-    void draw();
-
-private:
-    static constexpr std::string_view _name = "WeatherHandler";
+protected:
+    explicit WeatherHandler(const char *name, unsigned long interval = 1U << 20U) : name(name), interval(interval) {};
 
     static constexpr std::array<uint16_t, 7> conditionClear{
         0b0011100,
@@ -150,7 +144,39 @@ private:
         0b10000000000,
     };
 
-    std::span<const uint16_t> sign{};
+    struct Codeset
+    {
+        Conditions condition{};
+        std::span<const std::string_view> codes{};
+    };
 
-    void setSign(Conditions condition);
+    struct Codeset8
+    {
+        Conditions condition{};
+        std::span<const uint8_t> codes{};
+    };
+
+    struct Codeset16
+    {
+        Conditions condition{};
+        std::span<const uint16_t> codes{};
+    };
+
+    const char *host;
+    const char *path;
+    const char *query = nullptr;
+
+    bool tls = true;
+
+    uint16_t port = 443;
+
+    std::unordered_map<std::string_view, std::string_view> headers = {
+        {"Accept", "application/json"},
+    };
+
+    [[nodiscard]] int fetch(std::vector<char> &body, unsigned long &lastMillis);
+
+    [[nodiscard]] std::optional<Conditions> getCondition(std::string_view code, std::span<const Codeset> codesets);
+    [[nodiscard]] std::optional<Conditions> getCondition(uint8_t code, std::span<const Codeset8> codesets);
+    [[nodiscard]] std::optional<Conditions> getCondition(uint16_t code, std::span<const Codeset16> codesets);
 };

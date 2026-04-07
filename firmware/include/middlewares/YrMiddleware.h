@@ -1,27 +1,17 @@
 #pragma once
 
-#if MODE_YR
+#if WEATHER_YR
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "handlers/WeatherHandler.h"
-#include "modules/ModeModule.h"
 
+#include <array>
+#include <string_view>
 #include <vector>
 
-class YrMode final : public ModeModule
+class YrMiddleware final : public WeatherHandler
 {
 private:
-    static constexpr unsigned long interval = 300'000; // Data resolution: down to 5 minutes (depending on location)
-
-    unsigned long lastMillis = 0;
-
-    // https://api.met.no/weatherapi/locationforecast/2.0/documentation
-    // https://api.met.no/weatherapi/nowcast/2.0/documentation
-    std::vector<const char *> paths{
-        "/weatherapi/locationforecast/2.0/complete",
-        "/weatherapi/nowcast/2.0/complete",
-    };
-
     // https://github.com/metno/weathericons/tree/main/weather
     static constexpr std::array<std::string_view, 6> codesClear{
         "clearsky_day",
@@ -127,23 +117,34 @@ private:
         "snowshowersandthunder_polartwilight",
     };
 
-    static constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
-        {WeatherHandler::Conditions::CLEAR, codesClear},
-        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
-        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {WeatherHandler::Conditions::FOG, codesFog},
-        {WeatherHandler::Conditions::RAIN, codesRain},
-        {WeatherHandler::Conditions::SNOW, codesSnow},
-        {WeatherHandler::Conditions::THUNDER, codesThunder},
+    static constexpr std::array<Codeset, 7> codesets{{
+        {Conditions::CLEAR, codesClear},
+        {Conditions::CLOUDY, codesCloudy},
+        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
+        {Conditions::FOG, codesFog},
+        {Conditions::RAIN, codesRain},
+        {Conditions::SNOW, codesSnow},
+        {Conditions::THUNDER, codesThunder},
     }};
 
-    void update();
+    // https://api.met.no/weatherapi/locationforecast/2.0/documentation
+    // https://api.met.no/weatherapi/nowcast/2.0/documentation
+    inline static std::vector<const char *> paths{
+        "/weatherapi/locationforecast/2.0/complete",
+        "/weatherapi/nowcast/2.0/complete",
+    };
 
 public:
-    explicit YrMode() : ModeModule("Yr") {};
+    static constexpr std::string_view name{"Yr"};
 
-    void begin() override;
-    void handle() override;
+    explicit YrMiddleware() : WeatherHandler(name.data(), 1U << 19U)
+    {
+        host = "api.met.no";
+        query = "lat=" LATITUDE "&lon=" LONGITUDE;
+    };
+
+    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+                unsigned long &lastMillis) override;
 };
 
-#endif // MODE_YR
+#endif // WEATHER_YR
