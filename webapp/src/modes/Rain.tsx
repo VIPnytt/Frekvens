@@ -1,4 +1,4 @@
-import { mdiWeatherRainy } from "@mdi/js";
+import { mdiWaterOutline } from "@mdi/js";
 import type { Component } from "solid-js";
 
 import { IkeaObegransad } from "../config/devices";
@@ -8,7 +8,7 @@ export const name = "Rain";
 
 export const Main: Component = () => (
     <ModesMainComponent
-        icon={mdiWeatherRainy}
+        icon={mdiWaterOutline}
         text={IkeaObegransad}
     />
 );

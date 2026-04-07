@@ -255,12 +255,12 @@ const Toggle: Component = () => (
 );
 
 export const SidebarSection: Component<{
-    title: string;
+    title?: string;
     children: JSX.Element;
 }> = (props) => (
     <>
         <div class="space-y-3">
-            <h3 class="ml-3">{props.title}</h3>
+            <h3 class="ml-3">{props.title || "Options"}</h3>
             <div class="mx-3 space-y-3">
                 <div class="px-3">{props.children}</div>
             </div>

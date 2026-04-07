@@ -107,11 +107,10 @@ export const Sidebar: Component = () => {
                 },
             }),
         );
-        toast(`${name} updated`);
     };
 
     return (
-        <SidebarSection title={name}>
+        <SidebarSection title="Due">
             <input
                 class="w-full"
                 type="datetime-local"
