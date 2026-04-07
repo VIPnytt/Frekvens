@@ -2,15 +2,14 @@
 
 #if MODE_WEATHER
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "handlers/WeatherHandler.h"
-#include "middlewares/GoogleWeatherMiddleware.h"
-#include "middlewares/HomeAssistantWeatherMiddleware.h"
-#include "middlewares/OpenMeteoMiddleware.h"
-#include "middlewares/OpenWeatherMiddleware.h"
-#include "middlewares/WorldWeatherOnlineMiddleware.h"
-#include "middlewares/WttrInMiddleware.h"
-#include "middlewares/YrMiddleware.h"
+#include "config/constants.h"                           // NOLINT(misc-include-cleaner)
+#include "middlewares/GoogleWeatherMiddleware.h"        // NOLINT(misc-include-cleaner)
+#include "middlewares/HomeAssistantWeatherMiddleware.h" // NOLINT(misc-include-cleaner)
+#include "middlewares/OpenMeteoMiddleware.h"            // NOLINT(misc-include-cleaner)
+#include "middlewares/OpenWeatherMiddleware.h"          // NOLINT(misc-include-cleaner)
+#include "middlewares/WorldWeatherOnlineMiddleware.h"   // NOLINT(misc-include-cleaner)
+#include "middlewares/WttrInMiddleware.h"               // NOLINT(misc-include-cleaner)
+#include "middlewares/YrMiddleware.h"                   // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <array>
@@ -59,11 +58,11 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::optional<WeatherHandler::Conditions> condition;
+    std::optional<WeatherHandler::Conditions> condition{};
 
-    std::optional<int16_t> temperature;
+    std::optional<int16_t> temperature{};
 
-    std::unique_ptr<WeatherHandler> provider;
+    std::unique_ptr<WeatherHandler> provider{};
 
     void setProvider(std::string_view providerName);
 

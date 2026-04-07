@@ -1,14 +1,10 @@
 #include "handlers/WeatherHandler.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"   // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"
-#include "handlers/TextHandler.h"
+#include "config/constants.h"             // NOLINT(misc-include-cleaner)
 #include "services/ConnectivityService.h" // NOLINT(misc-include-cleaner)
-#include "services/DisplayService.h"
 
-#include <esp_crt_bundle.h> // NOLINT(misc-include-cleaner)
-#include <esp_http_client.h>
+#include <esp_crt_bundle.h>  // NOLINT(misc-include-cleaner)
+#include <esp_http_client.h> // NOLINT(misc-include-cleaner)
 
 void WeatherHandler::update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
                             unsigned long &lastMillis)
@@ -84,6 +80,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(std::stri
     return std::nullopt;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t code, std::span<const Codeset8> codesets)
 {
     for (const Codeset8 &codeset : codesets)
@@ -97,6 +94,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t c
     return std::nullopt;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t code,
                                                                        std::span<const Codeset16> codesets)
 {
@@ -119,7 +117,13 @@ std::span<const uint16_t> WeatherHandler::getSign(Conditions condition)
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
         return conditionClear;
 #else
-        return Display.getRatio() > 1.0F ? conditionClearTall : conditionClearWide;
+    {
+        if (Display.getRatio() > 1.0F)
+        {
+            return conditionClearTall
+        }
+        return conditionClearWide;
+    }
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
     case Conditions::CLOUDY:
         return conditionCloudy;

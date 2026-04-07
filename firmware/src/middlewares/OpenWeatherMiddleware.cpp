@@ -2,7 +2,7 @@
 
 #include "middlewares/OpenWeatherMiddleware.h"
 
-#include <ArduinoJson.h>
+#include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
 void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &condition,
                                    std::optional<int16_t> &temperature, unsigned long &lastMillis)

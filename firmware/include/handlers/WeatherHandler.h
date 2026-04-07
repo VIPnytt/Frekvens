@@ -162,8 +162,8 @@ protected:
         std::span<const uint16_t> codes{};
     };
 
-    const char *host;
-    const char *path;
+    const char *host = nullptr;
+    const char *path = nullptr;
     const char *query = nullptr;
 
     bool tls = true;
