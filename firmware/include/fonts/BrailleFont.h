@@ -9,7 +9,7 @@
 class BrailleFont final : public FontModule
 {
 private:
-    static constexpr std::array<uint8_t, 26> _41{
+    static constexpr std::array<uint8_t, 26> chars41{
         // 0x31, 1
         // 0x41, A
         // 0x61, a
@@ -100,7 +100,7 @@ private:
         0b100111,
     };
 
-    [[nodiscard]] FontModule::Symbol toChar(uint8_t bits) const;
+    [[nodiscard]] FontModule::Symbol generate(uint8_t bits) const;
 
 public:
     static constexpr std::string_view name = "Braille";

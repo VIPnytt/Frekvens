@@ -4,7 +4,7 @@
 
 #include <vector>
 
-FontModule::Symbol BrailleFont::toChar(uint8_t bits) const
+FontModule::Symbol BrailleFont::generate(uint8_t bits) const
 {
     const uint8_t row1 = bits & 0x03;
     const uint8_t row2 = (bits >> 2) & 0x03;
@@ -30,47 +30,47 @@ FontModule::Symbol BrailleFont::getChar(uint32_t character) const
 {
     if (character >= 0x31 && character <= 0x39)
     {
-        return toChar(_41[character - 0x31]);
+        return generate(chars41[character - 0x31]);
     }
     if (character >= 0x41 && character <= 0x5A)
     {
-        return toChar(_41[character - 0x41]);
+        return generate(chars41[character - 0x41]);
     }
     if (character >= 0x61 && character <= 0x7A)
     {
-        return toChar(_41[character - 0x61]);
+        return generate(chars41[character - 0x61]);
     }
     switch (character)
     {
     case 0x20: // SPACE
         return {{}, 2, 0};
     case 0x21: // !
-        return toChar(0b1110);
+        return generate(0b1110);
     case 0x27: // '
-        return toChar(0b10);
+        return generate(0b10);
     case 0x28: // (
     case 0x29: // )
     case 0x5B: // [
     case 0x5D: // ]
     case 0x7B: // {
     case 0x7D: // }
-        return toChar(0b1111);
+        return generate(0b1111);
     case 0x2C: // ,
-        return toChar(0b1000);
+        return generate(0b1000);
     case 0x2D: // -
-        return toChar(0b11);
+        return generate(0b11);
     case 0x2E: // .
-        return toChar(0b1101);
+        return generate(0b1101);
     case 0x2F: // /
-        return toChar(0b10010);
+        return generate(0b10010);
     case 0x30: // 0
-        return toChar(_41[9]);
+        return generate(chars41[9]);
     case 0x3A: // :
-        return toChar(0b1100);
+        return generate(0b1100);
     case 0x3B: // ;
-        return toChar(0b1010);
+        return generate(0b1010);
     case 0x3F: // ?
-        return toChar(0b1011);
+        return generate(0b1011);
     }
     return {};
 }

@@ -7,7 +7,7 @@
 class MediumFont final : public FontModule
 {
 private:
-    static constexpr std::array<std::array<uint8_t, 7>, 10> _30 = {{
+    static constexpr std::array<std::array<uint8_t, 7>, 10> chars30 = {{
         {
             // 0x30, 0
             0b011110,
@@ -111,7 +111,7 @@ private:
     }};
 
     // 0x49, I
-    static constexpr std::array<uint8_t, 7> _49 = {
+    static constexpr std::array<uint8_t, 7> char49 = {
         0b111111,
         0b001100,
         0b001100,
@@ -122,7 +122,7 @@ private:
     };
 
     // 0x4F, O
-    static constexpr std::array<uint8_t, 7> _4F = {
+    static constexpr std::array<uint8_t, 7> char4F = {
         0b011110,
         0b111111,
         0b110011,
@@ -133,7 +133,7 @@ private:
     };
 
     // 0x6F, o
-    static constexpr std::array<uint8_t, 5> _6F = {
+    static constexpr std::array<uint8_t, 5> char6F = {
         0b01110,
         0b11111,
         0b11011,

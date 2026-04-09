@@ -33,7 +33,7 @@ public:
         WIND,
     };
 
-    const std::string_view name;
+    const std::string_view name{};
 
     const unsigned long interval;
 
@@ -43,7 +43,9 @@ public:
     [[nodiscard]] std::span<const uint16_t> getSign(Conditions condition);
 
 protected:
-    explicit WeatherHandler(std::string_view name, unsigned long interval = 1U << 20U) : name(name), interval(interval) {};
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+    explicit WeatherHandler(std::string_view name, unsigned long interval = 1U << 20U)
+        : name(name), interval(interval) {};
 
     static constexpr std::array<uint16_t, 7> conditionClear{
         0b0011100,

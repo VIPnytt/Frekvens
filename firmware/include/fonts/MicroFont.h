@@ -7,7 +7,7 @@
 class MicroFont final : public FontModule
 {
 private:
-    static constexpr std::array<uint8_t, 1> _22 = {0b11}; // 0x22, "
+    static constexpr std::array<uint8_t, 1> char22 = {0b11}; // 0x22, "
 
     // 0x27, '
     // 0x2A, *
@@ -15,9 +15,9 @@ private:
     // 0x2E, .
     // 0x60, `
     // 0xB0, ° DEGREE SIGN
-    static constexpr std::array<uint8_t, 1> _27 = {0b1};
+    static constexpr std::array<uint8_t, 1> char27 = {0b1};
 
-    static constexpr std::array<std::array<uint8_t, 3>, 2> _28 = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 2> chars28 = {{
         // 0x28, (
         {
             0b01,
@@ -33,7 +33,7 @@ private:
     }};
 
     // 0x2B, +
-    static constexpr std::array<uint8_t, 3> _2B = {
+    static constexpr std::array<uint8_t, 3> char2B = {
         0b010,
         0b111,
         0b010,
@@ -41,9 +41,9 @@ private:
 
     // 0x2D, -
     // 0x5F, _
-    static constexpr std::array<uint8_t, 1> _2D = {0b111};
+    static constexpr std::array<uint8_t, 1> char2D = {0b111};
 
-    static constexpr std::array<std::array<uint8_t, 3>, 16> _2F = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 16> chars2F = {{
         // 0x2F, /
         {
             0b001,
@@ -142,7 +142,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 3>, 26> letters = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 26> chars41 = {{
         // 0x41, A
         // 0x61, a
         {
@@ -327,7 +327,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 3>, 3> _5B = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 3> chars5B = {{
         // 0x5B, [
         {
             0b11,
@@ -349,12 +349,12 @@ private:
     }};
 
     // 0x5E, ^
-    static constexpr std::array<uint8_t, 2> _5E = {
+    static constexpr std::array<uint8_t, 2> char5E = {
         0b010,
         0b101,
     };
 
-    static constexpr std::array<std::array<uint8_t, 3>, 3> _7B = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 3> chars7B = {{
         // 0x7B, {
         {
             0b001,

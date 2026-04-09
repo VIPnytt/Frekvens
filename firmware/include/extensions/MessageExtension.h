@@ -2,8 +2,8 @@
 
 #if EXTENSION_MESSAGE
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h"
+#include "config/constants.h"     // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
 #include <array>

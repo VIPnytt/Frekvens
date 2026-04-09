@@ -8,26 +8,26 @@ class MiniFont final : public FontModule
 {
 private:
     // 0x2B, +
-    static constexpr std::array<uint8_t, 3> _2B = {
+    static constexpr std::array<uint8_t, 3> char2B = {
         0b010,
         0b111,
         0b010,
     };
 
     // 0x2C, ,
-    static constexpr std::array<uint8_t, 2> _2C = {
+    static constexpr std::array<uint8_t, 2> char2C = {
         0b01,
         0b10,
     };
 
     // 0x2D, -
     // 0x5F, _
-    static constexpr std::array<uint8_t, 1> _2D = {0b111};
+    static constexpr std::array<uint8_t, 1> char2D = {0b111};
 
     // 0x2E, .
-    static constexpr std::array<uint8_t, 1> _2E = {0b1};
+    static constexpr std::array<uint8_t, 1> char2E = {0b1};
 
-    static constexpr std::array<std::array<uint8_t, 5>, 10> _30 = {{
+    static constexpr std::array<std::array<uint8_t, 5>, 10> chars30 = {{
         // 0x30, 0
         {
             0b111,
@@ -111,20 +111,20 @@ private:
     }};
 
     // 0x3A, :
-    static constexpr std::array<uint8_t, 3> _3A = {
+    static constexpr std::array<uint8_t, 3> char3A = {
         0b1,
         0b0,
         0b1,
     };
 
     // 0x3D, =
-    static constexpr std::array<uint8_t, 3> _3D = {
+    static constexpr std::array<uint8_t, 3> char3D = {
         0b111,
         0b000,
         0b111,
     };
 
-    static constexpr std::array<std::array<uint8_t, 5>, 29> _41 = {{
+    static constexpr std::array<std::array<uint8_t, 5>, 29> chars41 = {{
         // 0x41, A
         {
             0b010,
@@ -360,7 +360,7 @@ private:
     }};
 
     // 0x61, a
-    static constexpr std::array<uint8_t, 5> _61 = {
+    static constexpr std::array<uint8_t, 5> char61 = {
         0b110,
         0b001,
         0b011,
@@ -369,7 +369,7 @@ private:
     };
 
     // 0x62, b
-    static constexpr std::array<uint8_t, 4> _62 = {
+    static constexpr std::array<uint8_t, 4> char62 = {
         0b100,
         0b110,
         0b101,
@@ -377,21 +377,21 @@ private:
     };
 
     // 0x63, c
-    static constexpr std::array<uint8_t, 3> _63 = {
+    static constexpr std::array<uint8_t, 3> char63 = {
         0b011,
         0b100,
         0b011,
     };
 
     // 0x64, d
-    static constexpr std::array<uint8_t, 4> _64 = {
+    static constexpr std::array<uint8_t, 4> char64 = {
         0b001,
         0b011,
         0b101,
         0b011,
     };
 
-    static constexpr std::array<std::array<uint8_t, 5>, 3> _65 = {{
+    static constexpr std::array<std::array<uint8_t, 5>, 3> chars65 = {{
         // 0x65, e
         {
             0b010,
@@ -418,7 +418,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 4>, 2> _68 = {{
+    static constexpr std::array<std::array<uint8_t, 4>, 2> chars68 = {{
         // 0x68, h
         {
             0b100,
@@ -436,7 +436,7 @@ private:
     }};
 
     // 0x6A, j
-    static constexpr std::array<uint8_t, 5> _6A = {
+    static constexpr std::array<uint8_t, 5> char6A = {
         0b01,
         0b00,
         0b01,
@@ -444,7 +444,7 @@ private:
         0b10,
     };
 
-    static constexpr std::array<std::array<uint8_t, 4>, 2> _6B = {{
+    static constexpr std::array<std::array<uint8_t, 4>, 2> chars6B = {{
         // 0x6B, k
         {
             0b101,
@@ -461,7 +461,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 3>, 2> _6D = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 2> chars6D = {{
         // 0x6D, m
         {
             0b01010,
@@ -476,7 +476,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 4>, 4> _6F = {{
+    static constexpr std::array<std::array<uint8_t, 4>, 4> chars6F = {{
         // 0x6F, o
         {
             0b010,
@@ -508,7 +508,7 @@ private:
     }};
 
     // 0x73, s
-    static constexpr std::array<uint8_t, 5> _73 = {
+    static constexpr std::array<uint8_t, 5> char73 = {
         0b011,
         0b100,
         0b010,
@@ -517,14 +517,14 @@ private:
     };
 
     // 0x74, t
-    static constexpr std::array<uint8_t, 4> _74 = {
+    static constexpr std::array<uint8_t, 4> char74 = {
         0b010,
         0b111,
         0b010,
         0b011,
     };
 
-    static constexpr std::array<std::array<uint8_t, 3>, 4> _75 = {{
+    static constexpr std::array<std::array<uint8_t, 3>, 4> chars75 = {{
         // 0x75, u
         {
             0b101,
@@ -552,7 +552,7 @@ private:
     }};
 
     // 0x79, y
-    static constexpr std::array<uint8_t, 4> _79 = {
+    static constexpr std::array<uint8_t, 4> char79 = {
         0b101,
         0b101,
         0b010,
@@ -560,14 +560,14 @@ private:
     };
 
     // 0x7A, z
-    static constexpr std::array<uint8_t, 3> _7A = {
+    static constexpr std::array<uint8_t, 3> char7A = {
         0b111,
         0b010,
         0b111,
     };
 
     // 0x7C, |
-    static constexpr std::array<uint8_t, 5> _7C = {
+    static constexpr std::array<uint8_t, 5> char7C = {
         0b1,
         0b1,
         0b1,
@@ -576,13 +576,13 @@ private:
     };
 
     // 0xB0, ° DEGREE SIGN
-    static constexpr std::array<uint8_t, 2> _B0 = {
+    static constexpr std::array<uint8_t, 2> charB0 = {
         0b11,
         0b11,
     };
 
     // 0x3C0, π GREEK SMALL LETTER PI
-    static constexpr std::array<uint8_t, 4> _3C0 = {
+    static constexpr std::array<uint8_t, 4> char3C0 = {
         0b11111,
         0b01010,
         0b01010,

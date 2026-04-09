@@ -9,7 +9,7 @@ class LargeFont final : public FontModule
 {
 private:
     // 0x21, !
-    static constexpr std::array<uint8_t, 8> _21 = {
+    static constexpr std::array<uint8_t, 8> char21 = {
         0b11,
         0b11,
         0b11,
@@ -21,7 +21,7 @@ private:
     };
 
     // 0x49, I
-    static constexpr std::array<uint8_t, 8> _49 = {
+    static constexpr std::array<uint8_t, 8> char49 = {
         0b111111,
         0b001100,
         0b001100,
@@ -33,7 +33,7 @@ private:
     };
 
     // 0x52, R
-    static constexpr std::array<uint8_t, 8> _52 = {
+    static constexpr std::array<uint8_t, 8> char52 = {
         0b111110,
         0b110011,
         0b110011,
@@ -45,7 +45,7 @@ private:
     };
 
     // 0x55, U
-    static constexpr std::array<uint8_t, 8> _55 = {
+    static constexpr std::array<uint8_t, 8> char55 = {
         0b110011,
         0b110011,
         0b110011,
@@ -57,7 +57,7 @@ private:
     };
 
     // 0x3C0, π GREEK SMALL LETTER PI
-    static constexpr std::array<uint8_t, 8> _3C0 = {
+    static constexpr std::array<uint8_t, 8> char3C0 = {
         0b11111111,
         0b11111111,
         0b00100100,
