@@ -7,11 +7,6 @@
 #include <esp_crt_bundle.h>  // NOLINT(misc-include-cleaner)
 #include <esp_http_client.h> // NOLINT(misc-include-cleaner)
 
-void WeatherHandler::update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
-                            unsigned long &lastMillis)
-{
-}
-
 int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
 {
     esp_http_client_config_t config = {

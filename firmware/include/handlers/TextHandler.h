@@ -12,7 +12,7 @@ class TextHandler final : public HandlerModule
 private:
     static constexpr std::string_view _name = "TextHandler";
 
-    std::string text;
+    std::string text{};
 
     FontModule &font;
 

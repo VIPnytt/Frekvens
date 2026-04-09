@@ -79,7 +79,7 @@ private:
 public:
     static constexpr std::string_view name{"OpenWeather"};
 
-    explicit OpenWeatherMiddleware() : WeatherHandler(name.data()) { host = "api.openweathermap.org"; };
+    explicit OpenWeatherMiddleware() : WeatherHandler(name) { host = "api.openweathermap.org"; };
 
     void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;

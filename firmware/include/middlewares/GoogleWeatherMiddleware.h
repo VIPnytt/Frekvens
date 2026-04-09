@@ -91,7 +91,7 @@ private:
 public:
     static constexpr std::string_view name{"Google"};
 
-    explicit GoogleWeatherMiddleware() : WeatherHandler(name.data())
+    explicit GoogleWeatherMiddleware() : WeatherHandler(name)
     {
         host = "weather.googleapis.com";
         path = "/v1/currentConditions:lookup";

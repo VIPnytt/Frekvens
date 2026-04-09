@@ -6,7 +6,7 @@
 #include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"
 #include "services/ModesService.h"
 
 #include <Preferences.h>
@@ -89,7 +89,7 @@ void MessageExtension::begin()
     }
     if (!font)
     {
-        setFont(Fonts.names[0]);
+        setFont(SmallFont::name);
     }
     pending = true;
 }

@@ -3,8 +3,7 @@
 #if EXTENSION_MESSAGE
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "fonts/SmallFont.h"
-#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"
 #include "modules/ExtensionModule.h"
 
 #include <array>

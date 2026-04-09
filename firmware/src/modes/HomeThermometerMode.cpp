@@ -86,8 +86,9 @@ void HomeThermometerMode::update()
     const int16_t indoor = Storage.getShort("indoor");
     const int16_t outdoor = Storage.getShort("outdoor");
     Storage.end();
-    TextHandler _indoor = TextHandler(std::to_string(indoor).append("°"), FontMini);
-    TextHandler _outdoor = TextHandler(std::to_string(outdoor).append("°"), FontMini);
+    MiniFont font;
+    TextHandler _indoor = TextHandler(std::to_string(indoor).append("°"), font);
+    TextHandler _outdoor = TextHandler(std::to_string(outdoor).append("°"), font);
     const uint8_t _height = _outdoor.getHeight();
     const uint8_t marginsY = (GRID_ROWS - _indoor.getHeight() - _height) / 3;
     Display.clearFrame();

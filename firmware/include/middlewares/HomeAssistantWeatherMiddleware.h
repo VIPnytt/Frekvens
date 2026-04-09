@@ -70,7 +70,7 @@ private:
 public:
     static constexpr std::string_view name{"Home Assistant"};
 
-    explicit HomeAssistantWeatherMiddleware() : WeatherHandler(name.data(), 1U << 18U)
+    explicit HomeAssistantWeatherMiddleware() : WeatherHandler(name, 1U << 18U)
     {
 #ifdef HOMEASSISTANT_HOST
         host = HOMEASSISTANT_HOST;

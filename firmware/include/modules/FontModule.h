@@ -21,7 +21,7 @@ public:
         const int8_t offsetY{};
     };
 
-    const std::string_view name;
+    const std::string_view name{};
 
     [[nodiscard]] virtual Symbol getChar(uint32_t character) const = 0;
 

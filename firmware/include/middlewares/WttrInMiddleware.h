@@ -69,7 +69,7 @@ private:
 public:
     static constexpr std::string_view name{"Wttr.in"};
 
-    explicit WttrInMiddleware() : WeatherHandler(name.data()) { host = "wttr.in"; };
+    explicit WttrInMiddleware() : WeatherHandler(name) { host = "wttr.in"; };
 
     void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;

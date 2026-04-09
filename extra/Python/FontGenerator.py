@@ -143,7 +143,6 @@ class FontGenerator:
                 h.append("")
         h.extend(
             [
-                "",
                 "public:",
                 f'    static constexpr std::string_view name = "{name}";',
                 "",

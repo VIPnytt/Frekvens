@@ -3,10 +3,9 @@
 #include "modes/TickerMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"
 
 #include <Preferences.h>
 

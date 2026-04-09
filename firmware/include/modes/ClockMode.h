@@ -2,10 +2,10 @@
 
 #if MODE_CLOCK
 
-#include "fonts/MediumBoldFont.h"
-#include "fonts/MediumFont.h"
-#include "fonts/MediumWideFont.h"
-#include "fonts/MiniFont.h"
+#include "fonts/MediumBoldFont.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MediumFont.h"     // NOLINT(misc-include-cleaner)
+#include "fonts/MediumWideFont.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <bits/unique_ptr.h>

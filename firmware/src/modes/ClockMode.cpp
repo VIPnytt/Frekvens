@@ -7,7 +7,7 @@
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h"
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 
@@ -19,10 +19,8 @@ void ClockMode::borderPixel(uint8_t sec, uint8_t brightness) // NOLINT(bugprone-
     static constexpr uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1U; // bottom edge (x GRID_COLUMNS-2..0)
     static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1U;    // left edge (y GRID_ROWS-2..0)
     // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
-
     uint8_t x = 0;
     uint8_t y = 0;
-
     if (sec < SEG1)
     {
         x = (GRID_COLUMNS / 2U) + sec;
@@ -48,7 +46,6 @@ void ClockMode::borderPixel(uint8_t sec, uint8_t brightness) // NOLINT(bugprone-
         x = sec - SEG4 + 1U;
         y = 0U;
     }
-
     Display.setPixel(x, y, brightness);
 }
 
@@ -75,7 +72,6 @@ void ClockMode::configure()
         setFont(MediumBoldFont::name);
         cellSize = TextHandler("0", *font).getHeight();
     }
-
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
@@ -118,7 +114,6 @@ void ClockMode::configure()
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.ticking}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
-
     transmit();
 }
 
@@ -127,19 +122,15 @@ void ClockMode::begin() { pending = true; }
 void ClockMode::drawDigits()
 {
     Display.clearFrame();
-
     TextHandler hh1(std::to_string(hour / 10), *font);
     TextHandler hh2(std::to_string(hour % 10), *font);
     TextHandler mm1(std::to_string(minute / 10), *font);
     TextHandler mm2(std::to_string(minute % 10), *font);
-
     // Small font: digits flush to the center gap (no cell padding).
     // Large font: digits centred in a cellSize-wide cell on each side of the gap.
     const int8_t yTop = (GRID_ROWS / 2) - 1 - cellSize;
     const int8_t yBot = (cellSize <= 5) ? (GRID_ROWS / 2) : (GRID_ROWS / 2) + 1;
-
     auto xPad = [this](uint8_t width) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - width) / 2; };
-
     hh1.draw((GRID_COLUMNS / 2) - 1 - xPad(hh1.getWidth()) - hh1.getWidth(), yTop);
     hh2.draw((GRID_COLUMNS / 2) + 1 + xPad(hh2.getWidth()), yTop);
     mm1.draw((GRID_COLUMNS / 2) - 1 - xPad(mm1.getWidth()) - mm1.getWidth(), yBot);
