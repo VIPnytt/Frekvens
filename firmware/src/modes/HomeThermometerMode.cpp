@@ -86,7 +86,7 @@ void HomeThermometerMode::update()
     const int16_t indoor = Storage.getShort("indoor");
     const int16_t outdoor = Storage.getShort("outdoor");
     Storage.end();
-    MiniFont font;
+    const MiniFont font;
     TextHandler _indoor = TextHandler(std::to_string(indoor).append("°"), font);
     TextHandler _outdoor = TextHandler(std::to_string(outdoor).append("°"), font);
     const uint8_t _height = _outdoor.getHeight();

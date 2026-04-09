@@ -74,24 +74,24 @@ void CountdownMode::handle()
         if (seconds >= 0 && minutes >= 0 && hours >= 0)
         {
             Display.clearFrame();
-            MediumFont font;
+            const MediumFont font;
             {
-                TextHandler topLeft = TextHandler(std::to_string(upper / 10), font);
+                TextHandler topLeft{std::to_string(upper / 10), font};
                 topLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - topLeft.getWidth()) / 2) - topLeft.getWidth(),
                              (GRID_ROWS / 2) - 1 - ((7 - topLeft.getHeight()) / 2) - topLeft.getHeight());
             }
             {
-                TextHandler topRight = TextHandler(std::to_string(upper % 10), font);
+                TextHandler topRight{std::to_string(upper % 10), font};
                 topRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - topRight.getWidth()) / 2),
                               (GRID_ROWS / 2) - 1 + ((7 - topRight.getHeight()) / 2) - topRight.getHeight());
             }
             {
-                TextHandler bottomLeft = TextHandler(std::to_string(lower / 10), font);
+                TextHandler bottomLeft{std::to_string(lower / 10), font};
                 bottomLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - bottomLeft.getWidth()) / 2) - bottomLeft.getWidth(),
                                 (GRID_ROWS / 2) + 1 - ((7 - bottomLeft.getHeight()) / 2));
             }
             {
-                TextHandler bottomRight = TextHandler(std::to_string(lower % 10), font);
+                TextHandler bottomRight{std::to_string(lower % 10), font};
                 bottomRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - bottomRight.getWidth()) / 2),
                                  (GRID_ROWS / 2) + 1 + ((7 - bottomRight.getHeight()) / 2));
             }

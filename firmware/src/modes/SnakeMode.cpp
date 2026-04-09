@@ -61,7 +61,7 @@ void SnakeMode::handle()
         hour = local.tm_hour;
         minute = local.tm_min;
         Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-        MiniFont font;
+        const MiniFont font;
         TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2 - 8, 0);
         TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2 - 4, 0);
         TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2 + 1, 0);

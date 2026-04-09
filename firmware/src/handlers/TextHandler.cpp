@@ -3,7 +3,7 @@
 #include "config/constants.h"        // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
-TextHandler::TextHandler(std::string text, FontModule &font) : text(text), font(font)
+TextHandler::TextHandler(std::string text, const FontModule &font) : text(text), font(font)
 {
     if (text.length())
     {
@@ -12,7 +12,7 @@ TextHandler::TextHandler(std::string text, FontModule &font) : text(text), font(
             uint8_t yMin = 0;
             for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
-                FontModule::Symbol character = font.getChar(codepoint);
+                FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
                     [&](auto &&bitmap)
                     {
@@ -32,7 +32,7 @@ TextHandler::TextHandler(std::string text, FontModule &font) : text(text), font(
             width = 0;
             for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
-                FontModule::Symbol character = font.getChar(codepoint);
+                FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
                     [&](auto &&bitmap)
                     {
@@ -46,7 +46,7 @@ TextHandler::TextHandler(std::string text, FontModule &font) : text(text), font(
                         }
                         else
                         {
-                            ESP_LOGV(font.name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
+                            ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
                         }
                     },
                     character.bitmap);
@@ -69,7 +69,7 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
     i = 0;
     for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
     {
-        FontModule::Symbol character = font.getChar(codepoint);
+        FontModule::Symbol character{font.getChar(codepoint)};
         std::visit(
             [&](auto &&bitmap)
             {

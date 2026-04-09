@@ -9,7 +9,19 @@ FontModule::Symbol BrailleFont::generate(uint8_t bits) const
     const uint8_t row1 = bits & 0x03;
     const uint8_t row2 = (bits >> 2) & 0x03;
     const uint8_t row3 = (bits >> 4) & 0x03;
-    const int8_t size = row3 ? 3 : row2 ? 2 : row1 ? 1 : 0;
+    int8_t size = 0;
+    if (row3)
+    {
+        size = 3;
+    }
+    else if (row2)
+    {
+        size = 2;
+    }
+    else if (row1)
+    {
+        size = 1;
+    }
     std::vector<uint8_t> bitmap(size);
     if (size)
     {
@@ -23,7 +35,7 @@ FontModule::Symbol BrailleFont::generate(uint8_t bits) const
     {
         bitmap[2] = row3;
     }
-    return {bitmap, ((row1 | row2 | row3) & 0x02) ? 0 : 1, 3 - size};
+    return {bitmap, static_cast<uint8_t>(((row1 | row2 | row3) & 0x02) ? 0 : 1), static_cast<int8_t>(3 - size)};
 }
 
 FontModule::Symbol BrailleFont::getChar(uint32_t character) const
