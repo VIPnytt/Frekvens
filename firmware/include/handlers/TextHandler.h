@@ -12,23 +12,25 @@ class TextHandler final : public HandlerModule
 private:
     static constexpr std::string_view _name = "TextHandler";
 
-    std::string text = "";
+    std::string text;
 
-    FontModule *font = nullptr;
+    FontModule &font;
 
     uint8_t height = 0;
     uint8_t i = 0;
     uint8_t tracking = 1;
     uint8_t width = 0;
 
-    [[nodiscard]] uint8_t calcMsbMax(const FontModule::Symbol &character) const;
+    template <typename T>
+        requires std::is_unsigned_v<T>
+    [[nodiscard]] uint8_t calcMsbMax(std::span<const T> bitmap) const;
 
     bool nextCodepoint(uint32_t &out);
 
     static std::array<char, 5> encode(uint32_t codepoint);
 
 public:
-    explicit TextHandler(std::string text, FontModule *font);
+    explicit TextHandler(std::string text, FontModule &font);
 
     void draw(uint8_t brightness = UINT8_MAX);
     void draw(int16_t x, int8_t y, uint8_t brightness = UINT8_MAX);

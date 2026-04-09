@@ -157,9 +157,10 @@ void ModesService::setMode(ModeModule *mode, bool power)
     }
     uint8_t height = 0; // NOLINT(misc-const-correctness)
     std::vector<std::unique_ptr<TextHandler>> lines;
+    MicroFont font;
     for (const std::string &word : words)
     {
-        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, FontMicro);
+        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, font);
         const uint8_t lineHeight = handler->getHeight();
         if (height + lineHeight >= GRID_ROWS)
         {

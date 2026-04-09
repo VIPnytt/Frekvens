@@ -30,9 +30,9 @@ void MessageExtension::configure()
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const FontModule *_font : Fonts.getAll())
+        for (const std::string_view _font : Fonts.names)
         {
-            options.add(_font->name);
+            options.add(_font);
         }
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
@@ -87,9 +87,9 @@ void MessageExtension::begin()
     {
         Storage.end();
     }
-    if (font == nullptr)
+    if (!font)
     {
-        font = FontSmall;
+        setFont(Fonts.names[0]);
     }
     pending = true;
 }
@@ -118,7 +118,7 @@ void MessageExtension::handle()
         }
         else if (messages.size())
         {
-            text = std::make_unique<TextHandler>(messages.front(), font);
+            text = std::make_unique<TextHandler>(messages.front(), *font);
             offsetX = GRID_COLUMNS;
             offsetY = (GRID_ROWS - text->getHeight()) / 2;
             width = text->getWidth();
@@ -151,24 +151,16 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
     ESP_LOGD(name, "received");
 }
 
-void MessageExtension::setFont(const char *fontName)
+void MessageExtension::setFont(std::string_view fontName)
 {
-    if (font == nullptr || strcmp(fontName, font->name) != 0)
+    if (std::unique_ptr<FontModule> _font = Fonts.get(fontName))
     {
-        for (FontModule *_font : Fonts.getAll())
-        {
-            if (!strcmp(_font->name, fontName))
-            {
-                font = _font;
-                Preferences Storage;
-                Storage.begin(name);
-                Storage.putString("font", font->name);
-                Storage.end();
-                pending = true;
-                return;
-            }
-        }
-        ESP_LOGD(name, "unknown font %s", fontName);
+        font = std::move(_font);
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putString("font", font->name.data());
+        Storage.end();
+        pending = true;
     }
 }
 
@@ -197,9 +189,9 @@ void MessageExtension::onReceive(JsonObjectConst payload,
                                  const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
-    if (payload["font"].is<const char *>())
+    if (payload["font"].is<std::string_view>())
     {
-        setFont(payload["font"].as<const char *>());
+        setFont(payload["font"].as<std::string_view>());
     }
     // Repeat
     if (payload["repeat"].is<uint8_t>())

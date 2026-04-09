@@ -4,13 +4,10 @@
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MediumBoldFont.h"
-#include "fonts/MediumFont.h"     // NOLINT(misc-include-cleaner)
-#include "fonts/MediumWideFont.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/FontsService.h"
 
 #include <Preferences.h>
 
@@ -57,13 +54,6 @@ void ClockMode::borderPixel(uint8_t sec, uint8_t brightness) // NOLINT(bugprone-
 
 void ClockMode::configure()
 {
-    fonts = {
-        FontMini,
-        FontMedium,
-        FontMediumBold,
-        FontMediumWide,
-    };
-
     Preferences Storage;
     Storage.begin(name, true);
     if (Storage.isKey("ticking"))
@@ -80,10 +70,10 @@ void ClockMode::configure()
     {
         Storage.end();
     }
-    if (font == nullptr)
+    if (!font)
     {
-        font = FontMediumBold;
-        cellSize = TextHandler("0", font).getHeight();
+        setFont(MediumBoldFont::name);
+        cellSize = TextHandler("0", *font).getHeight();
     }
 
 #if EXTENSION_HOMEASSISTANT
@@ -99,9 +89,9 @@ void ClockMode::configure()
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const FontModule *_font : fonts)
+        for (const std::string_view _font : fonts)
         {
-            options.add(_font->name);
+            options.add(_font);
         }
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
@@ -138,10 +128,10 @@ void ClockMode::drawDigits()
 {
     Display.clearFrame();
 
-    TextHandler hh1(std::to_string(hour / 10), font);
-    TextHandler hh2(std::to_string(hour % 10), font);
-    TextHandler mm1(std::to_string(minute / 10), font);
-    TextHandler mm2(std::to_string(minute % 10), font);
+    TextHandler hh1(std::to_string(hour / 10), *font);
+    TextHandler hh2(std::to_string(hour % 10), *font);
+    TextHandler mm1(std::to_string(minute / 10), *font);
+    TextHandler mm2(std::to_string(minute % 10), *font);
 
     // Small font: digits flush to the center gap (no cell padding).
     // Large font: digits centred in a cellSize-wide cell on each side of the gap.
@@ -191,26 +181,18 @@ void ClockMode::handle()
     }
 }
 
-void ClockMode::setFont(const char *fontName)
+void ClockMode::setFont(std::string_view fontName)
 {
-    if (font == nullptr || strcmp(font->name, fontName) != 0)
+    if (std::unique_ptr<FontModule> _font = Fonts.get(fontName))
     {
-        for (FontModule *_font : fonts)
-        {
-            if (!strcmp(_font->name, fontName))
-            {
-                font = _font;
-                cellSize = TextHandler("0", font).getHeight();
-                Preferences Storage;
-                Storage.begin(name);
-                Storage.putString("font", font->name);
-                Storage.end();
-                pending = true;
-                transmit();
-                return;
-            }
-        }
-        ESP_LOGD(name, "unsupported font %s", fontName); // NOLINT(cppcoreguidelines-avoid-do-while)
+        font = std::move(_font);
+        cellSize = TextHandler("0", *font).getHeight();
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putString("font", font->name.data());
+        Storage.end();
+        pending = true;
+        transmit();
     }
 }
 
@@ -233,9 +215,9 @@ void ClockMode::transmit()
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["font"].set(font->name);
     JsonArray _fonts{doc["fonts"].to<JsonArray>()};
-    for (const FontModule *_font : fonts)
+    for (const std::string_view _font : fonts)
     {
-        _fonts.add(_font->name);
+        _fonts.add(_font);
     }
     doc["ticking"].set(ticking);
     Device.transmit(doc.as<JsonObjectConst>(), name);
@@ -245,9 +227,9 @@ void ClockMode::onReceive(JsonObjectConst payload,
                           const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
-    if (payload["font"].is<const char *>())
+    if (payload["font"].is<std::string_view>())
     {
-        setFont(payload["font"].as<const char *>());
+        setFont(payload["font"].as<std::string_view>());
     }
     // Ticking
     if (payload["ticking"].is<bool>())

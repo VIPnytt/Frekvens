@@ -2,8 +2,8 @@
 
 #if MODE_TICKER
 
-#include "config/constants.h"     // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"
 #include "modules/FontModule.h"
 #include "modules/ModeModule.h"
 
@@ -21,13 +21,13 @@ private:
 
     unsigned long lastMillis = 0;
 
-    FontModule *font = nullptr;
-
     std::string message = NAME;
 
-    std::unique_ptr<TextHandler> text = nullptr;
+    std::unique_ptr<FontModule> font{};
 
-    void setFont(const char *fontName);
+    std::unique_ptr<TextHandler> text{};
+
+    void setFont(std::string_view fontName);
     void setMessage(std::string _message);
 
     void transmit();

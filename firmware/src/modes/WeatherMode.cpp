@@ -68,7 +68,8 @@ void WeatherMode::handle()
         if (condition.has_value() && temperature.has_value())
         {
             BitmapHandler bitmap(provider->getSign(condition.value()));
-            TextHandler text(std::to_string(temperature.value()) + "°", FontMini);
+            MiniFont font;
+            TextHandler text(std::to_string(temperature.value()) + "°", font);
             const uint8_t textHeight = text.getHeight();
             // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             const uint8_t marginsY = std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
@@ -82,7 +83,7 @@ void WeatherMode::handle()
 
 void WeatherMode::setProvider(std::string_view providerName)
 {
-    if (provider == nullptr || strcmp(provider->name, providerName.data()) != 0)
+    if (provider == nullptr || provider->name != providerName)
     {
 #if WEATHER_GOOGLE
         if (providerName == GoogleWeatherMiddleware::name)
@@ -130,7 +131,7 @@ void WeatherMode::setProvider(std::string_view providerName)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putString("provider", provider->name);
+            Storage.putString("provider", provider->name.data());
             Storage.end();
             condition.reset();
             temperature.reset();
