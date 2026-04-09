@@ -68,11 +68,10 @@ void WeatherMode::handle()
         if (condition.has_value() && temperature.has_value())
         {
             BitmapHandler bitmap(provider->getSign(condition.value()));
-            MiniFont font;
+            const MiniFont font;
             TextHandler text(std::to_string(temperature.value()) + "°", font);
-            const uint8_t textHeight = text.getHeight();
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-            const uint8_t marginsY = std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
+            const uint8_t textHeight{text.getHeight()};
+            const uint8_t marginsY{std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3};
             Display.clearFrame();
             bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
             text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);

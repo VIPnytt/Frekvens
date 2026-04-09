@@ -3,7 +3,7 @@
 #include "config/constants.h"        // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
-TextHandler::TextHandler(std::string text, const FontModule &font) : text(text), font(font)
+TextHandler::TextHandler(std::string text, const FontModule &font) : text(text), font(&font)
 {
     if (text.length())
     {
@@ -69,14 +69,14 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
     i = 0;
     for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
     {
-        FontModule::Symbol character{font.getChar(codepoint)};
+        FontModule::Symbol character{font->getChar(codepoint)};
         std::visit(
             [&](auto &&bitmap)
             {
                 const uint8_t _height = bitmap.size();
                 if (_height != 0)
                 {
-                    const uint8_t msbMax = calcMsbMax(bitmap); // NOLINT(cppcoreguidelines-init-variables)
+                    const uint8_t msbMax{calcMsbMax(bitmap)};
                     for (uint16_t _x = 0; _x <= msbMax; ++_x)
                     {
                         for (uint8_t _y = 0; _y < _height; ++_y)
@@ -113,7 +113,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte = static_cast<uint8_t>(text[i]); // NOLINT(cppcoreguidelines-init-variables)
+    const uint8_t byte{static_cast<uint8_t>(text[i])};
     i++;
     if (byte <= 0x7F)
     {
@@ -143,7 +143,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     }
     while (bytes-- && i < text.length())
     {
-        const uint8_t cont = text[i]; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t cont{text[i]};
         i++;
         if ((cont & 0xC0U) != 0x80U)
         {

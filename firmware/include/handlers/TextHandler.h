@@ -21,7 +21,7 @@ public:
 private:
     static constexpr std::string_view _name = "TextHandler";
 
-    const FontModule &font;
+    const FontModule *font;
 
     uint8_t height = 0;
     uint8_t i = 0;

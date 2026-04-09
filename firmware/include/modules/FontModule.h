@@ -17,8 +17,8 @@ public:
     struct Symbol
     {
         const std::variant<std::span<const uint8_t>, std::span<const uint16_t>> bitmap{};
-        const uint8_t offsetX{};
-        const int8_t offsetY{};
+        uint8_t offsetX{};
+        int8_t offsetY{};
     };
 
     const std::string_view name{};
