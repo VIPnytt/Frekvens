@@ -24,7 +24,7 @@ private:
     const FontModule *font;
 
     uint8_t height = 0;
-    uint8_t i = 0;
+    uint8_t index = 0;
     uint8_t tracking = 1;
     uint8_t width = 0;
 

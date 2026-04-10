@@ -3,7 +3,6 @@
 #include "extensions/MessageExtension.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/SmallFont.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h" // NOLINT(misc-include-cleaner)
@@ -73,24 +72,15 @@ void MessageExtension::begin()
 {
     Preferences Storage;
     Storage.begin(name, true);
+    if (Storage.isKey("font"))
+    {
+        fontName = Storage.getString("font").c_str();
+    }
     if (Storage.isKey("repeat"))
     {
         repeat = Storage.getUShort("repeat");
     }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
-    }
-    if (!font)
-    {
-        setFont(SmallFont::name);
-    }
+    Storage.end();
     pending = true;
 }
 
@@ -118,6 +108,11 @@ void MessageExtension::handle()
         }
         else if (messages.size())
         {
+            if (!font)
+            {
+                std::unique_ptr<const FontModule> _font = Fonts.get(fontName);
+                font = std::move(_font);
+            }
             text = std::make_unique<TextHandler>(messages.front(), *font);
             offsetX = GRID_COLUMNS;
             offsetY = (GRID_ROWS - text->getHeight()) / 2;
@@ -135,6 +130,7 @@ void MessageExtension::handle()
         }
         else if (active)
         {
+            font.reset();
             Display.setFrame(frame);
             Modes.setActive(true);
             active = false;
@@ -151,14 +147,14 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
     ESP_LOGD(name, "received");
 }
 
-void MessageExtension::setFont(std::string_view fontName)
+void MessageExtension::setFont(std::string_view _fontName)
 {
-    if (std::unique_ptr<FontModule> _font = Fonts.get(fontName))
+    if (std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
     {
-        font = std::move(_font);
+        fontName = _font->name.data();
         Preferences Storage;
         Storage.begin(name);
-        Storage.putString("font", font->name.data());
+        Storage.putString("font", fontName.c_str());
         Storage.end();
         pending = true;
     }
@@ -180,7 +176,7 @@ void MessageExtension::setRepeat(uint8_t count)
 void MessageExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["font"].set(font->name);
+    doc["font"].set(fontName);
     doc["repeat"].set(repeat);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

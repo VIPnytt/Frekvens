@@ -100,7 +100,7 @@ private:
         0b100111,
     };
 
-    [[nodiscard]] FontModule::Symbol generate(uint8_t bits) const;
+    [[nodiscard]] FontModule::Symbol toSymbol(uint8_t bits) const override;
 
 public:
     static constexpr std::string_view name = "Braille";

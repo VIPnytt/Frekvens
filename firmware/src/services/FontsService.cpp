@@ -4,41 +4,41 @@
 
 void FontsService::begin() { transmit(); }
 
-std::unique_ptr<FontModule> FontsService::get(std::string_view fontName) const
+std::unique_ptr<const FontModule> FontsService::get(std::string_view fontName) const
 {
 #if FONT_BRAILLE
     if (fontName == BrailleFont::name)
     {
-        return std::make_unique<BrailleFont>();
+        return std::make_unique<const BrailleFont>();
     }
 #endif
     if (fontName == MicroFont::name)
     {
-        return std::make_unique<MicroFont>();
+        return std::make_unique<const MicroFont>();
     }
     if (fontName == MiniFont::name)
     {
-        return std::make_unique<MiniFont>();
+        return std::make_unique<const MiniFont>();
     }
     if (fontName == SmallFont::name)
     {
-        return std::make_unique<SmallFont>();
+        return std::make_unique<const SmallFont>();
     }
     if (fontName == MediumFont::name)
     {
-        return std::make_unique<MediumFont>();
+        return std::make_unique<const MediumFont>();
     }
     if (fontName == MediumBoldFont::name)
     {
-        return std::make_unique<MediumBoldFont>();
+        return std::make_unique<const MediumBoldFont>();
     }
     if (fontName == MediumWideFont::name)
     {
-        return std::make_unique<MediumWideFont>();
+        return std::make_unique<const MediumWideFont>();
     }
     if (fontName == LargeFont::name)
     {
-        return std::make_unique<LargeFont>();
+        return std::make_unique<const LargeFont>();
     }
     return nullptr;
 }

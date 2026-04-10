@@ -28,7 +28,7 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         }
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
-            i = 0;
+            index = 0;
             width = 0;
             for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
@@ -66,7 +66,7 @@ void TextHandler::draw(uint8_t brightness)
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
 {
-    i = 0;
+    index = 0;
     for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
     {
         FontModule::Symbol character{font->getChar(codepoint)};
@@ -109,12 +109,12 @@ uint8_t TextHandler::getWidth() const { return width; }
 
 bool TextHandler::nextCodepoint(uint32_t &buffer)
 {
-    if (i >= text.length())
+    if (index >= text.length())
     {
         return false;
     }
-    const uint8_t byte{static_cast<uint8_t>(text[i])};
-    i++;
+    const uint8_t byte{static_cast<uint8_t>(text[index])};
+    index++;
     if (byte <= 0x7F)
     {
         buffer = byte;
@@ -141,10 +141,10 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
         buffer = 0xFFFDU;
         return true;
     }
-    while (bytes-- && i < text.length())
+    while (bytes-- && index < text.length())
     {
-        const uint8_t cont{text[i]};
-        i++;
+        const uint8_t cont{text[index]};
+        index++;
         if ((cont & 0xC0U) != 0x80U)
         {
             buffer = 0xFFFDU;

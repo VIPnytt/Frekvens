@@ -2,7 +2,8 @@
 
 #if EXTENSION_MESSAGE
 
-#include "config/constants.h"     // NOLINT(misc-include-cleaner)
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "fonts/SmallFont.h"
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
 
@@ -24,9 +25,11 @@ private:
 
     unsigned long lastMillis = 0;
 
+    std::string fontName = SmallFont::name.data();
+
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
-    std::unique_ptr<FontModule> font{};
+    std::unique_ptr<const FontModule> font{};
 
     std::unique_ptr<TextHandler> text{};
 
@@ -34,7 +37,7 @@ private:
 
     void addMessage(std::string message);
 
-    void setFont(std::string_view fontName);
+    void setFont(std::string_view _fontName);
     void setRepeat(uint8_t count);
 
     void transmit();

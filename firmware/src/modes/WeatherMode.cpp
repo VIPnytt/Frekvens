@@ -71,7 +71,7 @@ void WeatherMode::handle()
             const MiniFont font;
             TextHandler text(std::to_string(temperature.value()) + "°", font);
             const uint8_t textHeight{text.getHeight()};
-            const uint8_t marginsY{std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3};
+            const uint8_t marginsY{static_cast<uint8_t>(std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3)};
             Display.clearFrame();
             bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
             text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);

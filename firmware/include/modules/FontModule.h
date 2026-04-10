@@ -27,4 +27,12 @@ public:
 
 protected:
     explicit FontModule(std::string_view name) : name(name) {};
+
+    template <typename T, std::size_t N>
+    [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX = 0, int8_t offsetY = 0) const
+    {
+        return {bitmap, offsetX, offsetY};
+    }
+
+    [[nodiscard]] Symbol whitespace(uint8_t offsetX) const;
 };

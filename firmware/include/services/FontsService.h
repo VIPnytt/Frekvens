@@ -24,7 +24,7 @@ private:
 public:
     void begin();
 
-    [[nodiscard]] std::unique_ptr<FontModule> get(std::string_view fontName) const;
+    [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
 
     static constexpr std::array<std::string_view, COUNT_FONT> names{
 #if FONT_BRAILLE

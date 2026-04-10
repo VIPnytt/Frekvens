@@ -3,6 +3,7 @@
 #include "modes/TickerMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
+#include "fonts/SmallFont.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h" // NOLINT(misc-include-cleaner)
@@ -65,7 +66,7 @@ void TickerMode::configure()
     }
     if (!font)
     {
-        setFont(Fonts.names[0]);
+        setFont(SmallFont::name);
     }
     transmit();
 }
@@ -74,7 +75,7 @@ void TickerMode::begin() { pending = true; }
 
 void TickerMode::handle()
 {
-    if (pending && message.length())
+    if (pending)
     {
         text = std::make_unique<TextHandler>(message, *font);
         offsetX = GRID_COLUMNS;
@@ -98,7 +99,7 @@ void TickerMode::handle()
 
 void TickerMode::setFont(std::string_view fontName)
 {
-    if (std::unique_ptr<FontModule> _font = Fonts.get(fontName))
+    if (std::unique_ptr<const FontModule> _font = Fonts.get(fontName))
     {
         font = std::move(_font);
         Preferences Storage;
@@ -109,16 +110,15 @@ void TickerMode::setFont(std::string_view fontName)
     }
 }
 
-void TickerMode::setMessage(std::string _message)
+void TickerMode::setMessage(std::string_view _message)
 {
-    if (_message != message)
+    if (_message.length())
     {
-        message = _message;
+        message = _message.data();
         Preferences Storage;
         Storage.begin(name);
         Storage.putString("message", message.c_str());
         Storage.end();
-        ESP_LOGD(name, "received");
         pending = true;
     }
 }
@@ -140,9 +140,9 @@ void TickerMode::onReceive(JsonObjectConst payload,
         setFont(payload["font"].as<std::string_view>());
     }
     //  Message
-    if (payload["message"].is<std::string>())
+    if (payload["message"].is<std::string_view>())
     {
-        setMessage(payload["message"].as<std::string>());
+        setMessage(payload["message"].as<std::string_view>());
     }
 }
 
