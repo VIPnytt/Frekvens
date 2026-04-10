@@ -52,6 +52,7 @@ FontModule::Symbol BrailleFont::getChar(uint32_t character) const
     {
         return toSymbol(chars41[character - 0x61]);
     }
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case 0x20: // SPACE
@@ -84,6 +85,7 @@ FontModule::Symbol BrailleFont::getChar(uint32_t character) const
     case 0x3F: // ?
         return toSymbol(0b1011);
     }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }
 

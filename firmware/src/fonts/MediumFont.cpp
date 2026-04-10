@@ -6,6 +6,7 @@ FontModule::Symbol MediumFont::getChar(uint32_t character) const
     {
         return toSymbol(chars30[character - 0x30]);
     }
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case 0x20: // SPACE
@@ -17,5 +18,6 @@ FontModule::Symbol MediumFont::getChar(uint32_t character) const
     case 0x6F: // o
         return toSymbol(char6F);
     }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }

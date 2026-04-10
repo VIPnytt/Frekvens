@@ -34,6 +34,7 @@ FontModule::Symbol MiniFont::getChar(uint32_t character) const
     {
         return toSymbol(chars75[character - 0x75]);
     }
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case 0x20: // SPACE
@@ -77,5 +78,6 @@ FontModule::Symbol MiniFont::getChar(uint32_t character) const
     case 0x3C0: // π GREEK SMALL LETTER PI
         return toSymbol(char3C0);
     }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }

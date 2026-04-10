@@ -114,14 +114,14 @@ void ClockMode::drawTicker()
     if (fontHeigt > 5)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) + 1 + ((second + 2) / 4),
-                         second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1,
+                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
     if (fontHeigt > 5)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) + 1 + ((second + 2) / 4),
-                         second % 2 ? GRID_ROWS / 2 : (GRID_ROWS / 2) - 1,
+                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          INT8_MAX);
     }
     else if (second < 8)

@@ -26,6 +26,7 @@ FontModule::Symbol MicroFont::getChar(uint32_t character) const
     {
         return toSymbol(chars7B[character - 0x7B]);
     }
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case 0x20: // SPACE
@@ -49,5 +50,6 @@ FontModule::Symbol MicroFont::getChar(uint32_t character) const
     case 0x5F: // _
         return toSymbol(char2D);
     }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }
