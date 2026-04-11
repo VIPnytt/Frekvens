@@ -7,9 +7,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
 {
     if (text.length())
     {
-        size_t index = 0;
         {
-            int8_t yMax = 0; // NOLINT(misc-const-correctness)
+            size_t index = 0; // NOLINT(misc-const-correctness)
+            int8_t yMax = 0;  // NOLINT(misc-const-correctness)
             int8_t yMin = 0;
             for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
             {
@@ -30,7 +30,7 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             width = 0;
-            size_t index = 0;
+            size_t index = 0; // NOLINT(misc-const-correctness)
             for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
@@ -67,7 +67,7 @@ void TextHandler::draw(uint8_t brightness) const
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    size_t index = 0;
+    size_t index = 0; // NOLINT(misc-const-correctness)
     for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
     {
         FontModule::Symbol character{font->getChar(codepoint)};
@@ -144,7 +144,7 @@ bool TextHandler::nextCodepoint(size_t &index, uint32_t &buffer) const
     }
     while (bytes-- && index < text.length())
     {
-        const uint8_t _byte{static_cast<uint8_t>(text[index])};
+        const uint8_t _byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
         index++;
         if ((_byte & 0xC0U) != 0x80U)
         {

@@ -493,7 +493,7 @@ private:
         },
         // 0x53, S
         {
-            0b011111,
+            0b01111,
             0b10000,
             0b10000,
             0b01110,
@@ -739,7 +739,7 @@ private:
         },
     }};
 
-    static constexpr std::array<std::array<uint8_t, 6>, 7> chars6D = {{
+    static constexpr std::array<std::array<uint8_t, 5>, 7> chars6D = {{
         // 0x6D, m
         {
             0b11010,
