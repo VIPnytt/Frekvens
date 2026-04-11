@@ -1,3 +1,5 @@
+#if FONT_SMALL
+
 #include "fonts/SmallFont.h"
 
 FontModule::Symbol SmallFont::getChar(uint32_t character) const
