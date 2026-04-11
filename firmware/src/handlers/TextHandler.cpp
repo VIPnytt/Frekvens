@@ -8,8 +8,8 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     if (text.length())
     {
         {
-            uint8_t yMax = 0;
-            uint8_t yMin = 0;
+            int8_t yMax = 0; // NOLINT(misc-const-correctness)
+            int8_t yMin = 0;
             for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
@@ -18,7 +18,7 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
                     {
                         if (!bitmap.empty())
                         {
-                            yMax = max<uint8_t>(yMax, bitmap.size() + character.offsetY);
+                            yMax = max<int8_t>(yMax, bitmap.size() + character.offsetY);
                         }
                     },
                     character.bitmap);
@@ -113,7 +113,7 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     {
         return false;
     }
-    const uint8_t byte{static_cast<uint8_t>(text[index])};
+    const uint8_t byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
     index++;
     if (byte <= 0x7F)
     {
@@ -143,14 +143,14 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     }
     while (bytes-- && index < text.length())
     {
-        const uint8_t cont{text[index]};
+        const uint8_t continuationByte{text[index]}; // NOLINT(cppcoreguidelines-init-variables)
         index++;
-        if ((cont & 0xC0U) != 0x80U)
+        if ((continuationByte & 0xC0U) != 0x80U)
         {
             buffer = 0xFFFDU;
             break;
         }
-        buffer = (buffer << 6U) | (cont & 0x3FU);
+        buffer = (buffer << 6U) | (continuationByte & 0x3FU);
     }
     return true;
 }

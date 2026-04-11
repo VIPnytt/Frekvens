@@ -106,7 +106,7 @@ void MessageExtension::handle()
             lastMillis = millis();
             Display.flush();
         }
-        else if (messages.size())
+        else if (!messages.empty())
         {
             if (!font)
             {
