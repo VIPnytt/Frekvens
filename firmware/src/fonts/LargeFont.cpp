@@ -1,3 +1,5 @@
+#if FONT_LARGE
+
 #include "fonts/LargeFont.h"
 
 FontModule::Symbol LargeFont::getChar(uint32_t character) const
@@ -21,3 +23,5 @@ FontModule::Symbol LargeFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_LARGE

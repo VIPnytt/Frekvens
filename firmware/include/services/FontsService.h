@@ -26,18 +26,30 @@ public:
 
     [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
 
-    static constexpr std::array<std::string_view, COUNT_FONT> names{
+    static constexpr auto names = std::to_array<std::string_view>({
 #if FONT_BRAILLE
         BrailleFont::name,
 #endif
         MicroFont::name,
+#if FONT_MINI
         MiniFont::name,
+#endif // FONT_MINI
+#if FONT_SMALL
         SmallFont::name,
+#endif // FONT_SMALL
+#if FONT_MEDIUM
         MediumFont::name,
+#endif // FONT_MEDIUM
+#if FONT_MEDIUMBOLD
         MediumBoldFont::name,
+#endif // FONT_MEDIUMBOLD
+#if FONT_MEDIUMWIDE
         MediumWideFont::name,
+#endif // FONT_MEDIUMWIDE
+#if FONT_LARGE
         LargeFont::name,
-    };
+#endif // FONT_LARGE
+    });
 
     static FontsService &getInstance();
 };

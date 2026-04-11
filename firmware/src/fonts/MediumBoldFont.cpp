@@ -1,3 +1,5 @@
+#if FONT_MEDIUMBOLD
+
 #include "fonts/MediumBoldFont.h"
 
 FontModule::Symbol MediumBoldFont::getChar(uint32_t character) const
@@ -21,3 +23,5 @@ FontModule::Symbol MediumBoldFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_MEDIUMBOLD

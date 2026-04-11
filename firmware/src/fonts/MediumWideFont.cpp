@@ -1,3 +1,5 @@
+#if FONT_MEDIUMWIDE
+
 #include "fonts/MediumWideFont.h"
 
 FontModule::Symbol MediumWideFont::getChar(uint32_t character) const
@@ -21,3 +23,5 @@ FontModule::Symbol MediumWideFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_MEDIUMWIDE

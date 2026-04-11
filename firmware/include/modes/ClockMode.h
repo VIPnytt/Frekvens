@@ -15,17 +15,25 @@
 class ClockMode final : public ModeModule
 {
 private:
-    static constexpr std::array<std::string_view, 4> fontNames{
+    static constexpr auto fontNames = std::to_array<std::string_view>({
+#if FONT_MINI
         MiniFont::name,
+#endif
+#if FONT_MEDIUM
         MediumFont::name,
+#endif
+#if FONT_MEDIUMBOLD
         MediumBoldFont::name,
+#endif
+#if FONT_MEDIUMWIDE
         MediumWideFont::name,
-    };
+#endif
+    });
 
     tm local{};
 
     bool pending = false;
-    bool ticking = false;
+    bool ticking = true;
 
     int hour = 24;
     int minute = 60;
@@ -33,7 +41,7 @@ private:
 
     uint8_t fontHeigt = 0;
 
-    std::string fontName = MediumBoldFont::name.data();
+    std::string fontName = fontNames[0].data();
 
     void drawDigits();
     void drawTicker();

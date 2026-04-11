@@ -1,3 +1,5 @@
+#if FONT_MINI
+
 #include "fonts/MiniFont.h"
 
 FontModule::Symbol MiniFont::getChar(uint32_t character) const
@@ -81,3 +83,5 @@ FontModule::Symbol MiniFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_MINI

@@ -7,10 +7,11 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
 {
     if (text.length())
     {
+        size_t index = 0;
         {
             int8_t yMax = 0; // NOLINT(misc-const-correctness)
             int8_t yMin = 0;
-            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
+            for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -28,9 +29,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         }
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
-            index = 0;
             width = 0;
-            for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
+            size_t index = 0;
+            for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -59,15 +60,15 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     }
 }
 
-void TextHandler::draw(uint8_t brightness)
+void TextHandler::draw(uint8_t brightness) const
 {
     draw(max(0, (GRID_COLUMNS - width) / 2), (GRID_ROWS - height) / 2, brightness);
 }
 
-void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness)
+void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    index = 0;
-    for (uint32_t codepoint = 0; nextCodepoint(codepoint);)
+    size_t index = 0;
+    for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
     {
         FontModule::Symbol character{font->getChar(codepoint)};
         std::visit(
@@ -107,7 +108,7 @@ uint8_t TextHandler::getHeight() const { return height; }
 
 uint8_t TextHandler::getWidth() const { return width; }
 
-bool TextHandler::nextCodepoint(uint32_t &buffer)
+bool TextHandler::nextCodepoint(size_t &index, uint32_t &buffer) const
 {
     if (index >= text.length())
     {
@@ -143,14 +144,14 @@ bool TextHandler::nextCodepoint(uint32_t &buffer)
     }
     while (bytes-- && index < text.length())
     {
-        const uint8_t continuationByte{text[index]}; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t _byte{static_cast<uint8_t>(text[index])};
         index++;
-        if ((continuationByte & 0xC0U) != 0x80U)
+        if ((_byte & 0xC0U) != 0x80U)
         {
             buffer = 0xFFFDU;
             break;
         }
-        buffer = (buffer << 6U) | (continuationByte & 0x3FU);
+        buffer = (buffer << 6U) | (_byte & 0x3FU);
     }
     return true;
 }

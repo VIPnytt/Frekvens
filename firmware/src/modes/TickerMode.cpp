@@ -66,7 +66,11 @@ void TickerMode::configure()
     }
     if (!font)
     {
+#if FONT_SMALL
         setFont(SmallFont::name);
+#else
+        setFont(Fonts.names[0]);
+#endif // FONT_SMALL
     }
     transmit();
 }

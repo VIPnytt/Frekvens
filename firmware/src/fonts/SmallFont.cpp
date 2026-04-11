@@ -123,3 +123,5 @@ FontModule::Symbol SmallFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_SMALL

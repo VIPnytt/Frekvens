@@ -16,16 +16,19 @@ private:
     bool active = false;
     bool pending = false;
 
-    int8_t offsetY = 0;
-
+    uint8_t offsetY = 0;
     uint8_t repeat = 3;
+    uint8_t width = 0;
 
     int16_t offsetX = GRID_COLUMNS;
-    int16_t width = 0;
 
     unsigned long lastMillis = 0;
 
+#if FONT_SMALL
     std::string fontName = SmallFont::name.data();
+#else
+    std::string fontName = Fonts.names[0].data();
+#endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 

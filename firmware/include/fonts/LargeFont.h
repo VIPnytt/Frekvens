@@ -1,5 +1,7 @@
 #pragma once
 
+#if FONT_LARGE
+
 #include "modules/FontModule.h"
 
 #include <array>
@@ -75,3 +77,5 @@ public:
 
     [[nodiscard]] FontModule::Symbol getChar(uint32_t character) const override;
 };
+
+#endif // FONT_LARGE
