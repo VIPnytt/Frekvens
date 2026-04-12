@@ -5,7 +5,7 @@
 #include "config/constants.h"               // NOLINT(misc-include-cleaner)
 #include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/BitmapHandler.h"         // NOLINT(misc-include-cleaner)
-#include "services/DisplayService.h"
+#include "services/DisplayService.h"        // NOLINT(misc-include-cleaner)
 
 void ArrowMode::handle()
 {
