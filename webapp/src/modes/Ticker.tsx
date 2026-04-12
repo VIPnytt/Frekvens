@@ -44,7 +44,7 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection>
-            <div class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Message</div>
+            <div class="font-semibold uppercase text-content-alt-light dark:text-content-alt-dark text-xs">Message</div>
             <input
                 class="mt-1 w-full"
                 maxlength="255"
@@ -54,7 +54,7 @@ export const Sidebar: Component = () => {
                 type="text"
                 value={getMessage()}
             />
-            <div class="mt-3 text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">
+            <div class="font-semibold uppercase text-content-alt-light dark:text-content-alt-dark mt-3 text-xs">
                 Font
             </div>
             <Tooltip text="Character availability may vary">

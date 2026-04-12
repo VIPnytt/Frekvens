@@ -14,7 +14,7 @@ import { WebSocketWS } from "./WebSocket";
 export const name = "Message";
 
 const [getFont, setFont] = createSignal<string>("");
-const [getMessage, setMessage] = createSignal<string>(Cookies.get(`${name}.message`) || "");
+const [getMessage, setMessage] = createSignal<string>(Cookies.get(`${name}.message`) ?? "");
 const [getRepeat, setRepeat] = createSignal<number>(0);
 
 export const receiver = (json: { event?: string; font?: string; repeat?: number }) => {

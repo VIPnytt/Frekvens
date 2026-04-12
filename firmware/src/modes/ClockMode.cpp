@@ -90,44 +90,33 @@ void ClockMode::handle()
 
 void ClockMode::drawDigits()
 {
-    std::unique_ptr<const FontModule> font = Fonts.get(fontName);
+    const std::unique_ptr<const FontModule> font = Fonts.get(fontName);
     const TextHandler hh1(std::to_string(hour / 10), *font);
     const TextHandler hh2(std::to_string(hour % 10), *font);
     const TextHandler mm1(std::to_string(minute / 10), *font);
     const TextHandler mm2(std::to_string(minute % 10), *font);
-    fontHeigt = mm2.getHeight();
-    const uint8_t yTop = (GRID_ROWS / 2) - 1 - fontHeigt;
+    const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
+    strikethrough = mm2.getHeight() > 6;
     Display.clearFrame();
-    if (fontHeigt > 5)
-    {
-        // Large font: digits centred in a cellSize-wide cell on each side of the gap.
-        hh1.draw((GRID_COLUMNS / 2) - 1 - ((fontHeigt - hh1.getWidth()) / 2) - hh1.getWidth(), yTop);
-        hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontHeigt - hh2.getWidth()) / 2), yTop);
-        mm1.draw((GRID_COLUMNS / 2) - 1 - ((fontHeigt - mm1.getWidth()) / 2) - mm1.getWidth(), (GRID_ROWS / 2) + 1);
-        mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontHeigt - mm2.getWidth()) / 2), (GRID_ROWS / 2) + 1);
-    }
-    else
-    {
-        // Small font: digits flush to the center gap (no cell padding).
-        hh1.draw((GRID_COLUMNS / 2) - 1 - hh1.getWidth(), yTop);
-        hh2.draw((GRID_COLUMNS / 2) + 1, yTop);
-        mm1.draw((GRID_COLUMNS / 2) - 1 - mm1.getWidth(), GRID_ROWS / 2);
-        mm2.draw((GRID_COLUMNS / 2) + 1, GRID_ROWS / 2);
-    }
+    hh1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - hh1.getWidth()) / 2),
+             (GRID_ROWS / 2) - 1 - hh1.getHeight());
+    hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2), (GRID_ROWS / 2) - 1 - hh2.getHeight());
+    mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
+             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
+    mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
+             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
 }
 
 void ClockMode::drawTicker()
 {
-    // Large font: move a pixel along the center gap between digit rows
-    // Small font: sweep a pixel clockwise around the grid border
-    if (fontHeigt > 5)
+    if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
                          second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
-    if (fontHeigt > 5)
+    if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
                          second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,

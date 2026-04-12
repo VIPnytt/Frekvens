@@ -149,7 +149,7 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
 
 void MessageExtension::setFont(std::string_view _fontName)
 {
-    if (std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
+    if (const std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
     {
         fontName = _font->name.data();
         Preferences Storage;

@@ -33,13 +33,12 @@ private:
     tm local{};
 
     bool pending = false;
+    bool strikethrough = false;
     bool ticking = true;
 
     int hour = 24;
     int minute = 60;
     int second = 60;
-
-    uint8_t fontHeigt = 0;
 
     std::string fontName = fontNames[0].data();
 
