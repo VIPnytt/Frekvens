@@ -21,13 +21,13 @@ Frekvens replicates all original display modes while introducing a range of new 
 
 ### Key Highlights
 
-- **41 display modes**:
+- **35 display modes**:
   - Animations
   - Clocks
   - Interactive tools
   - Text scrolling
   - Streaming content
-  - Weather displays
+  - Weather
 - **17 extensions**:
   - Web app
   - Smart-home integrations
@@ -35,7 +35,7 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Accessories
   - API interfaces
   - Miscellaneous
-- **7 fonts**
+- **8 fonts**
 - Extensive [documentation](https://github.com/VIPnytt/Frekvens/wiki)
 
 ## ⚙️ Hardware
@@ -153,7 +153,7 @@ Define the Wi-Fi credentials in [`secrets.h`](https://github.com/VIPnytt/Frekven
 
 ### Weather
 
-Coordinates are required for most weather services:
+Coordinates are needed for most weather services:
 
 ```h
 #define LATITUDE "0.000"

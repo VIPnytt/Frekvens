@@ -2,90 +2,27 @@
 
 #include "modes/ClockMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MediumBoldFont.h"
-#include "fonts/MediumFont.h"     // NOLINT(misc-include-cleaner)
-#include "fonts/MediumWideFont.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 
-void ClockMode::borderPixel(uint8_t sec, uint8_t brightness) // NOLINT(bugprone-easily-swappable-parameters)
-{
-    // Segment boundaries (number of steps in each segment)
-    static constexpr uint8_t SEG1 = GRID_COLUMNS / 2U;        // top-right half
-    static constexpr uint8_t SEG2 = SEG1 + GRID_ROWS - 1U;    // right edge (y 1..GRID_ROWS-1)
-    static constexpr uint8_t SEG3 = SEG2 + GRID_COLUMNS - 1U; // bottom edge (x GRID_COLUMNS-2..0)
-    static constexpr uint8_t SEG4 = SEG3 + GRID_ROWS - 1U;    // left edge (y GRID_ROWS-2..0)
-    // remaining [SEG4,60): top-left half (x 1..GRID_COLUMNS/2-1)
-
-    uint8_t x = 0;
-    uint8_t y = 0;
-
-    if (sec < SEG1)
-    {
-        x = (GRID_COLUMNS / 2U) + sec;
-        y = 0U;
-    }
-    else if (sec < SEG2)
-    {
-        x = GRID_COLUMNS - 1U;
-        y = sec - (GRID_COLUMNS / 2U) + 1U;
-    }
-    else if (sec < SEG3)
-    {
-        x = SEG2 + GRID_COLUMNS - 2U - sec;
-        y = GRID_ROWS - 1U;
-    }
-    else if (sec < SEG4)
-    {
-        x = 0U;
-        y = SEG3 + GRID_ROWS - 2U - sec;
-    }
-    else
-    {
-        x = sec - SEG4 + 1U;
-        y = 0U;
-    }
-
-    Display.setPixel(x, y, brightness);
-}
-
 void ClockMode::configure()
 {
-    fonts = {
-        FontMini,
-        FontMedium,
-        FontMediumBold,
-        FontMediumWide,
-    };
-
     Preferences Storage;
     Storage.begin(name, true);
+    if (Storage.isKey("font"))
+    {
+        fontName = Storage.getString("font").c_str();
+    }
     if (Storage.isKey("ticking"))
     {
         ticking = Storage.getBool("ticking");
     }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
-    }
-    if (font == nullptr)
-    {
-        font = FontMediumBold;
-        cellSize = TextHandler("0", font).getHeight();
-    }
-
+    Storage.end();
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
     {
@@ -99,9 +36,9 @@ void ClockMode::configure()
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const FontModule *_font : fonts)
+        for (const std::string_view _font : fontNames)
         {
-            options.add(_font->name);
+            options.add(_font);
         }
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
@@ -128,33 +65,10 @@ void ClockMode::configure()
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.ticking}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
-
     transmit();
 }
 
 void ClockMode::begin() { pending = true; }
-
-void ClockMode::drawDigits()
-{
-    Display.clearFrame();
-
-    TextHandler hh1(std::to_string(hour / 10), font);
-    TextHandler hh2(std::to_string(hour % 10), font);
-    TextHandler mm1(std::to_string(minute / 10), font);
-    TextHandler mm2(std::to_string(minute % 10), font);
-
-    // Small font: digits flush to the center gap (no cell padding).
-    // Large font: digits centred in a cellSize-wide cell on each side of the gap.
-    const int8_t yTop = (GRID_ROWS / 2) - 1 - cellSize;
-    const int8_t yBot = (cellSize <= 5) ? (GRID_ROWS / 2) : (GRID_ROWS / 2) + 1;
-
-    auto xPad = [this](uint8_t width) -> int8_t { return (cellSize <= 5) ? 0 : (cellSize - width) / 2; };
-
-    hh1.draw((GRID_COLUMNS / 2) - 1 - xPad(hh1.getWidth()) - hh1.getWidth(), yTop);
-    hh2.draw((GRID_COLUMNS / 2) + 1 + xPad(hh2.getWidth()), yTop);
-    mm1.draw((GRID_COLUMNS / 2) - 1 - xPad(mm1.getWidth()) - mm1.getWidth(), yBot);
-    mm2.draw((GRID_COLUMNS / 2) + 1 + xPad(mm2.getWidth()), yBot);
-}
 
 void ClockMode::handle()
 {
@@ -169,48 +83,83 @@ void ClockMode::handle()
         }
         if (ticking && second != local.tm_sec)
         {
-            if (cellSize <= 5)
-            {
-                // Small font: sweep a pixel clockwise around the grid border
-                borderPixel(second, 0);
-                second = static_cast<uint8_t>(local.tm_sec);
-                borderPixel(second, INT8_MAX);
-            }
-            else
-            {
-                // Large font: move a pixel along the center gap between digit rows
-                Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
-                                 (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
-                                 0);
-                second = static_cast<uint8_t>(local.tm_sec);
-                Display.setPixel((GRID_COLUMNS / 2) - 8 + ((second + 2) / 4),
-                                 (second % 2) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
-                                 INT8_MAX);
-            }
+            drawTicker();
         }
     }
 }
 
-void ClockMode::setFont(const char *fontName)
+void ClockMode::drawDigits()
 {
-    if (font == nullptr || strcmp(font->name, fontName) != 0)
+    const std::unique_ptr<const FontModule> font = Fonts.get(fontName);
+    const TextHandler hh1(std::to_string(hour / 10), *font);
+    const TextHandler hh2(std::to_string(hour % 10), *font);
+    const TextHandler mm1(std::to_string(minute / 10), *font);
+    const TextHandler mm2(std::to_string(minute % 10), *font);
+    const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
+    strikethrough = mm2.getHeight() > 6;
+    Display.clearFrame();
+    hh1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - hh1.getWidth()) / 2),
+             (GRID_ROWS / 2) - 1 - hh1.getHeight());
+    hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2), (GRID_ROWS / 2) - 1 - hh2.getHeight());
+    mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
+             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
+    mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
+             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
+}
+
+void ClockMode::drawTicker()
+{
+    if (strikethrough)
     {
-        for (FontModule *_font : fonts)
-        {
-            if (!strcmp(_font->name, fontName))
-            {
-                font = _font;
-                cellSize = TextHandler("0", font).getHeight();
-                Preferences Storage;
-                Storage.begin(name);
-                Storage.putString("font", font->name);
-                Storage.end();
-                pending = true;
-                transmit();
-                return;
-            }
-        }
-        ESP_LOGD(name, "unsupported font %s", fontName); // NOLINT(cppcoreguidelines-avoid-do-while)
+        Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
+                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         0);
+    }
+    second = local.tm_sec;
+    if (strikethrough)
+    {
+        Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
+                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         INT8_MAX);
+    }
+    else if (second < 8)
+    {
+        Display.setPixel((GRID_COLUMNS / 2) + second - 1, (GRID_ROWS / 2) - 8, 0);
+        Display.setPixel((GRID_COLUMNS / 2) + second, (GRID_ROWS / 2) - 8, INT8_MAX);
+    }
+    else if (second < 8 + 15)
+    {
+        Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 16 + second, 0);
+        Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 15 + second, INT8_MAX);
+    }
+    else if (second < 8 + 30)
+    {
+        Display.setPixel((GRID_COLUMNS / 2) + 30 - second, (GRID_ROWS / 2) + 7, 0);
+        Display.setPixel((GRID_COLUMNS / 2) + 29 - second, (GRID_ROWS / 2) + 7, INT8_MAX);
+    }
+    else if (second < 8 + 45)
+    {
+        Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 45 - second, 0);
+        Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 44 - second, INT8_MAX);
+    }
+    else
+    {
+        Display.setPixel((GRID_COLUMNS / 2) - 61 + second, (GRID_ROWS / 2) - 8, 0);
+        Display.setPixel((GRID_COLUMNS / 2) - 60 + second, (GRID_ROWS / 2) - 8, INT8_MAX);
+    }
+}
+
+void ClockMode::setFont(std::string_view _fontName)
+{
+    if (std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
+    {
+        fontName = _font->name.data();
+        Preferences Storage;
+        Storage.begin(name);
+        Storage.putString("font", fontName.c_str());
+        Storage.end();
+        pending = true;
+        transmit();
     }
 }
 
@@ -231,11 +180,11 @@ void ClockMode::setTicking(bool _ticking)
 void ClockMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["font"].set(font->name);
+    doc["font"].set(fontName);
     JsonArray _fonts{doc["fonts"].to<JsonArray>()};
-    for (const FontModule *_font : fonts)
+    for (const std::string_view _font : fontNames)
     {
-        _fonts.add(_font->name);
+        _fonts.add(_font);
     }
     doc["ticking"].set(ticking);
     Device.transmit(doc.as<JsonObjectConst>(), name);
@@ -245,9 +194,9 @@ void ClockMode::onReceive(JsonObjectConst payload,
                           const char *source) // NOLINT(misc-unused-parameters)
 {
     // Font
-    if (payload["font"].is<const char *>())
+    if (payload["font"].is<std::string_view>())
     {
-        setFont(payload["font"].as<const char *>());
+        setFont(payload["font"].as<std::string_view>());
     }
     // Ticking
     if (payload["ticking"].is<bool>())

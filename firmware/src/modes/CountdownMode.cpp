@@ -61,12 +61,9 @@ void CountdownMode::handle()
     const std::chrono::minutes _minutes = std::chrono::duration_cast<std::chrono::minutes>(_nanoseconds - _hours);
     const int64_t hours = _hours.count();
     const int64_t minutes = _minutes.count();
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-    const int64_t seconds = std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count();
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-    const uint8_t _upper = static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? hours % 100 : minutes, 0, 99));
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-    const uint8_t _lower = static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? minutes : seconds, 0, 99));
+    const int64_t seconds{std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count()};
+    const uint8_t _upper{static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? hours % 100 : minutes, 0, 99))};
+    const uint8_t _lower{static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? minutes : seconds, 0, 99))};
     if (_lower != lower || _upper != upper)
     {
         upper = _upper;
@@ -74,23 +71,24 @@ void CountdownMode::handle()
         if (seconds >= 0 && minutes >= 0 && hours >= 0)
         {
             Display.clearFrame();
+            const MediumFont font;
             {
-                TextHandler topLeft = TextHandler(std::to_string(upper / 10), FontMedium);
+                TextHandler topLeft{std::to_string(upper / 10), font};
                 topLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - topLeft.getWidth()) / 2) - topLeft.getWidth(),
                              (GRID_ROWS / 2) - 1 - ((7 - topLeft.getHeight()) / 2) - topLeft.getHeight());
             }
             {
-                TextHandler topRight = TextHandler(std::to_string(upper % 10), FontMedium);
+                TextHandler topRight{std::to_string(upper % 10), font};
                 topRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - topRight.getWidth()) / 2),
                               (GRID_ROWS / 2) - 1 + ((7 - topRight.getHeight()) / 2) - topRight.getHeight());
             }
             {
-                TextHandler bottomLeft = TextHandler(std::to_string(lower / 10), FontMedium);
+                TextHandler bottomLeft{std::to_string(lower / 10), font};
                 bottomLeft.draw((GRID_COLUMNS / 2) - 1 - ((7 - bottomLeft.getWidth()) / 2) - bottomLeft.getWidth(),
                                 (GRID_ROWS / 2) + 1 - ((7 - bottomLeft.getHeight()) / 2));
             }
             {
-                TextHandler bottomRight = TextHandler(std::to_string(lower % 10), FontMedium);
+                TextHandler bottomRight{std::to_string(lower % 10), font};
                 bottomRight.draw((GRID_COLUMNS / 2) + 1 + ((7 - bottomRight.getWidth()) / 2),
                                  (GRID_ROWS / 2) + 1 + ((7 - bottomRight.getHeight()) / 2));
             }

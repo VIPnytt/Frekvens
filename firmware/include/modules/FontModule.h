@@ -1,13 +1,11 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
+#include <span>
+#include <string_view>
+#include <variant>
 
 class FontModule
 {
-protected:
-    explicit FontModule(const char *name) : name(name) {};
-
 public:
     virtual ~FontModule() = default;
 
@@ -18,18 +16,23 @@ public:
 
     struct Symbol
     {
-        const std::vector<uint8_t> bitmap{};
-        const int8_t offsetX = 0;
-        const int8_t offsetY = 0;
+        const std::variant<std::span<const uint8_t>, std::span<const uint16_t>> bitmap{};
+        uint8_t offsetX{};
+        int8_t offsetY{};
     };
 
-    struct SymbolExtended
-    {
-        const wchar_t hex = 0;
-        const Symbol symbol;
-    };
-
-    const char *const name;
+    const std::string_view name{};
 
     [[nodiscard]] virtual Symbol getChar(uint32_t character) const = 0;
+
+protected:
+    explicit FontModule(std::string_view name) : name(name) {};
+
+    template <typename T, std::size_t N>
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+    [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX = 0, int8_t offsetY = 0) const;
+
+    [[nodiscard]] Symbol whitespace(uint8_t offsetX) const;
 };
+
+#include "modules/FontModule.tpp"

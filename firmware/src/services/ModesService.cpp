@@ -146,8 +146,8 @@ void ModesService::setMode(ModeModule *mode, bool power)
     {
         switch (_name[i])
         {
-        case 0x20: // Space
-        case 0x2D: // Hyphen-minus
+        case 0x20: // SPACE
+        case 0x2D: // -
             words.push_back("");
             ++_line;
             break;
@@ -157,9 +157,10 @@ void ModesService::setMode(ModeModule *mode, bool power)
     }
     uint8_t height = 0; // NOLINT(misc-const-correctness)
     std::vector<std::unique_ptr<TextHandler>> lines;
+    const MicroFont font;
     for (const std::string &word : words)
     {
-        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, FontMicro);
+        std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, font);
         const uint8_t lineHeight = handler->getHeight();
         if (height + lineHeight >= GRID_ROWS)
         {
@@ -171,7 +172,7 @@ void ModesService::setMode(ModeModule *mode, bool power)
     const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
     uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
     Display.clearFrame();
-    for (std::unique_ptr<TextHandler> &line : lines)
+    for (const std::unique_ptr<TextHandler> &line : lines)
     {
         line->draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line->getWidth())) / 2, y);
         y += line->getHeight() + margin;

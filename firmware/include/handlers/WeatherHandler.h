@@ -33,17 +33,19 @@ public:
         WIND,
     };
 
-    const char *const name;
+    const std::string_view name{};
 
     const unsigned long interval;
 
     virtual void update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
-                        unsigned long &lastMillis);
+                        unsigned long &lastMillis) = 0;
 
     [[nodiscard]] std::span<const uint16_t> getSign(Conditions condition);
 
 protected:
-    explicit WeatherHandler(const char *name, unsigned long interval = 1U << 20U) : name(name), interval(interval) {};
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+    explicit WeatherHandler(std::string_view name, unsigned long interval = 1U << 20U)
+        : name(name), interval(interval) {};
 
     static constexpr std::array<uint16_t, 7> conditionClear{
         0b0011100,

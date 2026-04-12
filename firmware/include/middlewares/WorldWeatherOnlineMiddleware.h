@@ -44,7 +44,7 @@ private:
 public:
     static constexpr std::string_view name{"World Weather Online"};
 
-    explicit WorldWeatherOnlineMiddleware() : WeatherHandler(name.data())
+    explicit WorldWeatherOnlineMiddleware() : WeatherHandler(name)
     {
         host = "api.worldweatheronline.com";
         path = "/premium/v1/weather.ashx";

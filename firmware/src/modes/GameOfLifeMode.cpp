@@ -57,10 +57,11 @@ void GameOfLifeMode::handle()
             hour = local.tm_hour;
             minute = local.tm_min;
             Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-            TextHandler(std::to_string(hour / 10), FontMini).draw(GRID_COLUMNS / 2 - 8, 0);
-            TextHandler(std::to_string(hour % 10), FontMini).draw(GRID_COLUMNS / 2 - 4, 0);
-            TextHandler(std::to_string(minute / 10), FontMini).draw(GRID_COLUMNS / 2 + 1, 0);
-            TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
+            const MiniFont font;
+            TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2 - 8, 0);
+            TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2 - 4, 0);
+            TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2 + 1, 0);
+            TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2 + 5, 0);
             pending = false;
         }
         std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)), false);

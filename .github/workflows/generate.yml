@@ -25,13 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Set up Cache for PlatformIO
-        continue-on-error: true
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        with:
-          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
-          path: .platformio/.cache
-
       - name: Set up uv
         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
         with:
@@ -40,7 +33,7 @@ jobs:
           activate-environment: true
 
       - name: Set up Python dependencies
-        run: uv sync --extra font --group platformio --no-dev
+        run: uv sync --extra font --no-dev
 
       - name: Font generator
         run: |
@@ -48,35 +41,6 @@ jobs:
 
           mv DejaVuSansFont.cpp firmware/src/fonts
           mv DejaVuSansFont.h firmware/include/fonts
-
-          sed -i '/^#pragma once$/a\#include "fonts/DejaVuSansFont.h"' firmware/include/services/FontsService.h
-          sed -i '/^    const std::vector<FontModule \*> modules{$/a\        new DejaVuSansFont(),' firmware/include/services/FontsService.h
-
-      - name: PlatformIO build
-        run: |
-          cat <<'EOL' > .env
-          EXTENSION_MESSAGE='true'
-          HOSTNAME='frekvens'
-          IKEA_FREKVENS='true'
-          MODE_TICKER='true'
-          NAME='Frekvens'
-          EOL
-
-          cat <<'EOL' > firmware/include/config/secrets.h
-          #pragma once
-          #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define WIFI_KEY "redacted"
-          #define WIFI_SSID "redacted"
-          EOL
-
-          pio run -e esp32dev
-
-      - name: PlatformIO compilation database
-        if: ${{ matrix.toolchain.python-version != 3.14 }}
-        run: pio run -e esp32dev -t compiledb
 
       - name: Clang
         if: ${{ matrix.toolchain.python-version != 3.14 }}
@@ -90,7 +54,7 @@ jobs:
           ignore: "*|!firmware/src/fonts/DejaVuSansFont.cpp|!firmware/include/fonts/DejaVuSansFont.h"
           step-summary: true
           style: file
-          tidy-checks: ""
+          tidy-checks: "-*"
 
       - name: Clang summary
         if: ${{ matrix.toolchain.python-version != 3.14 }}

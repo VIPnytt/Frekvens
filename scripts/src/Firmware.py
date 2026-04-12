@@ -21,6 +21,7 @@ class Firmware:
         self._define_pio()
 
     def _define_env(self) -> None:
+        count_font = 7
         count_weather = 0
         for option, _value in self.project.dotenv.items():
             if (value := _value or "") in [
@@ -33,7 +34,9 @@ class Firmware:
                     ]
                 )
                 if value == "true":
-                    if option.startswith("WEATHER_"):
+                    if option.startswith("FONT_"):
+                        count_font += 1
+                    elif option.startswith("WEATHER_"):
                         count_weather += 1
             else:
                 self.project.env.Append(
@@ -71,6 +74,7 @@ class Firmware:
                 {
                     option: value
                     for option, value in {
+                        "COUNT_FONT": count_font,
                         "COUNT_WEATHER": count_weather,
                     }.items()
                     if value

@@ -44,8 +44,9 @@ void OtaExtension::onStart()
 {
     ESP_LOGI(Ota->name, "updating"); // NOLINT(cppcoreguidelines-avoid-do-while)
     Modes.setActive(false);
+    const LargeFont font;
     Display.clearFrame();
-    TextHandler("U", FontLarge).draw();
+    TextHandler("U", font).draw();
     Display.flush();
     Display.setPower(true);
     timerWrite(Display.timer, 1'000'000 / (1U << 8U)); // 1 fps

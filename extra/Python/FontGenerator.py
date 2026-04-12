@@ -14,12 +14,11 @@ import unicodedata
 
 
 class FontGenerator:
-    count: int
+    characters: dict[int, tuple[int, int, str | None]]
     path: pathlib.Path
     size: int
 
     def __init__(self, path: pathlib.Path | str, size: int = 8) -> None:
-        self.count = 0
         self.path = pathlib.Path(path)
         self.size = size
 
@@ -94,7 +93,7 @@ class FontGenerator:
         return characters
 
     def source(self) -> list[str]:
-        self.count = 0
+        self.characters = {}
         unique = self.path.stem
         name = unique
         with fontTools.ttLib.TTFont(self.path) as font:
@@ -104,16 +103,17 @@ class FontGenerator:
                 elif record.nameID == 6:
                     unique = record.toUnicode()
         return [
-            self._source_h(unique),
-            self._source_cpp(unique, name),
+            self._source_h(unique, name),
+            self._source_cpp(unique),
         ]
 
-    def _source_h(self, unique: str) -> str:
-        bitmaps = self._characters_to_bitmaps(self._font_to_characters())
-        font = [
+    def _source_h(self, unique: str, name: str) -> str:
+        h = [
             "#pragma once",
             "",
             '#include "modules/FontModule.h"',
+            "",
+            "#include <array>",
             "",
             "//",
             "// @warning Automatically generated file",
@@ -122,142 +122,73 @@ class FontGenerator:
             f"class {unique}Font final : public FontModule",
             "{",
             "private:",
-            "    static inline const std::vector<Symbol> ascii{",
         ]
-        for cp in range(0x20, 0x80):
-            character = chr(cp)
-            if character in bitmaps:
-                bitmap, offsetX, offsetY = self._crop(bitmaps[character])
-                font.extend(
-                    [
-                        "        {",
-                        f"            // 0x{cp:X}, {self._character_to_description(character)}",
-                    ]
-                )
-                if bitmap:
-                    font.append("            {")
-                    if len(bitmap[0]) > 8:
-                        font.append("                /*")
-                        logging.debug("Character too wide: %s", character)
-                    for row in bitmap:
-                        font.append(f"                0b{row},")
-                    if len(bitmap[0]) > 8:
-                        font.append("                */")
-                    font.append("            },")
-                else:
-                    font.append("            {},")
-                    if cp == 0x20:
-                        offsetX = self.size // 2
-                font.extend(
-                    [
-                        f"            {offsetX},",
-                        f"            {offsetY},",
-                        "        },",
-                    ]
-                )
-                self.count += 1
-            else:
-                font.append("        {},")
-        font.extend(
-            [
-                "    };",
-                "",
-                "    static inline const std::vector<SymbolExtended> unicode{",
-            ]
-        )
-        for character in sorted(bitmaps):
+        bitmaps = self._characters_to_bitmaps(self._font_to_characters())
+        for character in bitmaps:
             bitmap, offsetX, offsetY = self._crop(bitmaps[character])
-            cp = ord(character)
-            if 0x80 <= cp <= 0x10FFFF:
+            if bitmap:
+                cp = ord(character)
                 comment = self._character_to_description(character)
-                if self.count >= 2**10:
-                    font.append("        /*")
-                    logging.debug("Too many characters, skipping: %s", character)
-                elif bitmap and len(bitmap[0]) > 8:
-                    font.append("        /*")
-                    logging.debug("Character too wide: %s", character)
-                font.append("        {")
+                self.characters[cp] = (offsetX, offsetY, comment)
                 if comment:
-                    font.append(f"            0x{cp:X}, // {comment}")
+                    h.append(f"    // 0x{cp:X}, {comment}")
                 else:
-                    font.append(f"            0x{cp:X},")
-                font.append("            {")
-                if bitmap:
-                    font.append("                {")
-                    for row in bitmap:
-                        font.append(f"                    0b{row},")
-                    font.append("                },")
-                else:
-                    font.append("                {},")
-                if cp == 0xA0:
-                    offsetX = self.size // 2
-                font.extend(
-                    [
-                        f"                {offsetX},",
-                        f"                {offsetY},",
-                        "            },",
-                        "        },",
-                    ]
+                    h.append(f"    // 0x{cp:X}")
+                h.append(
+                    f"    static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}> _{cp:X} = {{"
                 )
-                if self.count >= 2**10 or (bitmap and len(bitmap[0]) > 8):
-                    font.append("        */")
-                else:
-                    self.count += 1
-        font.extend(
+                for row in bitmap:
+                    h.append(f"        0b{row},")
+                h.append("    };")
+                h.append("")
+        h.extend(
             [
-                "    };",
-                "",
                 "public:",
-                f"    explicit {unique}Font();",
+                f'    static constexpr std::string_view name = "{name}";',
+                "",
+                f"    explicit {unique}Font() : FontModule(name) {{}};",
                 "",
                 "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
                 "};",
                 "",
-                f"extern {unique}Font *Font{unique}; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
+            ]
+        )
+        pathlib.Path(f"{unique}Font.h").write_text("\n".join(h), encoding="utf-8")
+        return f"{unique}Font.h"
+
+    def _source_cpp(self, unique: str) -> str:
+        cpp = [
+            f'#include "fonts/{unique}Font.h"',
+            "",
+            "//",
+            "// @warning Automatically generated file",
+            "//",
+            "",
+            f"FontModule::Symbol {unique}Font::getChar(uint32_t character) const",
+            "{",
+            "    switch (character)",
+            "    {",
+        ]
+        count = 0
+        prefix = ""
+        for cp, (offsetX, offsetY, comment) in self.characters.items():
+            if count == (1 << 7):
+                prefix = "    // "
+            count += 1
+            if comment:
+                cpp.append(f"    {prefix}case 0x{cp:X}: // {comment}")
+            else:
+                cpp.append(f"    {prefix}case 0x{cp:X}:")
+            cpp.append(f"    {prefix}    return {{_{cp:X}, {offsetX}, {offsetY}}};")
+        cpp.extend(
+            [
+                "    }",
+                "    return {};",
+                "}",
                 "",
             ]
         )
-        with open(f"{unique}Font.h", "w", encoding="utf-8") as f:
-            f.write("\n".join(font))
-        return f"{unique}Font.h"
-
-    def _source_cpp(self, unique: str, name: str) -> str:
-        with open(f"{unique}Font.cpp", "w", encoding="utf-8") as f:
-            f.write(
-                "\n".join(
-                    [
-                        f'#include "fonts/{unique}Font.h"',
-                        "",
-                        "//",
-                        "// @warning Automatically generated file",
-                        "//",
-                        "",
-                        f"{unique}Font *Font{unique} = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)",
-                        "",
-                        f'{unique}Font::{unique}Font() : FontModule("{name}") {{ Font{unique} = this; }}',
-                        "",
-                        f"FontModule::Symbol {unique}Font::getChar(uint32_t character) const",
-                        "{",
-                        "    if (character >= 0x20 && character <= 0x7F && character < ascii.size() + 0x20)",
-                        "    {",
-                        "        return ascii[character - 0x20];",
-                        "    }",
-                        "    if (character >= 0x80 && character <= 0x10FFFF)",
-                        "    {",
-                        "        for (const SymbolExtended &extended : unicode)",
-                        "        {",
-                        "            if (extended.hex == character)",
-                        "            {",
-                        "                return extended.symbol;",
-                        "            }",
-                        "        }",
-                        "    }",
-                        "    return {};",
-                        "}",
-                        "",
-                    ]
-                )
-            )
+        pathlib.Path(f"{unique}Font.cpp").write_text("\n".join(cpp), encoding="utf-8")
         return f"{unique}Font.cpp"
 
     @staticmethod

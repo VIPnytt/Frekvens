@@ -4,7 +4,6 @@
 
 #include "config/constants.h"     // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
-#include "modules/FontModule.h"
 #include "modules/ModeModule.h"
 
 #include <bits/unique_ptr.h>
@@ -21,14 +20,14 @@ private:
 
     unsigned long lastMillis = 0;
 
-    FontModule *font = nullptr;
-
     std::string message = NAME;
 
-    std::unique_ptr<TextHandler> text = nullptr;
+    std::unique_ptr<const FontModule> font{};
 
-    void setFont(const char *fontName);
-    void setMessage(std::string _message);
+    std::unique_ptr<TextHandler> text{};
+
+    void setFont(std::string_view fontName);
+    void setMessage(std::string_view _message);
 
     void transmit();
 
