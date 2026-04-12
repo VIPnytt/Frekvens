@@ -29,7 +29,7 @@ private:
 #endif
     });
     bool odd = false;
-    
+
     uint8_t blink = 0;
     uint8_t lower = 0;
     uint8_t upper = 0;
