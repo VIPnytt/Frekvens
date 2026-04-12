@@ -2,9 +2,9 @@
 
 #include "modes/ArrowMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/MicrophoneExtension.h"
-#include "handlers/BitmapHandler.h"
+#include "config/constants.h"               // NOLINT(misc-include-cleaner)
+#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"         // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
 void ArrowMode::handle()

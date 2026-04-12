@@ -1,6 +1,6 @@
 #pragma once
 
-#include "modules/HandlerModule.h"
+#include "modules/HandlerModule.h" // NOLINT(misc-include-cleaner)
 
 #include <span>
 #include <string_view>

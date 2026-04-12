@@ -3,11 +3,11 @@
 #include "modes/WeatherMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h" // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
