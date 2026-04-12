@@ -66,23 +66,26 @@ private:
         0b000010000,
         0b001010100,
     };
-    static constexpr std::array<uint16_t, 5> arrow4{
+    static constexpr std::array<uint8_t, 5> arrow4{
         0b0001000,
         0b0001000,
         0b0000000,
         0b1000001,
         0b0000000,
     };
-    static constexpr std::array<uint16_t, 2> arrow5{
+    static constexpr std::array<uint8_t, 2> arrow5{
         0b00100,
         0b10101,
     };
 
-    static constexpr std::array<std::span<const uint16_t>, 6> arrow{
+    static constexpr std::array<std::span<const uint16_t>, 4> arrows0{
         arrow0,
         arrow1,
         arrow2,
         arrow3,
+    };
+
+    static constexpr std::array<std::span<const uint8_t>, 2> arrows1{
         arrow4,
         arrow5,
     };

@@ -8,6 +8,7 @@
 #include "services/ModesService.h"
 
 #include <Preferences.h>
+#include <span>
 
 SignalExtension *Signal = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
@@ -29,14 +30,14 @@ void SignalExtension::handle()
 {
     if (Display.getPower() && millis() - lastMillis > 1'000 * duration)
     {
-        if (signals.size())
+        if (!signals.empty())
         {
             Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
 
             Display.clearFrame();
-            BitmapHandler(signals.front()).draw();
+            BitmapHandler(std::span<const uint16_t>{signals.front()}).draw();
             signals.erase(signals.begin());
             lastMillis = millis();
             Display.flush();

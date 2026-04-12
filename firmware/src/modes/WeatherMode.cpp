@@ -67,14 +67,21 @@ void WeatherMode::handle()
         provider->update(condition, temperature, lastMillis);
         if (condition.has_value() && temperature.has_value())
         {
-            BitmapHandler bitmap(provider->getSign(condition.value()));
-            const MiniFont font;
-            TextHandler text(std::to_string(temperature.value()) + "°", font);
-            const uint8_t textHeight{text.getHeight()};
-            const uint8_t marginsY{static_cast<uint8_t>(std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3)};
-            Display.clearFrame();
-            bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
-            text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
+            std::visit(
+                [&](auto sign)
+                {
+                    const BitmapHandler bitmap(sign);
+                    const MiniFont font;
+                    const TextHandler text(std::to_string(temperature.value()) + "°", font);
+                    const uint8_t textHeight{text.getHeight()};
+                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                    const uint8_t marginsY{
+                        static_cast<uint8_t>(std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3)};
+                    Display.clearFrame();
+                    bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
+                    text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
+                },
+                provider->getSign(condition.value()));
             transmit();
         }
     }
