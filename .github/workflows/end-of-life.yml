@@ -47,7 +47,7 @@ jobs:
 
       - name: Node.js wheel binaries version
         id: lock
-        run: echo "version=$(yq -p=toml '.package[] | select(.name == \"nodejs-wheel-binaries\") | .version' uv.lock)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(yq -p=toml '.package[] | select(.name == "nodejs-wheel-binaries") | .version' uv.lock)" >> "$GITHUB_OUTPUT"
 
   nodejs:
     name: Node.js
