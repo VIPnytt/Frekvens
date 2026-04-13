@@ -44,7 +44,7 @@ jobs:
 
       - name: Clang format
         if: ${{ matrix.toolchain.python-version != 3.14 }}
-        uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
+        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
         id: clang
         env:
           clang-version: 22
@@ -133,7 +133,7 @@ jobs:
 
       - name: Clang format
         if: ${{ matrix.toolchain.python-version != 3.14 }}
-        uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
+        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
         id: clang
         env:
           clang-version: 22
@@ -206,7 +206,7 @@ jobs:
 
       - name: Clang format
         if: ${{ matrix.toolchain.python-version != 3.14 }}
-        uses: cpp-linter/cpp-linter-action@24467985494bed9bfc398489b6ec12469beaf4da # v2.17.0
+        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
         id: clang
         env:
           clang-version: 22
