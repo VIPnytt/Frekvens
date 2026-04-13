@@ -47,7 +47,7 @@ jobs:
 
       - name: Node.js wheel binaries version
         id: lock
-        run: echo "version=$(yq '.package[] | select(.name == \"nodejs-wheel-binaries\") | .version' uv.lock)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(yq -p=toml '.package[] | select(.name == \"nodejs-wheel-binaries\") | .version' uv.lock)" >> "$GITHUB_OUTPUT"
 
   nodejs:
     name: Node.js
@@ -55,10 +55,10 @@ jobs:
       - idle-check
       - nodejs-wheel
     runs-on: ubuntu-slim
-    continue-on-error: true
     if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
+      fail-fast: false
       matrix:
         node-version:
           - ${{ needs.nodejs-wheel.outputs.version }}
@@ -76,10 +76,10 @@ jobs:
     name: Python
     needs: idle-check
     runs-on: ubuntu-slim
-    continue-on-error: true
     if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - python-version: '3.10'
