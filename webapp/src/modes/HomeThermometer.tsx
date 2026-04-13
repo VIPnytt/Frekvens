@@ -3,6 +3,7 @@ import { type Component, createSignal } from "solid-js";
 
 import { Icon } from "../components/Icon";
 import { Tooltip } from "../components/Tooltip";
+import { TEMPERATURE_UNIT } from "../config/constants";
 import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from "../config/modules";
 import { name as ExtensionHomeAssistantName } from "../extensions/HomeAssistant";
 import { name as ExtensionMqttName, MqttTopic } from "../extensions/Mqtt";
@@ -12,8 +13,8 @@ import { MainComponent as ModesMainComponent, name as ModesName } from "../servi
 
 export const name = "Home thermometer";
 
-const [getIndoor, setIndoor] = createSignal<number>(0);
-const [getOutdoor, setOutdoor] = createSignal<number>(0);
+const [getIndoor, setIndoor] = createSignal<number | undefined>(undefined);
+const [getOutdoor, setOutdoor] = createSignal<number | undefined>(undefined);
 
 export const receiver = (json: { indoor?: number; outdoor?: number }) => {
     json?.indoor !== undefined && setIndoor(json.indoor);
@@ -24,7 +25,11 @@ export const Main: Component = () => (
     <ModesMainComponent
         icon={mdiHomeThermometer}
         internal={true}
-        text="Smart-home integration"
+        text={
+            getIndoor() === undefined || getOutdoor() === undefined
+                ? "Smart-home integration"
+                : `${getIndoor()}${TEMPERATURE_UNIT || "°"} / ${getOutdoor()}${TEMPERATURE_UNIT || "°"}`
+        }
     />
 );
 
@@ -44,8 +49,27 @@ export const Link: Component = () => (
 );
 
 export const MainSecondary: Component = () => {
-    const payload = `{"indoor": ${getIndoor()}, "outdoor": ${getOutdoor()}}`;
-    const payloadAlt = `{"${name}": ${payload}}`;
+    const fallback = (() => {
+        switch (TEMPERATURE_UNIT) {
+            case "°C":
+                return {
+                    indoor: 20,
+                    outdoor: 10,
+                };
+            case "°F":
+                return {
+                    indoor: 70,
+                    outdoor: 50,
+                };
+            case "°K":
+                return {
+                    indoor: 295,
+                    outdoor: 280,
+                };
+        }
+    })();
+
+    const payload = `{"indoor": ${getIndoor() ?? fallback?.indoor ?? 0}, "outdoor": ${getOutdoor() ?? fallback?.outdoor ?? 0}}`;
 
     return (
         <div class="main">
@@ -121,7 +145,7 @@ export const MainSecondary: Component = () => {
                             <br />
                             <span class="font-medium ">Message:</span>{" "}
                             <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
-                                {payloadAlt}
+                                {`{"${name}": ${payload}}`}
                             </span>
                         </div>
                     </div>

@@ -2,13 +2,13 @@
 
 #include "modes/CircleMode.h"
 
-#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
-#include "services/DisplayService.h"        // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1UL << 6U) && Microphone->isTriggered())
+    if (millis() - lastMillis > (1UL << 6U) && Extensions.Microphone().isTriggered())
 #else
     if (millis() - lastMillis > (1UL << 6U))
 #endif // EXTENSION_MICROPHONE

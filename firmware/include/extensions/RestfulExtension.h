@@ -9,17 +9,17 @@
 class RestfulExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Restful"};
+
     static constexpr size_t prefixLength = sizeof("/restful/") - 1;
 
     static void onGet(AsyncWebServerRequest *request);
     static void onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index, size_t total);
 
 public:
-    explicit RestfulExtension();
+    explicit RestfulExtension() : ExtensionModule(name) {};
 
     void begin() override;
 };
-
-extern RestfulExtension *Restful; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_RESTFUL

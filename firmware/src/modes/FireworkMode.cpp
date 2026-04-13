@@ -4,6 +4,7 @@
 
 #include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 void FireworkMode::handle()
 {
@@ -27,7 +28,7 @@ void FireworkMode::handle()
 void FireworkMode::pad()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->isTriggered())
+    if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
         rocketX = random(GRID_COLUMNS);

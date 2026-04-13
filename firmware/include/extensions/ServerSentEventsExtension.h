@@ -9,17 +9,17 @@
 class ServerSentEventsExtension final : public ExtensionModule
 {
 public:
-    explicit ServerSentEventsExtension();
+    static constexpr std::string_view name{"Server-Sent Events"};
+
+    explicit ServerSentEventsExtension() : ExtensionModule(name) {};
 
     AsyncEventSource *client = new AsyncEventSource("/server-sent%20events");
 
     void begin() override;
 
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 
     static void onConnect(AsyncEventSourceClient *client);
 };
-
-extern ServerSentEventsExtension *ServerSentEvents; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_SERVERSENTEVENTS

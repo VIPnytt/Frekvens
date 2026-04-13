@@ -4,13 +4,10 @@
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
+#include "services/ExtensionsService.h"
 
 #include <WiFi.h>
 #include <array>
-
-MqttExtension *Mqtt = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-MqttExtension::MqttExtension() : ExtensionModule("MQTT") { Mqtt = this; }
 
 void MqttExtension::configure()
 {
@@ -40,7 +37,7 @@ void MqttExtension::handle()
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();
-            ESP_LOGD(Mqtt->name, "queue dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
+            ESP_LOGD(name, "queue dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -58,14 +55,14 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent)
 {
-    ESP_LOGD(Mqtt->name, "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD(name, "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     if (!sessionPresent ||
         (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
-        Mqtt->client.subscribe("frekvens/" HOSTNAME "/+/set", 2);
+        Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set", 2);
         subscribed = true;
     }
-    Mqtt->client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
+    Extensions.MQTT().client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
 }
 
 void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
@@ -77,19 +74,19 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
     if (deserializeJson(doc, payload, len) == DeserializationError::Code::Ok)
     {
         Device.receive(doc.as<JsonObjectConst>(),
-                       Mqtt->name,
+                       name,
                        std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
     }
 }
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD(Mqtt->name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD(name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
-    ESP_LOGV(Mqtt->name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
+    ESP_LOGV(name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
-void MqttExtension::onTransmit(JsonObjectConst payload, const char *source)
+void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     const size_t length = measureJson(payload);
     std::vector<char> message(length + 1);

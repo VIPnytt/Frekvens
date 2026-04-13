@@ -5,11 +5,12 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 void LinesMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > INT8_MAX && Microphone->isTriggered())
+    if (millis() - lastMillis > INT8_MAX && Extensions.Microphone().isTriggered())
 #else
     if (millis() - lastMillis > INT8_MAX)
 #endif // EXTENSION_MICROPHONE

@@ -30,7 +30,7 @@ public:
     void begin() override;
     void handle() override;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
 
 #endif // MODE_ANIMATION

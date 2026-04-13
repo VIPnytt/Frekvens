@@ -5,10 +5,6 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
-WebSocketExtension *WebSocket = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-WebSocketExtension::WebSocketExtension() : ExtensionModule("WebSocket") { WebSocket = this; }
-
 void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
@@ -17,7 +13,7 @@ void WebSocketExtension::begin()
 
 void WebSocketExtension::handle() { server->cleanupClients(); }
 
-void WebSocketExtension::onTransmit(JsonObjectConst payload, const char *source)
+void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc[source].set(payload);
@@ -53,7 +49,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-p
                 {
                     if (pair.value().is<JsonObjectConst>())
                     {
-                        Device.receive(pair.value().as<JsonObjectConst>(), WebSocket->name, pair.key().c_str());
+                        Device.receive(pair.value().as<JsonObjectConst>(), name, pair.key().c_str());
                     }
                 }
             }

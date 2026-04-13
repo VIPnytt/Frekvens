@@ -181,7 +181,7 @@ public:
     void setModePrevious();
     [[nodiscard]] TaskHandle_t getTaskHandle() const;
     [[nodiscard]] const std::vector<ModeModule *> &getAll() const;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 
     static ModesService &getInstance();
 };

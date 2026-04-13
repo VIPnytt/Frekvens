@@ -10,14 +10,10 @@
 #include <Preferences.h>
 #include <span>
 
-SignalExtension *Signal = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-SignalExtension::SignalExtension() : ExtensionModule("Signal") { Signal = this; }
-
 void SignalExtension::begin()
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("duration"))
     {
         duration = Storage.getUShort("duration");
@@ -60,7 +56,7 @@ void SignalExtension::setDuration(uint8_t seconds)
     {
         duration = seconds;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putUShort("duration", duration);
         Storage.end();
         transmit();
@@ -75,7 +71,7 @@ void SignalExtension::transmit()
 }
 
 void SignalExtension::onReceive(JsonObjectConst payload,
-                                const char *source) // NOLINT(misc-unused-parameters)
+                                std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())

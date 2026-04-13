@@ -16,6 +16,8 @@
 class InfraredExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Infrared"};
+
     struct Code
     {
         decode_type_t protocol{};
@@ -137,7 +139,7 @@ private:
     void transmit();
 
 public:
-    explicit InfraredExtension();
+    explicit InfraredExtension() : ExtensionModule(name) {};
 
     void configure() override;
     void begin() override;
@@ -147,9 +149,7 @@ public:
     void setActive(bool active);
     void parse();
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern InfraredExtension *Infrared; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_INFRARED

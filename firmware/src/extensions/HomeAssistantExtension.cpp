@@ -6,23 +6,21 @@
 #include "extensions/MqttExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
-#include "services/ModesService.h"   // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
+#include "services/ModesService.h" // NOLINT(misc-include-cleaner)
 
 #include <WiFi.h>
 #include <array>
 #include <regex>
 
-HomeAssistantExtension *HomeAssistant = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-HomeAssistantExtension::HomeAssistantExtension() : ExtensionModule("Home Assistant") { HomeAssistant = this; }
-
 void HomeAssistantExtension::configure()
 {
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
-        const std::string id{std::regex_replace(name, std::regex(R"(\s+)"), "").append("_main")};
+        const std::string id{std::regex_replace(name.data(), std::regex(R"(\s+)"), "").append("_main")};
         const std::string topicDisplay{std::string("frekvens/" HOSTNAME "/").append(Display.name)};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::brightness_command_template].set(R"({"brightness":{{value}}})");
         component[HomeAssistantAbbreviations::brightness_command_topic].set(topicDisplay + "/set");
         component[HomeAssistantAbbreviations::brightness_state_topic].set(topicDisplay);
@@ -49,7 +47,7 @@ void HomeAssistantExtension::configure()
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::state_value_template].set(
             std::string("{{value_json.").append(Display.name).append(".power}}"));
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
     }
 }
 
@@ -92,7 +90,7 @@ void HomeAssistantExtension::begin()
     serializeJson(*discovery, payload.data(), length + 1);
     delete discovery;
     discovery = nullptr;
-    Mqtt->client.publish(discoveryTopic.c_str(), 0, true, payload.data(), length);
+    Extensions.MQTT().client.publish(discoveryTopic.c_str(), 0, true, payload.data(), length);
 }
 
 void HomeAssistantExtension::handle()
@@ -106,7 +104,7 @@ void HomeAssistantExtension::handle()
 
 void HomeAssistantExtension::undiscover()
 {
-    Mqtt->client.publish(discoveryTopic.c_str(), 1, true, std::array<uint8_t, 1>{0}.data(), 0);
+    Extensions.MQTT().client.publish(discoveryTopic.c_str(), 1, true, std::array<uint8_t, 1>{0}.data(), 0);
     ESP_LOGW(name, "discovery packet removed"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
@@ -117,10 +115,10 @@ void HomeAssistantExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void HomeAssistantExtension::onTransmit(JsonObjectConst payload, const char *source)
+void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Power
-    if (!strcmp(source, Display.name) && payload["power"].is<bool>())
+    if (!strcmp(source.data(), Display.name) && payload["power"].is<bool>())
     {
         pending = true;
     }

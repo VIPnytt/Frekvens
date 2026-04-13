@@ -7,6 +7,7 @@
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 
@@ -14,9 +15,10 @@ void PingPongMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_clock")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"clock":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
@@ -30,7 +32,7 @@ void PingPongMode::configure()
         component[HomeAssistantAbbreviations::state_off].set("False");
         component[HomeAssistantAbbreviations::state_on].set("True");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
@@ -214,7 +216,7 @@ void PingPongMode::transmit()
 }
 
 void PingPongMode::onReceive(JsonObjectConst payload,
-                             const char *source) // NOLINT(misc-unused-parameters)
+                             std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

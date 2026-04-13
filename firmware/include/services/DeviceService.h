@@ -17,7 +17,7 @@ private:
 
     void transmit();
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 
 public:
     TaskHandle_t taskHandle = nullptr;
@@ -28,8 +28,8 @@ public:
     void setPower(bool power);
     void restore();
 
-    void transmit(JsonObjectConst payload, const char *source, bool retain = true);
-    void receive(JsonObjectConst payload, const char *source, const char *destination) const;
+    void transmit(JsonObjectConst payload, std::string_view source, bool retain = true);
+    void receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const;
 
     [[nodiscard]] JsonObjectConst getTransmits() const;
 

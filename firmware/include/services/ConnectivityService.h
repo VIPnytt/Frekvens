@@ -42,7 +42,7 @@ public:
     void configure();
     void begin();
     void handle();
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 
     static ConnectivityService &getInstance();
 };

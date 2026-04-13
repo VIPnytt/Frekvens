@@ -9,6 +9,8 @@
 class HomeAssistantExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Home Assistant"};
+
     bool pending = false;
 
     inline static const std::string discoveryTopic =
@@ -20,7 +22,7 @@ private:
     void transmit();
 
 public:
-    explicit HomeAssistantExtension();
+    explicit HomeAssistantExtension() : ExtensionModule(name) {};
 
     inline static const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
 
@@ -32,10 +34,8 @@ public:
 
     void undiscover();
 
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern HomeAssistantExtension *HomeAssistant; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 namespace HomeAssistantAbbreviations
 {
