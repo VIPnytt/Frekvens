@@ -107,7 +107,7 @@ void PhotocellExtension::setActive(bool active)
         }
         this->active = active;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBool("active", this->active);
         Storage.end();
         pending = true;
@@ -121,7 +121,7 @@ void PhotocellExtension::setGamma(float _gamma)
     {
         gamma = _gamma;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putFloat("gamma", gamma);
         Storage.end();
     }
