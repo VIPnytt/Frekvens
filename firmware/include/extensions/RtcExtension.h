@@ -38,13 +38,13 @@ public:
     explicit RtcExtension() : ExtensionModule(name) {};
 
 #ifdef RTC_DS1307
-    static RtcDS1307<TwoWire> rtc{Wire};
+    inline static RtcDS1307<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3231)
-    static RtcDS3231<TwoWire> rtc{Wire};
+    inline static RtcDS3231<TwoWire> rtc{Wire};
 #elif defined(RTC_DS3232)
-    static RtcDS3232<TwoWire> rtc{Wire};
+    inline static RtcDS3232<TwoWire> rtc{Wire};
 #elif defined(RTC_PCF8563)
-    static RtcPCF8563<TwoWire> rtc{Wire};
+    inline static RtcPCF8563<TwoWire> rtc{Wire};
 #endif // RTC_DS1307
 
     void configure() override;
