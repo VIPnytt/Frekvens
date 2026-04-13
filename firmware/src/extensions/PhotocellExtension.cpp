@@ -6,6 +6,7 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 
@@ -52,7 +53,7 @@ void PhotocellExtension::configure()
 void PhotocellExtension::begin()
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
     if (Storage.isKey("gamma"))
     {
