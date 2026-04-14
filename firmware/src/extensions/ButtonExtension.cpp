@@ -2,14 +2,10 @@
 
 #include "extensions/ButtonExtension.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 #include "services/ModesService.h"
-
-ButtonExtension *Button = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-ButtonExtension::ButtonExtension() : ExtensionModule("Button") { Button = this; }
 
 void ButtonExtension::configure()
 {
@@ -29,43 +25,38 @@ void ButtonExtension::configure()
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
+    for (const char *const payload : {
+             "long",
+             "short",
+         })
     {
-        for (const char *const payload : {
-                 "long",
-                 "short",
-             })
-        {
 #ifdef PIN_SW1
-            {
-                const std::string id{std::string(name).append("_power_").append(payload)};
-                JsonObject component{
-                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-                component[HomeAssistantAbbreviations::automation_type].set("trigger");
-                component[HomeAssistantAbbreviations::payload].set(payload);
-                component[HomeAssistantAbbreviations::platform].set("device_automation");
-                component[HomeAssistantAbbreviations::subtype].set("Power button");
-                component[HomeAssistantAbbreviations::topic].set(topic);
-                component[HomeAssistantAbbreviations::type].set(
-                    std::string("button_").append(payload).append("_press"));
-                component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.power}}");
-            }
+        {
+            const std::string id{std::string(name).append("_power_").append(payload)};
+            JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            component[HomeAssistantAbbreviations::automation_type].set("trigger");
+            component[HomeAssistantAbbreviations::payload].set(payload);
+            component[HomeAssistantAbbreviations::platform].set("device_automation");
+            component[HomeAssistantAbbreviations::subtype].set("Power button");
+            component[HomeAssistantAbbreviations::topic].set(topic);
+            component[HomeAssistantAbbreviations::type].set(std::string("button_").append(payload).append("_press"));
+            component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.power}}");
+        }
 #endif // PIN_SW1
 #ifdef PIN_SW2
-            {
-                const std::string id{std::string(name).append("_mode_").append(payload)};
-                JsonObject component{
-                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-                component[HomeAssistantAbbreviations::automation_type].set("trigger");
-                component[HomeAssistantAbbreviations::payload].set(payload);
-                component[HomeAssistantAbbreviations::platform].set("device_automation");
-                component[HomeAssistantAbbreviations::subtype].set("Mode button");
-                component[HomeAssistantAbbreviations::topic].set(topic);
-                component[HomeAssistantAbbreviations::type].set(
-                    std::string("button_").append(payload).append("_press"));
-                component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.mode}}");
-            }
-#endif // PIN_SW2
+        {
+            const std::string id{std::string(name).append("_mode_").append(payload)};
+            JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            component[HomeAssistantAbbreviations::automation_type].set("trigger");
+            component[HomeAssistantAbbreviations::payload].set(payload);
+            component[HomeAssistantAbbreviations::platform].set("device_automation");
+            component[HomeAssistantAbbreviations::subtype].set("Mode button");
+            component[HomeAssistantAbbreviations::topic].set(topic);
+            component[HomeAssistantAbbreviations::type].set(std::string("button_").append(payload).append("_press"));
+            component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.mode}}");
         }
+#endif // PIN_SW2
     }
 #endif // EXTENSION_HOMEASSISTANT
 }
@@ -140,33 +131,33 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #ifdef PIN_SW1
     if (digitalRead(PIN_SW1) == LOW)
     {
-        Button->powerMillis = millis();
-        Button->powerState = true;
+        powerMillis = millis();
+        powerState = true;
     }
     else
     {
-        if (Button->powerState && !Button->powerLong)
+        if (powerState && !powerLong)
         {
-            Button->powerShort = true;
+            powerShort = true;
         }
-        Button->powerLong = false;
-        Button->powerState = false;
+        powerLong = false;
+        powerState = false;
     }
 #endif // PIN_SW1
 #ifdef PIN_SW2
     if (digitalRead(PIN_SW2) == LOW)
     {
-        Button->modeMillis = millis();
-        Button->modeState = true;
+        modeMillis = millis();
+        modeState = true;
     }
     else
     {
-        if (Button->modeState && !Button->modeLong)
+        if (modeState && !modeLong)
         {
-            Button->modeShort = true;
+            modeShort = true;
         }
-        Button->modeLong = false;
-        Button->modeState = false;
+        modeLong = false;
+        modeState = false;
     }
 #endif // PIN_SW2
 }
@@ -175,7 +166,7 @@ void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugpro
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;
-    Device.transmit(doc.as<JsonObjectConst>(), Button->name, false);
+    Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
 #endif // EXTENSION_BUTTON

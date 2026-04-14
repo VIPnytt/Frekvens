@@ -7,10 +7,6 @@
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
-WebAppExtension *WebApp = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-WebAppExtension::WebAppExtension() : ExtensionModule("Web app") { WebApp = this; }
-
 void WebAppExtension::configure()
 {
     if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))

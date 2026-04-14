@@ -18,7 +18,7 @@ void FliesMode::handle()
 }
 
 void FliesMode::onReceive(JsonObjectConst payload,
-                          const char *source) // NOLINT(misc-unused-parameters)
+                          std::string_view source) // NOLINT(misc-unused-parameters)
 {
     if (payload["id"].is<uint8_t>() && payload["x"].is<uint8_t>() && payload["y"].is<uint8_t>())
     {

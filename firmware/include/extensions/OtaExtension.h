@@ -10,6 +10,8 @@
 class OtaExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"OTA"};
+
     ArduinoOTAClass ArduinoOTA;
 
     static void onStart();
@@ -21,13 +23,11 @@ private:
 #endif
 
 public:
-    explicit OtaExtension();
+    explicit OtaExtension() : ExtensionModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
 };
-
-extern OtaExtension *Ota; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_OTA

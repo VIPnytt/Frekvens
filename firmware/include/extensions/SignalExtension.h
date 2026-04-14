@@ -10,6 +10,8 @@
 class SignalExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Signal"};
+
     bool active = false;
 
     unsigned long lastMillis = 0;
@@ -24,14 +26,12 @@ private:
     void transmit();
 
 public:
-    explicit SignalExtension();
+    explicit SignalExtension() : ExtensionModule(name) {};
 
     void begin() override;
     void handle() override;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern SignalExtension *Signal; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_SIGNAL

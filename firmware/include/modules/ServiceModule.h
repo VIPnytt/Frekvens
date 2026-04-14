@@ -17,5 +17,5 @@ public:
 
     const char *const name;
 
-    virtual void onReceive(JsonObjectConst payload, const char *source);
+    virtual void onReceive(JsonObjectConst payload, std::string_view source);
 };

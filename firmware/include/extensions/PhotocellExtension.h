@@ -7,6 +7,8 @@
 class PhotocellExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Photocell"};
+
     bool active = false;
     bool direction = false;
     bool pending = false;
@@ -27,7 +29,7 @@ private:
     void transmit();
 
 public:
-    explicit PhotocellExtension();
+    explicit PhotocellExtension() : ExtensionModule(name) {};
 
     void configure() override;
     void begin() override;
@@ -36,10 +38,8 @@ public:
     [[nodiscard]] bool getActive() const;
     void setActive(bool active);
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern PhotocellExtension *Photocell; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PHOTOCELL

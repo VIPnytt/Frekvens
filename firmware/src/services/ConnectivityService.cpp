@@ -2,6 +2,7 @@
 
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
+#include "services/ExtensionsService.h"
 
 #include <ESPmDNS.h>
 #include <Preferences.h>
@@ -66,9 +67,10 @@ void ConnectivityService::begin()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_rssi")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::device_class].set("signal_strength");
         component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
@@ -78,7 +80,7 @@ void ConnectivityService::begin()
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::unit_of_measurement].set("dBm");
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
     }
@@ -282,7 +284,7 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
             _scan["rssi"].set(WiFi.RSSI(i));
             _scan["ssid"].set(WiFi.SSID(i));
         }
-        Device.transmit(doc.as<JsonObjectConst>(), _name.data(), false);
+        Device.transmit(doc.as<JsonObjectConst>(), _name, false);
     }
 }
 
@@ -320,7 +322,7 @@ void ConnectivityService::transmit()
 }
 
 void ConnectivityService::onReceive(JsonObjectConst payload,
-                                    const char *source) // NOLINT(misc-unused-parameters)
+                                    std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Connect
     if (payload["ssid"].is<const char *>())

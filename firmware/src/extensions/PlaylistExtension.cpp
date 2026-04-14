@@ -5,19 +5,16 @@
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 #include "services/ModesService.h"
 
 #include <Preferences.h>
-
-PlaylistExtension *Playlist = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist") { Playlist = this; }
 
 void PlaylistExtension::configure()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("modes"))
     {
         const size_t length = Storage.getBytesLength("modes");
@@ -43,9 +40,10 @@ void PlaylistExtension::configure()
     }
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_active")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
@@ -60,7 +58,7 @@ void PlaylistExtension::configure()
         component[HomeAssistantAbbreviations::state_off].set("False");
         component[HomeAssistantAbbreviations::state_on].set("True");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
@@ -70,7 +68,7 @@ void PlaylistExtension::begin()
 {
     bool _active = false;
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     switch (esp_reset_reason())
     {
     case esp_reset_reason_t::ESP_RST_BROWNOUT:
@@ -116,7 +114,7 @@ void PlaylistExtension::setActive(bool active)
         step = 0;
         this->active = active;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBool("active", this->active);
         Storage.end();
         transmit();
@@ -141,7 +139,7 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     std::vector<uint8_t> buffer(length + 1);
     serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length + 1);
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     Storage.putBytes("modes", buffer.data(), length + 1);
     Storage.end();
     transmit();
@@ -161,10 +159,10 @@ void PlaylistExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
+void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Modes: Mode
-    if (active && !strcmp(source, Modes.name) && payload["mode"].is<std::string>() &&
+    if (active && !strcmp(source.data(), Modes.name) && payload["mode"].is<std::string>() &&
         payload["mode"].as<std::string>() != playlist[step].mode)
     {
         setActive(false);
@@ -172,7 +170,7 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
 }
 
 void PlaylistExtension::onReceive(JsonObjectConst payload,
-                                  const char *source) // NOLINT(misc-unused-parameters)
+                                  std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())

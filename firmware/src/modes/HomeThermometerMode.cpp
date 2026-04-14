@@ -2,12 +2,12 @@
 
 #include "modes/HomeThermometerMode.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"   // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 #include <nvs.h>
@@ -17,6 +17,7 @@ void HomeThermometerMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         for (const char *const where : {
                  "indoor",
@@ -24,8 +25,7 @@ void HomeThermometerMode::configure()
              })
         {
             const std::string id{std::regex_replace(name, std::regex(R"(\s+)"), "").append("_").append(where)};
-            JsonObject component{
-                (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
             component[HomeAssistantAbbreviations::command_template].set(
                 std::string(R"({")").append(where).append(R"(":{{value}}})"));
             component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
@@ -50,7 +50,7 @@ void HomeThermometerMode::configure()
             component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
             component[HomeAssistantAbbreviations::platform].set("number");
             component[HomeAssistantAbbreviations::state_topic].set(topic);
-            component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+            component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
 #ifdef TEMPERATURE_UNIT
             component[HomeAssistantAbbreviations::unit_of_measurement].set(TEMPERATURE_UNIT);
 #endif // TEMPERATURE_UNIT
@@ -117,7 +117,7 @@ void HomeThermometerMode::transmit()
 }
 
 void HomeThermometerMode::onReceive(JsonObjectConst payload,
-                                    const char *source) // NOLINT(misc-unused-parameters)
+                                    std::string_view source) // NOLINT(misc-unused-parameters)
 {
     if (payload["indoor"].is<float>())
     {

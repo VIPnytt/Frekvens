@@ -9,20 +9,20 @@
 class WebSocketExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"WebSocket"};
+
     static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                         const uint8_t *data, size_t len);
 
 public:
-    explicit WebSocketExtension();
+    explicit WebSocketExtension() : ExtensionModule(name) {};
 
     AsyncWebSocket *server = new AsyncWebSocket("/websocket");
 
     void begin() override;
     void handle() override;
 
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern WebSocketExtension *WebSocket; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_WEBSOCKET

@@ -13,6 +13,8 @@
 class MessageExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Message"};
+
     bool active = false;
     bool pending = false;
 
@@ -46,7 +48,7 @@ private:
     void transmit();
 
 public:
-    explicit MessageExtension();
+    explicit MessageExtension() : ExtensionModule(name) {};
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;
@@ -54,9 +56,7 @@ public:
 
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern MessageExtension *Message; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MESSAGE

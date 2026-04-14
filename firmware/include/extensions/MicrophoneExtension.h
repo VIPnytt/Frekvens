@@ -7,6 +7,8 @@
 class MicrophoneExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Microphone"};
+
     bool active = false;
     bool detected = false;
     bool pending = false;
@@ -21,7 +23,7 @@ private:
     void transmit();
 
 public:
-    explicit MicrophoneExtension();
+    explicit MicrophoneExtension() : ExtensionModule(name) {};
 
     void configure() override;
     void begin() override;
@@ -32,9 +34,7 @@ public:
     void setThreshold(uint16_t _threshold);
     [[nodiscard]] bool isTriggered() const;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern MicrophoneExtension *Microphone; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MICROPHONE

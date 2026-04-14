@@ -3,13 +3,10 @@
 #include "extensions/AlexaExtension.h"
 
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 #include "services/WebServerService.h"
 
 #include <HTTPClient.h>
-
-AlexaExtension *Alexa = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-AlexaExtension::AlexaExtension() : ExtensionModule("Alexa") { Alexa = this; }
 
 void AlexaExtension::begin()
 {
@@ -51,7 +48,7 @@ void AlexaExtension::onSetState(unsigned char deviceId, // NOLINT(misc-unused-pa
 
 void AlexaExtension::onGet(AsyncWebServerRequest *request)
 {
-    if (!Alexa->fauxmo.process(request->client(), true, request->url(), ""))
+    if (!fauxmo.process(request->client(), true, request->url(), ""))
     {
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
     }
@@ -61,7 +58,7 @@ void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t
                            size_t index, // NOLINT(misc-unused-parameters)
                            size_t total) // NOLINT(misc-unused-parameters)
 {
-    if (!Alexa->fauxmo.process(
+    if (!fauxmo.process(
             request->client(),
             false,
             request->url(),
@@ -71,11 +68,11 @@ void AlexaExtension::onSet(AsyncWebServerRequest *request, uint8_t *data, size_t
     }
 }
 
-void AlexaExtension::onTransmit(JsonObjectConst payload, const char *source)
+void AlexaExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Brightness
     // Display: Power
-    if (!strcmp(source, Display.name) && (payload["brightness"].is<uint8_t>() || payload["power"].is<bool>()))
+    if (!strcmp(source.data(), Display.name) && (payload["brightness"].is<uint8_t>() || payload["power"].is<bool>()))
     {
         fauxmo.setState(NAME,
                         payload["power"].is<bool>() ? payload["power"].as<bool>() : Display.getPower(),

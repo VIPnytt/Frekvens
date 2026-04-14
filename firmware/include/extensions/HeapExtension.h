@@ -7,10 +7,12 @@
 class HeapExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Heap"};
+
     unsigned long lastMillis = 0;
 
 public:
-    explicit HeapExtension();
+    explicit HeapExtension() : ExtensionModule(name) {};
 
 #if EXTENSION_HOMEASSISTANT
     void configure() override;
@@ -19,7 +21,5 @@ public:
     void handle() override;
     void transmit();
 };
-
-extern HeapExtension *Heap; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_HEAP
