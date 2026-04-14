@@ -189,7 +189,7 @@ void DeviceService::setPower(bool power)
     Extensions.MQTT().disconnect();
 #endif
 #if EXTENSION_SERVERSENTEVENTS
-    Extensions.ServerSentEvents().client->close();
+    Extensions.ServerSentEvents().events.close();
 #endif
 #if EXTENSION_WEBSOCKET
     Extensions.WebSocket().server->closeAll();

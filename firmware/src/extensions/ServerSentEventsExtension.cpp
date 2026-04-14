@@ -7,8 +7,8 @@
 
 void ServerSentEventsExtension::begin()
 {
-    client->onConnect(&onConnect);
-    WebServer.http->addHandler(client);
+    events.onConnect(&onConnect);
+    WebServer.http->addHandler(&events);
 }
 
 void ServerSentEventsExtension::onTransmit(JsonObjectConst payload, std::string_view source)
@@ -16,7 +16,7 @@ void ServerSentEventsExtension::onTransmit(JsonObjectConst payload, std::string_
     const size_t length = measureJson(payload);
     std::vector<char> message(length + 1);
     serializeJson(payload, message.data(), length + 1);
-    client->send(message.data(), source.data());
+    events.send(message.data(), source.data());
 }
 
 void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
