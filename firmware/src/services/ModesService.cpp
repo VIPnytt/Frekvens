@@ -54,7 +54,7 @@ void ModesService::begin()
         break;
     default:
         Preferences Storage;
-        Storage.begin(name, true);
+        Storage.begin(name.data(), true);
         if (Storage.isKey("mode"))
         {
             const String _mode = Storage.getString("mode");
@@ -83,7 +83,7 @@ void ModesService::handle()
         setActive(true);
         transmit();
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putString("mode", mode->name);
         Storage.end();
     }
@@ -111,7 +111,7 @@ void ModesService::setActive(bool active)
     }
     else if (taskHandle == nullptr && active && mode != nullptr)
     {
-        xTaskCreate(&onTask, name, stackSize, nullptr, 2, &taskHandle);
+        xTaskCreate(&onTask, name.data(), stackSize, nullptr, 2, &taskHandle);
     }
 }
 

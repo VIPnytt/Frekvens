@@ -10,9 +10,9 @@
 class ConnectivityService final : public ServiceModule
 {
 private:
-    static constexpr std::string_view _name = "Connectivity";
+    static constexpr std::string_view name = "Connectivity";
 
-    explicit ConnectivityService() : ServiceModule(_name.data()) {};
+    explicit ConnectivityService() : ServiceModule(name) {};
 
     bool mDNS = false;
     bool pending = false;
@@ -20,7 +20,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::unique_ptr<DNSServer> dns = nullptr;
+    std::unique_ptr<DNSServer> dns{};
 
     WiFiMulti multi;
 

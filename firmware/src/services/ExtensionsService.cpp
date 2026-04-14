@@ -16,7 +16,7 @@ void ExtensionsService::begin()
     {
         extension->begin();
     }
-    xTaskCreate(&onTask, name, stackSize, nullptr, 1, &taskHandle);
+    xTaskCreate(&onTask, name.data(), stackSize, nullptr, 1, &taskHandle);
     transmit();
 }
 

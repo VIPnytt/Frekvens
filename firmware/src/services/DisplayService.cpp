@@ -39,7 +39,7 @@ void DisplayService::configure()
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
 
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     const uint8_t _brightness = Storage.isKey("brightness") ? Storage.getUShort("brightness") : UINT8_MAX;
     const Orientation _orientation =
         Storage.isKey("orientation") ? static_cast<Orientation>(Storage.getUShort("orientation")) : orientation;
@@ -176,7 +176,7 @@ void DisplayService::setOrientation(Orientation _orientation)
                                                           : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     Storage.putUShort("orientation", static_cast<uint8_t>(orientation));
     Storage.end();
     pending = true;
@@ -290,7 +290,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
     }
     brightness = _brightness;
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     Storage.putUShort("brightness", brightness);
     Storage.end();
     pending = true;
