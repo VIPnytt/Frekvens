@@ -189,7 +189,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
     if (esp_wifi_get_country_code(country.data()) == ESP_OK)
     {
         Preferences Storage;
-        Storage.begin(_name.data());
+        Storage.begin(name.data());
         if (strncmp(country.data(), "01", 2) != 0)
         {
             Storage.putString("country", country.data());
@@ -284,7 +284,7 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
             _scan["rssi"].set(WiFi.RSSI(i));
             _scan["ssid"].set(WiFi.SSID(i));
         }
-        Device.transmit(doc.as<JsonObjectConst>(), name, false);
+        Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }
 }
 

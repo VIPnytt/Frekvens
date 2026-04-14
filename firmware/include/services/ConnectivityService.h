@@ -10,9 +10,7 @@
 class ConnectivityService final : public ServiceModule
 {
 private:
-    static constexpr std::string_view name = "Connectivity";
-
-    explicit ConnectivityService() : ServiceModule(name) {};
+    explicit ConnectivityService() : ServiceModule("Connectivity") {};
 
     bool mDNS = false;
     bool pending = false;
