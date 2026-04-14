@@ -72,7 +72,7 @@ void AlexaExtension::onTransmit(JsonObjectConst payload, std::string_view source
 {
     // Display: Brightness
     // Display: Power
-    if (!strcmp(source.data(), Display.name) && (payload["brightness"].is<uint8_t>() || payload["power"].is<bool>()))
+    if (source == Display.name && (payload["brightness"].is<uint8_t>() || payload["power"].is<bool>()))
     {
         fauxmo.setState(NAME,
                         payload["power"].is<bool>() ? payload["power"].as<bool>() : Display.getPower(),

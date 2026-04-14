@@ -162,7 +162,7 @@ void PlaylistExtension::transmit()
 void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Modes: Mode
-    if (active && !strcmp(source.data(), Modes.name) && payload["mode"].is<std::string>() &&
+    if (active && source == Modes.name && payload["mode"].is<std::string>() &&
         payload["mode"].as<std::string>() != playlist[step].mode)
     {
         setActive(false);

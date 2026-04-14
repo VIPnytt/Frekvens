@@ -150,7 +150,7 @@ void PhotocellExtension::onReceive(JsonObjectConst payload,
 void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Brightness
-    if (active && !strcmp(source.data(), Display.name) && payload["brightness"].is<uint8_t>())
+    if (active && source == Display.name && payload["brightness"].is<uint8_t>())
     {
         const uint8_t _brightness{payload["brightness"].as<uint8_t>()};
         if (_brightness != brightness)

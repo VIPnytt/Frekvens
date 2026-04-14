@@ -118,7 +118,7 @@ void HomeAssistantExtension::transmit()
 void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Power
-    if (!strcmp(source.data(), Display.name) && payload["power"].is<bool>())
+    if (source == Display.name && payload["power"].is<bool>())
     {
         pending = true;
     }

@@ -30,7 +30,7 @@ void ConnectivityService::configure()
     esp_wifi_set_country_code(WIFI_COUNTRY, false);
 #else
     Preferences Storage;
-    Storage.begin(_name.data(), true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("country"))
     {
         const String country = Storage.getString("country");
@@ -111,7 +111,7 @@ void ConnectivityService::initStation()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     if (Storage.isKey("Wi-Fi"))
     {
         const size_t _length = Storage.getBytesLength("Wi-Fi");
@@ -189,7 +189,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
     if (esp_wifi_get_country_code(country.data()) == ESP_OK)
     {
         Preferences Storage;
-        Storage.begin(_name.data());
+        Storage.begin(Connectivity.name.data());
         if (strncmp(country.data(), "01", 2) != 0)
         {
             Storage.putString("country", country.data());
@@ -284,7 +284,7 @@ void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-par
             _scan["rssi"].set(WiFi.RSSI(i));
             _scan["ssid"].set(WiFi.SSID(i));
         }
-        Device.transmit(doc.as<JsonObjectConst>(), _name, false);
+        Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }
 }
 
@@ -295,7 +295,7 @@ void ConnectivityService::transmit()
     doc["rssi"].set(WiFi.RSSI());
     {
         Preferences Storage;
-        Storage.begin(name, true);
+        Storage.begin(name.data(), true);
         if (Storage.isKey("saved"))
         {
             const size_t len = Storage.getBytesLength("saved");
