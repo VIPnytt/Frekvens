@@ -189,7 +189,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
     if (esp_wifi_get_country_code(country.data()) == ESP_OK)
     {
         Preferences Storage;
-        Storage.begin(name.data());
+        Storage.begin(Connectivity.name.data());
         if (strncmp(country.data(), "01", 2) != 0)
         {
             Storage.putString("country", country.data());
