@@ -10,21 +10,21 @@
 class AlexaExtension final : public ExtensionModule
 {
 private:
-    fauxmoESP fauxmo = fauxmoESP();
+    static constexpr std::string_view name{"Alexa"};
+
+    static inline fauxmoESP fauxmo = fauxmoESP();
 
     static void onGet(AsyncWebServerRequest *request);
     static void onSet(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
     static void onSetState(unsigned char deviceId, const char *deviceName, bool state, unsigned char value);
 
 public:
-    explicit AlexaExtension();
+    explicit AlexaExtension() : ExtensionModule(name) {};
 
     void begin() override;
     void handle() override;
 
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern AlexaExtension *Alexa; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_ALEXA

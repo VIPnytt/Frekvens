@@ -1,9 +1,5 @@
 #include "services/DeviceService.h"
 
-#include "extensions/HomeAssistantExtension.h"
-#include "extensions/MqttExtension.h"
-#include "extensions/ServerSentEventsExtension.h"
-#include "extensions/WebSocketExtension.h"
 #include "services/ConnectivityService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
@@ -14,6 +10,7 @@
 #include <array>
 #include <nvs_flash.h>
 #include <regex>
+#include <string_view>
 
 void DeviceService::begin()
 {
@@ -108,9 +105,10 @@ void DeviceService::begin()
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_reboot")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::device_class].set("restart");
@@ -120,11 +118,11 @@ void DeviceService::begin()
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_press].set("reboot");
         component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
     }
     {
         const std::string id{std::string(name).append("_power")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::entity_category].set("config");
@@ -133,11 +131,11 @@ void DeviceService::begin()
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_press].set("power");
         component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
     }
     {
         const std::string id{std::string(name).append("_temperature")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::device_class].set("temperature");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
@@ -148,7 +146,7 @@ void DeviceService::begin()
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
@@ -188,13 +186,13 @@ void DeviceService::setPower(bool power)
     Display.clearFrame();
     Display.flush();
 #if EXTENSION_MQTT
-    Mqtt->disconnect();
+    Extensions.MQTT().disconnect();
 #endif
 #if EXTENSION_SERVERSENTEVENTS
-    ServerSentEvents->client->close();
+    Extensions.ServerSentEvents().events.close();
 #endif
 #if EXTENSION_WEBSOCKET
-    WebSocket->server->closeAll();
+    Extensions.WebSocket().server->closeAll();
 #endif
     WiFi.disconnect(true);
     power ? ESP.restart() : esp_deep_sleep_start();
@@ -206,17 +204,17 @@ void DeviceService::restore()
     Modes.setActive(false);
     Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
-    HomeAssistant->undiscover();
+    Extensions.HomeAssistant().undiscover();
 #endif
 #if EXTENSION_MQTT
-    Mqtt->client.loop();
-    Mqtt->client.disconnect();
+    Extensions.MQTT().client.loop();
+    Extensions.MQTT().client.disconnect();
 #endif
 #if EXTENSION_SERVERSENTEVENTS
-    ServerSentEvents->client->close();
+    Extensions.ServerSentEvents().events.close();
 #endif
 #if EXTENSION_WEBSOCKET
-    WebSocket->server->closeAll();
+    Extensions.WebSocket().server->closeAll();
 #endif
     WiFi.disconnect(true, true);
     esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
@@ -243,7 +241,7 @@ void DeviceService::transmit()
 }
 
 // NOLINTNEXTLINE(readability-make-member-function-const)
-void DeviceService::transmit(JsonObjectConst payload, const char *source, bool retain)
+void DeviceService::transmit(JsonObjectConst payload, std::string_view source, bool retain)
 {
     if (retain)
     {
@@ -260,7 +258,7 @@ void DeviceService::transmit(JsonObjectConst payload, const char *source, bool r
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DeviceService::receive(JsonObjectConst payload, const char *source, const char *destination) const
+void DeviceService::receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const
 {
     if (operational)
     {
@@ -273,7 +271,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
         };
         for (ServiceModule *service : services)
         {
-            if (!strcmp(service->name, destination))
+            if (service->name == destination)
             {
                 service->onReceive(payload, source);
                 return;
@@ -281,7 +279,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
         }
         for (ExtensionModule *extension : Extensions.getAll())
         {
-            if (!strcmp(extension->name, destination))
+            if (extension->name == destination)
             {
                 extension->onReceive(payload, source);
                 return;
@@ -289,7 +287,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
         }
         for (ModeModule *mode : Modes.getAll())
         {
-            if (!strcmp(mode->name, destination))
+            if (mode->name == destination)
             {
                 mode->onReceive(payload, source);
                 return;
@@ -299,7 +297,7 @@ void DeviceService::receive(JsonObjectConst payload, const char *source, const c
 }
 
 void DeviceService::onReceive(JsonObjectConst payload,
-                              const char *source) // NOLINT(misc-unused-parameters)
+                              std::string_view source) // NOLINT(misc-unused-parameters)
 {
     if (payload["action"].is<const char *>())
     {

@@ -9,6 +9,8 @@
 class MqttExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"MQTT"};
+
     unsigned long lastMillis = 0;
 
     static inline bool subscribed = false;
@@ -22,7 +24,7 @@ private:
                           const uint8_t *payload, size_t len, size_t index, size_t total);
 
 public:
-    explicit MqttExtension();
+    explicit MqttExtension() : ExtensionModule(name) {};
 
     espMqttClient client;
 
@@ -31,9 +33,7 @@ public:
 
     void disconnect();
 
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-extern MqttExtension *Mqtt; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_MQTT

@@ -3,11 +3,12 @@
 #include "modes/WeatherMode.h"
 
 #include "extensions/HomeAssistantExtension.h"
-#include "fonts/MiniFont.h" // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"
-#include "handlers/TextHandler.h"
+#include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
@@ -16,9 +17,10 @@ void WeatherMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_protocol")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"provider":"{{value}}"})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
@@ -33,7 +35,7 @@ void WeatherMode::configure()
         }
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
@@ -67,14 +69,21 @@ void WeatherMode::handle()
         provider->update(condition, temperature, lastMillis);
         if (condition.has_value() && temperature.has_value())
         {
-            BitmapHandler bitmap(provider->getSign(condition.value()));
-            TextHandler text(std::to_string(temperature.value()) + "°", FontMini);
-            const uint8_t textHeight = text.getHeight();
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-            const uint8_t marginsY = std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3;
-            Display.clearFrame();
-            bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
-            text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
+            std::visit(
+                [&](auto sign)
+                {
+                    const BitmapHandler bitmap(sign);
+                    const MiniFont font;
+                    const TextHandler text(std::to_string(temperature.value()) + "°", font);
+                    const uint8_t textHeight{text.getHeight()};
+                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+                    const uint8_t marginsY{
+                        static_cast<uint8_t>(std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3)};
+                    Display.clearFrame();
+                    bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
+                    text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
+                },
+                provider->getSign(condition.value()));
             transmit();
         }
     }
@@ -82,7 +91,7 @@ void WeatherMode::handle()
 
 void WeatherMode::setProvider(std::string_view providerName)
 {
-    if (provider == nullptr || strcmp(provider->name, providerName.data()) != 0)
+    if (provider == nullptr || provider->name != providerName)
     {
 #if WEATHER_GOOGLE
         if (providerName == GoogleWeatherMiddleware::name)
@@ -130,7 +139,7 @@ void WeatherMode::setProvider(std::string_view providerName)
         {
             Preferences Storage;
             Storage.begin(name);
-            Storage.putString("provider", provider->name);
+            Storage.putString("provider", provider->name.data());
             Storage.end();
             condition.reset();
             temperature.reset();
@@ -161,7 +170,7 @@ void WeatherMode::transmit()
 }
 
 void WeatherMode::onReceive(JsonObjectConst payload,
-                            const char *source) // NOLINT(misc-unused-parameters)
+                            std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Provider
     if (payload["provider"].is<std::string_view>())

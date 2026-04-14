@@ -133,6 +133,12 @@ jobs:
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           FONT_BRAILLE='true'
+          FONT_LARGE='true'
+          FONT_MEDIUM='true'
+          FONT_MEDIUMBOLD='true'
+          FONT_MEDIUMWIDE='true'
+          FONT_MINI='true'
+          FONT_SMALL='true'
           HOSTNAME='frekvens'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
@@ -226,7 +232,7 @@ jobs:
 
       - name: Summary
         env:
-          clang-threshold: 67
+          clang-threshold: 68
         run: |
           echo "Status: ${{ steps.tidy.outputs.clang-tidy-checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"

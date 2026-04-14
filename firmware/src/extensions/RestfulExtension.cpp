@@ -8,10 +8,6 @@
 #include <HTTPClient.h>
 #include <vector>
 
-RestfulExtension *Restful = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-RestfulExtension::RestfulExtension() : ExtensionModule("RESTful") { Restful = this; }
-
 void RestfulExtension::begin()
 {
     WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
@@ -51,7 +47,7 @@ void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *da
     if (request->contentType() == "application/json" &&
         deserializeJson(doc, data, len) == DeserializationError::Code::Ok)
     {
-        Device.receive(doc.as<JsonObjectConst>(), Restful->name, request->url().substring(prefixLength).c_str());
+        Device.receive(doc.as<JsonObjectConst>(), name, request->url().substring(prefixLength).c_str());
         request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
     }
     else

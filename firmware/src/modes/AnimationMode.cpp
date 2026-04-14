@@ -2,9 +2,9 @@
 
 #include "modes/AnimationMode.h"
 
-#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 #include <array>
@@ -18,7 +18,7 @@ void AnimationMode::begin()
 void AnimationMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis >= interval && Microphone->isTriggered())
+    if (millis() - lastMillis >= interval && Extensions.Microphone().isTriggered())
 #else
     if (millis() - lastMillis >= interval)
 #endif // EXTENSION_MICROPHONE
@@ -102,7 +102,7 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 }
 
 void AnimationMode::onReceive(JsonObjectConst payload,
-                              const char *source) // NOLINT(misc-unused-parameters)
+                              std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Action: pull
     if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "pull"))

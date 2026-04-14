@@ -137,7 +137,7 @@ private:
 public:
     static constexpr std::string_view name{"Yr"};
 
-    explicit YrMiddleware() : WeatherHandler(name.data(), 1U << 19U)
+    explicit YrMiddleware() : WeatherHandler(name, 1U << 19U)
     {
         host = "api.met.no";
         query = "lat=" LATITUDE "&lon=" LONGITUDE;

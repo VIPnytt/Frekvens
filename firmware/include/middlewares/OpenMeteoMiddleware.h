@@ -74,7 +74,7 @@ private:
 public:
     static constexpr std::string_view name{"Open-Meteo"};
 
-    explicit OpenMeteoMiddleware() : WeatherHandler(name.data()) { path = "/v1/forecast"; };
+    explicit OpenMeteoMiddleware() : WeatherHandler(name) { path = "/v1/forecast"; };
 
     void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;

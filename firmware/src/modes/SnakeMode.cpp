@@ -8,6 +8,7 @@
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 #include <Preferences.h>
 #include <map>
@@ -17,9 +18,10 @@ void SnakeMode::configure()
 {
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_clock")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"clock":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
@@ -33,7 +35,7 @@ void SnakeMode::configure()
         component[HomeAssistantAbbreviations::state_off].set("False");
         component[HomeAssistantAbbreviations::state_on].set("True");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
@@ -61,10 +63,11 @@ void SnakeMode::handle()
         hour = local.tm_hour;
         minute = local.tm_min;
         Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-        TextHandler(std::to_string(hour / 10), FontMini).draw(GRID_COLUMNS / 2 - 8, 0);
-        TextHandler(std::to_string(hour % 10), FontMini).draw(GRID_COLUMNS / 2 - 4, 0);
-        TextHandler(std::to_string(minute / 10), FontMini).draw(GRID_COLUMNS / 2 + 1, 0);
-        TextHandler(std::to_string(minute % 10), FontMini).draw(GRID_COLUMNS / 2 + 5, 0);
+        const MiniFont font;
+        TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2 - 8, 0);
+        TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2 - 4, 0);
+        TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2 + 1, 0);
+        TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2 + 5, 0);
         pending = false;
     }
     switch (stage)
@@ -187,7 +190,7 @@ void SnakeMode::move()
             }
             else
             {
-                const uint8_t step = UINT8_MAX / snake.size(); // NOLINT(cppcoreguidelines-init-variables)
+                const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
                 for (std::size_t i = 0; i < snake.size(); ++i)
                 {
                     Display.setPixel(snake[i].x, snake[i].y, step * (i + 1));
@@ -277,7 +280,7 @@ void SnakeMode::transmit()
 }
 
 void SnakeMode::onReceive(JsonObjectConst payload,
-                          const char *source) // NOLINT(misc-unused-parameters)
+                          std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Clock
     if (payload["clock"].is<bool>())

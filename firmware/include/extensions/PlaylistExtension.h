@@ -10,7 +10,7 @@
 class PlaylistExtension final : public ExtensionModule
 {
 public:
-    explicit PlaylistExtension();
+    explicit PlaylistExtension() : ExtensionModule(name) {};
 
     struct Mode
     {
@@ -24,10 +24,12 @@ public:
     [[nodiscard]] bool getActive() const;
     void setActive(bool active);
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
-    void onTransmit(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+    void onTransmit(JsonObjectConst payload, std::string_view source) override;
 
 private:
+    static constexpr std::string_view name{"Playlist"};
+
     bool active = false;
 
     uint8_t step = 0;
@@ -39,7 +41,5 @@ private:
     void setPlaylist(std::span<Mode> modes);
     void transmit();
 };
-
-extern PlaylistExtension *Playlist; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 #endif // EXTENSION_PLAYLIST

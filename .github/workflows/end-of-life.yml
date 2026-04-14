@@ -26,23 +26,43 @@ jobs:
             const { data: branch } = await github.rest.repos.getBranch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: '${{ github.ref_name }}',
+              branch: context.ref.replace('refs/heads/', ''),
             });
             const active = new Date() - new Date(branch.commit.commit.committer.date) <= 90 * 86400000;
             core.info(`Branch active: ${active}`);
             core.setOutput('active', active);
 
-  node:
-    name: Node.js
+  nodejs-wheel:
+    name: Node.js wheel version
     needs: idle-check
+    runs-on: ubuntu-latest
+    if: ${{ fromJSON(needs.idle-check.outputs.active) }}
+  
+    outputs:
+      version: ${{ steps.lock.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Node.js wheel binaries version
+        id: lock
+        run: echo "version=$(yq -o toml -p toml '.package[] | select(.name == "nodejs-wheel-binaries") | .version' uv.lock)" >> "$GITHUB_OUTPUT"
+
+  nodejs:
+    name: Node.js
+    needs:
+      - idle-check
+      - nodejs-wheel
     runs-on: ubuntu-slim
     if: ${{ fromJSON(needs.idle-check.outputs.active) }}
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - node-version: 24
+        node-version:
+          - ${{ needs.nodejs-wheel.outputs.version }}
+          - 24
 
     steps:
       - name: End-of-Life

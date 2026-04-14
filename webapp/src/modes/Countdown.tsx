@@ -1,6 +1,6 @@
 import { mdiTimerSand, mdiTimerSandComplete } from "@mdi/js";
 import Cookies from "js-cookie";
-import { type Component, createSignal } from "solid-js";
+import { type Component, createSignal, For } from "solid-js";
 
 import { Icon } from "../components/Icon";
 import { Toast } from "../components/Toast";
@@ -12,13 +12,17 @@ import { ModesMode, name as ModesName } from "../services/Modes";
 
 export const name = "Countdown";
 
-const [getHours, setHours] = createSignal<number>(parseInt(Cookies.get(`${name}.hours`) || "", 10) || 0);
-const [getMinutes, setMinutes] = createSignal<number>(parseInt(Cookies.get(`${name}.minutes`) || "", 10) || 10);
-const [getSeconds, setSeconds] = createSignal<number>(parseInt(Cookies.get(`${name}.seconds`) || "", 10) || 0);
+const [getFont, setFont] = createSignal<string>("");
+const [getFonts, setFonts] = createSignal<string[]>([]);
+const [getHours, setHours] = createSignal<number>(parseInt(Cookies.get(`${name}.hours`) ?? "0", 10));
+const [getMinutes, setMinutes] = createSignal<number>(parseInt(Cookies.get(`${name}.minutes`) ?? "10", 10));
+const [getSeconds, setSeconds] = createSignal<number>(parseInt(Cookies.get(`${name}.seconds`) ?? "0", 10));
 const [getTimestamp, setTimestamp] = createSignal<string | undefined>(undefined);
 
-export const receiver = (json: { event?: string; timestamp?: string | undefined }) => {
+export const receiver = (json: { event?: string; font?: string; fonts?: string[]; timestamp?: string }) => {
     json?.event !== undefined && event(json.event);
+    json?.font !== undefined && setFont(json.font);
+    json?.fonts !== undefined && setFonts(json.fonts);
     json?.timestamp !== undefined && setTimestamp(json.timestamp);
 };
 
@@ -109,15 +113,37 @@ export const Sidebar: Component = () => {
         );
     };
 
+    const handleFont = (font: string) => {
+        setFont(font);
+        WebSocketWS.send(
+            JSON.stringify({
+                [name]: {
+                    font: getFont(),
+                },
+            }),
+        );
+    };
+
     return (
-        <SidebarSection title="Due">
+        <SidebarSection>
+            <div class="font-semibold uppercase text-content-alt-light dark:text-content-alt-dark text-xs">Due</div>
             <input
-                class="w-full"
+                class="mt-1 w-full"
                 type="datetime-local"
                 min={new Date().toISOString().slice(0, 16)}
                 value={getTimestamp()}
                 onChange={(e) => handleAbsolute(e.currentTarget.value)}
             />
+            <div class="mt-3 font-semibold uppercase text-content-alt-light dark:text-content-alt-dark text-xs">
+                Font
+            </div>
+            <select
+                class="mt-1 w-full"
+                onchange={(e) => handleFont(e.currentTarget.value)}
+                value={getFont()}
+            >
+                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
+            </select>
         </SidebarSection>
     );
 };

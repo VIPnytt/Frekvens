@@ -22,22 +22,58 @@ Extremely small 3×3 pixel font, offering basic legibility in tight layouts.
 
 Balanced 4×5 pixel font providing improved readability without taking up much space.
 
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_MINI='true'
+```
+
 ## ⬇️ Small
 
 Small yet clear font suitable for most general-purpose display needs.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_SMALL='true'
+```
 
 ## ➡️ Medium
 
 Clean and versatile font with a slightly larger footprint.
 
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_MEDIUM='true'
+```
+
 ## 🅱️ Medium bold
 
 Bold style based on the medium font.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_MEDIUMBOLD='true'
+```
 
 ## ↔️ Medium wide
 
 Wide and legible style based on the medium font.
 
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_MEDIUMWIDE='true'
+```
+
 ## ⬆️ Large
 
 High-impact display font with oversized characters for standout visibility.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_LARGE='true'
+```

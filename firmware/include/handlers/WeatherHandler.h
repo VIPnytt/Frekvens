@@ -33,19 +33,21 @@ public:
         WIND,
     };
 
-    const char *const name;
+    const std::string_view name{};
 
     const unsigned long interval;
 
     virtual void update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
-                        unsigned long &lastMillis);
+                        unsigned long &lastMillis) = 0;
 
-    [[nodiscard]] std::span<const uint16_t> getSign(Conditions condition);
+    [[nodiscard]] std::variant<std::span<const uint8_t>, std::span<const uint16_t>> getSign(Conditions condition);
 
 protected:
-    explicit WeatherHandler(const char *name, unsigned long interval = 1U << 20U) : name(name), interval(interval) {};
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+    explicit WeatherHandler(std::string_view name, unsigned long interval = 1U << 20U)
+        : name(name), interval(interval) {};
 
-    static constexpr std::array<uint16_t, 7> conditionClear{
+    static constexpr std::array<uint8_t, 7> bitmapClear{
         0b0011100,
         0b0111110,
         0b1111111,
@@ -54,7 +56,7 @@ protected:
         0b0111110,
         0b0011100,
     };
-    static constexpr std::array<uint16_t, 8> conditionClearTall{
+    static constexpr std::array<uint8_t, 8> bitmapClearTall{
         0b001100,
         0b011110,
         0b111111,
@@ -64,7 +66,7 @@ protected:
         0b011110,
         0b001100,
     };
-    static constexpr std::array<uint16_t, 6> conditionClearWide{
+    static constexpr std::array<uint8_t, 6> bitmapClearWide{
         0b00111100,
         0b01111110,
         0b11111111,
@@ -72,14 +74,14 @@ protected:
         0b01111110,
         0b00111100,
     };
-    static constexpr std::array<uint16_t, 5> conditionCloudy{
+    static constexpr std::array<uint16_t, 5> bitmapCloudy{
         0b0000111000000,
         0b0001100111000,
         0b0111000001100,
         0b1100100000011,
         0b0111111111110,
     };
-    static constexpr std::array<uint16_t, 6> conditionCloudyPartly{
+    static constexpr std::array<uint16_t, 6> bitmapCloudyPartly{
         0b0000000001110,
         0b0000111011111,
         0b0001100111111,
@@ -87,7 +89,7 @@ protected:
         0b1100010000011,
         0b0111111111110,
     };
-    static constexpr std::array<uint16_t, 6> conditionExceptional{
+    static constexpr std::array<uint16_t, 6> bitmapExceptional{
         0b00000100000,
         0b00001010000,
         0b00010001000,
@@ -95,7 +97,7 @@ protected:
         0b01000000010,
         0b11111111111,
     };
-    static constexpr std::array<uint16_t, 6> conditionFog{
+    static constexpr std::array<uint16_t, 6> bitmapFog{
         0b00000111111110,
         0b01111110000000,
         0b00001111111111,
@@ -103,7 +105,7 @@ protected:
         0b00000111111100,
         0b01111111000000,
     };
-    static constexpr std::array<uint16_t, 8> conditionRain{
+    static constexpr std::array<uint16_t, 8> bitmapRain{
         0b0000111000000,
         0b0001100111000,
         0b0111000001100,
@@ -113,7 +115,7 @@ protected:
         0b0010100100100,
         0b0010100100100,
     };
-    static constexpr std::array<uint16_t, 8> conditionSnow{
+    static constexpr std::array<uint16_t, 8> bitmapSnow{
         0b0000111000000,
         0b0001100111000,
         0b0111000001100,
@@ -123,7 +125,7 @@ protected:
         0b0010000100100,
         0b0000100010000,
     };
-    static constexpr std::array<uint16_t, 8> conditionThunder{
+    static constexpr std::array<uint16_t, 8> bitmapThunder{
         0b0000111000000,
         0b0001100111000,
         0b0111000001100,
@@ -133,7 +135,7 @@ protected:
         0b0000001000000,
         0b0000010000000,
     };
-    static constexpr std::array<uint16_t, 8> conditionWind{
+    static constexpr std::array<uint16_t, 8> bitmapWind{
         0b10111000000,
         0b10100111000,
         0b11100000111,

@@ -6,11 +6,7 @@
 
 #include <esp_crt_bundle.h>  // NOLINT(misc-include-cleaner)
 #include <esp_http_client.h> // NOLINT(misc-include-cleaner)
-
-void WeatherHandler::update(std::optional<Conditions> &condition, std::optional<int16_t> &temperature,
-                            unsigned long &lastMillis)
-{
-}
+#include <variant>
 
 int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
 {
@@ -110,38 +106,40 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t 
     return std::nullopt;
 }
 
-std::span<const uint16_t> WeatherHandler::getSign(Conditions condition)
+std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Conditions condition)
 {
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch (condition)
     {
     case Conditions::CLEAR:
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
-        return conditionClear;
+        return bitmapClear;
 #else
     {
         if (Display.getRatio() > 1.0F)
         {
-            return conditionClearTall;
+            return bitmapClearTall;
         }
-        return conditionClearWide;
+        return bitmapClearWide;
     }
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
     case Conditions::CLOUDY:
-        return conditionCloudy;
+        return bitmapCloudy;
     case Conditions::CLOUDY_PARTLY:
-        return conditionCloudyPartly;
+        return bitmapCloudyPartly;
     case Conditions::EXCEPTION:
-        return conditionExceptional;
+        return bitmapExceptional;
     case Conditions::FOG:
-        return conditionFog;
+        return bitmapFog;
     case Conditions::RAIN:
-        return conditionRain;
+        return bitmapRain;
     case Conditions::SNOW:
-        return conditionSnow;
+        return bitmapSnow;
     case Conditions::THUNDER:
-        return conditionThunder;
+        return bitmapThunder;
     case Conditions::WIND:
-        return conditionWind;
+        return bitmapWind;
     }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }

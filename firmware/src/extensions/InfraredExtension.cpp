@@ -3,20 +3,13 @@
 #include "extensions/InfraredExtension.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h"
-#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
-#include "extensions/PhotocellExtension.h"  // NOLINT(misc-include-cleaner)
-#include "extensions/PlaylistExtension.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
-#include "services/ModesService.h"   // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
+#include "services/ModesService.h" // NOLINT(misc-include-cleaner)
 
 #include <IRremote.hpp> // NOLINT(misc-include-cleaner)
 #include <Preferences.h>
-
-InfraredExtension *Infrared = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-InfraredExtension::InfraredExtension() : ExtensionModule("Infrared") { Infrared = this; }
 
 void InfraredExtension::configure()
 {
@@ -25,9 +18,10 @@ void InfraredExtension::configure()
 
 #if EXTENSION_HOMEASSISTANT
     const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
     {
         const std::string id{std::string(name).append("_active")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::entity_category].set("config");
@@ -40,7 +34,7 @@ void InfraredExtension::configure()
         component[HomeAssistantAbbreviations::state_off].set("False");
         component[HomeAssistantAbbreviations::state_on].set("True");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 #endif // EXTENSION_HOMEASSISTANT
@@ -49,7 +43,7 @@ void InfraredExtension::configure()
 void InfraredExtension::begin()
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     const bool _active = Storage.isKey("active") && Storage.getBool("active");
     Storage.end();
     _active ? setActive(true) : transmit();
@@ -103,7 +97,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                                code.extensionMicrophoneToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionMicrophoneToggle.end())
             {
-                Microphone->setActive(!Microphone->getActive());
+                Extensions.Microphone().setActive(!Extensions.Microphone().getActive());
                 lastMillis = millis();
                 return;
             }
@@ -114,7 +108,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                                code.extensionPhotocellToggle.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPhotocellToggle.end())
             {
-                Photocell->setActive(!Photocell->getActive());
+                Extensions.Photocell().setActive(!Extensions.Photocell().getActive());
                 lastMillis = millis();
                 return;
             }
@@ -125,7 +119,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                                code.extensionPlaylistStart.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStart.end())
             {
-                Playlist->setActive(true);
+                Extensions.Playlist().setActive(true);
                 lastMillis = millis();
                 return;
             }
@@ -134,7 +128,7 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
                                code.extensionPlaylistStop.end(),
                                IrReceiver.decodedIRData.command) != code.extensionPlaylistStop.end())
             {
-                Playlist->setActive(false);
+                Extensions.Playlist().setActive(false);
                 lastMillis = millis();
                 return;
             }
@@ -174,7 +168,7 @@ void InfraredExtension::setActive(bool active)
         this->active = active;
         this->active ? IrReceiver.start() : IrReceiver.stop();
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBool("active", this->active);
         Storage.end();
         transmit();
@@ -191,7 +185,7 @@ void InfraredExtension::transmit()
 }
 
 void InfraredExtension::onReceive(JsonObjectConst payload,
-                                  const char *source) // NOLINT(misc-unused-parameters)
+                                  std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Active
     if (payload["active"].is<bool>())

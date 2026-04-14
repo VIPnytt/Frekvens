@@ -1,14 +1,27 @@
+#if FONT_MEDIUMWIDE
+
 #include "fonts/MediumWideFont.h"
-
-MediumWideFont *FontMediumWide = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-MediumWideFont::MediumWideFont() : FontModule("Medium wide") { FontMediumWide = this; }
 
 FontModule::Symbol MediumWideFont::getChar(uint32_t character) const
 {
-    if (character >= 0x20 && character <= 0x7F && character < ascii.size() + 0x20)
+    if (character >= 0x30 && character <= 0x39)
     {
-        return ascii[character - 0x20];
+        return toSymbol(chars30[character - 0x30]);
     }
+    // NOLINTBEGIN(bugprone-branch-clone)
+    switch (character)
+    {
+    case 0x20: // SPACE
+        return whitespace(6);
+    case 0x49: // I
+        return toSymbol(char49);
+    case 0x4F: // O
+        return toSymbol(char4F);
+    case 0x6F: // o
+        return toSymbol(char6F);
+    }
+    // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_MEDIUMWIDE
