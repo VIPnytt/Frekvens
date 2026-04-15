@@ -2,7 +2,6 @@
 
 #include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
-#include "services/ExtensionsService.h"
 
 #include <ESPmDNS.h>
 #include <Preferences.h>
@@ -315,6 +314,7 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

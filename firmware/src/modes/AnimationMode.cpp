@@ -4,7 +4,7 @@
 
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <array>

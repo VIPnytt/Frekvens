@@ -2,13 +2,12 @@
 
 #include "modes/GameOfLifeMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h"
+#include "config/constants.h"     // NOLINT(misc-include-cleaner)
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <vector>
@@ -120,6 +119,7 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

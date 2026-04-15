@@ -3,7 +3,6 @@
 #include "extensions/HomeAssistantExtension.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/MqttExtension.h"
 #include "services/ConnectivityService.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
@@ -111,6 +110,7 @@ void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_vie
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

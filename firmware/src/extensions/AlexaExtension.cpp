@@ -3,7 +3,6 @@
 #include "extensions/AlexaExtension.h"
 
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
 #include "services/WebServerService.h"
 
 #include <HTTPClient.h>

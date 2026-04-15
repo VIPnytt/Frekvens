@@ -2,7 +2,6 @@
 
 #include "modes/WeatherMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
@@ -163,6 +162,7 @@ void WeatherMode::end()
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

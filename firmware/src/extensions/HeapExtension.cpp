@@ -2,7 +2,6 @@
 
 #include "extensions/HeapExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
@@ -30,6 +29,7 @@ void HeapExtension::transmit()
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HeapExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

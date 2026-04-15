@@ -2,11 +2,10 @@
 
 #include "extensions/MessageExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 #include <Preferences.h>
@@ -145,6 +144,7 @@ void MessageExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

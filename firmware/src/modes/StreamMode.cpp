@@ -3,10 +3,9 @@
 #include "modes/StreamMode.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <span>
@@ -83,6 +82,7 @@ void StreamMode::onPacket(AsyncUDPPacket packet)
 void StreamMode::end() { udp.reset(); }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -2,12 +2,11 @@
 
 #include "modes/PingPongMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 
@@ -203,6 +202,7 @@ void PingPongMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void PingPongMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

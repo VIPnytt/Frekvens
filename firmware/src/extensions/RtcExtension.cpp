@@ -2,10 +2,9 @@
 
 #include "extensions/RtcExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <esp_sntp.h>
 
@@ -91,6 +90,7 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 }
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

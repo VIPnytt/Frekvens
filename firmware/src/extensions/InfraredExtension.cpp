@@ -4,9 +4,9 @@
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
-#include "services/ExtensionsService.h"
-#include "services/ModesService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ModesService.h"      // NOLINT(misc-include-cleaner)
 
 #include <IRremote.hpp> // NOLINT(misc-include-cleaner)
 #include <Preferences.h>
@@ -172,6 +172,7 @@ void InfraredExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void InfraredExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
