@@ -16,7 +16,7 @@ public:
     ModeModule(ModeModule &&) = delete;
     ModeModule &operator=(ModeModule &&) = delete;
 
-    std::string_view const name;
+    const std::string_view name{};
 
     virtual void configure();
     virtual void begin();
