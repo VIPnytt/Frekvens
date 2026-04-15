@@ -100,7 +100,7 @@ void PlaylistExtension::handle()
         {
             step = 0;
         }
-        Modes.setMode(playlist[step].mode.c_str());
+        Modes.setMode(playlist[step].mode);
         lastMillis = millis();
     }
 }

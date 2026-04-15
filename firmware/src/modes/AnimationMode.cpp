@@ -24,7 +24,7 @@ void AnimationMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         Preferences Storage;
-        Storage.begin(name, true);
+        Storage.begin(name.data(), true);
         if (Storage.isKey(std::to_string(index).c_str()))
         {
             lastMillis = millis();
@@ -52,7 +52,7 @@ void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2);
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     Storage.putBytes(std::to_string(_index).c_str(), frame.data(), frame.size());
     Storage.end();
     this->index = 0;
@@ -63,7 +63,7 @@ void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 void AnimationMode::setFrames(uint8_t count)
 {
     Preferences Storage;
-    Storage.begin(name);
+    Storage.begin(name.data());
     for (uint8_t i = count; i >= 2; ++i)
     {
         const std::string key = std::to_string(i);
@@ -82,7 +82,7 @@ void AnimationMode::setInterval(uint16_t _interval)
     {
         interval = _interval;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putUShort("interval", interval);
         Storage.end();
     }

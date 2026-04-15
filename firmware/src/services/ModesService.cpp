@@ -84,7 +84,7 @@ void ModesService::handle()
         transmit();
         Preferences Storage;
         Storage.begin(name.data());
-        Storage.putString("mode", mode->name);
+        Storage.putString("mode", mode->name.data());
         Storage.end();
     }
 }
@@ -115,13 +115,13 @@ void ModesService::setActive(bool active)
     }
 }
 
-void ModesService::setMode(const char *name) // NOLINT(readability-make-member-function-const)
+void ModesService::setMode(std::string_view _name) // NOLINT(readability-make-member-function-const)
 {
-    if (mode == nullptr || strcmp(mode->name, name) != 0)
+    if (mode == nullptr || mode->name != _name)
     {
         for (ModeModule *_mode : modes)
         {
-            if (!strcmp(_mode->name, name))
+            if (_mode->name == _name)
             {
                 setMode(_mode);
                 return;
@@ -141,7 +141,7 @@ void ModesService::setMode(ModeModule *mode, bool power)
     }
     lastMillis = millis();
     scheduled = mode;
-    const std::string _name = mode->name;
+    const std::string _name = mode->name.data();
     std::vector<std::string> words{""};
     uint8_t _line = 0;
     for (std::size_t i = 0; i < _name.length(); ++i)
@@ -189,9 +189,9 @@ TaskHandle_t ModesService::getTaskHandle() const { return taskHandle; }
 
 void ModesService::setModeNext()
 {
-    const char *const _name = mode == nullptr ? scheduled->name : mode->name;
-    std::vector<ModeModule *>::const_iterator _mode = std::find_if(
-        modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
+    const std::string_view _name = mode == nullptr ? scheduled->name : mode->name;
+    std::vector<ModeModule *>::const_iterator _mode =
+        std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return _mode->name == _name; });
     if (!Display.getPower())
     {
         Display.setPower(true);
@@ -209,9 +209,9 @@ void ModesService::setModeNext()
 
 void ModesService::setModePrevious()
 {
-    const char *const _name = mode == nullptr ? scheduled->name : mode->name;
-    std::vector<ModeModule *>::const_iterator _mode = std::find_if(
-        modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return !strcmp(_mode->name, _name); });
+    const std::string_view _name = mode == nullptr ? scheduled->name : mode->name;
+    std::vector<ModeModule *>::const_iterator _mode =
+        std::find_if(modes.begin(), modes.end(), [_name](const ModeModule *_mode) { return _mode->name == _name; });
     if (!Display.getPower())
     {
         Display.setPower(true);
@@ -246,9 +246,9 @@ void ModesService::onReceive(JsonObjectConst payload,
                              std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Mode
-    if (payload["mode"].is<const char *>())
+    if (payload["mode"].is<std::string_view>())
     {
-        setMode(payload["mode"].as<const char *>());
+        setMode(payload["mode"].as<std::string_view>());
     }
 }
 

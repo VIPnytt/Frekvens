@@ -14,7 +14,7 @@
 void ClockMode::configure()
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("font"))
     {
         fontName = Storage.getString("font").c_str();
@@ -157,7 +157,7 @@ void ClockMode::setFont(std::string_view _fontName)
     {
         fontName = _font->name.data();
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putString("font", fontName.c_str());
         Storage.end();
         pending = true;
@@ -171,7 +171,7 @@ void ClockMode::setTicking(bool _ticking)
     {
         ticking = _ticking;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBool("ticking", ticking);
         Storage.end();
         pending = true;

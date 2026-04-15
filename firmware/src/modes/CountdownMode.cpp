@@ -18,7 +18,7 @@
 void CountdownMode::configure()
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("font"))
     {
         fontName = Storage.getString("font").c_str();
@@ -139,7 +139,7 @@ void CountdownMode::save()
 {
     blink = 0;
     Preferences preferences;
-    preferences.begin(name);
+    preferences.begin(name.data());
     preferences.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
     preferences.end();
     transmit();
@@ -151,7 +151,7 @@ void CountdownMode::setFont(std::string_view _fontName)
     {
         fontName = _font->name.data();
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putString("font", fontName.c_str());
         Storage.end();
         transmit();

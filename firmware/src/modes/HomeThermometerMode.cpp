@@ -24,7 +24,7 @@ void HomeThermometerMode::configure()
                  "outdoor",
              })
         {
-            const std::string id{std::regex_replace(name, std::regex(R"(\s+)"), "").append("_").append(where)};
+            const std::string id{std::regex_replace(name.data(), std::regex(R"(\s+)"), "").append("_").append(where)};
             JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
             component[HomeAssistantAbbreviations::command_template].set(
                 std::string(R"({")").append(where).append(R"(":{{value}}})"));

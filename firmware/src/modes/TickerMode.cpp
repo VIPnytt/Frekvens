@@ -51,7 +51,7 @@ void TickerMode::configure()
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("message"))
     {
         message = Storage.getString("message").c_str();
@@ -109,7 +109,7 @@ void TickerMode::setFont(std::string_view fontName)
     {
         font = std::move(_font);
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putString("font", font->name.data());
         Storage.end();
         pending = true;
@@ -122,7 +122,7 @@ void TickerMode::setMessage(std::string_view _message)
     {
         message = _message.data();
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putString("message", message.c_str());
         Storage.end();
         pending = true;

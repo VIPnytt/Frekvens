@@ -39,7 +39,7 @@ void GameOfLifeMode::configure()
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("clock"))
     {
         clock = Storage.getBool("clock");
@@ -117,7 +117,7 @@ void GameOfLifeMode::setClock(bool _clock)
     {
         clock = _clock;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBool("clock", clock);
         Storage.end();
         pending = true;

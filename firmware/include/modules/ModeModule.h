@@ -1,11 +1,12 @@
 #pragma once
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
+#include <string_view>
 
 class ModeModule
 {
 protected:
-    explicit ModeModule(const char *name) : name(name) {};
+    explicit ModeModule(std::string_view name) : name(name) {};
 
 public:
     virtual ~ModeModule() = default;
@@ -15,7 +16,7 @@ public:
     ModeModule(ModeModule &&) = delete;
     ModeModule &operator=(ModeModule &&) = delete;
 
-    const char *const name;
+    std::string_view const name;
 
     virtual void configure();
     virtual void begin();

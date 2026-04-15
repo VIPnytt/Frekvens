@@ -10,8 +10,6 @@
 class StreamMode final : public ModeModule
 {
 private:
-    static constexpr std::string_view _name = "Stream";
-
     uint16_t port = 4048;
 
     std::unique_ptr<AsyncUDP> udp{};
@@ -22,7 +20,7 @@ private:
     static void onPacket(AsyncUDPPacket packet);
 
 public:
-    explicit StreamMode() : ModeModule(_name.data()) {};
+    explicit StreamMode() : ModeModule("Stream") {};
 
     void configure() override;
     void begin() override;
