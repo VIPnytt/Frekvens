@@ -18,7 +18,6 @@ void DeviceService::begin()
     vTaskDelay(INT8_MAX);
     ESP_LOGI(name, "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-avoid-do-while)
     ESP_LOGD(name, MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-avoid-do-while)
-
 #if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
     gpio_deep_sleep_hold_dis();
@@ -91,76 +90,19 @@ void DeviceService::begin()
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW2), ESP_GPIO_WAKEUP_GPIO_LOW);
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
-
     taskHandle = xTaskGetCurrentTaskHandle();
-
     Display.configure();
     Connectivity.configure();
     WebServer.configure();
     Extensions.configure();
     Modes.configure();
-
     operational = true;
     ESP_LOGV(name, "operational"); // NOLINT(cppcoreguidelines-avoid-do-while)
-
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_reboot")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::device_class].set("restart");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::name].set("Reboot");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::payload_press].set("reboot");
-        component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-    }
-    {
-        const std::string id{std::string(name).append("_power")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:power");
-        component[HomeAssistantAbbreviations::name].set("Power off");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::payload_press].set("power");
-        component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-    }
-    {
-        const std::string id{std::string(name).append("_temperature")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::device_class].set("temperature");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
-        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
-        component[HomeAssistantAbbreviations::force_update].set(true);
-        component[HomeAssistantAbbreviations::name].set("Internal temperature");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("sensor");
-        component[HomeAssistantAbbreviations::state_class].set("measurement");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-
-    Display.begin();
-    Connectivity.begin();
     WebServer.begin();
     Fonts.begin();
     Extensions.begin();
     Modes.begin();
-
     transmit();
-
     ESP_LOGD(name, "ready"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
@@ -322,6 +264,57 @@ void DeviceService::onReceive(JsonObjectConst payload,
         }
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_reboot")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::device_class].set("restart");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::name].set("Reboot");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_press].set("reboot");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+    }
+    {
+        const std::string id{std::string(name).append("_power")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:power");
+        component[HomeAssistantAbbreviations::name].set("Power off");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_press].set("power");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+    }
+    {
+        const std::string id{std::string(name).append("_temperature")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("temperature");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set("Internal temperature");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 DeviceService &DeviceService::getInstance()
 {

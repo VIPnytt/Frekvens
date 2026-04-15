@@ -63,30 +63,6 @@ void ConnectivityService::configure()
     configTzTime(TIME_ZONE, "pool.ntp.org", "time.cloudflare.com", "time.nist.gov");
 }
 
-void ConnectivityService::begin()
-{
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_rssi")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::device_class].set("signal_strength");
-        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
-        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
-        component[HomeAssistantAbbreviations::force_update].set(true);
-        component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("sensor");
-        component[HomeAssistantAbbreviations::state_class].set("measurement");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::unit_of_measurement].set("dBm");
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-}
-
 void ConnectivityService::handle()
 {
     if (dns && WiFi.getMode() != wifi_mode_t::WIFI_MODE_STA)
@@ -337,6 +313,29 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
         WiFi.scanNetworks(true);
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_rssi")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("signal_strength");
+        component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("dBm");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 ConnectivityService &ConnectivityService::getInstance()
 {

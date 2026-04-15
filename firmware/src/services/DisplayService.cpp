@@ -51,38 +51,6 @@ void DisplayService::configure()
     flush();
 }
 
-void DisplayService::begin()
-{
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_orientation")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"orientation":{{value.replace('°','')}}})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
-        component[HomeAssistantAbbreviations::name].set("Orientation");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        options.add("0°");
-#if GRID_COLUMNS == GRID_ROWS
-        options.add("90°");
-#endif // GRID_COLUMNS == GRID_ROWS
-        options.add("180°");
-#if GRID_COLUMNS == GRID_ROWS
-        options.add("270°");
-#endif // GRID_COLUMNS == GRID_ROWS
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-}
-
 void DisplayService::handle()
 {
     if (pending)
@@ -450,6 +418,37 @@ void DisplayService::onReceive(JsonObjectConst payload,
         setPower(payload["power"].as<bool>());
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_orientation")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"orientation":{{value.replace('°','')}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
+        component[HomeAssistantAbbreviations::name].set("Orientation");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        options.add("0°");
+#if GRID_COLUMNS == GRID_ROWS
+        options.add("90°");
+#endif // GRID_COLUMNS == GRID_ROWS
+        options.add("180°");
+#if GRID_COLUMNS == GRID_ROWS
+        options.add("270°");
+#endif // GRID_COLUMNS == GRID_ROWS
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 DisplayService &DisplayService::getInstance()
 {

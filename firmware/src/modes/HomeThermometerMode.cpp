@@ -13,54 +13,7 @@
 #include <nvs.h>
 #include <regex>
 
-void HomeThermometerMode::configure()
-{
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        for (const char *const where : {
-                 "indoor",
-                 "outdoor",
-             })
-        {
-            const std::string id{std::regex_replace(name.data(), std::regex(R"(\s+)"), "").append("_").append(where)};
-            JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-            component[HomeAssistantAbbreviations::command_template].set(
-                std::string(R"({")").append(where).append(R"(":{{value}}})"));
-            component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-            component[HomeAssistantAbbreviations::device_class].set("temperature");
-            component[HomeAssistantAbbreviations::entity_category].set("config");
-            component[HomeAssistantAbbreviations::icon].set("mdi:thermometer");
-#if GRID_COLUMNS < 18
-            component[HomeAssistantAbbreviations::max].set(999);
-            component[HomeAssistantAbbreviations::min].set(-99);
-#elif GRID_COLUMNS < 22
-            component[HomeAssistantAbbreviations::max].set(9999);
-            component[HomeAssistantAbbreviations::min].set(-999);
-#elif GRID_COLUMNS < 26
-            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
-            component[HomeAssistantAbbreviations::min].set(-9999);
-#else
-            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
-            component[HomeAssistantAbbreviations::min].set(INT16_MIN);
-#endif // GRID_COLUMNS < 18
-            component[HomeAssistantAbbreviations::mode].set("box");
-            component[HomeAssistantAbbreviations::name].set((char)std::toupper(*where) + std::string(where + 1));
-            component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-            component[HomeAssistantAbbreviations::platform].set("number");
-            component[HomeAssistantAbbreviations::state_topic].set(topic);
-            component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-#ifdef TEMPERATURE_UNIT
-            component[HomeAssistantAbbreviations::unit_of_measurement].set(TEMPERATURE_UNIT);
-#endif // TEMPERATURE_UNIT
-            component[HomeAssistantAbbreviations::value_template].set(
-                std::string("{{value_json.").append(where).append("}}"));
-        }
-    }
-#endif // EXTENSION_HOMEASSISTANT
-    transmit();
-}
+void HomeThermometerMode::configure() { transmit(); }
 
 void HomeThermometerMode::begin() { pending = true; }
 
@@ -143,5 +96,52 @@ void HomeThermometerMode::setTemperature(const char *where, int16_t temperature)
     ESP_LOGD(name, "%s %d°", where, temperature); // NOLINT(cppcoreguidelines-avoid-do-while)
 #endif // TEMPERATURE_UNIT
 }
+
+#if EXTENSION_HOMEASSISTANT
+void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        for (const char *const where : {
+                 "indoor",
+                 "outdoor",
+             })
+        {
+            const std::string id{std::regex_replace(name.data(), std::regex(R"(\s+)"), "").append("_").append(where)};
+            JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            component[HomeAssistantAbbreviations::command_template].set(
+                std::string(R"({")").append(where).append(R"(":{{value}}})"));
+            component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+            component[HomeAssistantAbbreviations::device_class].set("temperature");
+            component[HomeAssistantAbbreviations::entity_category].set("config");
+            component[HomeAssistantAbbreviations::icon].set("mdi:thermometer");
+#if GRID_COLUMNS < 18
+            component[HomeAssistantAbbreviations::max].set(999);
+            component[HomeAssistantAbbreviations::min].set(-99);
+#elif GRID_COLUMNS < 22
+            component[HomeAssistantAbbreviations::max].set(9999);
+            component[HomeAssistantAbbreviations::min].set(-999);
+#elif GRID_COLUMNS < 26
+            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
+            component[HomeAssistantAbbreviations::min].set(-9999);
+#else
+            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
+            component[HomeAssistantAbbreviations::min].set(INT16_MIN);
+#endif // GRID_COLUMNS < 18
+            component[HomeAssistantAbbreviations::mode].set("box");
+            component[HomeAssistantAbbreviations::name].set((char)std::toupper(*where) + std::string(where + 1));
+            component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+            component[HomeAssistantAbbreviations::platform].set("number");
+            component[HomeAssistantAbbreviations::state_topic].set(topic);
+            component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+#ifdef TEMPERATURE_UNIT
+            component[HomeAssistantAbbreviations::unit_of_measurement].set(TEMPERATURE_UNIT);
+#endif // TEMPERATURE_UNIT
+            component[HomeAssistantAbbreviations::value_template].set(
+                std::string("{{value_json.").append(where).append("}}"));
+        }
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_HOMETHERMOMETER

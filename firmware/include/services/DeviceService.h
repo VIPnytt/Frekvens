@@ -33,6 +33,10 @@ public:
 
     [[nodiscard]] JsonObjectConst getTransmits() const;
 
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
+
     static DeviceService &getInstance();
 };
 

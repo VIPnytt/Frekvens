@@ -181,7 +181,12 @@ public:
     void setModeNext();
     void setModePrevious();
     [[nodiscard]] TaskHandle_t getTaskHandle() const;
+
     void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 
     static ModesService &getInstance();
 };
