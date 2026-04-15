@@ -43,7 +43,7 @@ void DrawMode::end() { save(true); }
 void DrawMode::load(bool cache)
 {
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     const char *key = nullptr;
     if (cache && Storage.isKey("cache"))
     {
@@ -67,7 +67,7 @@ void DrawMode::save(bool cache)
     if (std::any_of(frame.begin(), frame.end(), [](uint8_t pixel) { return pixel > 0; }))
     {
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putBytes(cache ? "cache" : "saved", frame.data(), frame.size());
         Storage.end();
         pending = true;

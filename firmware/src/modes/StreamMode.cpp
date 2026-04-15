@@ -39,7 +39,7 @@ void StreamMode::configure()
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("port"))
     {
         port = Storage.getUShort("port");
@@ -64,7 +64,7 @@ void StreamMode::set(uint16_t _port)
     {
         port = _port;
         Preferences Storage;
-        Storage.begin(name);
+        Storage.begin(name.data());
         Storage.putUShort("port", port);
         Storage.end();
         if (udp)

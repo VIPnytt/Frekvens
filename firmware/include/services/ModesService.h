@@ -176,7 +176,7 @@ public:
     void begin();
     void handle();
     void setActive(bool active);
-    void setMode(const char *name);
+    void setMode(std::string_view _name);
     void setModeNext();
     void setModePrevious();
     [[nodiscard]] TaskHandle_t getTaskHandle() const;

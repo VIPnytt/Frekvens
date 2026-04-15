@@ -40,7 +40,7 @@ void WeatherMode::configure()
     }
 #endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
-    Storage.begin(name, true);
+    Storage.begin(name.data(), true);
     if (Storage.isKey("provider"))
     {
         const String _provider = Storage.getString("provider");
@@ -138,7 +138,7 @@ void WeatherMode::setProvider(std::string_view providerName)
         if (provider)
         {
             Preferences Storage;
-            Storage.begin(name);
+            Storage.begin(name.data());
             Storage.putString("provider", provider->name.data());
             Storage.end();
             condition.reset();
