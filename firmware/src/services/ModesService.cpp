@@ -8,7 +8,7 @@
 #include "services/ExtensionsService.h"
 
 #include <Preferences.h>
-#include <memory>
+#include <vector>
 
 void ModesService::configure()
 {

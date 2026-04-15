@@ -41,7 +41,7 @@
 // NOLINTEND(misc-include-cleaner)
 
 #include <array>
-#include <vector>
+#include <memory>
 
 class ModesService final : public ServiceModule
 {
