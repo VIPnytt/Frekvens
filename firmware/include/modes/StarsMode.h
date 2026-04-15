@@ -23,7 +23,9 @@ private:
     std::array<Star, GRID_COLUMNS * GRID_ROWS / (1U << 4U)> stars{};
 
 public:
-    explicit StarsMode() : ModeModule("Stars") {};
+    static constexpr std::string_view name{"Stars"};
+
+    explicit StarsMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

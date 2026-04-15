@@ -32,7 +32,9 @@ private:
     void transmit();
 
 public:
-    explicit TickerMode() : ModeModule("Ticker") {};
+    static constexpr std::string_view name{"Ticker"};
+
+    explicit TickerMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

@@ -18,7 +18,9 @@ private:
     void draw(uint8_t col, uint8_t value);
 
 public:
-    explicit BinaryClockMode() : ModeModule("Binary clock") {};
+    static constexpr std::string_view name{"Binary clock"};
+
+    explicit BinaryClockMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

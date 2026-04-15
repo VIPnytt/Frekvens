@@ -49,7 +49,9 @@ private:
     void transmit();
 
 public:
-    explicit ClockMode() : ModeModule("Clock") {};
+    static constexpr std::string_view name{"Clock"};
+
+    explicit ClockMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

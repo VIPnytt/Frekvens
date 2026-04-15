@@ -97,7 +97,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit ArrowMode() : ModeModule("Arrow") {};
+    static constexpr std::string_view name{"Arrow"};
+
+    explicit ArrowMode() : ModeModule(name) {};
 
     void handle() override;
 };

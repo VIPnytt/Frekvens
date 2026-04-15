@@ -131,7 +131,9 @@ private:
     };
 
 public:
-    explicit WaveformMode() : ModeModule("Waveform") {};
+    static constexpr std::string_view name{"Waveform"};
+
+    explicit WaveformMode() : ModeModule(name) {};
 
     void handle() override;
 };

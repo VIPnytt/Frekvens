@@ -42,7 +42,9 @@ private:
     void transmit();
 
 public:
-    explicit CountdownMode() : ModeModule("Countdown") {};
+    static constexpr std::string_view name{"Countdown"};
+
+    explicit CountdownMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

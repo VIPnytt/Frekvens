@@ -40,6 +40,7 @@
 #include "modules/ServiceModule.h"
 // NOLINTEND(misc-include-cleaner)
 
+#include <array>
 #include <vector>
 
 class ModesService final : public ServiceModule
@@ -47,124 +48,14 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
-    inline static const std::vector<ModeModule *> modes{
-#if MODE_ANIMATION
-        new AnimationMode(),
-#endif
-#if MODE_ARROW
-        new ArrowMode(),
-#endif
-#if MODE_BINARYCLOCK
-        new BinaryClockMode(),
-#endif
-#if MODE_BINARYEPOCH
-        new BinaryEpochMode(),
-#endif
-#if MODE_BLINDS
-        new BlindsMode(),
-#endif
-#if MODE_BLINK
-        new BlinkMode(),
-#endif
-#if MODE_BREAKOUTCLOCK
-        new BreakoutClockMode(),
-#endif
-#if MODE_BRIGHT
-        new BrightMode(),
-#endif
-#if MODE_CIRCLE
-        new CircleMode(),
-#endif
-#if MODE_CLOCK
-        new ClockMode(),
-#endif
-#if MODE_COUNTDOWN
-        new CountdownMode(),
-#endif
-#if MODE_DRAW
-        new DrawMode(),
-#endif
-#if MODE_EQUALIZER
-        new EqualizerMode(),
-#endif
-#if MODE_FIREWORK
-        new FireworkMode(),
-#endif
-#if MODE_FLIES
-        new FliesMode(),
-#endif
-#if MODE_GAMEOFLIFE
-        new GameOfLifeMode(),
-#endif
-#if MODE_GLITTER
-        new GlitterMode(),
-#endif
-#if MODE_HOMETHERMOMETER
-        new HomeThermometerMode(),
-#endif
-#if MODE_JAGGEDWAVEFORM
-        new JaggedWaveformMode(),
-#endif
-#if MODE_LEAFFALL
-        new LeafFallMode(),
-#endif
-#if MODE_LINES
-        new LinesMode(),
-#endif
-#if MODE_METABALLS
-        new MetaballsMode(),
-#endif
-#if MODE_NOISE
-        new NoiseMode(),
-#endif
-#if MODE_PINGPONG
-        new PingPongMode(),
-#endif
-#if MODE_PIXELSEQUENCE
-        new PixelSequenceMode(),
-#endif
-#if MODE_RAIN
-        new RainMode(),
-#endif
-#if MODE_RING
-        new RingMode(),
-#endif
-#if MODE_SCAN
-        new ScanMode(),
-#endif
-#if MODE_SMOOTHWAVEFORM
-        new SmoothWaveformMode(),
-#endif
-#if MODE_SNAKE
-        new SnakeMode(),
-#endif
-#if MODE_STARS
-        new StarsMode(),
-#endif
-#if MODE_STREAM
-        new StreamMode(),
-#endif
-#if MODE_TICKER
-        new TickerMode(),
-#endif
-#if MODE_WAVEFORM
-        new WaveformMode(),
-#endif
-#if MODE_WEATHER
-        new WeatherMode(),
-#endif
-    };
+    bool scheduled = false;
 
     unsigned long lastMillis = 0;
 
-    ModeModule *mode = nullptr;
+    std::unique_ptr<ModeModule> mode{};
 
-    TaskHandle_t taskHandle = nullptr;
+    TaskHandle_t taskHandle{};
 
-    ModeModule *scheduled = nullptr;
-
-    void setMode(ModeModule *mode, bool power = true);
     void transmit();
 
     static void onTask(void *parameter = nullptr);
@@ -172,15 +63,124 @@ private:
 public:
     static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
 
+    static constexpr auto names = std::to_array<std::string_view>({
+#if MODE_ANIMATION
+        AnimationMode::name,
+#endif
+#if MODE_ARROW
+        ArrowMode::name,
+#endif
+#if MODE_BINARYCLOCK
+        BinaryClockMode::name,
+#endif
+#if MODE_BINARYEPOCH
+        BinaryEpochMode::name,
+#endif
+#if MODE_BLINDS
+        BlindsMode::name,
+#endif
+#if MODE_BLINK
+        BlinkMode::name,
+#endif
+#if MODE_BREAKOUTCLOCK
+        BreakoutClockMode::name,
+#endif
+#if MODE_BRIGHT
+        BrightMode::name,
+#endif
+#if MODE_CIRCLE
+        CircleMode::name,
+#endif
+#if MODE_CLOCK
+        ClockMode::name,
+#endif
+#if MODE_COUNTDOWN
+        CountdownMode::name,
+#endif
+#if MODE_DRAW
+        DrawMode::name,
+#endif
+#if MODE_EQUALIZER
+        EqualizerMode::name,
+#endif
+#if MODE_FIREWORK
+        FireworkMode::name,
+#endif
+#if MODE_FLIES
+        FliesMode::name,
+#endif
+#if MODE_GAMEOFLIFE
+        GameOfLifeMode::name,
+#endif
+#if MODE_GLITTER
+        GlitterMode::name,
+#endif
+#if MODE_HOMETHERMOMETER
+        HomeThermometerMode::name,
+#endif
+#if MODE_JAGGEDWAVEFORM
+        JaggedWaveformMode::name,
+#endif
+#if MODE_LEAFFALL
+        LeafFallMode::name,
+#endif
+#if MODE_LINES
+        LinesMode::name,
+#endif
+#if MODE_METABALLS
+        MetaballsMode::name,
+#endif
+#if MODE_NOISE
+        NoiseMode::name,
+#endif
+#if MODE_PINGPONG
+        PingPongMode::name,
+#endif
+#if MODE_PIXELSEQUENCE
+        PixelSequenceMode::name,
+#endif
+#if MODE_RAIN
+        RainMode::name,
+#endif
+#if MODE_RING
+        RingMode::name,
+#endif
+#if MODE_SCAN
+        ScanMode::name,
+#endif
+#if MODE_SMOOTHWAVEFORM
+        SmoothWaveformMode::name,
+#endif
+#if MODE_SNAKE
+        SnakeMode::name,
+#endif
+#if MODE_STARS
+        StarsMode::name,
+#endif
+#if MODE_STREAM
+        StreamMode::name,
+#endif
+#if MODE_TICKER
+        TickerMode::name,
+#endif
+#if MODE_WAVEFORM
+        WaveformMode::name,
+#endif
+#if MODE_WEATHER
+        WeatherMode::name,
+#endif
+    });
+
     void configure();
     void begin();
     void handle();
     void setActive(bool active);
-    void setMode(std::string_view _name);
+    [[nodiscard]] ModeModule *getMode();
+    [[nodiscard]] std::unique_ptr<ModeModule> getMode(std::string_view modeName);
+    void setMode(std::string_view modeName, bool power = true);
     void setModeNext();
     void setModePrevious();
     [[nodiscard]] TaskHandle_t getTaskHandle() const;
-    [[nodiscard]] const std::vector<ModeModule *> &getAll() const;
     void onReceive(JsonObjectConst payload, std::string_view source) override;
 
     static ModesService &getInstance();

@@ -30,9 +30,9 @@ void HomeAssistantExtension::configure()
         component[HomeAssistantAbbreviations::effect_command_topic].set(
             std::string("frekvens/" HOSTNAME "/").append(Modes.name).append("/set"));
         JsonArray effectList{component[HomeAssistantAbbreviations::effect_list].to<JsonArray>()};
-        for (const ModeModule *mode : Modes.getAll())
+        for (const std::string_view _mode : Modes.names)
         {
-            effectList.add(mode->name);
+            effectList.add(_mode);
         }
         component[HomeAssistantAbbreviations::effect_state_topic].set(
             std::string("frekvens/" HOSTNAME "/").append(Modes.name));

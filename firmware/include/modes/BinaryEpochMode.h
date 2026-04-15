@@ -10,7 +10,9 @@ private:
     time_t epoch = 0;
 
 public:
-    explicit BinaryEpochMode() : ModeModule("Binary epoch") {};
+    static constexpr std::string_view name{"Binary epoch"};
+
+    explicit BinaryEpochMode() : ModeModule(name) {};
 
     void handle() override;
 };

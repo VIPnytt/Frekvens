@@ -19,7 +19,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit PixelSequenceMode() : ModeModule("Pixel sequence") {};
+    static constexpr std::string_view name{"Pixel sequence"};
+
+    explicit PixelSequenceMode() : ModeModule(name) {};
 
     void handle() override;
 };

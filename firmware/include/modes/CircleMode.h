@@ -25,7 +25,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit CircleMode() : ModeModule("Circle") {};
+    static constexpr std::string_view name{"Circle"};
+
+    explicit CircleMode() : ModeModule(name) {};
 
     void handle() override;
 };

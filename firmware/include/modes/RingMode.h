@@ -127,7 +127,9 @@ private:
     }};
 
 public:
-    explicit RingMode() : ModeModule("Ring") {};
+    static constexpr std::string_view name{"Ring"};
+
+    explicit RingMode() : ModeModule(name) {};
 
     void handle() override;
 };
