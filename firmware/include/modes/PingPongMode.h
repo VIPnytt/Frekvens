@@ -37,7 +37,9 @@ private:
     void transmit();
 
 public:
-    explicit PingPongMode() : ModeModule("Ping-pong") {};
+    static constexpr std::string_view name{"Ping-pong"};
+
+    explicit PingPongMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

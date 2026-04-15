@@ -7,7 +7,9 @@
 class BrightMode final : public ModeModule
 {
 public:
-    explicit BrightMode() : ModeModule("Bright") {};
+    static constexpr std::string_view name{"Bright"};
+
+    explicit BrightMode() : ModeModule(name) {};
 
     void begin() override;
 };

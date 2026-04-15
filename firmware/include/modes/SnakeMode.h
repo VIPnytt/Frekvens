@@ -47,7 +47,9 @@ private:
     void transmit();
 
 public:
-    explicit SnakeMode() : ModeModule("Snake") {}
+    static constexpr std::string_view name{"Snake"};
+
+    explicit SnakeMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

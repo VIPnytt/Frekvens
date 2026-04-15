@@ -17,7 +17,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit BlindsMode() : ModeModule("Blinds") {};
+    static constexpr std::string_view name{"Blinds"};
+
+    explicit BlindsMode() : ModeModule(name) {};
 
     void handle() override;
 };

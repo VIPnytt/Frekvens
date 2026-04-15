@@ -22,7 +22,9 @@ private:
     std::array<Leaf, GRID_COLUMNS * GRID_ROWS / 20> leaves{};
 
 public:
-    explicit LeafFallMode() : ModeModule("Leaf fall") {};
+    static constexpr std::string_view name{"Leaf fall"};
+
+    explicit LeafFallMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

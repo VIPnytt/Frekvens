@@ -20,7 +20,9 @@ private:
     static void onPacket(AsyncUDPPacket packet);
 
 public:
-    explicit StreamMode() : ModeModule("Stream") {};
+    static constexpr std::string_view name{"Stream"};
+
+    explicit StreamMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

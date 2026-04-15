@@ -28,7 +28,9 @@ private:
     uint16_t deg = 90;
 
 public:
-    explicit BreakoutClockMode() : ModeModule("Breakout clock") {};
+    static constexpr std::string_view name{"Breakout clock"};
+
+    explicit BreakoutClockMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

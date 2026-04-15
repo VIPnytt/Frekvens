@@ -32,7 +32,7 @@ private:
         "Wind",
     };
 
-    static constexpr std::array<std::string_view, COUNT_WEATHER> providerNames{
+    static constexpr auto providerNames{std::to_array<std::string_view>({
 #if WEATHER_GOOGLE
         GoogleWeatherMiddleware::name,
 #endif
@@ -54,7 +54,7 @@ private:
 #if WEATHER_YR
         YrMiddleware::name,
 #endif
-    };
+    })};
 
     unsigned long lastMillis = 0;
 
@@ -69,7 +69,9 @@ private:
     void transmit();
 
 public:
-    explicit WeatherMode() : ModeModule("Weather") {};
+    static constexpr std::string_view name{"Weather"};
+
+    explicit WeatherMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

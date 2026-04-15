@@ -10,7 +10,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit BlinkMode() : ModeModule("Blink") {};
+    static constexpr std::string_view name{"Blink"};
+
+    explicit BlinkMode() : ModeModule(name) {};
 
     void handle() override;
 };

@@ -14,7 +14,9 @@ private:
     void transmit();
 
 public:
-    explicit HomeThermometerMode() : ModeModule("Home thermometer") {};
+    static constexpr std::string_view name{"Home thermometer"};
+
+    explicit HomeThermometerMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

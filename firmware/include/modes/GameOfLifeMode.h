@@ -23,7 +23,9 @@ private:
     void transmit();
 
 public:
-    explicit GameOfLifeMode() : ModeModule("Game of Life") {};
+    static constexpr std::string_view name{"Game of Life"};
+
+    explicit GameOfLifeMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;

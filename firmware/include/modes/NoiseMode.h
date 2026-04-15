@@ -21,7 +21,9 @@ private:
     std::array<Dot, GRID_COLUMNS * GRID_ROWS / 9> dots{};
 
 public:
-    explicit NoiseMode() : ModeModule("Noise") {};
+    static constexpr std::string_view name{"Noise"};
+
+    explicit NoiseMode() : ModeModule(name) {};
 
     void handle() override;
 };

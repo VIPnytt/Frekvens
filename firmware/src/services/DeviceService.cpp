@@ -285,13 +285,16 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
                 return;
             }
         }
-        for (ModeModule *mode : Modes.getAll())
+        ModeModule *mode{Modes.getMode()};
+        if (mode != nullptr && mode->name == destination)
         {
-            if (mode->name == destination)
-            {
-                mode->onReceive(payload, source);
-                return;
-            }
+            mode->onReceive(payload, source);
+            return;
+        }
+        std::unique_ptr<ModeModule> _mode{Modes.getMode(destination)};
+        if (_mode != nullptr)
+        {
+            _mode->onReceive(payload, source);
         }
     }
 }

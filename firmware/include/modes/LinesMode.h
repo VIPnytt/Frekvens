@@ -12,7 +12,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit LinesMode() : ModeModule("Lines") {};
+    static constexpr std::string_view name{"Lines"};
+
+    explicit LinesMode() : ModeModule(name) {};
 
     void handle() override;
 };

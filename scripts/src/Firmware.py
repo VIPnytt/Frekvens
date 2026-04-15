@@ -22,7 +22,6 @@ class Firmware:
 
     def _define_env(self) -> None:
         count_extension = 0
-        count_weather = 0
         for option, _value in self.project.dotenv.items():
             if (value := _value or "") in [
                 "false",
@@ -36,8 +35,6 @@ class Firmware:
                 if value == "true":
                     if option.startswith("EXTENSION_"):
                         count_extension += 1
-                    elif option.startswith("WEATHER_"):
-                        count_weather += 1
             else:
                 self.project.env.Append(
                     CPPDEFINES=[
@@ -75,7 +72,6 @@ class Firmware:
                     option: value
                     for option, value in {
                         "COUNT_EXTENSION": count_extension,
-                        "COUNT_WEATHER": count_weather,
                     }.items()
                     if value
                 }.items()

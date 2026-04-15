@@ -80,7 +80,9 @@ private:
     };
 
 public:
-    explicit JaggedWaveformMode() : ModeModule("Jagged waveform") {};
+    static constexpr std::string_view name{"Jagged waveform"};
+
+    explicit JaggedWaveformMode() : ModeModule(name) {};
 
     void handle() override;
 };
