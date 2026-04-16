@@ -24,10 +24,16 @@ void StreamMode::configure()
 
 void StreamMode::begin()
 {
-    udp = std::make_unique<AsyncUDP>();
-    if (udp->listen(port))
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("port"))
     {
-        udp->onPacket(&onPacket);
+        port = Storage.getUShort("port");
+    }
+    Storage.end();
+    if (udp.listen(port))
+    {
+        udp.onPacket(&onPacket);
         ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
@@ -41,11 +47,8 @@ void StreamMode::set(uint16_t _port)
         Storage.begin(name.data());
         Storage.putUShort("port", port);
         Storage.end();
-        if (udp)
-        {
-            udp->listen(port);
-            ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
-        }
+        udp.listen(port);
+        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
         transmit();
     }
 }
@@ -69,7 +72,6 @@ void StreamMode::onReceive(JsonObjectConst payload,
 
 void StreamMode::onPacket(AsyncUDPPacket packet)
 {
-    const uint16_t port = packet.localPort();
     const size_t len = packet.length();
     if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
         (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
@@ -78,8 +80,6 @@ void StreamMode::onPacket(AsyncUDPPacket packet)
         Display.setFrame(std::span<const uint8_t>(packet.data(), len).last(GRID_COLUMNS * GRID_ROWS));
     }
 }
-
-void StreamMode::end() { udp.reset(); }
 
 #if EXTENSION_HOMEASSISTANT
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)

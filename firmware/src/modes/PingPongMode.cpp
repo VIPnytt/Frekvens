@@ -24,6 +24,13 @@ void PingPongMode::configure()
 
 void PingPongMode::begin()
 {
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("clock"))
+    {
+        clock = Storage.getBool("clock");
+    }
+    Storage.end();
     pending = true;
     Display.clearFrame();
     paddleA.clear();

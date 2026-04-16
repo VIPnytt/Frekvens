@@ -27,6 +27,13 @@ void SnakeMode::configure()
 
 void SnakeMode::begin()
 {
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("clock"))
+    {
+        clock = Storage.getBool("clock");
+    }
+    Storage.end();
     Display.clearFrame();
     pending = true;
     stage = 0;
@@ -203,13 +210,13 @@ void SnakeMode::blink()
 
 void SnakeMode::clean()
 {
-    if (millis() - lastMillis > INT8_MAX && snake.size())
+    if (millis() - lastMillis > INT8_MAX && !snake.empty())
     {
         Display.setPixel(snake.front().x, snake.front().y, 0);
         snake.pop_front();
         lastMillis = millis();
     }
-    else if (!snake.size())
+    else if (snake.empty())
     {
         Display.setPixel(dot.x, dot.y, 0);
         stage = 0;

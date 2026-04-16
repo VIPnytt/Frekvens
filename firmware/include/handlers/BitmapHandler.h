@@ -20,8 +20,6 @@ template <typename T>
 class BitmapHandler final : public HandlerModule
 {
 private:
-    static constexpr std::string_view _name = "BitmapHandler";
-
     std::span<const T> bitmap{};
 
     uint8_t height = 0;

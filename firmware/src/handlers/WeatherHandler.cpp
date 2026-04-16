@@ -41,7 +41,7 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
     if (status != 200)
     {
         esp_http_client_cleanup(client);
-        ESP_LOGV(_name, "HTTP %d", status);
+        ESP_LOGV(name, "HTTP %d", status);
         return status;
     }
     const int64_t len = esp_http_client_get_content_length(client);
@@ -73,7 +73,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(std::stri
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %s", code.data());
+    ESP_LOGD(name, "unknown condition code %s", code.data());
     return std::nullopt;
 }
 
@@ -87,7 +87,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t c
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %d", code);
+    ESP_LOGD(name, "unknown condition code %d", code);
     return std::nullopt;
 }
 
@@ -102,7 +102,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t 
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %d", code);
+    ESP_LOGD(name, "unknown condition code %d", code);
     return std::nullopt;
 }
 

@@ -34,7 +34,7 @@ public:
 
     explicit MetaballsMode() : ModeModule(name) {};
 
-    void configure() override;
+    void begin() override;
     void handle() override;
 };
 

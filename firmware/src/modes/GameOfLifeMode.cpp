@@ -24,7 +24,17 @@ void GameOfLifeMode::configure()
     transmit();
 }
 
-void GameOfLifeMode::begin() { pending = true; }
+void GameOfLifeMode::begin()
+{
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("clock"))
+    {
+        clock = Storage.getBool("clock");
+    }
+    Storage.end();
+    pending = true;
+}
 
 void GameOfLifeMode::handle()
 {

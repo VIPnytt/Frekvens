@@ -76,7 +76,6 @@ public:
     void configure() override;
     void begin() override;
     void handle() override;
-    void end() override;
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;
 

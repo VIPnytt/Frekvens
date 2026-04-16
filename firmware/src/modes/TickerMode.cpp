@@ -39,7 +39,34 @@ void TickerMode::configure()
     transmit();
 }
 
-void TickerMode::begin() { pending = true; }
+void TickerMode::begin()
+{
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("message"))
+    {
+        message = Storage.getString("message").c_str();
+    }
+    if (Storage.isKey("font"))
+    {
+        const String _font = Storage.getString("font");
+        Storage.end();
+        setFont(_font.c_str());
+    }
+    else
+    {
+        Storage.end();
+    }
+    if (!font)
+    {
+#if FONT_SMALL
+        setFont(SmallFont::name);
+#else
+        setFont(Fonts.names[0]);
+#endif // FONT_SMALL
+    }
+    pending = true;
+}
 
 void TickerMode::handle()
 {
