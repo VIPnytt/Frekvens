@@ -5,7 +5,6 @@
 
 #include <array>
 #include <span>
-#include <vector>
 
 class DisplayService final : public ServiceModule
 {
@@ -104,6 +103,10 @@ public:
     void flush();
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 
     static DisplayService &getInstance();
 };

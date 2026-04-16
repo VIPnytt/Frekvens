@@ -2,10 +2,9 @@
 
 #include "extensions/RtcExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <esp_sntp.h>
 
@@ -37,27 +36,6 @@ void RtcExtension::configure()
 #ifdef PIN_INT
     attachInterrupt(PIN_INT, onInterrupt, CHANGE);
 #endif
-
-#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_temperature")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::device_class].set("temperature");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
-        component[HomeAssistantAbbreviations::force_update].set(true);
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" temperature"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("sensor");
-        component[HomeAssistantAbbreviations::state_class].set("measurement");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 }
 
 #if defined(RTC_DS3231) || defined(RTC_DS3232) || defined(RTC_PCF8563)
@@ -110,5 +88,29 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
         local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec));
     ESP_LOGV(name, "NTP sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
+
+#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_temperature")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::device_class].set("temperature");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
+        component[HomeAssistantAbbreviations::force_update].set(true);
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" temperature"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("sensor");
+        component[HomeAssistantAbbreviations::state_class].set("measurement");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 
 #endif // EXTENSION_RTC

@@ -24,4 +24,8 @@ public:
 
     virtual void onReceive(JsonObjectConst payload, std::string_view source);
     virtual void onTransmit(JsonObjectConst payload, std::string_view source);
+
+#if EXTENSION_HOMEASSISTANT
+    virtual void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique);
+#endif
 };

@@ -1,40 +1,16 @@
 #include "services/ModesService.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MicroFont.h"      // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <vector>
 
 void ModesService::configure()
 {
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_mode")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"mode":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
-        component[HomeAssistantAbbreviations::name].set("Mode");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _name : names)
-        {
-            options.add(_name);
-        }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.mode}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-
     for (const std::string_view _name : names)
     {
         getMode(_name)->configure();
@@ -449,6 +425,32 @@ void ModesService::onReceive(JsonObjectConst payload,
         setMode(payload["mode"].as<std::string_view>());
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void ModesService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_mode")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"mode":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
+        component[HomeAssistantAbbreviations::name].set("Mode");
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _name : names)
+        {
+            options.add(_name);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.mode}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 ModesService &ModesService::getInstance()
 {

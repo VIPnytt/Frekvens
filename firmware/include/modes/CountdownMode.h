@@ -50,7 +50,12 @@ public:
     void begin() override;
     void handle() override;
     void setFont(std::string_view _fontName);
+
     void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_COUNTDOWN

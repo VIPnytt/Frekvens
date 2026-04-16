@@ -50,13 +50,13 @@ private:
 public:
     explicit MessageExtension() : ExtensionModule(name) {};
 
-#if EXTENSION_HOMEASSISTANT
-    void configure() override;
-#endif
-
     void begin() override;
     void handle() override;
     void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // EXTENSION_MESSAGE

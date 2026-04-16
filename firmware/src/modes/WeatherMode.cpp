@@ -2,7 +2,6 @@
 
 #include "modes/WeatherMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
@@ -15,30 +14,6 @@
 
 void WeatherMode::configure()
 {
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    const HomeAssistantExtension &_ha = Extensions.HomeAssistant();
-    {
-        const std::string id{std::string(name).append("_protocol")};
-        JsonObject component{(*_ha.discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"provider":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:weather-partly-cloudy");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" provider"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _provider : providerNames)
-        {
-            options.add(_provider);
-        }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(_ha.uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
     Preferences Storage;
     Storage.begin(name.data(), true);
     if (Storage.isKey("provider"))
@@ -185,5 +160,33 @@ void WeatherMode::end()
     temperature.reset();
     transmit();
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_protocol")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"provider":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:weather-partly-cloudy");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" provider"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _provider : providerNames)
+        {
+            options.add(_provider);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_WEATHER

@@ -14,12 +14,12 @@ private:
 public:
     explicit HeapExtension() : ExtensionModule(name) {};
 
-#if EXTENSION_HOMEASSISTANT
-    void configure() override;
-#endif // EXTENSION_HOMEASSISTANT
-
     void handle() override;
     void transmit();
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // EXTENSION_HEAP

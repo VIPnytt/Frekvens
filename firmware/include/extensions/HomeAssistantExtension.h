@@ -24,17 +24,12 @@ private:
 public:
     explicit HomeAssistantExtension() : ExtensionModule(name) {};
 
-    inline static const std::string uniquePrefix = std::format("0x{:x}_", ESP.getEfuseMac());
-
-    JsonDocument *discovery = new JsonDocument();
-
-    void configure() override;
     void begin() override;
     void handle() override;
-
     void undiscover();
 
     void onTransmit(JsonObjectConst payload, std::string_view source) override;
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
 };
 
 namespace HomeAssistantAbbreviations
