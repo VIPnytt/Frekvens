@@ -6,8 +6,8 @@
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
-#include "services/ExtensionsService.h"
+#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
@@ -30,16 +30,34 @@ void WeatherMode::configure()
     {
         setProvider(providerNames.front());
     }
+    transmit();
 }
 
-void WeatherMode::begin() { lastMillis = millis() - provider->interval; }
+void WeatherMode::begin()
+{
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("provider"))
+    {
+        const String _provider = Storage.getString("provider");
+        Storage.end();
+        setProvider(_provider.c_str());
+    }
+    else
+    {
+        Storage.end();
+    }
+    if (provider == nullptr)
+    {
+        setProvider(providerNames.front());
+    }
+    lastMillis = millis() - provider->interval;
+}
 
 void WeatherMode::handle()
 {
     if (WiFi.isConnected() && millis() - lastMillis > provider->interval)
     {
-        condition.reset();
-        temperature.reset();
         lastMillis = millis();
         provider->update(condition, temperature, lastMillis);
         if (condition.has_value() && temperature.has_value())
@@ -152,13 +170,6 @@ void WeatherMode::onReceive(JsonObjectConst payload,
     {
         setProvider(payload["provider"].as<std::string_view>());
     }
-}
-
-void WeatherMode::end()
-{
-    condition.reset();
-    temperature.reset();
-    transmit();
 }
 
 #if EXTENSION_HOMEASSISTANT

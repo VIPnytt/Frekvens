@@ -76,7 +76,7 @@ FontModule::Symbol MiniFont::getChar(uint32_t character) const
     case 0x7C: // |
         return toSymbol(char7C);
     case 0xB0: // ° DEGREE SIGN
-        return toSymbol(charB0, 0, 2);
+        return toSymbol(charB0, 0, 3);
     case 0x3C0: // π GREEK SMALL LETTER PI
         return toSymbol(char3C0);
     }

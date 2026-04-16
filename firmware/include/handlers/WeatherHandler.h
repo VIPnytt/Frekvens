@@ -9,9 +9,6 @@
 
 class WeatherHandler
 {
-private:
-    static constexpr std::string_view _name = "WeatherHandler";
-
 public:
     virtual ~WeatherHandler() = default;
 

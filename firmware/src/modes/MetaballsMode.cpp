@@ -6,7 +6,7 @@
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 #include "services/ExtensionsService.h"
 
-void MetaballsMode::configure()
+void MetaballsMode::begin()
 {
     for (uint16_t i = 0; i < contributions.size(); ++i)
     {

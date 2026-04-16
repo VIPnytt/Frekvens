@@ -83,7 +83,7 @@ public:
         port = 8123;
 #endif // HOMEASSISTANT_PORT
 #ifdef HOMEASSISTANT_PROTOCOL
-        tls = strcmp(HOMEASSISTANT_PROTOCOL, "http:");
+        tls = strcmp(HOMEASSISTANT_PROTOCOL, "http:") != 0;
 #else
         tls = false;
 #endif // HOMEASSISTANT_PROTOCOL

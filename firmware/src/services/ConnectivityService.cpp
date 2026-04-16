@@ -1,6 +1,6 @@
 #include "services/ConnectivityService.h"
 
-#include "extensions/HomeAssistantExtension.h"
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
 #include <ESPmDNS.h>

@@ -2,12 +2,11 @@
 
 #include "modes/ClockMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 
 #include <Preferences.h>
 
@@ -27,7 +26,21 @@ void ClockMode::configure()
     transmit();
 }
 
-void ClockMode::begin() { pending = true; }
+void ClockMode::begin()
+{
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("font"))
+    {
+        fontName = Storage.getString("font").c_str();
+    }
+    if (Storage.isKey("ticking"))
+    {
+        ticking = Storage.getBool("ticking");
+    }
+    Storage.end();
+    pending = true;
+}
 
 void ClockMode::handle()
 {
@@ -165,6 +178,7 @@ void ClockMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

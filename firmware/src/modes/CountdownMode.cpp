@@ -37,6 +37,22 @@ void CountdownMode::configure()
 
 void CountdownMode::begin()
 {
+    Preferences Storage;
+    Storage.begin(name.data(), true);
+    if (Storage.isKey("font"))
+    {
+        fontName = Storage.getString("font").c_str();
+    }
+    if (Storage.isKey("epoch"))
+    {
+        const int64_t _epoch = Storage.getLong64("epoch");
+        Storage.end();
+        epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
+    }
+    else
+    {
+        Storage.end();
+    }
     blink = 0;
     lower = 0;
     upper = 0;

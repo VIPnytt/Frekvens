@@ -10,9 +10,9 @@
 class StreamMode final : public ModeModule
 {
 private:
-    uint16_t port = 4048;
+    inline static uint16_t port = 4048;
 
-    std::unique_ptr<AsyncUDP> udp{};
+    AsyncUDP udp{};
 
     void set(uint16_t _port);
     void transmit();
@@ -26,7 +26,6 @@ public:
 
     void configure() override;
     void begin() override;
-    void end() override;
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;
 

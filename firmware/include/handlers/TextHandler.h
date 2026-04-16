@@ -19,8 +19,6 @@ public:
     [[nodiscard]] uint8_t getWidth() const;
 
 private:
-    static constexpr std::string_view _name = "TextHandler";
-
     const FontModule *font;
 
     uint8_t height = 0;

@@ -17,7 +17,6 @@
 #include "extensions/SignalExtension.h"
 #include "extensions/WebAppExtension.h"
 #include "extensions/WebSocketExtension.h"
-#include "modules/ExtensionModule.h"
 #include "modules/ServiceModule.h"
 
 #include <array>
