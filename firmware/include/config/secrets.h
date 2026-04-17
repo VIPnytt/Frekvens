@@ -37,5 +37,9 @@
 // #define LATITUDE "0.000"  // °
 // #define LONGITUDE "0.000" // °
 // #define LOCATION "city"
-// #define TEMPERATURE_CELSIUS true    // °C
-// #define TEMPERATURE_FAHRENHEIT true // °F
+
+/**
+ * Miscellaneous (optional)
+ */
+// #define FRAME_RATE 60     // fps
+// #define WIFI_COUNTRY "01" // ISO 3166-1 alpha-2

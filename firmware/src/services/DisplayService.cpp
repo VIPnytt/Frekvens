@@ -59,7 +59,7 @@ void DisplayService::handle()
     }
 }
 
-IRAM_ATTR void DisplayService::onTimer()
+IRAM_ATTR void DisplayService::onTimer() // NOLINT(readability-function-cognitive-complexity)
 {
     static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
     static DRAM_ATTR uint8_t threshold = 0;
@@ -69,35 +69,35 @@ IRAM_ATTR void DisplayService::onTimer()
         for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
         {
             uint8_t byte = 0;
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x80U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x40U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x20U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x10U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x08U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x04U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x02U;
             }
-            if (*frame++ > threshold)
+            if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x01U;
             }
@@ -108,7 +108,7 @@ IRAM_ATTR void DisplayService::onTimer()
             uint8_t byte = 0;
             for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
             {
-                if (*frame++ > threshold)
+                if (*frame++ > threshold) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
                 {
                     byte |= static_cast<uint8_t>(0x80U >> bit);
                 }
@@ -121,35 +121,35 @@ IRAM_ATTR void DisplayService::onTimer()
         for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
         {
             uint8_t byte = 0;
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x80U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x40U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x20U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x10U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x08U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x04U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x02U;
             }
-            if (*frame++ == UINT8_MAX)
+            if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             {
                 byte |= 0x01U;
             }
@@ -160,7 +160,7 @@ IRAM_ATTR void DisplayService::onTimer()
             uint8_t byte = 0;
             for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
             {
-                if (*frame++ == UINT8_MAX)
+                if (*frame++ == UINT8_MAX) // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
                 {
                     byte |= static_cast<uint8_t>(0x80U >> bit);
                 }

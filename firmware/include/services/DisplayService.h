@@ -40,6 +40,7 @@ private:
         deg270,
     };
 
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
     inline static const uint8_t depth =
         min<uint8_t>(min<uint8_t>(static_cast<uint8_t>(14.0F - (6.0F * log2f(static_cast<float>(frameRate) / 60.0F))),
                                   static_cast<uint8_t>(log2f((1.0F / PWM_WIDTH) / static_cast<float>(frameRate)))),
