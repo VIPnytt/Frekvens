@@ -45,7 +45,6 @@ void OtaExtension::onStart()
     TextHandler("U", font).draw();
     Display.flush();
     Display.setPower(true);
-    timerWrite(Display.timer, 1'000'000 / (1U << 8U)); // 1 fps
 }
 
 void OtaExtension::onEnd()

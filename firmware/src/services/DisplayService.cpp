@@ -23,11 +23,11 @@ void DisplayService::configure()
 #else
     SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
-    SPI.beginTransaction(SPISettings(INT16_MAX * GRID_COLUMNS * GRID_ROWS, MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(SPISettings(frameRate * GRID_COLUMNS * GRID_ROWS * (1U << 9U), MSBFIRST, SPI_MODE0));
 
-    timer = timerBegin(1'000'000);
+    timer = timerBegin(1'000'000U);
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1'000'000 / (1U << 8U) / frameRate, true, 0);
+    timerAlarm(timer, 1'000'000U / (1U << 8U) / frameRate, true, 0);
     timerStart(timer);
 
     ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / PWM_WIDTH / static_cast<float>(1U << depth)), depth);
@@ -63,30 +63,112 @@ IRAM_ATTR void DisplayService::onTimer()
 {
     static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
     static DRAM_ATTR uint8_t threshold = 0;
-    size_t pixel = 0;
-    for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
+    const uint8_t *frame = Display.frame.data();
+    if (threshold != UINT8_MAX)
     {
-        uint8_t byte = 0;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x80U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x40U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x20U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x10U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x08U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x04U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x02U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x01U : 0U;
-        bytes[i] = byte;
-    }
-    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
-    {
-        uint8_t byte = 0;
-        for (size_t remainder = 0; remainder < GRID_COLUMNS * GRID_ROWS % 8; ++remainder)
+        for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
         {
-            byte |= (Display.frame[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
+            uint8_t byte = 0;
+            if (*frame++ > threshold)
+            {
+                byte |= 0x80U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x40U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x20U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x10U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x08U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x04U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x02U;
+            }
+            if (*frame++ > threshold)
+            {
+                byte |= 0x01U;
+            }
+            bytes[i] = byte;
         }
-        bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
+        if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+        {
+            uint8_t byte = 0;
+            for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
+            {
+                if (*frame++ > threshold)
+                {
+                    byte |= static_cast<uint8_t>(0x80U >> bit);
+                }
+            }
+            bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
+        }
     }
-    threshold += 1;
+    else
+    {
+        for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
+        {
+            uint8_t byte = 0;
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x80U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x40U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x20U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x10U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x08U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x04U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x02U;
+            }
+            if (*frame++ == UINT8_MAX)
+            {
+                byte |= 0x01U;
+            }
+            bytes[i] = byte;
+        }
+        if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+        {
+            uint8_t byte = 0;
+            for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
+            {
+                if (*frame++ == UINT8_MAX)
+                {
+                    byte |= static_cast<uint8_t>(0x80U >> bit);
+                }
+            }
+            bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
+        }
+    }
+    ++threshold;
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
     SPI.transferBytes(bytes.data(), nullptr, bytes.size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
@@ -94,9 +176,10 @@ IRAM_ATTR void DisplayService::onTimer()
 
 void DisplayService::flush()
 {
-    if (frame != _frame)
+    if (_pending)
     {
         frame = _frame;
+        _pending = false;
     }
 }
 
@@ -210,6 +293,7 @@ void DisplayService::onPowerOff()
     Display.pending = true;
     Modes.setActive(false);
     Display.frame.fill(0);
+    Display._pending = true;
 }
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
@@ -277,9 +361,14 @@ void DisplayService::setFrame(std::span<const uint8_t> frameNext)
     {
         _frame[pixel[i]] = frameNext[i];
     }
+    _pending = true;
 }
 
-void DisplayService::clearFrame(uint8_t brightness) { _frame.fill(brightness); }
+void DisplayService::clearFrame(uint8_t brightness)
+{
+    _frame.fill(brightness);
+    _pending = true;
+}
 
 void DisplayService::invertFrame()
 {
@@ -305,6 +394,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
         ESP_LOGV(name, "invalid pixel %d:%d", x, y);
     }
     _frame[pixel[x + (y * GRID_COLUMNS)]] = brightness;
+    _pending = true;
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)

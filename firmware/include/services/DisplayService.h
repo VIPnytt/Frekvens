@@ -17,18 +17,6 @@ private:
     static constexpr uint8_t frameRate = 60;
 #endif // FRAME_RATE
 
-    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
-    {
-        deg0,
-        deg90,
-        deg180,
-        deg270,
-    };
-
-    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
-    inline static const uint8_t depth =
-        min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
-
     static constexpr std::array<uint16_t, 12> splash{
         0b1000001001,
         0b1000000001,
@@ -44,6 +32,20 @@ private:
         0b0011111100,
     };
 
+    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
+    {
+        deg0,
+        deg90,
+        deg180,
+        deg270,
+    };
+
+    inline static const uint8_t depth =
+        min<uint8_t>(min<uint8_t>(static_cast<uint8_t>(14.0F - (6.0F * log2f(static_cast<float>(frameRate) / 60.0F))),
+                                  static_cast<uint8_t>(log2f((1.0F / PWM_WIDTH) / static_cast<float>(frameRate)))),
+                     SOC_LEDC_TIMER_BIT_WIDTH);
+
+    bool _pending = false;
     bool pending = false;
     bool power = false;
 
@@ -59,7 +61,9 @@ private:
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixel{LED_MAP};
 
-    Orientation orientation = Orientation::deg0;
+    hw_timer_t *timer{};
+
+    Orientation orientation{Orientation::deg0};
 
     void transmit();
 
@@ -68,10 +72,7 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
-    hw_timer_t *timer = nullptr;
-
     void configure();
-    void begin();
 
     void handle();
 
