@@ -14,7 +14,7 @@ private:
 #ifdef FRAME_RATE
     static constexpr uint8_t frameRate = FRAME_RATE;
 #else
-    static constexpr uint8_t frameRate = 60;
+    static constexpr uint8_t frameRate = F_CPU / GRID_COLUMNS / GRID_ROWS / 12'500;
 #endif // FRAME_RATE
 
     enum class Orientation : uint8_t // NOLINT(performance-enum-size)
