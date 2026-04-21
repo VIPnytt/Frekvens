@@ -30,7 +30,7 @@
         "@types/node": "24.12.2",
         "vite": "8.0.8",
         "vite-plugin-html": "3.2.2",
-        "vite-plugin-singlefile": "2.3.2",
+        "vite-plugin-singlefile": "2.3.3",
         "vite-plugin-solid": "2.11.12"
     },
     "private": true
