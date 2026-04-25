@@ -9,6 +9,7 @@ import {
     EXTENSION_OTA,
     EXTENSION_PHOTOCELL,
     EXTENSION_PLAYLIST,
+    EXTENSION_SCREENSHOT,
 } from "../config/modules";
 import {
     Actions as ExtensionIrActions,
@@ -40,6 +41,11 @@ import {
     name as ExtensionPlaylistName,
     MainThird as ExtensionPlaylistThird,
 } from "../extensions/Playlist";
+import {
+    Link as ExtensionScreenshotLink,
+    name as ExtensionScreenshotName,
+    MainThird as ExtensionScreenshotThird,
+} from "../extensions/Screenshot";
 import { SidebarSectionSecondary, Main as WebAppMain, WebAppPath } from "../extensions/WebApp";
 import { name as ExtensionsName } from "./Extensions";
 
@@ -105,6 +111,11 @@ export const MainThird: Component = () => (
                 <ExtensionPlaylistThird />
             </Match>
         )}
+        {EXTENSION_SCREENSHOT && (
+            <Match when={WebAppPath() === `/${ExtensionsName.toLowerCase()}/${ExtensionScreenshotName.toLowerCase()}`}>
+                <ExtensionScreenshotThird />
+            </Match>
+        )}
     </Switch>
 );
 
@@ -116,5 +127,6 @@ export const SidebarThird: Component = () => (
         {EXTENSION_OTA && <ExtensionOtaLink />}
         {EXTENSION_PHOTOCELL && <ExtensionPhotocellLink />}
         {EXTENSION_PLAYLIST && <ExtensionPlaylistLink />}
+        {EXTENSION_SCREENSHOT && <ExtensionScreenshotLink />}
     </SidebarSectionSecondary>
 );

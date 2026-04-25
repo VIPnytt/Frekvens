@@ -8,7 +8,7 @@
 
 **Smart-home:** [Alexa](#-alexa) | [Home Assistant](#-home-assistant) | [MQTT](#️-mqtt)
 
-**Tools:** [Heap](#-heap) | [OTA](#️-ota)
+**Tools:** [Heap](#-heap) | [OTA](#️-ota) | [Screenshot](#️-screenshot)
 
 ## 🎤 Alexa
 
@@ -363,6 +363,18 @@ EXTENSION_RTC='true'
 ```
 
 Check out the [Real-Time Clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) wiki for hardware instructions.
+
+## 📜 Screenshot
+
+Take screenshots of the display.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+EXTENSION_SCREENSHOT='true'
+```
+
+See also [Web app](#️-web-app).
 
 ## 📜 Server-Sent Events
 

@@ -13,6 +13,7 @@
 #include "extensions/PlaylistExtension.h"
 #include "extensions/RestfulExtension.h"
 #include "extensions/RtcExtension.h"
+#include "extensions/ScreenshotExtension.h"
 #include "extensions/ServerSentEventsExtension.h"
 #include "extensions/SignalExtension.h"
 #include "extensions/WebAppExtension.h"
@@ -68,6 +69,9 @@ private:
 #if EXTENSION_RTC
     RtcExtension extensionRtc;
 #endif
+#if EXTENSION_SCREENSHOT
+    ScreenshotExtension extensionScreenshot;
+#endif
 #if EXTENSION_SERVERSENTEVENTS
     ServerSentEventsExtension extensionServerSentEvents;
 #endif
@@ -120,6 +124,9 @@ private:
 #endif
 #if EXTENSION_RTC
         &extensionRtc,
+#endif
+#if EXTENSION_SCREENSHOT
+        &extensionScreenshot,
 #endif
 #if EXTENSION_SERVERSENTEVENTS
         &extensionServerSentEvents,
