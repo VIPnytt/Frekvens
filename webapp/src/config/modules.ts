@@ -7,6 +7,7 @@ export const EXTENSION_OTA: boolean = import.meta.env.VITE_EXTENSION_OTA === "tr
 export const EXTENSION_PHOTOCELL: boolean = import.meta.env.VITE_EXTENSION_PHOTOCELL === "true";
 export const EXTENSION_PLAYLIST: boolean = import.meta.env.VITE_EXTENSION_PLAYLIST === "true";
 export const EXTENSION_RESTFUL: boolean = import.meta.env.VITE_EXTENSION_RESTFUL === "true";
+export const EXTENSION_SCREENSHOT: boolean = import.meta.env.VITE_EXTENSION_SCREENSHOT === "true";
 export const EXTENSION_SIGNAL: boolean = import.meta.env.VITE_EXTENSION_SIGNAL === "true";
 
 export const MODE_ANIMATION: boolean = import.meta.env.VITE_MODE_ANIMATION === "true";
