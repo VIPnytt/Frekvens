@@ -9,32 +9,25 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 #include <vector>
 
 void GameOfLifeMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        clock = Storage.getBool("clock");
+        uint8_t _clock{0};
+        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK)
+        {
+            clock = static_cast<bool>(_clock);
+        }
+        nvs_close(handle);
     }
-    Storage.end();
     transmit();
 }
 
-void GameOfLifeMode::begin()
-{
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
-    {
-        clock = Storage.getBool("clock");
-    }
-    Storage.end();
-    pending = true;
-}
+void GameOfLifeMode::begin() { pending = true; }
 
 void GameOfLifeMode::handle()
 {
@@ -65,12 +58,10 @@ void GameOfLifeMode::handle()
             for (uint8_t y = (clock ? 5 : 0); y < GRID_ROWS; ++y)
             {
                 uint8_t count = 0;
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                for (uint8_t _x = static_cast<uint8_t>(std::max<int16_t>(x - 1, 0)); _x <= x + 1 && _x < GRID_COLUMNS;
+                for (uint8_t _x{static_cast<uint8_t>(std::max<int16_t>(x - 1, 0))}; _x <= x + 1 && _x < GRID_COLUMNS;
                      ++_x)
                 {
-                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                    for (uint8_t _y = static_cast<uint8_t>(std::max<int16_t>(clock ? 5 : 0, y - 1));
+                    for (uint8_t _y{static_cast<uint8_t>(std::max<int16_t>(clock ? 5 : 0, y - 1))};
                          _y <= y + 1 && _y < GRID_ROWS;
                          ++_y)
                     {
@@ -82,7 +73,7 @@ void GameOfLifeMode::handle()
                     }
                 }
                 // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                const bool lit = seeds[x + (y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(x, y) != 0;
+                const bool lit{seeds[x + (y * (GRID_COLUMNS - (clock ? 5 : 0)))] || Display.getPixel(x, y) != 0};
                 if (lit && (count < 2 || count > 3))
                 {
                     Display.setPixel(x, y, 0);
@@ -99,16 +90,16 @@ void GameOfLifeMode::handle()
 
 void GameOfLifeMode::setClock(bool _clock)
 {
-    if (_clock != clock)
+    clock = _clock;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        clock = _clock;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("clock", clock);
-        Storage.end();
-        pending = true;
-        transmit();
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock));
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    pending = true;
+    transmit();
 }
 
 void GameOfLifeMode::transmit()

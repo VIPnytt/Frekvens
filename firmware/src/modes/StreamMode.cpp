@@ -7,48 +7,46 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 #include <span>
 
 void StreamMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("port"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        port = Storage.getUShort("port");
+        nvs_get_u16(handle, "port", &port);
+        nvs_close(handle);
     }
-    Storage.end();
     transmit();
 }
 
 void StreamMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("port"))
-    {
-        port = Storage.getUShort("port");
-    }
-    Storage.end();
     if (udp.listen(port))
     {
         udp.onPacket(&onPacket);
-        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
+        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
 }
 
 void StreamMode::set(uint16_t _port)
 {
-    if (_port != port && (_port == 4048 || _port == 5568 || _port == 6454))
+    if (_port != 4048 && _port != 5568 && _port != 6454)
     {
-        port = _port;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putUShort("port", port);
-        Storage.end();
-        udp.listen(port);
-        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
+        return;
+    }
+    port = _port;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u16(handle, "port", port);
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    if (udp.listen(port))
+    {
+        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
         transmit();
     }
 }

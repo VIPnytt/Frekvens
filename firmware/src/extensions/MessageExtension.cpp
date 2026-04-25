@@ -8,21 +8,22 @@
 #include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void MessageExtension::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("font"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        fontName = Storage.getString("font").c_str();
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            fontName.resize(len - 1);
+            nvs_get_str(handle, "font", fontName.data(), &len);
+        }
+        nvs_get_u8(handle, "repeat", &repeat);
+        nvs_close(handle);
     }
-    if (Storage.isKey("repeat"))
-    {
-        repeat = Storage.getUShort("repeat");
-    }
-    Storage.end();
     pending = true;
 }
 
@@ -86,33 +87,36 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
     {
         messages.push_back(message);
     }
-    ESP_LOGD(name, "received");
+    ESP_LOGD("Queue", "message received");
 }
 
 void MessageExtension::setFont(std::string_view _fontName)
 {
-    if (const std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
+    if (const std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
     {
-        fontName = _font->name.data();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putString("font", fontName.c_str());
-        Storage.end();
+        fontName = _font->name;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", fontName.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }
 
 void MessageExtension::setRepeat(uint8_t count)
 {
-    if (count != repeat)
+    repeat = count;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        repeat = count;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putUShort("repeat", repeat);
-        Storage.end();
-        pending = true;
+        nvs_set_u8(handle, "repeat", repeat);
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    pending = true;
 }
 
 void MessageExtension::transmit()

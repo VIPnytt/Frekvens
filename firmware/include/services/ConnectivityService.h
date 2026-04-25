@@ -35,8 +35,6 @@ private:
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 public:
-    static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
-
     void configure();
     void handle();
 

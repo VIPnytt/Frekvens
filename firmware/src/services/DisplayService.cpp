@@ -5,8 +5,8 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-#include <Preferences.h>
 #include <SPI.h>
+#include <nvs.h>
 
 void DisplayService::configure()
 {
@@ -37,13 +37,16 @@ void DisplayService::configure()
     ledcSetGammaFactor(GAMMA);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
 
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    const uint8_t _brightness = Storage.isKey("brightness") ? Storage.getUShort("brightness") : UINT8_MAX;
-    const Orientation _orientation =
-        Storage.isKey("orientation") ? static_cast<Orientation>(Storage.getUShort("orientation")) : orientation;
-    Storage.end();
-    setOrientation(_orientation);
+    uint8_t _brightness{UINT8_MAX};
+    uint8_t _orientation{static_cast<uint8_t>(Orientation::deg0)};
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        nvs_get_u8(handle, "brightness", &_brightness);
+        nvs_get_u8(handle, "orientation", &_orientation);
+        nvs_close(handle);
+    }
+    setOrientation(static_cast<Orientation>(_orientation % 4U));
     setBrightness(_brightness);
 
     BitmapHandler(splash).draw();
@@ -106,46 +109,49 @@ DisplayService::Orientation DisplayService::getOrientation() const { return orie
 
 void DisplayService::setOrientation(Orientation _orientation)
 {
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _pixel{};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _pixels{};
     switch ((static_cast<uint8_t>(_orientation) + 4U - static_cast<uint8_t>(orientation)) % 4U)
     {
 #if GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg90):
-        for (std::size_t i = 0; i < _pixel.size(); ++i)
+        for (std::size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixel[i] = pixel[((GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1))) << __builtin_ctz(GRID_COLUMNS)) |
-                              (i >> __builtin_ctz(GRID_COLUMNS))];
+            _pixels[i] = pixels[((GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1))) << __builtin_ctz(GRID_COLUMNS)) |
+                                (i >> __builtin_ctz(GRID_COLUMNS))];
         }
         break;
     case static_cast<uint8_t>(Orientation::deg270):
-        for (std::size_t i = 0; i < _pixel.size(); ++i)
+        for (std::size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixel[i] = pixel[((i & (GRID_COLUMNS - 1)) << __builtin_ctz(GRID_COLUMNS)) |
-                              (GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS)))];
+            _pixels[i] = pixels[((i & (GRID_COLUMNS - 1)) << __builtin_ctz(GRID_COLUMNS)) |
+                                (GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS)))];
         }
         break;
 #endif // GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg180):
-        for (std::size_t i = 0; i < _pixel.size(); ++i)
+        for (std::size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixel[i] = pixel[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
-                              (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
+            _pixels[i] = pixels[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
+                                (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
         }
         break;
     default:
         return;
     }
-    ESP_LOGI(name, "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
-    pixel = _pixel;
+    ESP_LOGI("Status", "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
+    pixels = _pixels;
     orientation = _orientation;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    ratio = (static_cast<uint8_t>(orientation) % 2U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+    ratio = (static_cast<uint8_t>(orientation) & 1U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
                                                           : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    Preferences Storage;
-    Storage.begin(name.data());
-    Storage.putUShort("orientation", static_cast<uint8_t>(orientation));
-    Storage.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "orientation", static_cast<uint8_t>(orientation));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     pending = true;
 }
 
@@ -157,7 +163,7 @@ void DisplayService::setPower(bool _power)
     {
         return;
     }
-    ESP_LOGI(name, "power");
+    ESP_LOGI("Action", "power");
     if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -216,16 +222,12 @@ uint8_t DisplayService::getBrightness() const { return brightness; }
 
 void DisplayService::setBrightness(uint8_t _brightness)
 {
-    if (power && _brightness == brightness)
-    {
-        return;
-    }
     if (_brightness == 0)
     {
         setPower(false);
         return;
     }
-    ESP_LOGI(name, "brightness");
+    ESP_LOGI("Action", "brightness");
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
@@ -256,26 +258,29 @@ void DisplayService::setBrightness(uint8_t _brightness)
         Modes.setActive(true);
     }
     brightness = _brightness;
-    Preferences Storage;
-    Storage.begin(name.data());
-    Storage.putUShort("brightness", brightness);
-    Storage.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "brightness", brightness);
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     pending = true;
 }
 
-void DisplayService::getFrame(std::span<uint8_t> frameCurrent) const
+void DisplayService::getFrame(std::span<uint8_t> _frame) const
 {
-    for (size_t i = 0; i < frameCurrent.size(); ++i)
+    for (size_t idx = 0; idx < _frame.size(); ++idx)
     {
-        frameCurrent[i] = frame[pixel[i]];
+        _frame[idx] = frame[pixels[idx]];
     }
 }
 
-void DisplayService::setFrame(std::span<const uint8_t> frameNext)
+void DisplayService::setFrame(std::span<const uint8_t> _frame)
 {
-    for (size_t i = 0; i < frameNext.size(); ++i)
+    for (size_t idx = 0; idx < _frame.size(); ++idx)
     {
-        _frame[pixel[i]] = frameNext[i];
+        frame[pixels[idx]] = _frame[idx];
     }
 }
 
@@ -293,7 +298,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV(name, "invalid pixel %d:%d", x, y);
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y);
     }
     return frame[pixel[x + (y * GRID_COLUMNS)]];
 }
@@ -302,7 +307,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV(name, "invalid pixel %d:%d", x, y);
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y);
     }
     _frame[pixel[x + (y * GRID_COLUMNS)]] = brightness;
 }
@@ -379,7 +384,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = (static_cast<uint8_t>(orientation) % 2U) != 0U;
+    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0U;
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS

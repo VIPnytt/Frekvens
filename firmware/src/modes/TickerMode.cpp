@@ -8,25 +8,30 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void TickerMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("message"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        message = Storage.getString("message").c_str();
-    }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
+        size_t len{0};
+        if (nvs_get_str(handle, "message", nullptr, &len) == ESP_OK && len > 0)
+        {
+            message.resize(len - 1);
+            nvs_get_str(handle, "message", message.data(), &len);
+        }
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _font(len);
+            nvs_get_str(handle, "font", _font.data(), &len);
+            nvs_close(handle);
+            setFont(_font.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (!font)
     {
@@ -41,21 +46,21 @@ void TickerMode::configure()
 
 void TickerMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("message"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        message = Storage.getString("message").c_str();
-    }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _font(len);
+            nvs_get_str(handle, "font", _font.data(), &len);
+            nvs_close(handle);
+            setFont(_font.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (!font)
     {
@@ -97,10 +102,13 @@ void TickerMode::setFont(std::string_view fontName)
     if (std::unique_ptr<const FontModule> _font = Fonts.get(fontName))
     {
         font = std::move(_font);
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putString("font", font->name.data());
-        Storage.end();
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", std::string(font->name).c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }
@@ -109,11 +117,14 @@ void TickerMode::setMessage(std::string_view _message)
 {
     if (_message.length())
     {
-        message = _message.data();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putString("message", message.c_str());
-        Storage.end();
+        message = _message;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "message", message.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }

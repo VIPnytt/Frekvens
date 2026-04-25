@@ -7,21 +7,28 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void PhotocellExtension::configure() { pinMode(PIN_LDR, ANALOG); }
 
 void PhotocellExtension::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    const bool _active = Storage.isKey("active") && Storage.getBool("active");
-    if (Storage.isKey("gamma"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        gamma = Storage.getFloat("gamma");
+        size_t len = sizeof(gamma);
+        nvs_get_blob(handle, "gamma", &gamma, &len);
+        uint8_t _active{0};
+        if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
+        {
+            nvs_close(handle);
+            static_cast<bool>(_active) ? setActive(true) : transmit();
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
-    Storage.end();
-    _active ? setActive(true) : transmit();
 }
 
 void PhotocellExtension::handle()
@@ -58,34 +65,34 @@ void PhotocellExtension::handle()
 
 bool PhotocellExtension::getActive() const { return active; }
 
-void PhotocellExtension::setActive(bool active)
+void PhotocellExtension::setActive(bool _active)
 {
-    if ((active && !this->active) || (!active && this->active))
+    if (_active)
     {
-        if (active)
-        {
-            counter = 0;
-            brightness = Display.getBrightness();
-        }
-        this->active = active;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("active", this->active);
-        Storage.end();
-        pending = true;
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        counter = 0;
+        brightness = Display.getBrightness();
     }
+    active = _active;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "active", static_cast<uint8_t>(active));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    pending = true;
+    ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void PhotocellExtension::setGamma(float _gamma)
 {
-    if (_gamma != gamma)
+    gamma = _gamma;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        gamma = _gamma;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putFloat("gamma", gamma);
-        Storage.end();
+        nvs_set_blob(handle, "gamma", &gamma, sizeof(gamma));
+        nvs_commit(handle);
+        nvs_close(handle);
     }
 }
 

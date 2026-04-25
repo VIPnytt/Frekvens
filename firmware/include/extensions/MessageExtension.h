@@ -27,9 +27,9 @@ private:
     unsigned long lastMillis = 0;
 
 #if FONT_SMALL
-    std::string fontName = SmallFont::name.data();
+    std::string fontName{SmallFont::name};
 #else
-    std::string fontName = Fonts.names[0].data();
+    std::string fontName{Fonts.names[0]};
 #endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};

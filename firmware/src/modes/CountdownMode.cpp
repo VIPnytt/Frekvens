@@ -8,51 +8,39 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/FontsService.h"
 
-#include <Preferences.h>
 #include <array>
 #include <iomanip>
+#include <nvs.h>
 #include <sstream>
 #include <string_view>
 
 void CountdownMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("font"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        fontName = Storage.getString("font").c_str();
-    }
-    if (Storage.isKey("epoch"))
-    {
-        const int64_t _epoch = Storage.getLong64("epoch");
-        Storage.end();
-        epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
-    }
-    else
-    {
-        Storage.end();
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            fontName.resize(len - 1);
+            nvs_get_str(handle, "font", fontName.data(), &len);
+        }
+        int64_t _epoch{};
+        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK)
+        {
+            nvs_close(handle);
+            epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     transmit();
 }
 
 void CountdownMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("font"))
-    {
-        fontName = Storage.getString("font").c_str();
-    }
-    if (Storage.isKey("epoch"))
-    {
-        const int64_t _epoch = Storage.getLong64("epoch");
-        Storage.end();
-        epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
-    }
-    else
-    {
-        Storage.end();
-    }
     blink = 0;
     lower = 0;
     upper = 0;
@@ -95,14 +83,14 @@ void CountdownMode::handle()
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 blink = INT8_MAX;
-                odd = static_cast<bool>(seconds & 1);
+                odd = true;
                 JsonDocument doc; // NOLINT(misc-const-correctness)
                 doc["event"].set("done");
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
         }
     }
-    else if (blink && odd == static_cast<bool>(seconds & 1))
+    else if (blink != 0 && odd == static_cast<bool>(seconds & 1))
     {
         --blink;
         odd = !odd;
@@ -113,10 +101,14 @@ void CountdownMode::handle()
 void CountdownMode::save()
 {
     blink = 0;
-    Preferences preferences;
-    preferences.begin(name.data());
-    preferences.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
-    preferences.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_i64(
+            handle, "epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     transmit();
 }
 
@@ -124,11 +116,14 @@ void CountdownMode::setFont(std::string_view _fontName)
 {
     if (const std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
     {
-        fontName = _font->name.data();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putString("font", fontName.c_str());
-        Storage.end();
+        fontName = _font->name;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", fontName.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         transmit();
     }
 }
@@ -146,7 +141,7 @@ void CountdownMode::transmit()
     {
         _fonts.add(_font);
     }
-    doc["timestamp"].set(std::string_view(buffer.data()));
+    doc["timestamp"].set(std::string(buffer.data(), buffer.size()).c_str());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

@@ -11,6 +11,8 @@
 class TickerMode final : public ModeModule
 {
 private:
+    static inline std::string message = NAME;
+
     bool pending = false;
 
     int8_t offsetY = GRID_ROWS / 2;
@@ -19,8 +21,6 @@ private:
     int16_t width = 0;
 
     unsigned long lastMillis = 0;
-
-    std::string message = NAME;
 
     std::unique_ptr<const FontModule> font{};
 

@@ -7,9 +7,10 @@
 class GameOfLifeMode final : public ModeModule
 {
 private:
+    static inline bool clock = true;
+
     tm local{};
 
-    bool clock = true;
     bool pending = false;
 
     uint8_t active = 0;
