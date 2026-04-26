@@ -16,7 +16,7 @@ interface Item {
 }
 
 const [getActive, setActive] = createSignal<boolean>(false);
-const [getDuration, setDuration] = createSignal<number>(parseInt(Cookies.get(`${name}.duration`) ?? "", 10) || 60);
+const [getDuration, setDuration] = createSignal<number>(parseInt(Cookies.get(`${name}.duration`) || "60", 10));
 const [getPlaylist, setPlaylist] = createSignal<Item[]>([]);
 
 export const PlaylistActive = getActive;

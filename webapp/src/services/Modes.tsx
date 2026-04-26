@@ -306,14 +306,17 @@ export const Sidebar: Component = () => {
     return (
         <>
             <SidebarSection title="Mode">
-                <select
-                    class="w-full"
-                    name={name}
-                    onchange={(e) => handleMode(e.currentTarget.value)}
-                    value={getMode()}
-                >
-                    <For each={getModes()}>{(mode) => <option>{mode}</option>}</For>
-                </select>
+                <div class="action grid-cols-[--spacing(4)_1fr]">
+                    <Icon path={mdiDotsGrid} />
+                    <select
+                        class="w-full"
+                        name={name}
+                        onchange={(e) => handleMode(e.currentTarget.value)}
+                        value={getMode()}
+                    >
+                        <For each={getModes()}>{(mode) => <option>{mode}</option>}</For>
+                    </select>
+                </div>
             </SidebarSection>
             <Switch>
                 {MODE_ANIMATION && (

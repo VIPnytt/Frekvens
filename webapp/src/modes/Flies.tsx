@@ -10,7 +10,7 @@ export const name = "Flies";
 const [getFrame, setFrame] = createSignal<number[]>();
 
 export const Main: Component = () => {
-    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? "", 10) || Math.round(Math.random() * (2 ** 8 - 1));
+    const _id: number = parseInt(Cookies.get(`${name}.id`) ?? Math.round(Math.random() * (2 ** 8 - 1)).toString(), 10);
     Cookies.set(`${name}.id`, _id.toString(), {
         expires: 1,
     });

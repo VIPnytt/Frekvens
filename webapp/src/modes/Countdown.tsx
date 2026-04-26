@@ -1,4 +1,4 @@
-import { mdiTimerSand, mdiTimerSandComplete } from "@mdi/js";
+import { mdiFormatFont, mdiTarget, mdiTimerSand, mdiTimerSandComplete } from "@mdi/js";
 import Cookies from "js-cookie";
 import { type Component, createSignal, For } from "solid-js";
 
@@ -126,24 +126,26 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection>
-            <div class="font-semibold uppercase text-content-alt-light dark:text-content-alt-dark text-xs">Due</div>
-            <input
-                class="mt-1 w-full"
-                type="datetime-local"
-                min={new Date().toISOString().slice(0, 16)}
-                value={getTimestamp()}
-                onChange={(e) => handleAbsolute(e.currentTarget.value)}
-            />
-            <div class="mt-3 font-semibold uppercase text-content-alt-light dark:text-content-alt-dark text-xs">
-                Font
+            <div class="action grid-cols-[--spacing(4)_1fr]">
+                <Icon path={mdiTarget} />
+                <input
+                    class="w-full"
+                    type="datetime-local"
+                    min={new Date().toISOString().slice(0, 16)}
+                    value={getTimestamp()}
+                    onChange={(e) => handleAbsolute(e.currentTarget.value)}
+                />
             </div>
-            <select
-                class="mt-1 w-full"
-                onchange={(e) => handleFont(e.currentTarget.value)}
-                value={getFont()}
-            >
-                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
-            </select>
+            <div class="action grid-cols-[--spacing(4)_1fr]">
+                <Icon path={mdiFormatFont} />
+                <select
+                    class="w-full"
+                    onchange={(e) => handleFont(e.currentTarget.value)}
+                    value={getFont()}
+                >
+                    <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
+                </select>
+            </div>
         </SidebarSection>
     );
 };

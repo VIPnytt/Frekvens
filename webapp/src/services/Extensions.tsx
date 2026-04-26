@@ -54,7 +54,7 @@ export const name = "Extensions";
 export const Footer: Component = () => (
     <>
         {EXTENSION_MESSAGE ? <div class="hr mt-auto mb-3" /> : <div class="mt-auto" />}
-        {EXTENSION_MESSAGE && <div class="mx-3">{<ExtensionMessageLink />}</div>}
+        {EXTENSION_MESSAGE && <ExtensionMessageLink />}
     </>
 );
 
