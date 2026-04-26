@@ -9,15 +9,14 @@
 
 #include <array>
 #include <nvs_flash.h>
-#include <regex>
 #include <string_view>
 
 void DeviceService::begin()
 {
     Serial.begin(MONITOR_SPEED);
     vTaskDelay(INT8_MAX);
-    ESP_LOGI(name, "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-avoid-do-while)
-    ESP_LOGD(name, MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGI("Device", "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("Device", MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-avoid-do-while)
 #if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
     gpio_deep_sleep_hold_dis();
@@ -97,13 +96,13 @@ void DeviceService::begin()
     Extensions.configure();
     Modes.configure();
     operational = true;
-    ESP_LOGV(name, "operational"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGV("Status", "operational"); // NOLINT(cppcoreguidelines-avoid-do-while)
     WebServer.begin();
     Fonts.begin();
     Extensions.begin();
     Modes.begin();
     transmit();
-    ESP_LOGD(name, "ready"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("Status", "ready"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void DeviceService::handle()
@@ -119,8 +118,8 @@ void DeviceService::handle()
 
 void DeviceService::setPower(bool power)
 {
-    ESP_LOGI(name, "%s...", power ? "rebooting" : "powering off"); // NOLINT(cppcoreguidelines-avoid-do-while)
-    JsonDocument doc;                                              // NOLINT(misc-const-correctness)
+    ESP_LOGI("Status", "%s...", power ? "rebooting" : "powering off"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    JsonDocument doc;                                                  // NOLINT(misc-const-correctness)
     doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
@@ -142,7 +141,7 @@ void DeviceService::setPower(bool power)
 
 void DeviceService::restore()
 {
-    ESP_LOGW(name, "restoring..."); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGW("Status", "restoring..."); // NOLINT(cppcoreguidelines-avoid-do-while)
     Modes.setActive(false);
     Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
@@ -191,7 +190,7 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
     }
     if (operational)
     {
-        ESP_LOGV(source, "transmitting"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        ESP_LOGV("Status", "transmitting"); // NOLINT(cppcoreguidelines-avoid-do-while)
         for (ExtensionModule *extension : Extensions.getAll())
         {
             extension->onTransmit(payload, source);
@@ -204,7 +203,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
 {
     if (operational)
     {
-        ESP_LOGV(source, "receiving"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        ESP_LOGV("Status", "receiving"); // NOLINT(cppcoreguidelines-avoid-do-while)
         const std::array<ServiceModule *, 4> services{
             &Connectivity,
             &Device,

@@ -91,7 +91,7 @@ void ModesService::setActive(bool active)
     }
     else if (taskHandle == nullptr && active && mode != nullptr)
     {
-        xTaskCreate(&onTask, name.data(), stackSize, nullptr, 2, &taskHandle);
+        xTaskCreate(&onTask, "Mode", stackSize, nullptr, 1, &taskHandle);
     }
 }
 
