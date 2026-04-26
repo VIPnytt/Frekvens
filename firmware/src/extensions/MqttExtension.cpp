@@ -37,7 +37,7 @@ void MqttExtension::handle()
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();
-            ESP_LOGD(name, "queue dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
+            ESP_LOGD("Queue", "dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
         }
     }
 }
@@ -55,7 +55,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent)
 {
-    ESP_LOGD(name, "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("Wi-Fi", "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     if (!sessionPresent ||
         (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
     {
@@ -81,9 +81,9 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD(name, "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("Wi-Fi", "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
-    ESP_LOGV(name, "%s", espMqttClientTypes::disconnectReasonToString(reason));
+    ESP_LOGV("Wi-Fi", "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
 void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)

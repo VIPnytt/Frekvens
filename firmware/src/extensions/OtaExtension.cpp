@@ -38,7 +38,7 @@ void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines
 
 void OtaExtension::onStart()
 {
-    ESP_LOGI(name, "updating"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGI("Status", "updating"); // NOLINT(cppcoreguidelines-avoid-do-while)
     Modes.setActive(false);
     const LargeFont font;
     Display.clearFrame();
@@ -50,7 +50,7 @@ void OtaExtension::onStart()
 
 void OtaExtension::onEnd()
 {
-    ESP_LOGI(name, "complete"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGI("Status", "complete"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 #ifndef OTA_KEY
@@ -64,7 +64,7 @@ void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename
     if ((index == 0 && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
         Update.write(data, len) != len || (final && !Update.end(true)))
     {
-        ESP_LOGE(name, "%s", Update.errorString()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE("Status", "%s", Update.errorString()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         request->send(t_http_codes::HTTP_CODE_INTERNAL_SERVER_ERROR);
     }
     else if (final)
