@@ -61,7 +61,7 @@ export const MainSecondary: Component = () => {
                     indoor: 70,
                     outdoor: 50,
                 };
-            case "°K":
+            default: // °K
                 return {
                     indoor: 295,
                     outdoor: 280,
@@ -69,7 +69,7 @@ export const MainSecondary: Component = () => {
         }
     })();
 
-    const payload = `{"indoor": ${getIndoor() ?? fallback?.indoor ?? 0}, "outdoor": ${getOutdoor() ?? fallback?.outdoor ?? 0}}`;
+    const payload = `{"indoor": ${getIndoor() ?? fallback.indoor}, "outdoor": ${getOutdoor() ?? fallback.outdoor}}`;
 
     return (
         <div class="main">
@@ -92,7 +92,7 @@ export const MainSecondary: Component = () => {
                                 <div class="border-t" />
                                 <h3>{ExtensionHomeAssistantName}</h3>
                                 <div class="text-sm">
-                                    <span class="font-medium ">Automation:</span>{" "}
+                                    <span class="font-medium">Automation:</span>{" "}
                                     <span class="text-content-alt-light dark:text-content-alt-dark">
                                         Set up in the user-interface.
                                     </span>
@@ -104,12 +104,12 @@ export const MainSecondary: Component = () => {
                                 <div class="border-t" />
                                 <h3>{ExtensionMqttName}</h3>
                                 <div class="text-sm">
-                                    <span class="font-medium ">Topic:</span>{" "}
+                                    <span class="font-medium">Topic:</span>{" "}
                                     <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
                                         {MqttTopic}/set
                                     </span>
                                     <br />
-                                    <span class="font-medium ">Message:</span>{" "}
+                                    <span class="font-medium">Message:</span>{" "}
                                     <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
                                         {payload}
                                     </span>
@@ -121,14 +121,17 @@ export const MainSecondary: Component = () => {
                                 <div class="border-t" />
                                 <h3>{ExtensionRestfulName}</h3>
                                 <div class="text-sm">
-                                    <span class="font-medium ">Method:</span> <span class="font-mono">PATCH</span>
+                                    <span class="font-medium">Method:</span>{" "}
+                                    <span class="text-content-alt-light dark:text-content-alt-dark font-mono">
+                                        PATCH
+                                    </span>
                                     <br />
-                                    <span class="font-medium ">URL:</span>{" "}
+                                    <span class="font-medium">URL:</span>{" "}
                                     <span class="text-content-alt-light dark:text-content-alt-dark font-mono">
                                         {RestfulUrl + encodeURIComponent(name)}
                                     </span>
                                     <br />
-                                    <span class="font-medium ">Body:</span>{" "}
+                                    <span class="font-medium">Body:</span>{" "}
                                     <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
                                         {payload}
                                     </span>
@@ -138,12 +141,12 @@ export const MainSecondary: Component = () => {
                         <div class="border-t" />
                         <h3>{ExtensionWebSocketName}</h3>
                         <div class="text-sm">
-                            <span class="font-medium ">URL:</span>{" "}
+                            <span class="font-medium">URL:</span>{" "}
                             <span class="text-content-alt-light dark:text-content-alt-dark font-mono">
                                 {WebSocketUrl}
                             </span>
                             <br />
-                            <span class="font-medium ">Message:</span>{" "}
+                            <span class="font-medium">Message:</span>{" "}
                             <span class="text-content-alt-light dark:text-content-alt-dark font-mono whitespace-nowrap">
                                 {`{"${name}": ${payload}}`}
                             </span>

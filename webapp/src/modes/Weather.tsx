@@ -8,9 +8,11 @@ import {
     mdiWeatherSnowy,
     mdiWeatherSunny,
     mdiWeatherWindy,
+    mdiWeb,
 } from "@mdi/js";
 import { type Component, createSignal, For } from "solid-js";
 
+import { Icon } from "../components/Icon";
 import { TEMPERATURE_UNIT } from "../config/constants";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
@@ -69,13 +71,16 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection title="Provider">
-            <select
-                class="w-full"
-                value={getProvider()}
-                onchange={(e) => handleProvider(e.currentTarget.value)}
-            >
-                <For each={getProviders()}>{(provider) => <option>{provider}</option>}</For>
-            </select>
+            <div class="action grid-cols-[--spacing(4)_1fr]">
+                <Icon path={mdiWeb} />
+                <select
+                    class="w-full"
+                    value={getProvider()}
+                    onchange={(e) => handleProvider(e.currentTarget.value)}
+                >
+                    <For each={getProviders()}>{(provider) => <option>{provider}</option>}</For>
+                </select>
+            </div>
         </SidebarSection>
     );
 };

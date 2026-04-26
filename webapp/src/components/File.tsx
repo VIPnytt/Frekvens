@@ -105,7 +105,7 @@ export const csvExport = (name: string, frames: number[][]) => {
     const handleDownload = (name: string, csv: string) => {
         const element = document.createElement("a");
         element.setAttribute("href", `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`);
-        element.setAttribute("download", `${name.toLowerCase()}.csv`);
+        element.setAttribute("download", `${name}.csv`);
         element.style.display = "none";
         document.body.appendChild(element);
         element.click();

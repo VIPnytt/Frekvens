@@ -197,7 +197,7 @@ export const Main: Component = () => (
 const Home: Component = () => (
     <>
         {WebAppPath() === "/" ? <ExtensionsFooter /> : <Footer />}
-        <div class="hr mt-3 pt-3">
+        <div class="hr mt-3 mx-0 pt-3">
             <a
                 class="link"
                 href={`#/${WebAppPath() === "/" ? "menu" : ""}`}
@@ -215,29 +215,27 @@ const Home: Component = () => (
 const Footer: Component = () => (
     <>
         <div class="hr mb-3 mt-auto" />
-        <div class="mx-3">
-            <div class="link">
-                <a
-                    class="flex-1"
-                    href="https://github.com/VIPnytt/Frekvens/wiki"
-                    rel="noopener"
-                    target="_blank"
-                >
-                    <Icon
-                        class="mr-2"
-                        path={mdiDotsGrid}
-                    />
-                    Frekvens
-                </a>
-                <a
-                    class="text-content-alt-light dark:text-content-alt-dark flex-none"
-                    href="https://github.com/VIPnytt/Frekvens/releases"
-                    rel="noopener"
-                    target="_blank"
-                >
-                    <Tooltip text="Release notes">{VERSION}</Tooltip>
-                </a>
-            </div>
+        <div class="link">
+            <a
+                class="flex-1"
+                href="https://github.com/VIPnytt/Frekvens/wiki"
+                rel="noopener"
+                target="_blank"
+            >
+                <Icon
+                    class="mr-2"
+                    path={mdiDotsGrid}
+                />
+                Frekvens
+            </a>
+            <a
+                class="text-content-alt-light dark:text-content-alt-dark flex-none"
+                href="https://github.com/VIPnytt/Frekvens/releases"
+                rel="noopener"
+                target="_blank"
+            >
+                <Tooltip text="Release notes">{VERSION}</Tooltip>
+            </a>
         </div>
     </>
 );
@@ -261,9 +259,7 @@ export const SidebarSection: Component<{
     <>
         <div class="space-y-3">
             <h3 class="ml-3">{props.title || "Options"}</h3>
-            <div class="mx-3 space-y-3">
-                <div class="px-3">{props.children}</div>
-            </div>
+            <div class="space-y-3">{props.children}</div>
         </div>
         <div class="hr my-6" />
     </>
@@ -276,7 +272,7 @@ export const SidebarSectionSecondary: Component<{
     <>
         <div class="space-y-3">
             <h3 class="ml-3">{props.title}</h3>
-            <div class="mx-3 space-y-3">{props.children}</div>
+            <div class="space-y-3">{props.children}</div>
         </div>
         <div class="hr my-6" />
     </>

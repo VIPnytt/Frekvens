@@ -1,6 +1,13 @@
+import {
+    mdiCheckboxBlankCircleOutline,
+    mdiCheckboxMarkedCircleOutline,
+    mdiFormatFont,
+    mdiProgressClock,
+} from "@mdi/js";
 import { type Component, createSignal, For } from "solid-js";
 
 import { ClockIcon, ClockText } from "../components/Clock";
+import { Icon } from "../components/Icon";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
@@ -36,8 +43,8 @@ export const Sidebar: Component = () => {
         );
     };
 
-    const handleTicking = (ticking: boolean) => {
-        setTicking(ticking);
+    const handleTicking = () => {
+        setTicking(!getTicking());
         WebSocketWS.send(
             JSON.stringify({
                 [name]: {
@@ -49,22 +56,27 @@ export const Sidebar: Component = () => {
 
     return (
         <SidebarSection>
-            <div class="text-xs font-semibold uppercase text-content-alt-light dark:text-content-alt-dark">Font</div>
-            <select
-                class="mt-1 w-full"
-                onchange={(e) => handleFont(e.currentTarget.value)}
-                value={getFont()}
-            >
-                <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
-            </select>
-            <label class="flex items-center gap-3">
-                <input
-                    checked={getTicking()}
-                    onChange={(e) => handleTicking(e.currentTarget.checked)}
-                    type="checkbox"
-                />
-                <span>Ticking</span>
-            </label>
+            <div class="action grid-cols-[--spacing(4)_1fr]">
+                <Icon path={mdiFormatFont} />
+                <select
+                    class="w-full"
+                    onchange={(e) => handleFont(e.currentTarget.value)}
+                    value={getFont()}
+                >
+                    <For each={getFonts()}>{(font) => <option>{font}</option>}</For>
+                </select>
+            </div>
+            <div class="action grid-cols-[--spacing(4)_1fr_--spacing(12)]">
+                <Icon path={mdiProgressClock} />
+                Ticking
+                <button
+                    class={`w-full ${getTicking() ? "action-negative" : "action-deactivated"}`}
+                    onclick={handleTicking}
+                    type="button"
+                >
+                    <Icon path={getTicking() ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline} />
+                </button>
+            </div>
         </SidebarSection>
     );
 };
