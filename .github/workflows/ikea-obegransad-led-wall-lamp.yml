@@ -531,7 +531,7 @@ jobs:
 
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
-          #define FRAME_RATE 60
+          #define FRAME_RATE 72
           #define GOOGLEWEATHER_KEY "redacted"
           #define HOMEASSISTANT_ENTITY "weather.forecast_home"
           #define HOMEASSISTANT_HOST "homeassistant.local"
@@ -557,6 +557,7 @@ jobs:
           #define PIN_SCLK 9
           #define PIN_SDA 10
           #define PIN_SW2 11
+          #define PWM_DEPTH 10
           #define RTC_DS3231
           #define WIFI_COUNTRY "01"
           #define WIFI_KEY "redacted"
