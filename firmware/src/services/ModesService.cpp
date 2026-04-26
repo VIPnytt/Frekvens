@@ -6,7 +6,7 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 #include <vector>
 
 void ModesService::configure()
@@ -19,27 +19,28 @@ void ModesService::configure()
 
 void ModesService::begin()
 {
-    switch (esp_reset_reason())
+    const esp_reset_reason_t reason = esp_reset_reason();
+    if (std::ranges::any_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
-    case esp_reset_reason_t::ESP_RST_BROWNOUT:
-    case esp_reset_reason_t::ESP_RST_INT_WDT:
-    case esp_reset_reason_t::ESP_RST_PANIC:
-    case esp_reset_reason_t::ESP_RST_TASK_WDT:
-    case esp_reset_reason_t::ESP_RST_WDT:
         setMode(names[random(names.size())], false);
-        break;
-    default:
-        Preferences Storage;
-        Storage.begin(name.data(), true);
-        if (Storage.isKey("mode"))
+    }
+    else
+    {
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
-            const String _mode = Storage.getString("mode");
-            Storage.end();
-            setMode(_mode.c_str());
-        }
-        else
-        {
-            Storage.end();
+            size_t len{0};
+            if (nvs_get_str(handle, "mode", nullptr, &len) == ESP_OK && len > 0)
+            {
+                std::vector<char> _mode(len);
+                nvs_get_str(handle, "mode", _mode.data(), &len);
+                nvs_close(handle);
+                setMode(_mode.data());
+            }
+            else
+            {
+                nvs_close(handle);
+            }
         }
     }
     if (mode == nullptr)
@@ -53,14 +54,18 @@ void ModesService::handle()
     if (scheduled && millis() - lastMillis > (1UL << 11U))
     {
         scheduled = false;
-        ESP_LOGI(name, "%s", mode->name); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI(
+            "Mode", "%s", std::string(mode->name).c_str()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         mode->begin();
         setActive(true);
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "mode", std::string(mode->name).c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         transmit();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putString("mode", mode->name.data());
-        Storage.end();
     }
 }
 
@@ -313,6 +318,7 @@ void ModesService::setMode(std::string_view modeName, bool power)
         {
             setActive(false);
             mode->end();
+            mode.reset();
         }
         mode = std::move(_mode);
         lastMillis = millis();
@@ -321,7 +327,7 @@ void ModesService::setMode(std::string_view modeName, bool power)
         {
             Display.setPower(power);
         }
-        const std::string _name = mode->name.data();
+        const std::string _name{mode->name};
         std::vector<std::string> words{""};
         uint8_t _line = 0;
         for (std::size_t i = 0; i < _name.length(); ++i)

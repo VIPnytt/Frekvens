@@ -9,31 +9,27 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
 #include <map>
+#include <nvs.h>
 #include <queue>
 
 void SnakeMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        clock = Storage.getBool("clock");
+        uint8_t _clock{0};
+        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK)
+        {
+            clock = static_cast<bool>(_clock);
+        }
+        nvs_close(handle);
     }
-    Storage.end();
     transmit();
 }
 
 void SnakeMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
-    {
-        clock = Storage.getBool("clock");
-    }
-    Storage.end();
     Display.clearFrame();
     pending = true;
     stage = 0;
@@ -75,7 +71,7 @@ void SnakeMode::idle()
     const uint8_t y = random(clock ? 5 : 0, GRID_ROWS);
     snake = {{x, y}};
     Display.setPixel(x, y);
-    setDot();
+    setTarget();
     stage = 1;
 }
 
@@ -91,7 +87,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     {
         Pixel current = frontier.front();
         frontier.pop();
-        if (current == dot)
+        if (current == target)
         {
             pathFound = true;
             break;
@@ -124,7 +120,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step{dot};
+        Pixel step{target}; // NOLINT(misc-const-correctness)
         while (from.at(step) != start)
         {
             step = from.at(step);
@@ -166,13 +162,14 @@ void SnakeMode::move()
         if (step.has_value())
         {
             snake.push_back(step.value());
-            if (snake.back() == dot)
+            if (snake.back() == target)
             {
-                Display.setPixel(dot.x, dot.y);
-                setDot();
+                Display.setPixel(target.x, target.y);
+                setTarget();
             }
             else
             {
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
                 for (std::size_t i = 0; i < snake.size(); ++i)
                 {
@@ -196,9 +193,10 @@ void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        for (const Pixel &piece : snake)
+        const uint8_t brightness = (blinkCount & 1U) == 0 ? 0 : UINT8_MAX;
+        for (const Pixel &pixel : snake)
         {
-            Display.setPixel(piece.x, piece.y, blinkCount % 2 == 0 ? 0 : UINT8_MAX);
+            Display.setPixel(pixel.x, pixel.y, brightness);
         }
         if (++blinkCount >= 6)
         {
@@ -218,41 +216,42 @@ void SnakeMode::clean()
     }
     else if (snake.empty())
     {
-        Display.setPixel(dot.x, dot.y, 0);
+        Display.setPixel(target.x, target.y, 0);
         stage = 0;
     }
 }
 
-void SnakeMode::setDot()
+void SnakeMode::setTarget()
 {
+    const uint8_t yMin = clock ? 5U : 0U;
     do // NOLINT(cppcoreguidelines-avoid-do-while)
     {
-        dot.x = random(GRID_COLUMNS);
-        dot.y = random(clock ? 5 : 0, GRID_ROWS);
-    } while (Display.getPixel(dot.x, dot.y) != 0);
-    Display.setPixel(dot.x, dot.y, random(1, 1U << 8U));
+        target.x = random(GRID_COLUMNS);
+        target.y = random(yMin, GRID_ROWS);
+    } while (Display.getPixel(target.x, target.y) != 0);
+    Display.setPixel(target.x, target.y, random(1, 1U << 8U));
 }
 
 void SnakeMode::setClock(bool _clock)
 {
-    if (_clock != clock)
+    clock = _clock;
+    if (clock && target.y < 5)
     {
-        clock = _clock;
-        if (clock && dot.y < 5)
-        {
-            setDot();
-        }
-        else if (!clock)
-        {
-            Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-        }
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("clock", clock);
-        Storage.end();
-        pending = true;
-        transmit();
+        setTarget();
     }
+    else if (!clock)
+    {
+        Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
+    }
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    pending = true;
+    transmit();
 }
 
 void SnakeMode::transmit()

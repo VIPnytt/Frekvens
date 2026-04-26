@@ -8,29 +8,25 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void PingPongMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        clock = Storage.getBool("clock");
+        uint8_t _clock{0};
+        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK)
+        {
+            clock = static_cast<bool>(_clock);
+        }
+        nvs_close(handle);
     }
-    Storage.end();
     transmit();
 }
 
 void PingPongMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("clock"))
-    {
-        clock = Storage.getBool("clock");
-    }
-    Storage.end();
     pending = true;
     Display.clearFrame();
     paddleA.clear();
@@ -174,21 +170,21 @@ void PingPongMode::handle()
 
 void PingPongMode::setClock(bool _clock)
 {
-    if (_clock != clock)
+    clock = _clock;
+    if (clock && yDec <= 5)
     {
-        clock = _clock;
-        if (clock && yDec <= 5)
-        {
-            yDec = 5.5F;
-        }
-        Display.clearFrame();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("clock", clock);
-        Storage.end();
-        pending = true;
-        transmit();
+        yDec = 5.5F;
     }
+    Display.clearFrame();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    pending = true;
+    transmit();
 }
 
 void PingPongMode::transmit()

@@ -18,26 +18,6 @@ class InfraredExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Infrared"};
 
-    struct Code
-    {
-        decode_type_t protocol{};
-        std::span<const uint16_t> displayBrightnessDecrease{};
-        std::span<const uint16_t> displayBrightnessIncrease{};
-        std::span<const uint16_t> displayPowerToggle{};
-#if EXTENSION_MICROPHONE
-        std::span<const uint16_t> extensionMicrophoneToggle{};
-#endif // EXTENSION_MICROPHONE
-#if EXTENSION_PHOTOCELL
-        std::span<const uint16_t> extensionPhotocellToggle{};
-#endif // EXTENSION_PHOTOCELL
-#if EXTENSION_PLAYLIST
-        std::span<const uint16_t> extensionPlaylistStart{};
-        std::span<const uint16_t> extensionPlaylistStop{};
-#endif // EXTENSION_PLAYLIST
-        std::span<const uint16_t> modeNext{};
-        std::span<const uint16_t> modePrevious{};
-    };
-
 #ifdef DECODE_RC5
     static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessDecrease{0x11}; // Philips: Volume-
     static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessIncrease{0x10}; // Philips: Volume+
@@ -81,6 +61,26 @@ private:
         0x7157, // Sony: Previous
     };
 #endif // DECODE_SONY
+
+    struct Code
+    {
+        decode_type_t protocol{};
+        std::span<const uint16_t> displayBrightnessDecrease{};
+        std::span<const uint16_t> displayBrightnessIncrease{};
+        std::span<const uint16_t> displayPowerToggle{};
+#if EXTENSION_MICROPHONE
+        std::span<const uint16_t> extensionMicrophoneToggle{};
+#endif // EXTENSION_MICROPHONE
+#if EXTENSION_PHOTOCELL
+        std::span<const uint16_t> extensionPhotocellToggle{};
+#endif // EXTENSION_PHOTOCELL
+#if EXTENSION_PLAYLIST
+        std::span<const uint16_t> extensionPlaylistStart{};
+        std::span<const uint16_t> extensionPlaylistStop{};
+#endif // EXTENSION_PLAYLIST
+        std::span<const uint16_t> modeNext{};
+        std::span<const uint16_t> modePrevious{};
+    };
 
 #ifdef DECODE_RC5
     static constexpr Code rc5{
@@ -146,7 +146,7 @@ public:
     void handle() override;
 
     [[nodiscard]] bool getActive() const;
-    void setActive(bool active);
+    void setActive(bool _active);
     void parse();
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;

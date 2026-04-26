@@ -30,17 +30,18 @@ private:
 #endif
     });
 
+    static inline bool ticking = true;
+
+    static inline std::string fontName{fontNames[0]};
+
     tm local{};
 
     bool pending = false;
     bool strikethrough = false;
-    bool ticking = true;
 
     int hour = 24;
     int minute = 60;
     int second = 60;
-
-    std::string fontName = fontNames[0].data();
 
     void drawDigits();
     void drawTicker();

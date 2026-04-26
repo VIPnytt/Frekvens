@@ -57,7 +57,7 @@ private:
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixel{LED_MAP};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
 
     Orientation orientation = Orientation::deg0;
 
@@ -86,8 +86,8 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(std::span<uint8_t> frameCurrent) const;
-    void setFrame(std::span<const uint8_t> frameNext);
+    void getFrame(std::span<uint8_t> _frame) const;
+    void setFrame(std::span<const uint8_t> _frame);
 
     void clearFrame(uint8_t _brightness = 0);
     void invertFrame();

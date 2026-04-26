@@ -12,7 +12,8 @@ class PingPongMode final : public ModeModule
 private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
-    bool clock = true;
+    static inline bool clock = true;
+
     bool pending = false;
 
     float xDec = .0F;

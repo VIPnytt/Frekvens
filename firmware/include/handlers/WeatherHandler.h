@@ -3,7 +3,6 @@
 #include <optional>
 #include <span>
 #include <string_view>
-#include <unordered_map>
 #include <variant>
 #include <vector>
 
@@ -169,7 +168,7 @@ protected:
 
     uint16_t port = 443;
 
-    std::unordered_map<std::string_view, std::string_view> headers = {
+    std::vector<std::pair<const char *const, const char *const>> headers = {
         {"Accept", "application/json"},
     };
 

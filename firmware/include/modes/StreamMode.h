@@ -10,7 +10,7 @@
 class StreamMode final : public ModeModule
 {
 private:
-    inline static uint16_t port = 4048;
+    static inline uint16_t port = 4048;
 
     AsyncUDP udp{};
 

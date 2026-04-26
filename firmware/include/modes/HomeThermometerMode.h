@@ -7,10 +7,13 @@
 class HomeThermometerMode final : public ModeModule
 {
 private:
-    bool pending = false;
+    static inline int16_t indoor{0};
+    static inline int16_t outdoor{0};
 
-    void update();
-    void setTemperature(const char *where, int16_t temperature);
+    bool pending{false};
+
+    void draw();
+    void setTemperature(std::string_view where, int16_t temperature);
     void transmit();
 
 public:

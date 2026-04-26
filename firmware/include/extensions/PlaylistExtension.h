@@ -22,7 +22,7 @@ public:
     void begin() override;
     void handle() override;
     [[nodiscard]] bool getActive() const;
-    void setActive(bool active);
+    void setActive(bool _active);
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;
     void onTransmit(JsonObjectConst payload, std::string_view source) override;

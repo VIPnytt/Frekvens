@@ -9,11 +9,12 @@ class MicrophoneExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Microphone"};
 
+    static inline uint16_t levelMax = UINT8_MAX;
+
     bool active = false;
     bool detected = false;
     bool pending = false;
 
-    uint16_t levelMax = UINT8_MAX;
     uint16_t mic = 0;
     uint16_t threshold = INT8_MAX;
 
@@ -30,7 +31,7 @@ public:
     void handle() override;
 
     [[nodiscard]] bool getActive() const;
-    void setActive(bool active);
+    void setActive(bool _active);
     void setThreshold(uint16_t _threshold);
     [[nodiscard]] bool isTriggered() const;
 

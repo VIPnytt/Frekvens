@@ -28,15 +28,16 @@ private:
         MediumWideFont::name,
 #endif
     });
+
+    static inline std::chrono::time_point<std::chrono::system_clock> epoch{};
+
+    static inline std::string fontName{fontNames[0]};
+
     bool odd = false;
 
     uint8_t blink = 0;
     uint8_t lower = 0;
     uint8_t upper = 0;
-
-    std::chrono::time_point<std::chrono::system_clock> epoch{};
-
-    std::string fontName = fontNames[0].data();
 
     void save();
     void transmit();

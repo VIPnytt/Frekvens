@@ -9,22 +9,26 @@
 #include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
+#include <nvs.h>
 
 void WeatherMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("provider"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const String _provider = Storage.getString("provider");
-        Storage.end();
-        setProvider(_provider.c_str());
-    }
-    else
-    {
-        Storage.end();
+        size_t len{0};
+        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _provider(len);
+            nvs_get_str(handle, "provider", _provider.data(), &len);
+            nvs_close(handle);
+            setProvider(_provider.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (provider == nullptr)
     {
@@ -35,17 +39,21 @@ void WeatherMode::configure()
 
 void WeatherMode::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("provider"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const String _provider = Storage.getString("provider");
-        Storage.end();
-        setProvider(_provider.c_str());
-    }
-    else
-    {
-        Storage.end();
+        size_t len{0};
+        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _provider(len);
+            nvs_get_str(handle, "provider", _provider.data(), &len);
+            nvs_close(handle);
+            setProvider(_provider.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (provider == nullptr)
     {
@@ -84,61 +92,61 @@ void WeatherMode::handle()
 
 void WeatherMode::setProvider(std::string_view providerName)
 {
-    if (provider == nullptr || provider->name != providerName)
-    {
 #if WEATHER_GOOGLE
-        if (providerName == GoogleWeatherMiddleware::name)
-        {
-            provider = std::make_unique<GoogleWeatherMiddleware>();
-        }
+    if (providerName == GoogleWeatherMiddleware::name)
+    {
+        provider = std::make_unique<GoogleWeatherMiddleware>();
+    }
 #endif // WEATHER_GOOGLE
 #if WEATHER_HOMEASSISTANT
-        if (providerName == HomeAssistantWeatherMiddleware::name)
-        {
-            provider = std::make_unique<HomeAssistantWeatherMiddleware>();
-        }
+    if (providerName == HomeAssistantWeatherMiddleware::name)
+    {
+        provider = std::make_unique<HomeAssistantWeatherMiddleware>();
+    }
 #endif // WEATHER_HOMEASSISTANT
 #if WEATHER_OPENMETEO
-        if (providerName == OpenMeteoMiddleware::name)
-        {
-            provider = std::make_unique<OpenMeteoMiddleware>();
-        }
+    if (providerName == OpenMeteoMiddleware::name)
+    {
+        provider = std::make_unique<OpenMeteoMiddleware>();
+    }
 #endif // WEATHER_OPENMETEO
 #if WEATHER_OPENWEATHER
-        if (providerName == OpenWeatherMiddleware::name)
-        {
-            provider = std::make_unique<OpenWeatherMiddleware>();
-        }
+    if (providerName == OpenWeatherMiddleware::name)
+    {
+        provider = std::make_unique<OpenWeatherMiddleware>();
+    }
 #endif // WEATHER_OPENWEATHER
 #if WEATHER_WORLDWEATHERONLINE
-        if (providerName == WorldWeatherOnlineMiddleware::name)
-        {
-            provider = std::make_unique<WorldWeatherOnlineMiddleware>();
-        }
+    if (providerName == WorldWeatherOnlineMiddleware::name)
+    {
+        provider = std::make_unique<WorldWeatherOnlineMiddleware>();
+    }
 #endif // WEATHER_WORLDWEATHERONLINE
 #if WEATHER_WTTRIN
-        if (providerName == WttrInMiddleware::name)
-        {
-            provider = std::make_unique<WttrInMiddleware>();
-        }
+    if (providerName == WttrInMiddleware::name)
+    {
+        provider = std::make_unique<WttrInMiddleware>();
+    }
 #endif // WEATHER_WTTRIN
 #if WEATHER_YR
-        if (providerName == YrMiddleware::name)
-        {
-            provider = std::make_unique<YrMiddleware>();
-        }
+    if (providerName == YrMiddleware::name)
+    {
+        provider = std::make_unique<YrMiddleware>();
+    }
 #endif // WEATHER_YR
-        if (provider)
+    if (provider)
+    {
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            Preferences Storage;
-            Storage.begin(name.data());
-            Storage.putString("provider", provider->name.data());
-            Storage.end();
-            condition.reset();
-            temperature.reset();
-            lastMillis = millis() - provider->interval;
-            transmit();
+            nvs_set_str(handle, "provider", std::string(provider->name).c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
         }
+        condition.reset();
+        temperature.reset();
+        lastMillis = millis() - provider->interval;
+        transmit();
     }
 }
 

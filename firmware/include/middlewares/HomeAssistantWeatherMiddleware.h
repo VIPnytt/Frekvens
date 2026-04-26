@@ -60,7 +60,7 @@ private:
     }};
 
     // https://developers.home-assistant.io/docs/api/rest
-    inline static std::vector<const char *> paths{
+    static inline std::vector<const char *> paths{
         "/api/states/weather.forecast_home",
 #ifdef HOMEASSISTANT_ENTITY
         "/api/states/" HOMEASSISTANT_ENTITY,
@@ -87,7 +87,7 @@ public:
 #else
         tls = false;
 #endif // HOMEASSISTANT_PROTOCOL
-        headers["Authorization"] = "Bearer " HOMEASSISTANT_KEY;
+        headers.push_back({"Authorization", "Bearer " HOMEASSISTANT_KEY});
     };
 
     void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,

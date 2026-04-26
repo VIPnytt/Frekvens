@@ -9,7 +9,7 @@
 #include "services/ModesService.h"      // NOLINT(misc-include-cleaner)
 
 #include <IRremote.hpp> // NOLINT(misc-include-cleaner)
-#include <Preferences.h>
+#include <nvs.h>
 
 void InfraredExtension::configure()
 {
@@ -19,11 +19,20 @@ void InfraredExtension::configure()
 
 void InfraredExtension::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    const bool _active = Storage.isKey("active") && Storage.getBool("active");
-    Storage.end();
-    _active ? setActive(true) : transmit();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        uint8_t _active{0};
+        if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
+        {
+            nvs_close(handle);
+            static_cast<bool>(_active) ? setActive(true) : transmit();
+        }
+        else
+        {
+            nvs_close(handle);
+        }
+    }
 }
 
 void InfraredExtension::handle()
@@ -132,26 +141,24 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
     if (IrReceiver.decodedIRData.flags == 0)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGV(name, "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
+        ESP_LOGV("Code", "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
     }
 }
 
 bool InfraredExtension::getActive() const { return active; }
 
-void InfraredExtension::setActive(bool active)
+void InfraredExtension::setActive(bool _active)
 {
-    if ((active && !this->active) || (!active && this->active))
+    active = _active;
+    active ? IrReceiver.start() : IrReceiver.stop();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        this->active = active;
-        this->active ? IrReceiver.start() : IrReceiver.stop();
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("active", this->active);
-        Storage.end();
-        transmit();
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive");
+        nvs_set_u8(handle, "active", static_cast<uint8_t>(active));
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    transmit();
 }
 
 void InfraredExtension::transmit()

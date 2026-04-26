@@ -7,18 +7,17 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
-#include <Preferences.h>
+#include <nvs.h>
 #include <span>
 
 void SignalExtension::begin()
 {
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("duration"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        duration = Storage.getUShort("duration");
+        nvs_get_u8(handle, "duration", &duration);
+        nvs_close(handle);
     }
-    Storage.end();
     transmit();
 }
 
@@ -52,15 +51,15 @@ void SignalExtension::handle()
 
 void SignalExtension::setDuration(uint8_t seconds)
 {
-    if (seconds != duration)
+    duration = seconds;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        duration = seconds;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putUShort("duration", duration);
-        Storage.end();
-        transmit();
+        nvs_set_u8(handle, "duration", duration);
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    transmit();
 }
 
 void SignalExtension::transmit()
@@ -97,7 +96,7 @@ void SignalExtension::onReceive(JsonObjectConst payload,
             }
         }
         signals.push_back(sign);
-        ESP_LOGD(name, "received");
+        ESP_LOGD("Queue", "received"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
 }
 

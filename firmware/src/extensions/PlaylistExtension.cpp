@@ -7,63 +7,65 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void PlaylistExtension::configure()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    Preferences Storage;
-    Storage.begin(name.data(), true);
-    if (Storage.isKey("modes"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const size_t length = Storage.getBytesLength("modes");
-        std::vector<uint8_t> buffer(length);
-        Storage.getBytes("modes", buffer.data(), length);
-        Storage.end();
-        if (deserializeJson(doc, buffer.data(), length) == DeserializationError::Code::Ok)
+        size_t len{0};
+        if (nvs_get_blob(handle, "modes", nullptr, &len) == ESP_OK && len > 0)
         {
-            JsonArrayConst modes = doc.as<JsonArrayConst>();
-            playlist.reserve(modes.size());
-            for (JsonVariantConst item : modes)
+            std::vector<uint8_t> buffer(len);
+            if (nvs_get_blob(handle, "modes", &buffer, &len) == ESP_OK)
             {
-                PlaylistExtension::Mode mode;
-                mode.duration = item["duration"].as<uint16_t>();
-                mode.mode = item["mode"].as<std::string>();
-                playlist.push_back(mode);
+                nvs_close(handle);
+                if (deserializeJson(doc, buffer.data(), len) == DeserializationError::Code::Ok)
+                {
+                    JsonArrayConst modes = doc.as<JsonArrayConst>();
+                    playlist.reserve(modes.size());
+                    for (JsonVariantConst item : modes)
+                    {
+                        PlaylistExtension::Mode mode;
+                        mode.duration = item["duration"].as<uint16_t>();
+                        mode.mode = item["mode"].as<std::string>();
+                        playlist.push_back(mode);
+                    }
+                }
+            }
+            else
+            {
+                nvs_close(handle);
             }
         }
-    }
-    else
-    {
-        Storage.end();
     }
 }
 
 void PlaylistExtension::begin()
 {
-    bool _active = false;
-    Preferences Storage;
-    Storage.begin(name.data());
-    switch (esp_reset_reason())
+    nvs_handle_t handle{};
+    const esp_reset_reason_t reason = esp_reset_reason();
+    if (std::ranges::any_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
-    case esp_reset_reason_t::ESP_RST_BROWNOUT:
-    case esp_reset_reason_t::ESP_RST_INT_WDT:
-    case esp_reset_reason_t::ESP_RST_PANIC:
-    case esp_reset_reason_t::ESP_RST_TASK_WDT:
-    case esp_reset_reason_t::ESP_RST_WDT:
-        if (Storage.isKey("active"))
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            Storage.remove("active");
+            if (nvs_erase_key(handle, "active") == ESP_OK)
+            {
+                nvs_commit(handle);
+            }
+            nvs_close(handle);
         }
-        break;
-    default:
-        if (Storage.isKey("active") && Storage.getBool("active"))
-        {
-            _active = true;
-        }
+        transmit();
     }
-    Storage.end();
-    _active ? setActive(true) : transmit();
+    else if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        uint8_t _active{0};
+        nvs_get_u8(handle, "active", &_active);
+        nvs_close(handle);
+        static_cast<bool>(_active) ? setActive(true) : transmit();
+    }
 }
 
 void PlaylistExtension::handle()
@@ -82,19 +84,23 @@ void PlaylistExtension::handle()
 
 bool PlaylistExtension::getActive() const { return active; }
 
-void PlaylistExtension::setActive(bool active)
+void PlaylistExtension::setActive(bool _active)
 {
-    if ((active && !this->active && !playlist.empty()) || (!active && this->active))
+    if (_active && playlist.empty())
     {
-        step = 0;
-        this->active = active;
-        Preferences Storage;
-        Storage.begin(name.data());
-        Storage.putBool("active", this->active);
-        Storage.end();
-        transmit();
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        return;
     }
+    step = 0;
+    active = _active;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "active", static_cast<uint8_t>(active));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    transmit();
+    ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
@@ -113,10 +119,13 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     const size_t length = measureJson(doc);
     std::vector<uint8_t> buffer(length + 1);
     serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length + 1);
-    Preferences Storage;
-    Storage.begin(name.data());
-    Storage.putBytes("modes", buffer.data(), length + 1);
-    Storage.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_blob(handle, "modes", buffer.data(), length + 1);
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     transmit();
 }
 
