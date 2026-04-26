@@ -147,9 +147,9 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    TaskHandle_t taskHandle = nullptr;
+    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
 
-    static constexpr uint16_t stackSize = 1U << 12U; // 4 kB
+    TaskHandle_t taskHandle = nullptr;
 
     void configure();
     void begin();

@@ -101,8 +101,20 @@ API payload example:
 
 **Frame rate:**
 
-Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
+The frame rate is automatically scaled based on the ESP32 variant's CPU frequency. While this ranges from 120 fps (400 MHz) down to 24 fps (80 MHz), most common variants running at 240 MHz will result in 72 fps.
+
+To manually set a fixed frame rate, define it in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define FRAME_RATE 60 // fps
+#define FRAME_RATE 72 // fps
+```
+
+**PWM bit depth:**
+
+To maximize visual quality, the bit depth is dynamically balanced against the frame rate. Higher frame rates favor fluid motion with lower bit depth (e.g. 8-bit at 120 fps), while lower frame rates allow for greater brightness control (e.g. 15-bit at 24 fps). For the common 72 fps configuration, this results in a 10-bit depth by default.
+
+To manually lock the bit depth, define it in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
+
+```h
+#define PWM_DEPTH 10 // bit
 ```

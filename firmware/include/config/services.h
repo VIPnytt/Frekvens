@@ -7,7 +7,8 @@
 /**
  * Display
  */
-// #define FRAME_RATE 60 // fps
+// #define FRAME_RATE 72 // fps
+// #define PWM_DEPTH 10  // bit
 
 /**
  * Weather

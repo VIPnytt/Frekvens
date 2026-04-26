@@ -23,14 +23,14 @@ void DisplayService::configure()
 #else
     SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
-    SPI.beginTransaction(SPISettings(INT16_MAX * GRID_COLUMNS * GRID_ROWS, MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(
+        SPISettings(static_cast<uint32_t>(1U << 9U) * GRID_COLUMNS * GRID_ROWS * fps, MSBFIRST, SPI_MODE0));
 
-    timer = timerBegin(1'000'000);
+    hw_timer_t *timer = timerBegin(static_cast<uint32_t>(UINT8_MAX) * fps);
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1'000'000 / (1U << 8U) / frameRate, true, 0);
-    timerStart(timer);
+    timerAlarm(timer, 1, true, 0);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / PWM_WIDTH / static_cast<float>(1U << depth)), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(1U << depth) / PWM_WIDTH), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -64,43 +64,109 @@ void DisplayService::handle()
 
 IRAM_ATTR void DisplayService::onTimer()
 {
-    static DRAM_ATTR std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7) / 8> bytes{};
-    static DRAM_ATTR uint8_t threshold = 0;
-    size_t pixel = 0;
-    for (size_t i = 0; i < GRID_COLUMNS * GRID_ROWS / 8; ++i)
-    {
-        uint8_t byte = 0;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x80U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x40U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x20U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x10U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x08U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x04U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x02U : 0U;
-        byte |= (Display.frame[pixel++] > threshold) ? 0x01U : 0U;
-        bytes[i] = byte;
-    }
-    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
-    {
-        uint8_t byte = 0;
-        for (size_t remainder = 0; remainder < GRID_COLUMNS * GRID_ROWS % 8; ++remainder)
-        {
-            byte |= (Display.frame[pixel++] > threshold) ? (0x80U >> remainder) : 0U;
-        }
-        bytes[GRID_COLUMNS * GRID_ROWS / 8] = byte;
-    }
-    threshold += 1;
+    static DRAM_ATTR uint8_t plane = 0;
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
-    SPI.transferBytes(bytes.data(), nullptr, bytes.size());
+    SPI.transferBytes(planes[plane].data(), nullptr, planes[0].size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
+    if (++plane >= UINT8_MAX)
+    {
+        plane = 0;
+    }
 }
 
 void DisplayService::flush()
 {
-    if (frame != _frame)
+    if (!render)
     {
-        frame = _frame;
+        return;
     }
+    size_t idx = 0;
+    for (size_t byte = 0; byte < GRID_COLUMNS * GRID_ROWS / 8; ++byte)
+    {
+        uint8_t bits = 0;
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b10000000U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b01000000U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00100000U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00010000U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00001000U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00000100U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00000010U;
+        }
+        if (frame[idx++] != 0)
+        {
+            bits |= 0b00000001U;
+        }
+        planes[0][byte] = bits;
+    }
+    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+    {
+        uint8_t bits = 0;
+        for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
+        {
+            if (frame[idx++] != 0)
+            {
+                bits |= static_cast<uint8_t>(0b10000000U >> bit);
+            }
+        }
+        planes[0][GRID_COLUMNS * GRID_ROWS / 8] = bits;
+    }
+    std::array<size_t, UINT8_MAX> counts{};
+    for (size_t idx = 0; idx < frame.size(); ++idx)
+    {
+        const uint8_t value = frame[idx];
+        if (value > 0 && value < UINT8_MAX)
+        {
+            ++counts[value];
+        }
+    }
+    std::array<size_t, UINT8_MAX> offsets{};
+    for (size_t value = 1; value < counts.size(); ++value)
+    {
+        offsets[value] = offsets[value - 1] + counts[value - 1];
+    }
+    std::array<size_t, UINT8_MAX> next = offsets;
+    std::array<size_t, GRID_COLUMNS * GRID_ROWS> indices{};
+    for (size_t idx = 0; idx < frame.size(); ++idx)
+    {
+        const uint8_t value = frame[idx];
+        if (value > 0 && value < UINT8_MAX)
+        {
+            indices[next[value]++] = idx;
+        }
+    }
+    for (uint8_t plane = 1; plane < UINT8_MAX; ++plane)
+    {
+        for (size_t byte = 0; byte < planes[0].size(); ++byte)
+        {
+            planes[plane][byte] = planes[plane - 1][byte];
+        }
+        for (size_t i = offsets[plane]; i < offsets[plane] + counts[plane]; ++i)
+        {
+            planes[plane][indices[i] >> 3U] &=
+                static_cast<uint8_t>(~static_cast<uint8_t>(0b10000000U >> (indices[i] & 7U)));
+        }
+    }
+    render = false;
 }
 
 float DisplayService::getRatio() const { return ratio; }
@@ -217,6 +283,7 @@ void DisplayService::onPowerOff()
     Display.pending = true;
     Modes.setActive(false);
     Display.frame.fill(0);
+    Display.render = true;
 }
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
@@ -283,16 +350,22 @@ void DisplayService::setFrame(std::span<const uint8_t> _frame)
     {
         frame[pixels[idx]] = _frame[idx];
     }
+    render = true;
 }
 
-void DisplayService::clearFrame(uint8_t brightness) { _frame.fill(brightness); }
+void DisplayService::clearFrame(uint8_t _brightness)
+{
+    frame.fill(_brightness);
+    render = true;
+}
 
 void DisplayService::invertFrame()
 {
-    for (uint8_t &pixel : _frame)
+    for (uint8_t &idx : frame)
     {
-        pixel = UINT8_MAX - pixel;
+        idx = UINT8_MAX - idx;
     }
+    render = true;
 }
 
 uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
@@ -311,6 +384,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
         ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
     frame[pixels[x + (y * GRID_COLUMNS)]] = brightness;
+    render = true;
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
@@ -318,9 +392,9 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
     const float xRatio =
-        static_cast<float>(2 * PITCH_HORIZONTAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+        static_cast<float>(PITCH_HORIZONTAL * 2) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
     const float yRatio =
-        static_cast<float>(2 * PITCH_VERTICAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+        static_cast<float>(PITCH_VERTICAL * 2) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
 #else
     const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0;
     const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
