@@ -45,7 +45,7 @@ void DrawMode::load(bool cache)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len = frame.size();
+        size_t len{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
         const char *key = nullptr;
         if ((cache && nvs_get_blob(handle, "cache", frame.data(), &len) == ESP_OK) ||
             nvs_get_blob(handle, "saved", frame.data(), &len) == ESP_OK)
@@ -71,7 +71,7 @@ void DrawMode::save(bool cache)
         pending = true;
         if (!cache)
         {
-            ESP_LOGV("Status", "saved"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+            ESP_LOGV("Status", "saved"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
     }
 }

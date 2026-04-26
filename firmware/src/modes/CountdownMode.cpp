@@ -131,7 +131,7 @@ void CountdownMode::setFont(std::string_view _fontName)
 void CountdownMode::transmit()
 {
     std::array<char, 32> buffer{};
-    time_t timer{std::chrono::system_clock::to_time_t(epoch)};
+    time_t timer{std::chrono::system_clock::to_time_t(epoch)}; // NOLINT(cppcoreguidelines-init-variables)
     tm local = *std::localtime(&timer);
     std::strftime(buffer.data(), buffer.size(), "%FT%T", &local);
     JsonDocument doc; // NOLINT(misc-const-correctness)

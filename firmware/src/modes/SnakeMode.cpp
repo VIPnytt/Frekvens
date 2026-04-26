@@ -120,7 +120,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step{target};
+        Pixel step{target}; // NOLINT(misc-const-correctness)
         while (from.at(step) != start)
         {
             step = from.at(step);
@@ -169,6 +169,7 @@ void SnakeMode::move()
             }
             else
             {
+                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
                 for (std::size_t i = 0; i < snake.size(); ++i)
                 {

@@ -138,6 +138,7 @@ void DisplayService::setOrientation(Orientation _orientation)
     default:
         return;
     }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ESP_LOGI("Status", "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
     pixels = _pixels;
     orientation = _orientation;
@@ -163,7 +164,7 @@ void DisplayService::setPower(bool _power)
     {
         return;
     }
-    ESP_LOGI("Action", "power"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGI("Action", "power"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -227,7 +228,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
         setPower(false);
         return;
     }
-    ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
@@ -298,18 +299,18 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV("Device", "invalid pixel %d:%d", x, y);
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
-    return frame[pixel[x + (y * GRID_COLUMNS)]];
+    return frame[pixels[x + (y * GRID_COLUMNS)]];
 }
 
 void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV("Device", "invalid pixel %d:%d", x, y);
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
-    _frame[pixel[x + (y * GRID_COLUMNS)]] = brightness;
+    frame[pixels[x + (y * GRID_COLUMNS)]] = brightness;
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)

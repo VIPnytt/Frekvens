@@ -78,6 +78,7 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload,
     }
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HomeThermometerMode::setTemperature(std::string_view where, int16_t temperature)
 {
     if (where == "indoor")

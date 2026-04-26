@@ -27,7 +27,7 @@ void AnimationMode::handle()
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-            size_t len = frame.size();
+            size_t len{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
             if (nvs_get_blob(handle, std::to_string(index).c_str(), frame.data(), &len) == ESP_OK)
             {
                 nvs_close(handle);

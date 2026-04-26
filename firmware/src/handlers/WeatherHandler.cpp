@@ -87,6 +87,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t c
             return codeset.condition;
         }
     }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ESP_LOGD("Response", "unknown condition code %d", code);
     return std::nullopt;
 }
@@ -102,6 +103,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t 
             return codeset.condition;
         }
     }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ESP_LOGD("Response", "unknown condition code %d", code);
     return std::nullopt;
 }
