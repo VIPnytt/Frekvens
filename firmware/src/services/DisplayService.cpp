@@ -163,7 +163,7 @@ void DisplayService::setPower(bool _power)
     {
         return;
     }
-    ESP_LOGI("Action", "power");
+    ESP_LOGI("Action", "power"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     if (_power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -227,7 +227,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
         setPower(false);
         return;
     }
-    ESP_LOGI("Action", "brightness");
+    ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
         PIN_OE,
@@ -321,7 +321,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     const float yRatio =
         static_cast<float>(2 * PITCH_VERTICAL) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
 #else
-    const bool rotated = (static_cast<uint8_t>(orientation) % 2) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0;
     const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                          (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
     const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /

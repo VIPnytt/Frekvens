@@ -96,7 +96,7 @@ void SignalExtension::onReceive(JsonObjectConst payload,
             }
         }
         signals.push_back(sign);
-        ESP_LOGD("Queue", "received");
+        ESP_LOGD("Queue", "received"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
 }
 

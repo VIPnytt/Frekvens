@@ -57,7 +57,7 @@ private:
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixel{LED_MAP};
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
 
     Orientation orientation = Orientation::deg0;
 

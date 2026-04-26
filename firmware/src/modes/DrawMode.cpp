@@ -71,7 +71,7 @@ void DrawMode::save(bool cache)
         pending = true;
         if (!cache)
         {
-            ESP_LOGV("Status", "saved");
+            ESP_LOGV("Status", "saved"); // NOLINT(cppcoreguidelines-pro-type-vararg)
         }
     }
 }

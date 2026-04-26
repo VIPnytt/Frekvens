@@ -70,19 +70,19 @@ void ClockMode::drawDigits()
              (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
 }
 
-void ClockMode::drawTicker()
+void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
 {
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          INT8_MAX);
     }
     else if (second < 8)
