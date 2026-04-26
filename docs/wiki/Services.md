@@ -101,7 +101,7 @@ API payload example:
 
 **Frame rate:**
 
-The frame rate is automatically scaled based on the ESP32 variant's CPU frequency. While this ranges from 120 fps (400 MHz) down to 24 fps (80 MHz), most common variants running at 240 MHz will result in 72 fps.
+The frame rate is automatically scaled based on the ESP32 variant's CPU frequency. While this ranges from 120 fps (400 MHz) down to 36 fps (120 MHz), most common variants running at 240 MHz will result in 72 fps.
 
 To manually set a fixed frame rate, define it in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
