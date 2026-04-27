@@ -35,7 +35,13 @@ class Environment:
     def IsCleanTarget(self) -> bool:
         raise NotImplementedError
 
+    def Replace(self, **kwargs: typing.Any) -> None:
+        raise NotImplementedError
+
     def StringifyMacro(self, value: str) -> str:
+        raise NotImplementedError
+
+    def subst(self, key: str) -> str:
         raise NotImplementedError
 
 
