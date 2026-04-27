@@ -3,15 +3,11 @@
 #include <optional>
 #include <span>
 #include <string_view>
-#include <unordered_map>
 #include <variant>
 #include <vector>
 
 class WeatherHandler
 {
-private:
-    static constexpr std::string_view _name = "WeatherHandler";
-
 public:
     virtual ~WeatherHandler() = default;
 
@@ -172,7 +168,7 @@ protected:
 
     uint16_t port = 443;
 
-    std::unordered_map<std::string_view, std::string_view> headers = {
+    std::vector<std::pair<const char *const, const char *const>> headers = {
         {"Accept", "application/json"},
     };
 

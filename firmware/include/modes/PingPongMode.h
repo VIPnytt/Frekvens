@@ -12,7 +12,8 @@ class PingPongMode final : public ModeModule
 private:
     static constexpr float speed = 1e-3 * GRID_COLUMNS;
 
-    bool clock = true;
+    static inline bool clock = true;
+
     bool pending = false;
 
     float xDec = .0F;
@@ -37,12 +38,19 @@ private:
     void transmit();
 
 public:
-    explicit PingPongMode() : ModeModule("Ping-pong") {};
+    static constexpr std::string_view name{"Ping-pong"};
+
+    explicit PingPongMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_PINGPONG

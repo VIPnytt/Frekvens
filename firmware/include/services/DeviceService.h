@@ -9,17 +9,26 @@ class DeviceService final : public ServiceModule
 private:
     explicit DeviceService() : ServiceModule("Device") {};
 
-    bool operational = false;
+    bool operational{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0};
 
     JsonDocument transmits;
 
     void transmit();
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 
 public:
+    static constexpr std::array<esp_reset_reason_t, 6> resetAbnormalities{
+        esp_reset_reason_t::ESP_RST_BROWNOUT,
+        esp_reset_reason_t::ESP_RST_CPU_LOCKUP,
+        esp_reset_reason_t::ESP_RST_INT_WDT,
+        esp_reset_reason_t::ESP_RST_PANIC,
+        esp_reset_reason_t::ESP_RST_TASK_WDT,
+        esp_reset_reason_t::ESP_RST_WDT,
+    };
+
     TaskHandle_t taskHandle = nullptr;
 
     void begin();
@@ -28,10 +37,14 @@ public:
     void setPower(bool power);
     void restore();
 
-    void transmit(JsonObjectConst payload, const char *source, bool retain = true);
-    void receive(JsonObjectConst payload, const char *source, const char *destination) const;
+    void transmit(JsonObjectConst payload, std::string_view source, bool retain = true);
+    void receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const;
 
     [[nodiscard]] JsonObjectConst getTransmits() const;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 
     static DeviceService &getInstance();
 };

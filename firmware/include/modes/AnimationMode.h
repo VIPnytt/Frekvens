@@ -25,12 +25,14 @@ private:
     void transmit(uint8_t index, std::span<const uint8_t> frame);
 
 public:
-    explicit AnimationMode() : ModeModule("Animation") {};
+    static constexpr std::string_view name{"Animation"};
+
+    explicit AnimationMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
 
 #endif // MODE_ANIMATION

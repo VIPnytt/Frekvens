@@ -2,14 +2,10 @@
 
 #include "extensions/ButtonExtension.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
-
-ButtonExtension *Button = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-ButtonExtension::ButtonExtension() : ExtensionModule("Button") { Button = this; }
 
 void ButtonExtension::configure()
 {
@@ -19,55 +15,12 @@ void ButtonExtension::configure()
 #ifdef PIN_SW2
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif
-
 #ifdef PIN_SW1
     attachInterrupt(PIN_SW1, &onInterrupt, CHANGE);
 #endif
 #ifdef PIN_SW2
     attachInterrupt(PIN_SW2, &onInterrupt, CHANGE);
 #endif
-
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    {
-        for (const char *const payload : {
-                 "long",
-                 "short",
-             })
-        {
-#ifdef PIN_SW1
-            {
-                const std::string id{std::string(name).append("_power_").append(payload)};
-                JsonObject component{
-                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-                component[HomeAssistantAbbreviations::automation_type].set("trigger");
-                component[HomeAssistantAbbreviations::payload].set(payload);
-                component[HomeAssistantAbbreviations::platform].set("device_automation");
-                component[HomeAssistantAbbreviations::subtype].set("Power button");
-                component[HomeAssistantAbbreviations::topic].set(topic);
-                component[HomeAssistantAbbreviations::type].set(
-                    std::string("button_").append(payload).append("_press"));
-                component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.power}}");
-            }
-#endif // PIN_SW1
-#ifdef PIN_SW2
-            {
-                const std::string id{std::string(name).append("_mode_").append(payload)};
-                JsonObject component{
-                    (*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-                component[HomeAssistantAbbreviations::automation_type].set("trigger");
-                component[HomeAssistantAbbreviations::payload].set(payload);
-                component[HomeAssistantAbbreviations::platform].set("device_automation");
-                component[HomeAssistantAbbreviations::subtype].set("Mode button");
-                component[HomeAssistantAbbreviations::topic].set(topic);
-                component[HomeAssistantAbbreviations::type].set(
-                    std::string("button_").append(payload).append("_press"));
-                component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.mode}}");
-            }
-#endif // PIN_SW2
-        }
-    }
-#endif // EXTENSION_HOMEASSISTANT
 }
 
 void ButtonExtension::handle()
@@ -116,7 +69,7 @@ void ButtonExtension::handle()
 #ifdef PIN_SW1
         Modes.setModeNext();
 #else
-        ESP_LOGI(name, "power");
+        ESP_LOGI("Action", "power");
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
         event("mode", "short");
@@ -140,33 +93,33 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #ifdef PIN_SW1
     if (digitalRead(PIN_SW1) == LOW)
     {
-        Button->powerMillis = millis();
-        Button->powerState = true;
+        powerMillis = millis();
+        powerState = true;
     }
     else
     {
-        if (Button->powerState && !Button->powerLong)
+        if (powerState && !powerLong)
         {
-            Button->powerShort = true;
+            powerShort = true;
         }
-        Button->powerLong = false;
-        Button->powerState = false;
+        powerLong = false;
+        powerState = false;
     }
 #endif // PIN_SW1
 #ifdef PIN_SW2
     if (digitalRead(PIN_SW2) == LOW)
     {
-        Button->modeMillis = millis();
-        Button->modeState = true;
+        modeMillis = millis();
+        modeState = true;
     }
     else
     {
-        if (Button->modeState && !Button->modeLong)
+        if (modeState && !modeLong)
         {
-            Button->modeShort = true;
+            modeShort = true;
         }
-        Button->modeLong = false;
-        Button->modeState = false;
+        modeLong = false;
+        modeState = false;
     }
 #endif // PIN_SW2
 }
@@ -175,7 +128,47 @@ void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugpro
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;
-    Device.transmit(doc.as<JsonObjectConst>(), Button->name, false);
+    Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void ButtonExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    for (const std::string_view payload : {
+             "long",
+             "short",
+         })
+    {
+#ifdef PIN_SW1
+        {
+            const std::string id{std::string(name).append("_power_").append(payload)};
+            JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            component[HomeAssistantAbbreviations::automation_type].set("trigger");
+            component[HomeAssistantAbbreviations::payload].set(payload);
+            component[HomeAssistantAbbreviations::platform].set("device_automation");
+            component[HomeAssistantAbbreviations::subtype].set("Power button");
+            component[HomeAssistantAbbreviations::topic].set(topic);
+            component[HomeAssistantAbbreviations::type].set(std::string("button_").append(payload).append("_press"));
+            component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.power}}");
+        }
+#endif // PIN_SW1
+#ifdef PIN_SW2
+        {
+            const std::string id{std::string(name).append("_mode_").append(payload)};
+            JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+            component[HomeAssistantAbbreviations::automation_type].set("trigger");
+            component[HomeAssistantAbbreviations::payload].set(payload);
+            component[HomeAssistantAbbreviations::platform].set("device_automation");
+            component[HomeAssistantAbbreviations::subtype].set("Mode button");
+            component[HomeAssistantAbbreviations::topic].set(topic);
+            component[HomeAssistantAbbreviations::type].set(std::string("button_").append(payload).append("_press"));
+            component[HomeAssistantAbbreviations::value_template].set("{{value_json.event.mode}}");
+        }
+#endif // PIN_SW2
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // EXTENSION_BUTTON

@@ -9,6 +9,7 @@ import {
     EXTENSION_MICROPHONE,
     EXTENSION_PHOTOCELL,
     EXTENSION_PLAYLIST,
+    EXTENSION_SCREENSHOT,
     EXTENSION_SIGNAL,
     MODE_ANIMATION,
     MODE_CLOCK,
@@ -24,6 +25,7 @@ import { name as ExtensionMessageName, receiver as ExtensionMessageReceiver } fr
 import { name as ExtensionMicName, receiver as ExtensionMicReceiver } from "../extensions/Microphone";
 import { name as ExtensionPhotocellName, receiver as ExtensionPhotocellReceiver } from "../extensions/Photocell";
 import { name as ExtensionPlaylistName, receiver as ExtensionPlaylistReceiver } from "../extensions/Playlist";
+import { name as ExtensionScreenshotName, receiver as ExtensionScreenshotReceiver } from "../extensions/Screenshot";
 import { name as ExtensionSignalName, receiver as ExtensionSignalReceiver } from "../extensions/Signal";
 import { name as ModeAnimationName, receiver as ModeAnimationReceiver } from "../modes/Animation";
 import { name as ModeClockName, receiver as ModeClockReceiver } from "../modes/Clock";
@@ -73,6 +75,9 @@ export const WebSocketmessages: ParentComponent = (props) => {
                 json[ExtensionPhotocellName] &&
                 ExtensionPhotocellReceiver(json[ExtensionPhotocellName]);
             EXTENSION_PLAYLIST && json[ExtensionPlaylistName] && ExtensionPlaylistReceiver(json[ExtensionPlaylistName]);
+            EXTENSION_SCREENSHOT &&
+                json[ExtensionScreenshotName] &&
+                ExtensionScreenshotReceiver(json[ExtensionScreenshotName]);
             EXTENSION_SIGNAL && json[ExtensionSignalName] && ExtensionSignalReceiver(json[ExtensionSignalName]);
             MODE_ANIMATION && json[ModeAnimationName] && ModeAnimationReceiver(json[ModeAnimationName]);
             MODE_CLOCK && json[ModeClockName] && ModeClockReceiver(json[ModeClockName]);

@@ -13,6 +13,8 @@
 class MessageExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Message"};
+
     bool active = false;
     bool pending = false;
 
@@ -25,9 +27,9 @@ private:
     unsigned long lastMillis = 0;
 
 #if FONT_SMALL
-    std::string fontName = SmallFont::name.data();
+    std::string fontName{SmallFont::name};
 #else
-    std::string fontName = Fonts.names[0].data();
+    std::string fontName{Fonts.names[0]};
 #endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
@@ -46,17 +48,15 @@ private:
     void transmit();
 
 public:
-    explicit MessageExtension();
-
-#if EXTENSION_HOMEASSISTANT
-    void configure() override;
-#endif
+    explicit MessageExtension() : ExtensionModule(name) {};
 
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
-};
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 
-extern MessageExtension *Message; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
+};
 
 #endif // EXTENSION_MESSAGE

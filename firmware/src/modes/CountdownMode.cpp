@@ -2,75 +2,40 @@
 
 #include "modes/CountdownMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/FontsService.h"
 
-#include <Preferences.h>
 #include <array>
 #include <iomanip>
+#include <nvs.h>
 #include <sstream>
 #include <string_view>
 
 void CountdownMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("font"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        fontName = Storage.getString("font").c_str();
-    }
-    if (Storage.isKey("epoch"))
-    {
-        const int64_t _epoch = Storage.getLong64("epoch");
-        Storage.end();
-        epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
-    }
-    else
-    {
-        Storage.end();
-    }
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    {
-        const std::string id{std::string(name).append("_font")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : fontNames)
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
         {
-            options.add(_font);
+            fontName.resize(len - 1);
+            nvs_get_str(handle, "font", fontName.data(), &len);
         }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
+        int64_t _epoch{};
+        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK)
+        {
+            nvs_close(handle);
+            epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
-    {
-        const std::string id{std::string(name).append("_timestamp")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"timestamp":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:timer-sand-full");
-        component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::pattern].set(
-            R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)");
-        component[HomeAssistantAbbreviations::platform].set("text");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.timestamp}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
     transmit();
 }
 
@@ -118,14 +83,14 @@ void CountdownMode::handle()
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 blink = INT8_MAX;
-                odd = static_cast<bool>(seconds & 1);
+                odd = true;
                 JsonDocument doc; // NOLINT(misc-const-correctness)
                 doc["event"].set("done");
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
         }
     }
-    else if (blink && odd == static_cast<bool>(seconds & 1))
+    else if (blink != 0 && odd == static_cast<bool>(seconds & 1))
     {
         --blink;
         odd = !odd;
@@ -136,10 +101,14 @@ void CountdownMode::handle()
 void CountdownMode::save()
 {
     blink = 0;
-    Preferences preferences;
-    preferences.begin(name);
-    preferences.putLong64("epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
-    preferences.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_i64(
+            handle, "epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     transmit();
 }
 
@@ -147,11 +116,14 @@ void CountdownMode::setFont(std::string_view _fontName)
 {
     if (const std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
     {
-        fontName = _font->name.data();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putString("font", fontName.c_str());
-        Storage.end();
+        fontName = _font->name;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", fontName.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         transmit();
     }
 }
@@ -159,7 +131,7 @@ void CountdownMode::setFont(std::string_view _fontName)
 void CountdownMode::transmit()
 {
     std::array<char, 32> buffer{};
-    time_t timer{std::chrono::system_clock::to_time_t(epoch)};
+    time_t timer{std::chrono::system_clock::to_time_t(epoch)}; // NOLINT(cppcoreguidelines-init-variables)
     tm local = *std::localtime(&timer);
     std::strftime(buffer.data(), buffer.size(), "%FT%T", &local);
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -169,12 +141,12 @@ void CountdownMode::transmit()
     {
         _fonts.add(_font);
     }
-    doc["timestamp"].set(std::string_view(buffer.data()));
+    doc["timestamp"].set(std::string(buffer.data(), buffer.size()).c_str());
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
 void CountdownMode::onReceive(JsonObjectConst payload,
-                              const char *source) // NOLINT(misc-unused-parameters)
+                              std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -196,5 +168,49 @@ void CountdownMode::onReceive(JsonObjectConst payload,
         save();
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_font")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _font : fontNames)
+        {
+            options.add(_font);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
+    }
+    {
+        const std::string id{std::string(name).append("_timestamp")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"timestamp":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:timer-sand-full");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::pattern].set(
+            R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)");
+        component[HomeAssistantAbbreviations::platform].set("text");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.timestamp}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_COUNTDOWN

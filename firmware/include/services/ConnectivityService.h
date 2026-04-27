@@ -10,9 +10,7 @@
 class ConnectivityService final : public ServiceModule
 {
 private:
-    static constexpr std::string_view _name = "Connectivity";
-
-    explicit ConnectivityService() : ServiceModule(_name.data()) {};
+    explicit ConnectivityService() : ServiceModule("Connectivity") {};
 
     bool mDNS = false;
     bool pending = false;
@@ -20,7 +18,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    std::unique_ptr<DNSServer> dns = nullptr;
+    std::unique_ptr<DNSServer> dns{};
 
     WiFiMulti multi;
 
@@ -37,12 +35,14 @@ private:
     static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
 
 public:
-    static constexpr std::string_view userAgent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)";
-
     void configure();
-    void begin();
     void handle();
-    void onReceive(JsonObjectConst payload, const char *source) override;
+
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 
     static ConnectivityService &getInstance();
 };

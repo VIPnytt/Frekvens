@@ -11,6 +11,8 @@
 class TickerMode final : public ModeModule
 {
 private:
+    static inline std::string message = NAME;
+
     bool pending = false;
 
     int8_t offsetY = GRID_ROWS / 2;
@@ -19,8 +21,6 @@ private:
     int16_t width = 0;
 
     unsigned long lastMillis = 0;
-
-    std::string message = NAME;
 
     std::unique_ptr<const FontModule> font{};
 
@@ -32,14 +32,20 @@ private:
     void transmit();
 
 public:
-    explicit TickerMode() : ModeModule("Ticker") {};
+    static constexpr std::string_view name{"Ticker"};
+
+    explicit TickerMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
     void end() override;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_TICKER

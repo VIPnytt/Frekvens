@@ -21,10 +21,12 @@ private:
     std::unordered_map<uint8_t, Dot> flies{};
 
 public:
-    explicit FliesMode() : ModeModule("Flies") {};
+    static constexpr std::string_view name{"Flies"};
+
+    explicit FliesMode() : ModeModule(name) {};
 
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
 
 #endif // MODE_FLIES

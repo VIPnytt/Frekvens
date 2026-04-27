@@ -10,11 +10,9 @@
 class StreamMode final : public ModeModule
 {
 private:
-    static constexpr std::string_view _name = "Stream";
+    static inline uint16_t port = 4048;
 
-    uint16_t port = 4048;
-
-    std::unique_ptr<AsyncUDP> udp{};
+    AsyncUDP udp{};
 
     void set(uint16_t _port);
     void transmit();
@@ -22,13 +20,18 @@ private:
     static void onPacket(AsyncUDPPacket packet);
 
 public:
-    explicit StreamMode() : ModeModule(_name.data()) {};
+    static constexpr std::string_view name{"Stream"};
+
+    explicit StreamMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
-    void end() override;
 
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_STREAM

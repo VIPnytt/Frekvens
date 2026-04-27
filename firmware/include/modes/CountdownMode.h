@@ -28,27 +28,35 @@ private:
         MediumWideFont::name,
 #endif
     });
+
+    static inline std::chrono::time_point<std::chrono::system_clock> epoch{};
+
+    static inline std::string fontName{fontNames[0]};
+
     bool odd = false;
 
     uint8_t blink = 0;
     uint8_t lower = 0;
     uint8_t upper = 0;
 
-    std::chrono::time_point<std::chrono::system_clock> epoch{};
-
-    std::string fontName = fontNames[0].data();
-
     void save();
     void transmit();
 
 public:
-    explicit CountdownMode() : ModeModule("Countdown") {};
+    static constexpr std::string_view name{"Countdown"};
+
+    explicit CountdownMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
     void setFont(std::string_view _fontName);
-    void onReceive(JsonObjectConst payload, const char *source) override;
+
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_COUNTDOWN

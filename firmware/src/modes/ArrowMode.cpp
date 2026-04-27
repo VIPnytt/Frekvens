@@ -2,15 +2,15 @@
 
 #include "modes/ArrowMode.h"
 
-#include "config/constants.h"               // NOLINT(misc-include-cleaner)
-#include "extensions/MicrophoneExtension.h" // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"         // NOLINT(misc-include-cleaner)
-#include "services/DisplayService.h"        // NOLINT(misc-include-cleaner)
+#include "config/constants.h"        // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"  // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 
 void ArrowMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > INT8_MAX && Microphone->isTriggered())
+    if (millis() - lastMillis > INT8_MAX && Extensions.Microphone().isTriggered())
 #else
     if (millis() - lastMillis > INT8_MAX)
 #endif // EXTENSION_MICROPHONE

@@ -15,7 +15,7 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
         .port = port,
         .path = path,
         .query = query,
-        .user_agent = Connectivity.userAgent.data(),
+        .user_agent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)",
         .method = esp_http_client_method_t::HTTP_METHOD_GET,
         .transport_type = tls ? esp_http_client_transport_t::HTTP_TRANSPORT_OVER_SSL
                               : esp_http_client_transport_t::HTTP_TRANSPORT_OVER_TCP,
@@ -27,9 +27,9 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
         lastMillis = millis() - interval + UINT16_MAX;
         return -1;
     }
-    for (std::pair<std::string_view, std::string_view> header : headers)
+    for (std::pair<const char *const, const char *const> header : headers)
     {
-        esp_http_client_set_header(client, header.first.data(), header.second.data());
+        esp_http_client_set_header(client, header.first, header.second);
     }
     if (esp_http_client_open(client, 0) != ESP_OK || esp_http_client_fetch_headers(client) < 0)
     {
@@ -41,7 +41,7 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
     if (status != 200)
     {
         esp_http_client_cleanup(client);
-        ESP_LOGV(_name, "HTTP %d", status);
+        ESP_LOGV("HTTP", "code %d", status);
         return status;
     }
     const int64_t len = esp_http_client_get_content_length(client);
@@ -73,7 +73,7 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(std::stri
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %s", code.data());
+    ESP_LOGD("Response", "unknown condition code %s", std::string(code).c_str());
     return std::nullopt;
 }
 
@@ -87,7 +87,8 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t c
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %d", code);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGD("Response", "unknown condition code %d", code);
     return std::nullopt;
 }
 
@@ -102,7 +103,8 @@ std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t 
             return codeset.condition;
         }
     }
-    ESP_LOGD(_name.data(), "unknown condition code %d", code);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGD("Response", "unknown condition code %d", code);
     return std::nullopt;
 }
 

@@ -9,7 +9,7 @@ void YrMiddleware::update(std::optional<WeatherHandler::Conditions> &condition, 
 {
     if (paths.empty())
     {
-        ESP_LOGE(name, "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE("Weather", "provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     path = paths.back();
@@ -40,7 +40,7 @@ void YrMiddleware::update(std::optional<WeatherHandler::Conditions> &condition, 
         return;
     }
     paths.pop_back();
-    ESP_LOGD(name, "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     lastMillis = millis() - interval + (1U << 13U);
 }
 

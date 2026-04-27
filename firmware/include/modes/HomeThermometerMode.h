@@ -7,19 +7,29 @@
 class HomeThermometerMode final : public ModeModule
 {
 private:
-    bool pending = false;
+    static inline int16_t indoor{0};
+    static inline int16_t outdoor{0};
 
-    void update();
-    void setTemperature(const char *where, int16_t temperature);
+    bool pending{false};
+
+    void draw();
+    void setTemperature(std::string_view where, int16_t temperature);
     void transmit();
 
 public:
-    explicit HomeThermometerMode() : ModeModule("Home thermometer") {};
+    static constexpr std::string_view name{"Home thermometer"};
+
+    explicit HomeThermometerMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_HOMETHERMOMETER

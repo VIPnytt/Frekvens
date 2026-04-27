@@ -23,7 +23,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit EqualizerMode() : ModeModule("Equalizer") {};
+    static constexpr std::string_view name{"Equalizer"};
+
+    explicit EqualizerMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

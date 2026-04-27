@@ -2,85 +2,28 @@
 
 #include "extensions/MessageExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-#include <Preferences.h>
-
-MessageExtension *Message = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-MessageExtension::MessageExtension() : ExtensionModule("Message") { Message = this; }
-
-#if EXTENSION_HOMEASSISTANT
-void MessageExtension::configure()
-{
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    {
-        const std::string id{std::string(name).append("_font")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : Fonts.names)
-        {
-            options.add(_font);
-        }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
-    }
-    {
-        const std::string id{std::string(name).append("_notify")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"message":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::name].set("");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("notify");
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-    }
-    {
-        const std::string id{std::string(name).append("_repeat")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template] = R"({"repeat":"{{value}}"})";
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:counter");
-        component[HomeAssistantAbbreviations::max].set(UINT8_MAX);
-        component[HomeAssistantAbbreviations::mode].set("box");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" repeat"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("number");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.repeat}}");
-    }
-}
-#endif // EXTENSION_HOMEASSISTANT
+#include <nvs.h>
 
 void MessageExtension::begin()
 {
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("font"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        fontName = Storage.getString("font").c_str();
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            fontName.resize(len - 1);
+            nvs_get_str(handle, "font", fontName.data(), &len);
+        }
+        nvs_get_u8(handle, "repeat", &repeat);
+        nvs_close(handle);
     }
-    if (Storage.isKey("repeat"))
-    {
-        repeat = Storage.getUShort("repeat");
-    }
-    Storage.end();
     pending = true;
 }
 
@@ -144,33 +87,36 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
     {
         messages.push_back(message);
     }
-    ESP_LOGD(name, "received");
+    ESP_LOGD("Queue", "message received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void MessageExtension::setFont(std::string_view _fontName)
 {
-    if (const std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
+    if (const std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
     {
-        fontName = _font->name.data();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putString("font", fontName.c_str());
-        Storage.end();
+        fontName = _font->name;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", fontName.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }
 
 void MessageExtension::setRepeat(uint8_t count)
 {
-    if (count != repeat)
+    repeat = count;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        repeat = count;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("repeat", repeat);
-        Storage.end();
-        pending = true;
+        nvs_set_u8(handle, "repeat", repeat);
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    pending = true;
 }
 
 void MessageExtension::transmit()
@@ -182,7 +128,7 @@ void MessageExtension::transmit()
 }
 
 void MessageExtension::onReceive(JsonObjectConst payload,
-                                 const char *source) // NOLINT(misc-unused-parameters)
+                                 std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -200,5 +146,31 @@ void MessageExtension::onReceive(JsonObjectConst payload,
         addMessage(payload["message"].as<std::string>());
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:remote-tv");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // EXTENSION_MESSAGE

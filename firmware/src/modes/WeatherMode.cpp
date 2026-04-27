@@ -2,67 +2,70 @@
 
 #include "modes/WeatherMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
+#include <nvs.h>
 
 void WeatherMode::configure()
 {
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const std::string id{std::string(name).append("_protocol")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"provider":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:weather-partly-cloudy");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" provider"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _provider : providerNames)
+        size_t len{0};
+        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
         {
-            options.add(_provider);
+            std::vector<char> _provider(len);
+            nvs_get_str(handle, "provider", _provider.data(), &len);
+            nvs_close(handle);
+            setProvider(_provider.data());
         }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("provider"))
-    {
-        const String _provider = Storage.getString("provider");
-        Storage.end();
-        setProvider(_provider.c_str());
-    }
-    else
-    {
-        Storage.end();
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (provider == nullptr)
     {
         setProvider(providerNames.front());
     }
+    transmit();
 }
 
-void WeatherMode::begin() { lastMillis = millis() - provider->interval; }
+void WeatherMode::begin()
+{
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        size_t len{0};
+        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _provider(len);
+            nvs_get_str(handle, "provider", _provider.data(), &len);
+            nvs_close(handle);
+            setProvider(_provider.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
+    }
+    if (provider == nullptr)
+    {
+        setProvider(providerNames.front());
+    }
+    lastMillis = millis() - provider->interval;
+}
 
 void WeatherMode::handle()
 {
     if (WiFi.isConnected() && millis() - lastMillis > provider->interval)
     {
-        condition.reset();
-        temperature.reset();
         lastMillis = millis();
         provider->update(condition, temperature, lastMillis);
         if (condition.has_value() && temperature.has_value())
@@ -89,61 +92,61 @@ void WeatherMode::handle()
 
 void WeatherMode::setProvider(std::string_view providerName)
 {
-    if (provider == nullptr || provider->name != providerName)
-    {
 #if WEATHER_GOOGLE
-        if (providerName == GoogleWeatherMiddleware::name)
-        {
-            provider = std::make_unique<GoogleWeatherMiddleware>();
-        }
+    if (providerName == GoogleWeatherMiddleware::name)
+    {
+        provider = std::make_unique<GoogleWeatherMiddleware>();
+    }
 #endif // WEATHER_GOOGLE
 #if WEATHER_HOMEASSISTANT
-        if (providerName == HomeAssistantWeatherMiddleware::name)
-        {
-            provider = std::make_unique<HomeAssistantWeatherMiddleware>();
-        }
+    if (providerName == HomeAssistantWeatherMiddleware::name)
+    {
+        provider = std::make_unique<HomeAssistantWeatherMiddleware>();
+    }
 #endif // WEATHER_HOMEASSISTANT
 #if WEATHER_OPENMETEO
-        if (providerName == OpenMeteoMiddleware::name)
-        {
-            provider = std::make_unique<OpenMeteoMiddleware>();
-        }
+    if (providerName == OpenMeteoMiddleware::name)
+    {
+        provider = std::make_unique<OpenMeteoMiddleware>();
+    }
 #endif // WEATHER_OPENMETEO
 #if WEATHER_OPENWEATHER
-        if (providerName == OpenWeatherMiddleware::name)
-        {
-            provider = std::make_unique<OpenWeatherMiddleware>();
-        }
+    if (providerName == OpenWeatherMiddleware::name)
+    {
+        provider = std::make_unique<OpenWeatherMiddleware>();
+    }
 #endif // WEATHER_OPENWEATHER
 #if WEATHER_WORLDWEATHERONLINE
-        if (providerName == WorldWeatherOnlineMiddleware::name)
-        {
-            provider = std::make_unique<WorldWeatherOnlineMiddleware>();
-        }
+    if (providerName == WorldWeatherOnlineMiddleware::name)
+    {
+        provider = std::make_unique<WorldWeatherOnlineMiddleware>();
+    }
 #endif // WEATHER_WORLDWEATHERONLINE
 #if WEATHER_WTTRIN
-        if (providerName == WttrInMiddleware::name)
-        {
-            provider = std::make_unique<WttrInMiddleware>();
-        }
+    if (providerName == WttrInMiddleware::name)
+    {
+        provider = std::make_unique<WttrInMiddleware>();
+    }
 #endif // WEATHER_WTTRIN
 #if WEATHER_YR
-        if (providerName == YrMiddleware::name)
-        {
-            provider = std::make_unique<YrMiddleware>();
-        }
+    if (providerName == YrMiddleware::name)
+    {
+        provider = std::make_unique<YrMiddleware>();
+    }
 #endif // WEATHER_YR
-        if (provider)
+    if (provider)
+    {
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            Preferences Storage;
-            Storage.begin(name);
-            Storage.putString("provider", provider->name.data());
-            Storage.end();
-            condition.reset();
-            temperature.reset();
-            lastMillis = millis() - provider->interval;
-            transmit();
+            nvs_set_str(handle, "provider", std::string(provider->name).c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
         }
+        condition.reset();
+        temperature.reset();
+        lastMillis = millis() - provider->interval;
+        transmit();
     }
 }
 
@@ -168,7 +171,7 @@ void WeatherMode::transmit()
 }
 
 void WeatherMode::onReceive(JsonObjectConst payload,
-                            const char *source) // NOLINT(misc-unused-parameters)
+                            std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Provider
     if (payload["provider"].is<std::string_view>())
@@ -177,11 +180,32 @@ void WeatherMode::onReceive(JsonObjectConst payload,
     }
 }
 
-void WeatherMode::end()
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
-    condition.reset();
-    temperature.reset();
-    transmit();
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_protocol")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"provider":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:weather-partly-cloudy");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" provider"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _provider : providerNames)
+        {
+            options.add(_provider);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
+    }
 }
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_WEATHER

@@ -16,11 +16,11 @@ void ExtensionsService::begin()
     {
         extension->begin();
     }
-    xTaskCreate(&onTask, name, stackSize, nullptr, 1, &taskHandle);
+    xTaskCreate(&onTask, "Extensions", stackSize, nullptr, 1, &taskHandle);
     transmit();
 }
 
-const std::vector<ExtensionModule *> &ExtensionsService::getAll() const { return modules; }
+std::span<ExtensionModule *const> ExtensionsService::getAll() { return modules; }
 
 void ExtensionsService::transmit()
 {
@@ -45,6 +45,28 @@ void ExtensionsService::onTask(void *parameter) // NOLINT(misc-unused-parameters
         vTaskDelay(1);
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+HomeAssistantExtension &ExtensionsService::HomeAssistant() { return extensionHomeAssistant; }
+#endif
+#if EXTENSION_MICROPHONE
+MicrophoneExtension &ExtensionsService::Microphone() { return extensionMicrophone; }
+#endif
+#if EXTENSION_MQTT
+MqttExtension &ExtensionsService::MQTT() { return extensionMqtt; }
+#endif
+#if EXTENSION_PHOTOCELL
+PhotocellExtension &ExtensionsService::Photocell() { return extensionPhotocell; }
+#endif
+#if EXTENSION_PLAYLIST
+PlaylistExtension &ExtensionsService::Playlist() { return extensionPlaylist; }
+#endif
+#if EXTENSION_SERVERSENTEVENTS
+ServerSentEventsExtension &ExtensionsService::ServerSentEvents() { return extensionServerSentEvents; }
+#endif
+#if EXTENSION_WEBSOCKET
+WebSocketExtension &ExtensionsService::WebSocket() { return extensionWebSocket; }
+#endif
 
 ExtensionsService &ExtensionsService::getInstance()
 {

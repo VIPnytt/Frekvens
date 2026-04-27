@@ -30,9 +30,11 @@ private:
     std::array<Ball, GRID_COLUMNS * GRID_ROWS / (1U << 6U)> balls{};
 
 public:
-    explicit MetaballsMode() : ModeModule("Metaballs") {};
+    static constexpr std::string_view name{"Metaballs"};
 
-    void configure() override;
+    explicit MetaballsMode() : ModeModule(name) {};
+
+    void begin() override;
     void handle() override;
 };
 

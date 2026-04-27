@@ -5,25 +5,18 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
-ServerSentEventsExtension *ServerSentEvents = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-ServerSentEventsExtension::ServerSentEventsExtension() : ExtensionModule("Server-Sent Events")
-{
-    ServerSentEvents = this;
-}
-
 void ServerSentEventsExtension::begin()
 {
-    client->onConnect(&onConnect);
-    WebServer.http->addHandler(client);
+    events.onConnect(&onConnect);
+    WebServer.http->addHandler(&events);
 }
 
-void ServerSentEventsExtension::onTransmit(JsonObjectConst payload, const char *source)
+void ServerSentEventsExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     const size_t length = measureJson(payload);
     std::vector<char> message(length + 1);
     serializeJson(payload, message.data(), length + 1);
-    client->send(message.data(), source);
+    events.send(message.data(), source.data());
 }
 
 void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)

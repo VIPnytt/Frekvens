@@ -4,8 +4,9 @@
 
 #include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 
-void MetaballsMode::configure()
+void MetaballsMode::begin()
 {
     for (uint16_t i = 0; i < contributions.size(); ++i)
     {
@@ -23,7 +24,7 @@ void MetaballsMode::configure()
 void MetaballsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (Microphone->isTriggered())
+    if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
 #if PITCH_HORIZONTAL != PITCH_VERTICAL

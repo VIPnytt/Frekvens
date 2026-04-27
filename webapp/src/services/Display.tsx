@@ -70,7 +70,7 @@ export const Sidebar: Component = () => {
     return (
         <SidebarSection title={name}>
             <div class="space-y-3">
-                <div class="grid grid-cols-[--spacing(12)_1fr] gap-3 items-center">
+                <div class="action grid-cols-[--spacing(12)_1fr]">
                     <button
                         class={`text-interactive-light dark:text-content-dark ${getPower() ? "bg-positive-light dark:bg-positive-dark hover:bg-negative-alt-light dark:hover:bg-negative-alt-dark" : "bg-negative-light dark:bg-negative-dark hover:bg-positive-alt-light dark:hover:bg-positive-alt-dark"}`}
                         onclick={handlePower}

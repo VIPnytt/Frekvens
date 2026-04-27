@@ -7,7 +7,9 @@
 class GlitterMode final : public ModeModule
 {
 public:
-    explicit GlitterMode() : ModeModule("Glitter") {};
+    static constexpr std::string_view name{"Glitter"};
+
+    explicit GlitterMode() : ModeModule(name) {};
 
     void handle() override;
 };

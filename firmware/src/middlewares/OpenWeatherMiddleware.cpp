@@ -9,7 +9,7 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
 {
     if (parts.empty())
     {
-        ESP_LOGE(name, "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE("Weather", "provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     path = parts.back().first;
@@ -48,7 +48,7 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
         return;
     }
     parts.pop_back();
-    ESP_LOGD(name, "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     lastMillis = millis() - interval + (1U << 13U);
 }
 

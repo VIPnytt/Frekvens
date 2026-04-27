@@ -68,7 +68,9 @@ private:
     };
 
 public:
-    explicit SmoothWaveformMode() : ModeModule("Smooth waveform") {};
+    static constexpr std::string_view name{"Smooth waveform"};
+
+    explicit SmoothWaveformMode() : ModeModule(name) {};
 
     void handle() override;
 };

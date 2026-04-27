@@ -2,69 +2,32 @@
 
 #include "modes/ClockMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void ClockMode::configure()
 {
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("font"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        fontName = Storage.getString("font").c_str();
-    }
-    if (Storage.isKey("ticking"))
-    {
-        ticking = Storage.getBool("ticking");
-    }
-    Storage.end();
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    {
-        const std::string id{std::string(name).append("_font")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : fontNames)
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
         {
-            options.add(_font);
+            fontName.resize(len - 1);
+            nvs_get_str(handle, "font", fontName.data(), &len);
         }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
+        uint8_t _ticking{0};
+        if (nvs_get_u8(handle, "ticking", &_ticking) == ESP_OK)
+        {
+            ticking = static_cast<bool>(_ticking);
+        }
+        nvs_close(handle);
     }
-    {
-        const std::string id{std::string(name).append("_ticking")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"ticking":{{value}}})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:progress-clock");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" ticking"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::payload_off].set("false");
-        component[HomeAssistantAbbreviations::payload_on].set("true");
-        component[HomeAssistantAbbreviations::platform].set("switch");
-        component[HomeAssistantAbbreviations::state_off].set("False");
-        component[HomeAssistantAbbreviations::state_on].set("True");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.ticking}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
     transmit();
 }
 
@@ -107,19 +70,19 @@ void ClockMode::drawDigits()
              (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
 }
 
-void ClockMode::drawTicker()
+void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
 {
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         second % 2 == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          INT8_MAX);
     }
     else if (second < 8)
@@ -153,11 +116,14 @@ void ClockMode::setFont(std::string_view _fontName)
 {
     if (std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
     {
-        fontName = _font->name.data();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putString("font", fontName.c_str());
-        Storage.end();
+        fontName = _font->name;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", fontName.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
         transmit();
     }
@@ -165,16 +131,16 @@ void ClockMode::setFont(std::string_view _fontName)
 
 void ClockMode::setTicking(bool _ticking)
 {
-    if (_ticking != ticking)
+    ticking = _ticking;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        ticking = _ticking;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putBool("ticking", ticking);
-        Storage.end();
-        pending = true;
-        transmit();
+        nvs_set_u8(handle, "ticking", static_cast<uint8_t>(ticking));
+        nvs_commit(handle);
+        nvs_close(handle);
     }
+    pending = true;
+    transmit();
 }
 
 void ClockMode::transmit()
@@ -191,7 +157,7 @@ void ClockMode::transmit()
 }
 
 void ClockMode::onReceive(JsonObjectConst payload,
-                          const char *source) // NOLINT(misc-unused-parameters)
+                          std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -204,5 +170,52 @@ void ClockMode::onReceive(JsonObjectConst payload,
         setTicking(payload["ticking"].as<bool>());
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_font")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _font : fontNames)
+        {
+            options.add(_font);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
+    }
+    {
+        const std::string id{std::string(name).append("_ticking")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"ticking":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:progress-clock");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" ticking"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.ticking}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_CLOCK

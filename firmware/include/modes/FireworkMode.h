@@ -23,7 +23,9 @@ private:
     void fading();
 
 public:
-    explicit FireworkMode() : ModeModule("Firework") {};
+    static constexpr std::string_view name{"Firework"};
+
+    explicit FireworkMode() : ModeModule(name) {};
 
     void handle() override;
 };

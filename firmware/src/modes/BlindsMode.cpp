@@ -4,11 +4,12 @@
 
 #include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 void BlindsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > UINT8_MAX && Microphone->isTriggered())
+    if (millis() - lastMillis > UINT8_MAX && Extensions.Microphone().isTriggered())
 #else
     if (millis() - lastMillis > UINT8_MAX)
 #endif // EXTENSION_MICROPHONE

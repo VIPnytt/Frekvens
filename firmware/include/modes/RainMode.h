@@ -23,7 +23,9 @@ private:
     std::array<Drop, GRID_COLUMNS / 3> drops{};
 
 public:
-    explicit RainMode() : ModeModule("Rain") {};
+    static constexpr std::string_view name{"Rain"};
+
+    explicit RainMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;

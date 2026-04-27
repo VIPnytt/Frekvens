@@ -5,7 +5,7 @@
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void DrawMode::begin()
 {
@@ -42,38 +42,36 @@ void DrawMode::end() { save(true); }
 
 void DrawMode::load(bool cache)
 {
-    Preferences Storage;
-    Storage.begin(name, true);
-    const char *key = nullptr;
-    if (cache && Storage.isKey("cache"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        key = "cache";
+        size_t len{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        const char *key = nullptr;
+        if ((cache && nvs_get_blob(handle, "cache", frame.data(), &len) == ESP_OK) ||
+            nvs_get_blob(handle, "saved", frame.data(), &len) == ESP_OK)
+        {
+            pending = true;
+            render = true;
+        }
+        nvs_close(handle);
     }
-    else if (Storage.isKey("saved"))
-    {
-        key = "saved";
-    }
-    if (key != nullptr)
-    {
-        Storage.getBytes(key, frame.data(), frame.size());
-        pending = true;
-        render = true;
-    }
-    Storage.end();
 }
 
 void DrawMode::save(bool cache)
 {
     if (std::any_of(frame.begin(), frame.end(), [](uint8_t pixel) { return pixel > 0; }))
     {
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putBytes(cache ? "cache" : "saved", frame.data(), frame.size());
-        Storage.end();
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_blob(handle, cache ? "cache" : "saved", frame.data(), frame.size());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
         if (!cache)
         {
-            ESP_LOGV(name, "saved");
+            ESP_LOGV("Status", "saved"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
     }
 }
@@ -90,29 +88,29 @@ void DrawMode::transmit()
 }
 
 void DrawMode::onReceive(JsonObjectConst payload,
-                         const char *source) // NOLINT(misc-unused-parameters)
+                         std::string_view source) // NOLINT(misc-unused-parameters)
 {
-    if (payload["action"].is<const char *>())
+    if (payload["action"].is<std::string_view>())
     {
-        const char *const action = payload["action"].as<const char *>(); // NOLINT(cppcoreguidelines-init-variables)
+        const std::string_view action{payload["action"].as<std::string_view>()};
         // Clear
-        if (strcmp(action, "clear") == 0)
+        if (action == "clear")
         {
             frame.fill(0);
             render = true;
         }
         // Load
-        else if (strcmp(action, "load") == 0)
+        else if (action == "load")
         {
             load();
         }
         // Pull
-        else if (strcmp(action, "pull") == 0)
+        else if (action == "pull")
         {
             save(true);
         }
         // Save
-        else if (strcmp(action, "save") == 0)
+        else if (action == "save")
         {
             save();
         }

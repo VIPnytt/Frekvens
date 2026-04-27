@@ -8,28 +8,30 @@
 class ButtonExtension final : public ExtensionModule
 {
 private:
+    static constexpr std::string_view name{"Button"};
+
 #ifdef PIN_SW1
     bool brightnessIncrease = false;
-    bool powerLong = false;
-    bool powerShort = false;
+    inline static bool powerLong = false;
+    inline static bool powerShort = false;
 #endif
 #ifdef PIN_SW2
-    bool modeLong = false;
-    bool modeShort = false;
+    inline static bool modeLong = false;
+    inline static bool modeShort = false;
 #endif
 
 #ifdef PIN_SW1
-    volatile bool powerState = false;
+    static inline volatile bool powerState = false;
 #endif
 #ifdef PIN_SW2
-    volatile bool modeState = false;
+    inline static volatile bool modeState = false;
 #endif
 
 #ifdef PIN_SW1
-    volatile unsigned long powerMillis = 0;
+    static inline volatile unsigned long powerMillis = 0;
 #endif
 #ifdef PIN_SW2
-    volatile unsigned long modeMillis = 0;
+    static inline volatile unsigned long modeMillis = 0;
 #endif
 
     static IRAM_ATTR void onInterrupt();
@@ -37,12 +39,14 @@ private:
     static void event(const char *key, const char *value);
 
 public:
-    explicit ButtonExtension();
+    explicit ButtonExtension() : ExtensionModule(name) {};
 
     void configure() override;
     void handle() override;
-};
 
-extern ButtonExtension *Button; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
+};
 
 #endif // EXTENSION_BUTTON

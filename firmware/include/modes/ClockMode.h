@@ -30,17 +30,18 @@ private:
 #endif
     });
 
+    static inline bool ticking = true;
+
+    static inline std::string fontName{fontNames[0]};
+
     tm local{};
 
     bool pending = false;
     bool strikethrough = false;
-    bool ticking = true;
 
     int hour = 24;
     int minute = 60;
     int second = 60;
-
-    std::string fontName = fontNames[0].data();
 
     void drawDigits();
     void drawTicker();
@@ -49,12 +50,18 @@ private:
     void transmit();
 
 public:
-    explicit ClockMode() : ModeModule("Clock") {};
+    static constexpr std::string_view name{"Clock"};
+
+    explicit ClockMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_CLOCK

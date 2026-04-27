@@ -2,67 +2,36 @@
 
 #include "modes/TickerMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "fonts/SmallFont.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 
 void TickerMode::configure()
 {
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const std::string id{std::string(name).append("_font")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : Fonts.names)
+        size_t len{0};
+        if (nvs_get_str(handle, "message", nullptr, &len) == ESP_OK && len > 0)
         {
-            options.add(_font);
+            message.resize(len - 1);
+            nvs_get_str(handle, "message", message.data(), &len);
         }
-        component[HomeAssistantAbbreviations::platform].set("select");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
-    }
-    {
-        const std::string id{std::string(name).append("_message")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"message":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::icon].set("mdi:message");
-        component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::platform].set("text");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.message}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("message"))
-    {
-        message = Storage.getString("message").c_str();
-    }
-    if (Storage.isKey("font"))
-    {
-        const String _font = Storage.getString("font");
-        Storage.end();
-        setFont(_font.c_str());
-    }
-    else
-    {
-        Storage.end();
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _font(len);
+            nvs_get_str(handle, "font", _font.data(), &len);
+            nvs_close(handle);
+            setFont(_font.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
     }
     if (!font)
     {
@@ -75,7 +44,34 @@ void TickerMode::configure()
     transmit();
 }
 
-void TickerMode::begin() { pending = true; }
+void TickerMode::begin()
+{
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        size_t len{0};
+        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        {
+            std::vector<char> _font(len);
+            nvs_get_str(handle, "font", _font.data(), &len);
+            nvs_close(handle);
+            setFont(_font.data());
+        }
+        else
+        {
+            nvs_close(handle);
+        }
+    }
+    if (!font)
+    {
+#if FONT_SMALL
+        setFont(SmallFont::name);
+#else
+        setFont(Fonts.names[0]);
+#endif // FONT_SMALL
+    }
+    pending = true;
+}
 
 void TickerMode::handle()
 {
@@ -106,10 +102,13 @@ void TickerMode::setFont(std::string_view fontName)
     if (std::unique_ptr<const FontModule> _font = Fonts.get(fontName))
     {
         font = std::move(_font);
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putString("font", font->name.data());
-        Storage.end();
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "font", std::string(font->name).c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }
@@ -118,11 +117,14 @@ void TickerMode::setMessage(std::string_view _message)
 {
     if (_message.length())
     {
-        message = _message.data();
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putString("message", message.c_str());
-        Storage.end();
+        message = _message;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_str(handle, "message", message.c_str());
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
         pending = true;
     }
 }
@@ -136,7 +138,7 @@ void TickerMode::transmit()
 }
 
 void TickerMode::onReceive(JsonObjectConst payload,
-                           const char *source) // NOLINT(misc-unused-parameters)
+                           std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -151,5 +153,46 @@ void TickerMode::onReceive(JsonObjectConst payload,
 }
 
 void TickerMode::end() { text.reset(); }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_font")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"font":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::enabled_by_default].set(false);
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
+        for (const std::string_view _font : Fonts.names)
+        {
+            options.add(_font);
+        }
+        component[HomeAssistantAbbreviations::platform].set("select");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.font}}");
+    }
+    {
+        const std::string id{std::string(name).append("_message")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"message":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:message");
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::platform].set("text");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.message}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // MODE_TICKER

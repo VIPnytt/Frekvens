@@ -47,7 +47,7 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
                         }
                         else
                         {
-                            ESP_LOGV(font->name, "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
+                            ESP_LOGV("Font", "missing symbol 0x%X %s", codepoint, encode(codepoint).data());
                         }
                     },
                     character.bitmap);

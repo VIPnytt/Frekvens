@@ -12,7 +12,9 @@ private:
     unsigned long lastMillis = 0;
 
 public:
-    explicit ScanMode() : ModeModule("Scan") {};
+    static constexpr std::string_view name{"Scan"};
+
+    explicit ScanMode() : ModeModule(name) {};
 
     void handle() override;
 };

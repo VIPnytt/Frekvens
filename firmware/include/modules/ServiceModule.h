@@ -1,11 +1,12 @@
 #pragma once
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
+#include <string_view>
 
 class ServiceModule
 {
 protected:
-    explicit ServiceModule(const char *name) : name(name) {};
+    explicit ServiceModule(std::string_view name) : name(name) {};
 
 public:
     virtual ~ServiceModule() = default;
@@ -15,7 +16,11 @@ public:
     ServiceModule(ServiceModule &&) = delete;
     ServiceModule &operator=(ServiceModule &&) = delete;
 
-    const char *const name;
+    const std::string_view name{};
 
-    virtual void onReceive(JsonObjectConst payload, const char *source);
+    virtual void onReceive(JsonObjectConst payload, std::string_view source);
+
+#if EXTENSION_HOMEASSISTANT
+    virtual void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique);
+#endif
 };

@@ -20,12 +20,14 @@ private:
     void transmit();
 
 public:
-    explicit DrawMode() : ModeModule("Draw") {};
+    static constexpr std::string_view name{"Draw"};
+
+    explicit DrawMode() : ModeModule(name) {};
 
     void begin() override;
     void handle() override;
     void end() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
 };
 
 #endif // MODE_DRAW

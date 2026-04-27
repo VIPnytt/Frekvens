@@ -2,95 +2,70 @@
 
 #include "extensions/PlaylistExtension.h"
 
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
-#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
-#include <Preferences.h>
-
-PlaylistExtension *Playlist = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-
-PlaylistExtension::PlaylistExtension() : ExtensionModule("Playlist") { Playlist = this; }
+#include <nvs.h>
 
 void PlaylistExtension::configure()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("modes"))
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        const size_t length = Storage.getBytesLength("modes");
-        std::vector<uint8_t> buffer(length);
-        Storage.getBytes("modes", buffer.data(), length);
-        Storage.end();
-        if (deserializeJson(doc, buffer.data(), length) == DeserializationError::Code::Ok)
+        size_t len{0};
+        if (nvs_get_blob(handle, "modes", nullptr, &len) == ESP_OK && len > 0)
         {
-            JsonArrayConst modes = doc.as<JsonArrayConst>();
-            playlist.reserve(modes.size());
-            for (JsonVariantConst item : modes)
+            std::vector<uint8_t> buffer(len);
+            if (nvs_get_blob(handle, "modes", &buffer, &len) == ESP_OK)
             {
-                PlaylistExtension::Mode mode;
-                mode.duration = item["duration"].as<uint16_t>();
-                mode.mode = item["mode"].as<std::string>();
-                playlist.push_back(mode);
+                nvs_close(handle);
+                if (deserializeJson(doc, buffer.data(), len) == DeserializationError::Code::Ok)
+                {
+                    JsonArrayConst modes = doc.as<JsonArrayConst>();
+                    playlist.reserve(modes.size());
+                    for (JsonVariantConst item : modes)
+                    {
+                        PlaylistExtension::Mode mode;
+                        mode.duration = item["duration"].as<uint16_t>();
+                        mode.mode = item["mode"].as<std::string>();
+                        playlist.push_back(mode);
+                    }
+                }
+            }
+            else
+            {
+                nvs_close(handle);
             }
         }
     }
-    else
-    {
-        Storage.end();
-    }
-#if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
-    {
-        const std::string id{std::string(name).append("_active")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
-        component[HomeAssistantAbbreviations::json_attributes_template].set(
-            "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}");
-        component[HomeAssistantAbbreviations::json_attributes_topic].set(topic);
-        component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
-        component[HomeAssistantAbbreviations::payload_off].set("false");
-        component[HomeAssistantAbbreviations::payload_on].set("true");
-        component[HomeAssistantAbbreviations::platform].set("switch");
-        component[HomeAssistantAbbreviations::state_off].set("False");
-        component[HomeAssistantAbbreviations::state_on].set("True");
-        component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
-        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
-    }
-#endif // EXTENSION_HOMEASSISTANT
 }
 
 void PlaylistExtension::begin()
 {
-    bool _active = false;
-    Preferences Storage;
-    Storage.begin(name);
-    switch (esp_reset_reason())
+    nvs_handle_t handle{};
+    const esp_reset_reason_t reason = esp_reset_reason();
+    if (std::ranges::any_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
-    case esp_reset_reason_t::ESP_RST_BROWNOUT:
-    case esp_reset_reason_t::ESP_RST_INT_WDT:
-    case esp_reset_reason_t::ESP_RST_PANIC:
-    case esp_reset_reason_t::ESP_RST_TASK_WDT:
-    case esp_reset_reason_t::ESP_RST_WDT:
-        if (Storage.isKey("active"))
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            Storage.remove("active");
+            if (nvs_erase_key(handle, "active") == ESP_OK)
+            {
+                nvs_commit(handle);
+            }
+            nvs_close(handle);
         }
-        break;
-    default:
-        if (Storage.isKey("active") && Storage.getBool("active"))
-        {
-            _active = true;
-        }
+        transmit();
     }
-    Storage.end();
-    _active ? setActive(true) : transmit();
+    else if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        uint8_t _active{0};
+        nvs_get_u8(handle, "active", &_active);
+        nvs_close(handle);
+        static_cast<bool>(_active) ? setActive(true) : transmit();
+    }
 }
 
 void PlaylistExtension::handle()
@@ -102,26 +77,30 @@ void PlaylistExtension::handle()
         {
             step = 0;
         }
-        Modes.setMode(playlist[step].mode.c_str());
+        Modes.setMode(playlist[step].mode);
         lastMillis = millis();
     }
 }
 
 bool PlaylistExtension::getActive() const { return active; }
 
-void PlaylistExtension::setActive(bool active)
+void PlaylistExtension::setActive(bool _active)
 {
-    if ((active && !this->active && !playlist.empty()) || (!active && this->active))
+    if (_active && playlist.empty())
     {
-        step = 0;
-        this->active = active;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putBool("active", this->active);
-        Storage.end();
-        transmit();
-        ESP_LOGI(name, "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        return;
     }
+    step = 0;
+    active = _active;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u8(handle, "active", static_cast<uint8_t>(active));
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    transmit();
+    ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
@@ -140,10 +119,13 @@ void PlaylistExtension::setPlaylist(std::span<PlaylistExtension::Mode> modes)
     const size_t length = measureJson(doc);
     std::vector<uint8_t> buffer(length + 1);
     serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length + 1);
-    Preferences Storage;
-    Storage.begin(name);
-    Storage.putBytes("modes", buffer.data(), length + 1);
-    Storage.end();
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_blob(handle, "modes", buffer.data(), length + 1);
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
     transmit();
 }
 
@@ -161,10 +143,10 @@ void PlaylistExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
+void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Modes: Mode
-    if (active && !strcmp(source, Modes.name) && payload["mode"].is<std::string>() &&
+    if (active && source == Modes.name && payload["mode"].is<std::string>() &&
         payload["mode"].as<std::string>() != playlist[step].mode)
     {
         setActive(false);
@@ -172,7 +154,7 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, const char *source)
 }
 
 void PlaylistExtension::onReceive(JsonObjectConst payload,
-                                  const char *source) // NOLINT(misc-unused-parameters)
+                                  std::string_view source) // NOLINT(misc-unused-parameters)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())
@@ -196,5 +178,33 @@ void PlaylistExtension::onReceive(JsonObjectConst payload,
         setActive(payload["active"].as<bool>());
     }
 }
+
+#if EXTENSION_HOMEASSISTANT
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
+    {
+        const std::string id{std::string(name).append("_active")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"active":{{value}}})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
+        component[HomeAssistantAbbreviations::json_attributes_template].set(
+            "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}");
+        component[HomeAssistantAbbreviations::json_attributes_topic].set(topic);
+        component[HomeAssistantAbbreviations::name].set(name);
+        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
+        component[HomeAssistantAbbreviations::payload_off].set("false");
+        component[HomeAssistantAbbreviations::payload_on].set("true");
+        component[HomeAssistantAbbreviations::platform].set("switch");
+        component[HomeAssistantAbbreviations::state_off].set("False");
+        component[HomeAssistantAbbreviations::state_on].set("True");
+        component[HomeAssistantAbbreviations::state_topic].set(topic);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+        component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
+    }
+}
+#endif // EXTENSION_HOMEASSISTANT
 
 #endif // EXTENSION_PLAYLIST

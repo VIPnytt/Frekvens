@@ -10,6 +10,8 @@
 class SnakeMode final : public ModeModule
 {
 private:
+    static inline bool clock = true;
+
     struct Pixel
     {
         uint8_t x = 0;
@@ -21,7 +23,6 @@ private:
 
     tm local{};
 
-    bool clock = true;
     bool pending = false;
 
     unsigned long lastMillis = 0;
@@ -32,7 +33,7 @@ private:
     uint8_t blinkCount = 0;
     uint8_t stage = 0;
 
-    Pixel dot;
+    Pixel target;
 
     std::deque<Pixel> snake{};
 
@@ -43,16 +44,23 @@ private:
     void clean();
 
     void setClock(bool _clock);
-    void setDot();
+    void setTarget();
     void transmit();
 
 public:
-    explicit SnakeMode() : ModeModule("Snake") {}
+    static constexpr std::string_view name{"Snake"};
+
+    explicit SnakeMode() : ModeModule(name) {};
 
     void configure() override;
     void begin() override;
     void handle() override;
-    void onReceive(JsonObjectConst payload, const char *source) override;
+
+    void onReceive(JsonObjectConst payload, std::string_view source) override;
+
+#if EXTENSION_HOMEASSISTANT
+    void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
+#endif
 };
 
 #endif // MODE_SNAKE

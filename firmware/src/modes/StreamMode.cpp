@@ -3,20 +3,90 @@
 #include "modes/StreamMode.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
-#include <Preferences.h>
+#include <nvs.h>
 #include <span>
 
 void StreamMode::configure()
 {
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        nvs_get_u16(handle, "port", &port);
+        nvs_close(handle);
+    }
+    transmit();
+}
+
+void StreamMode::begin()
+{
+    if (udp.listen(port))
+    {
+        udp.onPacket(&onPacket);
+        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
+    }
+}
+
+void StreamMode::set(uint16_t _port)
+{
+    if (_port != 4048 && _port != 5568 && _port != 6454)
+    {
+        return;
+    }
+    port = _port;
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    {
+        nvs_set_u16(handle, "port", port);
+        nvs_commit(handle);
+        nvs_close(handle);
+    }
+    if (udp.listen(port))
+    {
+        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
+        transmit();
+    }
+}
+
+void StreamMode::transmit()
+{
+    JsonDocument doc; // NOLINT(misc-const-correctness)
+    doc["port"].set(port);
+    Device.transmit(doc.as<JsonObjectConst>(), name);
+}
+
+void StreamMode::onReceive(JsonObjectConst payload,
+                           std::string_view source) // NOLINT(misc-unused-parameters)
+{
+    // Port
+    if (payload["port"].is<uint16_t>())
+    {
+        set(payload["port"].as<uint16_t>());
+    }
+}
+
+void StreamMode::onPacket(AsyncUDPPacket packet)
+{
+    const size_t len = packet.length();
+    if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
+        (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
+        (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
+    {
+        Display.setFrame(std::span<const uint8_t>(packet.data(), len).last(GRID_COLUMNS * GRID_ROWS));
+    }
+}
+
 #if EXTENSION_HOMEASSISTANT
-    const std::string topic{std::string("frekvens/" HOSTNAME "/").append(name)};
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
+{
+    topic.append(name);
     {
         const std::string id{std::string(name).append("_protocol")};
-        JsonObject component{(*HomeAssistant->discovery)[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(
             R"({"port":{{{"Art-Net":6454,"Distributed Display Protocol":4048,"E1.31":5568}.get(value)}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
@@ -31,78 +101,11 @@ void StreamMode::configure()
         options.add("E1.31");
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
-        component[HomeAssistantAbbreviations::unique_id].set(HomeAssistant->uniquePrefix + id);
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
         component[HomeAssistantAbbreviations::value_template].set(
             R"({{{4048:"Distributed Display Protocol",5568:"E1.31",6454:"Art-Net"}.get(value_json.port)}})");
     }
+}
 #endif // EXTENSION_HOMEASSISTANT
-    Preferences Storage;
-    Storage.begin(name, true);
-    if (Storage.isKey("port"))
-    {
-        port = Storage.getUShort("port");
-    }
-    Storage.end();
-    transmit();
-}
-
-void StreamMode::begin()
-{
-    udp = std::make_unique<AsyncUDP>();
-    if (udp->listen(port))
-    {
-        udp->onPacket(&onPacket);
-        ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
-    }
-}
-
-void StreamMode::set(uint16_t _port)
-{
-    if (_port != port && (_port == 4048 || _port == 5568 || _port == 6454))
-    {
-        port = _port;
-        Preferences Storage;
-        Storage.begin(name);
-        Storage.putUShort("port", port);
-        Storage.end();
-        if (udp)
-        {
-            udp->listen(port);
-            ESP_LOGD(name, "listening at " HOSTNAME ".local:%d", port); // NOLINT(cppcoreguidelines-avoid-do-while)
-        }
-        transmit();
-    }
-}
-
-void StreamMode::transmit()
-{
-    JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["port"].set(port);
-    Device.transmit(doc.as<JsonObjectConst>(), name);
-}
-
-void StreamMode::onReceive(JsonObjectConst payload,
-                           const char *source) // NOLINT(misc-unused-parameters)
-{
-    // Port
-    if (payload["port"].is<uint16_t>())
-    {
-        set(payload["port"].as<uint16_t>());
-    }
-}
-
-void StreamMode::onPacket(AsyncUDPPacket packet)
-{
-    const uint16_t port = packet.localPort();
-    const size_t len = packet.length();
-    if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
-        (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
-        (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
-    {
-        Display.setFrame(std::span<const uint8_t>(packet.data(), len).last(GRID_COLUMNS * GRID_ROWS));
-    }
-}
-
-void StreamMode::end() { udp.reset(); }
 
 #endif // MODE_STREAM

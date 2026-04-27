@@ -4,6 +4,7 @@
 
 #include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 
 void EqualizerMode::begin()
 {
@@ -22,7 +23,7 @@ void EqualizerMode::handle()
     {
         lastMillis = millis();
 #if EXTENSION_MICROPHONE
-        const bool play = Microphone->isTriggered();
+        const bool play = Extensions.Microphone().isTriggered();
 #endif // EXTENSION_MICROPHONE
         for (size_t i = 0; i < bars.size(); ++i)
         {

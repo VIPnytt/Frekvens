@@ -10,11 +10,8 @@ import { Tooltip } from "./Tooltip";
 const [getStrength, setStrength] = createSignal<number>(2 ** 8 - 1);
 
 export const Strength: Component = () => (
-    <div class="flex items-center mt-3">
-        <Icon
-            class="mr-2"
-            path={mdiBrightness6}
-        />
+    <div class="action grid-cols-[--spacing(4)_1fr]">
+        <Icon path={mdiBrightness6} />
         <Tooltip text={`Brush brightness ${Math.ceil((getStrength() / (2 ** 8 - 1)) * 100)} %`}>
             <input
                 class="w-full"
