@@ -12,22 +12,27 @@ private:
     explicit DisplayService() : ServiceModule("Display") {};
 
 #ifdef FRAME_RATE
-    static constexpr uint8_t frameRate = FRAME_RATE;
+    static constexpr uint8_t fps = FRAME_RATE;
 #else
-    static constexpr uint8_t frameRate = 60;
+    static constexpr uint8_t fps = F_CPU / 13'000U / GRID_COLUMNS / GRID_ROWS;
 #endif // FRAME_RATE
 
-    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
-    {
-        deg0,
-        deg90,
-        deg180,
-        deg270,
-    };
+#ifdef PWM_DEPTH
+    static constexpr uint8_t depth = min<uint8_t>(PWM_DEPTH, SOC_LEDC_TIMER_BIT_WIDTH);
+#else
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
+    static inline const uint8_t depth =
+        min(max<uint8_t>(
+                8U, static_cast<uint8_t>(8.0F - (std::numbers::pi_v<float> * log2f(static_cast<float>(fps) / 120.0F)))),
+            min<uint8_t>(SOC_LEDC_TIMER_BIT_WIDTH,
+                         static_cast<uint8_t>(log2f(1.0F / PWM_WIDTH / static_cast<float>(fps)))));
+#endif // PWM_DEPTH
 
-    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
-    inline static const uint8_t depth =
-        min<uint8_t>(log2f(1 / PWM_WIDTH / static_cast<float>(frameRate * 2)), SOC_LEDC_TIMER_BIT_WIDTH);
+#if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
+    float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
+#else
+    static constexpr float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
+#endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
 
     static constexpr std::array<uint16_t, 12> splash{
         0b1000001001,
@@ -44,22 +49,26 @@ private:
         0b0011111100,
     };
 
+    enum class Orientation : uint8_t // NOLINT(performance-enum-size)
+    {
+        deg0,
+        deg90,
+        deg180,
+        deg270,
+    };
+
+    static inline DRAM_ATTR std::array<std::array<uint8_t, ((GRID_COLUMNS * GRID_ROWS) + 7U) / 8U>, UINT8_MAX> planes{};
+
     bool pending = false;
     bool power = false;
-
-#if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
-#else
-    static constexpr float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
-#endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL == PITCH_VERTICAL
+    bool render = false;
 
     uint8_t brightness = 0;
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
 
-    Orientation orientation = Orientation::deg0;
+    Orientation orientation{Orientation::deg0};
 
     void transmit();
 
@@ -68,11 +77,7 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
-    hw_timer_t *timer = nullptr;
-
     void configure();
-    void begin();
-
     void handle();
 
     [[nodiscard]] float getRatio() const;
