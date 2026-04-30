@@ -65,7 +65,7 @@ scripts = [
     { include-group = "nodejs" },
     { include-group = "packaging" },
     "python-dotenv==1.2.2",
-    "tzdata==2026.1",
+    "tzdata==2026.2",
     "tzlocal==5.3.1",
 ]
 uv = [
