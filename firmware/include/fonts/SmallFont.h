@@ -961,7 +961,7 @@ private:
     };
 
     // 0xE4, ä LATIN SMALL LETTER A WITH DIAERESIS
-    static constexpr std::array<uint8_t, 7> charE4 = {
+    static constexpr std::array<uint8_t, 6> charE4 = {
         0b10001,
         0b01110,
         0b00001,
