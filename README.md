@@ -28,7 +28,7 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Text scrolling
   - Streaming content
   - Weather
-- **18 extensions**:
+- **19 extensions**:
   - Web app
   - Smart-home integrations
   - Notifications

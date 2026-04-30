@@ -319,6 +319,7 @@ jobs:
           EXTENSION_SCREENSHOT='true'
           EXTENSION_SERVERSENTEVENTS='true'
           EXTENSION_SIGNAL='true'
+          EXTENSION_STATUSLED='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           FONT_LARGE='true'
@@ -379,10 +380,11 @@ jobs:
           #define MQTT_KEY "redacted"
           #define MQTT_USER "redacted"
           #define PIN_CS 1
-          #define PIN_MOSI 2
-          #define PIN_OE 3
-          #define PIN_SCLK 4
-          #define PIN_SW2 5
+          #define PIN_LED 2
+          #define PIN_MOSI 3
+          #define PIN_OE 4
+          #define PIN_SCLK 5
+          #define PIN_SW2 6
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"
           EOL
@@ -470,6 +472,7 @@ jobs:
           EXTENSION_SCREENSHOT='true'
           EXTENSION_SERVERSENTEVENTS='true'
           EXTENSION_SIGNAL='true'
+          EXTENSION_STATUSLED='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
           FONT_BRAILLE='true'
@@ -550,13 +553,14 @@ jobs:
           #define PIN_INT 2
           #define PIN_IR 3
           #define PIN_LDR 4
-          #define PIN_MIC 5
-          #define PIN_MOSI 6
-          #define PIN_OE 7
-          #define PIN_SCL 8
-          #define PIN_SCLK 9
-          #define PIN_SDA 10
-          #define PIN_SW2 11
+          #define PIN_LED 5
+          #define PIN_MIC 6
+          #define PIN_MOSI 7
+          #define PIN_OE 8
+          #define PIN_SCL 9
+          #define PIN_SCLK 10
+          #define PIN_SDA 12
+          #define PIN_SW2 13
           #define PWM_DEPTH 10
           #define RTC_DS3231
           #define WIFI_COUNTRY "01"
