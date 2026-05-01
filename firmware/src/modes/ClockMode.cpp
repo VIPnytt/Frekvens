@@ -66,9 +66,9 @@ void ClockMode::drawDigits()
     hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2),
              static_cast<int8_t>((GRID_ROWS / 2) - 1 - hh2.getHeight()));
     mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
-             static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough)));
+             static_cast<int8_t>((GRID_COLUMNS / 2) + (strikethrough ? 1 : 0)));
     mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
-             static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough)));
+             static_cast<int8_t>((GRID_COLUMNS / 2) + (strikethrough ? 1 : 0)));
 }
 
 void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)

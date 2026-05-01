@@ -42,9 +42,9 @@ void EqualizerMode::handle()
                 const uint8_t maxX = minX + width - 1;
                 if (bar.level < bar.target)
                 {
-                    for (uint8_t x = minX; x <= maxX; ++x)
+                    for (size_t x = minX; x <= maxX; ++x)
                     {
-                        Display.setPixel(x, bar.level, 0);
+                        Display.setPixel(static_cast<uint8_t>(x), bar.level, 0);
                     }
                     ++bar.level;
                 }

@@ -407,16 +407,16 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
     const uint8_t xMin = max<uint8_t>(0, floorf(x - (radius / xRatio)));
     const uint8_t yMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(y + (radius / yRatio)));
     const uint8_t yMin = max<uint8_t>(0, floorf(y - (radius / yRatio)));
-    for (uint16_t _x = xMin; _x <= xMax; ++_x)
+    for (size_t _x = xMin; _x <= xMax; ++_x)
     {
-        for (uint16_t _y = yMin; _y <= yMax; ++_y)
+        for (size_t _y = yMin; _y <= yMax; ++_y)
         {
             const float xDistance = xRatio * (static_cast<float>(_x) - x);
             const float yDistance = yRatio * (static_cast<float>(_y) - y);
             const float distance = sqrtf((xDistance * xDistance) + (yDistance * yDistance));
             if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
-                setPixel(_x, _y, brightness);
+                setPixel(static_cast<uint8_t>(_x), static_cast<uint8_t>(_y), brightness);
             }
         }
     }
@@ -428,16 +428,16 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 {
     if (fill)
     {
-        for (uint16_t x = minX; x <= maxX; ++x)
+        for (size_t x = minX; x <= maxX; ++x)
         {
-            for (uint16_t y = minY; y <= maxY; ++y)
+            for (size_t y = minY; y <= maxY; ++y)
             {
                 setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
             }
         }
         return;
     }
-    for (uint16_t x = minX; x <= maxX; ++x)
+    for (size_t x = minX; x <= maxX; ++x)
     {
         setPixel(static_cast<uint8_t>(x), minY, brightness);
         if (maxY != minY)
@@ -447,7 +447,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
     }
     if (maxY > minY + 1)
     {
-        for (uint16_t y = static_cast<uint16_t>(minY) + 1; y <= static_cast<uint16_t>(maxY) - 1; ++y)
+        for (size_t y = minY + 1; y <= maxY - 1; ++y)
         {
             setPixel(minX, static_cast<uint8_t>(y), brightness);
             if (maxX != minX)
