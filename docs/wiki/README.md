@@ -28,6 +28,7 @@ Optional hardware that adds new capabilities and functionality to the device.
 - [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone)
 - [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell)
 - [RTC clock](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock)
+- [Status LED](https://github.com/VIPnytt/Frekvens/wiki/Status-Led)
 
 ## 🗃️ Miscellaneous
 

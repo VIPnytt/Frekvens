@@ -34,6 +34,9 @@ void MqttExtension::handle()
     if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT16_MAX)
     {
         lastMillis = millis();
+#if EXTENSION_STATUSLED
+        Extensions.StatusLed().warning();
+#endif // EXTENSION_STATUSLED
         if (!client.connect() && client.queueSize() > INT8_MAX)
         {
             client.clearQueue();

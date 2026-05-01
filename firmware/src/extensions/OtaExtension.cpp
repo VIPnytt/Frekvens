@@ -5,6 +5,7 @@
 #include "fonts/LargeFont.h"      // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h"
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
 
@@ -20,6 +21,9 @@ void OtaExtension::configure()
 #endif // OTA_KEY
     ArduinoOTA.onStart(&onStart);
     ArduinoOTA.onEnd(&onEnd);
+#if EXTENSION_STATUSLED
+    ArduinoOTA.onError(&onError);
+#endif // EXTENSION_STATUSLED
 }
 
 void OtaExtension::begin()
@@ -28,7 +32,7 @@ void OtaExtension::begin()
 #ifdef OTA_KEY
     MDNS.enableArduino(3232, true);
 #else
-    MDNS.enableArduino(3232, false);
+    MDNS.enableArduino(3232);
     WebServer.http->on(
         AsyncURIMatcher::exact("/ota"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, &onPost);
 #endif // OTA_KEY
@@ -51,6 +55,13 @@ void OtaExtension::onEnd()
 {
     ESP_LOGI("Status", "complete"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
+
+#if EXTENSION_STATUSLED
+void OtaExtension::onError(ota_error_t error) // NOLINT(misc-unused-parameters)
+{
+    Extensions.StatusLed().error();
+}
+#endif // EXTENSION_STATUSLED
 
 #ifndef OTA_KEY
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,

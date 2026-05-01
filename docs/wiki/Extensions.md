@@ -1,6 +1,6 @@
 # 🧩 Extensions
 
-**Accessories:** [Button](#️-button) | [Infrared](#-infrared) | [Microphone](#️-microphone) | [Photocell](#-photocell) | [RTC](#-rtc)
+**Accessories:** [Button](#️-button) | [Infrared](#-infrared) | [Microphone](#️-microphone) | [Photocell](#-photocell) | [RTC](#-rtc) | [Status LED](#-status-led)
 
 **APIs:** [MQTT](#️-mqtt) | [RESTful](#️-restful) | [Server-Sent Events](#-server-sent-events) | [WebSocket](#-websocket)
 
@@ -8,7 +8,7 @@
 
 **Smart-home:** [Alexa](#-alexa) | [Home Assistant](#-home-assistant) | [MQTT](#️-mqtt)
 
-**Tools:** [Heap](#-heap) | [OTA](#️-ota) | [Screenshot](#️-screenshot)
+**Tools:** [Heap](#-heap) | [OTA](#️-ota) | [Screenshot](#-screenshot)
 
 ## 🎤 Alexa
 
@@ -374,7 +374,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 EXTENSION_SCREENSHOT='true'
 ```
 
-See also [Web app](#️-web-app).
+See also [Web app](#-web-app).
 
 ## 📜 Server-Sent Events
 
@@ -429,6 +429,18 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 EXTENSION_SIGNAL='true'
 ```
+
+## 🟢 Status LED
+
+Provides low-level status of the device. Solid in normal conditions, blinks about once a second on warnings (e.g. Wi-Fi connectivity issues) and rapidly on errors.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+EXTENSION_STATUSLED='true'
+```
+
+Check out the [Status LED](https://github.com/VIPnytt/Frekvens/wiki/Status-Led) wiki for more info.
 
 ## 📱 Web app
 
