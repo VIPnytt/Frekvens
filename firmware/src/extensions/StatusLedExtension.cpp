@@ -4,7 +4,7 @@
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 
-#include <WiFi.h>
+#include <WiFi.h> // NOLINT(misc-include-cleaner)
 
 void StatusLedExtension::configure() { pinMode(PIN_LED, OUTPUT); }
 

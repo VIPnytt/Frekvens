@@ -64,8 +64,10 @@ void ClockMode::drawDigits()
     hh1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - hh1.getWidth()) / 2),
              (GRID_ROWS / 2) - 1 - hh1.getHeight());
     hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2), (GRID_ROWS / 2) - 1 - hh2.getHeight());
+    // NOLINTNEXTLINE(readability-implicit-bool-conversion)
     mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
              (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
+    // NOLINTNEXTLINE(readability-implicit-bool-conversion)
     mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
              (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
 }
@@ -75,14 +77,14 @@ void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          INT8_MAX);
     }
     else if (second < 8)
@@ -135,7 +137,7 @@ void ClockMode::setTicking(bool _ticking)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_u8(handle, "ticking", static_cast<uint8_t>(ticking));
+        nvs_set_u8(handle, "ticking", static_cast<uint8_t>(ticking)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
         nvs_close(handle);
     }

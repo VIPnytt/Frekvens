@@ -26,7 +26,7 @@ void DisplayService::configure()
     SPI.beginTransaction(
         SPISettings(static_cast<uint32_t>(1U << 9U) * GRID_COLUMNS * GRID_ROWS * fps, MSBFIRST, SPI_MODE0));
 
-    hw_timer_t *timer = timerBegin(static_cast<uint32_t>(UINT8_MAX) * fps);
+    hw_timer_t *timer = timerBegin(static_cast<uint32_t>(UINT8_MAX) * fps); // NOLINT(cppcoreguidelines-init-variables)
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1, true, 0);
 
