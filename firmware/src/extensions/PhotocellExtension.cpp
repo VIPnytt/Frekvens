@@ -53,7 +53,7 @@ void PhotocellExtension::handle()
             direction = !direction;
             counter /= 2;
         }
-        counter += static_cast<int16_t>(static_cast<int16_t>(_brightness) - static_cast<int16_t>(brightness));
+        counter = static_cast<int16_t>(counter + _brightness - brightness);
         if (abs(counter) > UINT8_MAX)
         {
             brightness = _brightness;

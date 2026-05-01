@@ -14,9 +14,9 @@ void CircleMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         bool _lit = lit;
-        for (uint8_t i = 0; i < (maxRadius - radius) / 3U + 1U; ++i)
+        for (uint8_t i = 0; i < static_cast<uint8_t>(((maxRadius - radius) / 3U) + 1U); ++i)
         {
-            Display.drawEllipse(x, y, radius + (i * 3U), 1.25F, false, _lit ? UINT8_MAX : 0);
+            Display.drawEllipse(x, y, static_cast<float>(radius + (i * 3U)), 1.25F, false, _lit ? UINT8_MAX : 0);
             _lit = !_lit;
         }
         lastMillis = millis();
