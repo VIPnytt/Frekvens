@@ -64,6 +64,9 @@ PlaylistExtension &ExtensionsService::Playlist() { return extensionPlaylist; }
 #if EXTENSION_SERVERSENTEVENTS
 ServerSentEventsExtension &ExtensionsService::ServerSentEvents() { return extensionServerSentEvents; }
 #endif
+#if EXTENSION_STATUSLED
+StatusLedExtension &ExtensionsService::StatusLed() { return extensionStatusLed; }
+#endif
 #if EXTENSION_WEBSOCKET
 WebSocketExtension &ExtensionsService::WebSocket() { return extensionWebSocket; }
 #endif
