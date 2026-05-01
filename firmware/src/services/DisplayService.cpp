@@ -428,7 +428,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 {
     if (fill)
     {
-        for (uint16_t x = minX; x <= maxX; ++x)
+        for (uint16_t x = minX; x <= static_cast<uint16_t>(maxX); ++x)
         {
             for (uint16_t y = minY; y <= maxY; ++y)
             {
@@ -437,7 +437,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
         }
         return;
     }
-    for (uint16_t x = minX; x <= maxX; ++x)
+    for (uint16_t x = minX; x <= static_cast<uint16_t>(maxX); ++x)
     {
         setPixel(static_cast<uint8_t>(x), minY, brightness);
         if (maxY != minY)
@@ -447,7 +447,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
     }
     if (maxY > minY + 1U)
     {
-        for (uint16_t y = minY + 1U; y <= maxY - 1U; ++y)
+        for (uint16_t y = minY + 1U; y <= static_cast<uint16_t>(maxY) - 1U; ++y)
         {
             setPixel(minX, static_cast<uint8_t>(y), brightness);
             if (maxX != minX)

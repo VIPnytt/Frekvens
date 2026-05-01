@@ -14,7 +14,7 @@ void CircleMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         bool _lit = lit;
-        for (uint8_t _radius = radius; _radius <= maxRadius; _radius += 3)
+        for (uint16_t _radius = radius; _radius <= static_cast<uint16_t>(maxRadius); _radius += 3)
         {
             Display.drawEllipse(x, y, _radius, 1.25F, false, _lit ? UINT8_MAX : 0);
             _lit = !_lit;
