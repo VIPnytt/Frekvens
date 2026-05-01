@@ -430,7 +430,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
     {
         for (uint16_t x = minX; x < static_cast<uint16_t>(maxX) + 1U; ++x)
         {
-            for (uint16_t y = minY; y <= maxY; ++y)
+            for (uint16_t y = minY; y < static_cast<uint16_t>(maxY) + 1U; ++y)
             {
                 setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
             }
