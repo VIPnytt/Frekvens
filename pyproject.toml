@@ -49,7 +49,7 @@ nodejs = [
     "nodejs-wheel==24.15.0",
 ]
 packaging = [
-    "packaging==26.1",
+    "packaging==26.2",
 ]
 platformio = [
     "platformio==6.1.19",
