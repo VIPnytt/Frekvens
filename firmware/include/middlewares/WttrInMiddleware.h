@@ -35,7 +35,7 @@ private:
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
-    inline static std::vector<std::pair<const char *, const char *>> parts{
+    static inline std::vector<std::pair<const char *, const char *>> parts{
         {
             "/",
             "format=j1",

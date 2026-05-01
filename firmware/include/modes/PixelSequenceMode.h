@@ -10,11 +10,11 @@
 class PixelSequenceMode final : public ModeModule
 {
 private:
-    static constexpr std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixelOrder{LED_MAP};
+    static constexpr std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
 
     bool lit = true;
 
-    uint16_t address = 0;
+    uint16_t idx = 0;
 
     unsigned long lastMillis = 0;
 

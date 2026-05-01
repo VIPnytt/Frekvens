@@ -204,19 +204,25 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
     if (operational)
     {
         ESP_LOGV("Status", "receiving"); // NOLINT(cppcoreguidelines-avoid-do-while)
-        const std::array<ServiceModule *, 4> services{
-            &Connectivity,
-            &Device,
-            &Display,
-            &Modes,
-        };
-        for (ServiceModule *service : services)
+        if (Connectivity.name == destination)
         {
-            if (service->name == destination)
-            {
-                service->onReceive(payload, source);
-                return;
-            }
+            Connectivity.onReceive(payload, source);
+            return;
+        }
+        else if (Device.name == destination)
+        {
+            Device.onReceive(payload, source);
+            return;
+        }
+        else if (Display.name == destination)
+        {
+            Display.onReceive(payload, source);
+            return;
+        }
+        else if (Modes.name == destination)
+        {
+            Modes.onReceive(payload, source);
+            return;
         }
         for (ExtensionModule *extension : Extensions.getAll())
         {
@@ -243,21 +249,22 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
 void DeviceService::onReceive(JsonObjectConst payload,
                               std::string_view source) // NOLINT(misc-unused-parameters)
 {
-    if (payload["action"].is<const char *>())
+    // Action
+    if (payload["action"].is<std::string_view>())
     {
-        const char *const action = payload["action"].as<const char *>(); // NOLINT(cppcoreguidelines-init-variables)
+        const std::string_view action{payload["action"].as<std::string_view>()};
         // Power off
-        if (strcmp(action, "power") == 0)
+        if (action == "power")
         {
             setPower(false);
         }
         // Reboot
-        else if (strcmp(action, "reboot") == 0)
+        else if (action == "reboot")
         {
             setPower(true);
         }
         // Restore
-        else if (strcmp(action, "restore") == 0)
+        else if (action == "restore")
         {
             restore();
         }

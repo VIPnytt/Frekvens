@@ -16,16 +16,16 @@ void PixelSequenceMode::handle()
     {
         for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
         {
-            if (pixelOrder[i] == address)
+            if (pixels[i] == idx)
             {
                 Display.setPixel(i % GRID_COLUMNS, i / GRID_COLUMNS, lit ? UINT8_MAX : 0);
                 break;
             }
         }
-        ++address;
-        if (address >= GRID_COLUMNS * GRID_ROWS)
+        ++idx;
+        if (idx >= GRID_COLUMNS * GRID_ROWS)
         {
-            address = 0;
+            idx = 0;
             lit = !lit;
         }
         lastMillis = millis();

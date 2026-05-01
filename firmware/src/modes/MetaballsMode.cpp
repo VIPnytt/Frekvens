@@ -24,76 +24,81 @@ void MetaballsMode::begin()
 void MetaballsMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (Extensions.Microphone().isTriggered())
-#endif // EXTENSION_MICROPHONE
+    if (!Extensions.Microphone().isTriggered())
     {
+        return;
+    }
+#endif // EXTENSION_MICROPHONE
 #if PITCH_HORIZONTAL != PITCH_VERTICAL
-        const bool rotated = (static_cast<uint8_t>(Display.getOrientation()) % 2) != 0;
-        const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
-                             static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
-        const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
-                             static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
+    const bool rotated = (static_cast<uint8_t>(Display.getOrientation()) & 1U) != 0;
+    const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
+                         static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
+    const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
+                         static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL);
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-        for (const Ball &ball : balls)
+    for (const Ball &ball : balls)
+    {
+        const uint8_t xMin =
+            static_cast<uint8_t>(max<int8_t>(static_cast<int8_t>(ball.x - radius - max(ball.xVelocity, 0.0F)), 0));
+        const uint8_t yMin =
+            static_cast<uint8_t>(max<int8_t>(static_cast<int8_t>(ball.y - radius - max(ball.yVelocity, 0.0F)), 0));
+        const uint8_t xMax = static_cast<uint8_t>(
+            min<int8_t>(static_cast<int8_t>(ceilf(ball.x + radius - min(ball.xVelocity, 0.0F))), GRID_COLUMNS - 1));
+        const uint8_t yMax = static_cast<uint8_t>(
+            min<int8_t>(static_cast<int8_t>(ceilf(ball.y + radius - min(ball.yVelocity, 0.0F))), GRID_ROWS - 1));
+        for (uint8_t x = xMin; x <= xMax; ++x)
         {
-            const uint8_t xMin = max<int8_t>(ball.x - radius - max<float>(ball.xVelocity, 0), 0);
-            const uint8_t yMin = max<int8_t>(ball.y - radius - max<float>(ball.yVelocity, 0), 0);
-            const uint8_t xMax = min<int8_t>(ceilf(ball.x + radius - min<float>(ball.xVelocity, 0)), GRID_COLUMNS - 1);
-            const uint8_t yMax = min<int8_t>(ceilf(ball.y + radius - min<float>(ball.yVelocity, 0)), GRID_ROWS - 1);
-            for (uint8_t x = xMin; x <= xMax; ++x)
+            for (uint8_t y = yMin; y <= yMax; ++y)
             {
-                for (uint8_t y = yMin; y <= yMax; ++y)
+                uint8_t brightness = 0;
+                for (const Ball &ball : balls)
                 {
-                    uint8_t brightness = 0;
-                    for (const Ball &ball : balls)
-                    {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
-                        const float xDistance = (ball.x - static_cast<float>(x));
-                        const float yDistance = (ball.y - static_cast<float>(y));
+                    const float xDistance = (ball.x - static_cast<float>(x));
+                    const float yDistance = (ball.y - static_cast<float>(y));
 #else
-                        const float xDistance = (ball.x - static_cast<float>(x)) * xRatio;
-                        const float yDistance = (ball.y - static_cast<float>(y)) * yRatio;
+                    const float xDistance = (ball.x - static_cast<float>(x)) * xRatio;
+                    const float yDistance = (ball.y - static_cast<float>(y)) * yRatio;
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-                        const float distanceSq = (xDistance * xDistance) + (yDistance * yDistance);
-                        if (distanceSq < radiusSq)
+                    const float distanceSq = (xDistance * xDistance) + (yDistance * yDistance);
+                    if (distanceSq < radiusSq)
+                    {
+                        brightness = min<uint8_t>(
+                            brightness + contributions[static_cast<uint8_t>(distanceSq * (1U << 6U) / radiusSq)],
+                            UINT8_MAX);
+                        if (brightness >= UINT8_MAX)
                         {
-                            brightness = min<uint8_t>(
-                                brightness + contributions[static_cast<uint8_t>(distanceSq * UINT8_MAX / radiusSq)],
-                                UINT8_MAX);
-                            if (brightness >= UINT8_MAX)
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
-                    Display.setPixel(x, y, brightness);
                 }
+                Display.setPixel(x, y, brightness);
             }
         }
-        for (Ball &ball : balls)
+    }
+    for (Ball &ball : balls)
+    {
+        ball.x += ball.xVelocity;
+        ball.y += ball.yVelocity;
+        if (ball.x < 0)
         {
-            ball.x += ball.xVelocity;
-            ball.y += ball.yVelocity;
-            if (ball.x < 0)
-            {
-                ball.x = 0;
-                ball.xVelocity = speed * static_cast<float>(random(1, multiplier));
-            }
-            else if (ball.x > GRID_COLUMNS - 1)
-            {
-                ball.x = GRID_COLUMNS - 1;
-                ball.xVelocity = -speed * static_cast<float>(random(1, multiplier));
-            }
-            if (ball.y < 0)
-            {
-                ball.y = 0;
-                ball.yVelocity = speed * static_cast<float>(random(1, multiplier));
-            }
-            else if (ball.y > GRID_ROWS - 1)
-            {
-                ball.y = GRID_ROWS - 1;
-                ball.yVelocity = -speed * static_cast<float>(random(1, multiplier));
-            }
+            ball.x = 0;
+            ball.xVelocity = speed * static_cast<float>(random(1, multiplier));
+        }
+        else if (ball.x > GRID_COLUMNS - 1)
+        {
+            ball.x = GRID_COLUMNS - 1;
+            ball.xVelocity = -speed * static_cast<float>(random(1, multiplier));
+        }
+        if (ball.y < 0)
+        {
+            ball.y = 0;
+            ball.yVelocity = speed * static_cast<float>(random(1, multiplier));
+        }
+        else if (ball.y > GRID_ROWS - 1)
+        {
+            ball.y = GRID_ROWS - 1;
+            ball.yVelocity = -speed * static_cast<float>(random(1, multiplier));
         }
     }
 }

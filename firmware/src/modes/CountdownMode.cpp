@@ -26,7 +26,7 @@ void CountdownMode::configure()
             nvs_get_str(handle, "font", fontName.data(), &len);
         }
         int64_t _epoch{};
-        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK)
+        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK) // NOLINT(bugprone-branch-clone)
         {
             nvs_close(handle);
             epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
@@ -90,7 +90,7 @@ void CountdownMode::handle()
             }
         }
     }
-    else if (blink != 0 && odd == static_cast<bool>(seconds & 1))
+    else if (blink != 0 && odd == static_cast<bool>(seconds & 1U))
     {
         --blink;
         odd = !odd;

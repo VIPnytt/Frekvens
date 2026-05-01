@@ -41,7 +41,7 @@ void HeapExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
         component[HomeAssistantAbbreviations::icon].set("mdi:memory");
-        component[HomeAssistantAbbreviations::name].set(std::string(Extensions.name.data()).append(" task stack"));
+        component[HomeAssistantAbbreviations::name].set(std::string(Extensions.name).append(" task stack"));
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");

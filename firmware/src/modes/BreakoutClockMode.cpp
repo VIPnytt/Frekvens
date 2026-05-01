@@ -24,11 +24,10 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
-    const uint8_t nextX =
-        static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-    const uint8_t nextY = static_cast<uint8_t>(
-        std::lroundf(yDec - (sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
+    const uint8_t nextX{
+        static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)))};
+    const uint8_t nextY{static_cast<uint8_t>(
+        std::lroundf(yDec - (sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)))};
     if (y <= 0 && deg < 180)
     {
         // Top

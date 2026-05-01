@@ -33,7 +33,7 @@ void ScreenshotExtension::transmit()
 void ScreenshotExtension::onReceive(JsonObjectConst payload,
                                     std::string_view source) // NOLINT(misc-unused-parameters)
 {
-    // Pull
+    // Action: Pull
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")
     {
         pending = true;

@@ -32,7 +32,7 @@ private:
     }};
 
     // https://open-meteo.com/en/docs#api-documentation
-    inline static std::vector<std::pair<const char *, const char *>> parts{
+    static inline std::vector<std::pair<const char *, const char *>> parts{
         {
             "api.open-meteo.com",
             "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
