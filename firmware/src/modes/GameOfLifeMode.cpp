@@ -46,7 +46,8 @@ void GameOfLifeMode::handle()
             pending = false;
         }
         std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)), false);
-        for (uint8_t i = active; i < GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1U << 4U); ++i)
+        for (uint8_t i = active; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - (clock ? 5 : 0)) / (1U << 4U));
+             ++i)
         {
             seeds[random(1, GRID_COLUMNS - 1) +
                   (random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0)))] = true;

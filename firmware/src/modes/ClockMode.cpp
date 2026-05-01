@@ -62,14 +62,13 @@ void ClockMode::drawDigits()
     strikethrough = mm2.getHeight() > 6;
     Display.clearFrame();
     hh1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - hh1.getWidth()) / 2),
-             (GRID_ROWS / 2) - 1 - hh1.getHeight());
-    hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2), (GRID_ROWS / 2) - 1 - hh2.getHeight());
-    // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+             static_cast<int8_t>((GRID_ROWS / 2) - 1 - hh1.getHeight()));
+    hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2),
+             static_cast<int8_t>((GRID_ROWS / 2) - 1 - hh2.getHeight()));
     mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
-             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
-    // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+             static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough)));
     mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
-             (GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough));
+             static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(strikethrough)));
 }
 
 void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
@@ -77,14 +76,14 @@ void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (static_cast<unsigned>(second) & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          0);
     }
     second = local.tm_sec;
     if (strikethrough)
     {
         Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (second & 1) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
+                         (static_cast<unsigned>(second) & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
                          INT8_MAX);
     }
     else if (second < 8)

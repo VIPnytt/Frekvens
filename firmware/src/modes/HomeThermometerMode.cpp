@@ -42,8 +42,8 @@ void HomeThermometerMode::draw()
     const uint8_t height{textOutdoor.getHeight()};
     const uint8_t marginsY = (GRID_ROWS - (height * 2)) / 3;
     Display.clearFrame();
-    textIndoor.draw((GRID_COLUMNS - textIndoor.getWidth()) / 2, marginsY);
-    textOutdoor.draw((GRID_COLUMNS - textOutdoor.getWidth()) / 2, GRID_ROWS - marginsY - height);
+    textIndoor.draw(static_cast<int16_t>((GRID_COLUMNS - textIndoor.getWidth()) / 2), static_cast<int8_t>(marginsY));
+    textOutdoor.draw(static_cast<int16_t>((GRID_COLUMNS - textOutdoor.getWidth()) / 2), GRID_ROWS - marginsY - height);
 }
 
 void HomeThermometerMode::transmit()
