@@ -66,7 +66,7 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload,
     }
     else if (payload["indoor"].is<float>())
     {
-        setTemperature("indoor", roundf(payload["indoor"].as<float>()));
+        setTemperature("indoor", lroundf(payload["indoor"].as<float>()));
     }
     if (payload["outdoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
     {
@@ -74,7 +74,7 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload,
     }
     else if (payload["outdoor"].is<float>())
     {
-        setTemperature("outdoor", roundf(payload["outdoor"].as<float>()));
+        setTemperature("outdoor", lroundf(payload["outdoor"].as<float>()));
     }
 }
 

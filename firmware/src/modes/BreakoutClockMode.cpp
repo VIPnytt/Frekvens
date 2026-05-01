@@ -82,7 +82,7 @@ void BreakoutClockMode::handle()
         paddle.push_front(paddle.front() - 1);
         Display.setPixel(paddle.front(), GRID_ROWS - 1);
     }
-    else if (xDec > paddle.back() && rad < 1 && paddle.back() < GRID_COLUMNS - 1)
+    else if (xDec > paddle.back() && rad < 1 && paddle.back() < GRID_COLUMNS - 1) // NOLINT(bugprone-branch-clone)
     {
         // Right
         Display.setPixel(paddle.front(), GRID_ROWS - 1, 0);

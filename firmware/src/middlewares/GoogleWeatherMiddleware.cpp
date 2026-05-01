@@ -32,7 +32,7 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &
         doc["temperature"]["degrees"].is<float>() && doc["weatherCondition"]["type"].is<std::string_view>())
     {
         condition = getCondition(doc["weatherCondition"]["type"].as<std::string_view>(), codesets);
-        temperature = static_cast<int16_t>(roundf(doc["temperature"]["degrees"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["temperature"]["degrees"].as<float>()));
         return;
     }
     queries.pop_back();

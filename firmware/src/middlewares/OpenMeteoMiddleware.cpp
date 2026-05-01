@@ -33,7 +33,7 @@ void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &cond
         doc["current"]["temperature_2m"].is<float>() && doc["current"]["weather_code"].is<uint8_t>())
     {
         condition = getCondition(doc["current"]["weather_code"].as<uint8_t>(), codesets);
-        temperature = static_cast<int16_t>(roundf(doc["current"]["temperature_2m"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["current"]["temperature_2m"].as<float>()));
         return;
     }
     parts.pop_back();
