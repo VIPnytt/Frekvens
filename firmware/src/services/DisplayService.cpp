@@ -74,13 +74,13 @@ IRAM_ATTR void DisplayService::onTimer()
     }
 }
 
-void DisplayService::flush()
+void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity)
 {
     if (!render)
     {
         return;
     }
-    size_t idx = 0;
+    size_t idx = 0; // NOLINT(misc-const-correctness)
     for (size_t byte = 0; byte < GRID_COLUMNS * GRID_ROWS / 8; ++byte)
     {
         uint8_t bits = 0;
@@ -133,7 +133,7 @@ void DisplayService::flush()
     std::array<size_t, UINT8_MAX> counts{};
     for (size_t idx = 0; idx < frame.size(); ++idx)
     {
-        const uint8_t value = frame[idx];
+        const uint8_t value = frame[idx]; // NOLINT(cppcoreguidelines-init-variables)
         if (value > 0 && value < UINT8_MAX)
         {
             ++counts[value];
@@ -148,7 +148,7 @@ void DisplayService::flush()
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> indices{};
     for (size_t idx = 0; idx < frame.size(); ++idx)
     {
-        const uint8_t value = frame[idx];
+        const uint8_t value = frame[idx]; // NOLINT(cppcoreguidelines-init-variables)
         if (value > 0 && value < UINT8_MAX)
         {
             indices[next[value]++] = idx;
@@ -160,6 +160,7 @@ void DisplayService::flush()
         {
             planes[plane][byte] = planes[plane - 1][byte];
         }
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for (size_t i = offsets[plane]; i < offsets[plane] + counts[plane]; ++i)
         {
             planes[plane][indices[i] >> 3U] &=
@@ -204,7 +205,7 @@ void DisplayService::setOrientation(Orientation _orientation)
     default:
         return;
     }
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGI("Status", "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
     pixels = _pixels;
     orientation = _orientation;
@@ -372,7 +373,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
     return frame[pixels[x + (y * GRID_COLUMNS)]];
 }
@@ -381,7 +382,7 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
 {
     if (x >= GRID_COLUMNS || y >= GRID_ROWS)
     {
-        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGV("Device", "invalid pixel %d:%d", x, y); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
     frame[pixels[x + (y * GRID_COLUMNS)]] = brightness;
     render = true;

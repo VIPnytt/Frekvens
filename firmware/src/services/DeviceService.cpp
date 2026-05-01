@@ -209,17 +209,17 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
             Connectivity.onReceive(payload, source);
             return;
         }
-        else if (Device.name == destination)
+        if (Device.name == destination)
         {
             Device.onReceive(payload, source);
             return;
         }
-        else if (Display.name == destination)
+        if (Display.name == destination)
         {
             Display.onReceive(payload, source);
             return;
         }
-        else if (Modes.name == destination)
+        if (Modes.name == destination)
         {
             Modes.onReceive(payload, source);
             return;
@@ -232,7 +232,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
                 return;
             }
         }
-        ModeModule *mode{Modes.getMode()};
+        ModeModule *mode{Modes.getMode()}; // NOLINT(misc-const-correctness)
         if (mode != nullptr && mode->name == destination)
         {
             mode->onReceive(payload, source);
