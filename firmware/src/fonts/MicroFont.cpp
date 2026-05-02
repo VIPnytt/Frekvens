@@ -1,3 +1,5 @@
+#if FONT_MICRO
+
 #include "fonts/MicroFont.h"
 
 FontModule::Symbol MicroFont::getChar(uint32_t character) const
@@ -53,3 +55,5 @@ FontModule::Symbol MicroFont::getChar(uint32_t character) const
     // NOLINTEND(bugprone-branch-clone)
     return {};
 }
+
+#endif // FONT_MICRO

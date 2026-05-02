@@ -18,6 +18,12 @@ FONT_BRAILLE='true'
 
 Extremely small 3×3 pixel font, offering basic legibility in tight layouts.
 
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+FONT_MICRO='true'
+```
+
 ## 🤏 Mini
 
 Balanced 4×5 pixel font providing improved readability without taking up much space.
