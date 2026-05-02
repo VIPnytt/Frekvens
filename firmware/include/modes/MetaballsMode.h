@@ -14,7 +14,7 @@ private:
                                                GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
                                     std::numbers::pi;
     static constexpr float radiusSq = radius * radius;
-    static constexpr float speed = 5e-6 * GRID_COLUMNS * GRID_ROWS;
+    static constexpr float speed = 5e-6F * static_cast<float>(GRID_COLUMNS * GRID_ROWS);
 
     static constexpr uint8_t multiplier = 1U << 3U;
 
