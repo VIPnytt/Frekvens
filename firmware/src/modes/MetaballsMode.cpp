@@ -54,13 +54,13 @@ void MetaballsMode::handle()
                 for (const Ball &ball : balls)
                 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
-                    const float xDistance = (ball.x - static_cast<float>(x));
-                    const float yDistance = (ball.y - static_cast<float>(y));
+                    const float xDistance = ball.x - static_cast<float>(x);
+                    const float yDistance = ball.y - static_cast<float>(y);
 #else
                     const float xDistance = (ball.x - static_cast<float>(x)) * xRatio;
                     const float yDistance = (ball.y - static_cast<float>(y)) * yRatio;
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-                    const float distanceSq = (xDistance * xDistance) + (yDistance * yDistance);
+                    const float distanceSq = hypotf(xDistance, yDistance);
                     if (distanceSq < radiusSq)
                     {
                         brightness = min<uint8_t>(
