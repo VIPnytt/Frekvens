@@ -393,27 +393,29 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
     const float xRatio =
-        static_cast<float>(PITCH_HORIZONTAL * 2) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+        static_cast<float>(PITCH_HORIZONTAL * 2) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
     const float yRatio =
-        static_cast<float>(PITCH_VERTICAL * 2) / (ratio * static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL));
+        static_cast<float>(PITCH_VERTICAL * 2) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
 #else
-    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0U;
     const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
-                         (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
+                         (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
     const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
-                         (ratio * (PITCH_VERTICAL + PITCH_HORIZONTAL));
+                         (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-    const uint8_t xMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(x + (radius / xRatio)));
-    const uint8_t xMin = max<uint8_t>(0, floorf(x - (radius / xRatio)));
-    const uint8_t yMax = min<uint8_t>(GRID_COLUMNS - 1, ceilf(y + (radius / yRatio)));
-    const uint8_t yMin = max<uint8_t>(0, floorf(y - (radius / yRatio)));
+    const uint8_t xMax =
+        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1), ceilf(x + (radius / xRatio))));
+    const uint8_t xMin = static_cast<uint8_t>(max<float>(0.0F, floorf(x - (radius / xRatio))));
+    const uint8_t yMax =
+        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1), ceilf(y + (radius / yRatio))));
+    const uint8_t yMin = static_cast<uint8_t>(max<float>(0.0F, floorf(y - (radius / yRatio))));
     for (size_t _x = xMin; _x <= xMax; ++_x)
     {
         for (size_t _y = yMin; _y <= yMax; ++_y)
         {
             const float xDistance = xRatio * (static_cast<float>(_x) - x);
             const float yDistance = yRatio * (static_cast<float>(_y) - y);
-            const float distance = sqrtf((xDistance * xDistance) + (yDistance * yDistance));
+            const float distance = hypotf(xDistance, yDistance);
             if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
                 setPixel(static_cast<uint8_t>(_x), static_cast<uint8_t>(_y), brightness);

@@ -11,11 +11,11 @@ private:
     static constexpr float x = (GRID_COLUMNS - 1) / 2.0F;
     static constexpr float y = (GRID_ROWS - 1) / 2.0F;
 
-    static inline const uint8_t maxRadius{
-        3 + static_cast<uint8_t>(ceilf((max(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
-                                            GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
-                                        std::numbers::sqrt2_v<float> * 3.0F / 2.0F) /
-                                       2.0F))};
+    static inline const uint8_t maxRadius{static_cast<uint8_t>(ceilf(
+        hypotf(((GRID_COLUMNS - 1) / 2.0F) *
+                   (static_cast<float>(2 * PITCH_HORIZONTAL) / static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)),
+               ((GRID_ROWS - 1) / 2.0F) *
+                   (static_cast<float>(2 * PITCH_VERTICAL) / static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)))))};
 
     bool lit = true;
 
