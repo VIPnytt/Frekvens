@@ -90,6 +90,7 @@ void DrawMode::transmit()
 void DrawMode::onReceive(JsonObjectConst payload,
                          std::string_view source) // NOLINT(misc-unused-parameters)
 {
+    // Action
     if (payload["action"].is<std::string_view>())
     {
         const std::string_view action{payload["action"].as<std::string_view>()};

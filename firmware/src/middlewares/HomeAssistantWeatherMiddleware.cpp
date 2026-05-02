@@ -32,7 +32,7 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
         doc["attributes"]["temperature"].is<float>() && doc["state"].is<std::string_view>())
     {
         condition = getCondition(doc["state"].as<std::string_view>(), codesets);
-        temperature = static_cast<int16_t>(roundf(doc["attributes"]["temperature"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["attributes"]["temperature"].as<float>()));
         return;
     }
     paths.pop_back();

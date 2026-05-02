@@ -129,7 +129,7 @@ private:
 
     // https://api.met.no/weatherapi/locationforecast/2.0/documentation
     // https://api.met.no/weatherapi/nowcast/2.0/documentation
-    inline static std::vector<const char *> paths{
+    static inline std::vector<const char *> paths{
         "/weatherapi/locationforecast/2.0/complete",
         "/weatherapi/nowcast/2.0/complete",
     };

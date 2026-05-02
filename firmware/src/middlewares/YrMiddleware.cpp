@@ -36,7 +36,7 @@ void YrMiddleware::update(std::optional<WeatherHandler::Conditions> &condition, 
             doc["properties"]["timeseries"][0]["data"]["next_1_hours"]["summary"]["symbol_code"].as<std::string_view>(),
             codesets);
         temperature = static_cast<int16_t>(
-            roundf(doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].as<float>()));
+            lroundf(doc["properties"]["timeseries"][0]["data"]["instant"]["details"]["air_temperature"].as<float>()));
         return;
     }
     paths.pop_back();

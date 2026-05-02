@@ -34,7 +34,7 @@ private:
 
     // https://openweathermap.org/api/one-call-3#current
     // https://openweathermap.org/current#one
-    inline static std::vector<std::pair<const char *, const char *>> parts{
+    static inline std::vector<std::pair<const char *, const char *>> parts{
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,

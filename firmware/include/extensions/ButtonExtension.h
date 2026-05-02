@@ -12,19 +12,19 @@ private:
 
 #ifdef PIN_SW1
     bool brightnessIncrease = false;
-    inline static bool powerLong = false;
-    inline static bool powerShort = false;
+    static inline bool powerLong = false;
+    static inline bool powerShort = false;
 #endif
 #ifdef PIN_SW2
-    inline static bool modeLong = false;
-    inline static bool modeShort = false;
+    static inline bool modeLong = false;
+    static inline bool modeShort = false;
 #endif
 
 #ifdef PIN_SW1
     static inline volatile bool powerState = false;
 #endif
 #ifdef PIN_SW2
-    inline static volatile bool modeState = false;
+    static inline volatile bool modeState = false;
 #endif
 
 #ifdef PIN_SW1

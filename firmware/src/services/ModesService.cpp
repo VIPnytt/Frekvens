@@ -95,6 +95,7 @@ void ModesService::setActive(bool active)
     }
 }
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
 {
 #if MODE_ANIMATION

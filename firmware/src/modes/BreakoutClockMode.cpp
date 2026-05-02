@@ -24,11 +24,11 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
-    const uint8_t nextX =
-        static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
+    const uint8_t nextX{
+        static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)))};
     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-    const uint8_t nextY = static_cast<uint8_t>(
-        std::lroundf(yDec - (sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)));
+    const uint8_t nextY{static_cast<uint8_t>(
+        std::lroundf(yDec - (sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)))};
     if (y <= 0 && deg < 180)
     {
         // Top
@@ -74,7 +74,7 @@ void BreakoutClockMode::handle()
     y = lroundf(yDec);
     Display.setPixel(x, y);
     const float rad = atanf((GRID_ROWS - 2 - yDec) / abs(paddle[1] - xDec));
-    if (xDec < paddle.front() && rad < 1 && paddle.front() > 0)
+    if (xDec < paddle.front() && rad < 1 && paddle.front() > 0) // NOLINT(bugprone-branch-clone)
     {
         // Left
         Display.setPixel(paddle.back(), GRID_ROWS - 1, 0);
@@ -82,7 +82,7 @@ void BreakoutClockMode::handle()
         paddle.push_front(paddle.front() - 1);
         Display.setPixel(paddle.front(), GRID_ROWS - 1);
     }
-    else if (xDec > paddle.back() && rad < 1 && paddle.back() < GRID_COLUMNS - 1)
+    else if (xDec > paddle.back() && rad < 1 && paddle.back() < GRID_COLUMNS - 1) // NOLINT(bugprone-branch-clone)
     {
         // Right
         Display.setPixel(paddle.front(), GRID_ROWS - 1, 0);

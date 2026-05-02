@@ -69,7 +69,7 @@ void FireworkMode::exploding()
     if (millis() - lastMillis > INT8_MAX)
     {
         ++radius;
-        Display.drawEllipse(rocketX, rocketY, radius, 1, true, UINT8_MAX / maxRadius * radius);
+        Display.drawEllipse(rocketX, rocketY, radius, 1.0F, true, UINT8_MAX / maxRadius * radius);
         lastMillis = millis();
         if (radius >= maxRadius)
         {
@@ -85,7 +85,7 @@ void FireworkMode::fading()
     {
         --brightness;
     }
-    Display.drawEllipse(rocketX, rocketY, radius, 1, true, brightness);
+    Display.drawEllipse(rocketX, rocketY, radius, 1.0F, true, brightness);
     lastMillis = millis();
     if (brightness <= 0)
     {

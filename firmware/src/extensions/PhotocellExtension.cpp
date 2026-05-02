@@ -53,7 +53,7 @@ void PhotocellExtension::handle()
             direction = !direction;
             counter /= 2;
         }
-        counter += _brightness - brightness;
+        counter = static_cast<int16_t>(counter + _brightness - brightness);
         if (abs(counter) > UINT8_MAX)
         {
             brightness = _brightness;
@@ -76,7 +76,7 @@ void PhotocellExtension::setActive(bool _active)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_u8(handle, "active", static_cast<uint8_t>(active));
+        nvs_set_u8(handle, "active", static_cast<uint8_t>(active)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
         nvs_close(handle);
     }

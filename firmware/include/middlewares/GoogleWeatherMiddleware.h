@@ -79,7 +79,7 @@ private:
     }};
 
     // https://developers.google.com/maps/documentation/weather
-    inline static std::vector<const char *> queries{
+    static inline std::vector<const char *> queries{
         "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
 #if TEMPERATURE_CELSIUS
         "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,

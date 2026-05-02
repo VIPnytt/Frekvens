@@ -246,7 +246,7 @@ void SnakeMode::setClock(bool _clock)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock));
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
         nvs_close(handle);
     }

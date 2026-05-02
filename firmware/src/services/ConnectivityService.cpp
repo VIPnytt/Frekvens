@@ -210,7 +210,7 @@ void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-par
                                  WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
-    ESP_LOGI("Wi-Fi", "IPv4 %s", WiFi.localIP().toString().c_str());
+    ESP_LOGI("Wi-Fi", "IPv4 %s", WiFi.localIP().toString().c_str()); // NOLINT(hicpp-vararg)
     if (!Connectivity.routable)
     {
         onRoutable();
@@ -323,8 +323,8 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
         connect(payload["ssid"].as<const char *>(),
                 payload["key"].is<const char *>() ? payload["key"].as<const char *>() : nullptr);
     }
-    // Scan
-    if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "scan"))
+    // Action: Scan
+    if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "scan")
     {
         ESP_LOGD("Wi-Fi", "scanning for networks..."); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         WiFi.scanNetworks(true);

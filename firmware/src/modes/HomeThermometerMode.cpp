@@ -42,8 +42,8 @@ void HomeThermometerMode::draw()
     const uint8_t height{textOutdoor.getHeight()};
     const uint8_t marginsY = (GRID_ROWS - (height * 2)) / 3;
     Display.clearFrame();
-    textIndoor.draw((GRID_COLUMNS - textIndoor.getWidth()) / 2, marginsY);
-    textOutdoor.draw((GRID_COLUMNS - textOutdoor.getWidth()) / 2, GRID_ROWS - marginsY - height);
+    textIndoor.draw(static_cast<int16_t>((GRID_COLUMNS - textIndoor.getWidth()) / 2), static_cast<int8_t>(marginsY));
+    textOutdoor.draw(static_cast<int16_t>((GRID_COLUMNS - textOutdoor.getWidth()) / 2), GRID_ROWS - marginsY - height);
 }
 
 void HomeThermometerMode::transmit()
@@ -60,21 +60,21 @@ void HomeThermometerMode::transmit()
 void HomeThermometerMode::onReceive(JsonObjectConst payload,
                                     std::string_view source) // NOLINT(misc-unused-parameters)
 {
-    if (payload["indoor"].is<int16_t>())
+    if (payload["indoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
     {
         setTemperature("indoor", payload["indoor"].as<int16_t>());
     }
     else if (payload["indoor"].is<float>())
     {
-        setTemperature("indoor", roundf(payload["indoor"].as<float>()));
+        setTemperature("indoor", lroundf(payload["indoor"].as<float>()));
     }
-    if (payload["outdoor"].is<int16_t>())
+    if (payload["outdoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
     {
         setTemperature("outdoor", payload["outdoor"].as<int16_t>());
     }
     else if (payload["outdoor"].is<float>())
     {
-        setTemperature("outdoor", roundf(payload["outdoor"].as<float>()));
+        setTemperature("outdoor", lroundf(payload["outdoor"].as<float>()));
     }
 }
 

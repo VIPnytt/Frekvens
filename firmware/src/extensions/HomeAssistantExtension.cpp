@@ -11,7 +11,6 @@
 
 #include <WiFi.h>
 #include <array>
-#include <regex>
 
 void HomeAssistantExtension::begin()
 {
@@ -103,8 +102,8 @@ void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_vie
     {
         pending = true;
     }
-    // Remove
-    else if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "remove"))
+    // Action: Remove
+    else if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "remove")
     {
         undiscover();
     }
@@ -115,7 +114,7 @@ void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::strin
 {
     topic.append(name);
     {
-        const std::string id{std::regex_replace(name.data(), std::regex(R"(\s+)"), "").append("_main")};
+        const std::string id{"HomeAssistant_main"};
         const std::string topicDisplay{std::string("frekvens/" HOSTNAME "/").append(Display.name)};
         JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::brightness_command_template].set(R"({"brightness":{{value}}})");

@@ -11,13 +11,13 @@ class HomeAssistantExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Home Assistant"};
 
-    bool pending = false;
-
-    inline static const std::string discoveryTopic =
+    static inline const std::string discoveryTopic =
         std::format("homeassistant/device/0x{:x}/config", ESP.getEfuseMac());
 
     static constexpr std::string_view payloadOff = R"({"power":false})";
     static constexpr std::string_view payloadOn = R"({"power":true})";
+
+    bool pending = false;
 
     void transmit();
 

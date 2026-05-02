@@ -109,8 +109,8 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 void AnimationMode::onReceive(JsonObjectConst payload,
                               std::string_view source) // NOLINT(misc-unused-parameters)
 {
-    // Action: pull
-    if (payload["action"].is<const char *>() && !strcmp(payload["action"].as<const char *>(), "pull"))
+    // Action: Pull
+    if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")
     {
         lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS);
         index = 0;

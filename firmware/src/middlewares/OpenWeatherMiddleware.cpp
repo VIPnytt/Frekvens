@@ -37,14 +37,14 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
     {
         // API 2.5
         condition = getCondition(doc["weather"][0]["id"].as<uint16_t>(), codesets);
-        temperature = static_cast<int16_t>(roundf(doc["main"]["temp"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["main"]["temp"].as<float>()));
         return;
     }
     if (deserialization && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
     {
         // API 3.0
         condition = getCondition(doc["current"]["weather"]["id"].as<uint16_t>(), codesets);
-        temperature = static_cast<int16_t>(roundf(doc["current"]["temp"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["current"]["temp"].as<float>()));
         return;
     }
     parts.pop_back();

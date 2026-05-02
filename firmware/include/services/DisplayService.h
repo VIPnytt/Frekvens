@@ -20,7 +20,7 @@ private:
 #ifdef PWM_DEPTH
     static constexpr uint8_t depth = min<uint8_t>(PWM_DEPTH, SOC_LEDC_TIMER_BIT_WIDTH);
 #else
-    // NOLINTNEXTLINE(bugprone-throwing-static-initialization)
+    // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
     static inline const uint8_t depth =
         min(max<uint8_t>(
                 8U, static_cast<uint8_t>(8.0F - (std::numbers::pi_v<float> * log2f(static_cast<float>(fps) / 120.0F)))),

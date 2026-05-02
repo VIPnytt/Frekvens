@@ -26,7 +26,7 @@ void CountdownMode::configure()
             nvs_get_str(handle, "font", fontName.data(), &len);
         }
         int64_t _epoch{};
-        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK)
+        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK) // NOLINT(bugprone-branch-clone)
         {
             nvs_close(handle);
             epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
@@ -73,13 +73,13 @@ void CountdownMode::handle()
             const uint8_t fontWidth{max({_tl.getWidth(), _tr.getWidth(), _bl.getWidth(), _br.getWidth()})};
             Display.clearFrame();
             _tl.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - _tl.getWidth()) / 2),
-                     (GRID_ROWS / 2) - 1 - _tl.getHeight());
+                     static_cast<int8_t>((GRID_ROWS / 2) - 1 - _tl.getHeight()));
             _tr.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - _tr.getWidth()) / 2),
-                     (GRID_ROWS / 2) - 1 - _tr.getHeight());
+                     static_cast<int8_t>((GRID_ROWS / 2) - 1 - _tr.getHeight()));
             _bl.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - _bl.getWidth()) / 2),
-                     (GRID_COLUMNS / 2) + static_cast<int8_t>(_bl.getHeight() > 5));
+                     static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(_bl.getHeight() > 5)));
             _br.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - _br.getWidth()) / 2),
-                     (GRID_COLUMNS / 2) + static_cast<int8_t>(_br.getHeight() > 5));
+                     static_cast<int8_t>((GRID_COLUMNS / 2) + static_cast<int8_t>(_br.getHeight() > 5)));
             if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 blink = INT8_MAX;
@@ -90,7 +90,7 @@ void CountdownMode::handle()
             }
         }
     }
-    else if (blink != 0 && odd == static_cast<bool>(seconds & 1))
+    else if (blink != 0 && odd == static_cast<bool>(static_cast<uint64_t>(seconds) & 1U))
     {
         --blink;
         odd = !odd;
