@@ -18,7 +18,7 @@ Documentation = "https://github.com/VIPnytt/Frekvens/wiki"
 [project.optional-dependencies]
 font = [
     "fonttools==4.62.1",
-    "matplotlib==3.10.8",
+    "matplotlib==3.10.9",
     "pillow==12.2.0",
 ]
 
@@ -49,13 +49,13 @@ nodejs = [
     "nodejs-wheel==24.15.0",
 ]
 packaging = [
-    "packaging==26.1",
+    "packaging==26.2",
 ]
 platformio = [
     "platformio==6.1.19",
 ]
 ruff = [
-    "ruff==0.15.10",
+    "ruff==0.15.12",
 ]
 scons = [
     "scons==4.10.1",
@@ -69,7 +69,7 @@ scripts = [
     "tzlocal==5.3.1",
 ]
 uv = [
-    "uv==0.11.6",
+    "uv==0.11.8",
 ]
 
 [tool.ruff]
