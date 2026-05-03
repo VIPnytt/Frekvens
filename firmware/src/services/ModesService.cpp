@@ -1,10 +1,10 @@
 #include "services/ModesService.h"
 
-#include "fonts/MicroFont.h"      // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h"
 
 #include <nvs.h>
 #include <vector>
@@ -346,10 +346,14 @@ void ModesService::setMode(std::string_view modeName, bool power)
         }
         uint8_t height = 0; // NOLINT(misc-const-correctness)
         std::vector<std::unique_ptr<TextHandler>> lines;
-        const MicroFont font;
+#if FONT_MICRO
+        const std::unique_ptr<const FontModule> font{Fonts.get(MicroFont::name)};
+#else
+        const std::unique_ptr<const FontModule> font{Fonts.get(Fonts.names[0])};
+#endif // FONT_MICRO
         for (const std::string &word : words)
         {
-            std::unique_ptr<TextHandler> handler = std::make_unique<TextHandler>(word, font);
+            std::unique_ptr<TextHandler> handler{std::make_unique<TextHandler>(word, *font)};
             const uint8_t lineHeight = handler->getHeight();
             if (height + lineHeight >= GRID_ROWS)
             {

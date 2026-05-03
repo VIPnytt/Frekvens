@@ -218,6 +218,7 @@ jobs:
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
+          FONT_MICRO='true'
           HOSTNAME='obegransad'
           IKEA_OBEGRANSAD='true'
           MODE_CIRCLE='true'
@@ -326,6 +327,7 @@ jobs:
           FONT_MEDIUM='true'
           FONT_MEDIUMBOLD='true'
           FONT_MEDIUMWIDE='true'
+          FONT_MICRO='true'
           FONT_MINI='true'
           FONT_SMALL='true'
           HOSTNAME='obegransad'
@@ -480,6 +482,7 @@ jobs:
           FONT_MEDIUM='true'
           FONT_MEDIUMBOLD='true'
           FONT_MEDIUMWIDE='true'
+          FONT_MICRO='true'
           FONT_MINI='true'
           FONT_SMALL='true'
           HOSTNAME='obegransad'

@@ -29,8 +29,10 @@ public:
     static constexpr auto names = std::to_array<std::string_view>({
 #if FONT_BRAILLE
         BrailleFont::name,
-#endif
+#endif // FONT_BRAILLE
+#if FONT_MICRO
         MicroFont::name,
+#endif // FONT_MICRO
 #if FONT_MINI
         MiniFont::name,
 #endif // FONT_MINI

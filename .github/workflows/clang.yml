@@ -139,6 +139,7 @@ jobs:
           FONT_MEDIUM='true'
           FONT_MEDIUMBOLD='true'
           FONT_MEDIUMWIDE='true'
+          FONT_MICRO='true'
           FONT_MINI='true'
           FONT_SMALL='true'
           HOSTNAME='frekvens'
