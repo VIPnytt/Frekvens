@@ -4,4 +4,4 @@
  * https://github.com/VIPnytt/Frekvens/wiki
  */
 
-#define VERSION "2.3.3-dev0"
+#define VERSION "2.4.0"
