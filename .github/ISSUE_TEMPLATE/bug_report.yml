@@ -14,8 +14,9 @@ body:
       label: Version
       description: Which version did you encounter the bug on?
       options:
-        - main branch (latest dev)
-        - v2.3.2 (latest stable)
+        - main branch (development)
+        - v2.4.0 (latest release)
+        - v2.3.2
         - v2.3.1
         - v2.3.0
         - v2.2.0
@@ -28,7 +29,7 @@ body:
         - v1.1.0
         - v1.0.1
         - v1.0.0
-        - Other
+        - Other (please specify below)
 
   - type: textarea
     id: bug-summary
