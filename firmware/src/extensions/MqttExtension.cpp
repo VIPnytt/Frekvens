@@ -60,7 +60,7 @@ void MqttExtension::disconnect()
     }
 }
 
-void MqttExtension::onConnect(bool sessionPresent)
+void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD("Wi-Fi", "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",

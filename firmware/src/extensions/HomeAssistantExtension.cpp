@@ -70,7 +70,11 @@ void HomeAssistantExtension::begin()
     const size_t length{measureJson(discovery)};
     std::vector<uint8_t> payload(length + 1);
     serializeJson(discovery, payload.data(), length + 1);
-    Extensions.MQTT().client.publish(discoveryTopic.c_str(), 0, true, payload.data(), length);
+    Extensions.MQTT().client.publish(discoveryTopic.c_str(),
+                                     static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS0),
+                                     true,
+                                     payload.data(),
+                                     length);
 }
 
 void HomeAssistantExtension::handle()
@@ -84,7 +88,7 @@ void HomeAssistantExtension::handle()
 
 void HomeAssistantExtension::undiscover()
 {
-    MqttExtension &_mqtt{Extensions.MQTT()};
+    MqttExtension &_mqtt{Extensions.MQTT()}; // NOLINT(misc-const-correctness)
     _mqtt.client.publish(discoveryTopic.c_str(),
                          static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
                          true,
