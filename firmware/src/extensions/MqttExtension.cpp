@@ -16,11 +16,15 @@ void MqttExtension::configure()
     client.onDisconnect(&onDisconnect);
     client.setCleanSession(false);
     client.setClientId(HOSTNAME);
-    client.setWill("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
+    client.setWill("frekvens/" HOSTNAME "/availability",
+                   static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
+                   true,
+                   emptyMessage.data(),
+                   emptyMessage.size() - 1U);
 #ifdef MQTT_PORT
     client.setServer(MQTT_HOST, MQTT_PORT);
 #else
-    client.setServer(MQTT_HOST, 1883);
+    client.setServer(MQTT_HOST, 1883U);
 #endif // MQTT_PORT
     client.setCredentials(MQTT_USER, MQTT_KEY);
     if (WiFi.isConnected())
@@ -31,18 +35,14 @@ void MqttExtension::configure()
 
 void MqttExtension::handle()
 {
-    if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT16_MAX)
+    client.loop();
+#if EXTENSION_STATUSLED
+    if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT8_MAX)
     {
         lastMillis = millis();
-#if EXTENSION_STATUSLED
         Extensions.StatusLed().warning();
-#endif // EXTENSION_STATUSLED
-        if (!client.connect() && client.queueSize() > INT8_MAX)
-        {
-            client.clearQueue();
-            ESP_LOGD("Queue", "dropped"); // NOLINT(cppcoreguidelines-avoid-do-while)
-        }
     }
+#endif // EXTENSION_STATUSLED
 }
 
 void MqttExtension::disconnect()
@@ -50,7 +50,11 @@ void MqttExtension::disconnect()
     lastMillis = millis();
     if (client.connected())
     {
-        client.publish("frekvens/" HOSTNAME "/availability", 1, true, std::array<uint8_t, 1>{0}.data(), 0);
+        client.publish("frekvens/" HOSTNAME "/availability",
+                       static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
+                       true,
+                       emptyMessage.data(),
+                       emptyMessage.size() - 1U);
         client.loop();
         client.disconnect();
     }
@@ -59,34 +63,45 @@ void MqttExtension::disconnect()
 void MqttExtension::onConnect(bool sessionPresent)
 {
     ESP_LOGD("Wi-Fi", "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
-    if (!sessionPresent ||
-        (!subscribed && esp_sleep_get_wakeup_cause() == esp_sleep_source_t::ESP_SLEEP_WAKEUP_UNDEFINED))
-    {
-        Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set", 2);
-        subscribed = true;
-    }
-    Extensions.MQTT().client.publish("frekvens/" HOSTNAME "/availability", 1, true, "online");
+    Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",
+                                       static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2));
+    Extensions.MQTT().client.publish("frekvens/" HOSTNAME "/availability",
+                                     static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
+                                     true,
+                                     "online");
 }
 
 void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
-                              const char *topic, const uint8_t *payload, size_t len,
-                              size_t index, // NOLINT(misc-unused-parameters)
-                              size_t total) // NOLINT(misc-unused-parameters)
+                              const char *topic, const uint8_t *payload, size_t len, size_t index, size_t total)
 {
+    if (index != 0 || len != total)
+    {
+        if (index == 0)
+        {
+            buffer.resize(total);
+        }
+        std::copy_n(payload, len, buffer.begin() + static_cast<std::ptrdiff_t>(index));
+        if (index + len != total)
+        {
+            return;
+        }
+        payload = buffer.data();
+        len = buffer.size();
+    }
     JsonDocument doc; // NOLINT(misc-const-correctness)
     if (deserializeJson(doc, payload, len) == DeserializationError::Code::Ok)
     {
-        Device.receive(doc.as<JsonObjectConst>(),
-                       name,
-                       std::string(topic).substr(prefixLength, strlen(topic) - prefixLength - suffixLength).c_str());
+        const std::string_view _topic{topic};
+        Device.receive(
+            doc.as<JsonObjectConst>(), name, _topic.substr(prefixLength, _topic.size() - prefixLength - suffixLength));
     }
 }
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("Wi-Fi", "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("MQTT", "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
-    ESP_LOGV("Wi-Fi", "%s", espMqttClientTypes::disconnectReasonToString(reason));
+    ESP_LOGV("MQTT", "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
 void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)
@@ -95,7 +110,8 @@ void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)
     std::vector<char> message(length + 1);
     serializeJson(payload, message.data(), length + 1);
     client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(),
-                   payload["event"].isUnbound() ? 0 : 2,
+                   payload["event"].isUnbound() ? static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS0)
+                                                : static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2),
                    false,
                    reinterpret_cast<const uint8_t *>(message.data()),
                    length);
