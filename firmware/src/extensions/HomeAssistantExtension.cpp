@@ -70,7 +70,11 @@ void HomeAssistantExtension::begin()
     const size_t length{measureJson(discovery)};
     std::vector<uint8_t> payload(length + 1);
     serializeJson(discovery, payload.data(), length + 1);
-    Extensions.MQTT().client.publish(discoveryTopic.c_str(), 0, true, payload.data(), length);
+    Extensions.MQTT().client.publish(discoveryTopic.c_str(),
+                                     static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS0),
+                                     true,
+                                     payload.data(),
+                                     length);
 }
 
 void HomeAssistantExtension::handle()
@@ -84,7 +88,12 @@ void HomeAssistantExtension::handle()
 
 void HomeAssistantExtension::undiscover()
 {
-    Extensions.MQTT().client.publish(discoveryTopic.c_str(), 1, true, std::array<uint8_t, 1>{0}.data(), 0);
+    MqttExtension &_mqtt{Extensions.MQTT()}; // NOLINT(misc-const-correctness)
+    _mqtt.client.publish(discoveryTopic.c_str(),
+                         static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
+                         true,
+                         _mqtt.emptyMessage.data(),
+                         _mqtt.emptyMessage.size() - 1U);
     ESP_LOGW("MQTT", "discovery packet removed"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 

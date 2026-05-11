@@ -4,7 +4,9 @@
 
 #include "modules/ExtensionModule.h"
 
+#include <array>
 #include <espMqttClient.h>
+#include <vector>
 
 class MqttExtension final : public ExtensionModule
 {
@@ -13,7 +15,7 @@ private:
 
     unsigned long lastMillis = 0;
 
-    static inline bool subscribed = false;
+    static inline std::vector<uint8_t> buffer{};
 
     static constexpr size_t prefixLength = sizeof("frekvens/" HOSTNAME "/") - 1;
     static constexpr size_t suffixLength = sizeof("/set") - 1;
@@ -26,7 +28,9 @@ private:
 public:
     explicit MqttExtension() : ExtensionModule(name) {};
 
-    espMqttClient client;
+    static constexpr std::array<uint8_t, 1> emptyMessage{0};
+
+    espMqttClient client{espMqttClientTypes::UseInternalTask::NO};
 
     void configure() override;
     void handle() override;
