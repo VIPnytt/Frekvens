@@ -26,7 +26,7 @@ void DisplayService::configure()
     SPI.beginTransaction(
         SPISettings(static_cast<uint32_t>(1U << 9U) * GRID_COLUMNS * GRID_ROWS * fps, MSBFIRST, SPI_MODE0));
 
-    hw_timer_t *timer = timerBegin(static_cast<uint32_t>(UINT8_MAX) * fps); // NOLINT(cppcoreguidelines-init-variables)
+    hw_timer_t *timer = timerBegin(uint32_t{UINT8_MAX} * fps); // NOLINT(cppcoreguidelines-init-variables)
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1, true, 0);
 
@@ -90,31 +90,31 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b01000000U;
+            bits |= 0b1000000U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00100000U;
+            bits |= 0b100000U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00010000U;
+            bits |= 0b10000U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00001000U;
+            bits |= 0b1000U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00000100U;
+            bits |= 0b100U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00000010U;
+            bits |= 0b10U;
         }
         if (frame[idx++] != 0)
         {
-            bits |= 0b00000001U;
+            bits |= 0b1U;
         }
         planes[0][byte] = bits;
     }
@@ -154,7 +154,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
             indices[next[value]++] = idx;
         }
     }
-    for (uint8_t plane = 1; plane < UINT8_MAX; ++plane)
+    for (size_t plane = 1; plane < planes.size(); ++plane)
     {
         for (size_t byte = 0; byte < planes[0].size(); ++byte)
         {
@@ -181,34 +181,39 @@ void DisplayService::setOrientation(Orientation _orientation)
     {
 #if GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg90):
-        for (std::size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixels[i] = pixels[((GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1))) << __builtin_ctz(GRID_COLUMNS)) |
-                                (i >> __builtin_ctz(GRID_COLUMNS))];
+            _pixels[i] = pixels[((GRID_COLUMNS - 1U - (i % GRID_COLUMNS)) * GRID_COLUMNS) + (i / GRID_COLUMNS)];
         }
         break;
     case static_cast<uint8_t>(Orientation::deg270):
-        for (std::size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixels[i] = pixels[((i & (GRID_COLUMNS - 1)) << __builtin_ctz(GRID_COLUMNS)) |
-                                (GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS)))];
+            _pixels[i] = pixels[(GRID_COLUMNS * (i % GRID_COLUMNS)) + (GRID_ROWS - 1U - (i / GRID_COLUMNS))];
         }
         break;
 #endif // GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg180):
-        for (std::size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0; i < _pixels.size(); ++i)
         {
-            _pixels[i] = pixels[((GRID_ROWS - 1 - (i >> __builtin_ctz(GRID_COLUMNS))) << __builtin_ctz(GRID_COLUMNS)) |
-                                (GRID_COLUMNS - 1 - (i & (GRID_COLUMNS - 1)))];
+            _pixels[i] = pixels[(GRID_COLUMNS - 1U - (i % GRID_COLUMNS)) +
+                                (GRID_COLUMNS * (GRID_ROWS - 1U - (i / GRID_COLUMNS)))];
         }
         break;
     default:
         return;
     }
+    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
+    for (size_t i = 0; i < _frame.size(); ++i)
+    {
+        _frame[_pixels[i]] = frame[pixels[i]];
+    }
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Status", "orientation %d°", static_cast<uint8_t>(_orientation) * 90U);
+    ESP_LOGI("Status", "orientation %d°", static_cast<uint16_t>(_orientation) * 90U);
     pixels = _pixels;
     orientation = _orientation;
+    frame = _frame;
+    render = true;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     ratio = (static_cast<uint8_t>(orientation) & 1U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
                                                           : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
@@ -227,10 +232,6 @@ bool DisplayService::getPower() const { return power; }
 
 void DisplayService::setPower(bool _power)
 {
-    if (_power == power)
-    {
-        return;
-    }
     ESP_LOGI("Action", "power"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     if (_power)
     {
@@ -253,6 +254,7 @@ void DisplayService::setPower(bool _power)
         power = true;
         pending = true;
         Modes.setActive(true);
+        render = true;
     }
     else
     {
@@ -283,8 +285,10 @@ void DisplayService::onPowerOff()
     Display.power = false;
     Display.pending = true;
     Modes.setActive(false);
-    Display.frame.fill(0);
-    Display.render = true;
+    for (size_t plane = 0; plane < planes.size(); ++plane)
+    {
+        planes[plane].fill(0);
+    }
 }
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
@@ -325,6 +329,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
     {
         power = true;
         Modes.setActive(true);
+        render = true;
     }
     brightness = _brightness;
     nvs_handle_t handle{};
@@ -430,16 +435,16 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 {
     if (fill)
     {
-        for (uint16_t x = minX; x < static_cast<uint16_t>(maxX) + 1U; ++x)
+        for (uint16_t x = minX; x < uint16_t{maxX} + 1U; ++x)
         {
-            for (uint16_t y = minY; y < static_cast<uint16_t>(maxY) + 1U; ++y)
+            for (uint16_t y = minY; y < uint16_t{maxY} + 1U; ++y)
             {
                 setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
             }
         }
         return;
     }
-    for (uint16_t x = minX; x < static_cast<uint16_t>(maxX) + 1U; ++x)
+    for (uint16_t x = minX; x < uint16_t{maxX} + 1U; ++x)
     {
         setPixel(static_cast<uint8_t>(x), minY, brightness);
         if (maxY != minY)
@@ -449,7 +454,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
     }
     if (maxY > minY + 1U)
     {
-        for (uint16_t y = minY + 1U; y < static_cast<uint16_t>(maxY); ++y)
+        for (uint16_t y = minY + 1U; y < uint16_t{maxY}; ++y)
         {
             setPixel(minX, static_cast<uint8_t>(y), brightness);
             if (maxX != minX)
@@ -470,7 +475,7 @@ void DisplayService::transmit()
 #else
     doc["columns"].set(rotated ? GRID_ROWS : GRID_COLUMNS);
 #endif // GRID_COLUMNS == GRID_ROWS
-    doc["orientation"].set(static_cast<uint8_t>(orientation) * 90U);
+    doc["orientation"].set(static_cast<uint16_t>(orientation) * 90U);
     doc["power"].set(power);
 #if GRID_COLUMNS == GRID_ROWS
     doc["rows"].set(GRID_ROWS);
