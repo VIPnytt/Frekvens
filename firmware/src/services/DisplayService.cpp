@@ -28,7 +28,7 @@ void DisplayService::configure()
 
     hw_timer_t *timer = timerBegin(uint32_t{UINT8_MAX} * fps); // NOLINT(cppcoreguidelines-init-variables)
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1, true, 0);
+    timerAlarm(timer, 1U, true, 0);
 
     ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(1U << depth) / PWM_WIDTH), depth);
     ledcOutputInvert(PIN_OE, true);
@@ -240,7 +240,7 @@ void DisplayService::setPower(bool _power)
                       0,
                       max<uint16_t>(brightness,
                                     powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                        ((1U << depth) - 2)),
+                                        ((1U << depth) - 2U)),
                       (1U << 5U) *
                           brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
@@ -248,7 +248,7 @@ void DisplayService::setPower(bool _power)
                  0,
                  max<uint16_t>(brightness,
                                powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                   ((1U << depth) - 2)),
+                                   ((1U << depth) - 2U)),
                  (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
@@ -263,7 +263,7 @@ void DisplayService::setPower(bool _power)
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2)),
+                              ((1U << depth) - 2U)),
             0,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
@@ -272,7 +272,7 @@ void DisplayService::setPower(bool _power)
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2)),
+                              ((1U << depth) - 2U)),
             0,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
@@ -306,11 +306,11 @@ void DisplayService::setBrightness(uint8_t _brightness)
         PIN_OE,
         power ? max<uint16_t>(brightness,
                               powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                  ((1U << depth) - 2))
+                                  ((1U << depth) - 2U))
               : 0,
         max<uint16_t>(_brightness,
                       powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                          ((1U << depth) - 2)),
+                          ((1U << depth) - 2U)),
         (1U << 4U) *
             abs(brightness -
                 _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
@@ -318,11 +318,11 @@ void DisplayService::setBrightness(uint8_t _brightness)
     ledcFade(PIN_OE,
              power ? max<uint16_t>(brightness,
                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                       ((1U << depth) - 2))
+                                       ((1U << depth) - 2U))
                    : 0,
              max<uint16_t>(_brightness,
                            powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                               ((1U << depth) - 2)),
+                               ((1U << depth) - 2U)),
              (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
@@ -467,7 +467,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0U;
+    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0;
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
