@@ -34,19 +34,19 @@ private:
     static constexpr float ratio = static_cast<float>(PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
 
-    static constexpr std::array<uint16_t, 12> splash{
-        0b1000001001,
-        0b1000000001,
-        0b1110001001,
-        0b1001001001,
-        0b1001001000,
-        0b1001001001,
-        0b0000000000,
-        0b0011001100,
-        0b0011001100,
-        0b0000000000,
-        0b0110000110,
-        0b0011111100,
+    static constexpr std::array<uint16_t, 12U> splash{
+        0b1000001001U,
+        0b1000000001U,
+        0b1110001001U,
+        0b1001001001U,
+        0b1001001000U,
+        0b1001001001U,
+        0b0000000000U,
+        0b0011001100U,
+        0b0011001100U,
+        0b0000000000U,
+        0b0110000110U,
+        0b0011111100U,
     };
 
     enum class Orientation : uint8_t // NOLINT(performance-enum-size)
@@ -63,7 +63,7 @@ private:
     bool power = false;
     bool render = false;
 
-    uint8_t brightness = 0;
+    uint8_t brightness = 0U;
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
@@ -94,13 +94,13 @@ public:
     void getFrame(std::span<uint8_t> _frame) const;
     void setFrame(std::span<const uint8_t> _frame);
 
-    void clearFrame(uint8_t _brightness = 0);
+    void clearFrame(uint8_t _brightness = 0U);
     void invertFrame();
 
     [[nodiscard]] uint8_t getPixel(uint8_t x, uint8_t y) const;
     void setPixel(uint8_t x, uint8_t y, uint8_t _brightness = UINT8_MAX);
 
-    void drawEllipse(float x, float y, float radius, float _ratio = 1, bool fill = false,
+    void drawEllipse(float x, float y, float radius, float _ratio = 1.0F, bool fill = false,
                      uint8_t _brightness = UINT8_MAX);
     void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill = true,
                        uint8_t _brightness = UINT8_MAX);

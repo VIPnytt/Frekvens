@@ -28,11 +28,11 @@ void DisplayService::configure()
 
     hw_timer_t *timer = timerBegin(uint32_t{UINT8_MAX} * fps); // NOLINT(cppcoreguidelines-init-variables)
     timerAttachInterrupt(timer, &onTimer);
-    timerAlarm(timer, 1U, true, 0);
+    timerAlarm(timer, 1U, true, 0U);
 
     ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(1U << depth) / PWM_WIDTH), depth);
     ledcOutputInvert(PIN_OE, true);
-    ledcWrite(PIN_OE, 0);
+    ledcWrite(PIN_OE, 0U);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcSetGammaFactor(GAMMA);
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -64,13 +64,13 @@ void DisplayService::handle()
 
 IRAM_ATTR void DisplayService::onTimer()
 {
-    static DRAM_ATTR uint8_t plane = 0;
+    static DRAM_ATTR size_t plane = 0U;
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), LOW);
-    SPI.transferBytes(planes[plane].data(), nullptr, planes[0].size());
+    SPI.transferBytes(planes[plane].data(), nullptr, planes[0U].size());
     gpio_set_level(static_cast<gpio_num_t>(PIN_CS), HIGH);
-    if (++plane >= UINT8_MAX)
+    if (++plane == planes.size())
     {
-        plane = 0;
+        plane = 0U;
     }
 }
 
@@ -80,85 +80,85 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
     {
         return;
     }
-    size_t idx = 0; // NOLINT(misc-const-correctness)
-    for (size_t byte = 0; byte < GRID_COLUMNS * GRID_ROWS / 8; ++byte)
+    size_t idx = 0U; // NOLINT(misc-const-correctness)
+    for (size_t byte = 0U; byte < GRID_COLUMNS * GRID_ROWS / 8U; ++byte)
     {
-        uint8_t bits = 0;
-        if (frame[idx++] != 0)
+        uint8_t bits = 0U;
+        if (frame[idx++] != 0U)
         {
             bits |= 0b10000000U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b1000000U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b100000U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b10000U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b1000U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b100U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b10U;
         }
-        if (frame[idx++] != 0)
+        if (frame[idx++] != 0U)
         {
             bits |= 0b1U;
         }
         planes[0][byte] = bits;
     }
-    if constexpr (GRID_COLUMNS * GRID_ROWS % 8 != 0)
+    if constexpr (GRID_COLUMNS * GRID_ROWS % 8U != 0U)
     {
-        uint8_t bits = 0;
-        for (size_t bit = 0; bit < GRID_COLUMNS * GRID_ROWS % 8; ++bit)
+        uint8_t bits = 0U;
+        for (size_t bit = 0U; bit < GRID_COLUMNS * GRID_ROWS % 8U; ++bit)
         {
-            if (frame[idx++] != 0)
+            if (frame[idx++] != 0U)
             {
                 bits |= static_cast<uint8_t>(0b10000000U >> bit);
             }
         }
-        planes[0][GRID_COLUMNS * GRID_ROWS / 8] = bits;
+        planes[0U][GRID_COLUMNS * GRID_ROWS / 8U] = bits;
     }
-    std::array<size_t, UINT8_MAX> counts{};
-    for (size_t idx = 0; idx < frame.size(); ++idx)
+    std::array<size_t, planes.size()> counts{};
+    for (size_t idx = 0U; idx < frame.size(); ++idx)
     {
         const uint8_t value = frame[idx]; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0 && value < UINT8_MAX)
+        if (value > 0U && value < UINT8_MAX)
         {
             ++counts[value];
         }
     }
-    std::array<size_t, UINT8_MAX> offsets{};
-    for (size_t value = 1; value < counts.size(); ++value)
+    std::array<size_t, planes.size()> offsets{};
+    for (size_t value = 1U; value < counts.size(); ++value)
     {
-        offsets[value] = offsets[value - 1] + counts[value - 1];
+        offsets[value] = offsets[value - 1U] + counts[value - 1U];
     }
-    std::array<size_t, UINT8_MAX> next = offsets;
+    std::array<size_t, planes.size()> next = offsets;
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> indices{};
-    for (size_t idx = 0; idx < frame.size(); ++idx)
+    for (size_t idx = 0U; idx < frame.size(); ++idx)
     {
         const uint8_t value = frame[idx]; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0 && value < UINT8_MAX)
+        if (value > 0U && value < UINT8_MAX)
         {
             indices[next[value]++] = idx;
         }
     }
-    for (size_t plane = 1; plane < planes.size(); ++plane)
+    for (size_t plane = 1U; plane < planes.size(); ++plane)
     {
-        for (size_t byte = 0; byte < planes[0].size(); ++byte)
+        for (size_t byte = 0; byte < planes[0U].size(); ++byte)
         {
-            planes[plane][byte] = planes[plane - 1][byte];
+            planes[plane][byte] = planes[plane - 1U][byte];
         }
         // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for (size_t i = offsets[plane]; i < offsets[plane] + counts[plane]; ++i)
@@ -181,20 +181,20 @@ void DisplayService::setOrientation(Orientation _orientation)
     {
 #if GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg90):
-        for (size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0U; i < _pixels.size(); ++i)
         {
             _pixels[i] = pixels[((GRID_COLUMNS - 1U - (i % GRID_COLUMNS)) * GRID_COLUMNS) + (i / GRID_COLUMNS)];
         }
         break;
     case static_cast<uint8_t>(Orientation::deg270):
-        for (size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0U; i < _pixels.size(); ++i)
         {
             _pixels[i] = pixels[(GRID_COLUMNS * (i % GRID_COLUMNS)) + (GRID_ROWS - 1U - (i / GRID_COLUMNS))];
         }
         break;
 #endif // GRID_COLUMNS == GRID_ROWS
     case static_cast<uint8_t>(Orientation::deg180):
-        for (size_t i = 0; i < _pixels.size(); ++i)
+        for (size_t i = 0U; i < _pixels.size(); ++i)
         {
             _pixels[i] = pixels[(GRID_COLUMNS - 1U - (i % GRID_COLUMNS)) +
                                 (GRID_COLUMNS * (GRID_ROWS - 1U - (i / GRID_COLUMNS)))];
@@ -204,7 +204,7 @@ void DisplayService::setOrientation(Orientation _orientation)
         return;
     }
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame{};
-    for (size_t i = 0; i < _frame.size(); ++i)
+    for (size_t i = 0U; i < _frame.size(); ++i)
     {
         _frame[_pixels[i]] = frame[pixels[i]];
     }
@@ -215,8 +215,8 @@ void DisplayService::setOrientation(Orientation _orientation)
     frame = _frame;
     render = true;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    ratio = (static_cast<uint8_t>(orientation) & 1U) == 0 ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
-                                                          : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
+    ratio = (static_cast<uint8_t>(orientation) & 1U) == 0U ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+                                                           : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
@@ -237,7 +237,7 @@ void DisplayService::setPower(bool _power)
     {
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGamma(PIN_OE,
-                      0,
+                      0U,
                       max<uint16_t>(brightness,
                                     powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                                         ((1U << depth) - 2U)),
@@ -245,7 +245,7 @@ void DisplayService::setPower(bool _power)
                           brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
         ledcFade(PIN_OE,
-                 0,
+                 0U,
                  max<uint16_t>(brightness,
                                powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                                    ((1U << depth) - 2U)),
@@ -264,7 +264,7 @@ void DisplayService::setPower(bool _power)
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                               ((1U << depth) - 2U)),
-            0,
+            0U,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
@@ -273,7 +273,7 @@ void DisplayService::setPower(bool _power)
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                               ((1U << depth) - 2U)),
-            0,
+            0U,
             (1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -285,9 +285,9 @@ void DisplayService::onPowerOff()
     Display.power = false;
     Display.pending = true;
     Modes.setActive(false);
-    for (size_t plane = 0; plane < planes.size(); ++plane)
+    for (size_t plane = 0U; plane < planes.size(); ++plane)
     {
-        planes[plane].fill(0);
+        planes[plane].fill(0U);
     }
 }
 
@@ -295,7 +295,7 @@ uint8_t DisplayService::getBrightness() const { return brightness; }
 
 void DisplayService::setBrightness(uint8_t _brightness)
 {
-    if (_brightness == 0)
+    if (_brightness == 0U)
     {
         setPower(false);
         return;
@@ -307,7 +307,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
         power ? max<uint16_t>(brightness,
                               powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                                   ((1U << depth) - 2U))
-              : 0,
+              : 0U,
         max<uint16_t>(_brightness,
                       powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                           ((1U << depth) - 2U)),
@@ -319,7 +319,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
              power ? max<uint16_t>(brightness,
                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                                        ((1U << depth) - 2U))
-                   : 0,
+                   : 0U,
              max<uint16_t>(_brightness,
                            powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
                                ((1U << depth) - 2U)),
@@ -344,7 +344,7 @@ void DisplayService::setBrightness(uint8_t _brightness)
 
 void DisplayService::getFrame(std::span<uint8_t> _frame) const
 {
-    for (size_t idx = 0; idx < _frame.size(); ++idx)
+    for (size_t idx = 0U; idx < _frame.size(); ++idx)
     {
         _frame[idx] = frame[pixels[idx]];
     }
@@ -352,7 +352,7 @@ void DisplayService::getFrame(std::span<uint8_t> _frame) const
 
 void DisplayService::setFrame(std::span<const uint8_t> _frame)
 {
-    for (size_t idx = 0; idx < _frame.size(); ++idx)
+    for (size_t idx = 0U; idx < _frame.size(); ++idx)
     {
         frame[pixels[idx]] = _frame[idx];
     }
@@ -398,21 +398,21 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
     const float xRatio =
-        static_cast<float>(PITCH_HORIZONTAL * 2) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
+        static_cast<float>(PITCH_HORIZONTAL * 2U) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
     const float yRatio =
-        static_cast<float>(PITCH_VERTICAL * 2) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
+        static_cast<float>(PITCH_VERTICAL * 2U) / (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
 #else
     const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0U;
-    const float xRatio = static_cast<float>(2 * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
+    const float xRatio = static_cast<float>(2U * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                          (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
-    const float yRatio = static_cast<float>(2 * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
+    const float yRatio = static_cast<float>(2U * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
                          (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL));
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
     const uint8_t xMax =
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1), ceilf(x + (radius / xRatio))));
+        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))));
     const uint8_t xMin = static_cast<uint8_t>(max<float>(0.0F, floorf(x - (radius / xRatio))));
     const uint8_t yMax =
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1), ceilf(y + (radius / yRatio))));
+        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))));
     const uint8_t yMin = static_cast<uint8_t>(max<float>(0.0F, floorf(y - (radius / yRatio))));
     for (size_t _x = xMin; _x <= xMax; ++_x)
     {
@@ -467,7 +467,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0;
+    const bool rotated = (static_cast<uint8_t>(orientation) & 1U) != 0U;
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
