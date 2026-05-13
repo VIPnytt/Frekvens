@@ -25,8 +25,8 @@ void DisplayService::configure()
 #endif // PIN_MISO
     SPI.beginTransaction(SPISettings((uint32_t{1U} << 9U) * GRID_COLUMNS * GRID_ROWS * fps, MSBFIRST, SPI_MODE0));
 
-    hw_timer_t *timer{
-        timerBegin(static_cast<uint32_t>(planes.size()) * fps)}; // NOLINT(cppcoreguidelines-init-variables)
+    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+    hw_timer_t *timer{timerBegin(static_cast<uint32_t>(planes.size()) * fps)};
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1U, true, 0U);
 
