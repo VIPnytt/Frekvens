@@ -410,10 +410,10 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
     const uint8_t xMax{
         static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))))};
-    const uint8_t xMin{static_cast<uint8_t>(max<float>(0.0F, floorf(x - (radius / xRatio))))};
+    const uint8_t xMin{static_cast<uint8_t>(max<float>(.0F, floorf(x - (radius / xRatio))))};
     const uint8_t yMax{
         static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))))};
-    const uint8_t yMin{static_cast<uint8_t>(max<float>(0.0F, floorf(y - (radius / yRatio))))};
+    const uint8_t yMin{static_cast<uint8_t>(max<float>(.0F, floorf(y - (radius / yRatio))))};
     for (size_t _x{xMin}; _x <= xMax; ++_x)
     {
         for (size_t _y{yMin}; _y <= yMax; ++_y)
