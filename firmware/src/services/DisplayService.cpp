@@ -116,7 +116,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
         {
             bits |= 0b1U;
         }
-        planes[0][byte] = bits;
+        planes[0U][byte] = bits;
     }
     if constexpr (GRID_COLUMNS * GRID_ROWS % 8U != 0U)
     {
