@@ -19,7 +19,6 @@
 #include "modes/GameOfLifeMode.h"
 #include "modes/GlitterMode.h"
 #include "modes/HomeThermometerMode.h"
-#include "modes/JaggedWaveformMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
@@ -29,7 +28,6 @@
 #include "modes/RainMode.h"
 #include "modes/RingMode.h"
 #include "modes/ScanMode.h"
-#include "modes/SmoothWaveformMode.h"
 #include "modes/SnakeMode.h"
 #include "modes/StarsMode.h"
 #include "modes/StreamMode.h"
@@ -118,9 +116,6 @@ public:
 #if MODE_HOMETHERMOMETER
         HomeThermometerMode::name,
 #endif
-#if MODE_JAGGEDWAVEFORM
-        JaggedWaveformMode::name,
-#endif
 #if MODE_LEAFFALL
         LeafFallMode::name,
 #endif
@@ -147,9 +142,6 @@ public:
 #endif
 #if MODE_SCAN
         ScanMode::name,
-#endif
-#if MODE_SMOOTHWAVEFORM
-        SmoothWaveformMode::name,
 #endif
 #if MODE_SNAKE
         SnakeMode::name,

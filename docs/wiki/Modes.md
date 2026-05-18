@@ -4,7 +4,7 @@
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong)| [Snake](#-snake)
 
-**IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Jagged Waveform](#-jagged-waveform) | [Ring](#-ring) | [Smooth waveform](#️-smooth-waveform)
+**IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Ring](#-ring) | [Waveform](#-waveform)
 
 **IKEA Obegränsad:** [Circle](#-circle) | [Lines](#-lines) | [Noise](#-noise) | [Rain](#-rain) | [Scan](#-scan) | [Stars](#-stars)
 
@@ -261,21 +261,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_HOMETHERMOMETER='true'
 ```
 
-## 📈 Jagged waveform
-
-Inspired by the original *IKEA Frekvens* mode.
-
-> [!TIP]
-> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on a stock *IKEA Frekvens* device.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_JAGGEDWAVEFORM='true'
-```
-
-See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
-
 ## 🍂 Leaf fall
 
 Autumn-inspired.
@@ -387,21 +372,6 @@ MODE_SCAN='true'
 
 See also [Lines](#-lines).
 
-## 〰️ Smooth waveform
-
-Inspired by the original *IKEA Frekvens* mode.
-
-> [!TIP]
-> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on a stock *IKEA Frekvens* device.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_SMOOTHWAVEFORM='true'
-```
-
-See also [Jagged waveform](#-jagged-waveform) and [Waveform](#-waveform).
-
 ## 🐍 Snake
 
 Inspired by the classic snake-game. Comes with an optional clock.
@@ -482,8 +452,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_WAVEFORM='true'
 ```
-
-See also [Jagged waveform](#-jagged-waveform) and [Smooth waveform](#️-smooth-waveform).
 
 ## ⛅ Weather
 

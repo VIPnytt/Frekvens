@@ -28,7 +28,6 @@ export const MODE_FLIES: boolean = import.meta.env.VITE_MODE_FLIES === "true";
 export const MODE_GAMEOFLIFE: boolean = import.meta.env.VITE_MODE_GAMEOFLIFE === "true";
 export const MODE_GLITTER: boolean = import.meta.env.VITE_MODE_GLITTER === "true";
 export const MODE_HOMETHERMOMETER: boolean = import.meta.env.VITE_MODE_HOMETHERMOMETER === "true";
-export const MODE_JAGGEDWAVEFORM: boolean = import.meta.env.VITE_MODE_JAGGEDWAVEFORM === "true";
 export const MODE_LEAFFALL: boolean = import.meta.env.VITE_MODE_LEAFFALL === "true";
 export const MODE_LINES: boolean = import.meta.env.VITE_MODE_LINES === "true";
 export const MODE_METABALLS: boolean = import.meta.env.VITE_MODE_METABALLS === "true";
@@ -38,7 +37,6 @@ export const MODE_PIXELSEQUENCE: boolean = import.meta.env.VITE_MODE_PIXELSEQUEN
 export const MODE_RAIN: boolean = import.meta.env.VITE_MODE_RAIN === "true";
 export const MODE_RING: boolean = import.meta.env.VITE_MODE_RING === "true";
 export const MODE_SCAN: boolean = import.meta.env.VITE_MODE_SCAN === "true";
-export const MODE_SMOOTHWAVEFORM: boolean = import.meta.env.VITE_MODE_SMOOTHWAVEFORM === "true";
 export const MODE_SNAKE: boolean = import.meta.env.VITE_MODE_SNAKE === "true";
 export const MODE_STARS: boolean = import.meta.env.VITE_MODE_STARS === "true";
 export const MODE_STREAM: boolean = import.meta.env.VITE_MODE_STREAM === "true";

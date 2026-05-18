@@ -8,6 +8,7 @@ from ..modes.GameOfLife import GameOfLife
 from ..modes.PingPong import PingPong
 from ..modes.Snake import Snake
 from ..modes.Stream import Stream
+from ..modes.Waveform import Waveform
 from ..modes.Weather import Weather
 
 if typing.TYPE_CHECKING:
@@ -23,6 +24,7 @@ class Deprecated:
         ("MODE_GAMEOFLIFECLOCK", "Game of Life clock", GameOfLife.ENV_OPTION, GameOfLife.NAME),
         ("MODE_GOOGLEWEATHER", "Google weather", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_HOMEASSISTANTWEATHER", "Home Assistant weather", Weather.ENV_OPTION, Weather.NAME),
+        ("MODE_JAGGEDWAVEFORM","Jagged waveform", Waveform.ENV_OPTION, Waveform.NAME),
         ("MODE_LARGECLOCK", "Large clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_LARGETICKINGCLOCK", "Large ticking clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_OPENMETEO", "Open-Meteo", Weather.ENV_OPTION, Weather.NAME),
@@ -30,6 +32,7 @@ class Deprecated:
         ("MODE_PINGPONGCLOCK", "Ping-Pong clock", PingPong.ENV_OPTION, PingPong.NAME),
         ("MODE_SMALLCLOCK", "Small clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_SMALLTICKINGCLOCK", "Small ticking clock", Clock.ENV_OPTION, Clock.NAME),
+        ("MODE_SMOOTHWAVEFORM","Smooth waveform", Waveform.ENV_OPTION, Waveform.NAME),
         ("MODE_SNAKECLOCK", "Snake clock", Snake.ENV_OPTION, Snake.NAME),
         ("MODE_WORLDWEATHERONLINE", "World Weather Online", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_WTTRIN", "Wttr.in", Weather.ENV_OPTION, Weather.NAME),
