@@ -10,6 +10,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
 #include <format>
+#include <vector>
 
 void AlexaExtension::begin()
 {
@@ -127,8 +128,9 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
                                 size_t index, // NOLINT(misc-unused-parameters)
                                 size_t total) // NOLINT(misc-unused-parameters)
 {
+    const std::string body{data, data + len};
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    deserializeJson(doc, reinterpret_cast<const char *>(data), len);
+    deserializeJson(doc, body);
     if (doc["bri"].is<uint8_t>())
     {
         const uint8_t brightness{doc["bri"].as<uint8_t>()}; // NOLINT(cppcoreguidelines-init-variables)
@@ -167,32 +169,27 @@ void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
 
 void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
 {
-    const std::string_view request{
-        reinterpret_cast<const char *>(packet.data()),
-        packet.length(),
-    };
-    if (request.find("M-SEARCH") != std::string_view::npos)
+    const std::string request{packet.data(), packet.data() + packet.length()};
+    if (request.find("M-SEARCH") != std::string::npos)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-        const bool root{request.find("upnp:rootdevice") != std::string_view::npos};
+        const bool root{request.find("upnp:rootdevice") != std::string::npos};
         const std::pair<std::array<char, 17U>, std::array<char, 13U>> unique{mac()};
-        const std::string response{std::format("HTTP/1.1 200 OK\r\n"
-                                               "EXT:\r\n"
-                                               "LOCATION: http://{}:80/description.xml\r\n"
-                                               "SERVER: FreeRTOS/6.0.5, UPnP/1.0, IpBridge/1.17.0\r\n"
-                                               "ST: {}\r\n"
-                                               "USN: uuid:2f402f80-da50-11e1-9b23-{}{}\r\n"
-                                               "hue-bridgeid: {}\r\n"
-                                               "\r\n",
-                                               WiFi.localIP().toString().c_str(),
-                                               root ? "upnp:rootdevice" : "urn:schemas-upnp-org:device:basic:1",
-                                               unique.second.data(),
-                                               root ? "::upnp:rootdevice" : "",
-                                               unique.first.data())};
-        upnp.writeTo(reinterpret_cast<const uint8_t *>(response.data()),
-                     response.size(),
-                     packet.remoteIP(),
-                     packet.remotePort());
+        const std::string _response{std::format("HTTP/1.1 200 OK\r\n"
+                                                "EXT:\r\n"
+                                                "LOCATION: http://{}:80/description.xml\r\n"
+                                                "SERVER: FreeRTOS/6.0.5, UPnP/1.0, IpBridge/1.17.0\r\n"
+                                                "ST: {}\r\n"
+                                                "USN: uuid:2f402f80-da50-11e1-9b23-{}{}\r\n"
+                                                "hue-bridgeid: {}\r\n"
+                                                "\r\n",
+                                                WiFi.localIP().toString().c_str(),
+                                                root ? "upnp:rootdevice" : "urn:schemas-upnp-org:device:basic:1",
+                                                unique.second.data(),
+                                                root ? "::upnp:rootdevice" : "",
+                                                unique.first.data())};
+        const std::vector<uint8_t> response{_response.begin(), _response.end()};
+        upnp.writeTo(response.data(), response.size(), packet.remoteIP(), packet.remotePort());
     }
 }
 
