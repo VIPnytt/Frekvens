@@ -175,6 +175,7 @@ void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
             request, "M-SEARCH", {}, std::identity{}, [](char character) { return static_cast<uint8_t>(character); })
             .begin() != request.end())
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const bool root{std::ranges::search(request,
                                             "upnp:rootdevice",
                                             {},
