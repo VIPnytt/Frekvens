@@ -16,8 +16,8 @@ void PhotocellExtension::begin()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{sizeof(gamma)};
-        nvs_get_blob(handle, "gamma", &gamma, &len);
+        size_t length{sizeof(gamma)};
+        nvs_get_blob(handle, "gamma", &gamma, &length);
         uint8_t _active{0U};
         if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
         {
