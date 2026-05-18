@@ -8,7 +8,7 @@
 
 #include <ESPmDNS.h>
 #include <HTTPClient.h>
-#include <WiFi.h>
+#include <WiFi.h> // NOLINT(misc-include-cleaner)
 #include <format>
 
 void AlexaExtension::begin()
@@ -123,14 +123,15 @@ void AlexaExtension::onMdns()
     MDNS.addServiceTxt("hue", "tcp", "modelid", "BSB002");
 }
 
-void AlexaExtension::onPutState(AsyncWebServerRequest *request, uint8_t *data, const size_t len, const size_t index,
-                                const size_t total)
+void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
+                                size_t index, // NOLINT(misc-unused-parameters)
+                                size_t total) // NOLINT(misc-unused-parameters)
 {
-    JsonDocument doc;
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     deserializeJson(doc, reinterpret_cast<const char *>(data), len);
     if (doc["bri"].is<uint8_t>())
     {
-        const uint8_t brightness{doc["bri"].as<uint8_t>()};
+        const uint8_t brightness{doc["bri"].as<uint8_t>()}; // NOLINT(cppcoreguidelines-init-variables)
         if (Display.getBrightness() != brightness)
         {
             Display.setBrightness(brightness);
@@ -138,7 +139,7 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, uint8_t *data, c
     }
     if (doc["on"].is<bool>())
     {
-        const bool power{doc["on"].as<bool>()};
+        const bool power{doc["on"].as<bool>()}; // NOLINT(cppcoreguidelines-init-variables)
         if (Display.getPower() != power)
         {
             Display.setPower(power);
@@ -156,10 +157,10 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, uint8_t *data, c
 }
 
 void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
-                               uint8_t *data, // NOLINT(misc-unused-parameters)
-                               size_t len,    // NOLINT(misc-unused-parameters)
-                               size_t index,  // NOLINT(misc-unused-parameters)
-                               size_t total)  // NOLINT(misc-unused-parameters)
+                               const uint8_t *data, // NOLINT(misc-unused-parameters)
+                               size_t len,          // NOLINT(misc-unused-parameters)
+                               size_t index,        // NOLINT(misc-unused-parameters)
+                               size_t total)        // NOLINT(misc-unused-parameters)
 {
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", R"([{"success":{"username":"alexa"}}])");
 }
@@ -172,6 +173,7 @@ void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
     };
     if (request.find("M-SEARCH") != std::string_view::npos)
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const bool root{request.find("upnp:rootdevice") != std::string_view::npos};
         const std::pair<std::array<char, 17U>, std::array<char, 13U>> unique{mac()};
         const std::string response{std::format("HTTP/1.1 200 OK\r\n"

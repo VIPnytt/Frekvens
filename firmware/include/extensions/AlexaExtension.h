@@ -19,8 +19,8 @@ private:
     static void onGetDescription(AsyncWebServerRequest *request);
     static void onGetLight(AsyncWebServerRequest *request);
     static void onGetLights(AsyncWebServerRequest *request);
-    static void onPostApi(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
-    static void onPutState(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total);
+    static void onPostApi(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index, size_t total);
+    static void onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index, size_t total);
     static void onUpnp(AsyncUDPPacket &packet);
 
 public:

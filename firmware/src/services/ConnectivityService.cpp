@@ -1,5 +1,6 @@
 #include "services/ConnectivityService.h"
 
+#include "extensions/AlexaExtension.h"
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
