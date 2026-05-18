@@ -55,7 +55,7 @@ void PhotocellExtension::handle()
             direction = !direction;
             debounce /= 2;
         }
-        debounce += static_cast<int16_t>(_brightness - brightness);
+        debounce = static_cast<int16_t>(debounce + _brightness - brightness);
         if (abs(debounce) > UINT8_MAX)
         {
             brightness = _brightness;
