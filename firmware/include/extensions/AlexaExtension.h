@@ -12,7 +12,7 @@ class AlexaExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Alexa"};
 
-    static inline AsyncUDP upnp{}; // NOLINT(bugprone-throwing-static-initialization)
+    static inline AsyncUDP upnp{}; // NOLINT(bugprone-throwing-static-initialization,cert-err58-cpp)
 
     [[nodiscard]] static std::string light();
     [[nodiscard]] static std::pair<std::array<char, 17U>, std::array<char, 13U>> mac();

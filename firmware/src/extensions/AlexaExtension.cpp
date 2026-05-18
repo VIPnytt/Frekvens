@@ -128,7 +128,8 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
                                 size_t index, // NOLINT(misc-unused-parameters)
                                 size_t total) // NOLINT(misc-unused-parameters)
 {
-    const std::string body{data, data + len};
+    const std::span<const uint8_t> _body{data, len};
+    const std::string body{_body.begin(), _body.end()};
     JsonDocument doc; // NOLINT(misc-const-correctness)
     deserializeJson(doc, body);
     if (doc["bri"].is<uint8_t>())
@@ -169,11 +170,17 @@ void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
 
 void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
 {
-    const std::string request{packet.data(), packet.data() + packet.length()};
-    if (request.find("M-SEARCH") != std::string::npos)
+    const std::span<const uint8_t> request{packet.data(), packet.length()};
+    if (std::ranges::search(
+            request, "M-SEARCH", {}, std::identity{}, [](char character) { return static_cast<uint8_t>(character); })
+            .begin() != request.end())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-        const bool root{request.find("upnp:rootdevice") != std::string::npos};
+        const bool root{std::ranges::search(request,
+                                            "upnp:rootdevice",
+                                            {},
+                                            std::identity{},
+                                            [](char character) { return static_cast<uint8_t>(character); })
+                            .begin() != request.end()};
         const std::pair<std::array<char, 17U>, std::array<char, 13U>> unique{mac()};
         const std::string _response{std::format("HTTP/1.1 200 OK\r\n"
                                                 "EXT:\r\n"
