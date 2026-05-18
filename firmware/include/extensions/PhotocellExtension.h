@@ -9,20 +9,20 @@ class PhotocellExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Photocell"};
 
-    bool active = false;
-    bool direction = false;
-    bool pending = false;
+    bool active{false};
+    bool direction{false};
+    bool pending{false};
 
-    float gamma = 1.0F;
+    float gamma{1.0F};
 
-    uint8_t brightness = UINT8_MAX;
+    int16_t debounce{0};
 
-    int16_t counter = 0;
+    uint8_t brightness{UINT8_MAX};
 
-    uint16_t raw = 0;
+    uint16_t raw{0U};
 
-    unsigned long lastMillis = 0;
-    unsigned long _lastMillis = 0;
+    unsigned long lastMillis{0UL};
+    unsigned long _lastMillis{0UL};
 
     void setGamma(float _gamma);
 
