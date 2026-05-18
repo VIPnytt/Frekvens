@@ -25,6 +25,7 @@ In the *Alexa app*, navigate to:
 2. Add Device
 3. Other
 4. Wi-Fi
+5. Discover
 
 > [!NOTE]
 > An [*Amazon Alexa*](https://www.amazon.com/smart-home-devices/b?node=9818047011) device is required.
