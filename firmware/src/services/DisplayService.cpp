@@ -295,51 +295,49 @@ uint8_t DisplayService::getBrightness() const { return brightness; }
 
 void DisplayService::setBrightness(uint8_t _brightness)
 {
-    if (_brightness == 0U)
+    if (_brightness != 0U)
     {
-        setPower(false);
-        return;
-    }
-    ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    ledcFadeGamma(
-        PIN_OE,
-        power ? max<uint16_t>(brightness,
-                              powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                  ((1U << depth) - 2U))
-              : 0U,
-        max<uint16_t>(_brightness,
-                      powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                          ((1U << depth) - 2U)),
-        (1U << 4U) *
-            abs(brightness -
-                _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+        ledcFadeGamma(
+            PIN_OE,
+            power ? max<uint16_t>(brightness,
+                                  powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                      ((1U << depth) - 2U))
+                  : 0U,
+            max<uint16_t>(_brightness,
+                          powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                              ((1U << depth) - 2U)),
+            (1U << 4U) *
+                abs(brightness -
+                    _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
-    ledcFade(PIN_OE,
-             power ? max<uint16_t>(brightness,
-                                   powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                       ((1U << depth) - 2U))
-                   : 0U,
-             max<uint16_t>(_brightness,
-                           powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                               ((1U << depth) - 2U)),
-             (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+        ledcFade(PIN_OE,
+                 power ? max<uint16_t>(brightness,
+                                       powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                           ((1U << depth) - 2U))
+                       : 0U,
+                 max<uint16_t>(_brightness,
+                               powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                   ((1U << depth) - 2U)),
+                 (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    if (!power)
-    {
-        power = true;
-        Modes.setActive(true);
-        render = true;
+        if (!power)
+        {
+            power = true;
+            Modes.setActive(true);
+            render = true;
+        }
+        brightness = _brightness;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_u8(handle, "brightness", brightness);
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
+        pending = true;
     }
-    brightness = _brightness;
-    nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
-    {
-        nvs_set_u8(handle, "brightness", brightness);
-        nvs_commit(handle);
-        nvs_close(handle);
-    }
-    pending = true;
 }
 
 void DisplayService::getFrame(std::span<uint8_t> _frame) const
