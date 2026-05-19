@@ -16,9 +16,9 @@ void PhotocellExtension::begin()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len = sizeof(gamma);
-        nvs_get_blob(handle, "gamma", &gamma, &len);
-        uint8_t _active{0};
+        size_t length{sizeof(gamma)};
+        nvs_get_blob(handle, "gamma", &gamma, &length);
+        uint8_t _active{0U};
         if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
         {
             nvs_close(handle);
@@ -46,18 +46,20 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
-        const uint8_t _brightness = static_cast<uint8_t>(
-            powf(static_cast<float>(raw) / static_cast<float>((1U << 12U) - 1), gamma) * UINT8_MAX);
+        const uint8_t _brightness{static_cast<uint8_t>(
+            static_cast<uint16_t>(powf(static_cast<float>(raw) / static_cast<float>((1U << 12U) - 1U), gamma) *
+                                  static_cast<float>(UINT8_MAX - 1U)) +
+            1U)};
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
-            counter /= 2;
+            debounce /= 2;
         }
-        counter = static_cast<int16_t>(counter + _brightness - brightness);
-        if (abs(counter) > UINT8_MAX)
+        debounce = static_cast<int16_t>(debounce + _brightness - brightness);
+        if (abs(debounce) > UINT8_MAX)
         {
             brightness = _brightness;
-            counter = 0;
+            debounce = 0;
             Display.setBrightness(brightness);
         }
     }
@@ -69,7 +71,7 @@ void PhotocellExtension::setActive(bool _active)
 {
     if (_active)
     {
-        counter = 0;
+        debounce = 0;
         brightness = Display.getBrightness();
     }
     active = _active;
@@ -125,7 +127,7 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
         if (_brightness != brightness)
         {
             setGamma(logf(static_cast<float>(_brightness) / static_cast<float>(1U << 8U)) /
-                     logf(static_cast<float>(raw + 1) / static_cast<float>((1U << 12U) + 1)));
+                     logf(static_cast<float>(raw + 1U) / static_cast<float>((1U << 12U) + 1U)));
         }
     }
 }

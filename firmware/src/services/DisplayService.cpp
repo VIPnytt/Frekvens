@@ -295,11 +295,6 @@ uint8_t DisplayService::getBrightness() const { return brightness; }
 
 void DisplayService::setBrightness(uint8_t _brightness)
 {
-    if (_brightness == 0U)
-    {
-        setPower(false);
-        return;
-    }
     ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     ledcFadeGamma(
