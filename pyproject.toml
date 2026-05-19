@@ -17,7 +17,7 @@ Documentation = "https://github.com/VIPnytt/Frekvens/wiki"
 
 [project.optional-dependencies]
 font = [
-    "fonttools==4.62.1",
+    "fonttools==4.63.0",
     "matplotlib==3.10.9",
     "pillow==12.2.0",
 ]
