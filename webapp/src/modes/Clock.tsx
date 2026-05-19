@@ -68,7 +68,7 @@ export const Sidebar: Component = () => {
             </div>
             <div class="action grid-cols-[--spacing(4)_1fr_--spacing(12)]">
                 <Icon path={mdiProgressClock} />
-                Ticking
+                Second indicator
                 <button
                     class={`w-full ${getTicking() ? "action-negative" : "action-deactivated"}`}
                     onclick={handleTicking}
