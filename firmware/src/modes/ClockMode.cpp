@@ -71,7 +71,7 @@ void ClockMode::handle()
     }
 }
 
-void ClockMode::drawTicker(uint8_t brightness)
+void ClockMode::drawTicker(uint8_t brightness) const
 {
     if (strikethrough)
     {

@@ -43,7 +43,7 @@ private:
     int minute{60};
     int second{60};
 
-    void drawTicker(uint8_t brightness);
+    void drawTicker(uint8_t brightness) const;
     void setFont(std::string_view _fontName);
     void setTicking(bool _ticking);
     void transmit();
