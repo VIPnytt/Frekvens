@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
 
 
 class Deprecated:
-    MIGRATIONS: list[tuple[str, str, str, str]] = [
+    FEATURES: list[tuple[str, str, str, str]] = [
         ("MODE_ARTNET", "Art-Net", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_BOLDCLOCK", "Bold clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", Stream.ENV_OPTION, Stream.NAME),
@@ -45,7 +45,7 @@ class Deprecated:
         self._platformio_ini()
 
     def _env(self) -> None:
-        for old_option, old_name, new_option, new_name in self.MIGRATIONS:
+        for old_option, old_name, new_option, new_name in self.FEATURES:
             if old_option in self.project.dotenv:
                 if new_option == Weather.ENV_OPTION:
                     weather_option = f"WEATHER_{old_option.removeprefix('MODE_')}"
@@ -71,15 +71,29 @@ class Deprecated:
                 del self.project.dotenv[old_option]
 
     def _platformio_ini(self) -> None:
-        option = "board_build.embed_files"
-        path = "firmware/embed/x509_crt_bundle.bin"
-        paths = self.project.env.GetProjectOption(option, None)
-        if paths and ((isinstance(paths, list) and path in paths) or (isinstance(paths, str) and paths == path)):
-            logging.warning("'%s = %s' is deprecated and should be removed from platformio.ini.", option, path)
-            _path = pathlib.Path(path)
+        embed_option = "board_build.embed_files"
+        embed_path = "firmware/embed/x509_crt_bundle.bin"
+        embed_paths = self.project.env.GetProjectOption(embed_option, None)
+        if embed_paths and (
+            (isinstance(embed_paths, list) and embed_path in embed_paths)
+            or (isinstance(embed_paths, str) and embed_paths == embed_path)
+        ):
+            logging.warning(
+                "'%s = %s' is deprecated and should be removed from platformio.ini.", embed_option, embed_path
+            )
+            _path = pathlib.Path(embed_path)
             if not _path.exists():
                 _path.parent.mkdir(parents=True, exist_ok=True)
                 _path.write_bytes(b"\x00")
+        partition_table = self.project.env.GetProjectOption("board_build.partitions", None)
+        if "partitions/2MB_no_ota.csv" == partition_table:
+            logging.warning(
+                "The '2MB_no_ota.csv' partition table is deprecated, please migrate to the newer '2MB_no_ota_rev2.csv' table"
+            )
+        elif "partitions/4MB.csv" == partition_table:
+            logging.warning(
+                "The '4MB.csv' partition table is deprecated, please migrate to the newer '4MB_rev2.csv' table"
+            )
 
     @staticmethod
     def clean() -> None:
