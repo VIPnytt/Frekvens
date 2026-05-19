@@ -10,18 +10,21 @@
 
 #include <nvs.h>
 
+static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
+
 void ClockMode::configure()
 {
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{0};
-        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        size_t length{0U};
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 0U)
         {
-            fontName.resize(len - 1);
-            nvs_get_str(handle, "font", fontName.data(), &len);
+            fontName.resize(length - 1U);
+            nvs_get_str(handle, "font", fontName.data(), &length);
         }
-        uint8_t _ticking{0};
+        uint8_t _ticking{0U};
         if (nvs_get_u8(handle, "ticking", &_ticking) == ESP_OK)
         {
             ticking = static_cast<bool>(_ticking);
@@ -41,81 +44,66 @@ void ClockMode::handle()
         {
             hour = local.tm_hour;
             minute = local.tm_min;
-            drawDigits();
+            const std::unique_ptr<const FontModule> font{Fonts.get(fontName)};
+            const TextHandler hh1(std::to_string(hour / 10), *font);
+            const TextHandler hh2(std::to_string(hour % 10), *font);
+            const TextHandler mm1(std::to_string(minute / 10), *font);
+            const TextHandler mm2(std::to_string(minute % 10), *font);
+            const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
+            strikethrough = mm2.getHeight() > 6U;
+            Display.clearFrame();
+            hh1.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - hh1.getWidth()) / 2U)),
+                     static_cast<int8_t>((GRID_ROWS / 2U) - 1U - hh1.getHeight()));
+            hh2.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) + 1U + ((fontWidth - hh2.getWidth()) / 2U)),
+                     static_cast<int8_t>((GRID_ROWS / 2U) - 1U - hh2.getHeight()));
+            mm1.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - mm1.getWidth()) / 2U)),
+                     static_cast<int8_t>((GRID_COLUMNS / 2U) + (strikethrough ? 1U : 0U)));
+            mm2.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) + 1U + ((fontWidth - mm2.getWidth()) / 2U)),
+                     static_cast<int8_t>((GRID_COLUMNS / 2U) + (strikethrough ? 1U : 0U)));
             pending = false;
         }
         if (ticking && second != local.tm_sec)
         {
-            drawTicker();
+            drawTicker(0U);
+            second = local.tm_sec;
+            drawTicker(INT8_MAX);
         }
     }
 }
 
-void ClockMode::drawDigits()
-{
-    const std::unique_ptr<const FontModule> font = Fonts.get(fontName);
-    const TextHandler hh1(std::to_string(hour / 10), *font);
-    const TextHandler hh2(std::to_string(hour % 10), *font);
-    const TextHandler mm1(std::to_string(minute / 10), *font);
-    const TextHandler mm2(std::to_string(minute % 10), *font);
-    const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
-    strikethrough = mm2.getHeight() > 6;
-    Display.clearFrame();
-    hh1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - hh1.getWidth()) / 2),
-             static_cast<int8_t>((GRID_ROWS / 2) - 1 - hh1.getHeight()));
-    hh2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - hh2.getWidth()) / 2),
-             static_cast<int8_t>((GRID_ROWS / 2) - 1 - hh2.getHeight()));
-    mm1.draw((GRID_COLUMNS / 2) - 1 - fontWidth + ((fontWidth - mm1.getWidth()) / 2),
-             static_cast<int8_t>((GRID_COLUMNS / 2) + (strikethrough ? 1 : 0)));
-    mm2.draw((GRID_COLUMNS / 2) + 1 + ((fontWidth - mm2.getWidth()) / 2),
-             static_cast<int8_t>((GRID_COLUMNS / 2) + (strikethrough ? 1 : 0)));
-}
-
-void ClockMode::drawTicker() // NOLINT(readability-make-member-function-const)
+void ClockMode::drawTicker(uint8_t brightness) const
 {
     if (strikethrough)
     {
-        Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (static_cast<unsigned>(second) & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
-                         0);
+        Display.setPixel((GRID_COLUMNS / 2U) - (60U / 4U / 2U) - 1U + ((second + 2U) / 4U),
+                         (static_cast<unsigned>(second) & 1U) == 0U ? (GRID_ROWS / 2U) - 1U : GRID_ROWS / 2U,
+                         brightness);
     }
-    second = local.tm_sec;
-    if (strikethrough)
+    else if (second < 8U)
     {
-        Display.setPixel((GRID_COLUMNS / 2) - (60 / 4 / 2) - 1 + ((second + 2) / 4),
-                         (static_cast<unsigned>(second) & 1U) == 0 ? (GRID_ROWS / 2) - 1 : GRID_ROWS / 2,
-                         INT8_MAX);
+        Display.setPixel((GRID_COLUMNS / 2U) + second, (GRID_ROWS / 2U) - 8U, brightness);
     }
-    else if (second < 8)
+    else if (second < 8U + 15U)
     {
-        Display.setPixel((GRID_COLUMNS / 2) + second - 1, (GRID_ROWS / 2) - 8, 0);
-        Display.setPixel((GRID_COLUMNS / 2) + second, (GRID_ROWS / 2) - 8, INT8_MAX);
+        Display.setPixel((GRID_COLUMNS / 2U) + 7U, (GRID_ROWS / 2U) - 15U + second, brightness);
     }
-    else if (second < 8 + 15)
+    else if (second < 8U + 30U)
     {
-        Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 16 + second, 0);
-        Display.setPixel((GRID_COLUMNS / 2) + 7, (GRID_ROWS / 2) - 15 + second, INT8_MAX);
+        Display.setPixel((GRID_COLUMNS / 2U) + 29U - second, (GRID_ROWS / 2U) + 7U, brightness);
     }
-    else if (second < 8 + 30)
+    else if (second < 8U + 45U)
     {
-        Display.setPixel((GRID_COLUMNS / 2) + 30 - second, (GRID_ROWS / 2) + 7, 0);
-        Display.setPixel((GRID_COLUMNS / 2) + 29 - second, (GRID_ROWS / 2) + 7, INT8_MAX);
-    }
-    else if (second < 8 + 45)
-    {
-        Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 45 - second, 0);
-        Display.setPixel((GRID_COLUMNS / 2) - 8, (GRID_ROWS / 2) + 44 - second, INT8_MAX);
+        Display.setPixel((GRID_COLUMNS / 2U) - 8U, (GRID_ROWS / 2U) + 44U - second, brightness);
     }
     else
     {
-        Display.setPixel((GRID_COLUMNS / 2) - 61 + second, (GRID_ROWS / 2) - 8, 0);
-        Display.setPixel((GRID_COLUMNS / 2) - 60 + second, (GRID_ROWS / 2) - 8, INT8_MAX);
+        Display.setPixel((GRID_COLUMNS / 2U) - 60U + second, (GRID_ROWS / 2U) - 8U, brightness);
     }
 }
 
 void ClockMode::setFont(std::string_view _fontName)
 {
-    if (std::unique_ptr<const FontModule> _font = Fonts.get(_fontName))
+    if (std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
     {
         fontName = _font->name;
         nvs_handle_t handle{};
@@ -205,7 +193,7 @@ void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:progress-clock");
-        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" ticking"));
+        component[HomeAssistantAbbreviations::name].set(std::string(name).append(" second indicator"));
         component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
