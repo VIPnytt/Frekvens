@@ -42,6 +42,7 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
 void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
                                size_t total)
 {
+    const bool final{index + len == total};
     if (request->contentType() == "application/json")
     {
         if (index != 0U || len != total)
@@ -51,7 +52,7 @@ void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *da
                 buffer.resize(total);
             }
             std::copy_n(data, len, buffer.begin() + static_cast<std::ptrdiff_t>(index));
-            if (index + len != total)
+            if (!final)
             {
                 return;
             }
@@ -68,7 +69,10 @@ void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *da
             return;
         }
     }
-    request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
+    else if (final)
+    {
+        request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
+    }
 }
 
 #endif // EXTENSION_RESTFUL
