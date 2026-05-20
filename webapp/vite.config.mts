@@ -1,5 +1,3 @@
-import { cwd } from "node:process";
-
 import { mdiDotsGrid } from "@mdi/js";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, loadEnv } from "vite";
@@ -10,7 +8,6 @@ import solidPlugin from "vite-plugin-solid";
 export default defineConfig(({ mode }) => ({
     build: {
         minify: mode === "production",
-        target: "esnext",
     },
     plugins: [
         solidPlugin(),
@@ -29,7 +26,7 @@ export default defineConfig(({ mode }) => ({
                     {
                         injectTo: "head",
                         tag: "title",
-                        children: loadEnv(mode, cwd()).VITE_NAME,
+                        children: loadEnv(mode, ".").VITE_NAME,
                     },
                 ],
             },
