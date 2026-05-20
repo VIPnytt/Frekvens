@@ -73,8 +73,8 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    const uint8_t x{random(GRID_COLUMNS)};
-    const uint8_t y{random(clock ? 5 : 0, GRID_ROWS)};
+    const uint8_t x{static_cast<uint8_t>(random(GRID_COLUMNS))};
+    const uint8_t y{static_cast<uint8_t>(random(clock ? 5 : 0, GRID_ROWS))};
     snake = {{x, y}};
     Display.setPixel(x, y);
     setTarget();
@@ -199,7 +199,7 @@ void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        const uint8_t brightness{(blinkCount & 1U) == 0U ? 0U : UINT8_MAX};
+        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 1U) == 0U ? 0U : UINT8_MAX)};
         for (const Pixel &pixel : snake)
         {
             Display.setPixel(pixel.x, pixel.y, brightness);

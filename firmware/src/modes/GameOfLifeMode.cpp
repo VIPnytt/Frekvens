@@ -17,81 +17,82 @@ static_assert(GRID_ROWS >= 8U, __STRING(MODE_GAMEOFLIFE) " is not compatible wit
 
 void GameOfLifeMode::configure()
 {
+    bool _pending{false};
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         uint8_t _clock{0U};
-        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK)
-        {
-            clock = static_cast<bool>(_clock);
-        }
+        _pending = nvs_get_u8(handle, "clock", &_clock) == ESP_OK;
         nvs_close(handle);
+        if (_pending)
+        {
+            setClock(static_cast<bool>(_clock));
+        }
     }
-    transmit();
+    if (!_pending)
+    {
+        transmit();
+    }
 }
 
 void GameOfLifeMode::begin() { pending = true; }
 
 void GameOfLifeMode::handle()
 {
-    if (millis() - lastMillis > UINT8_MAX)
+    if (millis() - lastMillis <= UINT8_MAX)
     {
-        if (clock && getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
-        {
-            hour = local.tm_hour;
-            minute = local.tm_min;
+        return;
+    }
+    if (clock && getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
+    {
+        hour = local.tm_hour;
+        minute = local.tm_min;
 #ifdef CLOCK_12H
-            const int hour{(local.tm_hour + 11) % 12 + 1};
+        const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-            Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
-            const MiniFont font;
-            TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
-            TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
-            TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2U + 1U, 0U);
-            TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2U + 5U, 0U);
-            pending = false;
-        }
-        std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - (clock ? 5U : 0U)), false);
-        for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - (clock ? 5U : 0U)) / (1U << 4U));
-             ++i)
+        Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
+        const MiniFont font;
+        TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
+        TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
+        TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2U + 1U, 0U);
+        TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2U + 5U, 0U);
+        pending = false;
+    }
+    std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
+    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (1U << 4U)); ++i)
+    {
+        seeds[random(1, GRID_COLUMNS - 1) + (random(yMin + 1U, GRID_ROWS - 1) * (GRID_COLUMNS - yMin))] = true;
+    }
+    lastMillis = millis();
+    active = 0U;
+    for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
+    {
+        for (uint8_t y{yMin}; y < GRID_ROWS; ++y)
         {
-            seeds[random(1, GRID_COLUMNS - 1) +
-                  (random(clock ? 6 : 1, GRID_ROWS - 1) * (GRID_COLUMNS - (clock ? 5 : 0)))] = true;
-        }
-        lastMillis = millis();
-        active = 0U;
-        const uint8_t yMin{clock ? uint8_t{5U} : uint8_t{0U}};
-        for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
-        {
-            for (uint8_t y{yMin}; y < GRID_ROWS; ++y)
+            uint8_t count{0U};
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+            for (uint8_t _x{static_cast<uint8_t>(max<int16_t>(x - 1, 0))}; _x <= x + 1U && _x < GRID_COLUMNS; ++_x)
             {
-                uint8_t count{0U};
                 // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                for (uint8_t _x{static_cast<uint8_t>(max<int16_t>(x - 1, 0))}; _x <= x + 1U && _x < GRID_COLUMNS; ++_x)
+                for (uint8_t _y{static_cast<uint8_t>(max<int16_t>(yMin, y - 1U))}; _y <= y + 1U && _y < GRID_ROWS; ++_y)
                 {
-                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                    for (uint8_t _y{static_cast<uint8_t>(max<int16_t>(yMin, y - 1U))};
-                         _y <= y + 1U && _y < GRID_ROWS;
-                         ++_y)
+                    if ((_x != x || _y != y) &&
+                        (seeds[_x + (_y * (GRID_COLUMNS - yMin))] || Display.getPixel(_x, _y) != 0U))
                     {
-                        if ((_x != x || _y != y) &&
-                            (seeds[_x + (_y * (GRID_COLUMNS - (clock ? 5U : 0U)))] || Display.getPixel(_x, _y) != 0U))
-                        {
-                            ++count;
-                        }
+                        ++count;
                     }
                 }
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
-                const bool lit{seeds[x + (y * (GRID_COLUMNS - (clock ? 5U : 0U)))] || Display.getPixel(x, y) != 0U};
-                if (lit && (count < 2U || count > 3U))
-                {
-                    Display.setPixel(x, y, 0U);
-                }
-                else if (!lit && count == 3U)
-                {
-                    Display.setPixel(x, y, clock ? INT8_MAX : UINT8_MAX);
-                    ++active;
-                }
+            }
+            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
+            const bool lit{seeds[x + (y * (GRID_COLUMNS - yMin))] || Display.getPixel(x, y) != 0U};
+            if (lit && (count < 2U || count > 3U))
+            {
+                Display.setPixel(x, y, 0U);
+            }
+            else if (!lit && count == 3U)
+            {
+                Display.setPixel(x, y, brightness);
+                ++active;
             }
         }
     }
@@ -107,6 +108,8 @@ void GameOfLifeMode::setClock(bool _clock)
         nvs_commit(handle);
         nvs_close(handle);
     }
+    brightness = clock ? INT8_MAX : UINT8_MAX;
+    yMin = clock ? 5U : 0U;
     pending = true;
     transmit();
 }

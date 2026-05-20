@@ -35,7 +35,7 @@ void PingPongMode::begin()
     paddleA.clear();
     paddleB.clear();
 #if GRID_COLUMNS == GRID_ROWS
-    const uint8_t _paddle{random(clock ? 5 : 0, GRID_COLUMNS - 3U)};
+    const uint8_t _paddle{static_cast<uint8_t>(random(clock ? 5 : 0, GRID_COLUMNS - 3U))};
 #else
     const uint8_t _paddle{random(clock ? 5 : 0, clock ? GRID_ROWS - 3U : GRID_COLUMNS - 3U)};
 #endif // GRID_COLUMNS == GRID_ROWS

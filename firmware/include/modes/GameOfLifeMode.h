@@ -14,6 +14,8 @@ private:
     bool pending{false};
 
     uint8_t active{0U};
+    uint8_t brightness{INT8_MAX};
+    uint8_t yMin{5U};
 
     int hour{24};
     int minute{60};

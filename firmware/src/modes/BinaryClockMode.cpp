@@ -41,7 +41,7 @@ void BinaryClockMode::draw(uint8_t y, uint8_t value)
 {
     for (uint8_t i{0U}; i < 6U; ++i)
     {
-        const uint8_t x{(GRID_COLUMNS / 2U) + 4U - (i * 2U)}; // TODO: Narrowing
+        const uint8_t x{static_cast<uint8_t>((GRID_COLUMNS / 2U) + 4U - (i * 2U))};
         Display.drawRectangle(x, y, x + 1U, y + 3U, true, (value & (1U << i)) != 0U ? UINT8_MAX : 0U);
     }
 }
