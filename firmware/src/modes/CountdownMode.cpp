@@ -183,7 +183,6 @@ void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _font : fontNames)
         {
@@ -202,7 +201,6 @@ void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:timer-sand-full");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::pattern].set(
             R"(^(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d$)");
         component[HomeAssistantAbbreviations::platform].set("text");

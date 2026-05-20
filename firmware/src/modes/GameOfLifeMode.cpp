@@ -136,7 +136,6 @@ void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:one-up");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" clock"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

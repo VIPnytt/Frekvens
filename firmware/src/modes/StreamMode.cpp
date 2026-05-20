@@ -94,7 +94,6 @@ void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:protocol");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" protocol"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         options.add("Art-Net");
         options.add("Distributed Display Protocol");

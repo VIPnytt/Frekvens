@@ -144,7 +144,6 @@ void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string to
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:brightness-auto");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");
@@ -161,7 +160,6 @@ void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string to
         component[HomeAssistantAbbreviations::entity_category].set("diagnostic");
         component[HomeAssistantAbbreviations::icon].set("mdi:brightness-5");
         component[HomeAssistantAbbreviations::name].set("Illuminance");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);

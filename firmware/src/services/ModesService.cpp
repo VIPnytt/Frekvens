@@ -437,7 +437,6 @@ void ModesService::onHomeAssistant(JsonDocument &discovery, std::string topic, s
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-list-bulleted");
         component[HomeAssistantAbbreviations::name].set("Mode");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _name : names)
         {
