@@ -11,7 +11,7 @@
 
 void AnimationMode::begin()
 {
-    index = 0;
+    index = 0U;
     pending = true;
 }
 
@@ -27,8 +27,8 @@ void AnimationMode::handle()
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-            size_t len{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
-            if (nvs_get_blob(handle, std::to_string(index).c_str(), frame.data(), &len) == ESP_OK)
+            size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            if (nvs_get_blob(handle, std::to_string(index).c_str(), frame.data(), &length) == ESP_OK)
             {
                 nvs_close(handle);
                 Display.setFrame(frame);
@@ -41,7 +41,7 @@ void AnimationMode::handle()
             else
             {
                 nvs_close(handle);
-                index = 0;
+                index = 0U;
                 pending = false;
             }
         }
@@ -51,7 +51,7 @@ void AnimationMode::handle()
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
-    lastMillis = millis() + (frame.size() * 2);
+    lastMillis = millis() + (frame.size() * 2U);
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
@@ -59,9 +59,9 @@ void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
         nvs_commit(handle);
         nvs_close(handle);
     }
-    index = 0;
+    index = 0U;
     pending = true;
-    ESP_LOGV("Status", "frame #%d saved", _index + 1); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV("Status", "frame #%d saved", _index + 1U); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void AnimationMode::setFrames(uint8_t count)
@@ -69,7 +69,7 @@ void AnimationMode::setFrames(uint8_t count)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        for (uint8_t i = count; i >= 2U; ++i)
+        for (uint8_t i{count}; i >= 2U; ++i)
         {
             if (nvs_erase_key(handle, std::to_string(i).c_str()) != ESP_OK)
             {
@@ -98,7 +98,7 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["interval"].set(interval);
     JsonArray _frame{doc["frame"].to<JsonArray>()};
-    for (uint16_t i = 0; i < frame.size(); ++i)
+    for (size_t i{0U}; i < frame.size(); ++i)
     {
         _frame.add(frame[i]);
     }
@@ -113,7 +113,7 @@ void AnimationMode::onReceive(JsonObjectConst payload,
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")
     {
         lastMillis = millis() + (GRID_COLUMNS * GRID_ROWS);
-        index = 0;
+        index = 0U;
         pending = true;
     }
     // Frame
@@ -121,8 +121,8 @@ void AnimationMode::onReceive(JsonObjectConst payload,
         payload["index"].is<uint8_t>())
     {
         std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-        const JsonArrayConst &_frame = payload["frame"].as<JsonArrayConst>();
-        for (size_t i = 0; i < frame.size(); ++i)
+        const JsonArrayConst &_frame{payload["frame"].as<JsonArrayConst>()};
+        for (size_t i{0U}; i < frame.size(); ++i)
         {
             if (_frame[i].is<uint8_t>())
             {
