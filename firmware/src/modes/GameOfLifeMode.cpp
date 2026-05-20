@@ -47,7 +47,7 @@ void GameOfLifeMode::handle()
     {
         hour = local.tm_hour;
         minute = local.tm_min;
-#ifdef CLOCK_12H
+#if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
         Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);

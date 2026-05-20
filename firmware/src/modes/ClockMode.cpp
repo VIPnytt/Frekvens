@@ -44,7 +44,7 @@ void ClockMode::handle()
         {
             hour = local.tm_hour;
             minute = local.tm_min;
-#ifdef CLOCK_12H
+#if CLOCK_12H
             const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
             const std::unique_ptr<const FontModule> font{Fonts.get(fontName)};
