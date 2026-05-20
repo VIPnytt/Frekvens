@@ -39,7 +39,7 @@ const [getFrames, setFrames] = createSignal<Frame[]>([]);
 const [getFramesDraft, setFramesDraft] = createSignal<FrameSignal[]>([]);
 const [getPreview, setPreview] = createSignal<boolean>(false);
 const [getPreviewIndex, setPreviewIndex] = createSignal<number>(0);
-const [getPreviewTimer, setPreviewTimer] = createSignal<NodeJS.Timeout | undefined>(undefined);
+const [getPreviewTimer, setPreviewTimer] = createSignal<ReturnType<typeof setInterval> | undefined>(undefined);
 const [getSaved, setSaved] = createSignal<boolean>(true);
 
 export const receiver = (json: { frame?: Frame; index?: number; interval?: number }) => {
