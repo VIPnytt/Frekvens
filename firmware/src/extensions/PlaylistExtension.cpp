@@ -194,7 +194,6 @@ void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string top
             "{%set ns=namespace(d={})%}{%for i in value_json.playlist%}{%set ns.d=ns.d|combine({i.mode:i.duration})%}{%endfor%}{{ns.d}}");
         component[HomeAssistantAbbreviations::json_attributes_topic].set(topic);
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

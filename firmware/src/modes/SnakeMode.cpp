@@ -285,7 +285,6 @@ void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:snake");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" clock"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

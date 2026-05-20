@@ -515,7 +515,6 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
         component[HomeAssistantAbbreviations::name].set("Orientation");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         options.add("0°");
 #if GRID_COLUMNS == GRID_ROWS

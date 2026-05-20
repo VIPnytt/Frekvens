@@ -348,7 +348,6 @@ void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
         component[HomeAssistantAbbreviations::force_update].set(true);
         component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);

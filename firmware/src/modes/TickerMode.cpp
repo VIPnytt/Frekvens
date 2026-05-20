@@ -168,7 +168,6 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _font : Fonts.names)
         {
@@ -186,7 +185,6 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:message");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("text");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);

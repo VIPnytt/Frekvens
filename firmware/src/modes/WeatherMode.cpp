@@ -194,7 +194,6 @@ void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, st
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:weather-partly-cloudy");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" provider"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _provider : providerNames)
         {

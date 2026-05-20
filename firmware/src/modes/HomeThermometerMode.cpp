@@ -135,7 +135,6 @@ void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string t
 #endif // GRID_COLUMNS < 18
             component[HomeAssistantAbbreviations::mode].set("box");
             component[HomeAssistantAbbreviations::name].set(where.second);
-            component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
             component[HomeAssistantAbbreviations::platform].set("number");
             component[HomeAssistantAbbreviations::state_topic].set(topic);
             component[HomeAssistantAbbreviations::unique_id].set(unique + id);

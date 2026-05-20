@@ -160,7 +160,6 @@ void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topi
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:remote-tv");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

@@ -14,16 +14,15 @@
 
 void HomeAssistantExtension::begin()
 {
-    const std::string topic = std::string("frekvens/" HOSTNAME "/");
-    const std::string unique = std::format("0x{:x}_", ESP.getEfuseMac());
+    const std::string topic{std::string("frekvens/" HOSTNAME "/")};
+    const std::string unique{std::format("0x{:x}_", ESP.getEfuseMac())};
     JsonDocument discovery;
-    const std::array<ServiceModule *, 4> services{
-        &Connectivity,
-        &Device,
-        &Display,
-        &Modes,
-    };
-    for (ServiceModule *service : services)
+    for (ServiceModule *service : std::array<ServiceModule *, 4U>{
+             &Connectivity,
+             &Device,
+             &Display,
+             &Modes,
+         })
     {
         service->onHomeAssistant(discovery, topic, unique);
     }
@@ -43,28 +42,29 @@ void HomeAssistantExtension::begin()
     {
         JsonObject device{discovery[HomeAssistantAbbreviations::device].to<JsonObject>()};
 #if EXTENSION_WEBAPP
-        device[HomeAssistantAbbreviations::configuration_url].set("http://" HOSTNAME ".local");
+        device[HomeAssistantDeviceAbbreviations::configuration_url].set("http://" HOSTNAME ".local");
 #endif // EXTENSION_WEBAPP
         {
-            JsonArray _connections{device[HomeAssistantAbbreviations::connections].to<JsonArray>()};
+            JsonArray _connections{device[HomeAssistantDeviceAbbreviations::connections].to<JsonArray>()};
             {
                 JsonArray _wifi{_connections.add<JsonArray>()};
                 _wifi.add("mac");
                 _wifi.add(WiFi.macAddress());
             }
         }
-        device[HomeAssistantAbbreviations::hw_version].set(ARDUINO_BOARD);
-        device[HomeAssistantAbbreviations::identifiers].to<JsonArray>().add(std::format("0x{:x}", ESP.getEfuseMac()));
-        device[HomeAssistantAbbreviations::manufacturer].set(MANUFACTURER);
-        device[HomeAssistantAbbreviations::model].set(MODEL);
-        device[HomeAssistantAbbreviations::name].set(NAME);
-        device[HomeAssistantAbbreviations::sw_version].set("Frekvens " VERSION);
+        device[HomeAssistantDeviceAbbreviations::hw_version].set(ARDUINO_BOARD);
+        device[HomeAssistantDeviceAbbreviations::identifiers].to<JsonArray>().add(
+            std::format("0x{:x}", ESP.getEfuseMac()));
+        device[HomeAssistantDeviceAbbreviations::manufacturer].set(MANUFACTURER);
+        device[HomeAssistantDeviceAbbreviations::model].set(MODEL);
+        device[HomeAssistantDeviceAbbreviations::name].set(NAME);
+        device[HomeAssistantDeviceAbbreviations::sw_version].set("Frekvens " VERSION);
         {
             JsonObject origin{discovery[HomeAssistantAbbreviations::origin].to<JsonObject>()};
-            origin[HomeAssistantAbbreviations::name].set("Frekvens");
-            origin[HomeAssistantAbbreviations::support_url].set(
+            origin[HomeAssistantOriginAbbreviations::name].set("Frekvens");
+            origin[HomeAssistantOriginAbbreviations::support_url].set(
                 "https://github.com/VIPnytt/Frekvens/blob/main/docs/SUPPORT.md");
-            origin[HomeAssistantAbbreviations::sw_version].set(VERSION);
+            origin[HomeAssistantOriginAbbreviations::sw_version].set(VERSION);
         }
     }
     const size_t length{measureJson(discovery)};
@@ -144,7 +144,6 @@ void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::strin
         component[HomeAssistantAbbreviations::effect_value_template].set("{{value_json.mode}}");
         component[HomeAssistantAbbreviations::icon].set("mdi:dots-grid");
         component[HomeAssistantAbbreviations::name].set("");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::on_command_type].set("brightness");
         component[HomeAssistantAbbreviations::payload_off].set(payloadOff);
         component[HomeAssistantAbbreviations::payload_on].set(payloadOn);

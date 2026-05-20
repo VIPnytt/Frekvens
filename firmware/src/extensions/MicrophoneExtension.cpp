@@ -152,7 +152,6 @@ void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");
@@ -176,7 +175,7 @@ void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string t
     {
         const std::string id{std::string(name).append("_threshold")};
         JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template] = R"({"threshold":{{value}}})";
+        component[HomeAssistantAbbreviations::command_template].set(R"({"threshold":{{value}}})");
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::entity_category].set("config");
@@ -185,7 +184,6 @@ void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::min].set(1);
         component[HomeAssistantAbbreviations::mode].set("slider");
         component[HomeAssistantAbbreviations::name].set("Threshold");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("number");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
