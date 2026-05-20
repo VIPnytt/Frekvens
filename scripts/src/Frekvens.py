@@ -7,7 +7,7 @@ import typing
 from .components.Dependency import Dependency
 from .components.Deprecated import Deprecated
 from .components.Partition import Partition
-from .components.TimeZone import TimeZone
+from .components.Time import Time
 from .config.version import VERSION
 from .extensions.Ota import Ota
 from .extensions.WebApp import WebApp
@@ -30,7 +30,7 @@ class Frekvens:
     firmware: Firmware | None = None
     ota: Ota | None = None
     partition: Partition
-    timezone: TimeZone | None = None
+    time: Time | None = None
     tools: Tools
     webapp: WebApp | None = None
 
@@ -59,7 +59,7 @@ class Frekvens:
             ["uploadfs"],
             ["uploadfsota"],
         ]:
-            self.timezone = TimeZone(self)
+            self.time = Time(self)
         if COMMAND_LINE_TARGETS not in [
             ["build"],
             ["compiledb"],
@@ -85,8 +85,8 @@ class Frekvens:
     def configure(self) -> None:
         if self.ota:
             self.ota.configure()
-        if self.timezone:
-            self.timezone.configure()
+        if self.time:
+            self.time.configure()
 
     def validate(self) -> None:
         if self.ota:

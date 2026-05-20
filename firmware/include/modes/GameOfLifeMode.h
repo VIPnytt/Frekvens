@@ -7,18 +7,18 @@
 class GameOfLifeMode final : public ModeModule
 {
 private:
-    static inline bool clock = true;
+    static inline bool clock{true};
 
     tm local{};
 
-    bool pending = false;
+    bool pending{false};
 
-    uint8_t active = 0;
+    uint8_t active{0U};
 
-    int hour = 24;
-    int minute = 60;
+    int hour{24};
+    int minute{60};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     void setClock(bool _clock);
     void transmit();

@@ -10,12 +10,12 @@
 class SnakeMode final : public ModeModule
 {
 private:
-    static inline bool clock = true;
+    static inline bool clock{true};
 
     struct Pixel
     {
-        uint8_t x = 0;
-        uint8_t y = 0;
+        uint8_t x{0U};
+        uint8_t y{0U};
         bool operator==(const Pixel &pixel) const { return x == pixel.x && y == pixel.y; }
         bool operator!=(const Pixel &pixel) const { return x != pixel.x || y != pixel.y; }
         bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }
@@ -23,15 +23,15 @@ private:
 
     tm local{};
 
-    bool pending = false;
+    bool pending{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
-    int hour = 24;
-    int minute = 60;
+    int hour{24};
+    int minute{60};
 
-    uint8_t blinkCount = 0;
-    uint8_t stage = 0;
+    uint8_t blinkCount{0U};
+    uint8_t stage{0U};
 
     Pixel target;
 

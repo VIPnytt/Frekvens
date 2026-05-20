@@ -19,7 +19,7 @@ void ClockMode::configure()
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 0U)
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length != 0U)
         {
             fontName.resize(length - 1U);
             nvs_get_str(handle, "font", fontName.data(), &length);
@@ -44,6 +44,9 @@ void ClockMode::handle()
         {
             hour = local.tm_hour;
             minute = local.tm_min;
+#ifdef CLOCK_12H
+            const int hour{(local.tm_hour + 11) % 12 + 1};
+#endif // CLOCK_12H
             const std::unique_ptr<const FontModule> font{Fonts.get(fontName)};
             const TextHandler hh1(std::to_string(hour / 10), *font);
             const TextHandler hh2(std::to_string(hour % 10), *font);

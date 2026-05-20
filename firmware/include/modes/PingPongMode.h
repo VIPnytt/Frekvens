@@ -10,29 +10,29 @@
 class PingPongMode final : public ModeModule
 {
 private:
-    static constexpr float speed = 1e-3 * GRID_COLUMNS;
+    static constexpr float speed{1e-3F * GRID_COLUMNS};
 
-    static inline bool clock = true;
+    static inline bool clock{true};
 
-    bool pending = false;
+    bool pending{false};
 
-    float xDec = .0F;
-    float yDec = .0F;
+    float xDec{.0F};
+    float yDec{.0F};
 
     std::deque<uint8_t> paddleA{};
     std::deque<uint8_t> paddleB{};
 
     tm local{};
 
-    int hour = 24;
-    int minute = 60;
+    int hour{24};
+    int minute{60};
 
-    uint8_t x = GRID_COLUMNS - 2;
-    uint8_t y = GRID_ROWS / 2;
+    uint8_t x{GRID_COLUMNS - 2U};
+    uint8_t y{GRID_ROWS / 2U};
 
-    uint16_t deg = 135;
+    uint16_t deg{135U};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     void setClock(bool _clock);
     void transmit();

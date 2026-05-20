@@ -7,7 +7,7 @@
 class BinaryEpochMode final : public ModeModule
 {
 private:
-    time_t epoch = 0;
+    time_t epoch{0LL};
 
 public:
     static constexpr std::string_view name{"Binary epoch"};

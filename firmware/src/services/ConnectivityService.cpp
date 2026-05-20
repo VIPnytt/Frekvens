@@ -61,7 +61,7 @@ void ConnectivityService::configure()
     {
         initStation();
     }
-    configTzTime(TIME_ZONE, "pool.ntp.org", "time.cloudflare.com", "time.nist.gov");
+    configTzTime(TIME_ZONE_POSIX, "1.pool.ntp.org", "2.pool.ntp.org", "3.pool.ntp.org");
 }
 
 void ConnectivityService::handle()

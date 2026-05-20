@@ -12,16 +12,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 HOSTNAME='frekvens'
 ```
 
-**Time zone:**
-
-Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/London`.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-TIME_ZONE='Etc/Universal'
-```
-
 **Wi-Fi client:**
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
@@ -117,4 +107,26 @@ To manually lock the bit depth, define it in [secrets.h](https://github.com/VIPn
 
 ```h
 #define PWM_DEPTH 10 // bit
+```
+
+## ⌚ Time
+
+**Clock format:**
+
+Whether to use 12-hour or 24-hour format for time display.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+CLOCK_FORMAT='12' # hours
+```
+
+**Time zone:**
+
+Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/London`.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+TIME_ZONE='Etc/Universal'
 ```

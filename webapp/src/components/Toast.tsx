@@ -6,13 +6,12 @@ import { Icon } from "./Icon";
 type ToastItem = {
     id: number;
     text: string;
-    duration: number;
 };
 
 const [getToast, setToast] = createSignal<ToastItem | null>(null);
 
 const toast = (text: string, duration: number = 3e3) => {
-    const id = Date.now();
+    const id = Math.random();
     setToast({
         id,
         text,
