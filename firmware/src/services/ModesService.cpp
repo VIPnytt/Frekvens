@@ -206,12 +206,6 @@ std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
         return std::make_unique<HomeThermometerMode>();
     }
 #endif
-#if MODE_JAGGEDWAVEFORM
-    if (modeName == JaggedWaveformMode::name)
-    {
-        return std::make_unique<JaggedWaveformMode>();
-    }
-#endif
 #if MODE_LEAFFALL
     if (modeName == LeafFallMode::name)
     {
@@ -264,12 +258,6 @@ std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
     if (modeName == ScanMode::name)
     {
         return std::make_unique<ScanMode>();
-    }
-#endif
-#if MODE_SMOOTHWAVEFORM
-    if (modeName == SmoothWaveformMode::name)
-    {
-        return std::make_unique<SmoothWaveformMode>();
     }
 #endif
 #if MODE_SNAKE

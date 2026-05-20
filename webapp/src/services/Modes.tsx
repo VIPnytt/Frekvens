@@ -21,7 +21,6 @@ import {
     MODE_GAMEOFLIFE,
     MODE_GLITTER,
     MODE_HOMETHERMOMETER,
-    MODE_JAGGEDWAVEFORM,
     MODE_LEAFFALL,
     MODE_LINES,
     MODE_METABALLS,
@@ -31,7 +30,6 @@ import {
     MODE_RAIN,
     MODE_RING,
     MODE_SCAN,
-    MODE_SMOOTHWAVEFORM,
     MODE_SNAKE,
     MODE_STARS,
     MODE_STREAM,
@@ -78,7 +76,6 @@ import {
     MainSecondary as ModeHomeThermometerMainThird,
     name as ModeHomeThermometerName,
 } from "../modes/HomeThermometer";
-import { Main as ModeJaggedWaveformMain, name as ModeJaggedWaveformName } from "../modes/JaggedWaveform";
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from "../modes/LeafFall";
 import { Main as ModeLinesMain, name as ModeLinesName } from "../modes/Lines";
 import { Main as ModeMetaballsMain, name as ModeMetaballsName } from "../modes/Metaballs";
@@ -88,12 +85,11 @@ import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from "..
 import { Main as ModeRainMain, name as ModeRainName } from "../modes/Rain";
 import { Main as ModeRingMain, name as ModeRingName } from "../modes/Ring";
 import { Main as ModeScanMain, name as ModeScanName } from "../modes/Scan";
-import { Main as ModeSmoothWaveformMain, name as ModeSmoothWaveformName } from "../modes/SmoothWaveform";
 import { Main as ModeSnakeMain, name as ModeSnakeName, Sidebar as ModeSnakeSidebar } from "../modes/Snake";
 import { Main as ModeStarsMain, name as ModeStarsName } from "../modes/Stars";
 import { Main as ModeStreamMain, name as ModeStreamName, Sidebar as ModeStreamSidebar } from "../modes/Stream";
 import { Main as ModeTickerMain, name as ModeTickerName, Sidebar as ModeTickerSidebar } from "../modes/Ticker";
-import { Main as ModeWaveformMain, name as ModeWaveformName } from "../modes/Waveform";
+import { Main as ModeWaveformMain, name as ModeWaveformName, Sidebar as ModeWaveformSidebar } from "../modes/Waveform";
 import { Main as ModeWeatherMain, name as ModeWeatherName, Sidebar as ModeWeatherSidebar } from "../modes/Weather";
 import { DisplayPowerSet } from "./Display";
 
@@ -202,11 +198,6 @@ export const Main: Component = () => (
                 <ModeHomeThermometerMain />
             </Match>
         )}
-        {MODE_JAGGEDWAVEFORM && (
-            <Match when={getMode() === ModeJaggedWaveformName}>
-                <ModeJaggedWaveformMain />
-            </Match>
-        )}
         {MODE_LEAFFALL && (
             <Match when={getMode() === ModeLeafFallName}>
                 <ModeLeafFallMain />
@@ -250,11 +241,6 @@ export const Main: Component = () => (
         {MODE_SCAN && (
             <Match when={getMode() === ModeScanName}>
                 <ModeScanMain />
-            </Match>
-        )}
-        {MODE_SMOOTHWAVEFORM && (
-            <Match when={getMode() === ModeSmoothWaveformName}>
-                <ModeSmoothWaveformMain />
             </Match>
         )}
         {MODE_SNAKE && (
@@ -362,6 +348,11 @@ export const Sidebar: Component = () => {
                 {MODE_TICKER && (
                     <Match when={getMode() === ModeTickerName}>
                         <ModeTickerSidebar />
+                    </Match>
+                )}
+                {MODE_WAVEFORM && (
+                    <Match when={getMode() === ModeWaveformName}>
+                        <ModeWaveformSidebar />
                     </Match>
                 )}
                 {MODE_WEATHER && (
