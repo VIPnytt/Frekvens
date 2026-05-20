@@ -1,5 +1,6 @@
 #include "services/ConnectivityService.h"
 
+#include "extensions/AlexaExtension.h"
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
@@ -247,7 +248,10 @@ void ConnectivityService::onRoutable()
     {
         Connectivity.mDNS = true;
         MDNS.setInstanceName(NAME);
-#if EXTENSION_ALEXA || (EXTENSION_OTA && !defined(OTA_KEY)) || EXTENSION_RESTFUL || EXTENSION_WEBAPP
+#if EXTENSION_ALEXA
+        AlexaExtension::onMdns();
+#endif // EXTENSION_ALEXA
+#if EXTENSION_RESTFUL || EXTENSION_WEBAPP
         MDNS.addService("http", "tcp", 80);
 #endif
 #if EXTENSION_WEBSOCKET
