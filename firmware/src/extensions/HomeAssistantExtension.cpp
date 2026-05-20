@@ -2,8 +2,8 @@
 
 #include "extensions/HomeAssistantExtension.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "services/ConnectivityService.h"
+#include "config/constants.h"             // NOLINT(misc-include-cleaner)
+#include "services/ConnectivityService.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 #include "services/ExtensionsService.h"
