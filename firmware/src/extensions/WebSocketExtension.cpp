@@ -5,6 +5,8 @@
 #include "services/DeviceService.h"
 #include "services/WebServerService.h"
 
+#include <span>
+
 void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
@@ -43,14 +45,15 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-p
         const AwsFrameInfo *info{static_cast<AwsFrameInfo *>(arg)};
         if (info->message_opcode == AwsFrameType::WS_TEXT)
         {
-            if (!info->final || info->index != 0U || info->index + len != info->len)
+            if (info->final == 0U || info->index != 0U || info->index + len != info->len)
             {
                 if (info->num == 0U && info->index == 0U)
                 {
                     buffer.clear();
                 }
-                buffer.insert(buffer.end(), data, data + len);
-                if (!info->final || info->index + len != info->len)
+                const std::span<const uint8_t> chunk{data, len};
+                buffer.insert(buffer.end(), chunk.begin(), chunk.end());
+                if (info->final == 0U || info->index + len != info->len)
                 {
                     return;
                 }
