@@ -23,7 +23,7 @@ void CountdownMode::configure()
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 0U)
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length != 0U)
         {
             fontName.resize(length - 1U);
             nvs_get_str(handle, "font", fontName.data(), &length);
@@ -83,7 +83,7 @@ void CountdownMode::handle()
                      static_cast<int8_t>((GRID_COLUMNS / 2U) + static_cast<int8_t>(_bl.getHeight() > 5U)));
             _br.draw((GRID_COLUMNS / 2U) + 1U + ((fontWidth - _br.getWidth()) / 2U),
                      static_cast<int8_t>((GRID_COLUMNS / 2U) + static_cast<int8_t>(_br.getHeight() > 5U)));
-            if (seconds == 0U && minutes == 0U && hours == 0U)
+            if (seconds == 0 && minutes == 0 && hours == 0)
             {
                 blink = INT8_MAX;
                 odd = true;
