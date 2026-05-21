@@ -50,7 +50,9 @@ void GameOfLifeMode::handle()
 #if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-        for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
+        for (uint8_t _x{static_cast<uint8_t>((GRID_COLUMNS / 2U) - 8U)};
+             _x < static_cast<uint8_t>((GRID_COLUMNS / 2U) + 8U);
+             ++_x)
         {
             for (uint8_t y{0U}; y < 5U; ++y)
             {

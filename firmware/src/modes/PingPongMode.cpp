@@ -61,7 +61,9 @@ void PingPongMode::handle()
 #if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-        for (uint8_t _x{(GRID_COLUMNS / 2U) - 8U}; _x < (GRID_COLUMNS / 2U) + 8U; ++_x)
+        for (uint8_t _x{static_cast<uint8_t>((GRID_COLUMNS / 2U) - 8U)};
+             _x < static_cast<uint8_t>((GRID_COLUMNS / 2U) + 8U);
+             ++_x)
         {
             for (uint8_t _y{0U}; _y < 5U; ++_y)
             {
