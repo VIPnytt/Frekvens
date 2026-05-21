@@ -17,7 +17,7 @@ static_assert(GRID_ROWS >= 8U, __STRING(MODE_GAMEOFLIFE) " is not compatible wit
 
 void GameOfLifeMode::configure()
 {
-    bool _pending{false};
+    bool _pending{false}; // NOLINT(misc-const-correctness)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
