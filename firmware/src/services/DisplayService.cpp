@@ -30,7 +30,7 @@ void DisplayService::configure()
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1U, true, 0U);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(1U << depth) / PWM_WIDTH), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(0b1U << depth) / PWM_WIDTH), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0U);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -134,7 +134,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
     for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
         const uint8_t value{frame[idx]}; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0U && value < UINT8_MAX)
+        if (value != 0U && value != UINT8_MAX)
         {
             ++counts[value];
         }
@@ -149,7 +149,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
     for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
         const uint8_t value{frame[idx]}; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0U && value < UINT8_MAX)
+        if (value != 0U && value != UINT8_MAX)
         {
             indices[next[value]++] = idx;
         }
@@ -240,16 +240,16 @@ void DisplayService::setPower(bool _power)
                       0U,
                       max<uint16_t>(brightness,
                                     powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                        ((1U << depth) - 2U)),
-                      (1U << 5U) *
+                                        ((0b1U << depth) - 2U)),
+                      (0b1U << 5U) *
                           brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
         ledcFade(PIN_OE,
                  0U,
                  max<uint16_t>(brightness,
                                powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                   ((1U << depth) - 2U)),
-                 (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
+                                   ((0b1U << depth) - 2U)),
+                 (0b1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
         pending = true;
@@ -263,18 +263,18 @@ void DisplayService::setPower(bool _power)
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2U)),
+                              ((0b1U << depth) - 2U)),
             0U,
-            (1U << 3U) * brightness,
+            (0b1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
         ledcFadeWithInterrupt(
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2U)),
+                              ((0b1U << depth) - 2U)),
             0U,
-            (1U << 3U) * brightness,
+            (0b1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
@@ -297,28 +297,27 @@ void DisplayService::setBrightness(uint8_t _brightness)
 {
     ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    ledcFadeGamma(
-        PIN_OE,
-        power ? max<uint16_t>(brightness,
-                              powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                  ((1U << depth) - 2U))
-              : 0U,
-        max<uint16_t>(_brightness,
-                      powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                          ((1U << depth) - 2U)),
-        (1U << 4U) *
-            abs(brightness -
-                _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+    // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+    ledcFadeGamma(PIN_OE,
+                  power ? max<uint16_t>(brightness,
+                                        powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                            ((0b1U << depth) - 2U))
+                        : 0U,
+                  max<uint16_t>(_brightness,
+                                powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                    ((0b1U << depth) - 2U)),
+                  (0b1U << 4U) * abs(brightness - _brightness));
 #else
+    // -2 offset due to `ledcFade` stability issues.
     ledcFade(PIN_OE,
              power ? max<uint16_t>(brightness,
                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                       ((1U << depth) - 2U))
+                                       ((0b1U << depth) - 2U))
                    : 0U,
              max<uint16_t>(_brightness,
                            powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                               ((1U << depth) - 2U)),
-             (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+                               ((0b1U << depth) - 2U)),
+             (0b1U << 4U) * abs(brightness - _brightness));
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
@@ -425,29 +424,17 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill,
-                                   uint8_t brightness)
+void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, uint8_t brightness)
 {
-    if (fill)
-    {
-        for (uint16_t x{minX}; x < uint16_t{maxX} + 1U; ++x)
-        {
-            for (uint16_t y{minY}; y < uint16_t{maxY} + 1U; ++y)
-            {
-                setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
-            }
-        }
-        return;
-    }
     for (uint16_t x{minX}; x < uint16_t{maxX} + 1U; ++x)
     {
         setPixel(static_cast<uint8_t>(x), minY, brightness);
-        if (maxY != minY)
+        if (minY != maxY)
         {
             setPixel(static_cast<uint8_t>(x), maxY, brightness);
         }
     }
-    if (maxY > minY + 1U)
+    if (minY + 1U < maxY)
     {
         for (uint16_t y{static_cast<uint16_t>(minY + 1U)}; y < uint16_t{maxY}; ++y)
         {

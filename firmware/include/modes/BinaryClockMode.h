@@ -15,7 +15,7 @@ private:
     int minute{60};
     int second{60};
 
-    void draw(uint8_t y, uint8_t value);
+    void draw(uint8_t y, uint8_t digit);
 
 public:
     static constexpr std::string_view name{"Binary clock"};

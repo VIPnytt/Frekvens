@@ -7,11 +7,17 @@
 #include "services/DisplayService.h"
 
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 6U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 10U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
 
 void BreakoutClockMode::begin()
 {
-    Display.drawRectangle(0U, 0U, GRID_COLUMNS - 1U, GRID_ROWS - 1U - 4U);
+    for (uint8_t _x{0U}; _x < GRID_COLUMNS; ++_x)
+    {
+        for (uint8_t _y{0U}; _y < GRID_ROWS - 4U; ++_y)
+        {
+            Display.setPixel(_x, _y);
+        }
+    }
     paddle.clear();
     const uint8_t paddleX{static_cast<uint8_t>(random(GRID_COLUMNS - 1U - 3U))};
     for (uint8_t _x{0U}; _x < 3U; ++_x)

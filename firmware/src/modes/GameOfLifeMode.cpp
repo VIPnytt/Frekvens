@@ -50,7 +50,13 @@ void GameOfLifeMode::handle()
 #if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-        Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
+        for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
+        {
+            for (uint8_t y{0U}; y < 5U; ++y)
+            {
+                Display.setPixel(x, y, 0U);
+            }
+        }
         const MiniFont font;
         TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
         TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
@@ -59,7 +65,7 @@ void GameOfLifeMode::handle()
         pending = false;
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
-    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (1U << 4U)); ++i)
+    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)
     {
         seeds[random(1, GRID_COLUMNS - 1) + (random(yMin + 1U, GRID_ROWS - 1) * (GRID_COLUMNS - yMin))] = true;
     }

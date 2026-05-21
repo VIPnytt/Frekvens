@@ -37,12 +37,17 @@ void BinaryClockMode::handle()
     }
 }
 
-void BinaryClockMode::draw(uint8_t y, uint8_t value)
+void BinaryClockMode::draw(uint8_t y, uint8_t digit)
 {
     for (uint8_t i{0U}; i < 6U; ++i)
     {
         const uint8_t x{static_cast<uint8_t>((GRID_COLUMNS / 2U) + 4U - (i * 2U))};
-        Display.drawRectangle(x, y, x + 1U, y + 3U, true, (value & (1U << i)) != 0U ? UINT8_MAX : 0U);
+        const uint8_t brightness = (digit & (0b1U << i)) == 0U ? 0U : UINT8_MAX;
+        for (uint16_t _y{y}; _y < uint16_t{y} + 4U; ++_y)
+        {
+            Display.setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(_y), brightness);
+            Display.setPixel(static_cast<uint8_t>(x + 1U), static_cast<uint8_t>(_y), brightness);
+        }
     }
 }
 

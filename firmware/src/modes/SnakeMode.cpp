@@ -47,7 +47,13 @@ void SnakeMode::handle()
 #if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-        Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
+        for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
+        {
+            for (uint8_t y{0U}; y < 5U; ++y)
+            {
+                Display.setPixel(x, y, 0U);
+            }
+        }
         const MiniFont font;
         TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
         TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
@@ -247,7 +253,13 @@ void SnakeMode::setClock(bool _clock)
     }
     else if (!clock)
     {
-        Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
+        for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
+        {
+            for (uint8_t y{0U}; y < 5U; ++y)
+            {
+                Display.setPixel(x, y, 0U);
+            }
+        }
     }
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)

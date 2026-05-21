@@ -61,7 +61,13 @@ void PingPongMode::handle()
 #if CLOCK_12H
         const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
-        Display.drawRectangle((GRID_COLUMNS / 2U) - 8U, 0U, (GRID_COLUMNS / 2U) + 7U, 4U, true, 0U);
+        for (uint8_t _x{(GRID_COLUMNS / 2U) - 8U}; _x < (GRID_COLUMNS / 2U) + 8U; ++_x)
+        {
+            for (uint8_t _y{0U}; _y < 5U; ++_y)
+            {
+                Display.setPixel(_x, _y, 0U);
+            }
+        }
         const MiniFont font;
         TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
         TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
