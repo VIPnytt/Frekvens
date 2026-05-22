@@ -110,7 +110,7 @@ void PingPongMode::handle()
                                             : (GRID_COLUMNS - 2U - xDec) / abs(paddleB[1U] - yDec))};
     if (clock == nullptr && xDec < paddleA.front() && bRad < 1U && paddleA.front() != 0U)
     {
-        // Bottom left
+        // Bottom: left
         Display.setPixel(paddleA.back(), GRID_ROWS - 1U, 0U);
         paddleA.pop_back();
         paddleA.push_front(paddleA.front() - 1U);
@@ -118,7 +118,7 @@ void PingPongMode::handle()
     }
     else if (clock == nullptr && xDec > paddleA.back() && bRad < 1U && paddleA.back() < GRID_COLUMNS - 1U)
     {
-        // Bottom right
+        // Bottom: right
         Display.setPixel(paddleA.front(), GRID_ROWS - 1U, 0U);
         paddleA.pop_front();
         paddleA.push_back(paddleA.back() + 1U);
@@ -126,7 +126,7 @@ void PingPongMode::handle()
     }
     else if (clock != nullptr && yDec > paddleA.back() && aRad < 1U && paddleA.back() < GRID_ROWS - 1U)
     {
-        // Left down
+        // Left: down
         Display.setPixel(0U, paddleA.front(), 0U);
         paddleA.pop_front();
         paddleA.push_back(paddleA.back() + 1U);
@@ -134,7 +134,7 @@ void PingPongMode::handle()
     }
     else if (clock != nullptr && yDec < paddleA.front() && aRad < 1U && paddleA.front() > 5U)
     {
-        // Left up
+        // Left: up
         Display.setPixel(0U, paddleA.back(), 0U);
         paddleA.pop_back();
         paddleA.push_front(paddleA.front() - 1U);
@@ -142,7 +142,7 @@ void PingPongMode::handle()
     }
     else if (clock != nullptr && yDec > paddleB.back() && bRad < 1U && paddleB.back() < GRID_ROWS - 1U)
     {
-        // Right down
+        // Right: down
         Display.setPixel(GRID_COLUMNS - 1U, paddleB.front(), 0);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
@@ -150,7 +150,7 @@ void PingPongMode::handle()
     }
     else if (clock != nullptr && yDec < paddleB.front() && bRad < 1U && paddleB.front() > 5U)
     {
-        // Right up
+        // Right: up
         Display.setPixel(GRID_COLUMNS - 1U, paddleB.back(), 0U);
         paddleB.pop_back();
         paddleB.push_front(paddleB.front() - 1U);
@@ -158,7 +158,7 @@ void PingPongMode::handle()
     }
     else if (clock == nullptr && xDec < paddleB.front() && aRad < 1U && paddleB.front() != 0U)
     {
-        // Top left
+        // Top: left
         Display.setPixel(paddleB.back(), 0U, 0U);
         paddleB.pop_back();
         paddleB.push_front(paddleB.front() - 1U);
@@ -166,7 +166,7 @@ void PingPongMode::handle()
     }
     else if (clock == nullptr && xDec > paddleB.back() && aRad < 1U && paddleB.back() < GRID_COLUMNS - 1U)
     {
-        // Top right
+        // Top: right
         Display.setPixel(paddleB.front(), 0U, 0U);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
@@ -186,24 +186,28 @@ void PingPongMode::setClock(bool _clock)
     if (_clock)
     {
         clock = std::make_unique<ClockHandler>();
-        clock->clear();
-        for (uint8_t y : paddleA)
-        {
-            Display.setPixel(0U, y, 0U);
-        }
-        for (uint8_t y : paddleB)
-        {
-            Display.setPixel(GRID_COLUMNS - 1U, y, 0U);
-        }
         yDec = y = 6U;
+        clock->clear();
+        for (const uint8_t x : paddleA)
+        {
+            Display.setPixel(x, GRID_ROWS - 1U, 0U);
+        }
+        for (const uint8_t x : paddleB)
+        {
+            Display.setPixel(x, 0U, 0U);
+        }
     }
     else if (clock != nullptr)
     {
         clock->clear();
         clock.reset();
-        for (uint8_t x : paddleB)
+        for (const uint8_t y : paddleA)
         {
-            Display.setPixel(x, GRID_ROWS - 1U, 0U);
+            Display.setPixel(0U, y, 0U);
+        }
+        for (const uint8_t y : paddleB)
+        {
+            Display.setPixel(GRID_COLUMNS - 1U, y, 0U);
         }
     }
     transmit();

@@ -10,7 +10,7 @@ void ClockHandler::handle()
         hour = local.tm_hour;
         minute = local.tm_min;
 #if CLOCK_12H
-        const uint8_t hour{static_cast<uint8_t>((local.tm_hour + 11) % 12 + 1)};
+        const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
         draw(digits[hour / 10], (GRID_COLUMNS / 2U) - 8U, 0U);
         draw(digits[hour % 10], (GRID_COLUMNS / 2U) - 4U, 0U);
@@ -39,19 +39,11 @@ void ClockHandler::draw(const uint16_t bitmap, uint8_t x, uint8_t y) const
 
 void ClockHandler::clear()
 {
-    for (uint8_t y{0U}; y < 5U; ++y)
+    for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
     {
-        Display.setPixel((GRID_COLUMNS / 2U) - 8U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 7U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 6U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 4U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 3U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 2U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 1U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 2U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 3U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 5U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 6U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 7U, y, 0U);
+        for (uint8_t y{0U}; y < 5U; ++y)
+        {
+            Display.setPixel(x, y, 0U);
+        }
     }
 }
