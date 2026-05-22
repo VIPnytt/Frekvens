@@ -3,6 +3,7 @@
 #if MODE_BREAKOUTCLOCK
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "handlers/ClockHandler.h"
 #include "modules/ModeModule.h"
 
 #include <deque>
@@ -20,12 +21,9 @@ private:
 
     uint16_t deg{90U};
 
-    int hour{24};
-    int minute{60};
-
     std::deque<uint8_t> paddle{};
 
-    tm local{};
+    ClockHandler clock{false};
 
 public:
     static constexpr std::string_view name{"Breakout clock"};

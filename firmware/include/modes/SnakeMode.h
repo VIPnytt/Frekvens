@@ -2,16 +2,16 @@
 
 #if MODE_SNAKE
 
+#include "handlers/ClockHandler.h"
 #include "modules/ModeModule.h"
 
+#include <bits/unique_ptr.h>
 #include <deque>
 #include <optional>
 
 class SnakeMode final : public ModeModule
 {
 private:
-    static inline bool clock{true};
-
     struct Pixel
     {
         uint8_t x{0U};
@@ -21,14 +21,7 @@ private:
         bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }
     };
 
-    tm local{};
-
-    bool pending{false};
-
     unsigned long lastMillis{0UL};
-
-    int hour{24};
-    int minute{60};
 
     uint8_t blinkCount{0U};
     uint8_t stage{0U};
@@ -36,6 +29,8 @@ private:
     Pixel target;
 
     std::deque<Pixel> snake{};
+
+    std::unique_ptr<ClockHandler> clock{};
 
     void idle();
     [[nodiscard]] std::optional<Pixel> next() const;

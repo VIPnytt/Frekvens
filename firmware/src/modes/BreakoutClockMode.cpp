@@ -19,7 +19,7 @@ void BreakoutClockMode::begin()
         }
     }
     paddle.clear();
-    const uint8_t paddleX{static_cast<uint8_t>(random(GRID_COLUMNS - 1U - 3U))};
+    const uint8_t paddleX{static_cast<uint8_t>(random(GRID_COLUMNS - 4U))};
     for (uint8_t _x{0U}; _x < 3U; ++_x)
     {
         paddle.push_back(paddleX + _x);
@@ -52,19 +52,7 @@ void BreakoutClockMode::handle()
     {
         // Bottom
         deg = random(30, 151); // ±60°
-        if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
-        {
-            hour = local.tm_hour;
-            minute = local.tm_min;
-#if CLOCK_12H
-            const int hour{(local.tm_hour + 11) % 12 + 1};
-#endif // CLOCK_12H
-            const MiniFont font;
-            TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
-            TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
-            TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2U + 1U, 0U);
-            TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2U + 5U, 0U);
-        }
+        clock.handle();
     }
     else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY) != 0U)
     {

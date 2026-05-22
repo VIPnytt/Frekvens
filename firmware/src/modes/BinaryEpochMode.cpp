@@ -18,10 +18,10 @@ void BinaryEpochMode::handle()
         {
             const uint8_t x{static_cast<uint8_t>(GRID_COLUMNS - 2U - (i % (GRID_COLUMNS / 2U) * 2U))};
             const uint8_t y{static_cast<uint8_t>(GRID_ROWS - 4U - (i / (GRID_COLUMNS / 2U) * 4U))};
-            const uint8_t brightness{
+            const uint8_t brightness{static_cast<uint8_t>(
                 ((static_cast<std::make_unsigned_t<time_t>>(epoch) >> i) & std::make_unsigned_t<time_t>{1ULL}) == 0U
                     ? 0U
-                    : UINT8_MAX};
+                    : UINT8_MAX)};
             for (uint16_t _y{y}; _y < uint16_t{y} + 4U; ++_y)
             {
                 Display.setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(_y), brightness);

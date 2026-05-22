@@ -2,12 +2,10 @@
 
 #include "modes/GameOfLifeMode.h"
 
-#include "config/constants.h"     // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 #include <vector>
@@ -17,25 +15,35 @@ static_assert(GRID_ROWS >= 8U, __STRING(MODE_GAMEOFLIFE) " is not compatible wit
 
 void GameOfLifeMode::configure()
 {
-    bool _pending{false}; // NOLINT(misc-const-correctness)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         uint8_t _clock{0U};
-        _pending = nvs_get_u8(handle, "clock", &_clock) == ESP_OK;
+        nvs_get_u8(handle, "clock", &_clock);
         nvs_close(handle);
-        if (_pending)
+        if (static_cast<bool>(_clock))
         {
-            setClock(static_cast<bool>(_clock));
+            clock = std::make_unique<ClockHandler>();
         }
     }
-    if (!_pending)
-    {
-        transmit();
-    }
+    transmit();
 }
 
-void GameOfLifeMode::begin() { pending = true; }
+void GameOfLifeMode::begin()
+{
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        uint8_t _clock{0U};
+        nvs_get_u8(handle, "clock", &_clock);
+        nvs_close(handle);
+        if (static_cast<bool>(_clock))
+        {
+            clock = std::make_unique<ClockHandler>();
+            yMin = 5U;
+        }
+    }
+}
 
 void GameOfLifeMode::handle()
 {
@@ -43,28 +51,9 @@ void GameOfLifeMode::handle()
     {
         return;
     }
-    if (clock && getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
+    if (clock != nullptr)
     {
-        hour = local.tm_hour;
-        minute = local.tm_min;
-#if CLOCK_12H
-        const int hour{(local.tm_hour + 11) % 12 + 1};
-#endif // CLOCK_12H
-        for (uint8_t x{static_cast<uint8_t>((GRID_COLUMNS / 2U) - 8U)};
-             x < static_cast<uint8_t>((GRID_COLUMNS / 2U) + 8U);
-             ++x)
-        {
-            for (uint8_t y{0U}; y < 5U; ++y)
-            {
-                Display.setPixel(x, y, 0U);
-            }
-        }
-        const MiniFont font;
-        TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2U - 8U, 0U);
-        TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2U - 4U, 0U);
-        TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2U + 1U, 0U);
-        TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2U + 5U, 0U);
-        pending = false;
+        clock->handle();
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
     for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)
@@ -108,24 +97,31 @@ void GameOfLifeMode::handle()
 
 void GameOfLifeMode::setClock(bool _clock)
 {
-    clock = _clock;
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock)); // NOLINT(readability-implicit-bool-conversion)
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(_clock));
         nvs_commit(handle);
         nvs_close(handle);
     }
-    brightness = clock ? INT8_MAX : UINT8_MAX;
-    yMin = clock ? 5U : 0U;
-    pending = true;
+    if (_clock)
+    {
+        yMin = 5U;
+        clock = std::make_unique<ClockHandler>();
+        clock->clear();
+    }
+    else
+    {
+        clock.reset();
+        yMin = 0U;
+    }
     transmit();
 }
 
 void GameOfLifeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["clock"].set(clock);
+    doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

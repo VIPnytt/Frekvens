@@ -42,8 +42,8 @@ void ClockMode::handle()
     {
         if (minute != local.tm_min || hour != local.tm_hour || pending)
         {
-            hour = local.tm_hour;
-            minute = local.tm_min;
+            hour = static_cast<uint8_t>(local.tm_hour);
+            minute = static_cast<uint8_t>(local.tm_min);
 #if CLOCK_12H
             const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
@@ -68,7 +68,7 @@ void ClockMode::handle()
         if (ticking && second != local.tm_sec)
         {
             drawTicker(0U);
-            second = local.tm_sec;
+            second = static_cast<uint8_t>(local.tm_sec);
             drawTicker(INT8_MAX);
         }
     }

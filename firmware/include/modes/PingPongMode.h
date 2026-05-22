@@ -3,8 +3,10 @@
 #if MODE_PINGPONG
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "handlers/ClockHandler.h"
 #include "modules/ModeModule.h"
 
+#include <bits/unique_ptr.h>
 #include <deque>
 
 class PingPongMode final : public ModeModule
@@ -12,20 +14,11 @@ class PingPongMode final : public ModeModule
 private:
     static constexpr float speed{1e-3F * GRID_COLUMNS};
 
-    static inline bool clock{true};
-
-    bool pending{false};
-
     float xDec{.0F};
     float yDec{.0F};
 
     std::deque<uint8_t> paddleA{};
     std::deque<uint8_t> paddleB{};
-
-    tm local{};
-
-    int hour{24};
-    int minute{60};
 
     uint8_t x{GRID_COLUMNS - 2U};
     uint8_t y{GRID_ROWS / 2U};
@@ -33,6 +26,8 @@ private:
     uint16_t deg{135U};
 
     unsigned long lastMillis{0UL};
+
+    std::unique_ptr<ClockHandler> clock{};
 
     void setClock(bool _clock);
     void transmit();
