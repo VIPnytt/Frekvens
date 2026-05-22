@@ -2,11 +2,11 @@
 
 #include "modes/ClockMode.h"
 
+#include "extensions/HomeAssistantExtension.h"
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
-#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 
@@ -42,8 +42,8 @@ void ClockMode::handle()
     {
         if (minute != local.tm_min || hour != local.tm_hour || pending)
         {
-            hour = static_cast<uint8_t>(local.tm_hour);
-            minute = static_cast<uint8_t>(local.tm_min);
+            hour = local.tm_hour;
+            minute = local.tm_min;
 #if CLOCK_12H
             const int hour{(local.tm_hour + 11) % 12 + 1};
 #endif // CLOCK_12H
@@ -106,9 +106,9 @@ void ClockMode::drawTicker(uint8_t brightness) const
 
 void ClockMode::setFont(std::string_view _fontName)
 {
-    if (std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
+    if (Fonts.has(_fontName))
     {
-        fontName = _font->name;
+        fontName = _fontName;
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {

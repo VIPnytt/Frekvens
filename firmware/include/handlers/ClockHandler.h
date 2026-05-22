@@ -3,7 +3,7 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 
 #include <array>
-#include <time.h>
+#include <ctime>
 
 class ClockHandler
 {
@@ -83,12 +83,12 @@ private:
 
     const bool opaque{true};
 
-    uint8_t hour{24U};
-    uint8_t minute{60U};
+    int hour{24U};
+    int minute{60U};
 
     tm local{};
 
-    void draw(const std::array<uint8_t, 5U> &digit, uint8_t x, uint8_t y);
+    void draw(const std::array<uint8_t, 5U> &digit, uint8_t x, uint8_t y) const;
 
 public:
     explicit ClockHandler(bool opaque = true) : opaque(opaque) {};

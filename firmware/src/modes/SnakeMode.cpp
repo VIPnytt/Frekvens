@@ -2,12 +2,12 @@
 
 #include "modes/SnakeMode.h"
 
-#include "config/constants.h"     // NOLINT(misc-include-cleaner)
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h"
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <map>
 #include <nvs.h>
@@ -229,8 +229,8 @@ void SnakeMode::clean()
 
 void SnakeMode::setTarget()
 {
-    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
-    do // NOLINT(cppcoreguidelines-avoid-do-while)
+    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)}; // NOLINT(cppcoreguidelines-init-variables)
+    do                                                                    // NOLINT(cppcoreguidelines-avoid-do-while)
     {
         target.x = random(GRID_COLUMNS);
         target.y = random(yMin, GRID_ROWS);

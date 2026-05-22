@@ -25,12 +25,12 @@ void BinaryClockMode::handle()
         }
         if (minute != local.tm_min || pending)
         {
-            minute = static_cast<uint8_t>(local.tm_min);
+            minute = local.tm_min;
             draw((GRID_ROWS / 2U) - 2U, minute);
         }
         if (hour != local.tm_hour || pending)
         {
-            hour = static_cast<uint8_t>(local.tm_hour);
+            hour = local.tm_hour;
             draw((GRID_ROWS / 2U) - 7U, hour);
             pending = false;
         }

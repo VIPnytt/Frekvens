@@ -14,8 +14,8 @@ class SnakeMode final : public ModeModule
 private:
     struct Pixel
     {
-        uint8_t x{0U};
-        uint8_t y{0U};
+        uint8_t x{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
+        uint8_t y{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
         bool operator==(const Pixel &pixel) const { return x == pixel.x && y == pixel.y; }
         bool operator!=(const Pixel &pixel) const { return x != pixel.x || y != pixel.y; }
         bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }

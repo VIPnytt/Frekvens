@@ -2,8 +2,8 @@
 
 #if MODE_PINGPONG
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "handlers/ClockHandler.h"
+#include "config/constants.h"      // NOLINT(misc-include-cleaner)
+#include "handlers/ClockHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <bits/unique_ptr.h>

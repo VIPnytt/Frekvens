@@ -11,9 +11,9 @@ private:
 
     bool pending{false};
 
-    uint8_t hour{24U};
-    uint8_t minute{60U};
-    uint8_t second{60U};
+    int hour{24U};
+    int minute{60U};
+    int second{60U};
 
     void draw(uint8_t y, uint8_t digit);
 

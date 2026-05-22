@@ -7,8 +7,8 @@ void ClockHandler::handle()
 {
     if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
     {
-        hour = static_cast<uint8_t>(local.tm_hour);
-        minute = static_cast<uint8_t>(local.tm_min);
+        hour = local.tm_hour;
+        minute = local.tm_min;
 #if CLOCK_12H
         const uint8_t hour{static_cast<uint8_t>((local.tm_hour + 11) % 12 + 1)};
 #endif // CLOCK_12H
@@ -19,7 +19,7 @@ void ClockHandler::handle()
     }
 }
 
-void ClockHandler::draw(const std::array<uint8_t, 5U> &bitmap, uint8_t x, uint8_t y)
+void ClockHandler::draw(const std::array<uint8_t, 5U> &bitmap, uint8_t x, uint8_t y) const
 {
     for (uint8_t _x{x}; _x < x + 3U; ++_x)
     {
