@@ -57,6 +57,18 @@ std::unique_ptr<const FontModule> FontsService::get(std::string_view fontName) c
     return nullptr;
 }
 
+bool FontsService::has(std::string_view fontName) const
+{
+    for (const std::string_view name : names)
+    {
+        if (fontName == name)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void FontsService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -75,4 +87,4 @@ FontsService &FontsService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-FontsService &Fonts = FontsService::getInstance();
+FontsService &Fonts{FontsService::getInstance()};

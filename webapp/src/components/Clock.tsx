@@ -13,6 +13,7 @@ import {
     mdiClockTimeTwoOutline,
 } from "@mdi/js";
 import { createSignal, onCleanup } from "solid-js";
+import { Temporal } from "temporal-polyfill-lite";
 
 const icons = [
     mdiClockTimeTwelveOutline,
@@ -29,31 +30,33 @@ const icons = [
     mdiClockTimeElevenOutline,
 ];
 
-const hour = () => {
-    const now = new Date();
-    const hour = now.getHours();
-    return icons[(now.getMinutes() >= 30 ? hour + 1 : hour) % 12];
+const getClockState = () => {
+    const now = Temporal.Now.zonedDateTimeISO();
+    return {
+        icon: icons[(now.minute >= 30 ? now.hour + 1 : now.hour) % icons.length],
+        text: new Intl.DateTimeFormat([], {
+            hour: "numeric",
+            minute: "2-digit",
+        }).format(now.epochMilliseconds),
+        delay: 60_000 - now.second * 1_000 - now.millisecond,
+    };
 };
 
-const text = () =>
-    new Date().toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-    });
+const initialClockState = getClockState();
 
-const [getIcon, setIcon] = createSignal(hour());
-const [getText, setText] = createSignal(text());
+const [getIcon, setIcon] = createSignal(initialClockState.icon);
+const [getText, setText] = createSignal(initialClockState.text);
 
 let timer: ReturnType<typeof setTimeout>;
 
 const update = () => {
-    const now = new Date();
-    setIcon(hour());
-    setText(text());
-    timer = setTimeout(update, 60_000 - now.getSeconds() * 1000 - now.getMilliseconds());
+    const clockState = getClockState();
+    setIcon(clockState.icon);
+    setText(clockState.text);
+    timer = setTimeout(update, clockState.delay);
 };
 
-update();
+timer = setTimeout(update, initialClockState.delay);
 
 onCleanup(() => clearTimeout(timer));
 

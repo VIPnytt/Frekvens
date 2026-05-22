@@ -9,13 +9,13 @@ class BinaryClockMode final : public ModeModule
 private:
     tm local{};
 
-    bool pending = false;
+    bool pending{false};
 
-    int hour = 24;
-    int minute = 60;
-    int second = 60;
+    int hour{24U};
+    int minute{60U};
+    int second{60U};
 
-    void draw(uint8_t col, uint8_t value);
+    void draw(uint8_t y, uint8_t digit);
 
 public:
     static constexpr std::string_view name{"Binary clock"};

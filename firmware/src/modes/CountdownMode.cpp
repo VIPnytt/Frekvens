@@ -2,10 +2,10 @@
 
 #include "modes/CountdownMode.h"
 
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/FontsService.h"
 
 #include <array>
@@ -117,9 +117,9 @@ void CountdownMode::save()
 
 void CountdownMode::setFont(std::string_view _fontName)
 {
-    if (const std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
+    if (Fonts.has(_fontName))
     {
-        fontName = _font->name;
+        fontName = _fontName;
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {

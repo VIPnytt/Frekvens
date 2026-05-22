@@ -39,9 +39,9 @@ private:
     bool pending{false};
     bool strikethrough{false};
 
-    int hour{24};
-    int minute{60};
-    int second{60};
+    int hour{24U};
+    int minute{60U};
+    int second{60U};
 
     void drawTicker(uint8_t brightness) const;
     void setFont(std::string_view _fontName);

@@ -3,6 +3,7 @@
 #if MODE_BREAKOUTCLOCK
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "handlers/ClockHandler.h"
 #include "modules/ModeModule.h"
 
 #include <deque>
@@ -10,22 +11,19 @@
 class BreakoutClockMode final : public ModeModule
 {
 private:
-    static constexpr float speed = 7e-4 * GRID_ROWS;
+    static constexpr float speed{7e-4F * GRID_ROWS};
 
-    float xDec = GRID_COLUMNS / 2.0F;
-    float yDec = GRID_ROWS - 2.0F;
+    float xDec{GRID_COLUMNS / 2.0F};
+    float yDec{GRID_ROWS - 2.0F};
+
+    uint8_t x{GRID_COLUMNS / 2U};
+    uint8_t y{GRID_ROWS - 2U};
+
+    uint16_t deg{90U};
 
     std::deque<uint8_t> paddle{};
 
-    tm local{};
-
-    int hour = 24;
-    int minute = 60;
-
-    uint8_t x = GRID_COLUMNS / 2;
-    uint8_t y = GRID_ROWS - 2;
-
-    uint16_t deg = 90;
+    ClockHandler clock{false};
 
 public:
     static constexpr std::string_view name{"Breakout clock"};
