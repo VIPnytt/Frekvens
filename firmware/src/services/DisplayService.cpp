@@ -1,8 +1,8 @@
 #include "services/DisplayService.h"
 
-#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"            // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 #include <SPI.h>
@@ -387,34 +387,30 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
+void DisplayService::drawEllipse(float x, float y, float radius, bool fill, uint8_t brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
-    const float xRatio{static_cast<float>(PITCH_HORIZONTAL * 2U) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
-    const float yRatio{static_cast<float>(PITCH_VERTICAL * 2U) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+    constexpr float xRatio{static_cast<float>(PITCH_HORIZONTAL * 2U) /
+                           static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
+    constexpr float yRatio{static_cast<float>(PITCH_VERTICAL * 2U) /
+                           static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
 #else
     const bool rotated{(static_cast<uint8_t>(orientation) & 1U) != 0U};
     const float xRatio{static_cast<float>(2U * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+                       static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
     const float yRatio{static_cast<float>(2U * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+                       static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-    const uint8_t xMax{
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))))};
-    const uint8_t xMin{static_cast<uint8_t>(max<float>(.0F, floorf(x - (radius / xRatio))))};
-    const uint8_t yMax{
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))))};
-    const uint8_t yMin{static_cast<uint8_t>(max<float>(.0F, floorf(y - (radius / yRatio))))};
-    for (size_t _x{xMin}; _x <= xMax; ++_x)
+    const size_t yMax{
+        static_cast<size_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))))};
+    const size_t yMin{static_cast<size_t>(max<float>(.0F, floorf(y - (radius / yRatio))))};
+    for (size_t _x{static_cast<size_t>(max<float>(.0F, floorf(x - (radius / xRatio))))};
+         _x <= static_cast<size_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))));
+         ++_x)
     {
         for (size_t _y{yMin}; _y <= yMax; ++_y)
         {
-            const float xDistance{xRatio * (static_cast<float>(_x) - x)};
-            const float yDistance{yRatio * (static_cast<float>(_y) - y)};
-            const float distance{hypotf(xDistance, yDistance)};
+            const float distance{hypotf(xRatio * (static_cast<float>(_x) - x), yRatio * (static_cast<float>(_y) - y))};
             if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
                 setPixel(static_cast<uint8_t>(_x), static_cast<uint8_t>(_y), brightness);
