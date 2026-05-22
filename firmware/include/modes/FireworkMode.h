@@ -8,14 +8,14 @@
 class FireworkMode final : public ModeModule
 {
 private:
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
-    uint8_t brightness = UINT8_MAX;
-    uint8_t maxRadius = 1;
-    uint8_t radius = 0;
-    uint8_t rocketX = 0;
-    uint8_t rocketY = GRID_ROWS;
-    uint8_t stage = 0;
+    uint8_t brightness{UINT8_MAX};
+    uint8_t maxRadius{1U};
+    uint8_t radius{0U};
+    uint8_t rocketX{0U};
+    uint8_t rocketY{GRID_ROWS};
+    uint8_t stage{0U};
 
     void pad();
     void launching();
