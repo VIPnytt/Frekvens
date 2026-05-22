@@ -1,9 +1,9 @@
 #include "services/ModesService.h"
 
-#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/FontsService.h"
 
 #include <nvs.h>
@@ -19,7 +19,7 @@ void ModesService::configure()
 
 void ModesService::begin()
 {
-    const esp_reset_reason_t reason = esp_reset_reason();
+    const esp_reset_reason_t reason{esp_reset_reason()};
     if (std::ranges::any_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
         setMode(names[random(names.size())], false);
@@ -29,11 +29,11 @@ void ModesService::begin()
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
-            size_t len{0};
-            if (nvs_get_str(handle, "mode", nullptr, &len) == ESP_OK && len > 0)
+            size_t length{0U};
+            if (nvs_get_str(handle, "mode", nullptr, &length) == ESP_OK && length != 0U)
             {
-                std::vector<char> _mode(len);
-                nvs_get_str(handle, "mode", _mode.data(), &len);
+                std::vector<char> _mode(length);
+                nvs_get_str(handle, "mode", _mode.data(), &length);
                 nvs_close(handle);
                 setMode(_mode.data());
             }
@@ -51,7 +51,7 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled && millis() - lastMillis > (1UL << 11U))
+    if (scheduled && millis() - lastMillis > (1U << 11U))
     {
         scheduled = false;
         ESP_LOGI(
@@ -312,14 +312,14 @@ void ModesService::setMode(std::string_view modeName, bool power)
         mode = std::move(_mode);
         lastMillis = millis();
         scheduled = true;
-        if (power)
+        if (power && !Display.getPower())
         {
             Display.setPower(power);
         }
         const std::string _name{mode->name};
         std::vector<std::string> words{""};
-        uint8_t _line = 0;
-        for (std::size_t i = 0; i < _name.length(); ++i)
+        uint8_t _line{0U};
+        for (size_t i{0U}; i < _name.length(); ++i)
         {
             switch (_name[i])
             {
@@ -332,17 +332,17 @@ void ModesService::setMode(std::string_view modeName, bool power)
                 words[_line].push_back(_name[i]);
             }
         }
-        uint8_t height = 0; // NOLINT(misc-const-correctness)
+        uint8_t height{0U}; // NOLINT(misc-const-correctness)
         std::vector<std::unique_ptr<TextHandler>> lines;
 #if FONT_MICRO
         const std::unique_ptr<const FontModule> font{Fonts.get(MicroFont::name)};
 #else
-        const std::unique_ptr<const FontModule> font{Fonts.get(Fonts.names[0])};
+        const std::unique_ptr<const FontModule> font{Fonts.get(Fonts.names[0U])};
 #endif // FONT_MICRO
         for (const std::string &word : words)
         {
             std::unique_ptr<TextHandler> handler{std::make_unique<TextHandler>(word, *font)};
-            const uint8_t lineHeight = handler->getHeight();
+            const uint8_t lineHeight{handler->getHeight()};
             if (height + lineHeight >= GRID_ROWS)
             {
                 break;
@@ -350,12 +350,16 @@ void ModesService::setMode(std::string_view modeName, bool power)
             height += lineHeight;
             lines.emplace_back(std::move(handler));
         }
-        const int8_t margin = max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1));
-        uint8_t y = max<int8_t>(0, (GRID_ROWS - height - (lines.size() - 1) * margin) / 2);
+        const int8_t margin{max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1))};
+        uint8_t y{static_cast<uint8_t>(
+            max<int16_t>(0,
+                         (static_cast<int16_t>(GRID_ROWS) - static_cast<int16_t>(height) -
+                          static_cast<int16_t>((lines.size() - 1U) * static_cast<size_t>(margin))) /
+                             2))};
         Display.clearFrame();
         for (const std::unique_ptr<TextHandler> &line : lines)
         {
-            line->draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line->getWidth())) / 2, y);
+            line->draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line->getWidth())) / 2U, y);
             y += line->getHeight() + margin;
         }
         Display.flush();
@@ -372,12 +376,12 @@ void ModesService::setModeNext()
     {
         Display.setPower(true);
     }
-    for (std::size_t i = 0; i < names.size(); ++i)
+    for (size_t i{0U}; i < names.size(); ++i)
     {
         if (names[i] == mode->name)
         {
-            const size_t index = (i + 1) % names.size();
-            setMode(names[index], index != 0);
+            const size_t index{(i + 1U) % names.size()};
+            setMode(names[index], index != 0U);
             return;
         }
     }
@@ -389,12 +393,12 @@ void ModesService::setModePrevious()
     {
         Display.setPower(true);
     }
-    for (std::size_t i = 0; i < names.size(); ++i)
+    for (size_t i{0U}; i < names.size(); ++i)
     {
         if (names[i] == mode->name)
         {
-            const size_t index = (i - 1) % names.size();
-            setMode(names[index], index != 0);
+            const size_t index{(i + names.size() - 1U) % names.size()};
+            setMode(names[index], index != 0U);
             return;
         }
     }
@@ -457,4 +461,4 @@ ModesService &ModesService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-ModesService &Modes = ModesService::getInstance();
+ModesService &Modes{ModesService::getInstance()};
