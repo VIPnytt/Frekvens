@@ -21,7 +21,7 @@ void EqualizerMode::begin()
 
 void EqualizerMode::handle()
 {
-    if (millis() - lastMillis > (1UL << 4U))
+    if (millis() - lastMillis > (1U << 4U))
     {
         lastMillis = millis();
 #if EXTENSION_MICROPHONE

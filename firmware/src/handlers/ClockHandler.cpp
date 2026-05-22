@@ -19,13 +19,13 @@ void ClockHandler::handle()
     }
 }
 
-void ClockHandler::draw(const uint16_t bitmap, uint8_t x, uint8_t y) const
+void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
 {
     for (uint8_t _x{0U}; _x < 3U; ++_x)
     {
         for (uint8_t _y{0U}; _y < 5U; ++_y)
         {
-            if ((bitmap >> (14U - (_y * 3U + _x))) & 1U)
+            if ((bitmap >> (14U - ((3U * _y) + _x))) & 1U)
             {
                 Display.setPixel(static_cast<uint8_t>(x + _x), static_cast<uint8_t>(y + _y));
             }
@@ -37,7 +37,7 @@ void ClockHandler::draw(const uint16_t bitmap, uint8_t x, uint8_t y) const
     }
 }
 
-void ClockHandler::clear()
+void ClockHandler::clear() const
 {
     for (uint8_t x{(GRID_COLUMNS / 2U) - 8U}; x < (GRID_COLUMNS / 2U) + 8U; ++x)
     {
