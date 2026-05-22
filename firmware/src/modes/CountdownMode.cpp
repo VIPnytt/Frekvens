@@ -2,7 +2,7 @@
 
 #include "modes/CountdownMode.h"
 
-#include "extensions/HomeAssistantExtension.h"
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"

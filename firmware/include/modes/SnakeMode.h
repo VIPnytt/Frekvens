@@ -2,7 +2,7 @@
 
 #if MODE_SNAKE
 
-#include "handlers/ClockHandler.h"
+#include "handlers/ClockHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <bits/unique_ptr.h>

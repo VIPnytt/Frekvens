@@ -81,7 +81,7 @@ private:
         },
     }};
 
-    const bool opaque{true};
+    const bool opaque{true}; // NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
 
     int hour{24U};
     int minute{60U};
@@ -94,5 +94,5 @@ public:
     explicit ClockHandler(bool opaque = true) : opaque(opaque) {};
 
     void handle();
-    void clear(uint8_t brightness = 0U);
+    void clear();
 };
