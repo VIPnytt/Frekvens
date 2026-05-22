@@ -46,9 +46,9 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    bool scheduled = false;
+    bool scheduled{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     std::unique_ptr<ModeModule> mode{};
 
@@ -59,9 +59,9 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
+    static constexpr uint16_t stackSize{1U << 13U}; // 8 kB
 
-    static constexpr auto names = std::to_array<std::string_view>({
+    static constexpr auto names{std::to_array<std::string_view>({
 #if MODE_ANIMATION
         AnimationMode::name,
 #endif
@@ -161,7 +161,7 @@ public:
 #if MODE_WEATHER
         WeatherMode::name,
 #endif
-    });
+    })};
 
     void configure();
     void begin();
