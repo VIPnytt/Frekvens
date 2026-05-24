@@ -1,6 +1,6 @@
 import hashlib
+import logging
 import typing
-import warnings
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
@@ -23,10 +23,7 @@ class Ota:
     def validate(self) -> None:
         if "no_ota" in str(self.project.partition.table):
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] != "false":
-                warnings.warn(
-                    f"{self.ENV_OPTION}: Partition table does not support OTA updates.",
-                    UserWarning,
-                )
+                logging.error(f"{self.ENV_OPTION}: Partition table does not support {self.NAME} updates.")
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None

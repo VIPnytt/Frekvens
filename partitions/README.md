@@ -1,11 +1,8 @@
 # 💾 Partition tables
 
-This directory contains predefined partition tables for different ESP32 flash sizes.
+Partition tables for ESP32 boards with different flash sizes. Choose a layout matching your board, or let the build system select the best fit automatically.
 
-> [!NOTE]
-> 4MB boards with OTA support are space-constrained. Some feature combinations may not fit. For the full feature set, use the 4MB non-OTA layout with wired flashing, or use an 8MB or larger board.
-
-Use one of the predefined layouts below to match your board’s flash size:
+## 📦 Predefined layouts
 
 | Flash size | File                   | Feature capacity        | OTA updates        |
 | ---------- | ---------------------- | ----------------------- | ------------------ |
@@ -15,8 +12,6 @@ Use one of the predefined layouts below to match your board’s flash size:
 |  8 MB      |  `8MB.csv`             | :white_check_mark:      | :white_check_mark: |
 | 16 MB      | `16MB.csv`             | :white_check_mark:      | :white_check_mark: |
 | 32 MB      | `32MB.csv`             | :white_check_mark:      | :white_check_mark: |
-|  2 MB      |  `2MB_no_ota.csv`      | :warning:               | :x:                |
-|  4 MB      |  `4MB.csv`             | :warning:               | :white_check_mark: |
 
 **Legend:**
 
@@ -24,16 +19,23 @@ Use one of the predefined layouts below to match your board’s flash size:
 
 :ballot_box_with_check: — limited
 
-:warning: — legacy / not recommended for new flashes
-
 :x: — not available
 
 > [!TIP]
-> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit. Legacy layouts are kept for compatibility, but are not recommended for new flashes.
+> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit. OTA support requires space for two firmware images, so disabling OTA is often the most effective option on 4 MB boards.
 
-## 2️⃣ 2 MB flash boards
+### Legacy layouts
 
-The `2MB_no_ota_rev2.csv` layout provides almost the same firmware capacity as `4MB_rev2.csv`, at the cost of [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) support.
+| Flash size | File              |
+| ---------- | ----------------- |
+|  2 MB      |  `2MB_no_ota.csv` |
+|  4 MB      |  `4MB.csv`        |
+
+These layouts are kept for backward compatibility, but are no longer recommended for new flashes. They were replaced in v2.5.0 by revised layouts with a better balance between firmware and filesystem space.
+
+## 2️⃣ 2 MB flash memory
+
+Boards with only 2 MB flash memory have very limited space, so only a minimal feature set with no OTA-capability is possible.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -41,16 +43,13 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 board_build.partitions = partitions/2MB_no_ota_rev2.csv
 ```
 
-> [!NOTE]
-> Revision 2 of the 2 MB table was added in `v2.5.0` to provide a better balance between firmware and filesystem space.
+## 4️⃣ 4 MB flash memory
 
-## 4️⃣ 4 MB flash boards
-
-There are two main options, depending on whether OTA updates are required.
+There are two main options, depending on whether OTA updates are desired.
 
 ### No OTA
 
-The `4MB_no_ota.csv` layout provides the same firmware capacity as `8MB.csv`, at the cost of [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) ability.
+The 4 MB flash layout without OTA support is recommended for users who want the full feature set and are comfortable with manual updates.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -60,7 +59,7 @@ board_build.partitions = partitions/4MB_no_ota.csv
 
 ### With OTA
 
-The `4MB_rev2.csv` layout provides OTA updates, web app access, and limited firmware capacity.
+The 4 MB flash layout with OTA support provides a limited feature set, but allows for convenient over-the-air updates. Recommended for users who prioritize ease of updates and are willing to accept some limitations in features.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -68,12 +67,9 @@ Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/plat
 board_build.partitions = partitions/4MB_rev2.csv
 ```
 
-> [!IMPORTANT]
-> `4MB_rev2.csv` was added in `v2.5.0` to rebalance NVS, firmware, and filesystem space. Use it for new flashes or wired migrations. Devices already flashed with the original `4MB.csv` layout should keep using `4MB.csv` for OTA updates.
+## 8️⃣ 8 MB+ flash memory
 
-## 8️⃣ 8 MB, 16 MB, and 32 MB flash boards
-
-These provides a comfortable and flexible configuration without any compromises.
+These layouts all include OTA support and provide a comfortable, flexible configuration without compromises.
 
 Configure in  [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -88,3 +84,5 @@ board_build.partitions = partitions/16MB.csv
 ```ini
 board_build.partitions = partitions/32MB.csv
 ```
+
+Boards with more than 32 MB flash memory should use the 32 MB layout.

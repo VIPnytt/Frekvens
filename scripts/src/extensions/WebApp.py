@@ -1,5 +1,6 @@
 import dotenv
 import gzip
+import logging
 import nodejs_wheel
 import os
 import pathlib
@@ -28,10 +29,7 @@ class WebApp:
             self.project.webapp = None
         elif "no_fs" in str(self.project.partition.table):
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
-                warnings.warn(
-                    f"{self.ENV_OPTION}: Partition table has no filesystem support.",
-                    UserWarning,
-                )
+                logging.error(f"{self.ENV_OPTION}: Partition table has no filesystem support.")
         elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
             warnings.warn(
                 f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
