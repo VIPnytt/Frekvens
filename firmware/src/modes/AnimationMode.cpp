@@ -32,11 +32,17 @@ void AnimationMode::handle()
             {
                 nvs_close(handle);
                 Display.setFrame(frame);
+                lastMillis = millis();
                 if (pending)
                 {
                     transmit(index, frame);
                 }
                 ++index;
+            }
+            else if (index == 0U)
+            {
+                nvs_close(handle);
+                lastMillis = millis() + UINT16_MAX;
             }
             else
             {
