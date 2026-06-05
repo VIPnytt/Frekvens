@@ -9,14 +9,16 @@ import { WebSocketWS } from "./WebSocket";
 export const name = "Microphone";
 
 const [getActive, setActive] = createSignal<boolean>(false);
-const [getMax, setMax] = createSignal<number>(0);
+const [getCeiling, setCeiling] = createSignal<number>(0);
+const [getFloor, setFloor] = createSignal<number>(0);
 const [getThreshold, setThreshold] = createSignal<number>(0);
 
 export const MicActive = getActive;
 
-export const receiver = (json: { active?: boolean; max?: number; threshold?: number }) => {
+export const receiver = (json: { active?: boolean; ceiling?: number; floor?: number; threshold?: number }) => {
     json?.active !== undefined && setActive(json.active);
-    json?.max !== undefined && setMax(json.max);
+    json?.ceiling !== undefined && setCeiling(json.ceiling);
+    json?.floor !== undefined && setFloor(json.floor);
     json?.threshold !== undefined && setThreshold(json.threshold);
 };
 
@@ -88,14 +90,16 @@ export const MainThird: Component = () => {
                         <h3>Beat synchronization</h3>
                         <div class="text-sm">Some modes has the ability to react to sounds.</div>
                         <h3>Threshold</h3>
-                        <Tooltip text={`Threshold ${Math.round((getThreshold() / getMax()) * 100)} %`}>
+                        <Tooltip
+                            text={`Threshold ${Math.ceil(((getThreshold() - getFloor()) / (getCeiling() - 1 - getFloor())) * 100)} %`}
+                        >
                             <input
                                 class="w-full"
                                 type="range"
-                                min="1"
-                                max={getMax() - 1}
+                                min={getFloor()}
+                                max={getCeiling() - 1}
                                 value={getThreshold()}
-                                onInput={(e) => handleThreshold(parseFloat(e.currentTarget.value), false)}
+                                onInput={(e) => handleThreshold(e.currentTarget.valueAsNumber, false)}
                                 onKeyUp={() => handleThreshold(getThreshold())}
                                 onPointerUp={() => handleThreshold(getThreshold())}
                             />
