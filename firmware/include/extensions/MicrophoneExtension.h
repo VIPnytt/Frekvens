@@ -14,11 +14,11 @@ private:
     bool triggered{true};
 
     uint8_t index{0U};
+    uint8_t soundFloor{UINT8_MAX};
 
     uint16_t accumulated{0U};
     uint16_t mic{0U};
     uint16_t soundCeiling{0U};
-    uint16_t soundFloor{UINT16_MAX};
     uint16_t threshold{INT8_MAX};
 
     unsigned long lastMillis{0UL};

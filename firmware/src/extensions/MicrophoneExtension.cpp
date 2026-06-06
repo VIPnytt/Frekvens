@@ -9,7 +9,17 @@
 
 #include <nvs.h>
 
-void MicrophoneExtension::configure() { pinMode(PIN_MIC, ANALOG); }
+void MicrophoneExtension::configure()
+{
+    pinMode(PIN_MIC, ANALOG);
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        nvs_get_u16(handle, "ceiling", &soundCeiling);
+        nvs_get_u8(handle, "floor", &soundFloor);
+        nvs_close(handle);
+    }
+}
 
 void MicrophoneExtension::begin()
 {
@@ -18,8 +28,6 @@ void MicrophoneExtension::begin()
     {
         uint8_t _active{0U};
         nvs_get_u8(handle, "active", &_active);
-        nvs_get_u16(handle, "ceiling", &soundCeiling);
-        nvs_get_u16(handle, "floor", &soundFloor);
         nvs_get_u16(handle, "threshold", &threshold);
         nvs_close(handle);
         static_cast<bool>(_active) ? setActive(true) : transmit();
@@ -79,7 +87,7 @@ void MicrophoneExtension::handle()
                 nvs_handle_t handle{};
                 if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
                 {
-                    nvs_set_u16(handle, "floor", soundFloor);
+                    nvs_set_u8(handle, "floor", soundFloor);
                     nvs_commit(handle);
                     nvs_close(handle);
                 }
