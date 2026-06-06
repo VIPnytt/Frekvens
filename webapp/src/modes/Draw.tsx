@@ -9,7 +9,7 @@ import {
 } from "@mdi/js";
 import { type Component, createSignal } from "solid-js";
 
-import { Canvas, Strength } from "../components/Canvas";
+import { Canvas, StrengthComponent as CanvasStrengthComponent } from "../components/Canvas";
 import { csvExport, fileImport } from "../components/File";
 import { Icon } from "../components/Icon";
 import { Toast } from "../components/Toast";
@@ -122,7 +122,7 @@ export const Sidebar: Component = () => {
                     </button>
                 </Tooltip>
             </div>
-            <Strength />
+            <CanvasStrengthComponent />
         </SidebarSection>
     );
 };
