@@ -164,6 +164,7 @@ private:
 
     unsigned long lastMillis{0UL};
 
+    void draw();
     void setWave(std::string_view waveName);
 
     void transmit();
