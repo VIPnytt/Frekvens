@@ -2,7 +2,6 @@
 
 #include "modes/WaveformMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -28,17 +27,32 @@ void WaveformMode::configure()
 
 void WaveformMode::handle()
 {
-#if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1UL << 9U) && Extensions.Microphone().isTriggered())
-#else
-    if (millis() - lastMillis > (1UL << 9U))
-#endif // EXTENSION_MICROPHONE
+    if (millis() - lastMillis > (0b1U << 9U))
     {
-        lastMillis = millis();
         Display.clearFrame();
-        const std::span<const std::span<const uint16_t>> &_wave{waves[static_cast<size_t>(wave)]};
-        BitmapHandler(_wave[random(_wave.size())]).draw();
+#if EXTENSION_MICROPHONE
+        if (Extensions.Microphone().isTriggered())
+        {
+            draw();
+        }
+        else
+        {
+            for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
+            {
+                Display.setPixel(x, GRID_ROWS / 2U);
+            }
+        }
+#else
+        draw();
+#endif // EXTENSION_MICROPHONE
+        lastMillis = millis();
     }
+}
+
+void WaveformMode::draw()
+{
+    const std::span<const std::span<const uint16_t>> &_wave{waves[static_cast<size_t>(wave)]};
+    BitmapHandler(_wave[random(_wave.size())]).draw();
 }
 
 void WaveformMode::setWave(std::string_view waveName)
