@@ -13,16 +13,36 @@ class OpenWeatherMiddleware final : public WeatherHandler
 {
 private:
     // https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
-    static constexpr std::array<uint16_t, 1> codesClear{800};
-    static constexpr std::array<uint16_t, 1> codesCloudy{804};
-    static constexpr std::array<uint16_t, 3> codesCloudyPartly{801, 802, 803};
-    static constexpr std::array<uint16_t, 10> codesFog{701, 711, 721, 731, 741, 751, 761, 762, 771, 781};
-    static constexpr std::array<uint16_t, 19> codesRain{
-        300, 301, 302, 310, 311, 312, 313, 314, 321, 500, 501, 502, 503, 504, 511, 520, 521, 522, 531};
-    static constexpr std::array<uint16_t, 11> codesSnow{600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622};
-    static constexpr std::array<uint16_t, 10> codesThunder{200, 201, 202, 210, 211, 212, 221, 230, 231, 232};
+    static constexpr std::array<uint16_t, 1U> codesClear{800U};
+    static constexpr std::array<uint16_t, 1U> codesCloudy{804U};
+    static constexpr std::array<uint16_t, 3U> codesCloudyPartly{801U, 802U, 803U};
+    static constexpr std::array<uint16_t, 10U> codesFog{701U, 711U, 721U, 731U, 741U, 751U, 761U, 762U, 771U, 781U};
+    static constexpr std::array<uint16_t, 19U> codesRain{
+        300U,
+        301U,
+        302U,
+        310U,
+        311U,
+        312U,
+        313U,
+        314U,
+        321U,
+        500U,
+        501U,
+        502U,
+        503U,
+        504U,
+        511U,
+        520U,
+        521U,
+        522U,
+        531U,
+    };
+    static constexpr std::array<uint16_t, 11U> codesSnow{
+        600U, 601U, 602U, 611U, 612U, 613U, 615U, 616U, 620U, 621U, 622U};
+    static constexpr std::array<uint16_t, 10U> codesThunder{200U, 201U, 202U, 210U, 211U, 212U, 221U, 230U, 231U, 232U};
 
-    static constexpr std::array<WeatherHandler::Codeset16, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset16, 7U> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
@@ -32,48 +52,87 @@ private:
         {WeatherHandler::Conditions::THUNDER, codesThunder},
     }};
 
-    // https://openweathermap.org/api/one-call-3#current
-    // https://openweathermap.org/current#one
+    // https://openweathermap.org/api/one-call-4?collection=one_call_api#current
+    // https://openweathermap.org/api/one-call-3?collection=one_call_api#current
+    // https://openweathermap.org/api/current?collection=current_forecast#one
     static inline std::vector<std::pair<const char *, const char *>> parts{
-        {
-            "/data/3.0/onecall",
-            "lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
-        },
+#if defined(LOCATION) && TEMPERATURE_CELSIUS
         {
             "/data/2.5/weather",
-            "lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
+            "q=" LOCATION "&units=metric&appid=" OPENWEATHER_KEY,
         },
-#if TEMPERATURE_KELVIN
-        {
-            "/data/3.0/onecall",
-            "lat=" LATITUDE "&lon=" LONGITUDE
-            "&exclude=alerts,daily,hourly,minutely&units=standard&appid=" OPENWEATHER_KEY,
-        },
+#elif defined(LOCATION) && TEMPERATURE_FAHRENHEIT
         {
             "/data/2.5/weather",
-            "lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
+            "q=" LOCATION "&units=imperial&appid=" OPENWEATHER_KEY,
         },
-#elif TEMPERATURE_CELSIUS
+#elif defined(LOCATION) && TEMPERATURE_KELVIN
+        {
+            "/data/2.5/weather",
+            "q=" LOCATION "&units=standard&appid=" OPENWEATHER_KEY,
+        },
+#elif defined(LOCATION)
+        {
+            "/data/2.5/weather",
+            "q=" LOCATION "&appid=" OPENWEATHER_KEY,
+        },
+#endif // defined(LOCATION) && TEMPERATURE_CELSIUS
+#if defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_CELSIUS
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE
             "&exclude=alerts,daily,hourly,minutely&units=metric&appid=" OPENWEATHER_KEY,
         },
         {
+            "/data/4.0/onecall/current",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&units=metric&appid=" OPENWEATHER_KEY,
+        },
+        {
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&units=metric&appid=" OPENWEATHER_KEY,
         },
-#elif TEMPERATURE_FAHRENHEIT
+#elif defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_FAHRENHEIT
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE
             "&exclude=alerts,daily,hourly,minutely&units=imperial&appid=" OPENWEATHER_KEY,
         },
         {
+            "/data/4.0/onecall/current",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&units=imperial&appid=" OPENWEATHER_KEY,
+        },
+        {
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&units=imperial&appid=" OPENWEATHER_KEY,
         },
-#endif // TEMPERATURE_KELVIN
+#elif defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_KELVIN
+        {
+            "/data/3.0/onecall",
+            "lat=" LATITUDE "&lon=" LONGITUDE
+            "&exclude=alerts,daily,hourly,minutely&units=standard&appid=" OPENWEATHER_KEY,
+        },
+        {
+            "/data/4.0/onecall/current",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
+        },
+        {
+            "/data/2.5/weather",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
+        },
+#elif defined(LATITUDE) && defined(LONGITUDE)
+        {
+            "/data/3.0/onecall",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
+        },
+        {
+            "/data/4.0/onecall/current",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
+        },
+        {
+            "/data/2.5/weather",
+            "lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
+        },
+#endif // defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_CELSIUS
     };
 
 public:

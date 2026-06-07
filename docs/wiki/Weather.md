@@ -102,7 +102,7 @@ WEATHER_OPENWEATHER='true'
 ```
 
 > [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
+> Location coordinates `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
 
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
