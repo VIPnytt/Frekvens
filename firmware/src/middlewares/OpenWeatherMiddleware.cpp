@@ -25,14 +25,14 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter;                               // NOLINT(misc-const-correctness)
     filter["current"]["temp"].set(true);               // API 3.0
     filter["current"]["weather"][0U]["id"].set(true);  // API 3.0
     filter["data"][0U]["temp"].set(true);              // API 4.0
     filter["data"][0U]["weather"][0U]["id"].set(true); // API 4.0
     filter["main"]["temp"].set(true);                  // API 2.5
     filter["weather"][0U]["id"].set(true);             // API 2.5
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc;                                  // NOLINT(misc-const-correctness)
     const bool deserialization{deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) ==
                                DeserializationError::Code::Ok};
     if (deserialization && doc["main"]["temp"].is<float>() && doc["weather"][0U]["id"].is<uint16_t>())
