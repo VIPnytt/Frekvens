@@ -9,17 +9,19 @@ class MicrophoneExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Microphone"};
 
-    static inline uint16_t levelMax = UINT8_MAX;
+    bool active{false};
+    bool pending{false};
+    bool triggered{true};
 
-    bool active = false;
-    bool detected = false;
-    bool pending = false;
+    uint8_t index{0U};
+    uint8_t soundFloor{UINT8_MAX};
 
-    uint16_t mic = 0;
-    uint16_t threshold = INT8_MAX;
+    uint16_t accumulated{0U};
+    uint16_t mic{0U};
+    uint16_t soundCeiling{0U};
+    uint16_t threshold{INT8_MAX};
 
-    unsigned long lastMillis = 0;
-    unsigned long _lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     void transmit();
 
