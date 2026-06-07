@@ -24,9 +24,10 @@ FontModule::Symbol MediumFont::getChar(char32_t character) const
         return toSymbol(latinCapitalLetterO);
     case 'o': // LATIN SMALL LETTER O
         return toSymbol(latinSmallLetterO);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_MEDIUM

@@ -56,9 +56,10 @@ FontModule::Symbol MicroFont::getChar(char32_t character) const
         return toSymbol(circumflexAccent, 1);
     case '_': // LOW LINE
         return toSymbol(hyphenMinus);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_MICRO

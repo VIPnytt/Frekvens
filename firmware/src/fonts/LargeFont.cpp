@@ -24,9 +24,10 @@ FontModule::Symbol LargeFont::getChar(char32_t character) const
         return toSymbol(latinCapitalLetterU);
     case U'π': // GREEK SMALL LETTER PI
         return toSymbol(greekSmallLetterPi);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_LARGE

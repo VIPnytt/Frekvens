@@ -126,9 +126,10 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
         return toSymbol(latinSmallLetterUWithDiaeresis);
     case U'π': // GREEK SMALL LETTER PI
         return toSymbol(greekSmallLetterPi);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_SMALL

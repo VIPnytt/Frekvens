@@ -89,9 +89,10 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
         return toSymbol(0b00'10'10U);
     case '?': // QUESTION MARK
         return toSymbol(0b00'10'11U);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_BRAILLE

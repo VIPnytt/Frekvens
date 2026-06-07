@@ -4,7 +4,6 @@
 
 import argparse
 import fontTools.ttLib
-import logging
 import matplotlib.font_manager
 import pathlib
 import PIL.Image
@@ -114,13 +113,21 @@ class FontGenerator:
                 cp = ord(character)
                 comment = unicodedata.name(character)
                 self.characters[character] = (offsetX, offsetY, comment)
+                prefix = (
+                    "    // "
+                    if character
+                    in {
+                        "∪",  # UNION
+                    }
+                    else ""
+                )
                 h.append(f"    // 0x{cp:X}, {character} {comment}")
                 h.append(
-                    f"    static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}{{"
+                    f"    {prefix}static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}{{"
                 )
                 for row in bitmap:
-                    h.append(f"        0b{row}U,")
-                h.append("    };")
+                    h.append(f"    {prefix}    0b{row}U,")
+                h.append(f"    {prefix}}};")
                 h.append("")
         h.extend(
             [
@@ -150,31 +157,31 @@ class FontGenerator:
             "    switch (character)",
             "    {",
         ]
-        count = 0
-        ignore = ""
+        literal = ""
+        prefix = ""
         for character, (offsetX, offsetY, comment) in self.characters.items():
-            cp = ord(character)
             escape = (
                 "\\"
                 if character
                 in {
-                    "'",
-                    "\\",
+                    "'",  # APOSTROPHE
+                    "\\",  # REVERSE SOLIDUS
                 }
                 else ""
             )
-            unicode = "U" if cp >= 1 << 7 else ""
-            if count == (1 << 7):
-                ignore = "    // "
-            count += 1
-            cpp.append(f"    {ignore}case {unicode}'{escape + character}': // {comment}")
-            cpp.append(
-                f"    {ignore}    return {{{''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}, {offsetX}U, {offsetY}}};"
+            variable = "".join(
+                word.title() if i else word.lower() for i, word in enumerate(comment.replace("-", " ").split())
             )
+            if ord(character) >= 1 << 7:
+                literal = "U"
+                prefix = "    // "
+            cpp.append(f"    {prefix}case {literal}'{escape + character}': // {comment}")
+            cpp.append(f"    {prefix}    return {{{variable}, {offsetX}U, {offsetY}}};")
         cpp.extend(
             [
+                "    default:",
+                "        return {};",
                 "    }",
-                "    return {};",
                 "}",
                 "",
             ]
