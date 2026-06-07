@@ -26,12 +26,12 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
         return;
     }
     JsonDocument filter; // NOLINT(misc-const-correctness)
-    filter["current"]["temp"].set(true);
-    filter["current"]["weather"]["id"].set(true);
-    filter["data"][0U]["temp"].set(true);
-    filter["data"][0U]["weather"][0U]["id"].set(true);
-    filter["main"]["temp"].set(true);
-    filter["weather"][0U]["id"].set(true);
+    filter["current"]["temp"].set(true);               // API 3.0
+    filter["current"]["weather"][0U]["id"].set(true);  // API 3.0
+    filter["data"][0U]["temp"].set(true);              // API 4.0
+    filter["data"][0U]["weather"][0U]["id"].set(true); // API 4.0
+    filter["main"]["temp"].set(true);                  // API 2.5
+    filter["weather"][0U]["id"].set(true);             // API 2.5
     JsonDocument doc; // NOLINT(misc-const-correctness)
     const bool deserialization{deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) ==
                                DeserializationError::Code::Ok};
@@ -49,10 +49,10 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
         temperature = static_cast<int16_t>(lroundf(doc["data"][0U]["temp"].as<float>()));
         return;
     }
-    if (deserialization && doc["current"]["temp"].is<float>() && doc["current"]["weather"]["id"].is<uint16_t>())
+    if (deserialization && doc["current"]["temp"].is<float>() && doc["current"]["weather"][0U]["id"].is<uint16_t>())
     {
         // API 3.0
-        condition = getCondition(doc["current"]["weather"]["id"].as<uint16_t>(), codesets);
+        condition = getCondition(doc["current"]["weather"][0U]["id"].as<uint16_t>(), codesets);
         temperature = static_cast<int16_t>(lroundf(doc["current"]["temp"].as<float>()));
         return;
     }
