@@ -10,72 +10,72 @@
 class LargeFont final : public FontModule
 {
 private:
-    // 0x21, !
-    static constexpr std::array<uint8_t, 8> char21 = {
-        0b11,
-        0b11,
-        0b11,
-        0b11,
-        0b11,
-        0b00,
-        0b11,
-        0b11,
+    // 0x21, ! EXCLAMATION MARK
+    static constexpr std::array<uint8_t, 8U> exclamationMark{
+        0b11U,
+        0b11U,
+        0b11U,
+        0b11U,
+        0b11U,
+        0b00U,
+        0b11U,
+        0b11U,
     };
 
-    // 0x49, I
-    static constexpr std::array<uint8_t, 8> char49 = {
-        0b111111,
-        0b001100,
-        0b001100,
-        0b001100,
-        0b001100,
-        0b001100,
-        0b001100,
-        0b111111,
+    // 0x49, I LATIN CAPITAL LETTER I
+    static constexpr std::array<uint8_t, 8U> latinCapitalLetterI{
+        0b111111U,
+        0b001100U,
+        0b001100U,
+        0b001100U,
+        0b001100U,
+        0b001100U,
+        0b001100U,
+        0b111111U,
     };
 
-    // 0x52, R
-    static constexpr std::array<uint8_t, 8> char52 = {
-        0b111110,
-        0b110011,
-        0b110011,
-        0b110010,
-        0b111100,
-        0b110011,
-        0b110011,
-        0b110011,
+    // 0x52, R LATIN CAPITAL LETTER R
+    static constexpr std::array<uint8_t, 8U> latinCapitalLetterR{
+        0b111110U,
+        0b110011U,
+        0b110011U,
+        0b110010U,
+        0b111100U,
+        0b110011U,
+        0b110011U,
+        0b110011U,
     };
 
-    // 0x55, U
-    static constexpr std::array<uint8_t, 8> char55 = {
-        0b110011,
-        0b110011,
-        0b110011,
-        0b110011,
-        0b110011,
-        0b110011,
-        0b111111,
-        0b011111,
+    // 0x55, U LATIN CAPITAL LETTER U
+    static constexpr std::array<uint8_t, 8U> latinCapitalLetterU{
+        0b110011U,
+        0b110011U,
+        0b110011U,
+        0b110011U,
+        0b110011U,
+        0b110011U,
+        0b111111U,
+        0b011111U,
     };
 
     // 0x3C0, π GREEK SMALL LETTER PI
-    static constexpr std::array<uint8_t, 8> char3C0 = {
-        0b11111111,
-        0b11111111,
-        0b00100100,
-        0b00100100,
-        0b00100100,
-        0b00100100,
-        0b00100101,
-        0b11000010,
+    static constexpr std::array<uint8_t, 8U> greekSmallLetterPi{
+        0b11111111U,
+        0b11111111U,
+        0b00100100U,
+        0b00100100U,
+        0b00100100U,
+        0b00100100U,
+        0b00100101U,
+        0b11000010U,
     };
 
 public:
-    static constexpr std::string_view name = "Large";
+    static constexpr std::string_view name{"Large"};
 
     explicit LargeFont() : FontModule(name) {};
 
-    [[nodiscard]] FontModule::Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] FontModule::Symbol getChar(char32_t character) const override;
 };
 
 #endif // FONT_LARGE

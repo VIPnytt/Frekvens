@@ -8,10 +8,10 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     if (text.length())
     {
         {
-            size_t index = 0; // NOLINT(misc-const-correctness)
-            int8_t yMax = 0;  // NOLINT(misc-const-correctness)
-            int8_t yMin = 0;
-            for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
+            size_t index{0U}; // NOLINT(misc-const-correctness)
+            int8_t yMax{0};   // NOLINT(misc-const-correctness)
+            int8_t yMin{0};
+            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -29,9 +29,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         }
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
-            width = 0;
-            size_t index = 0; // NOLINT(misc-const-correctness)
-            for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
+            width = 0U;
+            size_t index{0U}; // NOLINT(misc-const-correctness)
+            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
             {
                 FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -39,9 +39,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
                     {
                         if (!bitmap.empty())
                         {
-                            width += calcMsbMax(bitmap) + 1 + character.offsetX + tracking;
+                            width += calcMsbMax(bitmap) + 1U + character.offsetX + tracking;
                         }
-                        else if (character.offsetX > 0)
+                        else if (character.offsetX != 0U)
                         {
                             width += character.offsetX + tracking;
                         }
@@ -62,30 +62,30 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
 
 void TextHandler::draw(uint8_t brightness) const
 {
-    draw(max(0, (GRID_COLUMNS - width) / 2), (GRID_ROWS - height) / 2, brightness);
+    draw(max(0U, (GRID_COLUMNS - width) / 2U), (GRID_ROWS - height) / 2U, brightness);
 }
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    size_t index = 0; // NOLINT(misc-const-correctness)
-    for (uint32_t codepoint = 0; nextCodepoint(index, codepoint);)
+    size_t index{0U}; // NOLINT(misc-const-correctness)
+    for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
     {
         FontModule::Symbol character{font->getChar(codepoint)};
         std::visit(
             [&](auto &&bitmap)
             {
-                const uint8_t _height = bitmap.size();
-                if (_height != 0)
+                const uint8_t _height{static_cast<uint8_t>(bitmap.size())};
+                if (_height != 0U)
                 {
                     const uint8_t msbMax{calcMsbMax(bitmap)};
-                    for (uint16_t _x = 0; _x <= msbMax; ++_x)
+                    for (uint16_t _x{0U}; _x <= msbMax; ++_x)
                     {
-                        for (uint8_t _y = 0; _y < _height; ++_y)
+                        for (uint8_t _y{0U}; _y < _height; ++_y)
                         {
-                            if ((x + character.offsetX + _x) >= 0 && (x + character.offsetX + _x) < GRID_COLUMNS &&
+                            if ((x + character.offsetX + _x) >= 0U && (x + character.offsetX + _x) < GRID_COLUMNS &&
                                 (int16_t)(y + height - _height - character.offsetY + _y) >= 0 &&
                                 (int16_t)(y + height - _height - character.offsetY + _y) < GRID_ROWS &&
-                                (bitmap[_y] >> (msbMax - _x)) & 1)
+                                (bitmap[_y] >> (msbMax - _x)) & 0b1U)
                             {
                                 Display.setPixel(x + character.offsetX + _x,
                                                  y + height - _height - character.offsetY + _y,
@@ -95,7 +95,7 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
                     }
                     x += msbMax + 1 + character.offsetX + tracking;
                 }
-                else if (character.offsetX > 0)
+                else if (character.offsetX != 0U)
                 {
                     x += character.offsetX + tracking;
                 }
@@ -108,7 +108,7 @@ uint8_t TextHandler::getHeight() const { return height; }
 
 uint8_t TextHandler::getWidth() const { return width; }
 
-bool TextHandler::nextCodepoint(size_t &index, uint32_t &buffer) const
+bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 {
     if (index >= text.length())
     {
@@ -116,42 +116,42 @@ bool TextHandler::nextCodepoint(size_t &index, uint32_t &buffer) const
     }
     const uint8_t byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
     index++;
-    if (byte <= 0x7F)
+    if (byte < (0b1U << 7U))
     {
         buffer = byte;
         return true;
     }
-    uint8_t bytes = 0;
-    if ((byte & 0xE0U) == 0xC0U)
+    uint8_t bytes{0U};
+    if ((byte & (0b111U << 5U)) == 0b11U << 6U)
     {
-        buffer = byte & 0x1FU;
-        bytes = 1;
+        buffer = byte & 0b1'1111U;
+        bytes = 1U;
     }
-    else if ((byte & 0xF0U) == 0xE0U)
+    else if ((byte & (0b1111U << 4U)) == 0b111U << 5U)
     {
-        buffer = byte & 0x0FU;
-        bytes = 2;
+        buffer = byte & 0b1111U;
+        bytes = 2U;
     }
-    else if ((byte & 0xF8U) == 0xF0U)
+    else if ((byte & (0b1'1111U << 3U)) == 0b1111U << 4U)
     {
-        buffer = byte & 0x07U;
-        bytes = 3;
+        buffer = byte & 0b111U;
+        bytes = 3U;
     }
     else
     {
-        buffer = 0xFFFDU;
+        buffer = 0b1111'1111'1111'1101U;
         return true;
     }
     while (bytes-- && index < text.length())
     {
         const uint8_t _byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
         index++;
-        if ((_byte & 0xC0U) != 0x80U)
+        if ((_byte & (0b11U << 6U)) != 0b1U << 7U)
         {
-            buffer = 0xFFFDU;
+            buffer = 0b1111'1111'1111'1101U;
             break;
         }
-        buffer = (buffer << 6U) | (_byte & 0x3FU);
+        buffer = (buffer << 6U) | (_byte & 0b11'1111U);
     }
     return true;
 }
@@ -160,10 +160,10 @@ template <typename T>
     requires std::is_unsigned_v<T>
 uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 {
-    uint8_t msbMax = 0; // NOLINT(misc-const-correctness)
+    uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)
     for (const T bitset : bitmap)
     {
-        if (bitset != 0)
+        if (bitset != 0U)
         {
             msbMax = max(msbMax, static_cast<uint8_t>(std::bit_width(bitset) - 1));
         }
@@ -171,30 +171,30 @@ uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
     return msbMax;
 }
 
-std::array<char, 5> TextHandler::encode(uint32_t codepoint)
+std::array<char, 5U> TextHandler::encode(char32_t codepoint)
 {
-    std::array<char, 5> out{};
-    if (codepoint <= 0x7F)
+    std::array<char, 5U> out{};
+    if (codepoint < (0b1U << 7U))
     {
-        out.at(0) = static_cast<char>(codepoint);
+        out.at(0U) = static_cast<char>(codepoint);
     }
-    else if (codepoint <= 0x7FF)
+    else if (codepoint < (0b1U << 11U))
     {
-        out.at(0) = static_cast<char>(0xC0 | (codepoint >> 6U));
-        out.at(1) = static_cast<char>(0x80 | (codepoint & 0x3FU));
+        out.at(0U) = static_cast<char>((0b11U << 6U) | (codepoint >> (0b11U << 1U)));
+        out.at(1U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
     }
-    else if (codepoint <= 0xFFFF)
+    else if (codepoint < (0b1U << 16U))
     {
-        out.at(0) = static_cast<char>(0xE0 | (codepoint >> 12U));
-        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
-        out.at(2) = static_cast<char>(0x80 | (codepoint & 0x3FU));
+        out.at(0U) = static_cast<char>((0b111U << 5U) | (codepoint >> (0b11U << 2U)));
+        out.at(1U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 1U)) & 0b11'1111U));
+        out.at(2U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
     }
-    else if (codepoint <= 0x10FFFF)
+    else if (codepoint < (0b10001U << 16U))
     {
-        out.at(0) = static_cast<char>(0xF0 | (codepoint >> 18U));
-        out.at(1) = static_cast<char>(0x80 | ((codepoint >> 12U) & 0x3FU));
-        out.at(2) = static_cast<char>(0x80 | ((codepoint >> 6U) & 0x3FU));
-        out.at(3) = static_cast<char>(0x80 | (codepoint & 0x3FU));
+        out.at(0U) = static_cast<char>((0b1U << 7U) | (codepoint >> (0b1'001U << 1U)));
+        out.at(1U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 2U)) & 0b11'1111U));
+        out.at(2U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 1U)) & 0b11'1111U));
+        out.at(3U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
     }
     return out;
 }

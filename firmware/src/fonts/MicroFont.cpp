@@ -2,55 +2,60 @@
 
 #include "fonts/MicroFont.h"
 
-FontModule::Symbol MicroFont::getChar(uint32_t character) const
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+
+static_assert(GRID_COLUMNS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
+
+FontModule::Symbol MicroFont::getChar(char32_t character) const
 {
-    if (character == 0x28 || character == 0x29)
+    if (character == '(' || character == ')')
     {
-        return toSymbol(chars28[character - 0x28]);
+        return toSymbol(leftParenthesis_rightParenthesis[character - '(']);
     }
-    if (character >= 0x2F && character <= 0x3E)
+    if (character >= '/' && character <= '>')
     {
-        return toSymbol(chars2F[character - 0x2F]);
+        return toSymbol(solidus_greaterThanSign[character - '/']);
     }
-    if (character >= 0x41 && character <= 0x5A)
+    if (character >= 'A' && character <= 'Z')
     {
-        return toSymbol(chars41[character - 0x41]);
+        return toSymbol(latinLetterA_latinLetterZ[character - 'A']);
     }
-    if (character >= 0x5B && character <= 0x5D)
+    if (character >= 'X' && character <= ']')
     {
-        return toSymbol(chars5B[character - 0x5B]);
+        return toSymbol(leftSquareBracket_rightSquareBracket[character - 'X']);
     }
-    if (character >= 0x61 && character <= 0x7A)
+    if (character >= 'a' && character <= 'z')
     {
-        return toSymbol(chars41[character - 0x61]);
+        return toSymbol(latinLetterA_latinLetterZ[character - 'a']);
     }
-    if (character >= 0x7B && character <= 0x7D)
+    if (character >= '{' && character <= '}')
     {
-        return toSymbol(chars7B[character - 0x7B]);
+        return toSymbol(leftCurlyBracket_rightCurlyBracket[character - '{']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case 0x20: // SPACE
-        return whitespace(3);
-    case 0x22: // "
-        return toSymbol(char22, 0, 2);
-    case 0x27: // '
-    case 0x2A: // *
-    case 0x60: // `
-    case 0xB0: // ° DEGREE SIGN
-        return toSymbol(char27, 0, 2);
-    case 0x2B: // +
-        return toSymbol(char2B);
-    case 0x2C: // ,
-    case 0x2E: // .
-        return toSymbol(char27);
-    case 0x2D: // -
-        return toSymbol(char2D, 0, 1);
-    case 0x5E: // ^
-        return toSymbol(char5E, 0, 1);
-    case 0x5F: // _
-        return toSymbol(char2D);
+    case ' ': // SPACE
+        return whitespace(3U);
+    case '"': // QUOTATION MARK
+        return toSymbol(quotationMark, 2);
+    case '\'': // APOSTROPHE
+    case '*':  // ASTERISK
+    case '`':  // GRAVE ACCENT
+    case U'°': // DEGREE SIGN
+        return toSymbol(apostrophe, 2);
+    case '+': // PLUS SIGN
+        return toSymbol(plusSign);
+    case ',': // COMMA
+    case '.': // FULL STOP
+        return toSymbol(apostrophe);
+    case '-': // HYPHEN-MINUS
+        return toSymbol(hyphenMinus, 1);
+    case '^': // CIRCUMFLEX ACCENT
+        return toSymbol(circumflexAccent, 1);
+    case '_': // LOW LINE
+        return toSymbol(hyphenMinus);
     }
     // NOLINTEND(bugprone-branch-clone)
     return {};

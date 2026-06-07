@@ -2,23 +2,28 @@
 
 #include "fonts/LargeFont.h"
 
-FontModule::Symbol LargeFont::getChar(uint32_t character) const
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+
+static_assert(GRID_COLUMNS >= 8U, __STRING(FONT_LARGE) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 8U, __STRING(FONT_LARGE) " is not compatible with this device's display size.");
+
+FontModule::Symbol LargeFont::getChar(char32_t character) const
 {
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case 0x20: // SPACE
-        return whitespace(6);
-    case 0x21: // !
-        return toSymbol(char21);
-    case 0x49: // I
-        return toSymbol(char49);
-    case 0x52: // R
-        return toSymbol(char52);
-    case 0x55: // U
-        return toSymbol(char55);
-    case 0x3C0: // π GREEK SMALL LETTER PI
-        return toSymbol(char3C0);
+    case ' ': // SPACE
+        return whitespace(6U);
+    case '!': // EXCLAMATION MARK
+        return toSymbol(exclamationMark);
+    case 'I': // LATIN CAPITAL LETTER I
+        return toSymbol(latinCapitalLetterI);
+    case 'R': // LATIN CAPITAL LETTER R
+        return toSymbol(latinCapitalLetterR);
+    case 'U': // LATIN CAPITAL LETTER U
+        return toSymbol(latinCapitalLetterU);
+    case U'π': // GREEK SMALL LETTER PI
+        return toSymbol(greekSmallLetterPi);
     }
     // NOLINTEND(bugprone-branch-clone)
     return {};

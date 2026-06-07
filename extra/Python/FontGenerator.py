@@ -14,28 +14,13 @@ import unicodedata
 
 
 class FontGenerator:
-    characters: dict[int, tuple[int, int, str | None]]
+    characters: dict[str, tuple[int, int, str]]
     path: pathlib.Path
     size: int
 
     def __init__(self, path: pathlib.Path | str, size: int = 8) -> None:
         self.path = pathlib.Path(path)
         self.size = size
-
-    def _character_to_description(self, character: str) -> str | None:
-        if character.isprintable() and character.strip() and ord(character) != 0x5C:
-            if ord(character) >= 0x80:
-                try:
-                    return f"{character} {unicodedata.name(character)}"
-                except ValueError as e:
-                    logging.debug("Character name for %s not found: %s", character, e)
-            return character
-        else:
-            try:
-                return unicodedata.name(character)
-            except ValueError as e:
-                logging.debug("Character name for %s not found: %s", character, e)
-                return None
 
     def _characters_to_bitmaps(self, characters: list[str], index: int = 0) -> dict[str, list[str]]:
         bitmaps = {}
@@ -86,13 +71,12 @@ class FontGenerator:
                     codepoints.update(table.cmap.keys())
         characters = []
         for codepoint in sorted(codepoints):
-            try:
-                characters.append(chr(codepoint))
-            except ValueError:
-                continue
+            character = chr(codepoint)
+            if character.isprintable() and character.strip():
+                characters.append(character)
         return characters
 
-    def source(self) -> list[str]:
+    def source(self) -> set[str]:
         self.characters = {}
         unique = self.path.stem
         name = unique
@@ -102,10 +86,10 @@ class FontGenerator:
                     name = record.toUnicode()
                 elif record.nameID == 6:
                     unique = record.toUnicode()
-        return [
+        return {
             self._source_h(unique, name),
             self._source_cpp(unique),
-        ]
+        }
 
     def _source_h(self, unique: str, name: str) -> str:
         h = [
@@ -128,27 +112,24 @@ class FontGenerator:
             bitmap, offsetX, offsetY = self._crop(bitmaps[character])
             if bitmap:
                 cp = ord(character)
-                comment = self._character_to_description(character)
-                self.characters[cp] = (offsetX, offsetY, comment)
-                if comment:
-                    h.append(f"    // 0x{cp:X}, {comment}")
-                else:
-                    h.append(f"    // 0x{cp:X}")
+                comment = unicodedata.name(character)
+                self.characters[character] = (offsetX, offsetY, comment)
+                h.append(f"    // 0x{cp:X}, {character} {comment}")
                 h.append(
-                    f"    static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}> _{cp:X} = {{"
+                    f"    static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}{{"
                 )
                 for row in bitmap:
-                    h.append(f"        0b{row},")
+                    h.append(f"        0b{row}U,")
                 h.append("    };")
                 h.append("")
         h.extend(
             [
                 "public:",
-                f'    static constexpr std::string_view name = "{name}";',
+                f'    static constexpr std::string_view name{{"{name}"}};',
                 "",
                 f"    explicit {unique}Font() : FontModule(name) {{}};",
                 "",
-                "    [[nodiscard]] Symbol getChar(uint32_t character) const override;",
+                "    [[nodiscard]] Symbol getChar(char32_t character) const override;",
                 "};",
                 "",
             ]
@@ -164,22 +145,32 @@ class FontGenerator:
             "// @warning Automatically generated file",
             "//",
             "",
-            f"FontModule::Symbol {unique}Font::getChar(uint32_t character) const",
+            f"FontModule::Symbol {unique}Font::getChar(char32_t character) const",
             "{",
             "    switch (character)",
             "    {",
         ]
         count = 0
-        prefix = ""
-        for cp, (offsetX, offsetY, comment) in self.characters.items():
+        ignore = ""
+        for character, (offsetX, offsetY, comment) in self.characters.items():
+            cp = ord(character)
+            escape = (
+                "\\"
+                if character
+                in {
+                    "'",
+                    "\\",
+                }
+                else ""
+            )
+            unicode = "U" if cp >= 1 << 7 else ""
             if count == (1 << 7):
-                prefix = "    // "
+                ignore = "    // "
             count += 1
-            if comment:
-                cpp.append(f"    {prefix}case 0x{cp:X}: // {comment}")
-            else:
-                cpp.append(f"    {prefix}case 0x{cp:X}:")
-            cpp.append(f"    {prefix}    return {{_{cp:X}, {offsetX}, {offsetY}}};")
+            cpp.append(f"    {ignore}case {unicode}'{escape + character}': // {comment}")
+            cpp.append(
+                f"    {ignore}    return {{{''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}, {offsetX}U, {offsetY}}};"
+            )
         cpp.extend(
             [
                 "    }",
@@ -213,7 +204,7 @@ def main() -> None:
         }.items()
         if value is not None
     }
-    paths: list[str] = []
+    paths: set[str] = set()
     if input_path.is_file():
         paths = FontGenerator(**kwargs).source()
     else:
