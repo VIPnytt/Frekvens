@@ -8,10 +8,11 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     if (text.length())
     {
         {
-            size_t index{0U}; // NOLINT(misc-const-correctness)
-            int8_t yMax{0};   // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
+            int8_t yMax{0};
             int8_t yMin{0};
-            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
+            size_t index{0U};
+            while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -30,8 +31,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             width = 0U;
-            size_t index{0U};                                              // NOLINT(misc-const-correctness)
-            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
+            size_t index{0U};
+            while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
@@ -67,8 +69,9 @@ void TextHandler::draw(uint8_t brightness) const
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    size_t index{0U};                                              // NOLINT(misc-const-correctness)
-    for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
+    char32_t codepoint{0U};
+    size_t index{0U};
+    while (nextCodepoint(index, codepoint))
     {
         const FontModule::Symbol character{font->getChar(codepoint)};
         std::visit(
@@ -116,45 +119,63 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
     {
         return false;
     }
-    const uint8_t byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
-    index++;
-    if (byte < (0b1U << 7U))
+    const uint8_t first{static_cast<uint8_t>(text[index])};
+    ++index;
+    if (first < 0x80U)
     {
-        buffer = byte;
+        buffer = first;
         return true;
     }
-    uint8_t bytes{0U};
-    if ((byte & (0b111U << 5U)) == 0b11U << 6U)
+    char32_t codepoint{};
+    char32_t minimum{};
+    uint8_t remaining{};
+    if ((first & 0xE0U) == 0xC0U)
     {
-        buffer = byte & 0b1'1111U;
-        bytes = 1U;
+        codepoint = first & 0x1FU;
+        minimum = 0x80U;
+        remaining = 1U;
     }
-    else if ((byte & (0b1111U << 4U)) == 0b111U << 5U)
+    else if ((first & 0xF0U) == 0xE0U)
     {
-        buffer = byte & 0b1111U;
-        bytes = 2U;
+        codepoint = first & 0x0FU;
+        minimum = 0x800U;
+        remaining = 2U;
     }
-    else if ((byte & (0b1'1111U << 3U)) == 0b1111U << 4U)
+    else if ((first & 0xF8U) == 0xF0U)
     {
-        buffer = byte & 0b111U;
-        bytes = 3U;
+        codepoint = first & 0x07U;
+        minimum = 0x10000U;
+        remaining = 3U;
     }
     else
     {
-        buffer = 0b1111'1111'1111'1101U;
+        buffer = U'\uFFFD';
         return true;
     }
-    while (bytes-- && index < text.length())
+    if (index + remaining > text.length())
     {
-        const uint8_t _byte{static_cast<uint8_t>(text[index])}; // NOLINT(cppcoreguidelines-init-variables)
-        index++;
-        if ((_byte & (0b11U << 6U)) != 0b1U << 7U)
-        {
-            buffer = 0b1111'1111'1111'1101U;
-            break;
-        }
-        buffer = (buffer << 6U) | (_byte & 0b11'1111U);
+        index = text.length();
+        buffer = U'\uFFFD';
+        return true;
     }
+    while (remaining > 0U)
+    {
+        const uint8_t next{static_cast<uint8_t>(text[index])};
+        if ((next & 0xC0U) != 0x80U)
+        {
+            buffer = U'\uFFFD';
+            return true;
+        }
+        ++index;
+        codepoint = (codepoint << 6U) | (next & 0x3FU);
+        --remaining;
+    }
+    if (codepoint < minimum || codepoint > 0x10FFFFU || (codepoint >= 0xD800U && codepoint <= 0xDFFFU))
+    {
+        buffer = U'\uFFFD';
+        return true;
+    }
+    buffer = codepoint;
     return true;
 }
 
@@ -176,27 +197,30 @@ uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 std::array<char, 5U> TextHandler::encode(char32_t codepoint)
 {
     std::array<char, 5U> out{};
-    if (codepoint < (0b1U << 7U))
+    if (codepoint < 0x110000U && (codepoint < 0xD800U || codepoint > 0xDFFFU))
     {
-        out.at(0U) = static_cast<char>(codepoint);
-    }
-    else if (codepoint < (0b1U << 11U))
-    {
-        out.at(0U) = static_cast<char>((0b11U << 6U) | (codepoint >> (0b11U << 1U)));
-        out.at(1U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
-    }
-    else if (codepoint < (0b1U << 16U))
-    {
-        out.at(0U) = static_cast<char>((0b111U << 5U) | (codepoint >> (0b11U << 2U)));
-        out.at(1U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 1U)) & 0b11'1111U));
-        out.at(2U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
-    }
-    else if (codepoint < (0b10001U << 16U))
-    {
-        out.at(0U) = static_cast<char>((0b1U << 7U) | (codepoint >> (0b1'001U << 1U)));
-        out.at(1U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 2U)) & 0b11'1111U));
-        out.at(2U) = static_cast<char>((0b1U << 7U) | ((codepoint >> (0b11U << 1U)) & 0b11'1111U));
-        out.at(3U) = static_cast<char>((0b1U << 7U) | (codepoint & 0b11'1111U));
+        if (codepoint < 0x80U)
+        {
+            out[0U] = static_cast<char>(codepoint);
+        }
+        else if (codepoint < 0x800U)
+        {
+            out[0U] = static_cast<char>(0xC0U | (codepoint >> 6U));
+            out[1U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
+        }
+        else if (codepoint < 0x10000U)
+        {
+            out[0U] = static_cast<char>(0xE0U | (codepoint >> 12U));
+            out[1U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
+            out[2U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
+        }
+        else
+        {
+            out[0U] = static_cast<char>(0xF0U | (codepoint >> 18U));
+            out[1U] = static_cast<char>(0x80U | ((codepoint >> 12U) & 0x3FU));
+            out[2U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
+            out[3U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
+        }
     }
     return out;
 }
