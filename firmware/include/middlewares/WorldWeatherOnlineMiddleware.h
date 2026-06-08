@@ -13,15 +13,16 @@ class WorldWeatherOnlineMiddleware final : public WeatherHandler
 {
 private:
     // https://www.worldweatheronline.com/weather-api/api/docs/weather-icons.aspx
-    static constexpr std::array<uint16_t, 1> codesClear{113};
-    static constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
-    static constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
-    static constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
-    static constexpr std::array<uint16_t, 9> codesRain{176, 263, 266, 293, 296, 299, 302, 305, 308};
-    static constexpr std::array<uint16_t, 11> codesSnow{179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320};
-    static constexpr std::array<uint16_t, 1> codesThunder{200};
+    static constexpr std::array<uint16_t, 1U> codesClear{113U};
+    static constexpr std::array<uint16_t, 2U> codesCloudy{119U, 122U};
+    static constexpr std::array<uint16_t, 1U> codesCloudyPartly{116U};
+    static constexpr std::array<uint16_t, 3U> codesFog{143U, 248U, 260U};
+    static constexpr std::array<uint16_t, 9U> codesRain{176U, 263U, 266U, 293U, 296U, 299U, 302U, 305U, 308U};
+    static constexpr std::array<uint16_t, 11U> codesSnow{
+        179U, 182U, 185U, 227U, 230U, 281U, 284U, 311U, 314U, 317U, 320U};
+    static constexpr std::array<uint16_t, 1U> codesThunder{200U};
 
-    static constexpr std::array<Codeset16, 7> codesets{{
+    static constexpr std::array<Codeset16, 7U> codesets{{
         {Conditions::CLEAR, codesClear},
         {Conditions::CLOUDY, codesCloudy},
         {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
