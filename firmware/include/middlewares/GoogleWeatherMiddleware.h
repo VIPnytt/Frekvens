@@ -13,18 +13,18 @@ class GoogleWeatherMiddleware final : public WeatherHandler
 {
 private:
     // https://developers.google.com/maps/documentation/weather/weather-condition-icons
-    static constexpr std::array<std::string_view, 2> codesClear{
+    static constexpr std::array<std::string_view, 2U> codesClear{
         "CLEAR",
         "MOSTLY_CLEAR",
     };
-    static constexpr std::array<std::string_view, 1> codesCloudy{
+    static constexpr std::array<std::string_view, 1U> codesCloudy{
         "CLOUDY",
     };
-    static constexpr std::array<std::string_view, 2> codesCloudyPartly{
+    static constexpr std::array<std::string_view, 2U> codesCloudyPartly{
         "MOSTLY_CLOUDY",
         "PARTLY_CLOUDY",
     };
-    static constexpr std::array<std::string_view, 11> codesRain{
+    static constexpr std::array<std::string_view, 11U> codesRain{
         "CHANCE_OF_SHOWERS",
         "HEAVY_RAIN",
         "HEAVY_RAIN_SHOWERS",
@@ -37,7 +37,7 @@ private:
         "RAIN_SHOWERS",
         "SCATTERED_SHOWERS",
     };
-    static constexpr std::array<std::string_view, 14> codesSnow{
+    static constexpr std::array<std::string_view, 14U> codesSnow{
         "CHANCE_OF_SNOW_SHOWERS",
         "HAIL",
         "HAIL_SHOWERS",
@@ -53,7 +53,7 @@ private:
         "SNOW_PERIODICALLY_HEAVY",
         "SNOW_SHOWERS",
     };
-    static constexpr std::array<std::string_view, 7> codesThunder{
+    static constexpr std::array<std::string_view, 7U> codesThunder{
         "HEAVY_SNOW_STORM",
         "HEAVY_THUNDERSTORM",
         "LIGHT_THUNDERSTORM_RAIN",
@@ -62,13 +62,13 @@ private:
         "THUNDERSHOWER",
         "THUNDERSTORM",
     };
-    static constexpr std::array<std::string_view, 3> codesWind{
+    static constexpr std::array<std::string_view, 3U> codesWind{
         "BLOWING_SNOW",
         "WIND_AND_RAIN",
         "WINDY",
     };
 
-    static constexpr std::array<WeatherHandler::Codeset, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset, 7U> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
@@ -80,12 +80,13 @@ private:
 
     // https://developers.google.com/maps/documentation/weather
     static inline std::vector<const char *> queries{
-        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
-#if TEMPERATURE_CELSIUS
+#if TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
         "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=METRIC&key=" GOOGLEWEATHER_KEY,
 #elif TEMPERATURE_FAHRENHEIT
         "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&unitsSystem=IMPERIAL&key=" GOOGLEWEATHER_KEY,
-#endif // TEMPERATURE_CELSIUS
+#else
+        "location.latitude=" LATITUDE "&location.longitude=" LONGITUDE "&key=" GOOGLEWEATHER_KEY,
+#endif // TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
     };
 
 public:

@@ -14,13 +14,13 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &
     }
     query = queries.back();
     std::vector<char> body;
-    const int status = fetch(body, lastMillis);
+    const int status{fetch(body, lastMillis)};
     if (status != 200)
     {
         if (status >= 400 && status < 500)
         {
             queries.pop_back();
-            lastMillis = millis() - interval + (1U << 12U);
+            lastMillis = millis() - interval + (0b1U << 12U);
         }
         return;
     }
@@ -32,12 +32,16 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &
         doc["temperature"]["degrees"].is<float>() && doc["weatherCondition"]["type"].is<std::string_view>())
     {
         condition = getCondition(doc["weatherCondition"]["type"].as<std::string_view>(), codesets);
+#if TEMPERATURE_KELVIN
+        temperature = static_cast<int16_t>(lroundf(273.15F + doc["temperature"]["degrees"].as<float>()));
+#else
         temperature = static_cast<int16_t>(lroundf(doc["temperature"]["degrees"].as<float>()));
+#endif // TEMPERATURE_KELVIN
         return;
     }
     queries.pop_back();
     ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    lastMillis = millis() - interval + (1U << 13U);
+    lastMillis = millis() - interval + (0b1U << 13U);
 }
 
 #endif // WEATHER_GOOGLE
