@@ -13,15 +13,16 @@ class OpenMeteoMiddleware final : public WeatherHandler
 {
 private:
     // https://open-meteo.com/en/docs#weather_variable_documentation
-    static constexpr std::array<uint8_t, 1> codesClear{0};
-    static constexpr std::array<uint8_t, 1> codesCloudy{3};
-    static constexpr std::array<uint8_t, 2> codesCloudyPartly{1, 2};
-    static constexpr std::array<uint8_t, 2> codesFog{45, 48};
-    static constexpr std::array<uint8_t, 13> codesRain{51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82};
-    static constexpr std::array<uint8_t, 6> codesSnow{71, 73, 75, 77, 85, 86};
-    static constexpr std::array<uint8_t, 3> codesThunder{95, 96, 99};
+    static constexpr std::array<uint8_t, 1U> codesClear{0U};
+    static constexpr std::array<uint8_t, 1U> codesCloudy{3U};
+    static constexpr std::array<uint8_t, 2U> codesCloudyPartly{1U, 2U};
+    static constexpr std::array<uint8_t, 2U> codesFog{45U, 48U};
+    static constexpr std::array<uint8_t, 13U> codesRain{
+        51U, 53U, 55U, 56U, 57U, 61U, 63U, 65U, 66U, 67U, 80U, 81U, 82U};
+    static constexpr std::array<uint8_t, 6U> codesSnow{71U, 73U, 75U, 77U, 85U, 86U};
+    static constexpr std::array<uint8_t, 3U> codesThunder{95U, 96U, 99U};
 
-    static constexpr std::array<WeatherHandler::Codeset8, 7> codesets{{
+    static constexpr std::array<WeatherHandler::Codeset8, 7U> codesets{{
         {WeatherHandler::Conditions::CLEAR, codesClear},
         {WeatherHandler::Conditions::CLOUDY, codesCloudy},
         {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
@@ -33,11 +34,7 @@ private:
 
     // https://open-meteo.com/en/docs#api-documentation
     static inline std::vector<std::pair<const char *, const char *>> parts{
-        {
-            "api.open-meteo.com",
-            "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
-        },
-#if TEMPERATURE_CELSIUS
+#if TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
         {
             "api.open-meteo.com",
             "latitude=" LATITUDE "&longitude=" LONGITUDE
@@ -49,14 +46,13 @@ private:
             "latitude=" LATITUDE "&longitude=" LONGITUDE
             "&current=temperature_2m,weather_code&temperature_unit=fahrenheit",
         },
-#endif // TEMPERATURE_CELSIUS
-#ifdef OPENMETEO_KEY
+#else
         {
-            "customer-api.open-meteo.com",
-            "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
+            "api.open-meteo.com",
+            "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
         },
-#endif // OPENMETEO_KEY
-#if defined(OPENMETEO_KEY) && TEMPERATURE_CELSIUS
+#endif // TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
+#if defined(OPENMETEO_KEY) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
         {
             "customer-api.open-meteo.com",
             "latitude=" LATITUDE "&longitude=" LONGITUDE
@@ -68,7 +64,12 @@ private:
             "latitude=" LATITUDE "&longitude=" LONGITUDE
             "&current=temperature_2m,weather_code&temperature_unit=fahrenheit&apikey=" OPENMETEO_KEY,
         },
-#endif // defined(OPENMETEO_KEY) && TEMPERATURE_CELSIUS
+#elif defined(OPENMETEO_KEY)
+        {
+            "customer-api.open-meteo.com",
+            "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
+        },
+#endif // defined(OPENMETEO_KEY) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
     };
 
 public:
