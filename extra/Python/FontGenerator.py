@@ -110,26 +110,25 @@ class FontGenerator:
         for character in bitmaps:
             bitmap, offsetX, offsetY = self._crop(bitmaps[character])
             if bitmap:
-                cp = ord(character)
+                codepoint = ord(character)
                 name = unicodedata.name(character)
                 self.characters[character] = (name, offsetX, offsetY)
-                prefix = (
-                    "    // "
-                    if character
-                    in {
-                        "∪",  # U+222A UNION
-                        "⊨",  # U+22A8 TRUE
-                        "⊻",  # U+22BB XOR
-                    }
-                    else ""
-                )
-                h.append(f"    // U+{cp:04X} {character} {name}")
+                comment = character in {
+                    "∪",  # U+222A UNION
+                    "⊨",  # U+22A8 TRUE
+                    "⊻",  # U+22BB XOR
+                }
+                if comment:
+                    h.append("    /*")
+                h.append(f"    // U+{codepoint:04X} {character} {name}")
                 h.append(
-                    f"    {prefix}static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(name.replace('-', ' ').split()))}{{"
+                    f"    static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(name.replace('-', ' ').split()))}{{"
                 )
                 for row in bitmap:
-                    h.append(f"    {prefix}    0b{row}U,")
-                h.append(f"    {prefix}}};")
+                    h.append(f"        0b{row}U,")
+                h.append("    };")
+                if comment:
+                    h.append("    */")
                 h.append("")
         h.extend(
             [
@@ -160,7 +159,7 @@ class FontGenerator:
             "    {",
         ]
         literal = ""
-        prefix = ""
+        comment = ""
         for character, (name, offsetX, offsetY) in self.characters.items():
             codepoint = ord(character)
             escape = (
@@ -177,9 +176,9 @@ class FontGenerator:
             )
             if codepoint >= 1 << 7:
                 literal = "U"
-                prefix = "    // "
-            cpp.append(f"    {prefix}case {literal}'{escape + character}': // U+{codepoint:04X} {name}")
-            cpp.append(f"    {prefix}    return {{{variable}, {offsetX}U, {offsetY}}};")
+                comment = "    // "
+            cpp.append(f"    {comment}case {literal}'{escape + character}': // U+{codepoint:04X} {name}")
+            cpp.append(f"    {comment}    return {{{variable}, {offsetX}U, {offsetY}}};")
         cpp.extend(
             [
                 "    default:",

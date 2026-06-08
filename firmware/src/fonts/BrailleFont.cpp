@@ -11,9 +11,9 @@ static_assert(GRID_ROWS >= 3U, __STRING(FONT_BRAILLE) " is not compatible with t
 
 FontModule::Symbol BrailleFont::toSymbol(uint8_t bits) const
 {
-    const uint8_t row1{bits & 0b11U};
-    const uint8_t row2{(bits >> (0b1U << 1U)) & 0b11U};
-    const uint8_t row3{(bits >> (0b1U << 2U)) & 0b11U};
+    const uint8_t row1{static_cast<uint8_t>(bits & 0b11U)};
+    const uint8_t row2{static_cast<uint8_t>((bits >> 2U) & 0b11U)};
+    const uint8_t row3{static_cast<uint8_t>((bits >> 4U) & 0b11U)};
     int8_t size{0};
     if (row3)
     {
@@ -31,16 +31,18 @@ FontModule::Symbol BrailleFont::toSymbol(uint8_t bits) const
     if (size)
     {
         bitmap[0U] = row1;
+        if (size >= 2)
+        {
+            bitmap[1U] = row2;
+            if (size == 3)
+            {
+                bitmap[2U] = row3;
+            }
+        }
     }
-    if (size >= 2)
-    {
-        bitmap[1U] = row2;
-    }
-    if (size == 3)
-    {
-        bitmap[2U] = row3;
-    }
-    return {bitmap, ((row1 | row2 | row3) & (0b1U << 1U)) ? 0U : 1U, static_cast<int8_t>(3 - size)};
+    return {bitmap,
+            static_cast<uint8_t>(((row1 | row2 | row3) & (0b1U << 1U)) != 0U ? 0U : 1U),
+            static_cast<int8_t>(3 - size)};
 }
 
 FontModule::Symbol BrailleFont::getChar(char32_t character) const
@@ -48,7 +50,7 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
     if (character >= '1' && character <= '9')
     {
         // U+0031-U+0039
-        return toSymbol(latinLetterA_latinLetterZtterA_latinLetterZ[character - '1']);
+        return toSymbol(latinLetterA_latinLetterZ[character - '1']);
     }
     if (character >= 'A' && character <= 'Z')
     {
