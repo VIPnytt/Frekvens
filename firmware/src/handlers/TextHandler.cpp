@@ -11,9 +11,9 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
             size_t index{0U}; // NOLINT(misc-const-correctness)
             int8_t yMax{0};   // NOLINT(misc-const-correctness)
             int8_t yMin{0};
-            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
+            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
             {
-                FontModule::Symbol character{font.getChar(codepoint)};
+                const FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
                     [&](auto &&bitmap)
                     {
@@ -30,10 +30,10 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             width = 0U;
-            size_t index{0U}; // NOLINT(misc-const-correctness)
-            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
+            size_t index{0U};                                              // NOLINT(misc-const-correctness)
+            for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
             {
-                FontModule::Symbol character{font.getChar(codepoint)};
+                const FontModule::Symbol character{font.getChar(codepoint)};
                 std::visit(
                     [&](auto &&bitmap)
                     {
@@ -67,10 +67,10 @@ void TextHandler::draw(uint8_t brightness) const
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    size_t index{0U}; // NOLINT(misc-const-correctness)
-    for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);)
+    size_t index{0U};                                              // NOLINT(misc-const-correctness)
+    for (char32_t codepoint{0U}; nextCodepoint(index, codepoint);) // NOLINT(misc-const-correctness)
     {
-        FontModule::Symbol character{font->getChar(codepoint)};
+        const FontModule::Symbol character{font->getChar(codepoint)};
         std::visit(
             [&](auto &&bitmap)
             {
@@ -82,14 +82,16 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
                     {
                         for (uint8_t _y{0U}; _y < _height; ++_y)
                         {
-                            if ((x + character.offsetX + _x) >= 0U && (x + character.offsetX + _x) < GRID_COLUMNS &&
-                                (int16_t)(y + height - _height - character.offsetY + _y) >= 0 &&
-                                (int16_t)(y + height - _height - character.offsetY + _y) < GRID_ROWS &&
-                                (bitmap[_y] >> (msbMax - _x)) & 0b1U)
+                            const int pixelX{static_cast<int>(x) + static_cast<int>(character.offsetX) +
+                                             static_cast<int>(_x)};
+                            const int pixelY{static_cast<int>(y) + static_cast<int>(height) -
+                                             static_cast<int>(_height) - static_cast<int>(character.offsetY) +
+                                             static_cast<int>(_y)};
+                            if (pixelX >= 0 && pixelX < GRID_COLUMNS && pixelY >= 0 && pixelY < GRID_ROWS &&
+                                (((bitmap[_y] >> (msbMax - _x)) & 0b1U) != 0U))
                             {
-                                Display.setPixel(x + character.offsetX + _x,
-                                                 y + height - _height - character.offsetY + _y,
-                                                 brightness);
+                                Display.setPixel(
+                                    static_cast<uint8_t>(pixelX), static_cast<uint8_t>(pixelY), brightness);
                             }
                         }
                     }

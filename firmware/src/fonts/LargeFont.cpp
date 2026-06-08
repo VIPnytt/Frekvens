@@ -12,17 +12,17 @@ FontModule::Symbol LargeFont::getChar(char32_t character) const
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case ' ': // SPACE
+    case ' ': // U+0020 SPACE
         return whitespace(6U);
-    case '!': // EXCLAMATION MARK
+    case '!': // U+0021 EXCLAMATION MARK
         return toSymbol(exclamationMark);
-    case 'I': // LATIN CAPITAL LETTER I
+    case 'I': // U+0049 LATIN CAPITAL LETTER I
         return toSymbol(latinCapitalLetterI);
-    case 'R': // LATIN CAPITAL LETTER R
+    case 'R': // U+0052 LATIN CAPITAL LETTER R
         return toSymbol(latinCapitalLetterR);
-    case 'U': // LATIN CAPITAL LETTER U
+    case 'U': // U+0055 LATIN CAPITAL LETTER U
         return toSymbol(latinCapitalLetterU);
-    case U'π': // GREEK SMALL LETTER PI
+    case U'π': // U+03C0 GREEK SMALL LETTER PI
         return toSymbol(greekSmallLetterPi);
     default:
         return {};

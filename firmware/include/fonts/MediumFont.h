@@ -11,7 +11,7 @@ class MediumFont final : public FontModule
 private:
     static constexpr std::array<std::array<uint8_t, 7U>, 10U> digitZero_digitNine{{
         {
-            // 0x30, 0 DIGIT ZERO
+            // U+0030 0 DIGIT ZERO
             0b011110U,
             0b110011U,
             0b110011U,
@@ -21,7 +21,7 @@ private:
             0b011110U,
         },
         {
-            // 0x31, 1 DIGIT ONE
+            // U+0031 1 DIGIT ONE
             0b0011U,
             0b0111U,
             0b1111U,
@@ -31,7 +31,7 @@ private:
             0b0011U,
         },
         {
-            // 0x32, 2 DIGIT TWO
+            // U+0032 2 DIGIT TWO
             0b011110U,
             0b110011U,
             0b000011U,
@@ -41,7 +41,7 @@ private:
             0b111111U,
         },
         {
-            // 0x33, 3 DIGIT THREE
+            // U+0033 3 DIGIT THREE
             0b011110U,
             0b110011U,
             0b000011U,
@@ -51,7 +51,7 @@ private:
             0b011110U,
         },
         {
-            // 0x34, 4 DIGIT FOUR
+            // U+0034 4 DIGIT FOUR
             0b110011U,
             0b110011U,
             0b110011U,
@@ -61,7 +61,7 @@ private:
             0b000011U,
         },
         {
-            // 0x35, 5 DIGIT FIVE
+            // U+0035 5 DIGIT FIVE
             0b111111U,
             0b110000U,
             0b110000U,
@@ -71,7 +71,7 @@ private:
             0b011110U,
         },
         {
-            // 0x36, 6 DIGIT SIX
+            // U+0036 6 DIGIT SIX
             0b011110U,
             0b110011U,
             0b110000U,
@@ -81,7 +81,7 @@ private:
             0b011110U,
         },
         {
-            // 0x37, 7 DIGIT SEVEN
+            // U+0037 7 DIGIT SEVEN
             0b111111U,
             0b000011U,
             0b000110U,
@@ -91,7 +91,7 @@ private:
             0b001100U,
         },
         {
-            // 0x38, 8 DIGIT EIGHT
+            // U+0038 8 DIGIT EIGHT
             0b011110U,
             0b110011U,
             0b110011U,
@@ -101,7 +101,7 @@ private:
             0b011110U,
         },
         {
-            // 0x39, 9 DIGIT NINE
+            // U+0039 9 DIGIT NINE
             0b011110U,
             0b110011U,
             0b110011U,
@@ -112,7 +112,7 @@ private:
         },
     }};
 
-    // 0x49, I LATIN CAPITAL LETTER I
+    // U+0049 I LATIN CAPITAL LETTER I
     static constexpr std::array<uint8_t, 7U> latinCapitalLetterI{
         0b111111U,
         0b001100U,
@@ -123,7 +123,7 @@ private:
         0b111111U,
     };
 
-    // 0x4F, O LATIN CAPITAL LETTER O
+    // U+004F O LATIN CAPITAL LETTER O
     static constexpr std::array<uint8_t, 7U> latinCapitalLetterO{
         0b011110U,
         0b111111U,
@@ -134,7 +134,7 @@ private:
         0b011110U,
     };
 
-    // 0x6F, o LATIN SMALL LETTER O
+    // U+006F o LATIN SMALL LETTER O
     static constexpr std::array<uint8_t, 5U> latinSmallLetterO{
         0b01110U,
         0b11111U,

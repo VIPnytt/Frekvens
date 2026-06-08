@@ -11,18 +11,19 @@ FontModule::Symbol MediumWideFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
     {
+        // U+0030-U+0039
         return toSymbol(digitZero_digitNine[character - '0']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case ' ': // SPACE
+    case ' ': // U+0020 SPACE
         return whitespace(6U);
-    case 'I': // LATIN CAPITAL LETTER I
+    case 'I': // U+0049 LATIN CAPITAL LETTER I
         return toSymbol(latinCapitalLetterI);
-    case 'O': // LATIN CAPITAL LETTER O
+    case 'O': // U+004F LATIN CAPITAL LETTER O
         return toSymbol(latinCapitalLetterO);
-    case 'o': // LATIN SMALL LETTER O
+    case 'o': // U+006F LATIN SMALL LETTER O
         return toSymbol(latinSmallLetterO);
     default:
         return {};

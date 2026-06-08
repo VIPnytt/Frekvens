@@ -11,78 +11,86 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
     {
+        // U+0030-U+0039
         return toSymbol(digitZero_digitNine[character - '0']);
     }
     if (character >= 'A' && character <= ']')
     {
+        // U+0041-U+005D
         return toSymbol(latinCapitalLetterA_rightSquareBracket[character - 'A']);
     }
     if (character >= 'e' && character <= 'g')
     {
+        // U+0065-U+0067
         return toSymbol(latinSmallLetterE_latinSmallLetterG[character - 'e']);
     }
     if (character == 'h' || character == 'i')
     {
+        // U+0068-U+0069
         return toSymbol(latinSmallLetterH_latinSmallLetterI[character - 'h']);
     }
     if (character == 'k' || character == 'l')
     {
+        // U+006B-U+006C
         return toSymbol(latinSmallLetterK_latinSmallLetterL[character - 'k']);
     }
     if (character == 'm' || character == 'n')
     {
+        // U+006D-U+006E
         return toSymbol(latinSmallLetterM_latinSmallLetterN[character - 'm']);
     }
     if (character >= 'o' && character <= 'r')
     {
+        // U+006F-U+0072
         return toSymbol(latinSmallLetterO_latinSmallLetterR[character - 'o']);
     }
     if (character >= 'u' && character <= 'x')
     {
+        // U+0075-U+0078
         return toSymbol(latinSmallLetterU_latinSmallLetterX[character - 'u']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case ' ': // SPACE
+    case ' ': // U+0020 SPACE
         return whitespace(3U);
-    case '+': // PLUS SIGN
+    case '+': // U+002B PLUS SIGN
         return toSymbol(plusSign, 1);
-    case ',': // COMMA
+    case ',': // U+002C COMMA
         return toSymbol(comma);
-    case '-': // HYPHEN-MINUS
+    case '-': // U+002D HYPHEN-MINUS
         return toSymbol(hyphenMinus, 2);
-    case '.': // FULL STOP
+    case '.': // U+002E FULL STOP
         return toSymbol(fullStop);
-    case ':': // COLON
+    case ':': // U+003A COLON
         return toSymbol(colon, 1);
-    case '=': // EQUALS SIGN
+    case '=': // U+003D EQUALS SIGN
         return toSymbol(equalsSign, 1);
-    case '_': // LOW LINE
+    case '_': // U+005F LOW LINE
         return toSymbol(hyphenMinus);
-    case 'a': // LATIN SMALL LETTER A
+    case 'a': // U+0061 LATIN SMALL LETTER A
         return toSymbol(latinSmallLetterA);
-    case 'b': // LATIN SMALL LETTER B
+    case 'b': // U+0062 LATIN SMALL LETTER B
         return toSymbol(latinSmallLetterB);
-    case 'c': // LATIN SMALL LETTER C
+    case 'c': // U+0063 LATIN SMALL LETTER C
         return toSymbol(latinSmallLetterC);
-    case 'd': // LATIN SMALL LETTER D
+    case 'd': // U+0064 LATIN SMALL LETTER D
         return toSymbol(latinSmallLetterD);
-    case 'j': // LATIN SMALL LETTER J
+    case 'j': // U+006A LATIN SMALL LETTER J
         return toSymbol(latinSmallLetterJ);
-    case 's': // LATIN SMALL LETTER S
+    case 's': // U+0073 LATIN SMALL LETTER S
         return toSymbol(latinSmallLetterS);
-    case 't': // LATIN SMALL LETTER T
+    case 't': // U+0074 LATIN SMALL LETTER T
         return toSymbol(latinSmallLetterT);
-    case 'y': // LATIN SMALL LETTER Y
+    case 'y': // U+0079 LATIN SMALL LETTER Y
         return toSymbol(latinSmallLetterY);
-    case 'z': // LATIN SMALL LETTER Z
+    case 'z': // U+007A LATIN SMALL LETTER Z
         return toSymbol(latinSmallLetterZ);
-    case '|': // VERTICAL LINE
+    case '|': // U+007C VERTICAL LINE
         return toSymbol(verticalLine);
-    case U'°': // DEGREE SIGN
+    case U'°': // U+00B0 DEGREE SIGN
         return toSymbol(degreeSign, 3);
-    case U'π': // GREEK SMALL LETTER PI
+    case U'π': // U+03C0 GREEK SMALL LETTER PI
         return toSymbol(greekSmallLetterPi);
     default:
         return {};

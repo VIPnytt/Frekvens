@@ -47,47 +47,50 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
 {
     if (character >= '1' && character <= '9')
     {
+        // U+0031-U+0039
         return toSymbol(latinLetterA_latinLetterZtterA_latinLetterZ[character - '1']);
     }
     if (character >= 'A' && character <= 'Z')
     {
+        // U+0041-U+005A
         return toSymbol(latinLetterA_latinLetterZ[character - 'A']);
     }
     if (character >= 'a' && character <= 'z')
     {
+        // U+0061-U+007A
         return toSymbol(latinLetterA_latinLetterZ[character - 'a']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case ' ': // SPACE
+    case ' ': // U+0020 SPACE
         return whitespace(2U);
-    case '!': // EXCLAMATION MARK
+    case '!': // U+0021 EXCLAMATION MARK
         return toSymbol(0b00'11'10U);
-    case '\'': // APOSTROPHE
+    case '\'': // U+0027 APOSTROPHE
         return toSymbol(0b00'00'10U);
-    case '(': // LEFT PARENTHESIS
-    case ')': // RIGHT PARENTHESIS
-    case '[': // LEFT SQUARE BRACKET
-    case ']': // RIGHT SQUARE BRACKET
-    case '{': // LEFT CURLY BRACKET
-    case '}': // RIGHT CURLY BRACKET
+    case '(': // U+0028 LEFT PARENTHESIS
+    case ')': // U+0029 RIGHT PARENTHESIS
+    case '[': // U+005B LEFT SQUARE BRACKET
+    case ']': // U+005D RIGHT SQUARE BRACKET
+    case '{': // U+007B LEFT CURLY BRACKET
+    case '}': // U+007D RIGHT CURLY BRACKET
         return toSymbol(0b00'11'11U);
-    case ',': // COMMA
+    case ',': // U+002C COMMA
         return toSymbol(0b00'10'00U);
-    case '-': // HYPHEN-MINUS
+    case '-': // U+002D HYPHEN-MINUS
         return toSymbol(0b00'00'11U);
-    case '.': // FULL STOP
+    case '.': // U+002E FULL STOP
         return toSymbol(0b00'11'01U);
-    case '/': // SOLIDUS
+    case '/': // U+002F SOLIDUS
         return toSymbol(0b01'00'10U);
-    case '0': // DIGIT ZERO
+    case '0': // U+0030 DIGIT ZERO
         return toSymbol(latinLetterA_latinLetterZ[9U]);
-    case ':': // COLON
+    case ':': // U+003A COLON
         return toSymbol(0b00'11'00U);
-    case ';': // SEMICOLON
+    case ';': // U+003B SEMICOLON
         return toSymbol(0b00'10'10U);
-    case '?': // QUESTION MARK
+    case '?': // U+003F QUESTION MARK
         return toSymbol(0b00'10'11U);
     default:
         return {};

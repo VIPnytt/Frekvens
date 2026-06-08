@@ -10,7 +10,7 @@
 class LargeFont final : public FontModule
 {
 private:
-    // 0x21, ! EXCLAMATION MARK
+    // U+0021 ! EXCLAMATION MARK
     static constexpr std::array<uint8_t, 8U> exclamationMark{
         0b11U,
         0b11U,
@@ -22,7 +22,7 @@ private:
         0b11U,
     };
 
-    // 0x49, I LATIN CAPITAL LETTER I
+    // U+0049 I LATIN CAPITAL LETTER I
     static constexpr std::array<uint8_t, 8U> latinCapitalLetterI{
         0b111111U,
         0b001100U,
@@ -34,7 +34,7 @@ private:
         0b111111U,
     };
 
-    // 0x52, R LATIN CAPITAL LETTER R
+    // U+0052 R LATIN CAPITAL LETTER R
     static constexpr std::array<uint8_t, 8U> latinCapitalLetterR{
         0b111110U,
         0b110011U,
@@ -46,7 +46,7 @@ private:
         0b110011U,
     };
 
-    // 0x55, U LATIN CAPITAL LETTER U
+    // U+0055 U LATIN CAPITAL LETTER U
     static constexpr std::array<uint8_t, 8U> latinCapitalLetterU{
         0b110011U,
         0b110011U,
@@ -58,7 +58,7 @@ private:
         0b011111U,
     };
 
-    // 0x3C0, π GREEK SMALL LETTER PI
+    // U+03C0 π GREEK SMALL LETTER PI
     static constexpr std::array<uint8_t, 8U> greekSmallLetterPi{
         0b11111111U,
         0b11111111U,

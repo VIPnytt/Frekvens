@@ -13,7 +13,7 @@ import unicodedata
 
 
 class FontGenerator:
-    characters: dict[str, tuple[int, int, str]]
+    characters: dict[str, tuple[str, int, int]]
     path: pathlib.Path
     size: int
 
@@ -78,19 +78,19 @@ class FontGenerator:
     def source(self) -> set[str]:
         self.characters = {}
         unique = self.path.stem
-        name = unique
+        friendly = unique
         with fontTools.ttLib.TTFont(self.path) as font:
             for record in font["name"].names:
                 if record.nameID == 4:
-                    name = record.toUnicode()
+                    friendly = record.toUnicode()
                 elif record.nameID == 6:
                     unique = record.toUnicode()
         return {
-            self._source_h(unique, name),
+            self._source_h(unique, friendly),
             self._source_cpp(unique),
         }
 
-    def _source_h(self, unique: str, name: str) -> str:
+    def _source_h(self, unique: str, friendly: str) -> str:
         h = [
             "#pragma once",
             "",
@@ -111,19 +111,21 @@ class FontGenerator:
             bitmap, offsetX, offsetY = self._crop(bitmaps[character])
             if bitmap:
                 cp = ord(character)
-                comment = unicodedata.name(character)
-                self.characters[character] = (offsetX, offsetY, comment)
+                name = unicodedata.name(character)
+                self.characters[character] = (name, offsetX, offsetY)
                 prefix = (
                     "    // "
                     if character
                     in {
-                        "∪",  # UNION
+                        "∪",  # U+222A UNION
+                        "⊨",  # U+22A8 TRUE
+                        "⊻",  # U+22BB XOR
                     }
                     else ""
                 )
-                h.append(f"    // 0x{cp:X}, {character} {comment}")
+                h.append(f"    // U+{cp:04X} {character} {name}")
                 h.append(
-                    f"    {prefix}static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(comment.replace('-', ' ').split()))}{{"
+                    f"    {prefix}static constexpr std::array<uint{max(8, 1 << (len(bitmap[0]) - 1).bit_length())}_t, {len(bitmap)}U> {''.join(word.title() if i else word.lower() for i, word in enumerate(name.replace('-', ' ').split()))}{{"
                 )
                 for row in bitmap:
                     h.append(f"    {prefix}    0b{row}U,")
@@ -132,7 +134,7 @@ class FontGenerator:
         h.extend(
             [
                 "public:",
-                f'    static constexpr std::string_view name{{"{name}"}};',
+                f'    static constexpr std::string_view name{{"{friendly}"}};',
                 "",
                 f"    explicit {unique}Font() : FontModule(name) {{}};",
                 "",
@@ -159,23 +161,24 @@ class FontGenerator:
         ]
         literal = ""
         prefix = ""
-        for character, (offsetX, offsetY, comment) in self.characters.items():
+        for character, (name, offsetX, offsetY) in self.characters.items():
+            codepoint = ord(character)
             escape = (
                 "\\"
                 if character
                 in {
-                    "'",  # APOSTROPHE
-                    "\\",  # REVERSE SOLIDUS
+                    "'",  # U+0027 APOSTROPHE
+                    "\\",  # U+005C REVERSE SOLIDUS
                 }
                 else ""
             )
             variable = "".join(
-                word.title() if i else word.lower() for i, word in enumerate(comment.replace("-", " ").split())
+                word.title() if i else word.lower() for i, word in enumerate(name.replace("-", " ").split())
             )
-            if ord(character) >= 1 << 7:
+            if codepoint >= 1 << 7:
                 literal = "U"
                 prefix = "    // "
-            cpp.append(f"    {prefix}case {literal}'{escape + character}': // {comment}")
+            cpp.append(f"    {prefix}case {literal}'{escape + character}': // U+{codepoint:04X} {name}")
             cpp.append(f"    {prefix}    return {{{variable}, {offsetX}U, {offsetY}}};")
         cpp.extend(
             [
