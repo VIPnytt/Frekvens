@@ -5,7 +5,7 @@
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 10U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
