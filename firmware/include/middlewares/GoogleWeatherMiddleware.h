@@ -68,14 +68,14 @@ private:
         "WINDY",
     };
 
-    static constexpr std::array<WeatherHandler::Codeset, 7U> codesets{{
-        {WeatherHandler::Conditions::CLEAR, codesClear},
-        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
-        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {WeatherHandler::Conditions::RAIN, codesRain},
-        {WeatherHandler::Conditions::SNOW, codesSnow},
-        {WeatherHandler::Conditions::THUNDER, codesThunder},
-        {WeatherHandler::Conditions::WIND, codesWind},
+    static constexpr std::array<std::pair<WeatherHandler::Condition, std::span<const std::string_view>>, 7U> codesets{{
+        {WeatherHandler::Condition::CLEAR, codesClear},
+        {WeatherHandler::Condition::CLOUDY, codesCloudy},
+        {WeatherHandler::Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Condition::RAIN, codesRain},
+        {WeatherHandler::Condition::SNOW, codesSnow},
+        {WeatherHandler::Condition::THUNDER, codesThunder},
+        {WeatherHandler::Condition::WIND, codesWind},
     }};
 
     // https://developers.google.com/maps/documentation/weather
@@ -98,7 +98,7 @@ public:
         path = "/v1/currentConditions:lookup";
     };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

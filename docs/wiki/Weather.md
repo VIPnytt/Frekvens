@@ -2,13 +2,19 @@
 
 Provider support may vary depending on location.
 
-[Google](%EF%B8%8F-google) | [Home Assistant](#-home-assistant) | [Open-Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+**Auto detect:** [Home Assistant](#-home-assistant) | [Wttr.in](#️-wttrin)
+
+**Coordinates:** [Google](%EF%B8%8F-google) | [Open-Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+
+**Location name:** [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin)
+
+**Open access:** [Open-Meteo](#-open-meteo) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
 ## ☁️ Google
 
-Updated about every ~17 minutes.
+Refreshed every ~17 minutes.
 
-Requires a [API-key](https://developers.google.com/maps/documentation/weather/get-api-key).
+Requires a [API-key](https://developers.google.com/maps/documentation/weather/get-api-key). Consumes up to 2 555 requests/month, depending on usage.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -32,7 +38,7 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 
 Smart-home integration.
 
-Updated about every ~4 minutes.
+Refreshed every ~4 minutes.
 
 Requires an [Long-lived access token](https://my.home-assistant.io/redirect/profile_security/).
 
@@ -43,10 +49,10 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 ```
 
 ```h
-#define HOMEASSISTANT_PROTOCOL "http:"
+#define HOMEASSISTANT_PROTOCOL "http:"               // optional
 #define HOMEASSISTANT_HOST "homeassistant.local"
-#define HOMEASSISTANT_PORT 8123
-#define HOMEASSISTANT_ENTITY "weather.forecast_home"
+#define HOMEASSISTANT_PORT 8123                      // optional
+#define HOMEASSISTANT_ENTITY "weather.forecast_home" // optional
 ```
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
@@ -60,14 +66,14 @@ See also [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#ho
 
 ## ⛅ Open-Meteo
 
-Updated about every ~17 minutes.
+Refreshed every ~17 minutes.
 
-Commercial usage requires an [API-key](https://open-meteo.com/en/pricing).
+Commercial usage requires an [API-key](https://open-meteo.com/en/pricing). Consumes up to 2 555 requests/month, depending on usage.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define OPENMETEO_KEY "secret"
+#define OPENMETEO_KEY "secret" // optional
 ```
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
@@ -84,9 +90,14 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 
 ## ☀️ Open Weather
 
-Updated about every ~17 minutes.
+Refreshed every ~17 minutes.
 
-Requires a [API-key](https://openweathermap.org/api), set using the `OPENWEATHER_KEY` variable.
+Requires a [API-key](https://home.openweathermap.org/api_keys). Consumes up to 83 requests/day and 2 555 requests/month, depending on usage.
+
+Order of precedence:
+
+- `LATITUDE` and `LONGITUDE`
+- `LOCATION`
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -102,20 +113,20 @@ WEATHER_OPENWEATHER='true'
 ```
 
 > [!NOTE]
-> Location coordinates `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
+> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
 
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
 ## 🌍 World Weather Online
 
-Updated about every ~17 minutes.
+Refreshed every ~17 minutes.
 
 Order of precedence:
 
-- `LATITUDE` and `LONGITUDE`.
+- `LATITUDE` and `LONGITUDE`
 - `LOCATION`
 
-Requires a [API-key](https://www.worldweatheronline.com/weather-api/api/docs/), set using the `WORLDWEATHERONLINE_KEY` variable.
+Requires a [API-key](https://www.worldweatheronline.com/weather-api/my/). Consumes up to 83 requests/day, depending on usage.
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -137,11 +148,11 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 
 ## ☀️ Wttr.in
 
-Updated about every ~17 minutes.
+Refreshed every ~17 minutes.
 
 Order of precedence:
 
-- `LATITUDE` and `LONGITUDE`.
+- `LATITUDE` and `LONGITUDE`
 - `LOCATION`
 - IP address
 
@@ -156,7 +167,7 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 
 ## 🌧️ Yr
 
-Updated about every ~9 minutes.
+Refreshed every ~9 minutes.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 

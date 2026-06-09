@@ -42,14 +42,14 @@ private:
         179U, 227U, 323U, 326U, 329U, 332U, 335U, 338U, 368U, 371U, 392U, 395U, 230U, 350U};
     static constexpr std::array<uint16_t, 5U> codesThunder{200U, 386U, 389U, 392U, 395U};
 
-    static constexpr std::array<Codeset16, 7U> codesets{{
-        {Conditions::CLEAR, codesClear},
-        {Conditions::CLOUDY, codesCloudy},
-        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {Conditions::FOG, codesFog},
-        {Conditions::RAIN, codesRain},
-        {Conditions::SNOW, codesSnow},
-        {Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<Condition, std::span<const uint16_t>>, 7U> codesets{{
+        {Condition::CLEAR, codesClear},
+        {Condition::CLOUDY, codesCloudy},
+        {Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {Condition::FOG, codesFog},
+        {Condition::RAIN, codesRain},
+        {Condition::SNOW, codesSnow},
+        {Condition::THUNDER, codesThunder},
     }};
 
     // https://wttr.in/:help
@@ -90,7 +90,7 @@ public:
 
     explicit WttrInMiddleware() : WeatherHandler(name) { host = "wttr.in"; };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

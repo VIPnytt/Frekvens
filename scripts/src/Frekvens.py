@@ -11,6 +11,7 @@ from .components.Time import Time
 from .config.version import VERSION
 from .extensions.Ota import Ota
 from .extensions.WebApp import WebApp
+from .modes.Weather import Weather
 from .Extra import Extra
 from .Firmware import Firmware
 from .Tools import Tools
@@ -32,6 +33,7 @@ class Frekvens:
     partition: Partition
     time: Time | None = None
     tools: Tools
+    weather: Weather | None = None
     webapp: WebApp | None = None
 
     def __init__(self, env: Environment) -> None:
@@ -54,6 +56,7 @@ class Frekvens:
             ["uploadfsota"],
         ]:
             self.firmware = Firmware(self)
+            self.weather = Weather(self)
         if COMMAND_LINE_TARGETS not in [
             ["buildfs"],
             ["uploadfs"],
@@ -87,10 +90,14 @@ class Frekvens:
             self.ota.configure()
         if self.time:
             self.time.configure()
+        if self.weather:
+            self.weather.configure()
 
     def validate(self) -> None:
         if self.ota:
             self.ota.validate()
+        if self.weather:
+            self.weather.validate()
         if self.webapp:
             self.webapp.validate()
 
@@ -108,10 +115,10 @@ class Frekvens:
         Extra.clean()
         WebApp.clean()
         Tools.clean()
-        for path in [
+        for path in {
             "logs",
             "scripts/__pycache__",
-        ]:
+        }:
             if os.path.exists(path):
                 shutil.rmtree(path, ignore_errors=True)
                 print(f"Removing {path}")
