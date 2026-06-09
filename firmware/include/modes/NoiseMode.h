@@ -12,13 +12,13 @@ class NoiseMode final : public ModeModule
 private:
     struct Dot
     {
-        uint8_t x = 0;
-        uint8_t y = 0;
-        uint8_t delay = 0;
-        unsigned long lastMillis = 0;
+        uint8_t x{0U};
+        uint8_t y{0U};
+        uint8_t delay{0U};
+        unsigned long lastMillis{0UL};
     };
 
-    std::array<Dot, GRID_COLUMNS * GRID_ROWS / 9> dots{};
+    std::array<Dot, GRID_COLUMNS * GRID_ROWS / 9U> dots{};
 
 public:
     static constexpr std::string_view name{"Noise"};
