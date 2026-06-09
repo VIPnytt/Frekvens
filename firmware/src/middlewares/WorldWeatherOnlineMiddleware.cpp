@@ -40,7 +40,8 @@ void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Conditio
 #endif // TEMPERATURE_FAHRENHEIT
         doc["data"]["current_condition"][0U]["weatherCode"].is<std::string_view>())
     {
-        condition = getCondition<uint16_t>(doc["data"]["current_condition"][0U]["weatherCode"].as<uint16_t>(), codesets);
+        condition =
+            getCondition<uint16_t>(doc["data"]["current_condition"][0U]["weatherCode"].as<uint16_t>(), codesets);
 #if TEMPERATURE_FAHRENHEIT
         temperature = doc["data"]["current_condition"][0U]["temp_F"].as<int16_t>();
 #elif TEMPERATURE_KELVIN
