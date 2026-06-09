@@ -14,7 +14,7 @@ class Weather:
         self.project = project
 
     def configure(self) -> None:
-        if self.project.dotenv[self.ENV_OPTION] != "true":
+        if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] != "true":
             self.project.weather = None
             return
         for option in {

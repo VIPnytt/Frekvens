@@ -4,7 +4,7 @@
  * https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens
  */
 
-#include "sct2024.h"
+#include "sct2024.h" // NOLINT(misc-include-cleaner)
 #include "secrets.h"
 
 #define MANUFACTURER "IKEA"
