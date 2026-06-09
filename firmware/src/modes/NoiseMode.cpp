@@ -2,8 +2,8 @@
 
 #include "modes/NoiseMode.h"
 
-#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
-#include "services/ExtensionsService.h"
+#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 static_assert(GRID_COLUMNS * GRID_ROWS >= 9U,
               __STRING(MODE_NOISE) " is not compatible with this device's display size.");
