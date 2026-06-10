@@ -36,11 +36,11 @@ class Partition:
                 if Ota.ENV_OPTION in self.project.dotenv and self.project.dotenv[Ota.ENV_OPTION] == "true"
                 else self.path / "4MB_no_ota.csv"
             )
-        elif flash_size in [
+        elif flash_size in {
             "8MB",
             "16MB",
             "32MB",
-        ]:
+        }:
             return self.path / f"{flash_size}.csv"
         elif flash_size.endswith("MB") and int(flash_size[:-2]) >= 32:
             return self.path / "32MB.csv"

@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 class Deprecated:
-    FEATURES: list[tuple[str, str, str, str]] = [
+    FEATURES: set[tuple[str, str, str, str]] = {
         ("MODE_ARTNET", "Art-Net", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_BOLDCLOCK", "Bold clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", Stream.ENV_OPTION, Stream.NAME),
@@ -37,7 +37,7 @@ class Deprecated:
         ("MODE_WORLDWEATHERONLINE", "World Weather Online", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_WTTRIN", "Wttr.in", Weather.ENV_OPTION, Weather.NAME),
         ("MODE_YR", "Yr", Weather.ENV_OPTION, Weather.NAME),
-    ]
+    }
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
@@ -100,18 +100,18 @@ class Deprecated:
 
     @staticmethod
     def clean() -> None:
-        for file in [
+        for file in {
             "firmware/certs/bundle/ca_roots.pem",
             "firmware/embed/x509_crt_bundle.bin",
-        ]:
+        }:
             if os.path.isfile(file):
                 os.remove(file)
                 print(f"Removing {file}")
-        for directory in [
+        for directory in {
             "firmware/certs/bundle",
             "firmware/certs",
             "firmware/embed",
-        ]:
+        }:
             if os.path.isdir(directory):
                 os.rmdir(directory)
                 print(f"Removing {directory}")

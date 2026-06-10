@@ -23,7 +23,7 @@ class Ota:
     def validate(self) -> None:
         if "no_ota" in str(self.project.partition.table):
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] != "false":
-                logging.error(f"{self.ENV_OPTION}: Partition table does not support {self.NAME} updates.")
+                logging.error("%s: Partition table does not support %s updates.", self.ENV_OPTION, self.NAME)
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None

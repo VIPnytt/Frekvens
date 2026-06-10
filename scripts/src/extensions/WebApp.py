@@ -7,7 +7,6 @@ import pathlib
 import shutil
 import subprocess
 import typing
-import warnings
 
 from .WebSocket import WebSocket
 
@@ -29,19 +28,16 @@ class WebApp:
             self.project.webapp = None
         elif "no_fs" in str(self.project.partition.table):
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
-                logging.error(f"{self.ENV_OPTION}: Partition table has no filesystem support.")
+                logging.error("%s: Partition table has no filesystem support.", self.ENV_OPTION)
         elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
-            warnings.warn(
-                f"{WebSocket.ENV_OPTION}: {WebSocket.NAME} is required by {self.NAME}.",
-                UserWarning,
-            )
+            logging.warning("%s: %s is required by %s.", WebSocket.ENV_OPTION, WebSocket.NAME, self.NAME)
 
     def finalize(self) -> None:
-        options = [
+        options = {
             "HOSTNAME",
             "NAME",
             "TEMPERATURE_UNIT",
-        ]
+        }
         prefixes = (
             "EXTENSION_",
             "FONT_",
@@ -49,16 +45,16 @@ class WebApp:
             "MODE_",
         )
         for option, value in self.project.dotenv.items():
-            if option in [
+            if option in {
                 "OTA_KEY",
-            ]:
+            }:
                 dotenv.set_key(self.path / ".env", f"VITE_{option}", "true")
             elif option in options or option.startswith(prefixes):
                 dotenv.set_key(self.path / ".env", f"VITE_{option}", value)
         config = self.project.env.GetProjectConfig()
-        for option in [
+        for option in {
             "board",
-        ]:
+        }:
             value = config.get(f"env:{self.project.env['PIOENV']}", option, None)
             if value:
                 dotenv.set_key(self.path / ".env", f"VITE_{option.upper()}", value)
@@ -87,10 +83,10 @@ class WebApp:
 
     @staticmethod
     def clean() -> None:
-        for path in [
+        for path in {
             "data/webapp",
             "webapp/dist",
-        ]:
+        }:
             for data in os.scandir(path):
                 if data.is_file():
                     pathlib.Path(data.path).unlink()
