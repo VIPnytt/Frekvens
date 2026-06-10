@@ -453,7 +453,7 @@ jobs:
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
-      - name: PlatformIO build'
+      - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -526,6 +526,7 @@ jobs:
           WEATHER_HOMEASSISTANT='true'
           WEATHER_OPENMETEO='true'
           WEATHER_OPENWEATHER='true'
+          WEATHER_TOMORROWIO='true'
           WEATHER_WORLDWEATHERONLINE='true'
           WEATHER_WTTRIN='true'
           WEATHER_YR='true'
@@ -562,6 +563,7 @@ jobs:
           #define PIN_SW2 13
           #define PWM_DEPTH 10
           #define RTC_DS3231
+          #define TOMORROWIO_KEY "redacted"
           #define WIFI_COUNTRY "01"
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"

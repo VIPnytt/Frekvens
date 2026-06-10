@@ -7,6 +7,7 @@
 #include "middlewares/HomeAssistantWeatherMiddleware.h" // NOLINT(misc-include-cleaner)
 #include "middlewares/OpenMeteoMiddleware.h"            // NOLINT(misc-include-cleaner)
 #include "middlewares/OpenWeatherMiddleware.h"          // NOLINT(misc-include-cleaner)
+#include "middlewares/TomorrowIoMiddleware.h"           // NOLINT(misc-include-cleaner)
 #include "middlewares/WorldWeatherOnlineMiddleware.h"   // NOLINT(misc-include-cleaner)
 #include "middlewares/WttrInMiddleware.h"               // NOLINT(misc-include-cleaner)
 #include "middlewares/YrMiddleware.h"                   // NOLINT(misc-include-cleaner)
@@ -44,6 +45,9 @@ private:
 #endif
 #if WEATHER_OPENWEATHER
         OpenWeatherMiddleware::name,
+#endif
+#if WEATHER_OPENWEATHER
+        TomorrowIoMiddleware::name,
 #endif
 #if WEATHER_WORLDWEATHERONLINE
         WorldWeatherOnlineMiddleware::name,

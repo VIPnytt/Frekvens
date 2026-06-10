@@ -8,6 +8,7 @@ At least one weather provider is required to use the [Weather](https://github.co
 | [Home Assistant](#-home-assistant)             | :x:                     | :x:                     | :x:                     | :white_check_mark: |
 | [Open-Meteo](#-open-meteo)                     | :ballot_box_with_check: | :white_check_mark:      | :x:                     | :x:                |
 | [Open Weather](#️-open-weather)                 | :x:                     | :white_check_mark:      | :white_check_mark:      | :x:                |
+| [Tomorrow.io](#-tomorrowio)                    | :x:                     | :white_check_mark:      | :white_check_mark:      | :x:                |
 | [World Weather Online](#-world-weather-online) | :x:                     | :white_check_mark:      | :x:                     | :x:                |
 | [Wttr.in](#️-wttrin)                            | :white_check_mark:      | :white_check_mark:      | :white_check_mark:      | :white_check_mark: |
 | [Yr](#️-yr)                                     | :white_check_mark:      | :white_check_mark:      | :x:                     | :x:                |
@@ -116,6 +117,35 @@ WEATHER_OPENWEATHER='true'
 
 > [!NOTE]
 > Location coordinates, `LATITUDE` and `LONGITUDE` are required.
+
+See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
+
+## 🌀 Tomorrow.io
+
+Refreshed every ~17 minutes.
+
+Requires a [API-key](https://app.tomorrow.io/development/keys). Consumes up to 83 requests/day, depending on usage.
+
+Order of precedence:
+
+- `LATITUDE` and `LONGITUDE`
+- `LOCATION`
+
+Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
+
+```h
+#define TOMORROWIO_KEY "secret"
+```
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+MODE_WEATHER='true'
+WEATHER_TOMORROWIO='true'
+```
+
+> [!NOTE]
+> Location coordinates `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
 
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
