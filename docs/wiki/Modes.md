@@ -225,6 +225,9 @@ MODE_FLIES='true'
 
 Inspired by Conway’s *Game of Life*. Comes with an optional clock.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the game.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
