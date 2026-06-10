@@ -271,6 +271,9 @@ MODE_HOMETHERMOMETER='true'
 
 Autumn-inspired.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause spawning of new leaves.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
