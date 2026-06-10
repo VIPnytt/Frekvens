@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version-file: pyproject.toml
           python-version: 3.14
@@ -99,7 +99,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Cache for Node.js
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -114,7 +114,7 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
@@ -195,7 +195,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -205,7 +205,7 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
@@ -281,7 +281,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Cache for Node.js
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -296,7 +296,7 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
@@ -350,7 +350,6 @@ jobs:
           MODE_GAMEOFLIFE='true'
           MODE_GLITTER='true'
           MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
@@ -360,7 +359,6 @@ jobs:
           MODE_RAIN='true'
           MODE_RING='true'
           MODE_SCAN='true'
-          MODE_SMOOTHWAVEFORM='true'
           MODE_SNAKE='true'
           MODE_STARS='true'
           MODE_STREAM='true'
@@ -431,7 +429,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Cache for Node.js
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -446,7 +444,7 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
@@ -455,7 +453,7 @@ jobs:
       - name: Set up PlatformIO
         run: uv sync --only-group platformio
 
-      - name: PlatformIO build'
+      - name: PlatformIO build
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -505,7 +503,6 @@ jobs:
           MODE_GAMEOFLIFE='true'
           MODE_GLITTER='true'
           MODE_HOMETHERMOMETER='true'
-          MODE_JAGGEDWAVEFORM='true'
           MODE_LEAFFALL='true'
           MODE_LINES='true'
           MODE_METABALLS='true'
@@ -515,7 +512,6 @@ jobs:
           MODE_RAIN='true'
           MODE_RING='true'
           MODE_SCAN='true'
-          MODE_SMOOTHWAVEFORM='true'
           MODE_SNAKE='true'
           MODE_STARS='true'
           MODE_STREAM='true'
@@ -530,6 +526,7 @@ jobs:
           WEATHER_HOMEASSISTANT='true'
           WEATHER_OPENMETEO='true'
           WEATHER_OPENWEATHER='true'
+          WEATHER_TOMORROWIO='true'
           WEATHER_WORLDWEATHERONLINE='true'
           WEATHER_WTTRIN='true'
           WEATHER_YR='true'
@@ -566,6 +563,7 @@ jobs:
           #define PIN_SW2 13
           #define PWM_DEPTH 10
           #define RTC_DS3231
+          #define TOMORROWIO_KEY "redacted"
           #define WIFI_COUNTRY "01"
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"

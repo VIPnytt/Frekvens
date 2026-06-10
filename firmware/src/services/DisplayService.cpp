@@ -1,8 +1,8 @@
 #include "services/DisplayService.h"
 
-#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"            // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 #include <SPI.h>
@@ -30,7 +30,7 @@ void DisplayService::configure()
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1U, true, 0U);
 
-    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(1U << depth) / PWM_WIDTH), depth);
+    ledcAttach(PIN_OE, static_cast<uint32_t>(1.0F / static_cast<float>(0b1U << depth) / PWM_WIDTH), depth);
     ledcOutputInvert(PIN_OE, true);
     ledcWrite(PIN_OE, 0U);
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
@@ -134,7 +134,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
     for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
         const uint8_t value{frame[idx]}; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0U && value < UINT8_MAX)
+        if (value != 0U && value != UINT8_MAX)
         {
             ++counts[value];
         }
@@ -149,7 +149,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
     for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
         const uint8_t value{frame[idx]}; // NOLINT(cppcoreguidelines-init-variables)
-        if (value > 0U && value < UINT8_MAX)
+        if (value != 0U && value != UINT8_MAX)
         {
             indices[next[value]++] = idx;
         }
@@ -240,16 +240,16 @@ void DisplayService::setPower(bool _power)
                       0U,
                       max<uint16_t>(brightness,
                                     powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                        ((1U << depth) - 2U)),
-                      (1U << 5U) *
+                                        ((0b1U << depth) - 2U)),
+                      (0b1U << 5U) *
                           brightness); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
 #else
         ledcFade(PIN_OE,
                  0U,
                  max<uint16_t>(brightness,
                                powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                   ((1U << depth) - 2U)),
-                 (1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
+                                   ((0b1U << depth) - 2U)),
+                 (0b1U << 5U) * brightness); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         power = true;
         pending = true;
@@ -263,18 +263,18 @@ void DisplayService::setPower(bool _power)
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2U)),
+                              ((0b1U << depth) - 2U)),
             0U,
-            (1U << 3U) * brightness,
+            (0b1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGammaWithInterrupt`.
 #else
         ledcFadeWithInterrupt(
             PIN_OE,
             max<uint16_t>(brightness,
                           powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                              ((1U << depth) - 2U)),
+                              ((0b1U << depth) - 2U)),
             0U,
-            (1U << 3U) * brightness,
+            (0b1U << 3U) * brightness,
             &onPowerOff); // -2 offset due to `ledcFade` stability issues.
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     }
@@ -297,28 +297,27 @@ void DisplayService::setBrightness(uint8_t _brightness)
 {
     ESP_LOGI("Action", "brightness"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
-    ledcFadeGamma(
-        PIN_OE,
-        power ? max<uint16_t>(brightness,
-                              powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                  ((1U << depth) - 2U))
-              : 0U,
-        max<uint16_t>(_brightness,
-                      powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                          ((1U << depth) - 2U)),
-        (1U << 4U) *
-            abs(brightness -
-                _brightness)); // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+    // -2 offset due to `ledcFade` stability issues. Unconfirmed for `ledcFadeGamma`.
+    ledcFadeGamma(PIN_OE,
+                  power ? max<uint16_t>(brightness,
+                                        powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                            ((0b1U << depth) - 2U))
+                        : 0U,
+                  max<uint16_t>(_brightness,
+                                powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
+                                    ((0b1U << depth) - 2U)),
+                  (0b1U << 4U) * abs(brightness - _brightness));
 #else
+    // -2 offset due to `ledcFade` stability issues.
     ledcFade(PIN_OE,
              power ? max<uint16_t>(brightness,
                                    powf(static_cast<float>(brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                                       ((1U << depth) - 2U))
+                                       ((0b1U << depth) - 2U))
                    : 0U,
              max<uint16_t>(_brightness,
                            powf(static_cast<float>(_brightness) / static_cast<float>(UINT8_MAX), GAMMA) *
-                               ((1U << depth) - 2U)),
-             (1U << 4U) * abs(brightness - _brightness)); // -2 offset due to `ledcFade` stability issues.
+                               ((0b1U << depth) - 2U)),
+             (0b1U << 4U) * abs(brightness - _brightness));
 #endif // SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
     if (!power)
     {
@@ -388,34 +387,30 @@ void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t brightness)
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bool fill, uint8_t brightness)
+void DisplayService::drawEllipse(float x, float y, float radius, bool fill, uint8_t brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
-    const float xRatio{static_cast<float>(PITCH_HORIZONTAL * 2U) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
-    const float yRatio{static_cast<float>(PITCH_VERTICAL * 2U) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+    constexpr float xRatio{static_cast<float>(PITCH_HORIZONTAL * 2U) /
+                           static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
+    constexpr float yRatio{static_cast<float>(PITCH_VERTICAL * 2U) /
+                           static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
 #else
     const bool rotated{(static_cast<uint8_t>(orientation) & 1U) != 0U};
     const float xRatio{static_cast<float>(2U * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+                       static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
     const float yRatio{static_cast<float>(2U * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
-                       (ratio * static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL))};
+                       static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-    const uint8_t xMax{
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))))};
-    const uint8_t xMin{static_cast<uint8_t>(max<float>(.0F, floorf(x - (radius / xRatio))))};
-    const uint8_t yMax{
-        static_cast<uint8_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))))};
-    const uint8_t yMin{static_cast<uint8_t>(max<float>(.0F, floorf(y - (radius / yRatio))))};
-    for (size_t _x{xMin}; _x <= xMax; ++_x)
+    const size_t yMax{
+        static_cast<size_t>(min<float>(static_cast<float>(GRID_ROWS - 1U), ceilf(y + (radius / yRatio))))};
+    const size_t yMin{static_cast<size_t>(max<float>(.0F, floorf(y - (radius / yRatio))))};
+    for (size_t _x{static_cast<size_t>(max<float>(.0F, floorf(x - (radius / xRatio))))};
+         _x <= static_cast<size_t>(min<float>(static_cast<float>(GRID_COLUMNS - 1U), ceilf(x + (radius / xRatio))));
+         ++_x)
     {
         for (size_t _y{yMin}; _y <= yMax; ++_y)
         {
-            const float xDistance{xRatio * (static_cast<float>(_x) - x)};
-            const float yDistance{yRatio * (static_cast<float>(_y) - y)};
-            const float distance{hypotf(xDistance, yDistance)};
+            const float distance{hypotf(xRatio * (static_cast<float>(_x) - x), yRatio * (static_cast<float>(_y) - y))};
             if (fill ? (distance <= radius) : (fabsf(distance - radius) < .5F))
             {
                 setPixel(static_cast<uint8_t>(_x), static_cast<uint8_t>(_y), brightness);
@@ -425,29 +420,17 @@ void DisplayService::drawEllipse(float x, float y, float radius, float ratio, bo
 }
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, bool fill,
-                                   uint8_t brightness)
+void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, uint8_t brightness)
 {
-    if (fill)
-    {
-        for (uint16_t x{minX}; x < uint16_t{maxX} + 1U; ++x)
-        {
-            for (uint16_t y{minY}; y < uint16_t{maxY} + 1U; ++y)
-            {
-                setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(y), brightness);
-            }
-        }
-        return;
-    }
     for (uint16_t x{minX}; x < uint16_t{maxX} + 1U; ++x)
     {
         setPixel(static_cast<uint8_t>(x), minY, brightness);
-        if (maxY != minY)
+        if (minY != maxY)
         {
             setPixel(static_cast<uint8_t>(x), maxY, brightness);
         }
     }
-    if (maxY > minY + 1U)
+    if (minY + 1U < maxY)
     {
         for (uint16_t y{static_cast<uint16_t>(minY + 1U)}; y < uint16_t{maxY}; ++y)
         {
@@ -515,7 +498,6 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
         component[HomeAssistantAbbreviations::name].set("Orientation");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         options.add("0°");
 #if GRID_COLUMNS == GRID_ROWS

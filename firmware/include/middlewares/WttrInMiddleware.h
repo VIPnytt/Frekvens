@@ -13,24 +13,43 @@ class WttrInMiddleware final : public WeatherHandler
 {
 private:
     // https://github.com/chubin/wttr.in/blob/master/lib/constants.py
-    static constexpr std::array<uint16_t, 1> codesClear{113};
-    static constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
-    static constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
-    static constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
-    static constexpr std::array<uint16_t, 19> codesRain{
-        176, 293, 296, 299, 302, 305, 308, 311, 314, 353, 356, 359, 386, 389, 263, 266, 281, 284, 185};
-    static constexpr std::array<uint16_t, 14> codesSnow{
-        179, 227, 323, 326, 329, 332, 335, 338, 368, 371, 392, 395, 230, 350};
-    static constexpr std::array<uint16_t, 5> codesThunder{200, 386, 389, 392, 395};
+    static constexpr std::array<uint16_t, 1U> codesClear{113U};
+    static constexpr std::array<uint16_t, 2U> codesCloudy{119U, 122U};
+    static constexpr std::array<uint16_t, 1U> codesCloudyPartly{116U};
+    static constexpr std::array<uint16_t, 3U> codesFog{143U, 248U, 260U};
+    static constexpr std::array<uint16_t, 19U> codesRain{
+        176U,
+        293U,
+        296U,
+        299U,
+        302U,
+        305U,
+        308U,
+        311U,
+        314U,
+        353U,
+        356U,
+        359U,
+        386U,
+        389U,
+        263U,
+        266U,
+        281U,
+        284U,
+        185U,
+    };
+    static constexpr std::array<uint16_t, 14U> codesSnow{
+        179U, 227U, 323U, 326U, 329U, 332U, 335U, 338U, 368U, 371U, 392U, 395U, 230U, 350U};
+    static constexpr std::array<uint16_t, 5U> codesThunder{200U, 386U, 389U, 392U, 395U};
 
-    static constexpr std::array<Codeset16, 7> codesets{{
-        {Conditions::CLEAR, codesClear},
-        {Conditions::CLOUDY, codesCloudy},
-        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {Conditions::FOG, codesFog},
-        {Conditions::RAIN, codesRain},
-        {Conditions::SNOW, codesSnow},
-        {Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<Condition, std::span<const uint16_t>>, 7U> codesets{{
+        {Condition::CLEAR, codesClear},
+        {Condition::CLOUDY, codesCloudy},
+        {Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {Condition::FOG, codesFog},
+        {Condition::RAIN, codesRain},
+        {Condition::SNOW, codesSnow},
+        {Condition::THUNDER, codesThunder},
     }};
 
     // https://wttr.in/:help
@@ -71,7 +90,7 @@ public:
 
     explicit WttrInMiddleware() : WeatherHandler(name) { host = "wttr.in"; };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

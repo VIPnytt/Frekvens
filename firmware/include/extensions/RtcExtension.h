@@ -17,11 +17,11 @@ private:
     static constexpr std::string_view name{"RTC"};
 
 #ifdef PIN_INT
-    static inline bool pending = true;
+    static inline bool pending{true};
 #endif
 
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 #endif
 
 #if defined(RTC_DS3231) || defined(RTC_DS3232)

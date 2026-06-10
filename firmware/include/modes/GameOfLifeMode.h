@@ -2,23 +2,21 @@
 
 #if MODE_GAMEOFLIFE
 
+#include "handlers/ClockHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
+
+#include <bits/unique_ptr.h>
 
 class GameOfLifeMode final : public ModeModule
 {
 private:
-    static inline bool clock = true;
+    uint8_t active{0U};
+    uint8_t brightness{INT8_MAX};
+    uint8_t yMin{0U};
 
-    tm local{};
+    unsigned long lastMillis{0UL};
 
-    bool pending = false;
-
-    uint8_t active = 0;
-
-    int hour = 24;
-    int minute = 60;
-
-    unsigned long lastMillis = 0;
+    std::unique_ptr<ClockHandler> clock{};
 
     void setClock(bool _clock);
     void transmit();

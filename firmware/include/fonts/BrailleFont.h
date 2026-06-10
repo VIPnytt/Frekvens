@@ -9,105 +9,105 @@
 class BrailleFont final : public FontModule
 {
 private:
-    static constexpr std::array<uint8_t, 26> chars41{
-        // 0x31, 1
-        // 0x41, A
-        // 0x61, a
-        0b100000,
-        // 0x32, 2
-        // 0x42, B
-        // 0x62, b
-        0b101000,
-        // 0x33, 3
-        // 0x43, C
-        // 0x63, c
-        0b110000,
-        // 0x34, 4
-        // 0x44, D
-        // 0x64, d
-        0b110100,
-        // 0x35, 5
-        // 0x45, E
-        // 0x65, e
-        0b100100,
-        // 0x36, 6
-        // 0x46, F
-        // 0x66, f
-        0b111000,
-        // 0x37, 7
-        // 0x47, G
-        // 0x67, g
-        0b111100,
-        // 0x38, 8
-        // 0x48, H
-        // 0x68, h
-        0b101100,
-        // 0x39, 9
-        // 0x49, I
-        // 0x69, i
-        0b11000,
-        // 0x30, 0
-        // 0x4A, J
-        // 0x6A, j
-        0b11100,
-        // 0x4B, K
-        // 0x6B, k
-        0b100010,
-        // 0x4C, L
-        // 0x6C, l
-        0b101010,
-        // 0x4D, M
-        // 0x6D, m
-        0b110010,
-        // 0x4E, N
-        // 0x6E, n
-        0b110110,
-        // 0x4F, O
-        // 0x6F, o
-        0b100110,
-        // 0x50, P
-        // 0x70, p
-        0b111010,
-        // 0x51, Q
-        // 0x71, q
-        0b111110,
-        // 0x52, R
-        // 0x72, r
-        0b101110,
-        // 0x53, S
-        // 0x73, s
-        0b11010,
-        // 0x54, T
-        // 0x74, t
-        0b11110,
-        // 0x55, U
-        // 0x75, u
-        0b100011,
-        // 0x56, V
-        // 0x76, v
-        0b101011,
-        // 0x57, W
-        // 0x77, w
-        0b11101,
-        // 0x58, X
-        // 0x78, x
-        0b110011,
-        // 0x59, Y
-        // 0x79, y
-        0b110111,
-        // 0x5A, Z
-        // 0x7A, z
-        0b100111,
+    static constexpr std::array<uint8_t, 26U> latinLetterA_latinLetterZ{
+        // U+0031 1 DIGIT ONE
+        // U+0041 A LATIN CAPITAL LETTER A
+        // U+0061 a LATIN SMALL LETTER A
+        0b10'00'00U,
+        // U+0032 2 DIGIT TWO
+        // U+0042 B LATIN CAPITAL LETTER B
+        // U+0062 b LATIN SMALL LETTER B
+        0b10'10'00U,
+        // U+0033 3 DIGIT THREE
+        // U+0043 C LATIN CAPITAL LETTER C
+        // U+0063 c LATIN SMALL LETTER C
+        0b11'00'00U,
+        // U+0034 4 DIGIT FOUR
+        // U+0044 D LATIN CAPITAL LETTER D
+        // U+0064 d LATIN SMALL LETTER D
+        0b11'01'00U,
+        // U+0035 5 DIGIT FIVE
+        // U+0045 E LATIN CAPITAL LETTER E
+        // U+0065 e LATIN SMALL LETTER E
+        0b10'01'00U,
+        // U+0036 6 DIGIT SIX
+        // U+0046 F LATIN CAPITAL LETTER F
+        // U+0066 f LATIN SMALL LETTER F
+        0b11'10'00U,
+        // U+0037 7 DIGIT SEVEN
+        // U+0047 G LATIN CAPITAL LETTER G
+        // U+0067 g LATIN SMALL LETTER G
+        0b11'11'00U,
+        // U+0038 8 DIGIT EIGHT
+        // U+0048 H LATIN CAPITAL LETTER H
+        // U+0068 h LATIN SMALL LETTER H
+        0b10'1100U,
+        // U+0039 9 DIGIT NINE
+        // U+0049 I LATIN CAPITAL LETTER I
+        // U+0069 i LATIN SMALL LETTER I
+        0b01'10'00U,
+        // U+0030 0 DIGIT ZERO
+        // U+004A J LATIN CAPITAL LETTER J
+        // U+006A j LATIN SMALL LETTER J
+        0b11'10'0U,
+        // U+004B K LATIN CAPITAL LETTER K
+        // U+006B k LATIN SMALL LETTER K
+        0b10'00'10U,
+        // U+004C L LATIN CAPITAL LETTER L
+        // U+006C l LATIN SMALL LETTER L
+        0b10'10'10U,
+        // U+004D M LATIN CAPITAL LETTER M
+        // U+006D m LATIN SMALL LETTER M
+        0b11'00'10U,
+        // U+004E N LATIN CAPITAL LETTER N
+        // U+006E n LATIN SMALL LETTER N
+        0b11'01'10U,
+        // U+004F O LATIN CAPITAL LETTER O
+        // U+006F o LATIN SMALL LETTER O
+        0b10'01'10U,
+        // U+0050 P LATIN CAPITAL LETTER P
+        // U+0070 p LATIN SMALL LETTER P
+        0b11'10'10U,
+        // U+0051 Q LATIN CAPITAL LETTER Q
+        // U+0071 q LATIN SMALL LETTER Q
+        0b11'11'10U,
+        // U+0052 R LATIN CAPITAL LETTER R
+        // U+0072 r LATIN SMALL LETTER R
+        0b10'11'10U,
+        // U+0053 S LATIN CAPITAL LETTER S
+        // U+0073 s LATIN SMALL LETTER S
+        0b01'11'10U,
+        // U+0054 T LATIN CAPITAL LETTER T
+        // U+0074 t LATIN SMALL LETTER T
+        0b11'110U,
+        // U+0055 U LATIN CAPITAL LETTER U
+        // U+0075 u LATIN SMALL LETTER U
+        0b10'00'11U,
+        // U+0056 V LATIN CAPITAL LETTER V
+        // U+0076 v LATIN SMALL LETTER V
+        0b10'10'11U,
+        // U+0057 W LATIN CAPITAL LETTER W
+        // U+0077 w LATIN SMALL LETTER W
+        0b01'11'01U,
+        // U+0058 X LATIN CAPITAL LETTER X
+        // U+0078 x LATIN SMALL LETTER X
+        0b11'00'11U,
+        // U+0059 Y LATIN CAPITAL LETTER Y
+        // U+0079 y LATIN SMALL LETTER Y
+        0b11'01'11U,
+        // U+005A Z LATIN CAPITAL LETTER Z
+        // U+007A z LATIN SMALL LETTER Z
+        0b10'01'11U,
     };
 
     [[nodiscard]] FontModule::Symbol toSymbol(uint8_t bits) const;
 
 public:
-    static constexpr std::string_view name = "Braille";
+    static constexpr std::string_view name{"Braille"};
 
     explicit BrailleFont() : FontModule(name) {};
 
-    [[nodiscard]] FontModule::Symbol getChar(uint32_t character) const override;
+    [[nodiscard]] FontModule::Symbol getChar(char32_t character) const override;
 };
 
 #endif // FONT_BRAILLE

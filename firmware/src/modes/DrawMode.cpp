@@ -14,7 +14,7 @@ void DrawMode::begin()
     {
         for (const uint8_t pixel : frame)
         {
-            if (pixel > 0)
+            if (pixel != 0U)
             {
                 pending = true;
                 render = true;
@@ -45,10 +45,10 @@ void DrawMode::load(bool cache)
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
-        const char *key = nullptr;
-        if ((cache && nvs_get_blob(handle, "cache", frame.data(), &len) == ESP_OK) ||
-            nvs_get_blob(handle, "saved", frame.data(), &len) == ESP_OK)
+        size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        const char *key{nullptr};
+        if ((cache && nvs_get_blob(handle, "cache", frame.data(), &length) == ESP_OK) ||
+            nvs_get_blob(handle, "saved", frame.data(), &length) == ESP_OK)
         {
             pending = true;
             render = true;
@@ -59,7 +59,7 @@ void DrawMode::load(bool cache)
 
 void DrawMode::save(bool cache)
 {
-    if (std::any_of(frame.begin(), frame.end(), [](uint8_t pixel) { return pixel > 0; }))
+    if (std::any_of(frame.begin(), frame.end(), [](uint8_t pixel) { return pixel != 0U; }))
     {
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
@@ -97,7 +97,7 @@ void DrawMode::onReceive(JsonObjectConst payload,
         // Clear
         if (action == "clear")
         {
-            frame.fill(0);
+            frame.fill(0U);
             render = true;
         }
         // Load
@@ -119,8 +119,8 @@ void DrawMode::onReceive(JsonObjectConst payload,
     // Frame
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == frame.size())
     {
-        const JsonArrayConst _frame = payload["frame"].as<JsonArrayConst>();
-        for (size_t i = 0; i < frame.size(); ++i)
+        const JsonArrayConst _frame{payload["frame"].as<JsonArrayConst>()};
+        for (size_t i{0U}; i < frame.size(); ++i)
         {
             if (_frame[i].is<uint8_t>())
             {
@@ -136,8 +136,8 @@ void DrawMode::onReceive(JsonObjectConst payload,
         {
             if (pixel["x"].is<uint8_t>() && pixel["y"].is<uint8_t>() && pixel["brightness"].is<uint8_t>())
             {
-                const uint8_t x = pixel["x"].as<uint8_t>();
-                const uint8_t y = pixel["y"].as<uint8_t>();
+                const uint8_t x{pixel["x"].as<uint8_t>()};
+                const uint8_t y{pixel["y"].as<uint8_t>()};
                 if (x < GRID_COLUMNS && y < GRID_ROWS)
                 {
                     frame[x + y * GRID_COLUMNS] = pixel["brightness"].as<uint8_t>();

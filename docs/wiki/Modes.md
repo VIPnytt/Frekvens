@@ -4,7 +4,7 @@
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong)| [Snake](#-snake)
 
-**IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Jagged Waveform](#-jagged-waveform) | [Ring](#-ring) | [Smooth waveform](#️-smooth-waveform)
+**IKEA Frekvens:** [Arrow](#️-arrow) | [Blinds](#-blinds) | [Equalizer](#-equalizer) | [Ring](#-ring) | [Waveform](#-waveform)
 
 **IKEA Obegränsad:** [Circle](#-circle) | [Lines](#-lines) | [Noise](#-noise) | [Rain](#-rain) | [Scan](#-scan) | [Stars](#-stars)
 
@@ -96,6 +96,9 @@ See also [Bright](#-bright).
 ## 💥 Breakout clock
 
 Inspired by the classic breakout game.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the game.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -222,6 +225,9 @@ MODE_FLIES='true'
 
 Inspired by Conway’s *Game of Life*. Comes with an optional clock.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the game.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
@@ -260,21 +266,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_HOMETHERMOMETER='true'
 ```
-
-## 📈 Jagged waveform
-
-Inspired by the original *IKEA Frekvens* mode.
-
-> [!TIP]
-> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on a stock *IKEA Frekvens* device.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_JAGGEDWAVEFORM='true'
-```
-
-See also [Smooth waveform](#%EF%B8%8F-smooth-waveform) and [Waveform](#-waveform).
 
 ## 🍂 Leaf fall
 
@@ -317,6 +308,9 @@ MODE_METABALLS='true'
 ## 🔇 Noise
 
 Inspired by the original *IKEA Obegränsad* mode.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the noise.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -387,21 +381,6 @@ MODE_SCAN='true'
 
 See also [Lines](#-lines).
 
-## 〰️ Smooth waveform
-
-Inspired by the original *IKEA Frekvens* mode.
-
-> [!TIP]
-> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the waveforms, just like on a stock *IKEA Frekvens* device.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_SMOOTHWAVEFORM='true'
-```
-
-See also [Jagged waveform](#-jagged-waveform) and [Waveform](#-waveform).
-
 ## 🐍 Snake
 
 Inspired by the classic snake-game. Comes with an optional clock.
@@ -453,6 +432,9 @@ Rolling text.
 
 Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to set a message, or automate it via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the rolling text.
+
 API payload example:
 
 ```json
@@ -483,8 +465,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_WAVEFORM='true'
 ```
 
-See also [Jagged waveform](#-jagged-waveform) and [Smooth waveform](#️-smooth-waveform).
-
 ## ⛅ Weather
 
 Providers available:
@@ -493,6 +473,7 @@ Providers available:
 - [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant)
 - [Open-Meteo](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-meteo)
 - [Open Weather](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-weather)
+- [Tomorrow.io](https://github.com/VIPnytt/Frekvens/wiki/Weather#-tomorrowio)
 - [World Weather Online](https://github.com/VIPnytt/Frekvens/wiki/Weather#-world-weather-online)
 - [Wttr.in](https://github.com/VIPnytt/Frekvens/wiki/Weather#-wttrin)
 - [Yr](https://github.com/VIPnytt/Frekvens/wiki/Weather#-yr)
@@ -500,20 +481,18 @@ Providers available:
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define LATITUDE "0.000"  // coordinate
-#define LONGITUDE "0.000" // coordinate
+#define LATITUDE "0.000"  // °
+#define LONGITUDE "0.000" // °
 #define LOCATION "city"
 ```
 
+To find your coordinates, use any preferred map or coordinate service, such as [LatLong.net](https://www.latlong.net/my-location-latitude-longitude), [GPS-Coordinates.net](https://www.gps-coordinates.net/my-location) or [GPS-Coordinates.org](https://gps-coordinates.org/my-location.php).
+
 > [!NOTE]
-> Provide 3-4 decimals for the most accurate weather reports. A small subset of providers also supports a location name, usually in the form of a city or village.
+> Coordinates with 3-4 decimal places are usually more than accurate enough for weather data. Some providers also support a location name, usually in the form of a city or village.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_WEATHER='true'
-```
-
-```ini
-TEMPERATURE_UNIT='°C' # °C, °F or °K
 ```

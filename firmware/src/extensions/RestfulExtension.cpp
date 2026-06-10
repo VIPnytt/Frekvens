@@ -17,20 +17,20 @@ void RestfulExtension::begin()
 
 void RestfulExtension::onGet(AsyncWebServerRequest *request)
 {
-    const String module = request->url().substring(prefixLength);
+    const String module{request->url().substring(prefixLength)};
     const JsonObjectConst transmits{Device.getTransmits()};
     if (module.isEmpty())
     {
-        const size_t length = measureJson(transmits);
-        std::vector<char> content(length + 1);
-        serializeJson(transmits, content.data(), length + 1);
+        const size_t length{measureJson(transmits)};
+        std::vector<char> content(length + 1U);
+        serializeJson(transmits, content.data(), length + 1U);
         request->send(t_http_codes::HTTP_CODE_OK, "application/json", content.data());
     }
     else if (transmits[module].is<JsonVariantConst>())
     {
-        const size_t length = measureJson(transmits[module]);
-        std::vector<char> content(length + 1);
-        serializeJson(transmits[module], content.data(), length + 1);
+        const size_t length{measureJson(transmits[module])};
+        std::vector<char> content(length + 1U);
+        serializeJson(transmits[module], content.data(), length + 1U);
         request->send(t_http_codes::HTTP_CODE_OK, "application/json", content.data());
     }
     else
@@ -39,18 +39,37 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
-void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
-                               size_t index, // NOLINT(misc-unused-parameters)
-                               size_t total) // NOLINT(misc-unused-parameters)
+void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                               size_t total)
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
-    if (request->contentType() == "application/json" &&
-        deserializeJson(doc, data, len) == DeserializationError::Code::Ok)
+    const bool final{index + len == total};
+    if (request->contentType() == "application/json")
     {
-        Device.receive(doc.as<JsonObjectConst>(), name, request->url().substring(prefixLength).c_str());
-        request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
+        if (index != 0U || len != total)
+        {
+            if (index == 0U)
+            {
+                buffer.resize(total);
+            }
+            std::copy_n(data, len, buffer.begin() + static_cast<std::ptrdiff_t>(index));
+            if (!final)
+            {
+                return;
+            }
+            data = buffer.data();
+            len = buffer.size();
+        }
+        JsonDocument doc; // NOLINT(misc-const-correctness)
+        if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok)
+        {
+            const String destination{request->url().substring(prefixLength)};
+            Device.receive(
+                doc.as<JsonObjectConst>(), name, std::string_view{destination.c_str(), destination.length()});
+            request->send(t_http_codes::HTTP_CODE_NO_CONTENT);
+            return;
+        }
     }
-    else
+    else if (final)
     {
         request->send(t_http_codes::HTTP_CODE_BAD_REQUEST);
     }

@@ -9,7 +9,7 @@ import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Game of Life";
 
-const [getClock, setClock] = createSignal<boolean>(true);
+const [getClock, setClock] = createSignal<boolean>(false);
 
 export const receiver = (json: { clock?: boolean }) => {
     json?.clock !== undefined && setClock(json.clock);

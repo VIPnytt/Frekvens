@@ -1,21 +1,23 @@
 import { mdiMatrix } from "@mdi/js";
-import { type Component, createSignal, onCleanup } from "solid-js";
+import { type Component, createSignal, onCleanup, onMount } from "solid-js";
+import { Temporal } from "temporal-polyfill-lite";
 
 import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Binary epoch";
 
 export const Main: Component = () => {
-    const [getTime, setTime] = createSignal(Math.floor(Date.now() / 1000));
+    const [getTime, setTime] = createSignal(0);
 
     let timeout: ReturnType<typeof setTimeout>;
 
     const tick = () => {
-        setTime(Math.floor(Date.now() / 1000));
-        timeout = setTimeout(tick, 1000 - (Date.now() % 1000));
+        const now = Temporal.Now.instant();
+        setTime(Math.floor(now.epochMilliseconds / 1_000));
+        timeout = setTimeout(tick, 1_000 - (now.epochMilliseconds % 1_000));
     };
 
-    tick();
+    onMount(tick);
 
     onCleanup(() => clearTimeout(timeout));
 

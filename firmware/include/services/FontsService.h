@@ -25,8 +25,9 @@ public:
     void begin();
 
     [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
+    [[nodiscard]] bool has(std::string_view fontName) const;
 
-    static constexpr auto names = std::to_array<std::string_view>({
+    static constexpr auto names{std::to_array<std::string_view>({
 #if FONT_BRAILLE
         BrailleFont::name,
 #endif // FONT_BRAILLE
@@ -51,7 +52,7 @@ public:
 #if FONT_LARGE
         LargeFont::name,
 #endif // FONT_LARGE
-    });
+    })};
 
     static FontsService &getInstance();
 };

@@ -23,14 +23,16 @@ public:
 
     const std::string_view name{};
 
-    [[nodiscard]] virtual Symbol getChar(uint32_t character) const = 0;
+    [[nodiscard]] virtual Symbol getChar(char32_t character) const = 0;
 
 protected:
     explicit FontModule(std::string_view name) : name(name) {};
 
-    template <typename T, std::size_t N>
+    template <typename T, size_t N> [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap) const;
+    template <typename T, size_t N> [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, int8_t offsetY) const;
+    template <typename T, size_t N>
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-    [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX = 0, int8_t offsetY = 0) const;
+    [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX, int8_t offsetY) const;
 
     [[nodiscard]] Symbol whitespace(uint8_t offsetX) const;
 };

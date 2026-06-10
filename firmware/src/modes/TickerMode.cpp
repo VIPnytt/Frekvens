@@ -2,7 +2,8 @@
 
 #include "modes/TickerMode.h"
 
-#include "fonts/SmallFont.h" // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/SmallFont.h"                   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
@@ -15,16 +16,16 @@ void TickerMode::configure()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{0};
-        if (nvs_get_str(handle, "message", nullptr, &len) == ESP_OK && len > 0)
+        size_t length{0U};
+        if (nvs_get_str(handle, "message", nullptr, &length) == ESP_OK && length > 1U)
         {
-            message.resize(len - 1);
-            nvs_get_str(handle, "message", message.data(), &len);
+            message.resize(length - 1U);
+            nvs_get_str(handle, "message", message.data(), &length);
         }
-        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _font(len);
-            nvs_get_str(handle, "font", _font.data(), &len);
+            std::vector<char> _font(length);
+            nvs_get_str(handle, "font", _font.data(), &length);
             nvs_close(handle);
             setFont(_font.data());
         }
@@ -38,7 +39,7 @@ void TickerMode::configure()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0]);
+        setFont(Fonts.names[0U]);
 #endif // FONT_SMALL
     }
     transmit();
@@ -49,11 +50,11 @@ void TickerMode::begin()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{0};
-        if (nvs_get_str(handle, "font", nullptr, &len) == ESP_OK && len > 0)
+        size_t length{0U};
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _font(len);
-            nvs_get_str(handle, "font", _font.data(), &len);
+            std::vector<char> _font(length);
+            nvs_get_str(handle, "font", _font.data(), &length);
             nvs_close(handle);
             setFont(_font.data());
         }
@@ -67,7 +68,7 @@ void TickerMode::begin()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0]);
+        setFont(Fonts.names[0U]);
 #endif // FONT_SMALL
     }
     pending = true;
@@ -79,7 +80,7 @@ void TickerMode::handle()
     {
         text = std::make_unique<TextHandler>(message, *font);
         offsetX = GRID_COLUMNS;
-        offsetY = (GRID_ROWS - text->getHeight()) / 2;
+        offsetY = (GRID_ROWS - text->getHeight()) / 2U;
         width = text->getWidth();
         transmit();
         pending = false;
@@ -90,18 +91,24 @@ void TickerMode::handle()
         {
             offsetX = GRID_COLUMNS;
         }
+        lastMillis = millis();
+#if EXTENSION_MICROPHONE
+        if (offsetX == GRID_COLUMNS && !Extensions.Microphone().isTriggered())
+        {
+            return;
+        }
+#endif // EXTENSION_MICROPHONE
         Display.clearFrame();
         text->draw(offsetX, offsetY);
         --offsetX;
-        lastMillis = millis();
     }
 }
 
 void TickerMode::setFont(std::string_view fontName)
 {
-    if (std::unique_ptr<const FontModule> _font = Fonts.get(fontName))
+    if (Fonts.has(fontName))
     {
-        font = std::move(_font);
+        font = Fonts.get(fontName);
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
@@ -168,7 +175,6 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _font : Fonts.names)
         {
@@ -186,7 +192,6 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
         component[HomeAssistantAbbreviations::icon].set("mdi:message");
         component[HomeAssistantAbbreviations::name].set(name);
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("text");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);

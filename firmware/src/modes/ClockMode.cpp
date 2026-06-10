@@ -2,11 +2,11 @@
 
 #include "modes/ClockMode.h"
 
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
-#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 
@@ -19,7 +19,7 @@ void ClockMode::configure()
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 0U)
+        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length != 0U)
         {
             fontName.resize(length - 1U);
             nvs_get_str(handle, "font", fontName.data(), &length);
@@ -44,6 +44,9 @@ void ClockMode::handle()
         {
             hour = local.tm_hour;
             minute = local.tm_min;
+#if CLOCK_12H
+            const int hour{(local.tm_hour + 11) % 12 + 1};
+#endif // CLOCK_12H
             const std::unique_ptr<const FontModule> font{Fonts.get(fontName)};
             const TextHandler hh1(std::to_string(hour / 10), *font);
             const TextHandler hh2(std::to_string(hour % 10), *font);
@@ -65,7 +68,7 @@ void ClockMode::handle()
         if (ticking && second != local.tm_sec)
         {
             drawTicker(0U);
-            second = local.tm_sec;
+            second = static_cast<uint8_t>(local.tm_sec);
             drawTicker(INT8_MAX);
         }
     }
@@ -103,9 +106,9 @@ void ClockMode::drawTicker(uint8_t brightness) const
 
 void ClockMode::setFont(std::string_view _fontName)
 {
-    if (std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
+    if (Fonts.has(_fontName))
     {
-        fontName = _font->name;
+        fontName = _fontName;
         nvs_handle_t handle{};
         if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
@@ -174,7 +177,6 @@ void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
         for (const std::string_view _font : fontNames)
         {
@@ -194,7 +196,6 @@ void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:progress-clock");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" second indicator"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

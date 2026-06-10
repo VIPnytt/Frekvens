@@ -29,9 +29,18 @@
 /**
  * OpenWeather
  *
- * https://openweathermap.org/api/one-call-3#start
+ * https://openweathermap.org/api/one-call-4?collection=one_call_api#current
+ * https://openweathermap.org/api/one-call-3?collection=one_call_api#current
+ * https://openweathermap.org/api/current?collection=current_forecast#one
  */
 // #define OPENWEATHER_KEY "secret"
+
+/**
+ * Tomorrow.io
+ *
+ * https://docs.tomorrow.io/reference/realtime-weather
+ */
+// #define TOMORROWIO_KEY "secret"
 
 /**
  * World Weather Online

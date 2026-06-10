@@ -5,11 +5,14 @@
 #include "modules/ExtensionModule.h"
 
 #include <AsyncWebSocket.h>
+#include <vector>
 
 class WebSocketExtension final : public ExtensionModule
 {
 private:
     static constexpr std::string_view name{"WebSocket"};
+
+    static inline std::vector<uint8_t> buffer{};
 
     static void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                         const uint8_t *data, size_t len);
@@ -17,7 +20,7 @@ private:
 public:
     explicit WebSocketExtension() : ExtensionModule(name) {};
 
-    AsyncWebSocket *server = new AsyncWebSocket("/websocket");
+    AsyncWebSocket *server{new AsyncWebSocket("/websocket")};
 
     void begin() override;
     void handle() override;

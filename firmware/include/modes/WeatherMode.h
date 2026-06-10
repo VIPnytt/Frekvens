@@ -7,6 +7,7 @@
 #include "middlewares/HomeAssistantWeatherMiddleware.h" // NOLINT(misc-include-cleaner)
 #include "middlewares/OpenMeteoMiddleware.h"            // NOLINT(misc-include-cleaner)
 #include "middlewares/OpenWeatherMiddleware.h"          // NOLINT(misc-include-cleaner)
+#include "middlewares/TomorrowIoMiddleware.h"           // NOLINT(misc-include-cleaner)
 #include "middlewares/WorldWeatherOnlineMiddleware.h"   // NOLINT(misc-include-cleaner)
 #include "middlewares/WttrInMiddleware.h"               // NOLINT(misc-include-cleaner)
 #include "middlewares/YrMiddleware.h"                   // NOLINT(misc-include-cleaner)
@@ -20,7 +21,7 @@
 class WeatherMode final : public ModeModule
 {
 private:
-    static constexpr std::array<std::string_view, 9> conditionNames{
+    static constexpr std::array<std::string_view, 9U> conditionNames{
         "Clear",
         "Cloudy",
         "Partly cloudy",
@@ -45,6 +46,9 @@ private:
 #if WEATHER_OPENWEATHER
         OpenWeatherMiddleware::name,
 #endif
+#if WEATHER_OPENWEATHER
+        TomorrowIoMiddleware::name,
+#endif
 #if WEATHER_WORLDWEATHERONLINE
         WorldWeatherOnlineMiddleware::name,
 #endif
@@ -56,9 +60,9 @@ private:
 #endif
     })};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
-    std::optional<WeatherHandler::Conditions> condition{};
+    std::optional<WeatherHandler::Condition> condition{};
 
     std::optional<int16_t> temperature{};
 

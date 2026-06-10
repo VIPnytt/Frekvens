@@ -5,13 +5,16 @@
 #include "modules/ExtensionModule.h"
 
 #include <ESPAsyncWebServer.h>
+#include <vector>
 
 class RestfulExtension final : public ExtensionModule
 {
 private:
     static constexpr std::string_view name{"Restful"};
 
-    static constexpr size_t prefixLength = sizeof("/restful/") - 1;
+    static constexpr size_t prefixLength{sizeof("/restful/") - 1ULL};
+
+    static inline std::vector<uint8_t> buffer{};
 
     static void onGet(AsyncWebServerRequest *request);
     static void onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index, size_t total);

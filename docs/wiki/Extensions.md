@@ -25,6 +25,7 @@ In the *Alexa app*, navigate to:
 2. Add Device
 3. Other
 4. Wi-Fi
+5. Discover
 
 > [!NOTE]
 > An [*Amazon Alexa*](https://www.amazon.com/smart-home-devices/b?node=9818047011) device is required.
@@ -311,11 +312,25 @@ Set up a playlist of [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) tha
 
 Integrated into the [Web app](#-web-app) and [Home Assistant](#-home-assistant) extensions.
 
-API payload examples:
+API payload example:
 
 ```json
 {
     "active": true,
+    "playlist": [
+        {
+            "mode": "Clock",
+            "duration": 20
+        },
+        {
+            "mode": "Ticker",
+            "duration": 30
+        },
+        {
+            "mode": "Weather",
+            "duration": 10
+        }
+    ]
 }
 ```
 

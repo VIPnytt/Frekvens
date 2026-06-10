@@ -285,7 +285,6 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::name].set("Reboot");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_press].set("reboot");
         component[HomeAssistantAbbreviations::platform].set("button");
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
@@ -298,7 +297,6 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:power");
         component[HomeAssistantAbbreviations::name].set("Power off");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_press].set("power");
         component[HomeAssistantAbbreviations::platform].set("button");
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
@@ -312,7 +310,6 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
         component[HomeAssistantAbbreviations::force_update].set(true);
         component[HomeAssistantAbbreviations::name].set("Internal temperature");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);

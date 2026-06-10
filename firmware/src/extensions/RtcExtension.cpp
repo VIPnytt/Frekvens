@@ -22,7 +22,7 @@ void RtcExtension::configure()
         if (!getLocalTime(&local))
         {
             struct timeval tv{}; // NOLINT(misc-const-correctness)
-            tv.tv_sec = rtc.GetDateTime().Unix64Time();
+            tv.tv_sec = static_cast<time_t>(rtc.GetDateTime().Unix64Time());
             settimeofday(&tv, nullptr);
             ESP_LOGD("Status", "synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
@@ -75,17 +75,21 @@ IRAM_ATTR void RtcExtension::onInterrupt() { pending = true; }
 void RtcExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
+#if TEMPERATURE_FAHRENHEIT
+    doc["temperature"].set(rtc.GetTemperature().AsFloatDegF());
+#else
     doc["temperature"].set(rtc.GetTemperature().AsFloatDegC());
+#endif // TEMPERATURE_FAHRENHEIT
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 #endif // defined(RTC_DS3231) || defined(RTC_DS3232)
 
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
-    const time_t timer = tv->tv_sec;
-    const tm *local = gmtime(&timer);
-    rtc.SetDateTime(RtcDateTime(
-        local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec));
+    const time_t timer{tv->tv_sec};
+    tm utc{};
+    gmtime_r(&timer, &utc);
+    rtc.SetDateTime(RtcDateTime(utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday, utc.tm_hour, utc.tm_min, utc.tm_sec));
     ESP_LOGV("Status", "NTP synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
@@ -102,12 +106,15 @@ void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, s
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
         component[HomeAssistantAbbreviations::force_update].set(true);
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" temperature"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+#if TEMPERATURE_FAHRENHEIT
+        component[HomeAssistantAbbreviations::unit_of_measurement].set("°F");
+#else
         component[HomeAssistantAbbreviations::unit_of_measurement].set("°C");
+#endif // TEMPERATURE_FAHRENHEIT
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 }

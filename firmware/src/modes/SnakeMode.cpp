@@ -2,62 +2,68 @@
 
 #include "modes/SnakeMode.h"
 
-#include "config/constants.h"     // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <map>
 #include <nvs.h>
 #include <queue>
+
+static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 
 void SnakeMode::configure()
 {
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        uint8_t _clock{0};
-        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK)
-        {
-            clock = static_cast<bool>(_clock);
-        }
+        uint8_t _clock{0U};
+        nvs_get_u8(handle, "clock", &_clock);
         nvs_close(handle);
+        if (static_cast<bool>(_clock))
+        {
+            clock = std::make_unique<ClockHandler>();
+        }
     }
     transmit();
 }
 
 void SnakeMode::begin()
 {
+    nvs_handle_t handle{};
+    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    {
+        uint8_t _clock{0U};
+        nvs_get_u8(handle, "clock", &_clock);
+        nvs_close(handle);
+        if (static_cast<bool>(_clock))
+        {
+            clock = std::make_unique<ClockHandler>();
+        }
+    }
     Display.clearFrame();
-    pending = true;
-    stage = 0;
+    stage = 0U;
 }
 
 void SnakeMode::handle()
 {
-    if (clock && getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour || pending))
+    if (clock != nullptr)
     {
-        hour = local.tm_hour;
-        minute = local.tm_min;
-        Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-        const MiniFont font;
-        TextHandler(std::to_string(hour / 10), font).draw(GRID_COLUMNS / 2 - 8, 0);
-        TextHandler(std::to_string(hour % 10), font).draw(GRID_COLUMNS / 2 - 4, 0);
-        TextHandler(std::to_string(minute / 10), font).draw(GRID_COLUMNS / 2 + 1, 0);
-        TextHandler(std::to_string(minute % 10), font).draw(GRID_COLUMNS / 2 + 5, 0);
-        pending = false;
+        clock->handle();
     }
     switch (stage)
     {
-    case 1:
+    case 1U:
         move();
         break;
-    case 2:
+    case 2U:
         blink();
         break;
-    case 3:
+    case 3U:
         clean();
         break;
     default:
@@ -67,25 +73,25 @@ void SnakeMode::handle()
 
 void SnakeMode::idle()
 {
-    const uint8_t x = random(GRID_COLUMNS);
-    const uint8_t y = random(clock ? 5 : 0, GRID_ROWS);
+    const uint8_t x{static_cast<uint8_t>(random(GRID_COLUMNS))};
+    const uint8_t y{static_cast<uint8_t>(random(clock == nullptr ? 0 : 5, GRID_ROWS))};
     snake = {{x, y}};
     Display.setPixel(x, y);
     setTarget();
-    stage = 1;
+    stage = 1U;
 }
 
 std::optional<SnakeMode::Pixel> SnakeMode::next() const
 {
-    Pixel start = snake.back();
+    Pixel start{snake.back()};
     std::map<Pixel, Pixel> from;
     std::queue<Pixel> frontier;
     frontier.push(start);
     from[start] = start;
-    bool pathFound = false;
+    bool pathFound{false};
     while (!frontier.empty())
     {
-        Pixel current = frontier.front();
+        Pixel current{frontier.front()};
         frontier.pop();
         if (current == target)
         {
@@ -93,21 +99,21 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
             break;
         }
         std::vector<Pixel> neighbors;
-        if (current.x > 0)
+        if (current.x != 0U)
         {
-            neighbors.push_back(Pixel{static_cast<uint8_t>(current.x - 1), current.y});
+            neighbors.push_back(Pixel{static_cast<uint8_t>(current.x - 1U), current.y});
         }
-        if (current.y > (clock ? 5 : 0))
+        if (current.y > (clock == nullptr ? 0U : 5U))
         {
-            neighbors.push_back(Pixel{current.x, static_cast<uint8_t>(current.y - 1)});
+            neighbors.push_back(Pixel{current.x, static_cast<uint8_t>(current.y - 1U)});
         }
-        if (current.x + 1 < GRID_COLUMNS)
+        if (current.x < GRID_COLUMNS - 1U)
         {
-            neighbors.push_back(Pixel{static_cast<uint8_t>(current.x + 1), current.y});
+            neighbors.push_back(Pixel{static_cast<uint8_t>(current.x + 1U), current.y});
         }
-        if (current.y + 1 < GRID_ROWS)
+        if (current.y < GRID_ROWS - 1U)
         {
-            neighbors.push_back(Pixel{current.x, static_cast<uint8_t>(current.y + 1)});
+            neighbors.push_back(Pixel{current.x, static_cast<uint8_t>(current.y + 1U)});
         }
         for (const Pixel &neighbor : neighbors)
         {
@@ -128,21 +134,21 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
         return step;
     }
     std::vector<Pixel> fallback;
-    if (start.y > (clock ? 5 : 0))
+    if (start.y > (clock == nullptr ? 0U : 5U))
     {
-        fallback.push_back(Pixel{start.x, static_cast<uint8_t>(start.y - 1)});
+        fallback.push_back(Pixel{start.x, static_cast<uint8_t>(start.y - 1U)});
     }
-    if (start.x + 1 < GRID_COLUMNS)
+    if (start.x < GRID_COLUMNS - 1U)
     {
-        fallback.push_back(Pixel{static_cast<uint8_t>(start.x + 1), start.y});
+        fallback.push_back(Pixel{static_cast<uint8_t>(start.x + 1U), start.y});
     }
-    if (start.y + 1 < GRID_ROWS)
+    if (start.y < GRID_ROWS - 1U)
     {
-        fallback.push_back(Pixel{start.x, static_cast<uint8_t>(start.y + 1)});
+        fallback.push_back(Pixel{start.x, static_cast<uint8_t>(start.y + 1U)});
     }
-    if (start.x > 0)
+    if (start.x != 0U)
     {
-        fallback.push_back(Pixel{static_cast<uint8_t>(start.x - 1), start.y});
+        fallback.push_back(Pixel{static_cast<uint8_t>(start.x - 1U), start.y});
     }
     for (const Pixel &option : fallback)
     {
@@ -158,7 +164,7 @@ void SnakeMode::move()
 {
     if (millis() - lastMillis > INT8_MAX + snake.size())
     {
-        std::optional<SnakeMode::Pixel> step = next();
+        std::optional<SnakeMode::Pixel> step{next()};
         if (step.has_value())
         {
             snake.push_back(step.value());
@@ -171,19 +177,19 @@ void SnakeMode::move()
             {
                 // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
-                for (std::size_t i = 0; i < snake.size(); ++i)
+                for (size_t i{0U}; i < snake.size(); ++i)
                 {
-                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1));
+                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1U));
                 }
-                Display.setPixel(snake.front().x, snake.front().y, 0);
+                Display.setPixel(snake.front().x, snake.front().y, 0U);
                 snake.pop_front();
             }
         }
         else
         {
             lastMillis = millis();
-            blinkCount = 0;
-            stage = 2;
+            blinkCount = 0U;
+            stage = 2U;
         }
         lastMillis = millis();
     }
@@ -193,14 +199,14 @@ void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        const uint8_t brightness = (blinkCount & 1U) == 0 ? 0 : UINT8_MAX;
+        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 1U) == 0U ? 0U : UINT8_MAX)};
         for (const Pixel &pixel : snake)
         {
             Display.setPixel(pixel.x, pixel.y, brightness);
         }
-        if (++blinkCount >= 6)
+        if (++blinkCount >= 6U)
         {
-            stage = 3;
+            stage = 3U;
         }
         lastMillis = millis();
     }
@@ -210,54 +216,55 @@ void SnakeMode::clean()
 {
     if (millis() - lastMillis > INT8_MAX && !snake.empty())
     {
-        Display.setPixel(snake.front().x, snake.front().y, 0);
+        Display.setPixel(snake.front().x, snake.front().y, 0U);
         snake.pop_front();
         lastMillis = millis();
     }
     else if (snake.empty())
     {
-        Display.setPixel(target.x, target.y, 0);
-        stage = 0;
+        Display.setPixel(target.x, target.y, 0U);
+        stage = 0U;
     }
 }
 
 void SnakeMode::setTarget()
 {
-    const uint8_t yMin = clock ? 5U : 0U;
-    do // NOLINT(cppcoreguidelines-avoid-do-while)
+    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)}; // NOLINT(cppcoreguidelines-init-variables)
+    do                                                                    // NOLINT(cppcoreguidelines-avoid-do-while)
     {
         target.x = random(GRID_COLUMNS);
         target.y = random(yMin, GRID_ROWS);
-    } while (Display.getPixel(target.x, target.y) != 0);
-    Display.setPixel(target.x, target.y, random(1, 1U << 8U));
+    } while (Display.getPixel(target.x, target.y) != 0U);
+    Display.setPixel(target.x, target.y, random(1, 0b1U << 8U));
 }
 
 void SnakeMode::setClock(bool _clock)
 {
-    clock = _clock;
-    if (clock && target.y < 5)
-    {
-        setTarget();
-    }
-    else if (!clock)
-    {
-        Display.drawRectangle(0, 0, GRID_COLUMNS - 1, 4, true, 0);
-    }
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_u8(handle, "clock", static_cast<uint8_t>(clock)); // NOLINT(readability-implicit-bool-conversion)
+        nvs_set_u8(handle, "clock", static_cast<uint8_t>(_clock)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
         nvs_close(handle);
     }
-    pending = true;
+    if (_clock)
+    {
+        clock = std::make_unique<ClockHandler>();
+        Display.setPixel(target.x, target.y, 0U);
+        setTarget();
+    }
+    else if (clock != nullptr)
+    {
+        clock->clear();
+        clock.reset();
+    }
     transmit();
 }
 
 void SnakeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["clock"].set(clock);
+    doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
@@ -285,7 +292,6 @@ void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:snake");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" clock"));
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::payload_off].set("false");
         component[HomeAssistantAbbreviations::payload_on].set("true");
         component[HomeAssistantAbbreviations::platform].set("switch");

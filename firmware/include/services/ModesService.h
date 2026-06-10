@@ -19,7 +19,6 @@
 #include "modes/GameOfLifeMode.h"
 #include "modes/GlitterMode.h"
 #include "modes/HomeThermometerMode.h"
-#include "modes/JaggedWaveformMode.h"
 #include "modes/LeafFallMode.h"
 #include "modes/LinesMode.h"
 #include "modes/MetaballsMode.h"
@@ -29,7 +28,6 @@
 #include "modes/RainMode.h"
 #include "modes/RingMode.h"
 #include "modes/ScanMode.h"
-#include "modes/SmoothWaveformMode.h"
 #include "modes/SnakeMode.h"
 #include "modes/StarsMode.h"
 #include "modes/StreamMode.h"
@@ -48,9 +46,9 @@ class ModesService final : public ServiceModule
 private:
     explicit ModesService() : ServiceModule("Modes") {};
 
-    bool scheduled = false;
+    bool scheduled{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     std::unique_ptr<ModeModule> mode{};
 
@@ -61,9 +59,9 @@ private:
     static void onTask(void *parameter = nullptr);
 
 public:
-    static constexpr uint16_t stackSize = 1U << 13U; // 8 kB
+    static constexpr uint16_t stackSize{1U << 13U}; // 8 kB
 
-    static constexpr auto names = std::to_array<std::string_view>({
+    static constexpr auto names{std::to_array<std::string_view>({
 #if MODE_ANIMATION
         AnimationMode::name,
 #endif
@@ -118,9 +116,6 @@ public:
 #if MODE_HOMETHERMOMETER
         HomeThermometerMode::name,
 #endif
-#if MODE_JAGGEDWAVEFORM
-        JaggedWaveformMode::name,
-#endif
 #if MODE_LEAFFALL
         LeafFallMode::name,
 #endif
@@ -148,9 +143,6 @@ public:
 #if MODE_SCAN
         ScanMode::name,
 #endif
-#if MODE_SMOOTHWAVEFORM
-        SmoothWaveformMode::name,
-#endif
 #if MODE_SNAKE
         SnakeMode::name,
 #endif
@@ -169,7 +161,7 @@ public:
 #if MODE_WEATHER
         WeatherMode::name,
 #endif
-    });
+    })};
 
     void configure();
     void begin();

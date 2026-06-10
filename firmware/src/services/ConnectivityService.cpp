@@ -1,5 +1,6 @@
 #include "services/ConnectivityService.h"
 
+#include "extensions/AlexaExtension.h"
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
@@ -60,7 +61,7 @@ void ConnectivityService::configure()
     {
         initStation();
     }
-    configTzTime(TIME_ZONE, "pool.ntp.org", "time.cloudflare.com", "time.nist.gov");
+    configTzTime(TIME_ZONE_POSIX, "1.pool.ntp.org", "2.pool.ntp.org", "3.pool.ntp.org");
 }
 
 void ConnectivityService::handle()
@@ -247,7 +248,10 @@ void ConnectivityService::onRoutable()
     {
         Connectivity.mDNS = true;
         MDNS.setInstanceName(NAME);
-#if EXTENSION_ALEXA || (EXTENSION_OTA && !defined(OTA_KEY)) || EXTENSION_RESTFUL || EXTENSION_WEBAPP
+#if EXTENSION_ALEXA
+        AlexaExtension::onMdns();
+#endif // EXTENSION_ALEXA
+#if EXTENSION_RESTFUL || EXTENSION_WEBAPP
         MDNS.addService("http", "tcp", 80);
 #endif
 #if EXTENSION_WEBSOCKET
@@ -344,7 +348,6 @@ void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::expire_after].set(UINT8_MAX);
         component[HomeAssistantAbbreviations::force_update].set(true);
         component[HomeAssistantAbbreviations::name].set("Wi-Fi signal");
-        component[HomeAssistantAbbreviations::object_id].set(HOSTNAME "_" + id);
         component[HomeAssistantAbbreviations::platform].set("sensor");
         component[HomeAssistantAbbreviations::state_class].set("measurement");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
