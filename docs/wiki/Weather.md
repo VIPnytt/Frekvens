@@ -1,14 +1,16 @@
 # ⛅ Weather
 
-Provider support may vary depending on location.
+At least one weather provider is required to use the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
-**Auto detect:** [Home Assistant](#-home-assistant) | [Wttr.in](#️-wttrin)
-
-**Coordinates:** [Google](%EF%B8%8F-google) | [Open-Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
-
-**Location name:** [Open Weather](#️-open-weather) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin)
-
-**Open access:** [Open-Meteo](#-open-meteo) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+| Provider                                       | Open access             | Coordinates             | Named location          | No place config    |
+| ---------------------------------------------- | ----------------------- | ----------------------- | ----------------------- | ------------------ |
+| [Google](%EF%B8%8F-google)                     | :x:                     | :white_check_mark:      | :x:                     | :x:                |
+| [Home Assistant](#-home-assistant)             | :x:                     | :x:                     | :x:                     | :white_check_mark: |
+| [Open-Meteo](#-open-meteo)                     | :ballot_box_with_check: | :white_check_mark:      | :x:                     | :x:                |
+| [Open Weather](#️-open-weather)                 | :x:                     | :white_check_mark:      | :white_check_mark:      | :x:                |
+| [World Weather Online](#-world-weather-online) | :x:                     | :white_check_mark:      | :x:                     | :x:                |
+| [Wttr.in](#️-wttrin)                            | :white_check_mark:      | :white_check_mark:      | :white_check_mark:      | :white_check_mark: |
+| [Yr](#️-yr)                                     | :white_check_mark:      | :white_check_mark:      | :x:                     | :x:                |
 
 ## ☁️ Google
 
