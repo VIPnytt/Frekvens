@@ -119,6 +119,12 @@ void WeatherMode::setProvider(std::string_view providerName)
         provider = std::make_unique<OpenWeatherMiddleware>();
     }
 #endif // WEATHER_OPENWEATHER
+#if WEATHER_TOMORROWIO
+    if (providerName == TomorrowIoMiddleware::name)
+    {
+        provider = std::make_unique<TomorrowIoMiddleware>();
+    }
+#endif // WEATHER_TOMORROWIO
 #if WEATHER_WORLDWEATHERONLINE
     if (providerName == WorldWeatherOnlineMiddleware::name)
     {

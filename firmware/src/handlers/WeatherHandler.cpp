@@ -98,6 +98,8 @@ template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<u
     uint8_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint8_t>>> codesets);
 template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<uint16_t>(
     uint16_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint16_t>>> codesets);
+template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<uint32_t>(
+    uint32_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint32_t>>> codesets);
 
 std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Condition condition)
 {
