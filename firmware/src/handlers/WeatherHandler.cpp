@@ -10,18 +10,18 @@
 
 int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
 {
-    esp_http_client_config_t config = {
-        .host = host,
-        .port = port,
-        .path = path,
-        .query = query,
-        .user_agent = "Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)",
-        .method = esp_http_client_method_t::HTTP_METHOD_GET,
-        .transport_type = tls ? esp_http_client_transport_t::HTTP_TRANSPORT_OVER_SSL
-                              : esp_http_client_transport_t::HTTP_TRANSPORT_OVER_TCP,
-        .crt_bundle_attach = esp_crt_bundle_attach,
+    esp_http_client_config_t config{
+        .host{host},
+        .port{port},
+        .path{path},
+        .query{query},
+        .user_agent{"Frekvens/" VERSION " (ESP32; +https://github.com/VIPnytt/Frekvens)"},
+        .method{esp_http_client_method_t::HTTP_METHOD_GET},
+        .transport_type{tls ? esp_http_client_transport_t::HTTP_TRANSPORT_OVER_SSL
+                            : esp_http_client_transport_t::HTTP_TRANSPORT_OVER_TCP},
+        .crt_bundle_attach{esp_crt_bundle_attach},
     };
-    esp_http_client_handle_t client = esp_http_client_init(&config);
+    esp_http_client_handle_t client{esp_http_client_init(&config)};
     if (client == nullptr)
     {
         lastMillis = millis() - interval + UINT16_MAX;
@@ -37,22 +37,22 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
         lastMillis = millis() - interval + INT16_MAX;
         return -1;
     }
-    const int status = esp_http_client_get_status_code(client);
+    const int status{esp_http_client_get_status_code(client)};
     if (status != 200)
     {
         esp_http_client_cleanup(client);
         ESP_LOGV("HTTP", "code %d", status);
         return status;
     }
-    const int64_t len = esp_http_client_get_content_length(client);
-    if (len > 0)
+    const int64_t length{esp_http_client_get_content_length(client)};
+    if (length > 0)
     {
-        body.reserve(static_cast<size_t>(len));
+        body.reserve(static_cast<size_t>(length));
     }
     std::array<char, UINT8_MAX> buffer{};
     while (true)
     {
-        const int read = esp_http_client_read(client, buffer.data(), static_cast<int>(buffer.size()));
+        const int read{esp_http_client_read(client, buffer.data(), static_cast<int>(buffer.size()))};
         if (read <= 0)
         {
             break;
@@ -63,57 +63,48 @@ int WeatherHandler::fetch(std::vector<char> &body, unsigned long &lastMillis)
     return status;
 }
 
-std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(std::string_view code,
-                                                                       std::span<const Codeset> codesets)
+std::optional<WeatherHandler::Condition> WeatherHandler::getCondition(
+    std::string_view code,
+    std::span<const std::pair<WeatherHandler::Condition, std::span<const std::string_view>>> codesets)
 {
-    for (const Codeset &codeset : codesets)
+    for (const std::pair<WeatherHandler::Condition, std::span<const std::string_view>> &codeset : codesets)
     {
-        if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
+        if (std::find(codeset.second.begin(), codeset.second.end(), code) != codeset.second.end())
         {
-            return codeset.condition;
+            return codeset.first;
         }
     }
     ESP_LOGD("Response", "unknown condition code %s", std::string(code).c_str());
     return std::nullopt;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint8_t code, std::span<const Codeset8> codesets)
+template <typename T>
+    requires std::is_unsigned_v<T>
+std::optional<WeatherHandler::Condition>
+WeatherHandler::getCondition(T code, std::span<const std::pair<WeatherHandler::Condition, std::span<const T>>> codesets)
 {
-    for (const Codeset8 &codeset : codesets)
+    for (const std::pair<Condition, std::span<const T>> &codeset : codesets)
     {
-        if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
+        if (std::find(codeset.second.begin(), codeset.second.end(), code) != codeset.second.end())
         {
-            return codeset.condition;
+            return codeset.first;
         }
     }
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGD("Response", "unknown condition code %d", code);
     return std::nullopt;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-std::optional<WeatherHandler::Conditions> WeatherHandler::getCondition(uint16_t code,
-                                                                       std::span<const Codeset16> codesets)
-{
-    for (const Codeset16 &codeset : codesets)
-    {
-        if (std::find(codeset.codes.begin(), codeset.codes.end(), code) != codeset.codes.end())
-        {
-            return codeset.condition;
-        }
-    }
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGD("Response", "unknown condition code %d", code);
-    return std::nullopt;
-}
+template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<uint8_t>(
+    uint8_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint8_t>>> codesets);
+template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<uint16_t>(
+    uint16_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint16_t>>> codesets);
 
-std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Conditions condition)
+std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Condition condition)
 {
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (condition)
     {
-    case Conditions::CLEAR:
+    case Condition::CLEAR:
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
         return bitmapClear;
 #else
@@ -125,21 +116,21 @@ std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler
         return bitmapClearWide;
     }
 #endif // PITCH_HORIZONTAL == PITCH_VERTICAL
-    case Conditions::CLOUDY:
+    case Condition::CLOUDY:
         return bitmapCloudy;
-    case Conditions::CLOUDY_PARTLY:
+    case Condition::CLOUDY_PARTLY:
         return bitmapCloudyPartly;
-    case Conditions::EXCEPTION:
+    case Condition::EXCEPTION:
         return bitmapExceptional;
-    case Conditions::FOG:
+    case Condition::FOG:
         return bitmapFog;
-    case Conditions::RAIN:
+    case Condition::RAIN:
         return bitmapRain;
-    case Conditions::SNOW:
+    case Condition::SNOW:
         return bitmapSnow;
-    case Conditions::THUNDER:
+    case Condition::THUNDER:
         return bitmapThunder;
-    case Conditions::WIND:
+    case Condition::WIND:
         return bitmapWind;
     }
     // NOLINTEND(bugprone-branch-clone)

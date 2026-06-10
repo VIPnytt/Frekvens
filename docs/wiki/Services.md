@@ -1,6 +1,6 @@
 # ⚙️ Services
 
-[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Web server](#️-web-server)
+[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Temperature](#-temperature) | [Time](#-time)
 
 ## 🌐 Connectivity
 
@@ -107,6 +107,18 @@ To manually lock the bit depth, define it in [secrets.h](https://github.com/VIPn
 
 ```h
 #define PWM_DEPTH 10 // bit
+```
+
+## 🌡️ Temperature
+
+**Unit:**
+
+Temperature unit in either Celsius, Fahrenheit or Kelvin.
+
+Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+
+```ini
+TEMPERATURE_UNIT='°C' # °C, °F or °K
 ```
 
 ## ⌚ Time

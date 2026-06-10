@@ -23,18 +23,17 @@ class Firmware:
     def _define_env(self) -> None:
         count_extension = 0
         for option, _value in self.project.dotenv.items():
-            if (value := _value or "") in [
+            if (value := _value or "") in {
                 "false",
                 "true",
-            ]:
+            }:
                 self.project.env.Append(
                     CPPDEFINES=[
                         (option, "true" if value == "true" else "false"),
                     ]
                 )
-                if value == "true":
-                    if option.startswith("EXTENSION_"):
-                        count_extension += 1
+                if value == "true" and option.startswith("EXTENSION_"):
+                    count_extension += 1
             else:
                 self.project.env.Append(
                     CPPDEFINES=[
@@ -61,11 +60,7 @@ class Firmware:
                             ]
                         )
                     else:
-                        logging.warning(
-                            "%s '%s' is unsupported. Valid values are '°C', '°F' and '°K'.",
-                            option,
-                            value,
-                        )
+                        logging.warning("%s %r is unsupported. Valid values are '°C', '°F' and '°K'.", option, value)
         self.project.env.Append(
             CPPDEFINES=list(
                 {
@@ -80,10 +75,10 @@ class Firmware:
 
     def _define_pio(self) -> None:
         config = self.project.env.GetProjectConfig()
-        for option in [
+        for option in {
             "board",
             "monitor_speed",
-        ]:
+        }:
             if value := config.get(f"env:{self.project.env['PIOENV']}", option, None):
                 _value = (
                     value

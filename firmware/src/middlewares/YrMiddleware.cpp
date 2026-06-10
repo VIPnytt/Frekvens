@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void YrMiddleware::update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+void YrMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                           unsigned long &lastMillis)
 {
     if (paths.empty())

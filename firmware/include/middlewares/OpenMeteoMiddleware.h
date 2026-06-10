@@ -22,14 +22,14 @@ private:
     static constexpr std::array<uint8_t, 6U> codesSnow{71U, 73U, 75U, 77U, 85U, 86U};
     static constexpr std::array<uint8_t, 3U> codesThunder{95U, 96U, 99U};
 
-    static constexpr std::array<WeatherHandler::Codeset8, 7U> codesets{{
-        {WeatherHandler::Conditions::CLEAR, codesClear},
-        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
-        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {WeatherHandler::Conditions::FOG, codesFog},
-        {WeatherHandler::Conditions::RAIN, codesRain},
-        {WeatherHandler::Conditions::SNOW, codesSnow},
-        {WeatherHandler::Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<Condition, std::span<const uint8_t>>, 7U> codesets{{
+        {WeatherHandler::Condition::CLEAR, codesClear},
+        {WeatherHandler::Condition::CLOUDY, codesCloudy},
+        {WeatherHandler::Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Condition::FOG, codesFog},
+        {WeatherHandler::Condition::RAIN, codesRain},
+        {WeatherHandler::Condition::SNOW, codesSnow},
+        {WeatherHandler::Condition::THUNDER, codesThunder},
     }};
 
     // https://open-meteo.com/en/docs#api-documentation
@@ -77,7 +77,7 @@ public:
 
     explicit OpenMeteoMiddleware() : WeatherHandler(name) { path = "/v1/forecast"; };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

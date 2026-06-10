@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void WttrInMiddleware::update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                               unsigned long &lastMillis)
 {
     if (parts.empty())
@@ -41,7 +41,7 @@ void WttrInMiddleware::update(std::optional<WeatherHandler::Conditions> &conditi
 #endif // TEMPERATURE_FAHRENHEIT
         doc["current_condition"][0U]["weatherCode"].is<std::string_view>())
     {
-        condition = getCondition(doc["current_condition"][0U]["weatherCode"].as<uint16_t>(), codesets);
+        condition = getCondition<uint16_t>(doc["current_condition"][0U]["weatherCode"].as<uint16_t>(), codesets);
 #if TEMPERATURE_FAHRENHEIT
         temperature = doc["current_condition"][0U]["temp_F"].as<int16_t>();
 #elif TEMPERATURE_KELVIN

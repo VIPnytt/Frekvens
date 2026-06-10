@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &condition,
+void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                  std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
     if (parts.empty())
@@ -32,7 +32,7 @@ void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &cond
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["current"]["temperature_2m"].is<float>() && doc["current"]["weather_code"].is<uint8_t>())
     {
-        condition = getCondition(doc["current"]["weather_code"].as<uint8_t>(), codesets);
+        condition = getCondition<uint8_t>(doc["current"]["weather_code"].as<uint8_t>(), codesets);
 #if TEMPERATURE_KELVIN
         temperature = static_cast<int16_t>(lroundf(273.15F + doc["current"]["temperature_2m"].as<float>()));
 #else

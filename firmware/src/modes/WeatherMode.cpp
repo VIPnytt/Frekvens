@@ -2,26 +2,29 @@
 
 #include "modes/WeatherMode.h"
 
-#include "fonts/MiniFont.h"         // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h"   // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"            // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
-#include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 #include <WiFi.h> // NOLINT(misc-include-cleaner)
 #include <nvs.h>
+
+static_assert(GRID_COLUMNS >= 14U, __STRING(MODE_WEATHER) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 14U, __STRING(MODE_WEATHER) " is not compatible with this device's display size.");
 
 void WeatherMode::configure()
 {
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{0};
-        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
+        size_t length{0U};
+        if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _provider(len);
-            nvs_get_str(handle, "provider", _provider.data(), &len);
+            std::vector<char> _provider(length);
+            nvs_get_str(handle, "provider", _provider.data(), &length);
             nvs_close(handle);
             setProvider(_provider.data());
         }
@@ -42,11 +45,11 @@ void WeatherMode::begin()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t len{0};
-        if (nvs_get_str(handle, "provider", nullptr, &len) == ESP_OK && len > 0)
+        size_t length{0U};
+        if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _provider(len);
-            nvs_get_str(handle, "provider", _provider.data(), &len);
+            std::vector<char> _provider(length);
+            nvs_get_str(handle, "provider", _provider.data(), &length);
             nvs_close(handle);
             setProvider(_provider.data());
         }
@@ -79,10 +82,10 @@ void WeatherMode::handle()
                     const uint8_t textHeight{text.getHeight()};
                     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                     const uint8_t marginsY{
-                        static_cast<uint8_t>(std::max(0, GRID_ROWS - bitmap.getHeight() - textHeight) / 3)};
+                        static_cast<uint8_t>(max(0U, GRID_ROWS - bitmap.getHeight() - textHeight) / 3U)};
                     Display.clearFrame();
-                    bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, marginsY);
-                    text.draw((GRID_COLUMNS - text.getWidth()) / 2, GRID_ROWS - marginsY - textHeight);
+                    bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2U, marginsY);
+                    text.draw((GRID_COLUMNS - text.getWidth()) / 2U, GRID_ROWS - marginsY - textHeight);
                 },
                 provider->getSign(condition.value()));
             transmit();

@@ -1,0 +1,15 @@
+#pragma once
+
+#define PWM_WIDTH 180e-9F // s
+
+// #define LED_MAP {0xFU, 0xEU, 0xDU, 0xCU, 0xBU, 0xAU, 0x9U, 0x8U, 0x7U, 0x6U, 0x5U, 0x4U, 0x3U, 0x2U, 0x1U, 0x0U}
+
+// #define PIN_MOSI 1 // SDI
+
+// #define PIN_SCLK 2 // CLK
+
+// #define PIN_CS 3 // LA/
+
+// #define PIN_OE 4 // OE/
+
+// #define PIN_MISO 5 // SDO

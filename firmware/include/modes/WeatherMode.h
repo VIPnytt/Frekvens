@@ -20,7 +20,7 @@
 class WeatherMode final : public ModeModule
 {
 private:
-    static constexpr std::array<std::string_view, 9> conditionNames{
+    static constexpr std::array<std::string_view, 9U> conditionNames{
         "Clear",
         "Cloudy",
         "Partly cloudy",
@@ -56,9 +56,9 @@ private:
 #endif
     })};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
-    std::optional<WeatherHandler::Conditions> condition{};
+    std::optional<WeatherHandler::Condition> condition{};
 
     std::optional<int16_t> temperature{};
 

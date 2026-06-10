@@ -117,14 +117,14 @@ private:
         "snowshowersandthunder_polartwilight",
     };
 
-    static constexpr std::array<Codeset, 7U> codesets{{
-        {Conditions::CLEAR, codesClear},
-        {Conditions::CLOUDY, codesCloudy},
-        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {Conditions::FOG, codesFog},
-        {Conditions::RAIN, codesRain},
-        {Conditions::SNOW, codesSnow},
-        {Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<WeatherHandler::Condition, std::span<const std::string_view>>, 7U> codesets{{
+        {Condition::CLEAR, codesClear},
+        {Condition::CLOUDY, codesCloudy},
+        {Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {Condition::FOG, codesFog},
+        {Condition::RAIN, codesRain},
+        {Condition::SNOW, codesSnow},
+        {Condition::THUNDER, codesThunder},
     }};
 
     // https://api.met.no/weatherapi/locationforecast/2.0/documentation
@@ -143,7 +143,7 @@ public:
         query = "lat=" LATITUDE "&lon=" LONGITUDE;
     };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 
