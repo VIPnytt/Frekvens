@@ -1,14 +1,18 @@
 import dotenv
 import os
 import pathlib
+import re
 import shutil
 import typing
+import unicodedata
 
 from .components.Dependency import Dependency
 from .components.Deprecated import Deprecated
 from .components.Partition import Partition
 from .components.Time import Time
 from .config.version import VERSION
+from .devices.IkeaFrekvens import IkeaFrekvens
+from .devices.IkeaObegransad import IkeaObegransad
 from .extensions.Ota import Ota
 from .extensions.WebApp import WebApp
 from .modes.Weather import Weather
@@ -70,6 +74,21 @@ class Frekvens:
         ]:
             self.webapp = WebApp(self)
         self.dotenv = {key: (value if value is not None else "") for key, value in dotenv.dotenv_values(".env").items()}
+        if "NAME" not in self.dotenv:
+            if IkeaFrekvens.ENV_OPTION in self.dotenv and self.dotenv[IkeaFrekvens.ENV_OPTION] == "true":
+                self.dotenv["NAME"] = IkeaFrekvens.NAME
+            elif IkeaObegransad.ENV_OPTION in self.dotenv and self.dotenv[IkeaObegransad.ENV_OPTION] == "true":
+                self.dotenv["NAME"] = IkeaObegransad.NAME
+            else:
+                self.dotenv["NAME"] = "Frekvens"
+        if "HOSTNAME" in self.dotenv:
+            self.dotenv["HOSTNAME"] = self.dotenv["HOSTNAME"].lower()
+        else:
+            self.dotenv["HOSTNAME"] = re.sub(
+                r"[^a-z0-9]+",
+                "-",
+                unicodedata.normalize("NFKD", self.dotenv["NAME"]).encode("ascii", "ignore").decode("ascii").lower(),
+            ).strip("-")
 
     def run(self) -> None:
         print(f"Frekvens {VERSION}")

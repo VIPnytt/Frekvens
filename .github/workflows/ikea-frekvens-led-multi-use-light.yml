@@ -220,14 +220,12 @@ jobs:
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
           FONT_MICRO='true'
-          HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
           MODE_ARROW='true'
           MODE_BLINDS='true'
           MODE_EQUALIZER='true'
           MODE_RING='true'
           MODE_WAVEFORM='true'
-          NAME='Frekvens'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -332,7 +330,6 @@ jobs:
           FONT_MICRO='true'
           FONT_MINI='true'
           FONT_SMALL='true'
-          HOSTNAME='frekvens'
           IKEA_FREKVENS='true'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
