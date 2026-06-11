@@ -27,6 +27,12 @@ class Ota:
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None
+        if (
+            self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] != "true"
+        ) and self.project.env.GetProjectOption("upload_protocol", None) == "espota":
+            logging.warning(
+                "%s: %s is disabled. Future uploads will require wired flashing.", self.ENV_OPTION, self.NAME
+            )
 
     def finalize(self) -> None:
         if (
