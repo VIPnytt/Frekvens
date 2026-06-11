@@ -1,15 +1,15 @@
 # ⚙️ Services
 
-[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Temperature](#-temperature) | [Time](#-time)
+[Connectivity](#-connectivity) | [Device](#️-device) | [Display](#-display) | [Temperature](#%EF%B8%8F-temperature) | [Time](#-time)
 
 ## 🌐 Connectivity
 
 **Hostname:**
 
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+Defaults to device name if not set. Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-HOSTNAME='frekvens'
+HOSTNAME='frekvens' # optional
 ```
 
 **Wi-Fi client:**
@@ -35,7 +35,7 @@ Regulatory country code in *ISO 3166-1 alpha-2* format.
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define WIFI_COUNTRY "01"
+#define WIFI_COUNTRY "01" // ISO 3166-1 alpha-2
 ```
 
 > [!NOTE]
@@ -45,10 +45,10 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 
 **Name:**
 
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+Defaults to device model name if not set. Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-NAME='Frekvens'
+NAME='Frekvens' # optional
 ```
 
 **Power off:**
@@ -125,9 +125,9 @@ TEMPERATURE_UNIT='°C' # °C, °F or °K
 
 **Clock format:**
 
-Whether to use 12-hour or 24-hour format for time display.
+Whether to use 12-hour or 24-hour format.
 
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+Auto-detected if not set. Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 CLOCK_FORMAT='12' # hours
@@ -137,8 +137,8 @@ CLOCK_FORMAT='12' # hours
 
 Time zone in IANA format, eg. `America/New_York`, `Asia/Shanghai` or `Europe/London`.
 
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
+Auto-detected if not set. Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
-TIME_ZONE='Etc/Universal'
+TIME_ZONE='Etc/Universal' # IANA
 ```

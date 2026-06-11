@@ -286,8 +286,8 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 IKEA_FREKVENS='true'
 
 # Names
-NAME='Frekvens'
-HOSTNAME='frekvens'
+NAME='Frekvens'     # optional
+HOSTNAME='frekvens' # optional
 ```
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
@@ -317,6 +317,7 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 
 A collection of external links for deeper exploration — including teardowns, mods, datasheets, and community projects — provided for reference only and with no formal connection to this project.
 
+- [GitHub: ah01/box-of-life](https://github.com/ah01/box-of-life/blob/master/readme.md)
 - [GitHub: attowatt/frekvensHack](https://github.com/attowatt/frekvensHack/blob/main/README.md)
 - [GitHub: CrazyRobMiles/Frekvens-stuff-from-Rob](https://github.com/CrazyRobMiles/Frekvens-stuff-from-Rob/blob/master/README.md)
 - [GitHub: frumperino/FrekvensPanel](https://github.com/frumperino/FrekvensPanel/blob/master/readme.md)

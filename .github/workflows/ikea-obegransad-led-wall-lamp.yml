@@ -219,7 +219,6 @@ jobs:
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
           FONT_MICRO='true'
-          HOSTNAME='obegransad'
           IKEA_OBEGRANSAD='true'
           MODE_CIRCLE='true'
           MODE_LINES='true'
@@ -227,7 +226,6 @@ jobs:
           MODE_RAIN='true'
           MODE_SCAN='true'
           MODE_STARS='true'
-          NAME='Obegränsad'
           EOL
 
           cat <<'EOL' > firmware/include/config/secrets.h
@@ -330,7 +328,6 @@ jobs:
           FONT_MICRO='true'
           FONT_MINI='true'
           FONT_SMALL='true'
-          HOSTNAME='obegransad'
           IKEA_OBEGRANSAD='true'
           MODE_ANIMATION='true'
           MODE_ARROW='true'

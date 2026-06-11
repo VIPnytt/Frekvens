@@ -261,8 +261,8 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 IKEA_OBEGRANSAD='true'
 
 # Names
-NAME='Obegränsad'
-HOSTNAME='obegransad'
+NAME='Obegränsad'     # optional
+HOSTNAME='obegransad' # optional
 ```
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
