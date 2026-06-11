@@ -398,6 +398,9 @@ MODE_SNAKE='true'
 
 Inspired by the original *IKEA Obegränsad* mode.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause spawning of new stars.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini

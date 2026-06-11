@@ -12,15 +12,15 @@ class StarsMode final : public ModeModule
 private:
     struct Star
     {
-        uint8_t brightness = 0;
-        uint8_t delay = 0;
-        uint8_t x = 0;
-        uint8_t y = 0;
-        unsigned long lastMillis = 0;
-        bool direction = true;
+        uint8_t brightness{0U};
+        uint8_t delay{0U};
+        uint8_t x{0U};
+        uint8_t y{0U};
+        unsigned long lastMillis{0UL};
+        bool direction{true};
     };
 
-    std::array<Star, GRID_COLUMNS * GRID_ROWS / (1U << 4U)> stars{};
+    std::array<Star, GRID_COLUMNS * GRID_ROWS / (0b1U << 4U)> stars{};
 
 public:
     static constexpr std::string_view name{"Stars"};
