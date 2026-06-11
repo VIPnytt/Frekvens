@@ -2,10 +2,10 @@
 
 #include "extensions/PhotocellExtension.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 
@@ -46,10 +46,12 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
-        const uint8_t _brightness{static_cast<uint8_t>(
-            static_cast<uint16_t>(powf(static_cast<float>(raw) / static_cast<float>((1U << 12U) - 1U), gamma) *
-                                  static_cast<float>(UINT8_MAX - 1U)) +
-            1U)};
+        const uint8_t _brightness{static_cast<uint8_t>(std::clamp<int16_t>(
+            lroundf(((0b1U << 8U) + 1U) *
+                        powf(static_cast<float>(raw + 1U) / static_cast<float>((0b1U << 12U) + 1U), gamma) -
+                    1U),
+            1,
+            UINT8_MAX))};
         if ((direction && _brightness < brightness) || (!direction && _brightness > brightness))
         {
             direction = !direction;
@@ -126,8 +128,8 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
         const uint8_t _brightness{payload["brightness"].as<uint8_t>()};
         if (_brightness != brightness)
         {
-            setGamma(logf(static_cast<float>(_brightness) / static_cast<float>(1U << 8U)) /
-                     logf(static_cast<float>(raw + 1U) / static_cast<float>((1U << 12U) + 1U)));
+            setGamma(logf(static_cast<float>(_brightness + 1U) / static_cast<float>((0b1U << 8U) + 1U)) /
+                     logf(static_cast<float>(raw + 1U) / static_cast<float>((0b1U << 12U) + 1U)));
         }
     }
 }
