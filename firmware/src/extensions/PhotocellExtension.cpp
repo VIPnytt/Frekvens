@@ -46,6 +46,7 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const uint8_t _brightness{static_cast<uint8_t>(std::clamp<int16_t>(
             lroundf(((0b1U << 8U) + 1U) *
                         powf(static_cast<float>(raw + 1U) / static_cast<float>((0b1U << 12U) + 1U), gamma) -
