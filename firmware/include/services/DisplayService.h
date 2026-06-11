@@ -12,13 +12,15 @@ private:
     explicit DisplayService() : ServiceModule("Display") {};
 
 #ifdef FRAME_RATE
+    static_assert(FRAME_RATE >= 1U);
     static constexpr uint8_t fps{FRAME_RATE};
 #else
     static constexpr uint8_t fps{F_CPU / 13'000U / GRID_COLUMNS / GRID_ROWS};
 #endif // FRAME_RATE
 
 #ifdef PWM_DEPTH
-    static constexpr uint8_t depth{min<uint8_t>(PWM_DEPTH, SOC_LEDC_TIMER_BIT_WIDTH)};
+    static_assert(PWM_DEPTH <= SOC_LEDC_TIMER_BIT_WIDTH);
+    static constexpr uint8_t depth{PWM_DEPTH};
 #else
     // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
     static inline const uint8_t depth{

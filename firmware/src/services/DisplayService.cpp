@@ -23,7 +23,8 @@ void DisplayService::configure()
 #else
     SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
-    SPI.beginTransaction(SPISettings((uint32_t{1U} << 9U) * GRID_COLUMNS * GRID_ROWS * fps, MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(SPISettings(
+        min<uint32_t>((uint32_t{1U} << 9U) * GRID_COLUMNS * GRID_ROWS * fps, SPI_FREQUENCY), MSBFIRST, SPI_MODE0));
 
     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     hw_timer_t *timer{timerBegin(static_cast<uint32_t>(planes.size()) * fps)};
@@ -86,31 +87,31 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
         uint8_t bits{0U};
         if (frame[idx++] != 0U)
         {
-            bits |= 0b10000000U;
+            bits |= 0b1U << 7U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b1000000U;
+            bits |= 0b1U << 6U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b100000U;
+            bits |= 0b1U << 5U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b10000U;
+            bits |= 0b1U << 4U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b1000U;
+            bits |= 0b1U << 3U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b100U;
+            bits |= 0b1U << 2U;
         }
         if (frame[idx++] != 0U)
         {
-            bits |= 0b10U;
+            bits |= 0b1U << 1U;
         }
         if (frame[idx++] != 0U)
         {
@@ -125,7 +126,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
         {
             if (frame[idx++] != 0U)
             {
-                bits |= static_cast<uint8_t>(0b10000000U >> bit);
+                bits |= static_cast<uint8_t>((0b1U << 7U) >> bit);
             }
         }
         planes[0U][GRID_COLUMNS * GRID_ROWS / 8U] = bits;
@@ -164,7 +165,7 @@ void DisplayService::flush() // NOLINT(readability-function-cognitive-complexity
         for (size_t i{offsets[plane]}; i < offsets[plane] + counts[plane]; ++i)
         {
             planes[plane][indices[i] >> 3U] &=
-                static_cast<uint8_t>(~static_cast<uint8_t>(0b10000000U >> (indices[i] & 7U)));
+                static_cast<uint8_t>(~static_cast<uint8_t>((0b1U << 7U) >> (indices[i] & 7U)));
         }
     }
     render = false;
@@ -215,8 +216,8 @@ void DisplayService::setOrientation(Orientation _orientation)
     frame = _frame;
     render = true;
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
-    ratio = (static_cast<uint8_t>(orientation) & 1U) == 0U ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
-                                                           : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
+    ratio = (static_cast<uint8_t>(orientation) & 0b1U) == 0U ? PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL)
+                                                             : PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL);
 #endif // GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
@@ -395,7 +396,7 @@ void DisplayService::drawEllipse(float x, float y, float radius, bool fill, uint
     constexpr float yRatio{static_cast<float>(PITCH_VERTICAL * 2U) /
                            static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
 #else
-    const bool rotated{(static_cast<uint8_t>(orientation) & 1U) != 0U};
+    const bool rotated{(static_cast<uint8_t>(orientation) & 0b1U) != 0U};
     const float xRatio{static_cast<float>(2U * (rotated ? PITCH_VERTICAL : PITCH_HORIZONTAL)) /
                        static_cast<float>(PITCH_HORIZONTAL + PITCH_VERTICAL)};
     const float yRatio{static_cast<float>(2U * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
@@ -445,7 +446,7 @@ void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uin
 
 void DisplayService::transmit()
 {
-    const bool rotated{(static_cast<uint8_t>(orientation) & 1U) != 0U};
+    const bool rotated{(static_cast<uint8_t>(orientation) & 0b1U) != 0U};
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
