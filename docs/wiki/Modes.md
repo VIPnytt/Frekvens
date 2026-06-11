@@ -236,7 +236,10 @@ MODE_GAMEOFLIFE='true'
 
 ## ✨ Glitter
 
-Inspired by *snow* on old analog TVs.
+Inspired by snow on old analog TVs.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause glittering.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
