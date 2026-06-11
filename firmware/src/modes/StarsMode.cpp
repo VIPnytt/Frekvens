@@ -18,8 +18,8 @@ void StarsMode::handle()
         {
             if (star.brightness == UINT8_MAX)
             {
-                --star.brightness;
                 star.direction = false;
+                --star.brightness;
             }
             else if (star.brightness != 0U)
             {
