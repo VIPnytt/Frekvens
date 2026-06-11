@@ -3,7 +3,7 @@
 #include "modes/StarsMode.h"
 
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 static_assert(GRID_COLUMNS * GRID_ROWS >= (0b1U << 4U),
               __STRING(MODE_STARS) " is not compatible with this device's display size.");
