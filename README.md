@@ -214,10 +214,17 @@ If the build fails due to size limits, try disabling features you don’t plan t
 
 ### Where is the web UI?
 
-First, ensure that the Web app has been uploaded to the device using the *Upload Filesystem Image* option in PlatformIO. Then enter `frekvens.local` or your custom `HOSTNAME.local` in the browser. If this isn’t working, use the IP address instead.
+First, ensure that the Web app has been uploaded to the device using the *Upload Filesystem Image* option in PlatformIO. Then open `frekvens.local`, `obegransad.local`, or your custom `HOSTNAME.local` in a browser. If the page does not open, make sure the device has connected to Wi-Fi. If you know its IP address, try that instead.
 
-### Unexpected Reboots
+### Power supply
 
-If the device is rebooting unexpectedly, this is often a symptom of a software or hardware issue. The ESP32’s USB port is suitable for flashing and testing, but it is not designed to supply the high current levels that a display might draw during continuous operation.
+Use the correct power source during normal operation.
 
-If terminal logs include error messages, please [report an issue](https://github.com/VIPnytt/Frekvens/issues).
+- **IKEA Frekvens**: Use the integrated **4 V / 1.5 A** power supply during normal operation. The ESP32’s USB port should only be used for short setup tasks, such as uploading firmware or checking terminal logs. Otherwise, the display may not function properly.
+- **IKEA Obegränsad**: Use a USB power supply rated for at least **5 V / 2 A**, together with the original USB-A cable. The ESP32’s USB port can be used for uploading firmware and short-term testing, but it is usually not rated to handle the full current the display may draw at maximum brightness.
+
+### Unexpected reboots
+
+If the device is rebooting unexpectedly, this is often a symptom of a software or hardware issue.
+
+First, check that the correct power source is being used. If the device still reboots unexpectedly, check the terminal logs. If the logs include error messages, please [report an issue](https://github.com/VIPnytt/Frekvens/issues).
