@@ -23,8 +23,8 @@ void DisplayService::configure()
 #else
     SPI.begin(PIN_SCLK, GPIO_NUM_NC, PIN_MOSI, PIN_CS);
 #endif // PIN_MISO
-    SPI.beginTransaction(SPISettings(
-        min<uint32_t>((uint32_t{1U} << 9U) * GRID_COLUMNS * GRID_ROWS * fps, SPI_FREQUENCY), MSBFIRST, SPI_MODE0));
+    SPI.beginTransaction(
+        SPISettings(min<uint32_t>((0b1U << 9U) * GRID_COLUMNS * GRID_ROWS * fps, SPI_FREQUENCY), MSBFIRST, SPI_MODE0));
 
     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     hw_timer_t *timer{timerBegin(static_cast<uint32_t>(planes.size()) * fps)};
