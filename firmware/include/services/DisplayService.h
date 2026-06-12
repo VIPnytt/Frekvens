@@ -26,7 +26,7 @@ private:
     static inline const uint8_t depth{
         min(max<uint8_t>(
                 8U, static_cast<uint8_t>(8.0F - (std::numbers::pi_v<float> * log2f(static_cast<float>(fps) / 120.0F)))),
-            min<uint8_t>(SOC_LEDC_TIMER_BIT_WIDTH, std::ilogb(1.0F / PWM_WIDTH / static_cast<float>(fps))))};
+            min<uint8_t>(SOC_LEDC_TIMER_BIT_WIDTH, std::ilogbf(1.0F / PWM_WIDTH / static_cast<float>(fps))))};
 #endif // PWM_DEPTH
 
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL
