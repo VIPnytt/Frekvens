@@ -5,6 +5,7 @@
 #include "fonts/MiniFont.h"       // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 10U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
@@ -33,6 +34,13 @@ void BreakoutClockMode::begin()
 
 void BreakoutClockMode::handle()
 {
+    clock.handle();
+#if EXTENSION_MICROPHONE
+    if (y == GRID_ROWS - 2U && deg < 180U && !Extensions.Microphone().isTriggered())
+    {
+        return;
+    }
+#endif // EXTENSION_MICROPHONE
     const uint8_t nextX{
         static_cast<uint8_t>(lroundf(xDec + (cosf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed)))};
     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
@@ -52,7 +60,6 @@ void BreakoutClockMode::handle()
     {
         // Bottom
         deg = random(30, 151); // ±60°
-        clock.handle();
     }
     else if ((nextX != x || nextY != y) && Display.getPixel(nextX, nextY) != 0U)
     {

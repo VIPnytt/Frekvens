@@ -11,16 +11,16 @@
 class TickerMode final : public ModeModule
 {
 private:
-    static inline std::string message = NAME;
+    static inline std::string message{NAME};
 
-    bool pending = false;
+    bool pending{false};
 
-    int8_t offsetY = GRID_ROWS / 2;
+    int8_t offsetY{GRID_ROWS / 2};
 
-    int16_t offsetX = GRID_COLUMNS;
-    int16_t width = 0;
+    int16_t offsetX{GRID_COLUMNS};
+    int16_t width{0};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     std::unique_ptr<const FontModule> font{};
 

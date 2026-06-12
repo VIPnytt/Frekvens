@@ -36,6 +36,13 @@
 // #define OPENWEATHER_KEY "secret"
 
 /**
+ * Tomorrow.io
+ *
+ * https://docs.tomorrow.io/reference/realtime-weather
+ */
+// #define TOMORROWIO_KEY "secret"
+
+/**
  * World Weather Online
  *
  * https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx#http_param

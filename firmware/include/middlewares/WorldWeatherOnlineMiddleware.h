@@ -13,22 +13,23 @@ class WorldWeatherOnlineMiddleware final : public WeatherHandler
 {
 private:
     // https://www.worldweatheronline.com/weather-api/api/docs/weather-icons.aspx
-    static constexpr std::array<uint16_t, 1> codesClear{113};
-    static constexpr std::array<uint16_t, 2> codesCloudy{119, 122};
-    static constexpr std::array<uint16_t, 1> codesCloudyPartly{116};
-    static constexpr std::array<uint16_t, 3> codesFog{143, 248, 260};
-    static constexpr std::array<uint16_t, 9> codesRain{176, 263, 266, 293, 296, 299, 302, 305, 308};
-    static constexpr std::array<uint16_t, 11> codesSnow{179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320};
-    static constexpr std::array<uint16_t, 1> codesThunder{200};
+    static constexpr std::array<uint16_t, 1U> codesClear{113U};
+    static constexpr std::array<uint16_t, 2U> codesCloudy{119U, 122U};
+    static constexpr std::array<uint16_t, 1U> codesCloudyPartly{116U};
+    static constexpr std::array<uint16_t, 3U> codesFog{143U, 248U, 260U};
+    static constexpr std::array<uint16_t, 9U> codesRain{176U, 263U, 266U, 293U, 296U, 299U, 302U, 305U, 308U};
+    static constexpr std::array<uint16_t, 11U> codesSnow{
+        179U, 182U, 185U, 227U, 230U, 281U, 284U, 311U, 314U, 317U, 320U};
+    static constexpr std::array<uint16_t, 1U> codesThunder{200U};
 
-    static constexpr std::array<Codeset16, 7> codesets{{
-        {Conditions::CLEAR, codesClear},
-        {Conditions::CLOUDY, codesCloudy},
-        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {Conditions::FOG, codesFog},
-        {Conditions::RAIN, codesRain},
-        {Conditions::SNOW, codesSnow},
-        {Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<Condition, std::span<const uint16_t>>, 7U> codesets{{
+        {Condition::CLEAR, codesClear},
+        {Condition::CLOUDY, codesCloudy},
+        {Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {Condition::FOG, codesFog},
+        {Condition::RAIN, codesRain},
+        {Condition::SNOW, codesSnow},
+        {Condition::THUNDER, codesThunder},
     }};
 
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
@@ -50,7 +51,7 @@ public:
         path = "/premium/v1/weather.ashx";
     };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

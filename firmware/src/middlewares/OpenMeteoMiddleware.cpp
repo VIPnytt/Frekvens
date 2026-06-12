@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &condition,
+void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                  std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
     if (parts.empty())
@@ -15,13 +15,13 @@ void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &cond
     host = parts.back().first;
     query = parts.back().second;
     std::vector<char> body;
-    const int status = fetch(body, lastMillis);
+    const int status{fetch(body, lastMillis)};
     if (status != 200)
     {
         if (status >= 400 && status < 500)
         {
             parts.pop_back();
-            lastMillis = millis() - interval + (1U << 12U);
+            lastMillis = millis() - interval + (0b1U << 12U);
         }
         return;
     }
@@ -32,13 +32,17 @@ void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Conditions> &cond
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["current"]["temperature_2m"].is<float>() && doc["current"]["weather_code"].is<uint8_t>())
     {
-        condition = getCondition(doc["current"]["weather_code"].as<uint8_t>(), codesets);
+        condition = getCondition<uint8_t>(doc["current"]["weather_code"].as<uint8_t>(), codesets);
+#if TEMPERATURE_KELVIN
+        temperature = static_cast<int16_t>(lroundf(273.15F + doc["current"]["temperature_2m"].as<float>()));
+#else
         temperature = static_cast<int16_t>(lroundf(doc["current"]["temperature_2m"].as<float>()));
+#endif // TEMPERATURE_KELVIN
         return;
     }
     parts.pop_back();
     ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    lastMillis = millis() - interval + (1U << 13U);
+    lastMillis = millis() - interval + (0b1U << 13U);
 }
 
 #endif // WEATHER_OPENMETEO

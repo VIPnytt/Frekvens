@@ -42,14 +42,14 @@ private:
         600U, 601U, 602U, 611U, 612U, 613U, 615U, 616U, 620U, 621U, 622U};
     static constexpr std::array<uint16_t, 10U> codesThunder{200U, 201U, 202U, 210U, 211U, 212U, 221U, 230U, 231U, 232U};
 
-    static constexpr std::array<WeatherHandler::Codeset16, 7U> codesets{{
-        {WeatherHandler::Conditions::CLEAR, codesClear},
-        {WeatherHandler::Conditions::CLOUDY, codesCloudy},
-        {WeatherHandler::Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {WeatherHandler::Conditions::FOG, codesFog},
-        {WeatherHandler::Conditions::RAIN, codesRain},
-        {WeatherHandler::Conditions::SNOW, codesSnow},
-        {WeatherHandler::Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<WeatherHandler::Condition, std::span<const uint16_t>>, 7U> codesets{{
+        {WeatherHandler::Condition::CLEAR, codesClear},
+        {WeatherHandler::Condition::CLOUDY, codesCloudy},
+        {WeatherHandler::Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {WeatherHandler::Condition::FOG, codesFog},
+        {WeatherHandler::Condition::RAIN, codesRain},
+        {WeatherHandler::Condition::SNOW, codesSnow},
+        {WeatherHandler::Condition::THUNDER, codesThunder},
     }};
 
     // https://openweathermap.org/api/one-call-4?collection=one_call_api#current
@@ -140,7 +140,7 @@ public:
 
     explicit OpenWeatherMiddleware() : WeatherHandler(name) { host = "api.openweathermap.org"; };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

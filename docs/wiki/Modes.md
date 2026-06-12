@@ -97,6 +97,9 @@ See also [Bright](#-bright).
 
 Inspired by the classic breakout game.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the game.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
@@ -222,6 +225,9 @@ MODE_FLIES='true'
 
 Inspired by Conway’s *Game of Life*. Comes with an optional clock.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the game.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
@@ -230,7 +236,10 @@ MODE_GAMEOFLIFE='true'
 
 ## ✨ Glitter
 
-Inspired by *snow* on old analog TVs.
+Inspired by snow on old analog TVs.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause glittering.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -264,6 +273,9 @@ MODE_HOMETHERMOMETER='true'
 ## 🍂 Leaf fall
 
 Autumn-inspired.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause spawning of new leaves.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -302,6 +314,9 @@ MODE_METABALLS='true'
 ## 🔇 Noise
 
 Inspired by the original *IKEA Obegränsad* mode.
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the noise.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -386,6 +401,9 @@ MODE_SNAKE='true'
 
 Inspired by the original *IKEA Obegränsad* mode.
 
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause spawning of new stars.
+
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
@@ -422,6 +440,9 @@ MODE_STREAM='true'
 Rolling text.
 
 Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to set a message, or automate it via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
+
+> [!TIP]
+> The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the rolling text.
 
 API payload example:
 
@@ -461,6 +482,7 @@ Providers available:
 - [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant)
 - [Open-Meteo](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-meteo)
 - [Open Weather](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-weather)
+- [Tomorrow.io](https://github.com/VIPnytt/Frekvens/wiki/Weather#-tomorrowio)
 - [World Weather Online](https://github.com/VIPnytt/Frekvens/wiki/Weather#-world-weather-online)
 - [Wttr.in](https://github.com/VIPnytt/Frekvens/wiki/Weather#-wttrin)
 - [Yr](https://github.com/VIPnytt/Frekvens/wiki/Weather#-yr)
@@ -468,20 +490,18 @@ Providers available:
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
-#define LATITUDE "0.000"  // coordinate
-#define LONGITUDE "0.000" // coordinate
+#define LATITUDE "0.000"  // °
+#define LONGITUDE "0.000" // °
 #define LOCATION "city"
 ```
 
+To find your coordinates, use any preferred map or coordinate service, such as [LatLong.net](https://www.latlong.net/my-location-latitude-longitude), [GPS-Coordinates.net](https://www.gps-coordinates.net/my-location) or [GPS-Coordinates.org](https://gps-coordinates.org/my-location.php).
+
 > [!NOTE]
-> Provide 3-4 decimals for the most accurate weather reports. A small subset of providers also supports a location name, usually in the form of a city or village.
+> Coordinates with 3-4 decimal places are usually more than accurate enough for weather data. Some providers also support a location name, usually in the form of a city or village.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
 ```ini
 MODE_WEATHER='true'
-```
-
-```ini
-TEMPERATURE_UNIT='°C' # °C, °F or °K
 ```

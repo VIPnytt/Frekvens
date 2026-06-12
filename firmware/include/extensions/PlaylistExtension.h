@@ -12,13 +12,6 @@ class PlaylistExtension final : public ExtensionModule
 public:
     explicit PlaylistExtension() : ExtensionModule(name) {};
 
-    struct Mode
-    {
-        std::string mode = "";
-        uint16_t duration = 60;
-    };
-
-    void configure() override;
     void begin() override;
     void handle() override;
     [[nodiscard]] bool getActive() const;
@@ -34,15 +27,17 @@ public:
 private:
     static constexpr std::string_view name{"Playlist"};
 
-    bool active = false;
+    bool active{false};
 
-    uint8_t step = 0;
+    uint8_t step{0U};
 
-    unsigned long lastMillis = 0;
+    uint32_t duration{0U};
 
-    std::vector<Mode> playlist{};
+    unsigned long lastMillis{0UL};
 
-    void setPlaylist(std::span<Mode> modes);
+    std::string mode{""};
+
+    void setPlaylist(std::span<const std::pair<std::string, uint16_t>> playlist);
     void transmit();
 };
 

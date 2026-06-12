@@ -12,14 +12,14 @@ class LeafFallMode final : public ModeModule
 private:
     struct Leaf
     {
-        uint8_t x = 0;
-        uint8_t y = 0;
-        uint8_t brightness = INT8_MAX;
-        uint16_t delay = UINT8_MAX;
-        unsigned long lastMillis = 0;
+        uint8_t x{0U};
+        uint8_t y{0U};
+        uint8_t brightness{INT8_MAX};
+        uint16_t delay{UINT8_MAX};
+        unsigned long lastMillis{0UL};
     };
 
-    std::array<Leaf, GRID_COLUMNS * GRID_ROWS / 20> leaves{};
+    std::array<Leaf, GRID_COLUMNS * GRID_ROWS / 20U> leaves{};
 
 public:
     static constexpr std::string_view name{"Leaf fall"};

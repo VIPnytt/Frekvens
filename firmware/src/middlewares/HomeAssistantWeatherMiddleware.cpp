@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &condition,
+void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                             std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
     if (paths.empty())
@@ -14,13 +14,13 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
     }
     path = paths.back();
     std::vector<char> body;
-    const int status = fetch(body, lastMillis);
+    const int status{fetch(body, lastMillis)};
     if (status != 200)
     {
         if (status >= 400 && status < 500)
         {
             paths.pop_back();
-            lastMillis = millis() - interval + (1U << 12U);
+            lastMillis = millis() - interval + (0b1U << 12U);
         }
         return;
     }
@@ -37,7 +37,7 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
     }
     paths.pop_back();
     ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    lastMillis = millis() - interval + (1U << 13U);
+    lastMillis = millis() - interval + (0b1U << 13U);
 }
 
 #endif // WEATHER_HOMEASSISTANT

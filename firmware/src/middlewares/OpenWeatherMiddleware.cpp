@@ -4,7 +4,7 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &condition,
+void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                    std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
     if (parts.empty())
@@ -38,21 +38,21 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Conditions> &co
     if (deserialization && doc["main"]["temp"].is<float>() && doc["weather"][0U]["id"].is<uint16_t>())
     {
         // API 2.5
-        condition = getCondition(doc["weather"][0U]["id"].as<uint16_t>(), codesets);
+        condition = getCondition<uint16_t>(doc["weather"][0U]["id"].as<uint16_t>(), codesets);
         temperature = static_cast<int16_t>(lroundf(doc["main"]["temp"].as<float>()));
         return;
     }
     if (deserialization && doc["data"][0U]["temp"].is<float>() && doc["data"][0U]["weather"][0U]["id"].is<uint16_t>())
     {
         // API 4.0
-        condition = getCondition(doc["data"][0U]["weather"][0U]["id"].as<uint16_t>(), codesets);
+        condition = getCondition<uint16_t>(doc["data"][0U]["weather"][0U]["id"].as<uint16_t>(), codesets);
         temperature = static_cast<int16_t>(lroundf(doc["data"][0U]["temp"].as<float>()));
         return;
     }
     if (deserialization && doc["current"]["temp"].is<float>() && doc["current"]["weather"][0U]["id"].is<uint16_t>())
     {
         // API 3.0
-        condition = getCondition(doc["current"]["weather"][0U]["id"].as<uint16_t>(), codesets);
+        condition = getCondition<uint16_t>(doc["current"]["weather"][0U]["id"].as<uint16_t>(), codesets);
         temperature = static_cast<int16_t>(lroundf(doc["current"]["temp"].as<float>()));
         return;
     }

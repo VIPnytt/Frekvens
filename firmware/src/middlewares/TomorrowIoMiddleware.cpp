@@ -1,11 +1,11 @@
-#if WEATHER_GOOGLE
+#if WEATHER_TOMORROWIO
 
-#include "middlewares/GoogleWeatherMiddleware.h"
+#include "middlewares/TomorrowIoMiddleware.h"
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
-void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
-                                     std::optional<int16_t> &temperature, unsigned long &lastMillis)
+void TomorrowIoMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
+                                  std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
     if (queries.empty())
     {
@@ -25,17 +25,17 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &c
         return;
     }
     JsonDocument filter; // NOLINT(misc-const-correctness)
-    filter["temperature"]["degrees"].set(true);
-    filter["weatherCondition"]["type"].set(true);
+    filter["data"]["values"]["temperature"].set(true);
+    filter["data"]["values"]["weatherCode"].set(true);
     JsonDocument doc; // NOLINT(misc-const-correctness)
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
-        doc["temperature"]["degrees"].is<float>() && doc["weatherCondition"]["type"].is<std::string_view>())
+        doc["data"]["values"]["temperature"].is<float>() && doc["data"]["values"]["weatherCode"].is<uint32_t>())
     {
-        condition = getCondition(doc["weatherCondition"]["type"].as<std::string_view>(), codesets);
+        condition = getCondition<uint32_t>(doc["data"]["values"]["weatherCode"].as<uint32_t>(), codesets);
 #if TEMPERATURE_KELVIN
-        temperature = static_cast<int16_t>(lroundf(273.15F + doc["temperature"]["degrees"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(273.15F + doc["data"]["values"]["temperature"].as<float>()));
 #else
-        temperature = static_cast<int16_t>(lroundf(doc["temperature"]["degrees"].as<float>()));
+        temperature = static_cast<int16_t>(lroundf(doc["data"]["values"]["temperature"].as<float>()));
 #endif // TEMPERATURE_KELVIN
         return;
     }
@@ -44,4 +44,4 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &c
     lastMillis = millis() - interval + (0b1U << 13U);
 }
 
-#endif // WEATHER_GOOGLE
+#endif // WEATHER_TOMORROWIO
