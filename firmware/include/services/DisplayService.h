@@ -15,7 +15,7 @@ private:
     static_assert(FRAME_RATE >= 1U);
     static constexpr uint8_t fps{FRAME_RATE};
 #else
-    static constexpr uint8_t fps{F_CPU / 13'000U / GRID_COLUMNS / GRID_ROWS};
+    static constexpr uint8_t fps{F_CPU / 13'000U / (GRID_COLUMNS * GRID_ROWS)};
 #endif // FRAME_RATE
 
 #ifdef PWM_DEPTH
