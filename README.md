@@ -210,7 +210,7 @@ Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with
 
 ### Build fails
 
-If the build fails due to size limits, try disabling features you don’t plan to use in the [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). The [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) extension is by far the largest one, and therefore a good first candidate to remove in order to free up space for other features.
+If the build fails due to size limits, try disabling features you don’t plan to use in the [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env). OTA support requires space for two firmware images, so disabling OTA is often the most effective option on 4 MB boards.
 
 ### Where is the web UI?
 

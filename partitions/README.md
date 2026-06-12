@@ -22,7 +22,7 @@ Partition tables for ESP32 boards with different flash sizes. Choose a layout ma
 :x: — not available
 
 > [!TIP]
-> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit. OTA support requires space for two firmware images, so disabling OTA is often the most effective option on 4 MB boards.
+> Disable unneeded features in the [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env) config file if the build is too large to fit. [OTA](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-ota) support requires space for two firmware images, so disabling OTA is often the most effective option on 4 MB boards.
 
 ### Legacy layouts
 
