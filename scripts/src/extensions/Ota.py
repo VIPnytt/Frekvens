@@ -1,6 +1,6 @@
 import hashlib
+import logging
 import typing
-import warnings
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
@@ -23,13 +23,16 @@ class Ota:
     def validate(self) -> None:
         if "no_ota" in str(self.project.partition.table):
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] != "false":
-                warnings.warn(
-                    f"{self.ENV_OPTION}: Partition table does not support OTA updates.",
-                    UserWarning,
-                )
+                logging.error("%s: Partition table does not support %s updates.", self.ENV_OPTION, self.NAME)
             else:
                 self.project.dotenv[self.ENV_OPTION] = "false"
                 self.project.ota = None
+        if (
+            self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] != "true"
+        ) and self.project.env.GetProjectOption("upload_protocol", None) == "espota":
+            logging.warning(
+                "%s: %s is disabled. Future uploads will require wired flashing.", self.ENV_OPTION, self.NAME
+            )
 
     def finalize(self) -> None:
         if (
