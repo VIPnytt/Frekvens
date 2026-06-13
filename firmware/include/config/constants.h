@@ -14,7 +14,7 @@
 #elif IKEA_OBEGRANSAD
 #include "config/IkeaObegransad.h"
 #else
-#error "Unsupported device."
+#error "Unknown device."
 #endif
 
 /**

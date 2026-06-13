@@ -16,7 +16,7 @@ import {
 } from "@mdi/js";
 import { type Component, createEffect, createSignal, For, Show } from "solid-js";
 
-import { Canvas, Strength } from "../components/Canvas";
+import { Canvas, StrengthComponent as CanvasStrengthComponent } from "../components/Canvas";
 import { csvExport, fileImport } from "../components/File";
 import { Icon } from "../components/Icon";
 import { Toast } from "../components/Toast";
@@ -312,7 +312,7 @@ export const Sidebar: Component = () => {
                             max={(2 ** 16 - 1) / 1_000}
                             name="Interval"
                             min="0.05"
-                            onChange={(e) => handleInterval(Math.round(parseFloat(e.currentTarget.value) * 1_000))}
+                            onChange={(e) => handleInterval(Math.round(e.currentTarget.valueAsNumber * 1_000))}
                             step="0.05"
                             type="number"
                             value={getFrameInterval() / 1_000}
@@ -323,7 +323,7 @@ export const Sidebar: Component = () => {
                     </div>
                 </Tooltip>
             </div>
-            <Strength />
+            <CanvasStrengthComponent />
         </SidebarSection>
     );
 };
@@ -373,7 +373,7 @@ export const Main: Component = () => {
         >
             <div class="bg-contrast-light dark:bg-contrast-dark h-full relative rounded-none">
                 <div
-                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw---spacing(80))*0.05)] ${getPreview() ? "justify-center-safe" : "justify-start"}`}
+                    class={`snap-x snap-mandatory flex flex-nowrap overflow-x-auto h-full items-center px-6 gap-[calc((100vw-(--spacing(80)))*0.05)] ${getPreview() ? "justify-center-safe" : "justify-start"}`}
                     ref={(div) => {
                         divRef = div;
                     }}
@@ -386,7 +386,7 @@ export const Main: Component = () => {
                         <For each={getFramesDraft()}>
                             {([getFrame, setFrame], index) => (
                                 <div
-                                    class={`snap-center max-h-[calc(100vh---spacing(32))] shrink-0 ${WebAppSidebar() ? "max-w-[calc((100vw---spacing(80))*0.8)]" : "max-w-[80vw]"}`}
+                                    class={`snap-center max-h-[calc(100vh-(--spacing(32)))] shrink-0 ${WebAppSidebar() ? "max-w-[calc((100vw-(--spacing(80)))*0.8)]" : "max-w-[80vw]"}`}
                                 >
                                     <header class="flex justify-between items-center mb-4">
                                         <div class="flex gap-3">

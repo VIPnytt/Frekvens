@@ -83,7 +83,7 @@ export const Sidebar: Component = () => {
                             class="w-full"
                             max={2 ** 8 - 1}
                             min="1"
-                            onInput={(e) => handleBrightness(parseFloat(e.currentTarget.value), false)}
+                            onInput={(e) => handleBrightness(e.currentTarget.valueAsNumber, false)}
                             onKeyUp={() => handleBrightness(getBrightness())}
                             onPointerUp={() => handleBrightness(getBrightness())}
                             type="range"

@@ -2,10 +2,10 @@
 
 #include "extensions/MicrophoneExtension.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 
@@ -15,7 +15,8 @@ void MicrophoneExtension::configure()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        nvs_get_u16(handle, "max", &levelMax);
+        nvs_get_u16(handle, "ceiling", &soundCeiling);
+        nvs_get_u8(handle, "floor", &soundFloor);
         nvs_close(handle);
     }
 }
@@ -25,7 +26,7 @@ void MicrophoneExtension::begin()
     nvs_handle_t handle{};
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        uint8_t _active{0};
+        uint8_t _active{0U};
         nvs_get_u8(handle, "active", &_active);
         nvs_get_u16(handle, "threshold", &threshold);
         nvs_close(handle);
@@ -42,41 +43,58 @@ void MicrophoneExtension::handle()
     }
     else if (active && Display.getPower())
     {
-        const uint16_t lastMic = mic;
+        const uint16_t lastMic{mic};
         mic = analogRead(PIN_MIC);
-        const uint16_t level = abs(mic - lastMic);
-        if (level >= threshold)
+        accumulated += abs(mic - lastMic);
+        if (++index == UINT16_MAX / ((0b1U << 12U) - 1U))
         {
-            lastMillis = millis();
-            if (!detected)
+            const uint16_t activity{static_cast<uint16_t>(accumulated / (UINT16_MAX / ((0b1U << 12U) - 1U)))};
+            if (activity > threshold)
             {
-                detected = true;
-                if (lastMillis - _lastMillis > UINT16_MAX)
+                if (!triggered)
                 {
-                    JsonDocument doc; // NOLINT(misc-const-correctness)
-                    doc["event"].set("sound");
-                    Device.transmit(doc.as<JsonObjectConst>(), name, false);
-                    _lastMillis = lastMillis;
+                    triggered = true;
+                    if (millis() - lastMillis > UINT16_MAX)
+                    {
+                        JsonDocument doc; // NOLINT(misc-const-correctness)
+                        doc["event"].set("sound");
+                        Device.transmit(doc.as<JsonObjectConst>(), name, false);
+                        lastMillis = millis();
+                    }
+                    ESP_LOGV("Sound", "level %d", activity); // NOLINT(cppcoreguidelines-avoid-do-while)
                 }
-                ESP_LOGV("Sound", "level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
+                else if (activity > soundCeiling)
+                {
+                    soundCeiling = activity;
+                    nvs_handle_t handle{};
+                    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+                    {
+                        nvs_set_u16(handle, "ceiling", soundCeiling);
+                        nvs_commit(handle);
+                        nvs_close(handle);
+                    }
+                    pending = true;
+                }
             }
-            else if (level > levelMax)
+            else if (triggered)
             {
-                levelMax = level;
+                triggered = false;
+                ESP_LOGV("Silence", "level %d", activity); // NOLINT(cppcoreguidelines-avoid-do-while)
+            }
+            else if (activity < soundFloor)
+            {
+                soundFloor = activity;
                 nvs_handle_t handle{};
                 if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
                 {
-                    nvs_set_u16(handle, "max", levelMax);
+                    nvs_set_u8(handle, "floor", soundFloor);
                     nvs_commit(handle);
                     nvs_close(handle);
                 }
                 pending = true;
             }
-        }
-        else if (detected && millis() - lastMillis > INT8_MAX)
-        {
-            detected = false;
-            ESP_LOGV("Silence", "level %d", level); // NOLINT(cppcoreguidelines-avoid-do-while)
+            accumulated = 0U;
+            index = 0U;
         }
     }
 }
@@ -85,20 +103,26 @@ bool MicrophoneExtension::getActive() const { return active; }
 
 void MicrophoneExtension::setActive(bool _active)
 {
-    if (_active)
+    if (active != _active)
     {
-        mic = analogRead(PIN_MIC);
+        if (_active)
+        {
+            accumulated = 0U;
+            index = 0U;
+            mic = analogRead(PIN_MIC);
+        }
+        active = _active;
+        nvs_handle_t handle{};
+        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_u8(handle, "active", static_cast<uint8_t>(active)); // NOLINT(readability-implicit-bool-conversion)
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
+        triggered = !active;
+        pending = true;
+        ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
     }
-    active = _active;
-    nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
-    {
-        nvs_set_u8(handle, "active", static_cast<uint8_t>(active)); // NOLINT(readability-implicit-bool-conversion)
-        nvs_commit(handle);
-        nvs_close(handle);
-    }
-    pending = true;
-    ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
 }
 
 void MicrophoneExtension::setThreshold(uint16_t _threshold)
@@ -114,13 +138,14 @@ void MicrophoneExtension::setThreshold(uint16_t _threshold)
     pending = true;
 }
 
-bool MicrophoneExtension::isTriggered() const { return detected || !active; }
+bool MicrophoneExtension::isTriggered() const { return triggered; }
 
 void MicrophoneExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["active"].set(active);
-    doc["max"].set(levelMax);
+    doc["ceiling"].set(soundCeiling);
+    doc["floor"].set(soundFloor);
     doc["threshold"].set(threshold);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
@@ -180,8 +205,8 @@ void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::enabled_by_default].set(false);
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:microphone");
-        component[HomeAssistantAbbreviations::max].set(levelMax);
-        component[HomeAssistantAbbreviations::min].set(1);
+        component[HomeAssistantAbbreviations::max].set(soundCeiling);
+        component[HomeAssistantAbbreviations::min].set(soundFloor);
         component[HomeAssistantAbbreviations::mode].set("slider");
         component[HomeAssistantAbbreviations::name].set("Threshold");
         component[HomeAssistantAbbreviations::platform].set("number");

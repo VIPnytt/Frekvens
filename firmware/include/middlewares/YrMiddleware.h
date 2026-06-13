@@ -13,7 +13,7 @@ class YrMiddleware final : public WeatherHandler
 {
 private:
     // https://github.com/metno/weathericons/tree/main/weather
-    static constexpr std::array<std::string_view, 6> codesClear{
+    static constexpr std::array<std::string_view, 6U> codesClear{
         "clearsky_day",
         "clearsky_night",
         "clearsky_polartwilight",
@@ -21,18 +21,18 @@ private:
         "fair_night",
         "fair_polartwilight",
     };
-    static constexpr std::array<std::string_view, 1> codesCloudy{
+    static constexpr std::array<std::string_view, 1U> codesCloudy{
         "cloudy",
     };
-    static constexpr std::array<std::string_view, 3> codesCloudyPartly{
+    static constexpr std::array<std::string_view, 3U> codesCloudyPartly{
         "partlycloudy_day",
         "partlycloudy_night",
         "partlycloudy_polartwilight",
     };
-    static constexpr std::array<std::string_view, 1> codesFog{
+    static constexpr std::array<std::string_view, 1U> codesFog{
         "fog",
     };
-    static constexpr std::array<std::string_view, 12> codesRain{
+    static constexpr std::array<std::string_view, 12U> codesRain{
         "heavyrain",
         "heavyrainshowers_day",
         "heavyrainshowers_night",
@@ -46,7 +46,7 @@ private:
         "rainshowers_night",
         "rainshowers_polartwilight",
     };
-    static constexpr std::array<std::string_view, 24> codesSnow{
+    static constexpr std::array<std::string_view, 24U> codesSnow{
         "heavysleet",
         "heavysleetshowers_day",
         "heavysleetshowers_night",
@@ -72,7 +72,7 @@ private:
         "snowshowers_night",
         "snowshowers_polartwilight",
     };
-    static constexpr std::array<std::string_view, 42> codesThunder{
+    static constexpr std::array<std::string_view, 42U> codesThunder{
         "heavyrainandthunder",
         "heavyrainshowersandthunder_day",
         "heavyrainshowersandthunder_night",
@@ -117,14 +117,14 @@ private:
         "snowshowersandthunder_polartwilight",
     };
 
-    static constexpr std::array<Codeset, 7> codesets{{
-        {Conditions::CLEAR, codesClear},
-        {Conditions::CLOUDY, codesCloudy},
-        {Conditions::CLOUDY_PARTLY, codesCloudyPartly},
-        {Conditions::FOG, codesFog},
-        {Conditions::RAIN, codesRain},
-        {Conditions::SNOW, codesSnow},
-        {Conditions::THUNDER, codesThunder},
+    static constexpr std::array<std::pair<WeatherHandler::Condition, std::span<const std::string_view>>, 7U> codesets{{
+        {Condition::CLEAR, codesClear},
+        {Condition::CLOUDY, codesCloudy},
+        {Condition::CLOUDY_PARTLY, codesCloudyPartly},
+        {Condition::FOG, codesFog},
+        {Condition::RAIN, codesRain},
+        {Condition::SNOW, codesSnow},
+        {Condition::THUNDER, codesThunder},
     }};
 
     // https://api.met.no/weatherapi/locationforecast/2.0/documentation
@@ -137,13 +137,13 @@ private:
 public:
     static constexpr std::string_view name{"Yr"};
 
-    explicit YrMiddleware() : WeatherHandler(name, 1U << 19U)
+    explicit YrMiddleware() : WeatherHandler(name, 0b1U << 19U)
     {
         host = "api.met.no";
         query = "lat=" LATITUDE "&lon=" LONGITUDE;
     };
 
-    void update(std::optional<WeatherHandler::Conditions> &condition, std::optional<int16_t> &temperature,
+    void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;
 };
 

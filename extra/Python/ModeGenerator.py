@@ -48,25 +48,25 @@ class ModeGenerator:
             f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
-            "    unsigned long lastMillis = 0;",
-            "",
-            "    uint8_t index = 0;",
-            "",
-            f"    static constexpr std::array<std::array<uint16_t, {self.rows}>, {count // self.rows}> frames{{{{",
+            f"    static constexpr std::array<std::array<uint16_t, {self.rows}U>, {count // self.rows}U> frames{{{{",
         ]
         with self.path.open(newline="") as animation:
             for i, row in enumerate(csv.reader(animation)):
                 if i % self.rows == 0:
                     frames.append("        {")
-                frames.append(f"            0b{self._bits(row)},")
+                frames.append(f"            0b{self._bits(row)}U,")
                 if i % self.rows == self.rows - 1:
                     frames.append("        },")
         frames.extend(
             [
                 "    }};",
                 "",
+                "    size_t index{0U};",
+                "",
+                "    unsigned long lastMillis{0UL};",
+                "",
                 "public:",
-                f'    static constexpr std::string_view name = "{self.name}";',
+                f'    static constexpr std::string_view name{{"{self.name}"}};',
                 "",
                 f"    explicit {self.id}Mode() : ModeModule(name) {{}};",
                 "",
@@ -96,16 +96,16 @@ class ModeGenerator:
                         "",
                         f"void {self.id}Mode::handle()",
                         "{",
-                        "    if (millis() - lastMillis >= 500)",
+                        "    if (millis() - lastMillis >= 500U)",
                         "    {",
                         "        lastMillis = millis();",
                         "        Display.clearFrame();",
                         "        const BitmapHandler bitmap(frames[index]);",
-                        "        bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0);",
+                        "        bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0U);",
                         "        ++index;",
                         "        if (index >= frames.size())",
                         "        {",
-                        "            index = 0;",
+                        "            index = 0U;",
                         "        }",
                         "    }",
                         "}",
@@ -130,17 +130,17 @@ class ModeGenerator:
             f"class {self.id}Mode final : public ModeModule",
             "{",
             "private:",
-            f"    static constexpr std::array<uint16_t, {count}> frame{{",
+            f"    static constexpr std::array<uint16_t, {count}U> frame{{",
         ]
         with self.path.open(newline="") as drawing:
             for row in csv.reader(drawing):
-                frame.append(f"        0b{self._bits(row)},")
+                frame.append(f"        0b{self._bits(row)}U,")
         frame.extend(
             [
                 "    };",
                 "",
                 "public:",
-                f'    static constexpr std::string_view name = "{self.name}";',
+                f'    static constexpr std::string_view name{{"{self.name}"}};',
                 "",
                 f"    explicit {self.id}Mode() : ModeModule(name) {{}};",
                 "",
@@ -172,7 +172,7 @@ class ModeGenerator:
                         "{",
                         "    Display.clearFrame();",
                         "    const BitmapHandler bitmap(frame);",
-                        "    bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0);",
+                        "    bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0U);",
                         "}",
                         "",
                     ]

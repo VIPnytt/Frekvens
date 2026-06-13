@@ -2,86 +2,100 @@
 
 #include "fonts/MiniFont.h"
 
-FontModule::Symbol MiniFont::getChar(uint32_t character) const
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+
+static_assert(GRID_COLUMNS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
+
+FontModule::Symbol MiniFont::getChar(char32_t character) const
 {
-    if (character >= 0x30 && character <= 0x39)
+    if (character >= '0' && character <= '9')
     {
-        return toSymbol(chars30[character - 0x30]);
+        // U+0030-U+0039
+        return toSymbol(digitZero_digitNine[character - '0']);
     }
-    if (character >= 0x41 && character <= 0x5D)
+    if (character >= 'A' && character <= ']')
     {
-        return toSymbol(chars41[character - 0x41]);
+        // U+0041-U+005D
+        return toSymbol(latinCapitalLetterA_rightSquareBracket[character - 'A']);
     }
-    if (character >= 0x65 && character <= 0x67)
+    if (character >= 'e' && character <= 'g')
     {
-        return toSymbol(chars65[character - 0x65]);
+        // U+0065-U+0067
+        return toSymbol(latinSmallLetterE_latinSmallLetterG[character - 'e']);
     }
-    if (character == 0x68 || character == 0x69)
+    if (character == 'h' || character == 'i')
     {
-        return toSymbol(chars68[character - 0x68]);
+        // U+0068-U+0069
+        return toSymbol(latinSmallLetterH_latinSmallLetterI[character - 'h']);
     }
-    if (character == 0x6B || character == 0x6C)
+    if (character == 'k' || character == 'l')
     {
-        return toSymbol(chars6B[character - 0x6B]);
+        // U+006B-U+006C
+        return toSymbol(latinSmallLetterK_latinSmallLetterL[character - 'k']);
     }
-    if (character == 0x6D || character == 0x6E)
+    if (character == 'm' || character == 'n')
     {
-        return toSymbol(chars6D[character - 0x6D]);
+        // U+006D-U+006E
+        return toSymbol(latinSmallLetterM_latinSmallLetterN[character - 'm']);
     }
-    if (character >= 0x6F && character <= 0x72)
+    if (character >= 'o' && character <= 'r')
     {
-        return toSymbol(chars6F[character - 0x6F]);
+        // U+006F-U+0072
+        return toSymbol(latinSmallLetterO_latinSmallLetterR[character - 'o']);
     }
-    if (character >= 0x75 && character <= 0x78)
+    if (character >= 'u' && character <= 'x')
     {
-        return toSymbol(chars75[character - 0x75]);
+        // U+0075-U+0078
+        return toSymbol(latinSmallLetterU_latinSmallLetterX[character - 'u']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case 0x20: // SPACE
-        return whitespace(3);
-    case 0x2B: // +
-        return toSymbol(char2B, 0, 1);
-    case 0x2C: // ,
-        return toSymbol(char2C);
-    case 0x2D: // -
-        return toSymbol(char2D, 0, 2);
-    case 0x2E: // .
-        return toSymbol(char2E);
-    case 0x3A: // :
-        return toSymbol(char3A, 0, 1);
-    case 0x3D: // =
-        return toSymbol(char3D, 0, 1);
-    case 0x5F: // _
-        return toSymbol(char2D);
-    case 0x61: // a
-        return toSymbol(char61);
-    case 0x62: // b
-        return toSymbol(char62);
-    case 0x63: // c
-        return toSymbol(char63);
-    case 0x64: // d
-        return toSymbol(char64);
-    case 0x6A: // j
-        return toSymbol(char6A);
-    case 0x73: // s
-        return toSymbol(char73);
-    case 0x74: // t
-        return toSymbol(char74);
-    case 0x79: // y
-        return toSymbol(char79);
-    case 0x7A: // z
-        return toSymbol(char7A);
-    case 0x7C: // |
-        return toSymbol(char7C);
-    case 0xB0: // ° DEGREE SIGN
-        return toSymbol(charB0, 0, 3);
-    case 0x3C0: // π GREEK SMALL LETTER PI
-        return toSymbol(char3C0);
+    case ' ': // U+0020 SPACE
+        return whitespace(3U);
+    case '+': // U+002B PLUS SIGN
+        return toSymbol(plusSign, 1);
+    case ',': // U+002C COMMA
+        return toSymbol(comma);
+    case '-': // U+002D HYPHEN-MINUS
+        return toSymbol(hyphenMinus, 2);
+    case '.': // U+002E FULL STOP
+        return toSymbol(fullStop);
+    case ':': // U+003A COLON
+        return toSymbol(colon, 1);
+    case '=': // U+003D EQUALS SIGN
+        return toSymbol(equalsSign, 1);
+    case '_': // U+005F LOW LINE
+        return toSymbol(hyphenMinus);
+    case 'a': // U+0061 LATIN SMALL LETTER A
+        return toSymbol(latinSmallLetterA);
+    case 'b': // U+0062 LATIN SMALL LETTER B
+        return toSymbol(latinSmallLetterB);
+    case 'c': // U+0063 LATIN SMALL LETTER C
+        return toSymbol(latinSmallLetterC);
+    case 'd': // U+0064 LATIN SMALL LETTER D
+        return toSymbol(latinSmallLetterD);
+    case 'j': // U+006A LATIN SMALL LETTER J
+        return toSymbol(latinSmallLetterJ);
+    case 's': // U+0073 LATIN SMALL LETTER S
+        return toSymbol(latinSmallLetterS);
+    case 't': // U+0074 LATIN SMALL LETTER T
+        return toSymbol(latinSmallLetterT);
+    case 'y': // U+0079 LATIN SMALL LETTER Y
+        return toSymbol(latinSmallLetterY);
+    case 'z': // U+007A LATIN SMALL LETTER Z
+        return toSymbol(latinSmallLetterZ);
+    case '|': // U+007C VERTICAL LINE
+        return toSymbol(verticalLine);
+    case U'°': // U+00B0 DEGREE SIGN
+        return toSymbol(degreeSign, 3);
+    case U'π': // U+03C0 GREEK SMALL LETTER PI
+        return toSymbol(greekSmallLetterPi);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_MINI
