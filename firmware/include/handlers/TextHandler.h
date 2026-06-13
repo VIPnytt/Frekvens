@@ -21,9 +21,9 @@ public:
 private:
     const FontModule *font;
 
-    uint8_t height = 0;
-    uint8_t tracking = 1;
-    uint8_t width = 0;
+    uint8_t height{0U};
+    uint8_t tracking{1U};
+    uint8_t width{0U};
 
     std::string text{};
 
@@ -31,7 +31,7 @@ private:
         requires std::is_unsigned_v<T>
     [[nodiscard]] uint8_t calcMsbMax(std::span<const T> bitmap) const;
 
-    bool nextCodepoint(size_t &index, uint32_t &out) const;
+    bool nextCodepoint(size_t &index, char32_t &out) const;
 
-    static std::array<char, 5> encode(uint32_t codepoint);
+    static std::array<char, 5U> encode(char32_t codepoint);
 };

@@ -312,11 +312,25 @@ Set up a playlist of [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) tha
 
 Integrated into the [Web app](#-web-app) and [Home Assistant](#-home-assistant) extensions.
 
-API payload examples:
+API payload example:
 
 ```json
 {
     "active": true,
+    "playlist": [
+        {
+            "mode": "Clock",
+            "duration": 20
+        },
+        {
+            "mode": "Ticker",
+            "duration": 30
+        },
+        {
+            "mode": "Weather",
+            "duration": 10
+        }
+    ]
 }
 ```
 

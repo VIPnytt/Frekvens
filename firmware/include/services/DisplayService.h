@@ -12,20 +12,21 @@ private:
     explicit DisplayService() : ServiceModule("Display") {};
 
 #ifdef FRAME_RATE
+    static_assert(FRAME_RATE >= 1U);
     static constexpr uint8_t fps{FRAME_RATE};
 #else
-    static constexpr uint8_t fps{F_CPU / 13'000U / GRID_COLUMNS / GRID_ROWS};
+    static constexpr uint8_t fps{F_CPU / 13'000U / (GRID_COLUMNS * GRID_ROWS)};
 #endif // FRAME_RATE
 
 #ifdef PWM_DEPTH
-    static constexpr uint8_t depth{min<uint8_t>(PWM_DEPTH, SOC_LEDC_TIMER_BIT_WIDTH)};
+    static_assert(PWM_DEPTH <= SOC_LEDC_TIMER_BIT_WIDTH);
+    static constexpr uint8_t depth{PWM_DEPTH};
 #else
     // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp)
     static inline const uint8_t depth{
         min(max<uint8_t>(
                 8U, static_cast<uint8_t>(8.0F - (std::numbers::pi_v<float> * log2f(static_cast<float>(fps) / 120.0F)))),
-            min<uint8_t>(SOC_LEDC_TIMER_BIT_WIDTH,
-                         static_cast<uint8_t>(log2f(1.0F / PWM_WIDTH / static_cast<float>(fps)))))};
+            min<uint8_t>(SOC_LEDC_TIMER_BIT_WIDTH, std::ilogbf(1.0F / PWM_WIDTH / static_cast<float>(fps))))};
 #endif // PWM_DEPTH
 
 #if GRID_COLUMNS == GRID_ROWS && PITCH_HORIZONTAL != PITCH_VERTICAL

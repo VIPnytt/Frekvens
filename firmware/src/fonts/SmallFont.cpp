@@ -2,128 +2,142 @@
 
 #include "fonts/SmallFont.h"
 
-FontModule::Symbol SmallFont::getChar(uint32_t character) const
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
+
+static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
+
+FontModule::Symbol SmallFont::getChar(char32_t character) const
 {
-    if (character >= 0x23 && character <= 0x26)
+    if (character >= '#' && character <= '&')
     {
-        return toSymbol(chars23[character - 0x23]);
+        // U+0023-U+0026
+        return toSymbol(numberSign_ampersand[character - '#']);
     }
-    if (character == 0x28 || character == 0x29)
+    if (character == '(' || character == ')')
     {
-        return toSymbol(chars28[character - 0x28]);
+        // U+0028-U+0029
+        return toSymbol(leftParenthesis_rightParenthesis[character - '(']);
     }
-    if (character >= 0x30 && character <= 0x39)
+    if (character >= '0' && character <= '9')
     {
-        return toSymbol(chars30[character - 0x30]);
+        // U+0030-U+0039
+        return toSymbol(digitZero_digitNine[character - '0']);
     }
-    if (character >= 0x3E && character <= 0x5B)
+    if (character >= '>' && character <= 'X')
     {
-        return toSymbol(chars3E[character - 0x3E]);
+        // U+003E-U+0058
+        return toSymbol(greaterThanSign_leftSquareBracket[character - '>']);
     }
-    if (character >= 0x68 && character <= 0x6C)
+    if (character >= 'h' && character <= 'l')
     {
-        return toSymbol(chars68[character - 0x68]);
+        // U+0068-U+006C
+        return toSymbol(latinSmallLetterH_latinSmallLetterL[character - 'h']);
     }
-    if (character >= 0x6D && character <= 0x73)
+    if (character >= 'm' && character <= 's')
     {
-        return toSymbol(chars6D[character - 0x6D]);
+        // U+006D-U+0073
+        return toSymbol(latinSmallLetterM_latinSmallLetterS[character - 'm']);
     }
-    if (character >= 0x75 && character <= 0x7A)
+    if (character >= 'u' && character <= 'z')
     {
-        return toSymbol(chars75[character - 0x75]);
+        // U+0075-U+007A
+        return toSymbol(latinSmallLetterU_latinSmallLetterZ[character - 'u']);
     }
-    if (character >= 0x7B && character <= 0x7D)
+    if (character >= '{' && character <= '}')
     {
-        return toSymbol(chars7B[character - 0x7B]);
+        // U+007B-U+007D
+        return toSymbol(leftCurlyBracket_rightCurlyBracket[character - '{']);
     }
     // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
-    case 0x20: // SPACE
+    case ' ': // U+0020 SPACE
         return whitespace(3);
-    case 0x21: // !
-        return toSymbol(char21);
-    case 0x22: // "
-        return toSymbol(char22, 0, 3);
-    case 0x27: // '
-        return toSymbol(char27, 0, 3);
-    case 0x2A: // *
-        return toSymbol(char2A, 0, 4);
-    case 0x2B: // +
-        return toSymbol(char2B, 0, 1);
-    case 0x2C: // ,
-        return toSymbol(char2C);
-    case 0x2D: // -
-        return toSymbol(char2D, 0, 2);
-    case 0x2E: // .
-        return toSymbol(char2E);
-    case 0x2F: // /
-        return toSymbol(char2F);
-    case 0x3A: // :
-        return toSymbol(char3A);
-    case 0x3B: // ;
-        return toSymbol(char3B);
-    case 0x3C: // <
-        return toSymbol(char3C);
-    case 0x3D: // =
-        return toSymbol(char3D, 0, 1);
-    case 0x5C: // REVERSE SOLIDUS
-        return toSymbol(char5C);
-    case 0x5D: // ]
-        return toSymbol(char5D);
-    case 0x5E: // ^
-        return toSymbol(char5E, 0, 3);
-    case 0x5F: // _
-        return toSymbol(char2D);
-    case 0x60: // `
-        return toSymbol(char60, 0, 3);
-    case 0x61: // a
-        return toSymbol(char61);
-    case 0x62: // b
-        return toSymbol(char62);
-    case 0x63: // c
-        return toSymbol(char63);
-    case 0x64: // d
-        return toSymbol(char64);
-    case 0x65: // e
-        return toSymbol(char65);
-    case 0x66: // f
-        return toSymbol(char66);
-    case 0x67: // g
-        return toSymbol(char67);
-    case 0x74: // t
-        return toSymbol(char74);
-    case 0xB0: // ° DEGREE SIGN
-        return toSymbol(charB0, 0, 4);
-    case 0xC4: // Ä LATIN CAPITAL LETTER A WITH DIAERESIS
-        return toSymbol(charC4);
-    case 0xC5: // Å LATIN CAPITAL LETTER A WITH RING ABOVE
-        return toSymbol(charC5);
-    case 0xC6: // Æ LATIN CAPITAL LETTER AE
-        return toSymbol(charC6);
-    case 0xD7: // Ö LATIN CAPITAL LETTER O WITH DIAERESIS
-        return toSymbol(charD6);
-    case 0xD8: // Ø LATIN CAPITAL LETTER O WITH STROKE
-        return toSymbol(charD8);
-    case 0xDF: // ß LATIN SMALL LETTER SHARP S
-        return toSymbol(charDF);
-    case 0xE4: // ä LATIN SMALL LETTER A WITH DIAERESIS
-        return toSymbol(charE4);
-    case 0xE5: // å LATIN SMALL LETTER A WITH RING ABOVE
-        return toSymbol(charE5);
-    case 0xE6: // æ LATIN SMALL LETTER AE
-        return toSymbol(charE6);
-    case 0xF6: // ö LATIN SMALL LETTER O WITH DIAERESIS
-        return toSymbol(charF6);
-    case 0xF8: // ø LATIN SMALL LETTER O WITH STROKE
-        return toSymbol(charF8);
-    case 0xFC: // ü LATIN SMALL LETTER U WITH DIAERESIS
-        return toSymbol(charFC);
-    case 0x3C0: // π GREEK SMALL LETTER PI
-        return toSymbol(char3C0);
+    case '!': // U+0021 EXCLAMATION MARK
+        return toSymbol(exclamationMark);
+    case '"': // U+0022 QUOTATION MARK
+        return toSymbol(quotationMark, 3);
+    case '\'': // U+0027 APOSTROPHE
+        return toSymbol(apostrophe, 3);
+    case '*': // U+002A ASTERISK
+        return toSymbol(asterisk, 4);
+    case '+': // U+002B PLUS SIGN
+        return toSymbol(plusSign, 1);
+    case ',': // U+002C COMMA
+        return toSymbol(comma);
+    case '-': // U+002D HYPHEN-MINUS
+        return toSymbol(hyphenMinus, 2);
+    case '.': // U+002E FULL STOP
+        return toSymbol(fullStop);
+    case '/': // U+002F SOLIDUS
+        return toSymbol(solidus);
+    case ':': // U+003A COLON
+        return toSymbol(colon);
+    case ';': // U+003B SEMICOLON
+        return toSymbol(semicolon);
+    case '<': // U+003C LESS-THAN SIGN
+        return toSymbol(lessThanSign);
+    case '=': // U+003D EQUALS SIGN
+        return toSymbol(equalsSign, 1);
+    case '\\': // U+005C REVERSE SOLIDUS
+        return toSymbol(reverseSolidus);
+    case ']': // U+005D RIGHT SQUARE BRACKET
+        return toSymbol(rightSquareBracket);
+    case '^': // U+005E CIRCUMFLEX ACCENT
+        return toSymbol(circumflexAccent, 3);
+    case '_': // U+005F LOW LINE
+        return toSymbol(hyphenMinus);
+    case '`': // U+0060 GRAVE ACCENT
+        return toSymbol(graveAccent, 3);
+    case 'a': // U+0061 LATIN SMALL LETTER A
+        return toSymbol(latinSmallLetterA);
+    case 'b': // U+0062 LATIN SMALL LETTER B
+        return toSymbol(latinSmallLetterB);
+    case 'c': // U+0063 LATIN SMALL LETTER C
+        return toSymbol(latinSmallLetterC);
+    case 'd': // U+0064 LATIN SMALL LETTER D
+        return toSymbol(latinSmallLetterD);
+    case 'e': // U+0065 LATIN SMALL LETTER E
+        return toSymbol(latinSmallLetterE);
+    case 'f': // U+0066 LATIN SMALL LETTER F
+        return toSymbol(latinSmallLetterF);
+    case 'g': // U+0067 LATIN SMALL LETTER G
+        return toSymbol(latinSmallLetterG);
+    case 't': // U+0074 LATIN SMALL LETTER T
+        return toSymbol(latinSmallLetterT);
+    case U'°': // U+00B0 DEGREE SIGN
+        return toSymbol(degreeSign, 4);
+    case U'Ä': // U+00C4 LATIN CAPITAL LETTER A WITH DIAERESIS
+        return toSymbol(latinCapitalLetterAWithDiaeresis);
+    case U'Å': // U+00C5 LATIN CAPITAL LETTER A WITH RING ABOVE
+        return toSymbol(latinCapitalLetterAWithRingAbove);
+    case U'Æ': // U+00C6 LATIN CAPITAL LETTER AE
+        return toSymbol(latinCapitalLetterAe);
+    case U'Ö': // U+00D6 LATIN CAPITAL LETTER O WITH DIAERESIS
+        return toSymbol(latinCapitalLetterOWithDiaeresis);
+    case U'Ø': // U+00D8 LATIN CAPITAL LETTER O WITH STROKE
+        return toSymbol(latinCapitalLetterOWithStroke);
+    case U'ß': // U+00DF LATIN SMALL LETTER SHARP S
+        return toSymbol(latinSmallLetterSharpS);
+    case U'ä': // U+00E4 LATIN SMALL LETTER A WITH DIAERESIS
+        return toSymbol(latinSmallLetterAWithDiaeresis);
+    case U'å': // U+00E5 LATIN SMALL LETTER A WITH RING ABOVE
+        return toSymbol(latinSmallLetterAWithRingAbove);
+    case U'æ': // U+00E6 LATIN SMALL LETTER AE
+        return toSymbol(latinSmallLetterAe);
+    case U'ö': // U+00F6 LATIN SMALL LETTER O WITH DIAERESIS
+        return toSymbol(latinSmallLetterOWithDiaeresis);
+    case U'ø': // U+00F8 LATIN SMALL LETTER O WITH STROKE
+        return toSymbol(latinSmallLetterOWithStroke);
+    case U'ü': // U+00FC LATIN SMALL LETTER U WITH DIAERESIS
+        return toSymbol(latinSmallLetterUWithDiaeresis);
+    case U'π': // U+03C0 GREEK SMALL LETTER PI
+        return toSymbol(greekSmallLetterPi);
+    default:
+        return {};
     }
     // NOLINTEND(bugprone-branch-clone)
-    return {};
 }
 
 #endif // FONT_SMALL

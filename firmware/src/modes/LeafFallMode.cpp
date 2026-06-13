@@ -3,6 +3,10 @@
 #include "modes/LeafFallMode.h"
 
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+
+static_assert(GRID_COLUMNS * GRID_ROWS >= 20U,
+              __STRING(MODE_LEAFFALL) " is not compatible with this device's display size.");
 
 void LeafFallMode::begin()
 {
@@ -10,7 +14,7 @@ void LeafFallMode::begin()
     {
         leaf.x = random(GRID_COLUMNS);
         leaf.y = random(GRID_ROWS);
-        leaf.brightness = random(1U << 4U, 1U << 8U);
+        leaf.brightness = random(0b1U << 4U, 0b1U << 8U);
         leaf.delay = random(UINT8_MAX, 600);
         leaf.lastMillis = millis();
     }
@@ -23,21 +27,25 @@ void LeafFallMode::handle()
     {
         if (millis() - leaf.lastMillis > leaf.delay)
         {
-            Display.setPixel(leaf.x, leaf.y, 0);
+            Display.setPixel(leaf.x, leaf.y, 0U);
             if (leaf.y + 1 >= GRID_ROWS)
             {
-                leaf.brightness = random(1U << 4U, 1U << 8U);
-                leaf.y = 0;
+#if EXTENSION_MICROPHONE
+                leaf.brightness = Extensions.Microphone().isTriggered() ? random(0b1U << 4U, 0b1U << 8U) : 0U;
+#else
+                leaf.brightness = random(0b1U << 4U, 0b1U << 8U);
+#endif // EXTENSION_MICROPHONE
+                leaf.y = 0U;
                 do
                 {
                     leaf.x = random(GRID_COLUMNS);
-                } while (Display.getPixel(leaf.x, leaf.y) != 0);
+                } while (Display.getPixel(leaf.x, leaf.y) != 0U);
             }
-            else if (leaf.x > 0 && random(4) == 0)
+            else if (leaf.x != 0U && random(4) == 0)
             {
                 --leaf.x;
             }
-            else if (leaf.x < GRID_COLUMNS - 1 && random(4) == 0)
+            else if (leaf.x < GRID_COLUMNS - 1U && random(4) == 0)
             {
                 ++leaf.x;
             }
@@ -45,7 +53,14 @@ void LeafFallMode::handle()
             {
                 ++leaf.y;
             }
+#if EXTENSION_MICROPHONE
+            if (leaf.brightness != 0U)
+            {
+                Display.setPixel(leaf.x, leaf.y, leaf.brightness);
+            }
+#else
             Display.setPixel(leaf.x, leaf.y, leaf.brightness);
+#endif // EXTENSION_MICROPHONE
             leaf.delay = random(UINT8_MAX, 600);
             leaf.lastMillis = millis();
         }

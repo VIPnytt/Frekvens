@@ -6,6 +6,7 @@
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
+#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
 #include <vector>
@@ -47,13 +48,17 @@ void GameOfLifeMode::begin()
 
 void GameOfLifeMode::handle()
 {
-    if (millis() - lastMillis <= UINT8_MAX)
-    {
-        return;
-    }
     if (clock != nullptr)
     {
         clock->handle();
+    }
+#if EXTENSION_MICROPHONE
+    if (millis() - lastMillis <= UINT8_MAX || !Extensions.Microphone().isTriggered())
+#else
+    if (millis() - lastMillis <= UINT8_MAX)
+#endif // EXTENSION_MICROPHONE
+    {
+        return;
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
     for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)

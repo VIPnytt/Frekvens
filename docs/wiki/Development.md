@@ -1,31 +1,35 @@
-# Development
+# 👷 Development
 
-## Formatting and linting
+## 🚧 Formatting and linting
 
 ### Firmware
 
-Clang-format is being used for all C/C++ source code.
+Clang-format is being used for all C/C++ code.
+
+### Tools and scripts
+
+Ruff is being used for all Python code.
 
 ### Webapp
 
-The default VS Code Javascript/Typescript formatter is used.
-
-The project supports Biome for linting Typescript files. To check all files run:
+Biome is being used for linting and formatting of Typescript files.
 
 ```sh
 cd webapp
 npm install
-npm run lint
 ```
 
-Automatic fixes for findings are currently disabled in the script to keep commits clean.
-
-When working on a specific file run
+Check all files:
 
 ```sh
-npx biome lint --write <./src/path/to/file>
+cd webapp
+npm biome check
 ```
 
-to automatically fix some of the findings in that particular file.
+Reformat or apply linter fixes to specific files:
 
-With the [Biome extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome) for VS Code you will also get hints in the editor.
+```sh
+cd webapp
+npx biome format --write <./src/path/to/file>
+npx biome lint --write <./src/path/to/file>
+```

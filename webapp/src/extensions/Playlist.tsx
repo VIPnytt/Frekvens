@@ -147,7 +147,7 @@ export const MainThird: Component = () => {
                                                     max={2 ** 16 - 1}
                                                     min="10"
                                                     onInput={(e) =>
-                                                        handleDuration(index, parseInt(e.currentTarget.value, 10))
+                                                        handleDuration(index, e.currentTarget.valueAsNumber)
                                                     }
                                                     step="5"
                                                     type="number"
@@ -176,7 +176,7 @@ export const MainThird: Component = () => {
                             <Tooltip text="Add mode">
                                 <button
                                     class={`action-neutral w-full ${getPlaylist().length < 2 ? `bg-neutral-light dark:enabled:bg-neutral-dark text-interactive-light dark:text-content-dark` : ""}`}
-                                    disabled={getActive()}
+                                    disabled={getActive() || getPlaylist().length >= 2 ** 8 - 1}
                                     onclick={handleAdd}
                                     type="button"
                                 >
