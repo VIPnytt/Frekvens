@@ -40,8 +40,9 @@ void GameOfLifeMode::begin()
         nvs_close(handle);
         if (static_cast<bool>(_clock))
         {
-            clock = std::make_unique<ClockHandler>();
             yMin = 5U;
+            clock = std::make_unique<ClockHandler>();
+            clock->clear();
         }
     }
 }
