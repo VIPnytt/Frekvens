@@ -423,9 +423,6 @@ dev = [
     { name = "nodejs-wheel" },
     { name = "ruff" },
 ]
-httpx = [
-    { name = "httpx" },
-]
 nodejs = [
     { name = "nodejs-wheel" },
 ]
@@ -442,7 +439,6 @@ scons = [
     { name = "scons" },
 ]
 scripts = [
-    { name = "httpx" },
     { name = "nodejs-wheel" },
     { name = "packaging" },
     { name = "python-dotenv" },
@@ -471,14 +467,12 @@ dev = [
     { name = "nodejs-wheel", specifier = "==24.16.0" },
     { name = "ruff", specifier = "==0.15.17" },
 ]
-httpx = [{ name = "httpx", specifier = "==0.28.1" }]
 nodejs = [{ name = "nodejs-wheel", specifier = "==24.16.0" }]
 packaging = [{ name = "packaging", specifier = "==26.2" }]
 platformio = [{ name = "platformio", specifier = "==6.1.19" }]
 ruff = [{ name = "ruff", specifier = "==0.15.17" }]
 scons = [{ name = "scons", specifier = "==4.10.1" }]
 scripts = [
-    { name = "httpx", specifier = "==0.28.1" },
     { name = "nodejs-wheel", specifier = "==24.16.0" },
     { name = "packaging", specifier = "==26.2" },
     { name = "python-dotenv", specifier = "==1.2.2" },

@@ -36,15 +36,12 @@ where = [
 
 [dependency-groups]
 dependabot = [
-    { include-group = "httpx" },
     { include-group = "packaging" },
+    "httpx==0.28.1",
 ]
 dev = [
     { include-group = "nodejs" },
     { include-group = "ruff" },
-]
-httpx = [
-    "httpx==0.28.1",
 ]
 nodejs = [
     "nodejs-wheel==24.16.0",
@@ -62,7 +59,6 @@ scons = [
     "scons==4.10.1",
 ]
 scripts = [
-    { include-group = "httpx" },
     { include-group = "nodejs" },
     { include-group = "packaging" },
     "python-dotenv==1.2.2",
