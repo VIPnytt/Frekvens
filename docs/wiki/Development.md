@@ -14,6 +14,8 @@ Ruff is being used for all Python code.
 
 Biome is being used for linting and formatting of Typescript files.
 
+Install webapp dependencies:
+
 ```sh
 cd webapp
 npm install
@@ -23,7 +25,7 @@ Check all files:
 
 ```sh
 cd webapp
-npm biome check
+npx biome check
 ```
 
 Reformat or apply linter fixes to specific files:
