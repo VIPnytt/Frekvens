@@ -25,7 +25,7 @@ Check all files:
 
 ```sh
 cd webapp
-npx biome check
+npx biome check ./src
 ```
 
 Reformat or apply linter fixes to specific files:
