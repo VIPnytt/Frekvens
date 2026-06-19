@@ -3,9 +3,10 @@
 #include "modes/ScanMode.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
+
+static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_SCAN) " is not compatible with this device's display size.");
 
 void ScanMode::handle()
 {
@@ -16,21 +17,21 @@ void ScanMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        for (uint8_t y = 0; y < GRID_ROWS; ++y)
+        for (uint8_t y{0U}; y < GRID_ROWS; ++y)
         {
             if (column < GRID_COLUMNS)
             {
                 Display.setPixel(column, y);
             }
-            if (column - 2 >= 0)
+            if (column >= 2U)
             {
-                Display.setPixel(column - 2, y, 0);
+                Display.setPixel(column - 2U, y, 0U);
             }
         }
         ++column;
-        if (column - 2 >= GRID_COLUMNS)
+        if (column >= GRID_COLUMNS + 2U)
         {
-            column = 0;
+            column = 0U;
         }
     }
 }
