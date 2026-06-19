@@ -12,15 +12,14 @@ class RainMode final : public ModeModule
 private:
     struct Drop
     {
-        uint8_t delay = INT8_MAX;
-        uint8_t length = 3;
-        uint8_t x = 0;
-        uint8_t y = 0;
-
-        unsigned long lastMillis = 0;
+        uint8_t delay{INT8_MAX};
+        uint8_t length{3U};
+        uint8_t x{0U};
+        uint8_t y{0U};
+        unsigned long lastMillis{0UL};
     };
 
-    std::array<Drop, GRID_COLUMNS / 3> drops{};
+    std::array<Drop, GRID_COLUMNS / 3U> drops{};
 
 public:
     static constexpr std::string_view name{"Rain"};
