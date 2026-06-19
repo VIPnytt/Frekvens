@@ -4,6 +4,8 @@
 
 #include "services/DisplayService.h"
 
+#include <algorithm>
+
 static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_RAIN) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 5U, __STRING(MODE_RAIN) " is not compatible with this device's display size.");
 
