@@ -44,7 +44,7 @@ jobs:
 
       - name: Clang format
         if: ${{ matrix.toolchain.python-version != 3.14 }}
-        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
+        uses: cpp-linter/cpp-linter-action@4f2a4033eda6119c3bf1a4d30857a4c61c11c247 # v2.19.0
         id: clang
         env:
           clang-version: 22
@@ -132,7 +132,7 @@ jobs:
           mv DynamicMode.h firmware/include/modes
 
       - name: Clang format
-        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
+        uses: cpp-linter/cpp-linter-action@4f2a4033eda6119c3bf1a4d30857a4c61c11c247 # v2.19.0
         id: clang
         env:
           clang-version: 22
@@ -203,7 +203,7 @@ jobs:
           mv StaticMode.h firmware/include/modes
 
       - name: Clang format
-        uses: cpp-linter/cpp-linter-action@77c390c5ba9c947ebc185a3e49cc754f1558abb5 # v2.18.0
+        uses: cpp-linter/cpp-linter-action@4f2a4033eda6119c3bf1a4d30857a4c61c11c247 # v2.19.0
         id: clang
         env:
           clang-version: 22
