@@ -32,7 +32,7 @@ void ConnectivityService::configure()
     if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, 3U> country{};
-        size_t length{country.size()};
+        size_t length{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
         if (nvs_get_str(handle, "country", country.data(), &length) == ESP_OK && length == country.size())
         {
             esp_wifi_set_country_code(country.data(), true);
