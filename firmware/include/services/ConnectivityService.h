@@ -12,11 +12,11 @@ class ConnectivityService final : public ServiceModule
 private:
     explicit ConnectivityService() : ServiceModule("Connectivity") {};
 
-    bool mDNS = false;
-    bool pending = false;
-    bool routable = false;
+    bool mdns{false};
+    bool pending{false};
+    bool routable{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     std::unique_ptr<DNSServer> dns{};
 

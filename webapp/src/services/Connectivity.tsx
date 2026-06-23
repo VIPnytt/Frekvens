@@ -131,7 +131,7 @@ export const MainThird: Component = () => {
 
 export const SidebarThird: Component = () => {
     const handleSelect = (ssid: string) => {
-        if (window.innerWidth < 800) {
+        if (innerWidth < 800) {
             WebAppSidebarSet(false);
         }
         setCredentialSsid(ssid);
