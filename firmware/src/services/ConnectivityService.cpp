@@ -199,19 +199,13 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info)
 {
     if (WiFi.STA.hasIP())
     {
-        const IPAddress ipv4 = WiFi.STA.localIP();
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
-        ESP_LOGI("Wi-Fi",
-                 "IPv4 %u.%u.%u.%u",
-                 static_cast<unsigned>(ipv4[0]),
-                 static_cast<unsigned>(ipv4[1]),
-                 static_cast<unsigned>(ipv4[2]),
-                 static_cast<unsigned>(ipv4[3]));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Wi-Fi", "IPv4 " IPSTR, IP2STR(&info.got_ip.ip_info.ip));
         if (!Connectivity.routable)
         {
             onRoutable();
@@ -219,23 +213,13 @@ void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-par
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv6(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
-        const IPAddress ipv6 = WiFi.STA.globalIPv6();
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
-        ESP_LOGI("Wi-Fi",
-                 "IPv6 %x:%x:%x:%x:%x:%x:%x:%x",
-                 (static_cast<unsigned>(ipv6[0]) << 8U) | static_cast<unsigned>(ipv6[1]),
-                 (static_cast<unsigned>(ipv6[2]) << 8U) | static_cast<unsigned>(ipv6[3]),
-                 (static_cast<unsigned>(ipv6[4]) << 8U) | static_cast<unsigned>(ipv6[5]),
-                 (static_cast<unsigned>(ipv6[6]) << 8U) | static_cast<unsigned>(ipv6[7]),
-                 (static_cast<unsigned>(ipv6[8]) << 8U) | static_cast<unsigned>(ipv6[9]),
-                 (static_cast<unsigned>(ipv6[10]) << 8U) | static_cast<unsigned>(ipv6[11]),
-                 (static_cast<unsigned>(ipv6[12]) << 8U) | static_cast<unsigned>(ipv6[13]),
-                 (static_cast<unsigned>(ipv6[14]) << 8U) | static_cast<unsigned>(ipv6[15]));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Wi-Fi", "IPv6 " IPV6STR, IPV62STR(info.got_ip6.ip6_info));
         if (!Connectivity.routable)
         {
             onRoutable();
