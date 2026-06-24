@@ -29,7 +29,7 @@ void ConnectivityService::configure()
     esp_wifi_set_country_code(WIFI_COUNTRY, false);
 #else
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, 3U> country{};
         size_t length{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
@@ -84,7 +84,7 @@ void ConnectivityService::initStation()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t _length{0U};
         if (nvs_get_blob(handle, "Wi-Fi", nullptr, &_length) == ESP_OK && _length != 0U)
@@ -118,7 +118,7 @@ void ConnectivityService::initStation()
     const size_t length{measureJson(doc) + 1U};
     std::vector<char> buffer(length);
     serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length);
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_blob(handle, "Wi-Fi", buffer.data(), length);
         nvs_commit(handle);
@@ -172,7 +172,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
     nvs_handle_t handle{};
     std::array<char, 3U> country{};
     if (esp_wifi_get_country_code(country.data()) == ESP_OK &&
-        nvs_open(std::string(Connectivity.name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        nvs_open(Connectivity.name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         if (strncmp(country.data(), "01", 2U) == 0 ? nvs_erase_key(handle, "country") == ESP_OK
                                                    : nvs_set_str(handle, "country", country.data()) == ESP_OK)
@@ -199,7 +199,8 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
+                                 WiFiEventInfo_t info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -282,7 +283,7 @@ void ConnectivityService::transmit()
     doc["rssi"].set(WiFi.RSSI());
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             size_t length{0U};
             if (nvs_get_blob(handle, "Wi-Fi", nullptr, &length) == ESP_OK && length != 0U)
