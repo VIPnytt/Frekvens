@@ -199,8 +199,7 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info)
+void ConnectivityService::onIPv4(WiFiEvent_t event, WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
     if (WiFi.STA.hasIP())
     {
