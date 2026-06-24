@@ -27,12 +27,12 @@ private:
     void connect(const char *ssid, const char *key);
     void transmit();
 
-    static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv4(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv6(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onConnected(WiFiEvent_t event);
+    static void onDisconnected(WiFiEvent_t event, const WiFiEventInfo_t &info);
+    static void onIPv4(WiFiEvent_t, const WiFiEventInfo_t &info);
+    static void onIPv6(WiFiEvent_t, WiFiEventInfo_t info);
     static void onRoutable();
-    static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onScan(WiFiEvent_t event);
 
 public:
     void configure();

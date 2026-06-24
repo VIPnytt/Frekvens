@@ -162,8 +162,7 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                      WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onConnected(WiFiEvent_t)
 {
     ESP_LOGD("Wi-Fi", "connected");           // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGV("Wi-Fi", "%d dBm", WiFi.RSSI()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -184,8 +183,7 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                         WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(WiFiEvent_t, const WiFiEventInfo_t &info)
 {
     Connectivity.routable = false;
     if (Connectivity.mdns)
@@ -199,8 +197,7 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info)
+void ConnectivityService::onIPv4(WiFiEvent_t, const WiFiEventInfo_t &info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -213,8 +210,7 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parame
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info)
+void ConnectivityService::onIPv6(WiFiEvent_t, WiFiEventInfo_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
@@ -257,8 +253,7 @@ void ConnectivityService::onRoutable()
     sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onScan(WiFiEvent_t)
 {
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)
@@ -307,8 +302,7 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onReceive(JsonObjectConst payload, std::string_view)
 {
     // Connect
     if (payload["ssid"].is<const char *>())
