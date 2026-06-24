@@ -204,7 +204,7 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parame
 {
     if (WiFi.STA.hasIP())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic,cppcoreguidelines-pro-type-cstyle-cast)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic,cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-type-vararg)
         ESP_LOGI("Wi-Fi", "IPv4 " IPSTR, IP2STR(&info.got_ip.ip_info.ip));
         if (!Connectivity.routable)
         {
@@ -218,6 +218,7 @@ void ConnectivityService::onIPv6(WiFiEvent_t event, // NOLINT(misc-unused-parame
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
         ESP_LOGI("Wi-Fi", "IPv6 " IPV6STR, IPV62STR(info.got_ip6.ip6_info));
         if (!Connectivity.routable)
         {
