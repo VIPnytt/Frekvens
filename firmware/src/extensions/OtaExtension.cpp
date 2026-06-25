@@ -42,7 +42,7 @@ void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines
 
 void OtaExtension::onStart()
 {
-    ESP_LOGI("Status", "updating"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGI("Status", "updating"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     Modes.setActive(false);
     const LargeFont font;
     Display.clearFrame();

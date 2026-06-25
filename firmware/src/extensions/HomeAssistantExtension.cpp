@@ -94,7 +94,7 @@ void HomeAssistantExtension::undiscover()
                          true,
                          _mqtt.emptyMessage.data(),
                          _mqtt.emptyMessage.size() - 1U);
-    ESP_LOGW("MQTT", "discovery packet removed"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGW("MQTT", "discovery packet removed"); // NOLINT(cppcoreguidelines-pro-type-vararg)
 }
 
 void HomeAssistantExtension::transmit()

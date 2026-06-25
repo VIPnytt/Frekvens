@@ -62,7 +62,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("Wi-Fi", "connected"); // NOLINT(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("Wi-Fi", "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",
                                        static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2));
     Extensions.MQTT().client.publish("frekvens/" HOSTNAME "/availability",
@@ -99,8 +99,8 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("MQTT", "disconnected"); // NOLINT(cppcoreguidelines-avoid-do-while)
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
+    ESP_LOGD("MQTT", "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
     ESP_LOGV("MQTT", "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 

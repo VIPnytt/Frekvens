@@ -61,7 +61,7 @@ void MicrophoneExtension::handle()
                         Device.transmit(doc.as<JsonObjectConst>(), name, false);
                         lastMillis = millis();
                     }
-                    ESP_LOGV("Sound", "level %d", activity); // NOLINT(cppcoreguidelines-avoid-do-while)
+                    ESP_LOGV("Sound", "level %d", activity); // NOLINT(cppcoreguidelines-pro-type-vararg)
                 }
                 else if (activity > soundCeiling)
                 {
@@ -79,7 +79,7 @@ void MicrophoneExtension::handle()
             else if (triggered)
             {
                 triggered = false;
-                ESP_LOGV("Silence", "level %d", activity); // NOLINT(cppcoreguidelines-avoid-do-while)
+                ESP_LOGV("Silence", "level %d", activity); // NOLINT(cppcoreguidelines-pro-type-vararg)
             }
             else if (activity < soundFloor)
             {
@@ -121,7 +121,7 @@ void MicrophoneExtension::setActive(bool _active)
         }
         triggered = !active;
         pending = true;
-        ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-pro-type-vararg)
     }
 }
 
