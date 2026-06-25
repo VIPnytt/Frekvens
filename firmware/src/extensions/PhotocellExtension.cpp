@@ -86,7 +86,7 @@ void PhotocellExtension::setActive(bool _active)
         nvs_close(handle);
     }
     pending = true;
-    ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+    ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void PhotocellExtension::setGamma(float _gamma)

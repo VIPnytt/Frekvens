@@ -121,7 +121,7 @@ void MicrophoneExtension::setActive(bool _active)
         }
         triggered = !active;
         pending = true;
-        ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGI("Status", "%s", this->active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
 }
 

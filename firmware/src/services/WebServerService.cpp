@@ -12,7 +12,7 @@ void WebServerService::onNotFound(AsyncWebServerRequest *request)
 #if EXTENSION_WEBAPP
     if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP && request->host() != WiFi.softAPIP().toString())
     {
-        ESP_LOGV("HTTP", "redirecting"); // NOLINT(cppcoreguidelines-pro-type-vararg)
+        ESP_LOGV("HTTP", "redirecting"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         request->redirect("http://" + WiFi.softAPIP().toString(), t_http_codes::HTTP_CODE_FOUND);
     }
     else
