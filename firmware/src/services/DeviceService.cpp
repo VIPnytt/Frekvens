@@ -118,8 +118,9 @@ void DeviceService::handle()
 
 void DeviceService::setPower(bool power)
 {
-    ESP_LOGI("Status", "%s...", power ? "rebooting" : "powering off"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    JsonDocument doc;                                                  // NOLINT(misc-const-correctness)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI("Status", "%s...", power ? "rebooting" : "powering off");
+    JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
