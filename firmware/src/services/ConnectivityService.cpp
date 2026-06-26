@@ -257,7 +257,7 @@ void ConnectivityService::onRoutable()
 #endif // EXTENSION_ALEXA
 #if EXTENSION_RESTFUL || EXTENSION_WEBAPP
             MDNS.addService("http", "tcp", 80U);
-#endif
+#endif // EXTENSION_RESTFUL || EXTENSION_WEBAPP
 #if EXTENSION_WEBSOCKET
             MDNS.addService("ws", "tcp", 80U);
 #endif // EXTENSION_WEBSOCKET
