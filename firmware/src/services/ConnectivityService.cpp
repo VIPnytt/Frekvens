@@ -203,8 +203,13 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
 {
     if (WiFi.STA.hasIP())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic,cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI("Wi-Fi", "IPv4 " IPSTR, IP2STR(&info.got_ip.ip_info.ip));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Wi-Fi",
+                 "IPv4 %u.%u.%u.%u",
+                 static_cast<unsigned>(info.got_ip.ip_info.ip.addr & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 8U) & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 16U) & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 24U) & 0xFFU));
         if (!Connectivity.routable)
         {
             onRoutable();
@@ -218,7 +223,16 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused
     if (WiFi.STA.hasGlobalIPv6())
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI("Wi-Fi", "IPv6 " IPV6STR, IPV62STR(info.got_ip6.ip6_info.ip));
+        ESP_LOGI("Wi-Fi",
+                 "IPv6 %x:%x:%x:%x:%x:%x:%x:%x",
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[1]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[1]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[2]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[2]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) & 0xFFFFU));
         if (!Connectivity.routable)
         {
             onRoutable();
