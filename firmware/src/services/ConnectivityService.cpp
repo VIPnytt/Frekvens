@@ -210,10 +210,7 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
                  static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 8U) & 0xFFU),
                  static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 16U) & 0xFFU),
                  static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 24U) & 0xFFU));
-        if (!Connectivity.routable)
-        {
-            onRoutable();
-        }
+        onRoutable();
     }
 }
 
@@ -233,41 +230,41 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused
                  static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[2]) & 0xFFFFU),
                  static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) >> 16U) & 0xFFFFU),
                  static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) & 0xFFFFU));
-        if (!Connectivity.routable)
-        {
-            onRoutable();
-        }
+        onRoutable();
     }
 }
 
 void ConnectivityService::onRoutable()
 {
-    Connectivity.routable = true;
-    if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
+    if (!Connectivity.routable)
     {
-        JsonDocument doc; // NOLINT(misc-const-correctness)
-        doc["event"].set("connected");
-        Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
-        ESP_LOGD("Wi-Fi", "terminating Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        Connectivity.dns.reset();
-        WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
-    }
-    if (!Connectivity.mdns && MDNS.begin(HOSTNAME))
-    {
-        Connectivity.mdns = true;
-        MDNS.setInstanceName(NAME);
+        Connectivity.routable = true;
+        if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
+        {
+            JsonDocument doc; // NOLINT(misc-const-correctness)
+            doc["event"].set("connected");
+            Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
+            ESP_LOGD("Wi-Fi", "terminating Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+            Connectivity.dns.reset();
+            WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
+        }
+        if (!Connectivity.mdns && MDNS.begin(HOSTNAME))
+        {
+            Connectivity.mdns = true;
+            MDNS.setInstanceName(NAME);
 #if EXTENSION_ALEXA
-        AlexaExtension::onMdns();
+            AlexaExtension::onMdns();
 #endif // EXTENSION_ALEXA
 #if EXTENSION_RESTFUL || EXTENSION_WEBAPP
-        MDNS.addService("http", "tcp", 80U);
+            MDNS.addService("http", "tcp", 80U);
 #endif
 #if EXTENSION_WEBSOCKET
-        MDNS.addService("ws", "tcp", 80U);
+            MDNS.addService("ws", "tcp", 80U);
 #endif // EXTENSION_WEBSOCKET
+        }
+        timeval tv{};
+        sntp_sync_time(&tv);
     }
-    timeval tv{};
-    sntp_sync_time(&tv);
 }
 
 void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
