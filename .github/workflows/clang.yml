@@ -229,6 +229,8 @@ jobs:
           clang-version: 22
         with:
           version: ${{ env.clang-version }}
+          extra-args: -DCORE_DEBUG_LEVEL=ARDUHAL_LOG_LEVEL_VERBOSE
+          file-annotations: false
           files-changed-only: false
           step-summary: true
           style: ""

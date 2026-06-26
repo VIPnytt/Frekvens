@@ -87,7 +87,8 @@ void PlaylistExtension::setActive(bool _active)
             nvs_close(handle);
         }
         transmit();
-        ESP_LOGI("Status", "%s", active ? "active" : "inactive"); // NOLINT(cppcoreguidelines-avoid-do-while)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Status", "%s", active ? "active" : "inactive");
     }
 }
 
