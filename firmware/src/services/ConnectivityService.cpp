@@ -20,11 +20,11 @@ void ConnectivityService::configure()
     WiFiClass::setHostname(HOSTNAME);
     WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIPv6();
-    WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
-    WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
-    WiFi.onEvent(&onIPv4, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
-    WiFi.onEvent(&onIPv6, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP6);
-    WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
+    WiFi.onEvent(&onConnected, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
+    WiFi.onEvent(&onDisconnected, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+    WiFi.onEvent(&onIPv4, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+    WiFi.onEvent(&onIPv6, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_GOT_IP6);
+    WiFi.onEvent(&onScan, arduino_event_id_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
 #ifdef WIFI_COUNTRY
     esp_wifi_set_country_code(WIFI_COUNTRY, false);
 #else
@@ -162,7 +162,7 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD("Wi-Fi", "connected");           // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGV("Wi-Fi", "%d dBm", WiFi.RSSI()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -183,8 +183,8 @@ void ConnectivityService::onConnected(WiFiEvent_t event) // NOLINT(misc-unused-p
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                         WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                         arduino_event_info_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mdns)
@@ -198,8 +198,8 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info)
+void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                 arduino_event_info_t info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -212,13 +212,13 @@ void ConnectivityService::onIPv4(WiFiEvent_t event, // NOLINT(misc-unused-parame
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info)
+void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                 arduino_event_info_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI("Wi-Fi", "IPv6 " IPV6STR, IPV62STR(info.got_ip6.ip6_info));
+        ESP_LOGI("Wi-Fi", "IPv6 " IPV6STR, IPV62STR(info.got_ip6.ip6_info.ip));
         if (!Connectivity.routable)
         {
             onRoutable();
@@ -256,7 +256,7 @@ void ConnectivityService::onRoutable()
     sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
 {
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)

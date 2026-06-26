@@ -27,12 +27,12 @@ private:
     void connect(const char *ssid, const char *key);
     void transmit();
 
-    static void onConnected(WiFiEvent_t event);
-    static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv4(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv6(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onConnected(arduino_event_id_t event);
+    static void onDisconnected(arduino_event_id_t event, arduino_event_info_t info);
+    static void onIPv4(arduino_event_id_t event, arduino_event_info_t info);
+    static void onIPv6(arduino_event_id_t event, arduino_event_info_t info);
     static void onRoutable();
-    static void onScan(WiFiEvent_t event);
+    static void onScan(arduino_event_id_t event);
 
 public:
     void configure();
