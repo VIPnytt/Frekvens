@@ -210,8 +210,8 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
 void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
                                  WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
 {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
-    ESP_LOGI("Wi-Fi", "IPv4 %s", WiFi.localIP().toString().c_str()); // NOLINT(hicpp-vararg)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI("Wi-Fi", "IPv4 %s", WiFi.localIP().toString().c_str());
     if (!Connectivity.routable)
     {
         onRoutable();
