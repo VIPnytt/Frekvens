@@ -1,6 +1,8 @@
 #pragma once
 
+#include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/HandlerModule.h" // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h"
 
 #include <span>
 #include <string_view>
@@ -44,7 +46,7 @@ BitmapHandler<T>::BitmapHandler(std::span<const T> bitmap) : bitmap(bitmap)
         for (T bitset : bitmap)
         {
             uint8_t msb{0U};
-            while (bitset >>= 1U)
+            while ((bitset >>= 1U) != 0U)
             {
                 ++msb;
             }
@@ -73,7 +75,7 @@ void BitmapHandler<T>::draw(uint8_t x, uint8_t y, uint8_t brightness) const
     for (T bitset : bitmap)
     {
         uint8_t msb{0U};
-        while (bitset >>= 1U)
+        while ((bitset >>= 1U) != 0U)
         {
             ++msb;
         }
