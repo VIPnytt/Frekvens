@@ -20,28 +20,24 @@ void ConnectivityService::configure()
     WiFiClass::setHostname(HOSTNAME);
     WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
     WiFi.enableIPv6();
-    WiFi.onEvent(&onConnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
-    WiFi.onEvent(&onDisconnected, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
-    WiFi.onEvent(&onIPv4, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
-    WiFi.onEvent(&onIPv6, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP6);
-    WiFi.onEvent(&onScan, WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
+    WiFi.onEvent(&onConnected, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_CONNECTED);
+    WiFi.onEvent(&onDisconnected, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
+    WiFi.onEvent(&onIPv4, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
+    WiFi.onEvent(&onIPv6, arduino_event_id_t::ARDUINO_EVENT_WIFI_STA_GOT_IP6);
+    WiFi.onEvent(&onScan, arduino_event_id_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
 #ifdef WIFI_COUNTRY
     esp_wifi_set_country_code(WIFI_COUNTRY, false);
 #else
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        std::array<char, 3> country{};
-        size_t len{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
-        if (nvs_get_str(handle, "country", country.data(), &len) == ESP_OK)
+        std::array<char, 3U> country{};
+        size_t length{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        if (nvs_get_str(handle, "country", country.data(), &length) == ESP_OK && length == country.size())
         {
-            nvs_close(handle);
             esp_wifi_set_country_code(country.data(), true);
         }
-        else
-        {
-            nvs_close(handle);
-        }
+        nvs_close(handle);
     }
 #endif // WIFI_COUNTRY
 #if defined(PIN_SW1) || defined(PIN_SW2)
@@ -88,47 +84,43 @@ void ConnectivityService::initStation()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t _len{0};
-        if (nvs_get_blob(handle, "Wi-Fi", nullptr, &_len) == ESP_OK && _len > 0)
+        size_t _length{0U};
+        if (nvs_get_blob(handle, "Wi-Fi", nullptr, &_length) == ESP_OK && _length != 0U)
         {
-            std::vector<char> _buffer(_len);
-            if (nvs_get_blob(handle, "Wi-Fi", _buffer.data(), &_len) == ESP_OK)
+            std::vector<char> _buffer(_length);
+            if (nvs_get_blob(handle, "Wi-Fi", _buffer.data(), &_length) == ESP_OK)
             {
-                nvs_close(handle);
-                deserializeJson(doc, _buffer.data(), _len);
-            }
-            else
-            {
-                nvs_close(handle);
+                deserializeJson(doc, _buffer.data(), _length);
             }
         }
+        nvs_close(handle);
     }
     wifi_config_t config;
     if (esp_wifi_get_config(wifi_interface_t::WIFI_IF_STA, &config) == ESP_OK)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-        const char *const ssid_ptr = reinterpret_cast<const char *>(config.sta.ssid);
+        const char *const ssid_ptr{reinterpret_cast<const char *>(config.sta.ssid)};
         const std::string_view ssid(ssid_ptr, strnlen(ssid_ptr, sizeof(config.sta.ssid)));
         if (!ssid.empty())
         {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-            const char *const key_ptr = reinterpret_cast<const char *>(config.sta.password);
+            const char *const key_ptr{reinterpret_cast<const char *>(config.sta.password)};
             const std::string_view key(key_ptr, strnlen(key_ptr, sizeof(config.sta.password)));
-            doc[ssid] = key.length() ? key : nullptr;
+            doc[ssid].set(key.length() ? key : nullptr);
         }
     }
     if (doc[WIFI_SSID].isUnbound())
     {
-        doc[WIFI_SSID] = WIFI_KEY;
+        doc[WIFI_SSID].set(WIFI_KEY);
     }
-    const size_t len = measureJson(doc);
-    std::vector<uint8_t> buffer(len + 1);
-    serializeJson(doc, reinterpret_cast<char *>(buffer.data()), len + 1);
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    const size_t length{measureJson(doc) + 1U};
+    std::vector<char> buffer(length);
+    serializeJson(doc, reinterpret_cast<char *>(buffer.data()), length);
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        nvs_set_blob(handle, "Wi-Fi", buffer.data(), len + 1);
+        nvs_set_blob(handle, "Wi-Fi", buffer.data(), length);
         nvs_commit(handle);
         nvs_close(handle);
     }
@@ -148,7 +140,7 @@ void ConnectivityService::initHotspot()
     {
         dns = std::make_unique<DNSServer>();
         dns->setErrorReplyCode(DNSReplyCode::NoError);
-        dns->start(53, "*", WiFi.softAPIP());
+        dns->start(53U, "*", WiFi.softAPIP());
     }
 #if EXTENSION_WEBAPP
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -170,20 +162,19 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                      WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
 {
     ESP_LOGD("Wi-Fi", "connected");           // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGV("Wi-Fi", "%d dBm", WiFi.RSSI()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGI("Wi-Fi", HOSTNAME ".local");     // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifndef WIFI_COUNTRY
     nvs_handle_t handle{};
-    std::array<char, 3> country{};
+    std::array<char, 3U> country{};
     if (esp_wifi_get_country_code(country.data()) == ESP_OK &&
         nvs_open(Connectivity.name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        if (strncmp(country.data(), "01", 2) == 0 ? nvs_erase_key(handle, "country") == ESP_OK
-                                                  : nvs_set_str(handle, "country", country.data()) == ESP_OK)
+        if (strncmp(country.data(), "01", 2U) == 0 ? nvs_erase_key(handle, "country") == ESP_OK
+                                                   : nvs_set_str(handle, "country", country.data()) == ESP_OK)
         {
             nvs_commit(handle);
         }
@@ -192,14 +183,14 @@ void ConnectivityService::onConnected(WiFiEvent_t event,    // NOLINT(misc-unuse
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unused-parameters)
-                                         WiFiEventInfo_t info)
+void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                         arduino_event_info_t info)
 {
     Connectivity.routable = false;
-    if (Connectivity.mDNS)
+    if (Connectivity.mdns)
     {
         MDNS.end();
-        Connectivity.mDNS = false;
+        Connectivity.mdns = false;
     }
     ESP_LOGI("Wi-Fi", "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
                                        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -207,70 +198,83 @@ void ConnectivityService::onDisconnected(WiFiEvent_t event, // NOLINT(misc-unuse
         "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                 arduino_event_info_t info)
 {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Wi-Fi", "IPv4 %s", WiFi.localIP().toString().c_str());
-    if (!Connectivity.routable)
+    if (WiFi.STA.hasIP())
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Wi-Fi",
+                 "IPv4 %u.%u.%u.%u",
+                 static_cast<unsigned>(info.got_ip.ip_info.ip.addr & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 8U) & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 16U) & 0xFFU),
+                 static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 24U) & 0xFFU));
         onRoutable();
     }
 }
 
-void ConnectivityService::onIPv6(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
+                                 arduino_event_info_t info)
 {
-    const char *const ipv6 = WiFi.globalIPv6().toString().c_str();
-    if (strcmp(ipv6, "") != 0)
+    if (WiFi.STA.hasGlobalIPv6())
     {
-        ESP_LOGI("Wi-Fi", "IPv6 %s", ipv6); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        if (!Connectivity.routable)
-        {
-            onRoutable();
-        }
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI("Wi-Fi",
+                 "IPv6 %x:%x:%x:%x:%x:%x:%x:%x",
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[1]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[1]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[2]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[2]) & 0xFFFFU),
+                 static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) >> 16U) & 0xFFFFU),
+                 static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[3]) & 0xFFFFU));
+        onRoutable();
     }
 }
 
 void ConnectivityService::onRoutable()
 {
-    Connectivity.routable = true;
-    if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
+    if (!Connectivity.routable)
     {
-        JsonDocument doc; // NOLINT(misc-const-correctness)
-        doc["event"].set("connected");
-        Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
-        ESP_LOGD("Wi-Fi", "terminating Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        Connectivity.dns.reset();
-        WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
-    }
-    if (!Connectivity.mDNS && MDNS.begin(HOSTNAME))
-    {
-        Connectivity.mDNS = true;
-        MDNS.setInstanceName(NAME);
+        Connectivity.routable = true;
+        if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
+        {
+            JsonDocument doc; // NOLINT(misc-const-correctness)
+            doc["event"].set("connected");
+            Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
+            ESP_LOGD("Wi-Fi", "terminating Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+            Connectivity.dns.reset();
+            WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
+        }
+        if (!Connectivity.mdns && MDNS.begin(HOSTNAME))
+        {
+            Connectivity.mdns = true;
+            MDNS.setInstanceName(NAME);
 #if EXTENSION_ALEXA
-        AlexaExtension::onMdns();
+            AlexaExtension::onMdns();
 #endif // EXTENSION_ALEXA
 #if EXTENSION_RESTFUL || EXTENSION_WEBAPP
-        MDNS.addService("http", "tcp", 80);
-#endif
+            MDNS.addService("http", "tcp", 80U);
+#endif // EXTENSION_RESTFUL || EXTENSION_WEBAPP
 #if EXTENSION_WEBSOCKET
-        MDNS.addService("ws", "tcp", 80);
+            MDNS.addService("ws", "tcp", 80U);
 #endif // EXTENSION_WEBSOCKET
+        }
+        timeval tv{};
+        sntp_sync_time(&tv);
     }
-    timeval tv{};
-    sntp_sync_time(&tv);
 }
 
-void ConnectivityService::onScan(WiFiEvent_t event,    // NOLINT(misc-unused-parameters)
-                                 WiFiEventInfo_t info) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
 {
-    const int16_t count = WiFi.scanComplete();
+    const int16_t count{WiFi.scanComplete()};
     if (count > 0)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
         JsonArray scan{doc["scan"].to<JsonArray>()};
-        for (int16_t i = 0; i < count; ++i)
+        for (int16_t i{0}; i < count; ++i)
         {
             JsonObject _scan{scan.add<JsonObject>()};
             _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
@@ -288,30 +292,24 @@ void ConnectivityService::transmit()
     doc["rssi"].set(WiFi.RSSI());
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
-            size_t len{0};
-            if (nvs_get_blob(handle, "saved", nullptr, &len) == ESP_OK && len > 0)
+            size_t length{0U};
+            if (nvs_get_blob(handle, "Wi-Fi", nullptr, &length) == ESP_OK && length != 0U)
             {
-                std::vector<uint8_t> buffer(len);
-                if (nvs_get_blob(handle, "Wi-Fi", &buffer, &len) == ESP_OK)
+                JsonDocument _saved; // NOLINT(misc-const-correctness)
+                std::vector<char> buffer(length);
+                if (nvs_get_blob(handle, "Wi-Fi", buffer.data(), &length) == ESP_OK &&
+                    deserializeJson(_saved, buffer.data(), length) == DeserializationError::Code::Ok)
                 {
-                    nvs_close(handle);
-                    JsonDocument _saved; // NOLINT(misc-const-correctness)
-                    if (deserializeJson(_saved, buffer.data(), len) == DeserializationError::Code::Ok)
+                    JsonArray saved{doc["saved"].to<JsonArray>()};
+                    for (const JsonPairConst pair : _saved.as<JsonObjectConst>())
                     {
-                        JsonArray saved{doc["saved"].to<JsonArray>()};
-                        for (const JsonPairConst pair : _saved.as<JsonObjectConst>())
-                        {
-                            saved.add(pair.key());
-                        }
+                        saved.add(pair.key());
                     }
                 }
-                else
-                {
-                    nvs_close(handle);
-                }
             }
+            nvs_close(handle);
         }
     }
     doc["ssid"].set(WiFi.SSID());
@@ -365,4 +363,4 @@ ConnectivityService &ConnectivityService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-ConnectivityService &Connectivity = ConnectivityService::getInstance();
+ConnectivityService &Connectivity{ConnectivityService::getInstance()};

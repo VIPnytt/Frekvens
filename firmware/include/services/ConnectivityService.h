@@ -12,11 +12,11 @@ class ConnectivityService final : public ServiceModule
 private:
     explicit ConnectivityService() : ServiceModule("Connectivity") {};
 
-    bool mDNS = false;
-    bool pending = false;
-    bool routable = false;
+    bool mdns{false};
+    bool pending{false};
+    bool routable{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     std::unique_ptr<DNSServer> dns{};
 
@@ -27,12 +27,12 @@ private:
     void connect(const char *ssid, const char *key);
     void transmit();
 
-    static void onConnected(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv4(WiFiEvent_t event, WiFiEventInfo_t info);
-    static void onIPv6(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onConnected(arduino_event_id_t event);
+    static void onDisconnected(arduino_event_id_t event, arduino_event_info_t info);
+    static void onIPv4(arduino_event_id_t event, arduino_event_info_t info);
+    static void onIPv6(arduino_event_id_t event, arduino_event_info_t info);
     static void onRoutable();
-    static void onScan(WiFiEvent_t event, WiFiEventInfo_t info);
+    static void onScan(arduino_event_id_t event);
 
 public:
     void configure();
