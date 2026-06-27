@@ -43,6 +43,7 @@ template <typename T, size_t N> FontModule::Symbol FontModule::toSymbol(const st
 }
 
 template <typename T, size_t N>
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 FontModule::Symbol FontModule::toSymbol(const std::array<T, N> &bitmap, int8_t offsetY) const
 {
     return {bitmap, 0U, offsetY};

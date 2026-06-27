@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"      // NOLINT(misc-include-cleaner)
 #include "modules/HandlerModule.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 
