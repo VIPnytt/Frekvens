@@ -106,7 +106,7 @@ void TickerMode::handle()
 
 void TickerMode::setFont(std::string_view fontName)
 {
-    if (Fonts.has(fontName))
+    if (std::ranges::find(FontsService::names, fontName) != FontsService::names.end())
     {
         font = Fonts.get(fontName);
         nvs_handle_t handle{};

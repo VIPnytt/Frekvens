@@ -117,7 +117,7 @@ void CountdownMode::save()
 
 void CountdownMode::setFont(std::string_view _fontName)
 {
-    if (Fonts.has(_fontName))
+    if (std::ranges::find(FontsService::names, _fontName) != FontsService::names.end())
     {
         fontName = _fontName;
         nvs_handle_t handle{};
