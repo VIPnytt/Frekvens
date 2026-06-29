@@ -37,7 +37,7 @@ void PlaylistExtension::handle()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint16_t _duration{0U};
-            size_t length{0U}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{0U}; // NOLINT(cppcoreguidelines-init-variables,misc-const-correctness)
             const std::string _modeKey{std::string("mode").append(std::to_string(step))};
             if (nvs_get_str(handle, _modeKey.c_str(), nullptr, &length) == ESP_OK && length > 1U &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(step)).c_str(), &_duration) ==

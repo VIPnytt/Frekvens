@@ -30,7 +30,7 @@ void ModesService::begin()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<char, namesMaxLength + 1U> _modeName{};
-            size_t length{_modeName.size()};
+            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
             if (nvs_get_str(handle, "mode", _modeName.data(), &length) == ESP_OK && length > 1U)
             {
                 setMode({_modeName.data(), length - 1U});

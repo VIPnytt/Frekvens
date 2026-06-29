@@ -55,7 +55,7 @@ void TickerMode::begin()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()};
+        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
         {
             setFont({_fontName.data(), length - 1U});
