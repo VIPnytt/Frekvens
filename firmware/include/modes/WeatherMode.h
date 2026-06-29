@@ -60,6 +60,19 @@ private:
 #endif
     })};
 
+    static constexpr size_t providerNamesMaxLength{[]
+                                                   {
+                                                       size_t length{0U};
+                                                       for (const std::string_view _name : providerNames)
+                                                       {
+                                                           if (_name.size() > length)
+                                                           {
+                                                               length = _name.size();
+                                                           }
+                                                       }
+                                                       return length;
+                                                   }()};
+
     unsigned long lastMillis{0UL};
 
     std::optional<WeatherHandler::Condition> condition{};
