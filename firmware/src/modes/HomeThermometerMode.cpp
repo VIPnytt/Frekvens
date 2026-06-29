@@ -90,7 +90,7 @@ void HomeThermometerMode::setTemperature(std::string_view where, int16_t tempera
         outdoor = temperature;
     }
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_i16(handle, "indoor", indoor);
         nvs_set_i16(handle, "outdoor", outdoor);

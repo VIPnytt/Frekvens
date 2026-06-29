@@ -13,7 +13,7 @@
 void StreamMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         nvs_get_u16(handle, "port", &port);
         nvs_close(handle);
@@ -39,7 +39,7 @@ void StreamMode::set(uint16_t _port)
     }
     port = _port;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u16(handle, "port", port);
         nvs_commit(handle);

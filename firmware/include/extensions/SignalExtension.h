@@ -12,11 +12,11 @@ class SignalExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Signal"};
 
-    bool active = false;
+    bool active{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
-    uint8_t duration = 30;
+    uint32_t duration{INT16_MAX};
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 

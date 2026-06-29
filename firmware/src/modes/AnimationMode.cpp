@@ -24,15 +24,14 @@ void AnimationMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
             size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
             if (nvs_get_blob(handle, std::to_string(index).c_str(), frame.data(), &length) == ESP_OK)
             {
-                nvs_close(handle);
-                Display.setFrame(frame);
                 lastMillis = millis();
+                Display.setFrame(frame);
                 if (pending)
                 {
                     transmit(index, frame);
@@ -41,15 +40,14 @@ void AnimationMode::handle()
             }
             else if (index == 0U)
             {
-                nvs_close(handle);
                 lastMillis = millis() + UINT16_MAX;
             }
             else
             {
-                nvs_close(handle);
                 index = 0U;
                 pending = false;
             }
+            nvs_close(handle);
         }
     }
 }
@@ -59,7 +57,7 @@ void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2U);
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_blob(handle, std::to_string(_index).c_str(), frame.data(), frame.size());
         nvs_commit(handle);
@@ -73,11 +71,12 @@ void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 void AnimationMode::setFrames(uint8_t count)
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         for (uint8_t i{count}; i >= 2U; ++i)
         {
-            if (nvs_erase_key(handle, std::to_string(i).c_str()) != ESP_OK)
+            if (nvs_find_key(handle, std::to_string(i).c_str(), nullptr) != ESP_OK ||
+                nvs_erase_key(handle, std::to_string(i).c_str()) != ESP_OK)
             {
                 break;
             }

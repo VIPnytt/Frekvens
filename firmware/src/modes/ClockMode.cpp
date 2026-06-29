@@ -16,13 +16,14 @@ static_assert(GRID_ROWS >= 16U, __STRING(MODE_CLOCK) " is not compatible with th
 void ClockMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length != 0U)
+        std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
+        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
+            std::ranges::find(fontNames, std::string_view{_fontName.data(), length - 1U}) != fontNames.end())
         {
-            fontName.resize(length - 1U);
-            nvs_get_str(handle, "font", fontName.data(), &length);
+            fontName.assign(_fontName.data(), length - 1U);
         }
         uint8_t _ticking{0U};
         if (nvs_get_u8(handle, "ticking", &_ticking) == ESP_OK)
@@ -110,7 +111,7 @@ void ClockMode::setFont(std::string_view _fontName)
     {
         fontName = _fontName;
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
             nvs_set_str(handle, "font", fontName.c_str());
             nvs_commit(handle);
@@ -125,7 +126,7 @@ void ClockMode::setTicking(bool _ticking)
 {
     ticking = _ticking;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "ticking", static_cast<uint8_t>(ticking)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);

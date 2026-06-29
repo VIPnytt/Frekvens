@@ -27,20 +27,15 @@ void ModesService::begin()
     else
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
-            size_t length{0U};
-            if (nvs_get_str(handle, "mode", nullptr, &length) == ESP_OK && length != 0U)
+            std::array<char, namesMaxLength + 1U> _modeName{};
+            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            if (nvs_get_str(handle, "mode", _modeName.data(), &length) == ESP_OK && length > 1U)
             {
-                std::vector<char> _mode(length);
-                nvs_get_str(handle, "mode", _mode.data(), &length);
-                nvs_close(handle);
-                setMode(_mode.data());
+                setMode({_modeName.data(), length - 1U});
             }
-            else
-            {
-                nvs_close(handle);
-            }
+            nvs_close(handle);
         }
     }
     if (mode == nullptr)
@@ -59,9 +54,9 @@ void ModesService::handle()
         mode->begin();
         setActive(true);
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            nvs_set_str(handle, "mode", std::string(mode->name).c_str());
+            nvs_set_str(handle, "mode", mode->name.data());
             nvs_commit(handle);
             nvs_close(handle);
         }

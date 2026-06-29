@@ -53,6 +53,19 @@ public:
 #endif // FONT_LARGE
     })};
 
+    static constexpr size_t namesMaxLength{[]
+                                           {
+                                               size_t length{0U}; // NOLINT(misc-const-correctness)
+                                               for (const std::string_view _name : names)
+                                               {
+                                                   if (_name.size() > length)
+                                                   {
+                                                       length = _name.size();
+                                                   }
+                                               }
+                                               return length;
+                                           }()};
+
     static FontsService &getInstance();
 };
 

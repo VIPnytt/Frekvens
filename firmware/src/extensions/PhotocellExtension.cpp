@@ -14,20 +14,13 @@ void PhotocellExtension::configure() { pinMode(PIN_LDR, ANALOG); }
 void PhotocellExtension::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t length{sizeof(gamma)};
         nvs_get_blob(handle, "gamma", &gamma, &length);
         uint8_t _active{0U};
-        if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
-        {
-            nvs_close(handle);
-            static_cast<bool>(_active) ? setActive(true) : transmit();
-        }
-        else
-        {
-            nvs_close(handle);
-        }
+        (nvs_get_u8(handle, "active", &_active) == ESP_OK && static_cast<bool>(_active)) ? setActive(true) : transmit();
+        nvs_close(handle);
     }
 }
 
@@ -79,7 +72,7 @@ void PhotocellExtension::setActive(bool _active)
     }
     active = _active;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "active", static_cast<uint8_t>(active)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
@@ -93,7 +86,7 @@ void PhotocellExtension::setGamma(float _gamma)
 {
     gamma = _gamma;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_blob(handle, "gamma", &gamma, sizeof(gamma));
         nvs_commit(handle);

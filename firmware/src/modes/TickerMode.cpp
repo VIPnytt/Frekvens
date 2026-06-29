@@ -14,25 +14,29 @@
 void TickerMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{0U};
-        if (nvs_get_str(handle, "message", nullptr, &length) == ESP_OK && length > 1U)
         {
-            message.resize(length - 1U);
-            nvs_get_str(handle, "message", message.data(), &length);
+            size_t length{0U};
+            if (nvs_get_str(handle, "message", nullptr, &length) == ESP_OK && length > 1U)
+            {
+                std::string _message(length, '\0');
+                if (nvs_get_str(handle, "message", _message.data(), &length) == ESP_OK)
+                {
+                    _message.resize(length - 1U);
+                    message = std::move(_message);
+                }
+            }
         }
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _font(length);
-            nvs_get_str(handle, "font", _font.data(), &length);
-            nvs_close(handle);
-            setFont(_font.data());
+            std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
+            size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
+            {
+                setFont({_fontName.data(), length - 1U});
+            }
         }
-        else
-        {
-            nvs_close(handle);
-        }
+        nvs_close(handle);
     }
     if (!font)
     {
@@ -48,20 +52,15 @@ void TickerMode::configure()
 void TickerMode::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length > 1U)
+        std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
+        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
         {
-            std::vector<char> _font(length);
-            nvs_get_str(handle, "font", _font.data(), &length);
-            nvs_close(handle);
-            setFont(_font.data());
+            setFont({_fontName.data(), length - 1U});
         }
-        else
-        {
-            nvs_close(handle);
-        }
+        nvs_close(handle);
     }
     if (!font)
     {
@@ -110,9 +109,9 @@ void TickerMode::setFont(std::string_view fontName)
     {
         font = Fonts.get(fontName);
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            nvs_set_str(handle, "font", std::string(font->name).c_str());
+            nvs_set_str(handle, "font", font->name.data());
             nvs_commit(handle);
             nvs_close(handle);
         }
@@ -126,7 +125,7 @@ void TickerMode::setMessage(std::string_view _message)
     {
         message = _message;
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
             nvs_set_str(handle, "message", message.c_str());
             nvs_commit(handle);
