@@ -13,10 +13,10 @@
 void MessageExtension::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()};
+        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
             std::ranges::find(FontsService::names, std::string_view{_fontName.data(), length - 1U}) !=
                 FontsService::names.end())

@@ -37,7 +37,7 @@ void PlaylistExtension::handle()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint16_t _duration{0U};
-            size_t length{0U};
+            size_t length{0U}; // NOLINT(cppcoreguidelines-init-variables)
             const std::string _modeKey{std::string("mode").append(std::to_string(step))};
             if (nvs_get_str(handle, _modeKey.c_str(), nullptr, &length) == ESP_OK && length > 1U &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(step)).c_str(), &_duration) ==
@@ -45,7 +45,7 @@ void PlaylistExtension::handle()
                 _duration != 0U)
             {
                 std::array<char, ModesService::namesMaxLength + 1U> _modeName{};
-                size_t length{_modeName.size()};
+                length = _modeName.size();
                 if (nvs_get_str(handle, _modeKey.c_str(), _modeName.data(), &length) == ESP_OK &&
                     std::ranges::find(ModesService::names, std::string_view{_modeName.data(), length - 1U}) !=
                         ModesService::names.end())
@@ -127,16 +127,16 @@ void PlaylistExtension::transmit()
         for (size_t _step{0U}; _step <= UINT8_MAX; ++_step)
         {
             uint16_t _duration{0U};
-            size_t _length{_modeName.size()};
+            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
             if (nvs_get_str(
-                    handle, std::string("mode").append(std::to_string(_step)).c_str(), _modeName.data(), &_length) ==
+                    handle, std::string("mode").append(std::to_string(_step)).c_str(), _modeName.data(), &length) ==
                     ESP_OK &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(_step)).c_str(), &_duration) ==
                     ESP_OK)
             {
                 JsonObject item{playlist.add<JsonObject>()};
                 item["duration"].set(_duration);
-                item["mode"].set(std::string_view{_modeName.data(), _length - 1U});
+                item["mode"].set(std::string_view{_modeName.data(), length - 1U});
             }
             else
             {

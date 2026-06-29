@@ -1,8 +1,8 @@
 #pragma once
 
-#include "config/constants.h"      // NOLINT(misc-include-cleaner)
-#include "modules/HandlerModule.h" // NOLINT(misc-include-cleaner)
-#include "services/DisplayService.h"
+#include "config/constants.h"        // NOLINT(misc-include-cleaner)
+#include "modules/HandlerModule.h"   // NOLINT(misc-include-cleaner)
+#include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
 #include <span>
 #include <string_view>

@@ -44,7 +44,7 @@ void WeatherMode::begin()
         if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
         {
             std::array<char, providerNamesMaxLength + 1U> _providerName{};
-            size_t length{_providerName.size()};
+            size_t length{_providerName.size()}; // NOLINT(cppcoreguidelines-init-variables)
             if (nvs_get_str(handle, "provider", _providerName.data(), &length) == ESP_OK)
             {
                 setProvider({_providerName.data(), length - 1U});
