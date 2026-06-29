@@ -15,7 +15,7 @@ static_assert(GRID_ROWS >= 12U, __STRING(MODE_WAVEFORM) " is not compatible with
 void WaveformMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         uint8_t _wave{static_cast<uint8_t>(wave)};
         nvs_get_u8(handle, "wave", &_wave);
@@ -66,7 +66,7 @@ void WaveformMode::setWave(std::string_view waveName)
         }
     }
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "wave", static_cast<uint8_t>(wave));
         nvs_commit(handle);

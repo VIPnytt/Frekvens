@@ -19,15 +19,14 @@ static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with thi
 void SnakeMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         uint8_t _clock{0U};
-        nvs_get_u8(handle, "clock", &_clock);
-        nvs_close(handle);
-        if (static_cast<bool>(_clock))
+        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK && static_cast<bool>(_clock))
         {
             clock = std::make_unique<ClockHandler>();
         }
+        nvs_close(handle);
     }
     transmit();
 }
@@ -35,15 +34,14 @@ void SnakeMode::configure()
 void SnakeMode::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         uint8_t _clock{0U};
-        nvs_get_u8(handle, "clock", &_clock);
-        nvs_close(handle);
-        if (static_cast<bool>(_clock))
+        if (nvs_get_u8(handle, "clock", &_clock) == ESP_OK && static_cast<bool>(_clock))
         {
             clock = std::make_unique<ClockHandler>();
         }
+        nvs_close(handle);
     }
     Display.clearFrame();
     stage = 0U;

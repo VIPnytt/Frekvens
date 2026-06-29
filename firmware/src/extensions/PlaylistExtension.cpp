@@ -15,18 +15,12 @@ void PlaylistExtension::begin()
     if (std::ranges::none_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint8_t _active{0};
-            if (nvs_get_u8(handle, "active", &_active) == ESP_OK)
-            {
-                nvs_close(handle);
-                static_cast<bool>(_active) ? setActive(true) : transmit();
-            }
-            else
-            {
-                nvs_close(handle);
-            }
+            (nvs_get_u8(handle, "active", &_active) == ESP_OK && static_cast<bool>(_active)) ? setActive(true)
+                                                                                             : transmit();
+            nvs_close(handle);
         }
     }
     else
@@ -40,34 +34,38 @@ void PlaylistExtension::handle()
     if (active && Display.getPower() && millis() - lastMillis > duration)
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint16_t _duration{0U};
             size_t length{0U};
-            const std::string _step{std::to_string(step)};
-            if (nvs_get_str(handle, std::string("mode").append(_step).c_str(), nullptr, &length) == ESP_OK &&
-                length > 1U &&
-                nvs_get_u16(handle, std::string("duration").append(_step).c_str(), &_duration) == ESP_OK &&
-                _duration > 0U)
+            const std::string _modeKey{std::string("mode").append(std::to_string(step))};
+            if (nvs_get_str(handle, _modeKey.c_str(), nullptr, &length) == ESP_OK && length > 1U &&
+                nvs_get_u16(handle, std::string("duration").append(std::to_string(step)).c_str(), &_duration) ==
+                    ESP_OK &&
+                _duration != 0U)
             {
-                mode.resize(length - 1U);
-                nvs_get_str(handle, std::string("mode").append(_step).c_str(), mode.data(), &length);
-                nvs_close(handle);
-                duration = _duration * 1'000U;
-                Modes.setMode(mode);
-                lastMillis = millis();
+                std::array<char, ModesService::namesMaxLength + 1U> _modeName{};
+                size_t length{_modeName.size()};
+                if (nvs_get_str(handle, _modeKey.c_str(), _modeName.data(), &length) == ESP_OK &&
+                    std::ranges::find(ModesService::names, std::string_view{_modeName.data(), length - 1U}) !=
+                        ModesService::names.end())
+                {
+                    duration = _duration * 1'000U;
+                    mode.assign(_modeName.data(), length - 1U);
+                    Modes.setMode(mode);
+                    lastMillis = millis();
+                }
                 ++step;
             }
             else if (step == 0U)
             {
-                nvs_close(handle);
                 setActive(false);
             }
             else
             {
-                nvs_close(handle);
                 step = 0U;
             }
+            nvs_close(handle);
         }
     }
 }
@@ -80,7 +78,7 @@ void PlaylistExtension::setActive(bool _active)
     {
         active = _active;
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
             nvs_set_u8(handle, "active", static_cast<uint8_t>(active)); // NOLINT(readability-implicit-bool-conversion)
             nvs_commit(handle);
@@ -95,7 +93,7 @@ void PlaylistExtension::setActive(bool _active)
 void PlaylistExtension::setPlaylist(std::span<const std::pair<std::string, uint16_t>> playlist)
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         size_t _step{0U};
         for (std::pair<std::string, uint16_t> item : playlist)
@@ -105,10 +103,10 @@ void PlaylistExtension::setPlaylist(std::span<const std::pair<std::string, uint1
             ++_step;
         }
         while (_step <= UINT8_MAX &&
-               nvs_find_key(handle, std::string("mode").append(std::to_string(_step)).c_str(), nullptr) == ESP_OK)
+               nvs_find_key(handle, std::string("mode").append(std::to_string(_step)).c_str(), nullptr) == ESP_OK &&
+               nvs_erase_key(handle, std::string("mode").append(std::to_string(_step)).c_str()) == ESP_OK &&
+               nvs_erase_key(handle, std::string("duration").append(std::to_string(_step)).c_str()) == ESP_OK)
         {
-            nvs_erase_key(handle, std::string("mode").append(std::to_string(_step)).c_str());
-            nvs_erase_key(handle, std::string("duration").append(std::to_string(_step)).c_str());
             ++_step;
         }
         nvs_commit(handle);
@@ -123,24 +121,22 @@ void PlaylistExtension::transmit()
     doc["active"].set(active);
     JsonArray playlist{doc["playlist"].to<JsonArray>()};
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
+        std::array<char, ModesService::namesMaxLength + 1U> _modeName{};
         for (size_t _step{0U}; _step <= UINT8_MAX; ++_step)
         {
-            size_t _length{0U};
             uint16_t _duration{0U};
-            if (nvs_get_str(handle, std::string("mode").append(std::to_string(_step)).c_str(), nullptr, &_length) ==
+            size_t _length{_modeName.size()};
+            if (nvs_get_str(
+                    handle, std::string("mode").append(std::to_string(_step)).c_str(), _modeName.data(), &_length) ==
                     ESP_OK &&
-                _length > 1U &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(_step)).c_str(), &_duration) ==
-                    ESP_OK &&
-                _duration != 0U)
+                    ESP_OK)
             {
-                std::unique_ptr<char[]> _mode{std::make_unique<char[]>(_length)};
-                nvs_get_str(handle, std::string("mode").append(std::to_string(_step)).c_str(), _mode.get(), &_length);
                 JsonObject item{playlist.add<JsonObject>()};
                 item["duration"].set(_duration);
-                item["mode"].set(_mode.get());
+                item["mode"].set(std::string_view{_modeName.data(), _length - 1U});
             }
             else
             {

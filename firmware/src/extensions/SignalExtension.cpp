@@ -13,9 +13,13 @@
 void SignalExtension::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        nvs_get_u8(handle, "duration", &duration);
+        uint8_t _duration{0U};
+        if (nvs_get_u8(handle, "duration", &_duration) == ESP_OK)
+        {
+            duration = _duration * 1'000U;
+        }
         nvs_close(handle);
     }
     transmit();
@@ -23,14 +27,13 @@ void SignalExtension::begin()
 
 void SignalExtension::handle()
 {
-    if (Display.getPower() && millis() - lastMillis > 1'000 * duration)
+    if (Display.getPower() && millis() - lastMillis > duration)
     {
         if (!signals.empty())
         {
             Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
-
             Display.clearFrame();
             BitmapHandler(std::span<const uint16_t>{signals.front()}).draw();
             signals.erase(signals.begin());
@@ -51,21 +54,25 @@ void SignalExtension::handle()
 
 void SignalExtension::setDuration(uint8_t seconds)
 {
-    duration = seconds;
-    nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    const uint32_t _duration{seconds * 1'000U};
+    if (_duration != duration && _duration != 0U)
     {
-        nvs_set_u8(handle, "duration", duration);
-        nvs_commit(handle);
-        nvs_close(handle);
+        duration = _duration;
+        nvs_handle_t handle{};
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        {
+            nvs_set_u8(handle, "duration", seconds);
+            nvs_commit(handle);
+            nvs_close(handle);
+        }
+        transmit();
     }
-    transmit();
 }
 
 void SignalExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["duration"].set(duration);
+    doc["duration"].set(duration / 1'000U);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 

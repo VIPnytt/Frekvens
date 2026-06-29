@@ -18,24 +18,19 @@ static_assert(GRID_ROWS >= 14U, __STRING(MODE_WEATHER) " is not compatible with 
 void WeatherMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{0U};
-        if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
+        std::array<char, providerNamesMaxLength + 1U> _providerName{};
+        size_t length{_providerName.size()};
+        if (nvs_get_str(handle, "provider", _providerName.data(), &length) == ESP_OK)
         {
-            std::vector<char> _provider(length);
-            nvs_get_str(handle, "provider", _provider.data(), &length);
-            nvs_close(handle);
-            setProvider(_provider.data());
+            setProvider({_providerName.data(), length - 1U});
         }
-        else
-        {
-            nvs_close(handle);
-        }
+        nvs_close(handle);
     }
     if (provider == nullptr)
     {
-        setProvider(providerNames.front());
+        setProvider(providerNames[0U]);
     }
     transmit();
 }
@@ -43,24 +38,23 @@ void WeatherMode::configure()
 void WeatherMode::begin()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         size_t length{0U};
         if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
         {
-            std::vector<char> _provider(length);
-            nvs_get_str(handle, "provider", _provider.data(), &length);
-            nvs_close(handle);
-            setProvider(_provider.data());
-        }
-        else
-        {
+            std::array<char, providerNamesMaxLength + 1U> _providerName{};
+            size_t length{_providerName.size()};
+            if (nvs_get_str(handle, "provider", _providerName.data(), &length) == ESP_OK)
+            {
+                setProvider({_providerName.data(), length - 1U});
+            }
             nvs_close(handle);
         }
     }
     if (provider == nullptr)
     {
-        setProvider(providerNames.front());
+        setProvider(providerNames[0U]);
     }
     lastMillis = millis() - provider->interval;
 }
@@ -146,9 +140,9 @@ void WeatherMode::setProvider(std::string_view providerName)
     if (provider)
     {
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
-            nvs_set_str(handle, "provider", std::string(provider->name).c_str());
+            nvs_set_str(handle, "provider", provider->name.data());
             nvs_commit(handle);
             nvs_close(handle);
         }

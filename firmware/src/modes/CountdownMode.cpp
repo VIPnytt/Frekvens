@@ -20,24 +20,22 @@ static_assert(GRID_ROWS >= 11U, __STRING(MODE_COUNTDOWN) " is not compatible wit
 void CountdownMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{0U};
-        if (nvs_get_str(handle, "font", nullptr, &length) == ESP_OK && length != 0U)
+        std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
+        size_t length{_fontName.size()};
+        if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
+            std::ranges::find(FontsService::names, std::string_view{_fontName.data(), length - 1U}) !=
+                FontsService::names.end())
         {
-            fontName.resize(length - 1U);
-            nvs_get_str(handle, "font", fontName.data(), &length);
+            fontName.assign(_fontName.data(), length - 1U);
         }
-        int64_t _epoch{};
-        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK) // NOLINT(bugprone-branch-clone)
+        int64_t _epoch{0};
+        if (nvs_get_i64(handle, "epoch", &_epoch) == ESP_OK && _epoch != 0)
         {
-            nvs_close(handle);
             epoch = std::chrono::system_clock::time_point{std::chrono::seconds{_epoch}};
         }
-        else
-        {
-            nvs_close(handle);
-        }
+        nvs_close(handle);
     }
     transmit();
 }
@@ -105,7 +103,7 @@ void CountdownMode::save()
 {
     blink = 0U;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_i64(
             handle, "epoch", std::chrono::duration_cast<std::chrono::seconds>(epoch.time_since_epoch()).count());
@@ -121,7 +119,7 @@ void CountdownMode::setFont(std::string_view _fontName)
     {
         fontName = _fontName;
         nvs_handle_t handle{};
-        if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+        if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
             nvs_set_str(handle, "font", fontName.c_str());
             nvs_commit(handle);
