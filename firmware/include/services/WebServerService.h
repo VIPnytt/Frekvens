@@ -12,7 +12,7 @@ private:
     static void onNotFound(AsyncWebServerRequest *request);
 
 public:
-    AsyncWebServer *http = new AsyncWebServer(80);
+    AsyncWebServer *http{new AsyncWebServer(80U)};
 
     void configure() const;
     void begin() const;

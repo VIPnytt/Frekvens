@@ -2,7 +2,6 @@
 
 #include "extensions/WebAppExtension.h"
 
-#include "services/ExtensionsService.h"
 #include "services/WebServerService.h"
 
 #include <HTTPClient.h>
@@ -10,15 +9,7 @@
 
 void WebAppExtension::configure()
 {
-    if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))
-    {
-        ESP_LOGE("Web server", "Filesystem Image not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-#if EXTENSION_STATUSLED
-        Extensions.StatusLed().error();
-#endif // EXTENSION_STATUSLED
-        return;
-    }
-    WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
+    WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_GET, &onGetRoot);
 }
 
 void WebAppExtension::begin()
@@ -26,9 +17,14 @@ void WebAppExtension::begin()
     WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
 }
 
+void WebAppExtension::onGetRoot(AsyncWebServerRequest *request)
+{
+    request->send(request->beginResponse(LittleFS, "/webapp/index.html", "text/html"));
+}
+
 void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
 {
-    AsyncWebServerResponse *response = request->beginResponse(t_http_codes::HTTP_CODE_OK);
+    AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_OK)};
     response->addHeader("Access-Control-Allow-Methods", "HEAD");
     response->addHeader("Access-Control-Allow-Origin", "*");
     request->send(response);
