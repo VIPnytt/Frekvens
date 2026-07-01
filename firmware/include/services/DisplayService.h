@@ -102,7 +102,6 @@ public:
     void setPixel(uint8_t x, uint8_t y, uint8_t _brightness = UINT8_MAX);
 
     void drawEllipse(float x, float y, float radius, bool fill = false, uint8_t _brightness = UINT8_MAX);
-    void drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, uint8_t _brightness = UINT8_MAX);
 
     void flush();
 
