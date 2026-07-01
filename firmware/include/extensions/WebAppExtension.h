@@ -11,6 +11,7 @@ class WebAppExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Web app"};
 
+    static void onGetRoot(AsyncWebServerRequest *request);
     static void onHeadRoot(AsyncWebServerRequest *request);
 
 public:

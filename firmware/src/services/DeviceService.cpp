@@ -7,6 +7,7 @@
 #include "services/ModesService.h"
 #include "services/WebServerService.h"
 
+#include <LittleFS.h>
 #include <array>
 #include <nvs_flash.h>
 #include <string_view>
@@ -15,8 +16,8 @@ void DeviceService::begin()
 {
     Serial.begin(MONITOR_SPEED);
     vTaskDelay(INT8_MAX);
-    ESP_LOGI("Device", "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGD("Device", MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI(name.data(), "Frekvens " VERSION);    // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), MANUFACTURER " " MODEL); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #if SOC_PM_SUPPORT_EXT_WAKEUP || SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
     gpio_deep_sleep_hold_dis();
@@ -89,6 +90,7 @@ void DeviceService::begin()
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW2), ESP_GPIO_WAKEUP_GPIO_LOW);
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
+    LittleFS.begin(false, "/littlefs", 1U, "littlefs");
     taskHandle = xTaskGetCurrentTaskHandle();
     Display.configure();
     Connectivity.configure();
@@ -96,13 +98,13 @@ void DeviceService::begin()
     Extensions.configure();
     Modes.configure();
     operational = true;
-    ESP_LOGV("Status", "operational"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "operational"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     WebServer.begin();
     Fonts.begin();
     Extensions.begin();
     Modes.begin();
     transmit();
-    ESP_LOGD("Status", "ready"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "ready"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void DeviceService::handle()
