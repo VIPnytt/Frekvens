@@ -431,30 +431,6 @@ void DisplayService::drawEllipse(float x, float y, float radius, bool fill, uint
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-void DisplayService::drawRectangle(uint8_t minX, uint8_t minY, uint8_t maxX, uint8_t maxY, uint8_t brightness)
-{
-    for (uint16_t x{minX}; x < uint16_t{maxX} + 1U; ++x)
-    {
-        setPixel(static_cast<uint8_t>(x), minY, brightness);
-        if (minY != maxY)
-        {
-            setPixel(static_cast<uint8_t>(x), maxY, brightness);
-        }
-    }
-    if (minY + 1U < maxY)
-    {
-        for (uint16_t y{static_cast<uint16_t>(minY + 1U)}; y < uint16_t{maxY}; ++y)
-        {
-            setPixel(minX, static_cast<uint8_t>(y), brightness);
-            if (maxX != minX)
-            {
-                setPixel(maxX, static_cast<uint8_t>(y), brightness);
-            }
-        }
-    }
-}
-
 void DisplayService::transmit()
 {
     const bool rotated{(static_cast<uint8_t>(orientation) & 0b1U) != 0U};
