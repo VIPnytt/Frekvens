@@ -22,7 +22,7 @@
         "@solid-primitives/websocket": "1.4.0",
         "js-cookie": "3.0.8",
         "solid-js": "1.9.13",
-        "temporal-polyfill-lite": "^0.4.0"
+        "temporal-polyfill-lite": "^0.4.2"
     },
     "devDependencies": {
         "@biomejs/biome": "2.4.16",
