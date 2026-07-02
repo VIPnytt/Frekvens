@@ -5,6 +5,7 @@
 #include "modules/ExtensionModule.h"
 
 #include <ESPAsyncWebServer.h>
+#include <array>
 
 class WebAppExtension final : public ExtensionModule
 {

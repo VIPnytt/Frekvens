@@ -34,14 +34,14 @@ void WebAppExtension::onGetRoot(AsyncWebServerRequest *request)
     if (_etag != nullptr && strcmp(_etag->value().c_str(), etag.data()) == 0)
     {
         AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_NOT_MODIFIED)};
-        response->setContentLength(length);
+        response->addHeader("ETag", etag.data(), false);
         request->send(response);
     }
     else
     {
         AsyncWebServerResponse *response{request->beginResponse(LittleFS, path.data(), "text/html")};
         response->addHeader("Content-Encoding", "gzip", false);
-        response->addHeader("Etag", etag.data(), false);
+        response->addHeader("ETag", etag.data(), false);
         request->send(response);
     }
 }
@@ -51,7 +51,7 @@ void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
     AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_OK)};
     response->addHeader("Access-Control-Allow-Methods", "HEAD", false);
     response->addHeader("Access-Control-Allow-Origin", "*", false);
-    response->addHeader("Etag", etag.data(), false);
+    response->addHeader("ETag", etag.data(), false);
     response->setContentLength(length);
     request->send(response);
 }

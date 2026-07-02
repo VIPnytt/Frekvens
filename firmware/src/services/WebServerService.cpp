@@ -5,17 +5,12 @@
 
 void WebServerService::configure() const { http->begin(); }
 
-void WebServerService::begin() const
-{
-#if EXTENSION_WEBAPP
-    http->onNotFound(&onNotFound);
-#endif // EXTENSION_WEBAPP
-}
+void WebServerService::begin() const { http->onNotFound(&onNotFound); }
 
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {
 #if EXTENSION_WEBAPP
-    if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
+    if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP && strcmp(request->host().c_str(), "192.168.4.1") != 0)
     {
         ESP_LOGV(WebServer.name.data(), "HTTP 302 Found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         request->redirect("http://192.168.4.1", t_http_codes::HTTP_CODE_FOUND);

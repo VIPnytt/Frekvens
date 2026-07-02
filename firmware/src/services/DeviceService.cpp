@@ -90,7 +90,12 @@ void DeviceService::begin()
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW2), ESP_GPIO_WAKEUP_GPIO_LOW);
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
-    LittleFS.begin(false, "/littlefs", 1U, "littlefs");
+#if EXTENSION_WEBAPP
+    if (!LittleFS.begin(false, "/littlefs", 1U, "littlefs"))
+    {
+        ESP_LOGE(name.data(), "Filesystem Image not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    }
+#endif // EXTENSION_WEBAPP
     taskHandle = xTaskGetCurrentTaskHandle();
     Display.configure();
     Connectivity.configure();
