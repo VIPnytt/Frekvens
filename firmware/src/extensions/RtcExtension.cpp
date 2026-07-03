@@ -24,12 +24,12 @@ void RtcExtension::configure()
             struct timeval tv{}; // NOLINT(misc-const-correctness)
             tv.tv_sec = static_cast<time_t>(rtc.GetDateTime().Unix64Time());
             settimeofday(&tv, nullptr);
-            ESP_LOGD("Status", "synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+            ESP_LOGD(name.data(), "synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
     }
     else
     {
-        ESP_LOGW("Status", "out of sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGW(name.data(), "out of sync"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
     sntp_set_time_sync_notification_cb(&sntpSetTimeSyncNotificationCallback);
 
@@ -90,7 +90,7 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
     tm utc{};
     gmtime_r(&timer, &utc);
     rtc.SetDateTime(RtcDateTime(utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday, utc.tm_hour, utc.tm_min, utc.tm_sec));
-    ESP_LOGV("Status", "NTP synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "NTP synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))

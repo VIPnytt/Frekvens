@@ -9,7 +9,7 @@ void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Conditio
 {
     if (queries.empty())
     {
-        ESP_LOGE("Weather", "provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(),"weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     query = queries.back();
@@ -52,7 +52,7 @@ void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Conditio
         return;
     }
     queries.pop_back();
-    ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     lastMillis = millis() - interval + (0b1U << 13U);
 }
 

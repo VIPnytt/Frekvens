@@ -27,7 +27,7 @@ void StreamMode::begin()
     {
         udp.onPacket(&onPacket);
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port);
+        ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
     }
 }
 
@@ -48,7 +48,7 @@ void StreamMode::set(uint16_t _port)
     if (udp.listen(port))
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGD("Status", "listening at " HOSTNAME ".local:%d", port);
+        ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
         transmit();
     }
 }

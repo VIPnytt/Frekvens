@@ -217,7 +217,7 @@ void DisplayService::setOrientation(Orientation _orientation)
         _frame[_pixels[i]] = frame[pixels[i]];
     }
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Status", "orientation %d°", static_cast<uint16_t>(_orientation) * 90U);
+    ESP_LOGI(name.data(), "orientation %d°", static_cast<int>(_orientation) * 90U);
     pixels = _pixels;
     orientation = _orientation;
     frame = _frame;
@@ -240,9 +240,9 @@ bool DisplayService::getPower() const { return power; }
 
 void DisplayService::setPower(bool _power)
 {
-    ESP_LOGI("Action", "power"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    if (_power)
+    if (_power && !power)
     {
+        ESP_LOGI(name.data(), "power on"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGamma(PIN_OE,
                       0U,
@@ -264,8 +264,9 @@ void DisplayService::setPower(bool _power)
         Modes.setActive(true);
         render = true;
     }
-    else
+    else if (!_power && power)
     {
+        ESP_LOGI(name.data(), "power off"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifdef SOC_LEDC_GAMMA_CURVE_FADE_SUPPORTED
         ledcFadeGammaWithInterrupt(
             PIN_OE,

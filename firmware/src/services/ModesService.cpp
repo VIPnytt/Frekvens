@@ -49,8 +49,7 @@ void ModesService::handle()
     if (scheduled && millis() - lastMillis > (1U << 11U))
     {
         scheduled = false;
-        ESP_LOGI(
-            "Mode", "%s", std::string(mode->name).c_str()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGI(name.data(), "Mode %s", mode->name.data()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         mode->begin();
         setActive(true);
         nvs_handle_t handle{};

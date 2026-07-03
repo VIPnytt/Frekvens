@@ -9,7 +9,7 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
 {
     if (paths.empty())
     {
-        ESP_LOGE("Weather", "provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(), "weather provider unavailable", name.data()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     path = paths.back();
@@ -36,7 +36,7 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
         return;
     }
     paths.pop_back();
-    ESP_LOGD("Response", "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     lastMillis = millis() - interval + (0b1U << 13U);
 }
 

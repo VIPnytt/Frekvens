@@ -69,7 +69,7 @@ void ButtonExtension::handle()
 #ifdef PIN_SW1
         Modes.setModeNext();
 #else
-        ESP_LOGI("Action", "power");
+        ESP_LOGI(name.data(), "power");
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
         event("mode", "short");
