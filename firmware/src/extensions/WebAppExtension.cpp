@@ -10,27 +10,51 @@
 
 void WebAppExtension::configure()
 {
-    if (!LittleFS.begin(false, "/littlefs", 1, "littlefs") || !LittleFS.exists("/webapp/index.html.gz"))
+    File file{LittleFS.open(path.data())};
+    length = file.size();
+    if (length == 0U)
     {
-        ESP_LOGE("Web server", "Filesystem Image not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(), "File not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #if EXTENSION_STATUSLED
         Extensions.StatusLed().error();
 #endif // EXTENSION_STATUSLED
-        return;
     }
-    WebServer.http->serveStatic("/", LittleFS, "/webapp/", "max-age=3600").setDefaultFile("index.html");
+    else
+    {
+        snprintf(etag.data(), etag.size(), R"("%08lx")", static_cast<unsigned long>(file.getLastWrite()));
+        file.close();
+        WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_GET, &onGetRoot);
+        WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
+    }
 }
 
-void WebAppExtension::begin()
+void WebAppExtension::onGetRoot(AsyncWebServerRequest *request)
 {
-    WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
+    const AsyncWebHeader *_etag{request->getHeader("If-None-Match")};
+    if (_etag != nullptr && strcmp(_etag->value().c_str(), etag.data()) == 0)
+    {
+        AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_NOT_MODIFIED)};
+        response->addHeader("ETag", etag.data(), false);
+        response->setContentLength(length);
+        request->send(response);
+    }
+    else
+    {
+        AsyncWebServerResponse *response{request->beginResponse(LittleFS, path.data(), "text/html")};
+        response->addHeader("Content-Encoding", "gzip", false);
+        response->addHeader("ETag", etag.data(), false);
+        request->send(response);
+    }
 }
 
 void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
 {
-    AsyncWebServerResponse *response = request->beginResponse(t_http_codes::HTTP_CODE_OK);
-    response->addHeader("Access-Control-Allow-Methods", "HEAD");
-    response->addHeader("Access-Control-Allow-Origin", "*");
+    AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_OK)};
+    response->addHeader("Access-Control-Allow-Methods", "HEAD", false);
+    response->addHeader("Access-Control-Allow-Origin", "*", false);
+    response->addHeader("Content-Encoding", "gzip", false);
+    response->addHeader("ETag", etag.data(), false);
+    response->setContentLength(length);
     request->send(response);
 }
 
