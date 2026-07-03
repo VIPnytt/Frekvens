@@ -21,7 +21,7 @@ void WebAppExtension::configure()
     }
     else
     {
-        snprintf(etag.data(), etag.size(), R"("%08lx")", static_cast<uint32_t>(file.getLastWrite()));
+        snprintf(etag.data(), etag.size(), R"("%08lx")", static_cast<unsigned long>(file.getLastWrite()));
         file.close();
         WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_GET, &onGetRoot);
         WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
