@@ -35,6 +35,7 @@ void WebAppExtension::onGetRoot(AsyncWebServerRequest *request)
     {
         AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_NOT_MODIFIED)};
         response->addHeader("ETag", etag.data(), false);
+        response->setContentLength(length);
         request->send(response);
     }
     else
