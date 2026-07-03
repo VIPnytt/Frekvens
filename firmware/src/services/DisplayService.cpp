@@ -217,7 +217,7 @@ void DisplayService::setOrientation(Orientation _orientation)
         _frame[_pixels[i]] = frame[pixels[i]];
     }
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI(name.data(), "orientation %d°", static_cast<int>(_orientation) * 90U);
+    ESP_LOGI(name.data(), "orientation %u°", static_cast<unsigned>(_orientation) * 90U);
     pixels = _pixels;
     orientation = _orientation;
     frame = _frame;
