@@ -9,7 +9,7 @@ void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Conditio
 {
     if (queries.empty())
     {
-        ESP_LOGE(name.data(),"weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(), "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     query = queries.back();

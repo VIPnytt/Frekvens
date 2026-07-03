@@ -61,7 +61,8 @@ void MicrophoneExtension::handle()
                         Device.transmit(doc.as<JsonObjectConst>(), name, false);
                         lastMillis = millis();
                     }
-                    ESP_LOGV(name.data(), "sound level %u", activity); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+                    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+                    ESP_LOGV(name.data(), "sound level %u", activity);
                 }
                 else if (activity > soundCeiling)
                 {
@@ -79,7 +80,8 @@ void MicrophoneExtension::handle()
             else if (triggered)
             {
                 triggered = false;
-                ESP_LOGV(name.data(), "silence level %u", activity); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+                ESP_LOGV(name.data(), "silence level %u", activity);
             }
             else if (activity < soundFloor)
             {

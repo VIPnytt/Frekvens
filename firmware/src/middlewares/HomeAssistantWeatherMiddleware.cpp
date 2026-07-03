@@ -9,7 +9,8 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
 {
     if (paths.empty())
     {
-        ESP_LOGE(name.data(), "weather provider unavailable", name.data()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(), "weather provider unavailable", name.data());
         return;
     }
     path = paths.back();

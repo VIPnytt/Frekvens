@@ -134,7 +134,8 @@ void InfraredExtension::parse() // NOLINT(readability-make-member-function-const
     if (IrReceiver.decodedIRData.flags == 0)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGV(name.data(), "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
+        ESP_LOGV(
+            name.data(), "%s 0x%X", ProtocolNames[IrReceiver.decodedIRData.protocol], IrReceiver.decodedIRData.command);
     }
 }
 

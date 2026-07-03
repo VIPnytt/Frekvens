@@ -9,7 +9,7 @@ void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &conditio
 {
     if (parts.empty())
     {
-        ESP_LOGE(name.data(),"weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGE(name.data(), "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
     path = parts.back().first;
