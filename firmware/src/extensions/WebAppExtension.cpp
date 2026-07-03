@@ -52,6 +52,7 @@ void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
     AsyncWebServerResponse *response{request->beginResponse(t_http_codes::HTTP_CODE_OK)};
     response->addHeader("Access-Control-Allow-Methods", "HEAD", false);
     response->addHeader("Access-Control-Allow-Origin", "*", false);
+    response->addHeader("Content-Encoding", "gzip", false);
     response->addHeader("ETag", etag.data(), false);
     response->setContentLength(length);
     request->send(response);
