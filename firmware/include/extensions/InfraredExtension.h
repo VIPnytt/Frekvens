@@ -19,46 +19,46 @@ private:
     static constexpr std::string_view name{"Infrared"};
 
 #ifdef DECODE_RC5
-    static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessDecrease{0x11}; // Philips: Volume-
-    static constexpr std::array<uint16_t, 1> rc5DisplayBrightnessIncrease{0x10}; // Philips: Volume+
-    static constexpr std::array<uint16_t, 1> rc5DisplayPowerToggle{0xC};         // Philips: Power
-    static constexpr std::array<uint16_t, 1> rc5ExtensionMicrophoneToggle{0xD};  // Philips: Mute
-    static constexpr std::array<uint16_t, 1> rc5ExtensionPhotocellToggle{0x47};  // Philips: Dim
-    static constexpr std::array<uint16_t, 1> rc5ExtensionPlaylistStart{0x35};    // Philips: Play/pause
-    static constexpr std::array<uint16_t, 1> rc5ExtensionPlaylistStop{0x36};     // Philips: Stop
-    static constexpr std::array<uint16_t, 2> rc5ModeNext{
-        0x1E, // Philips: Album next
-        0x20, // Philips: Title next
+    static constexpr std::array<uint16_t, 1U> rc5DisplayBrightnessDecrease{0x11U}; // Philips: Volume-
+    static constexpr std::array<uint16_t, 1U> rc5DisplayBrightnessIncrease{0x10U}; // Philips: Volume+
+    static constexpr std::array<uint16_t, 1U> rc5DisplayPowerToggle{0xCU};         // Philips: Power
+    static constexpr std::array<uint16_t, 1U> rc5ExtensionMicrophoneToggle{0xDU};  // Philips: Mute
+    static constexpr std::array<uint16_t, 1U> rc5ExtensionPhotocellToggle{0x47U};  // Philips: Dim
+    static constexpr std::array<uint16_t, 1U> rc5ExtensionPlaylistStart{0x35U};    // Philips: Play/pause
+    static constexpr std::array<uint16_t, 1U> rc5ExtensionPlaylistStop{0x36U};     // Philips: Stop
+    static constexpr std::array<uint16_t, 2U> rc5ModeNext{
+        0x1EU, // Philips: Album next
+        0x20U, // Philips: Title next
     };
-    static constexpr std::array<uint16_t, 2> rc5ModePrevious{
-        0x1F, // Philips: Album previous
-        0x21, // Philips: Title previous
+    static constexpr std::array<uint16_t, 2U> rc5ModePrevious{
+        0x1FU, // Philips: Album previous
+        0x21U, // Philips: Title previous
     };
 #endif // DECODE_RC5
 
 #ifdef DECODE_SONY
-    static constexpr std::array<uint16_t, 1> sonyDisplayBrightnessDecrease{0x13}; // Sony: Volume-
-    static constexpr std::array<uint16_t, 1> sonyDisplayBrightnessIncrease{0x12}; // Sony: Volume+
-    static constexpr std::array<uint16_t, 2> sonyDisplayPowerToggle{
-        0x15,   // Sony: Power
-        0x7115, // Sony: Power
+    static constexpr std::array<uint16_t, 1U> sonyDisplayBrightnessDecrease{0x13U}; // Sony: Volume-
+    static constexpr std::array<uint16_t, 1U> sonyDisplayBrightnessIncrease{0x12U}; // Sony: Volume+
+    static constexpr std::array<uint16_t, 2U> sonyDisplayPowerToggle{
+        0x15U,   // Sony: Power
+        0x7115U, // Sony: Power
     };
-    static constexpr std::array<uint16_t, 1> sonyExtensionMicrophoneToggle{0x14}; // Sony: Mute
-    static constexpr std::array<uint16_t, 1> sonyExtensionPhotocellToggle{0x78};  // Sony: Scene
-    static constexpr std::array<uint16_t, 1> sonyExtensionPlaylistStart{0x711A};  // Sony: Play
-    static constexpr std::array<uint16_t, 2> sonyExtensionPlaylistStop{
-        0x7118, // Sony: Stop
-        0x7119, // Sony: Pause
+    static constexpr std::array<uint16_t, 1U> sonyExtensionMicrophoneToggle{0x14U}; // Sony: Mute
+    static constexpr std::array<uint16_t, 1U> sonyExtensionPhotocellToggle{0x78U};  // Sony: Scene
+    static constexpr std::array<uint16_t, 1U> sonyExtensionPlaylistStart{0x711AU};  // Sony: Play
+    static constexpr std::array<uint16_t, 2U> sonyExtensionPlaylistStop{
+        0x7118U, // Sony: Stop
+        0x7119U, // Sony: Pause
     };
-    static constexpr std::array<uint16_t, 3> sonyModeNext{
-        0x10,   // Sony: Program+
-        0x711C, // Sony: Fast forward
-        0x7156, // Sony: Next
+    static constexpr std::array<uint16_t, 3U> sonyModeNext{
+        0x10U,   // Sony: Program+
+        0x711CU, // Sony: Fast forward
+        0x7156U, // Sony: Next
     };
-    static constexpr std::array<uint16_t, 3> sonyModePrevious{
-        0x11,   // Sony: Program-
-        0x711B, // Sony: Rewind
-        0x7157, // Sony: Previous
+    static constexpr std::array<uint16_t, 3U> sonyModePrevious{
+        0x11U,   // Sony: Program-
+        0x711BU, // Sony: Rewind
+        0x7157U, // Sony: Previous
     };
 #endif // DECODE_SONY
 
@@ -125,16 +125,16 @@ private:
 #endif // DECODE_SONY
 
 #if defined(DECODE_RC5) && defined(DECODE_SONY)
-    static constexpr std::array<Code, 2> codes{rc5, sony};
+    static constexpr std::array<Code, 2U> codes{rc5, sony};
 #elif defined(DECODE_RC5)
-    static constexpr std::array<Code, 1> codes{rc5};
+    static constexpr std::array<Code, 1U> codes{rc5};
 #elif defined(DECODE_SONY)
-    static constexpr std::array<Code, 1> codes{sony};
+    static constexpr std::array<Code, 1U> codes{sony};
 #endif // defined(DECODE_RC5) && defined(DECODE_SONY)
 
-    bool active = false;
+    bool active{false};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     void transmit();
 
