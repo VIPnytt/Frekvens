@@ -310,6 +310,11 @@ export const Sidebar: Component = () => {
                         <ModeAnimationSidebar />
                     </Match>
                 )}
+                {MODE_CLOCK && (
+                    <Match when={getMode() === ModeClockName}>
+                        <ModeClockSidebar />
+                    </Match>
+                )}
                 {MODE_COUNTDOWN && (
                     <Match when={getMode() === ModeCountdownName}>
                         <ModeCountdownSidebar />
@@ -318,11 +323,6 @@ export const Sidebar: Component = () => {
                 {MODE_DRAW && (
                     <Match when={getMode() === ModeDrawName}>
                         <ModeDrawSidebar />
-                    </Match>
-                )}
-                {MODE_CLOCK && (
-                    <Match when={getMode() === ModeClockName}>
-                        <ModeClockSidebar />
                     </Match>
                 )}
                 {MODE_GAMEOFLIFE && (

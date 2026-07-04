@@ -21,14 +21,14 @@ class Time:
         iana, posix = self._get_zone()
         self.project.dotenv["TIME_ZONE"] = iana
         self.project.dotenv["TIME_ZONE_POSIX"] = posix
-        if "CLOCK_FORMAT" in self.project.dotenv and self.project.dotenv["CLOCK_FORMAT"] == "24":
-            self.project.dotenv["CLOCK_24H"] = "true"
-        elif "CLOCK_FORMAT" in self.project.dotenv and self.project.dotenv["CLOCK_FORMAT"] == "12":
-            self.project.dotenv["CLOCK_12H"] = "true"
-        elif "CLOCK_FORMAT" in self.project.dotenv:
-            logging.warning(
-                "CLOCK_FORMAT '%s' is unsupported. Valid values are '12' and '24'.", self.project.dotenv["CLOCK_FORMAT"]
-            )
+        if "CLOCK_FORMAT" in self.project.dotenv:
+            if (format := self.project.dotenv.get("CLOCK_FORMAT")) in {"12", "24"}:
+                self.project.dotenv[f"CLOCK_{format}H"] = "true"
+            else:
+                logging.warning(
+                    "CLOCK_FORMAT %r is unsupported. Valid values are '12' and '24'.",
+                    self.project.dotenv["CLOCK_FORMAT"],
+                )
         else:
             previous = locale.setlocale(locale.LC_TIME)
             try:
