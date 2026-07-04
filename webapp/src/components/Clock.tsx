@@ -44,8 +44,8 @@ const getClockState = () => {
 
 const initialClockState = getClockState();
 
-const [getIcon, setIcon] = createSignal(initialClockState.icon);
-const [getText, setText] = createSignal(initialClockState.text);
+const [getIcon, setIcon] = createSignal<string>(initialClockState.icon);
+const [getText, setText] = createSignal<string>(initialClockState.text);
 
 let timer: ReturnType<typeof setTimeout>;
 
