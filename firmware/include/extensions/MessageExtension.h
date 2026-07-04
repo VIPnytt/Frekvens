@@ -15,21 +15,21 @@ class MessageExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Message"};
 
-    bool active = false;
-    bool pending = false;
+    bool active{false};
+    bool pending{false};
 
-    uint8_t offsetY = 0;
-    uint8_t repeat = 3;
-    uint8_t width = 0;
+    uint8_t offsetY{0U};
+    uint8_t repeat{3U};
+    uint8_t width{0U};
 
-    int16_t offsetX = GRID_COLUMNS;
+    int16_t offsetX{GRID_COLUMNS};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 #if FONT_SMALL
     std::string fontName{SmallFont::name};
 #else
-    std::string fontName{Fonts.names[0]};
+    std::string fontName{Fonts.names[0U]};
 #endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
