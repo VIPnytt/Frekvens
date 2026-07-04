@@ -2,10 +2,10 @@
 
 #include "extensions/MessageExtension.h"
 
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
-#include "services/FontsService.h"      // NOLINT(misc-include-cleaner)
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 #include <nvs.h>
@@ -55,12 +55,11 @@ void MessageExtension::handle()
         {
             if (!font)
             {
-                std::unique_ptr<const FontModule> _font = Fonts.get(fontName);
-                font = std::move(_font);
+                font = Fonts.get(fontName);
             }
             text = std::make_unique<TextHandler>(messages.front(), *font);
             offsetX = GRID_COLUMNS;
-            offsetY = (GRID_ROWS - text->getHeight()) / 2;
+            offsetY = (GRID_ROWS - text->getHeight()) / 2U;
             width = text->getWidth();
             if (!active)
             {
@@ -85,7 +84,8 @@ void MessageExtension::handle()
 
 void MessageExtension::addMessage(std::string message) // NOLINT(readability-make-member-function-const)
 {
-    for (uint8_t i = 0; i <= repeat; ++i)
+    messages.push_back(message);
+    for (uint8_t i{0U}; i < repeat; ++i)
     {
         messages.push_back(message);
     }
@@ -94,9 +94,9 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
 
 void MessageExtension::setFont(std::string_view _fontName)
 {
-    if (const std::unique_ptr<const FontModule> _font{Fonts.get(_fontName)})
+    if (std::ranges::find(FontsService::names, _fontName) != FontsService::names.end())
     {
-        fontName = _font->name;
+        fontName = _fontName;
         nvs_handle_t handle{};
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
         {
@@ -112,7 +112,7 @@ void MessageExtension::setRepeat(uint8_t count)
 {
     repeat = count;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "repeat", repeat);
         nvs_commit(handle);
