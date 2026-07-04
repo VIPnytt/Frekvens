@@ -126,7 +126,7 @@ void DeviceService::handle()
 void DeviceService::setPower(bool power)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Status", "%s...", power ? "rebooting" : "powering off");
+    ESP_LOGI(name.data(), "%s...", power ? "rebooting" : "powering off");
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
@@ -149,7 +149,7 @@ void DeviceService::setPower(bool power)
 
 void DeviceService::restore()
 {
-    ESP_LOGW("Status", "restoring..."); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGW(name.data(), "restoring..."); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     Modes.setActive(false);
     Display.setPower(false);
 #if EXTENSION_HOMEASSISTANT
@@ -198,7 +198,7 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
     }
     if (operational)
     {
-        ESP_LOGV("Status", "transmitting"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGV(name.data(), "transmitting"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         for (ExtensionModule *extension : Extensions.getAll())
         {
             extension->onTransmit(payload, source);
@@ -211,7 +211,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
 {
     if (operational)
     {
-        ESP_LOGV("Status", "receiving"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGV(name.data(), "receiving"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         if (Connectivity.name == destination)
         {
             Connectivity.onReceive(payload, source);

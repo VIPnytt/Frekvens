@@ -62,7 +62,7 @@ void MqttExtension::disconnect()
 
 void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("MQTT", "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",
                                        static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2));
     Extensions.MQTT().client.publish("frekvens/" HOSTNAME "/availability",
@@ -99,9 +99,9 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
 
 void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("MQTT", "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGV("MQTT", "%s", espMqttClientTypes::disconnectReasonToString(reason));
+    ESP_LOGV(name.data(), "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
 void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)

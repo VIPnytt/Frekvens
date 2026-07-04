@@ -133,7 +133,7 @@ void ConnectivityService::initStation()
 
 void ConnectivityService::initHotspot()
 {
-    ESP_LOGV("Status", "initializing Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "initializing Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     WiFiClass::mode(wifi_mode_t::WIFI_MODE_AP);
     WiFi.softAP(NAME);
     if (!dns)
@@ -144,9 +144,9 @@ void ConnectivityService::initHotspot()
     }
 #if EXTENSION_WEBAPP
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGD("Wi-Fi", "web interface @ http://%s", WiFi.softAPIP().toString());
+    ESP_LOGD(name.data(), "web interface @ http://192.168.4.1");
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Wi-Fi", "awaiting Wi-Fi configuration, please connect to the Wi-Fi hotspot...");
+    ESP_LOGI(name.data(), "awaiting Wi-Fi configuration, please connect to the Wi-Fi hotspot...");
 #endif // EXTENSION_WEBAPP
 }
 
@@ -164,9 +164,9 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
 
 void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
 {
-    ESP_LOGD("Wi-Fi", "connected");           // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGV("Wi-Fi", "%d dBm", WiFi.RSSI()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI("Wi-Fi", HOSTNAME ".local");     // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "Wi-Fi connected");            // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());   // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI(name.data(), "Hostname" HOSTNAME ".local"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifndef WIFI_COUNTRY
     nvs_handle_t handle{};
     std::array<char, 3U> country{};
@@ -192,10 +192,11 @@ void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(mis
         MDNS.end();
         Connectivity.mdns = false;
     }
-    ESP_LOGI("Wi-Fi", "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-                                       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGD(
-        "Wi-Fi", "%s", WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
+    ESP_LOGI(name.data(), "Wi-Fi disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+                                                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(),
+             "Wi-Fi disconnect reason %s",
+             WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
 void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
@@ -204,7 +205,7 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
     if (WiFi.STA.hasIP())
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI("Wi-Fi",
+        ESP_LOGI(name.data(),
                  "IPv4 %u.%u.%u.%u",
                  static_cast<unsigned>(info.got_ip.ip_info.ip.addr & 0xFFU),
                  static_cast<unsigned>((info.got_ip.ip_info.ip.addr >> 8U) & 0xFFU),
@@ -220,7 +221,7 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused
     if (WiFi.STA.hasGlobalIPv6())
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGI("Wi-Fi",
+        ESP_LOGI(name.data(),
                  "IPv6 %x:%x:%x:%x:%x:%x:%x:%x",
                  static_cast<unsigned>((__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) >> 16U) & 0xFFFFU),
                  static_cast<unsigned>(__builtin_bswap32(info.got_ip6.ip6_info.ip.addr[0]) & 0xFFFFU),
@@ -244,7 +245,8 @@ void ConnectivityService::onRoutable()
             JsonDocument doc; // NOLINT(misc-const-correctness)
             doc["event"].set("connected");
             Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
-            ESP_LOGD("Wi-Fi", "terminating Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+            ESP_LOGD(name.data(), "terminating Wi-Fi hotspot");
             Connectivity.dns.reset();
             WiFiClass::mode(wifi_mode_t::WIFI_MODE_STA);
         }
@@ -328,7 +330,8 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
     // Action: Scan
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "scan")
     {
-        ESP_LOGD("Wi-Fi", "scanning for networks..."); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+        ESP_LOGD(name.data(), "scanning for Wi-Fi networks...");
         WiFi.scanNetworks(true);
     }
 }

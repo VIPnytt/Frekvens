@@ -89,7 +89,7 @@ void MessageExtension::addMessage(std::string message) // NOLINT(readability-mak
     {
         messages.push_back(message);
     }
-    ESP_LOGD("Queue", "message received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "message received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 void MessageExtension::setFont(std::string_view _fontName)
