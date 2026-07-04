@@ -8,13 +8,13 @@
 class BlindsMode final : public ModeModule
 {
 private:
-    static constexpr uint8_t moduloMax = GRID_ROWS / 3;
+    static constexpr uint8_t moduloMax{GRID_ROWS / 3U};
 
-    bool direction = true;
+    bool direction{true};
 
-    uint8_t modulo = moduloMax;
+    uint8_t modulo{moduloMax};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Blinds"};
