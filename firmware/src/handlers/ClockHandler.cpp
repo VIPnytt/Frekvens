@@ -39,23 +39,17 @@ void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
 
 void ClockHandler::clear() const
 {
-    for (uint8_t x{0U}; x < (GRID_COLUMNS / 2U) - 8U; ++x)
+    for (uint8_t y{0U}; y < 5U; ++y)
     {
-        for (uint8_t y{0U}; y < 5U; ++y)
+        for (uint8_t x{0U}; x < (GRID_COLUMNS / 2U) - 8U; ++x)
         {
             Display.setPixel(x, y, 0U);
         }
-    }
-    for (uint8_t y{0U}; y < 5U; ++y)
-    {
         Display.setPixel((GRID_COLUMNS / 2U) - 5U, y, 0U);
         Display.setPixel((GRID_COLUMNS / 2U) - 1U, y, 0U);
         Display.setPixel(GRID_COLUMNS / 2U, y, 0U);
         Display.setPixel((GRID_COLUMNS / 2U) + 4U, y, 0U);
-    }
-    for (uint8_t x{(GRID_COLUMNS / 2U) + 8U}; x < GRID_COLUMNS; ++x)
-    {
-        for (uint8_t y{0U}; y < 5U; ++y)
+        for (uint8_t x{(GRID_COLUMNS / 2U) + 8U}; x < GRID_COLUMNS; ++x)
         {
             Display.setPixel(x, y, 0U);
         }
