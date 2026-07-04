@@ -47,7 +47,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@8e85cd02c8c3fe3ae527c94b5683fe2366b144ed # v2.20.0
         id: clang
         env:
-          clang-version: 22
+          clang-version: 23
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -135,7 +135,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@8e85cd02c8c3fe3ae527c94b5683fe2366b144ed # v2.20.0
         id: clang
         env:
-          clang-version: 22
+          clang-version: 23
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
@@ -206,7 +206,7 @@ jobs:
         uses: cpp-linter/cpp-linter-action@8e85cd02c8c3fe3ae527c94b5683fe2366b144ed # v2.20.0
         id: clang
         env:
-          clang-version: 22
+          clang-version: 23
         with:
           version: ${{ env.clang-version }}
           files-changed-only: false
