@@ -6,6 +6,7 @@
 #include "fonts/SmallFont.h"      // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ExtensionModule.h"
+#include "services/FontsService.h" // NOLINT(misc-include-cleaner)
 
 #include <array>
 #include <bits/unique_ptr.h>
@@ -29,7 +30,7 @@ private:
 #if FONT_SMALL
     std::string fontName{SmallFont::name};
 #else
-    std::string fontName{Fonts.names[0U]};
+    std::string fontName{FontsService::names[0U]};
 #endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
