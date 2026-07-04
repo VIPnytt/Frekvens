@@ -5,7 +5,7 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
-static_assert(GRID_ROWS >= 3U, __STRING(MODE_BLINDS) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 6U, __STRING(MODE_BLINDS) " is not compatible with this device's display size.");
 
 void BlindsMode::handle()
 {
