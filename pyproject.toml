@@ -1,7 +1,7 @@
 [project]
 name = "frekvens"
 description = "Toolbox for the Frekvens project."
-version = "2.5.1.dev0"
+version = "2.5.1"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
 classifiers = [

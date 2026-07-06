@@ -401,7 +401,7 @@ wheels = [
 
 [[package]]
 name = "frekvens"
-version = "2.5.1.dev0"
+version = "2.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
