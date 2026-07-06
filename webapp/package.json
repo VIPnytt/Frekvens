@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "@mdi/js": "7.4.47",
-        "@solid-primitives/event-listener": "2.4.5",
+        "@solid-primitives/event-listener": "2.4.6",
         "@solid-primitives/websocket": "1.4.0",
         "js-cookie": "3.0.8",
         "solid-js": "1.9.14",
