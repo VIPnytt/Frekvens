@@ -6,17 +6,17 @@ on:
 
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   platformio:
     name: Update PlatformIO dependencies
     runs-on: ubuntu-slim
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: PlatformIO Dependency Updater
-        uses: VIPnytt/platformio-dependency-updater@b411d22ddad4db6e57928e43e10748706af6507c # v1.0.0-a1
+        uses: VIPnytt/platformio-dependency-updater@12d4306e1dafa6a04bb22d0b67d4d1e025be5ed5 # v1.0.0-a2
