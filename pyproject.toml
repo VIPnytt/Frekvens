@@ -35,19 +35,12 @@ where = [
 ]
 
 [dependency-groups]
-dependabot = [
-    { include-group = "packaging" },
-    "httpx==0.28.1",
-]
 dev = [
     { include-group = "nodejs" },
     { include-group = "ruff" },
 ]
 nodejs = [
     "nodejs-wheel==24.16.0",
-]
-packaging = [
-    "packaging==26.2",
 ]
 platformio = [
     "platformio==6.1.19",
@@ -60,7 +53,7 @@ scons = [
 ]
 scripts = [
     { include-group = "nodejs" },
-    { include-group = "packaging" },
+    "packaging==26.2",
     "python-dotenv==1.2.2",
     "tzdata==2026.2",
     "tzlocal==5.4.4",
