@@ -422,6 +422,9 @@ dev = [
 nodejs = [
     { name = "nodejs-wheel" },
 ]
+packaging = [
+    { name = "packaging" },
+]
 platformio = [
     { name = "platformio" },
 ]
@@ -457,6 +460,7 @@ dev = [
     { name = "ruff", specifier = "==0.15.20" },
 ]
 nodejs = [{ name = "nodejs-wheel", specifier = "==24.16.0" }]
+packaging = [{ name = "packaging", specifier = "==26.2" }]
 platformio = [{ name = "platformio", specifier = "==6.1.19" }]
 ruff = [{ name = "ruff", specifier = "==0.15.20" }]
 scons = [{ name = "scons", specifier = "==4.10.1" }]
