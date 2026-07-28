@@ -19,6 +19,7 @@ class Consistency:
             self._package_lock_json(),
             self._version_h(),
             self._version_py(),
+            self._version_ts(),
         ]
 
     def check(self) -> bool:
@@ -56,7 +57,12 @@ class Consistency:
 
     def _version_py(self) -> tuple[pathlib.Path, str]:
         path = pathlib.Path("scripts") / "src" / "config" / "version.py"
-        match = re.search(r'^VERSION:\sstr\s=\s"([^"]+)"$', path.read_text(), re.MULTILINE)
+        match = re.search(r'^VERSION:\styping\.Final\[str\]\s=\s"([^"]+)"$', path.read_text(), re.MULTILINE)
+        return path, match.group(1) if match else ""
+
+    def _version_ts(self) -> tuple[pathlib.Path, str]:
+        path = pathlib.Path("webapp") / "src" / "config" / "version.ts"
+        match = re.search(r'^export\sconst\sVERSION:\sstring\s=\s"([^"]+)";$', path.read_text(), re.MULTILINE)
         return path, match.group(1) if match else ""
 
 

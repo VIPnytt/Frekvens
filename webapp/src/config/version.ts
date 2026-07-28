@@ -1,3 +1,1 @@
-import packageLockJson from "../../package-lock.json";
-
-export const VERSION: string = packageLockJson.version;
+export const VERSION: string = "2.5.2-dev0";
