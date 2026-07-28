@@ -38,12 +38,7 @@ export default defineConfig(({ mode }) => ({
             generateBundle(_, bundle) {
                 for (const file of Object.values(bundle)) {
                     if (file.type === "asset" && file.fileName === "index.html") {
-                        file.source = file.source
-                            .toString()
-                            .replace(/\/\*.+?\*\//g, "")
-                            .replace(/>\s+</g, "><")
-                            .replace(/[\r\n]+/g, "")
-                            .trim();
+                        file.source = file.source.toString().replace(/^\s+/gm, "").trim();
                     }
                 }
             },
