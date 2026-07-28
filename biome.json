@@ -20,6 +20,7 @@
     },
     "html": {
         "formatter": {
+            "attributePosition": "auto",
             "enabled": true
         }
     },
