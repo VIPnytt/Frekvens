@@ -10,6 +10,13 @@ class Consistency:
     semver: list[tuple[pathlib.Path, str]]
 
     def __init__(self) -> None:
+        """
+        Collect version values from the project files used for consistency checks.
+
+        Attributes:
+            pep (list[tuple[pathlib.Path, str]]): Version values using PEP 440 formatting.
+            semver (list[tuple[pathlib.Path, str]]): Version values using semantic versioning.
+        """
         self.pep = [
             self._pyproject_toml(),
             self._uv_lock(),
@@ -19,9 +26,16 @@ class Consistency:
             self._package_lock_json(),
             self._version_h(),
             self._version_py(),
+            self._version_ts(),
         ]
 
     def check(self) -> bool:
+        """
+        Display the collected versions and verify consistency across all sources.
+
+        Returns:
+            bool: True if all semver sources match and all PEP sources match the normalized semver value, otherwise false.
+        """
         cwd = pathlib.Path()
         for path, version in sorted(
             self.semver + self.pep,
@@ -55,8 +69,24 @@ class Consistency:
         return path, match.group(1) if match else ""
 
     def _version_py(self) -> tuple[pathlib.Path, str]:
+        """Extract the version from the Python configuration file.
+
+        Returns:
+            tuple[pathlib.Path, str]: The file path and extracted version, or an empty string if no version declaration is found.
+        """
         path = pathlib.Path("scripts") / "src" / "config" / "version.py"
-        match = re.search(r'^VERSION:\sstr\s=\s"([^"]+)"$', path.read_text(), re.MULTILINE)
+        match = re.search(r'^VERSION:\styping\.Final\[str\]\s=\s"([^"]+)"$', path.read_text(), re.MULTILINE)
+        return path, match.group(1) if match else ""
+
+    def _version_ts(self) -> tuple[pathlib.Path, str]:
+        """
+        Extract the version declared in the TypeScript configuration file.
+
+        Returns:
+            tuple[pathlib.Path, str]: The source file path and the extracted version, or an empty string if no matching declaration is found.
+        """
+        path = pathlib.Path("webapp") / "src" / "config" / "version.ts"
+        match = re.search(r'^export\sconst\sVERSION:\sstring\s=\s"([^"]+)";$', path.read_text(), re.MULTILINE)
         return path, match.group(1) if match else ""
 
 
