@@ -50,12 +50,6 @@ private:
         0b0011111100U,
     };
 
-    struct PixelMap
-    {
-        uint8_t bit;
-        uint8_t byte;
-    };
-
     enum class Orientation : uint8_t // NOLINT(performance-enum-size)
     {
         deg0,
@@ -74,7 +68,11 @@ private:
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
-    std::array<PixelMap, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
+#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+    std::array<std::pair<uint8_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
+#else
+    std::array<std::pair<uint16_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
+#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
 
     Orientation orientation{Orientation::deg0};
 

@@ -84,8 +84,13 @@ void DisplayService::flush()
         const uint8_t _brightness{frame[logical]};
         if (_brightness != 0U)
         {
+#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
             const std::pair<uint8_t, uint8_t> &mapping{pixelsMapped[logical]};
             planes[0U][mapping.second] |= static_cast<uint8_t>(mapping.first);
+#else
+            const std::pair<uint16_t, uint8_t> &mapping{pixelsMapped[logical]};
+            planes[0U][mapping.second] |= static_cast<uint16_t>(mapping.first);
+#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
             if (_brightness != UINT8_MAX)
             {
                 ++counts[_brightness];
@@ -184,7 +189,11 @@ void DisplayService::setOrientation(Orientation _orientation)
 
 void DisplayService::mapPixel(uint8_t logical, uint8_t physical)
 {
+#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
     pixelsMapped[logical].first = static_cast<uint8_t>(0x80U >> (physical & 7U));
+#else
+    pixelsMapped[logical].first = static_cast<uint16_t>(0x80U >> (physical & 7U));
+#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
     pixelsMapped[logical].second = static_cast<uint8_t>(physical >> 3U);
 }
 
@@ -328,7 +337,7 @@ void DisplayService::drawLineHorizontal(size_t xMin, size_t columns, size_t y, u
 
 void DisplayService::drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uint8_t _brightness)
 {
-    for (size_t idx{static_cast<size_t>(x + (yMin * GRID_COLUMNS))}; idx < x + (yMax * GRID_COLUMNS);
+    for (size_t idx{static_cast<size_t>(x + (yMin * GRID_COLUMNS))}; idx <= x + (yMax * GRID_COLUMNS);
          idx += GRID_COLUMNS)
     {
         frame[idx] = _brightness;
@@ -442,7 +451,7 @@ void DisplayService::drawRectangleOutline(size_t minX, size_t columns, size_t mi
 {
     std::ranges::fill(std::span{frame}.subspan(minX + (minY * GRID_COLUMNS), columns), _brightness);
     std::ranges::fill(std::span{frame}.subspan(minX + (maxY * GRID_COLUMNS), columns), _brightness);
-    const size_t maxX{static_cast<size_t>(minX + columns)};
+    const size_t maxX{static_cast<size_t>(minX + columns - 1U)};
     for (size_t y{static_cast<size_t>(minY + 1U)}; y < maxY; ++y)
     {
         frame[minX + (y * GRID_COLUMNS)] = _brightness;

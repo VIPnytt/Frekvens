@@ -83,7 +83,7 @@ void StreamMode::onArtNet(AsyncUDPPacket packet)
 {
     if (packet.length() == 18U + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(18U)));
     }
 }
@@ -94,12 +94,12 @@ void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
     const bool time{(data.front() & (0b1U << 4U)) != 0U};
     if (!time && packet.length() == 10U + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(10U)));
     }
     else if (time && packet.length() == 14U + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(14U)));
     }
 }
@@ -108,7 +108,7 @@ void StreamMode::onE131(AsyncUDPPacket packet)
 {
     if (packet.length() == 126U + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(126U)));
     }
 }
