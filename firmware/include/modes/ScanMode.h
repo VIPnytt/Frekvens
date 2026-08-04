@@ -7,7 +7,7 @@
 class ScanMode final : public ModeModule
 {
 private:
-    uint8_t column{0U};
+    uint8_t x{0U};
 
     unsigned long lastMillis{0UL};
 

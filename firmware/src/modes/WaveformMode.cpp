@@ -29,7 +29,7 @@ void WaveformMode::handle()
 {
     if (millis() - lastMillis > (0b1U << 9U))
     {
-        Display.clearFrame();
+        Display.fillFrame(0U);
 #if EXTENSION_MICROPHONE
         if (Extensions.Microphone().isTriggered())
         {
@@ -37,10 +37,7 @@ void WaveformMode::handle()
         }
         else
         {
-            for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
-            {
-                Display.setPixel(x, GRID_ROWS / 2U);
-            }
+            Display.fillRow(GRID_ROWS / 2U, UINT8_MAX);
         }
 #else
         draw();

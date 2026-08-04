@@ -34,7 +34,7 @@ void SignalExtension::handle()
             Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
-            Display.clearFrame();
+            Display.fillFrame(0U);
             BitmapHandler(std::span<const uint16_t>{signals.front()}).draw();
             signals.erase(signals.begin());
             lastMillis = millis();

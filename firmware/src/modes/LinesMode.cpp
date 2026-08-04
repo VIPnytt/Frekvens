@@ -21,17 +21,11 @@ void LinesMode::handle()
         {
             if (x + offset < GRID_COLUMNS)
             {
-                for (uint8_t y{0U}; y < GRID_ROWS; ++y)
-                {
-                    Display.setPixel(x + offset, y, UINT8_MAX);
-                }
+                Display.fillColumn(x + offset, UINT8_MAX);
             }
             if (x + offset >= 2U && x + offset < GRID_COLUMNS + 2U)
             {
-                for (uint8_t y{0U}; y < GRID_ROWS; ++y)
-                {
-                    Display.setPixel(x + offset - 2U, y, 0U);
-                }
+                Display.fillColumn(x + offset - 2U, 0U);
             }
         }
         ++x;

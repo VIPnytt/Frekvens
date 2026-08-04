@@ -12,7 +12,7 @@ void GlitterMode::handle()
     if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
-        Display.setPixel(random(GRID_COLUMNS), random(GRID_ROWS), random(1, 0b1U << 8U));
+        Display.setPixel(random(GRID_COLUMNS * GRID_ROWS), static_cast<uint8_t>(random(1, 0b1U << 8U)));
     }
 }
 

@@ -132,7 +132,7 @@ void DeviceService::setPower(bool power)
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
     Display.setPower(false);
-    Display.clearFrame();
+    Display.fillFrame(0U);
     Display.flush();
 #if EXTENSION_MQTT
     Extensions.MQTT().disconnect();
@@ -335,4 +335,4 @@ DeviceService &DeviceService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-DeviceService &Device = DeviceService::getInstance();
+DeviceService &Device{DeviceService::getInstance()};

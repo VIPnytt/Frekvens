@@ -7,7 +7,9 @@
 class BlinkMode final : public ModeModule
 {
 private:
-    unsigned long lastMillis = 0;
+    bool lit{true};
+
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Blink"};

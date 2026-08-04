@@ -16,7 +16,7 @@ void ArrowMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        Display.clearFrame();
+        Display.fillFrame(0U);
         if (index < arrows0.size())
         {
             const BitmapHandler bitmap(arrows0.at(index));
@@ -28,7 +28,7 @@ void ArrowMode::handle()
             bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2, GRID_ROWS - bitmap.getHeight());
         }
         direction ? ++index : --index;
-        if (index <= 0 || index >= arrows0.size() + arrows1.size() - 1)
+        if (index == 0U || index >= arrows0.size() + arrows1.size() - 1U)
         {
             direction = !direction;
         }

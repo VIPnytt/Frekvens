@@ -2,7 +2,6 @@
 
 #include "modes/FireworkMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
@@ -72,7 +71,7 @@ void FireworkMode::exploding()
     if (millis() - lastMillis > INT8_MAX)
     {
         ++radius;
-        Display.drawEllipse(rocketX, rocketY, radius, true, UINT8_MAX / maxRadius * radius);
+        Display.drawEllipseSolid(rocketX, rocketY, radius, UINT8_MAX / maxRadius * radius);
         lastMillis = millis();
         if (radius >= maxRadius)
         {
@@ -88,12 +87,11 @@ void FireworkMode::fading()
     {
         --brightness;
     }
-    Display.drawEllipse(rocketX, rocketY, radius, true, brightness);
+    Display.drawEllipseSolid(rocketX, rocketY, radius, brightness);
     lastMillis = millis();
     if (brightness == 0U)
     {
         stage = 0U;
-        Display.clearFrame();
     }
 }
 

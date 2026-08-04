@@ -21,11 +21,10 @@ void NoiseMode::handle()
                 break;
             }
 #endif // EXTENSION_MICROPHONE
-            Display.setPixel(dot.x, dot.y, 0U);
-            dot.x = random(GRID_COLUMNS);
-            dot.y = random(GRID_ROWS);
-            dot.delay = random(0b1U << 6U, INT8_MAX);
-            Display.setPixel(dot.x, dot.y);
+            Display.setPixel(dot.idx, 0U);
+            dot.idx = static_cast<size_t>(random(GRID_COLUMNS * GRID_ROWS));
+            Display.setPixel(dot.idx, UINT8_MAX);
+            dot.delay = static_cast<uint8_t>(random(0b1U << 6U, INT8_MAX));
             dot.lastMillis = millis();
         }
     }

@@ -6,6 +6,7 @@
 
 #include <AsyncUDP.h>
 #include <bits/unique_ptr.h>
+#include <span>
 
 class StreamMode final : public ModeModule
 {
@@ -17,7 +18,9 @@ private:
     void set(uint16_t _port);
     void transmit();
 
-    static void onPacket(AsyncUDPPacket packet);
+    static void onArtNet(AsyncUDPPacket packet);
+    static void onDistributedDisplayProtocol(AsyncUDPPacket packet);
+    static void onE131(AsyncUDPPacket packet);
 
 public:
     static constexpr std::string_view name{"Stream"};

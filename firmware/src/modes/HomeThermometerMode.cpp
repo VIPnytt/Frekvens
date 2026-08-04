@@ -40,8 +40,8 @@ void HomeThermometerMode::draw()
     const TextHandler textIndoor{std::to_string(indoor).append("°"), font};
     const TextHandler textOutdoor{std::to_string(outdoor).append("°"), font};
     const uint8_t height{textOutdoor.getHeight()};
-    const uint8_t marginsY = (GRID_ROWS - (height * 2)) / 3;
-    Display.clearFrame();
+    const uint8_t marginsY{static_cast<uint8_t>((GRID_ROWS - (height * 2U)) / 3U)};
+    Display.fillFrame(0U);
     textIndoor.draw(static_cast<int16_t>((GRID_COLUMNS - textIndoor.getWidth()) / 2), static_cast<int8_t>(marginsY));
     textOutdoor.draw(static_cast<int16_t>((GRID_COLUMNS - textOutdoor.getWidth()) / 2), GRID_ROWS - marginsY - height);
 }

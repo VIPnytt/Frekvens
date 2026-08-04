@@ -12,24 +12,17 @@ static_assert(GRID_ROWS >= 10U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible
 
 void BreakoutClockMode::begin()
 {
-    for (uint8_t _x{0U}; _x < GRID_COLUMNS; ++_x)
-    {
-        for (uint8_t _y{0U}; _y < GRID_ROWS - 4U; ++_y)
-        {
-            Display.setPixel(_x, _y);
-        }
-    }
+    Display.fillRows(0U, GRID_ROWS - 4U, UINT8_MAX);
     paddle.clear();
     const uint8_t paddleX{static_cast<uint8_t>(random(GRID_COLUMNS - 4U))};
-    for (uint8_t _x{0U}; _x < 3U; ++_x)
-    {
-        paddle.push_back(paddleX + _x);
-        Display.setPixel(paddleX + _x, GRID_ROWS - 1U);
-    }
-    deg = random(60, 121); // ±30°
+    paddle.push_back(paddleX);
+    paddle.push_back(paddleX + 1U);
+    paddle.push_back(paddleX + 2U);
+    Display.drawLineHorizontal(paddleX, 3U, GRID_ROWS - 1U, UINT8_MAX);
+    deg = static_cast<uint16_t>(random(60, 121)); // ±30°
     xDec = x = paddleX + 1U;
     yDec = y = GRID_ROWS - 2U;
-    Display.setPixel(x, y);
+    Display.setPixel(x, y, UINT8_MAX);
 }
 
 void BreakoutClockMode::handle()
@@ -79,7 +72,7 @@ void BreakoutClockMode::handle()
     yDec -= sinf(static_cast<float>(deg) * static_cast<float>(DEG_TO_RAD)) * speed;
     x = lroundf(xDec);
     y = lroundf(yDec);
-    Display.setPixel(x, y);
+    Display.setPixel(x, y, UINT8_MAX);
     const float rad{atanf((GRID_ROWS - 2U - yDec) / abs(paddle[1U] - xDec))};
     if (xDec < paddle.front() && rad < 1.0F && paddle.front() != 0U) // NOLINT(bugprone-branch-clone)
     {
@@ -87,7 +80,7 @@ void BreakoutClockMode::handle()
         Display.setPixel(paddle.back(), GRID_ROWS - 1U, 0U);
         paddle.pop_back();
         paddle.push_front(paddle.front() - 1U);
-        Display.setPixel(paddle.front(), GRID_ROWS - 1U);
+        Display.setPixel(paddle.front(), GRID_ROWS - 1U, UINT8_MAX);
     }
     else if (xDec > paddle.back() && rad < 1.0F && paddle.back() < GRID_COLUMNS - 1U) // NOLINT(bugprone-branch-clone)
     {
@@ -95,7 +88,7 @@ void BreakoutClockMode::handle()
         Display.setPixel(paddle.front(), GRID_ROWS - 1U, 0U);
         paddle.pop_front();
         paddle.push_back(paddle.back() + 1U);
-        Display.setPixel(paddle.back(), GRID_ROWS - 1U);
+        Display.setPixel(paddle.back(), GRID_ROWS - 1U, UINT8_MAX);
     }
 }
 
