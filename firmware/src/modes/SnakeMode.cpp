@@ -43,7 +43,7 @@ void SnakeMode::begin()
         }
         nvs_close(handle);
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
     stage = 0U;
 }
 
@@ -74,7 +74,7 @@ void SnakeMode::idle()
     const uint8_t x{static_cast<uint8_t>(random(GRID_COLUMNS))};
     const uint8_t y{static_cast<uint8_t>(random(clock == nullptr ? 0 : 5, GRID_ROWS))};
     snake = {{x, y}};
-    Display.setPixel(x, y);
+    Display.setPixel(x, y, UINT8_MAX);
     setTarget();
     stage = 1U;
 }
@@ -160,7 +160,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
 
 void SnakeMode::move()
 {
-    if (millis() - lastMillis > INT8_MAX + snake.size())
+    if (millis() - lastMillis + snake.size() > INT8_MAX)
     {
         std::optional<SnakeMode::Pixel> step{next()};
         if (step.has_value())
@@ -168,16 +168,16 @@ void SnakeMode::move()
             snake.push_back(step.value());
             if (snake.back() == target)
             {
-                Display.setPixel(target.x, target.y);
+                Display.setPixel(target.x, target.y, UINT8_MAX);
                 setTarget();
             }
             else
             {
                 // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
-                for (size_t i{0U}; i < snake.size(); ++i)
+                for (size_t idx{0U}; idx < snake.size(); ++idx)
                 {
-                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1U));
+                    Display.setPixel(snake[idx].x, snake[idx].y, step * (idx + 1U));
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0U);
                 snake.pop_front();

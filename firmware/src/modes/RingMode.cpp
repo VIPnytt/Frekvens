@@ -17,7 +17,7 @@ void RingMode::handle()
     {
         lastMillis = millis();
 
-        Display.clearFrame();
+        Display.fillFrame(0U);
         BitmapHandler(ring[index]).draw();
         direction ? index++ : index--;
         if (index <= 0 || index >= ring.size() - 1)

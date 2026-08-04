@@ -306,24 +306,22 @@ void ModesService::setMode(std::string_view modeName, bool power)
         mode = std::move(_mode);
         lastMillis = millis();
         scheduled = true;
-        if (power && !Display.getPower())
+        if (power)
         {
-            Display.setPower(power);
+            Display.setPower(true);
         }
         const std::string _name{mode->name};
         std::vector<std::string> words{""};
-        uint8_t _line{0U};
-        for (size_t i{0U}; i < _name.length(); ++i)
+        for (const char character : _name)
         {
-            switch (_name[i])
+            switch (character)
             {
-            case 0x20: // SPACE
-            case 0x2D: // -
-                words.push_back("");
-                ++_line;
+            case ' ': // U+0020 - SPACE
+            case '-': // U+002D - HYPHEN-MINUS
+                words.emplace_back();
                 break;
             default:
-                words[_line].push_back(_name[i]);
+                words.back().push_back(character);
             }
         }
         uint8_t height{0U}; // NOLINT(misc-const-correctness)
@@ -331,26 +329,22 @@ void ModesService::setMode(std::string_view modeName, bool power)
 #if FONT_MICRO
         const std::unique_ptr<const FontModule> font{Fonts.get(MicroFont::name)};
 #else
-        const std::unique_ptr<const FontModule> font{Fonts.get(Fonts.names[0U])};
+        const std::unique_ptr<const FontModule> font{Fonts.get(FontsService::names[0U])};
 #endif // FONT_MICRO
         for (const std::string &word : words)
         {
-            std::unique_ptr<TextHandler> handler{std::make_unique<TextHandler>(word, *font)};
-            const uint8_t lineHeight{handler->getHeight()};
-            if (height + lineHeight >= GRID_ROWS)
+            std::unique_ptr<TextHandler> text{std::make_unique<TextHandler>(word, *font)};
+            if (height + text->getHeight() >= GRID_ROWS)
             {
                 break;
             }
-            height += lineHeight;
-            lines.emplace_back(std::move(handler));
+            height += text->getHeight();
+            lines.emplace_back(std::move(text));
         }
-        const int8_t margin{max<int8_t>(1, (GRID_ROWS - height) / (lines.size() + 1))};
-        uint8_t y{static_cast<uint8_t>(
-            max<int16_t>(0,
-                         (static_cast<int16_t>(GRID_ROWS) - static_cast<int16_t>(height) -
-                          static_cast<int16_t>((lines.size() - 1U) * static_cast<size_t>(margin))) /
-                             2))};
-        Display.clearFrame();
+        const uint8_t margin{
+            max<uint8_t>(1U, static_cast<int>(GRID_ROWS - height) / static_cast<int>(lines.size() + 1U))};
+        uint8_t y{max<uint8_t>(0U, (GRID_ROWS - height - ((lines.size() - 1U) * margin)) / 2U)};
+        Display.fillFrame(0U);
         for (const std::unique_ptr<TextHandler> &line : lines)
         {
             line->draw((GRID_COLUMNS - min<uint8_t>(GRID_COLUMNS, line->getWidth())) / 2U, y);
@@ -366,15 +360,12 @@ TaskHandle_t ModesService::getTaskHandle() const { return taskHandle; }
 
 void ModesService::setModeNext()
 {
-    if (!Display.getPower())
+    Display.setPower(true);
+    for (size_t idx{0U}; idx < names.size(); ++idx)
     {
-        Display.setPower(true);
-    }
-    for (size_t i{0U}; i < names.size(); ++i)
-    {
-        if (names[i] == mode->name)
+        if (names[idx] == mode->name)
         {
-            const size_t index{(i + 1U) % names.size()};
+            const size_t index{(idx + 1U) % names.size()};
             setMode(names[index], index != 0U);
             return;
         }
@@ -383,15 +374,12 @@ void ModesService::setModeNext()
 
 void ModesService::setModePrevious()
 {
-    if (!Display.getPower())
+    Display.setPower(true);
+    for (size_t idx{0U}; idx < names.size(); ++idx)
     {
-        Display.setPower(true);
-    }
-    for (size_t i{0U}; i < names.size(); ++i)
-    {
-        if (names[i] == mode->name)
+        if (names[idx] == mode->name)
         {
-            const size_t index{(i + names.size() - 1U) % names.size()};
+            const size_t index{(idx + names.size() - 1U) % names.size()};
             setMode(names[index], index != 0U);
             return;
         }

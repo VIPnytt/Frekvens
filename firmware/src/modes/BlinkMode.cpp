@@ -15,7 +15,8 @@ void BlinkMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        Display.clearFrame(Display.getPixel(0, 0) == 0 ? UINT8_MAX : 0);
+        Display.fillFrame(lit ? UINT8_MAX : 0U);
+        lit = !lit;
     }
 }
 

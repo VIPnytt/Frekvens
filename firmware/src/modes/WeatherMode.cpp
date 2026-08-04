@@ -77,7 +77,7 @@ void WeatherMode::handle()
                     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                     const uint8_t marginsY{
                         static_cast<uint8_t>(max(0U, GRID_ROWS - bitmap.getHeight() - textHeight) / 3U)};
-                    Display.clearFrame();
+                    Display.fillFrame(0U);
                     bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2U, marginsY);
                     text.draw((GRID_COLUMNS - text.getWidth()) / 2U, GRID_ROWS - marginsY - textHeight);
                 },

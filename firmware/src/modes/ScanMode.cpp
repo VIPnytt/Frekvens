@@ -17,21 +17,18 @@ void ScanMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        for (uint8_t y{0U}; y < GRID_ROWS; ++y)
+        if (x < GRID_COLUMNS)
         {
-            if (column < GRID_COLUMNS)
-            {
-                Display.setPixel(column, y);
-            }
-            if (column >= 2U)
-            {
-                Display.setPixel(column - 2U, y, 0U);
-            }
+            Display.fillColumn(x, UINT8_MAX);
         }
-        ++column;
-        if (column >= GRID_COLUMNS + 2U)
+        if (x >= 2U)
         {
-            column = 0U;
+            Display.fillColumn(x - 2U, 0U);
+        }
+        ++x;
+        if (x >= GRID_COLUMNS + 2U)
+        {
+            x = 0U;
         }
     }
 }

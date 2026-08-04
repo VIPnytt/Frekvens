@@ -19,7 +19,7 @@ void CircleMode::handle()
         bool _lit{lit};
         for (uint16_t _radius{radius}; _radius < uint16_t{maxRadius} + 1U; _radius += 3U)
         {
-            Display.drawEllipse(x, y, static_cast<float>(_radius), false, _lit ? UINT8_MAX : 0U);
+            Display.drawEllipseOutline(x, y, static_cast<float>(_radius), _lit ? UINT8_MAX : 0U);
             _lit = !_lit;
         }
         lastMillis = millis();

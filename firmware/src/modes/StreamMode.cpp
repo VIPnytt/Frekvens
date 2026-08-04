@@ -2,13 +2,13 @@
 
 #include "modes/StreamMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
+#include "services/ExtensionsService.h"
 
 #include <nvs.h>
-#include <span>
 
 void StreamMode::configure()
 {
@@ -25,7 +25,20 @@ void StreamMode::begin()
 {
     if (udp.listen(port))
     {
-        udp.onPacket(&onPacket);
+        switch (port)
+        {
+        case 4048U:
+            udp.onPacket(&onDistributedDisplayProtocol);
+            break;
+        case 5568U:
+            udp.onPacket(&onE131);
+            break;
+        case 6454U:
+            udp.onPacket(&onArtNet);
+            break;
+        default:
+            return;
+        }
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
     }
@@ -33,7 +46,7 @@ void StreamMode::begin()
 
 void StreamMode::set(uint16_t _port)
 {
-    if (_port != 4048 && _port != 5568 && _port != 6454)
+    if (_port != 4048U && _port != 5568U && _port != 6454U)
     {
         return;
     }
@@ -45,12 +58,8 @@ void StreamMode::set(uint16_t _port)
         nvs_commit(handle);
         nvs_close(handle);
     }
-    if (udp.listen(port))
-    {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
-        transmit();
-    }
+    begin();
+    transmit();
 }
 
 void StreamMode::transmit()
@@ -70,14 +79,37 @@ void StreamMode::onReceive(JsonObjectConst payload,
     }
 }
 
-void StreamMode::onPacket(AsyncUDPPacket packet)
+void StreamMode::onArtNet(AsyncUDPPacket packet)
 {
-    const size_t len = packet.length();
-    if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
-        (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
-        (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
+    if (packet.length() == 18U + GRID_COLUMNS * GRID_ROWS)
     {
-        Display.setFrame(std::span<const uint8_t>(packet.data(), len).last(GRID_COLUMNS * GRID_ROWS));
+        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(18U)));
+    }
+}
+
+void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
+{
+    const std::span<const uint8_t> data{std::span(packet.data(), packet.length())};
+    const bool time{(data.front() & (0b1U << 4U)) != 0U};
+    if (!time && packet.length() == 10U + GRID_COLUMNS * GRID_ROWS)
+    {
+        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(10U)));
+    }
+    else if (time && packet.length() == 14U + GRID_COLUMNS * GRID_ROWS)
+    {
+        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(14U)));
+    }
+}
+
+void StreamMode::onE131(AsyncUDPPacket packet)
+{
+    if (packet.length() == 126U + GRID_COLUMNS * GRID_ROWS)
+    {
+        Display.setFrame(static_cast<std::span<uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(126U)));
     }
 }
 

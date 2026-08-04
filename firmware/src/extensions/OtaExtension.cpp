@@ -43,12 +43,12 @@ void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines
 void OtaExtension::onStart()
 {
     ESP_LOGI(name.data(), "updating"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    Display.setPower(true);
     Modes.setActive(false);
     const LargeFont font;
-    Display.clearFrame();
+    Display.fillFrame(0U);
     TextHandler("U", font).draw();
     Display.flush();
-    Display.setPower(true);
 }
 
 void OtaExtension::onEnd()

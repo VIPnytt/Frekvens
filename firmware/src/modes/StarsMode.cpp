@@ -8,7 +8,7 @@
 static_assert(GRID_COLUMNS * GRID_ROWS >= (0b1U << 4U),
               __STRING(MODE_STARS) " is not compatible with this device's display size.");
 
-void StarsMode::begin() { Display.clearFrame(); }
+void StarsMode::begin() { Display.fillFrame(0U); }
 
 void StarsMode::handle()
 {
@@ -36,14 +36,13 @@ void StarsMode::handle()
             {
                 do
                 {
-                    star.x = random(GRID_COLUMNS);
-                    star.y = random(GRID_ROWS);
-                } while (Display.getPixel(star.x, star.y) != 0U);
+                    star.idx = static_cast<size_t>(random(GRID_COLUMNS * GRID_ROWS));
+                } while (Display.getPixel(star.idx) != 0U);
                 ++star.brightness;
                 star.direction = true;
-                star.delay = random(0b1U << 4U);
+                star.delay = static_cast<uint8_t>(random(0b1U << 4U));
             }
-            Display.setPixel(star.x, star.y, star.brightness);
+            Display.setPixel(star.idx, star.brightness);
             star.lastMillis = millis();
         }
     }

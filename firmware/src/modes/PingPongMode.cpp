@@ -40,24 +40,31 @@ void PingPongMode::begin()
         }
         nvs_close(handle);
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
 #if GRID_COLUMNS == GRID_ROWS
     const uint8_t _paddle{static_cast<uint8_t>(random(clock == nullptr ? 0 : 5, GRID_COLUMNS - 3U))};
 #else
     const uint8_t _paddle{random(clock == nullptr ? 0 : 5, clock ? GRID_ROWS - 3U : GRID_COLUMNS - 3U)};
 #endif // GRID_COLUMNS == GRID_ROWS
-    for (uint8_t i{0U}; i < 3U; ++i)
+    for (uint8_t idx{0U}; idx < 3U; ++idx)
     {
-        paddleA.push_back(_paddle + i);
-        paddleB.push_back(_paddle + i);
-        Display.setPixel(clock == nullptr ? _paddle + i : 0U, clock == nullptr ? 0U : _paddle + i);
-        Display.setPixel(clock == nullptr ? _paddle + i : GRID_COLUMNS - 1U,
-                         clock == nullptr ? GRID_ROWS - 1U : _paddle + i);
+        paddleA.push_back(_paddle + idx);
+        paddleB.push_back(_paddle + idx);
+    }
+    if (clock == nullptr)
+    {
+        Display.drawLineHorizontal(_paddle, 3U, 0U, UINT8_MAX);
+        Display.drawLineHorizontal(_paddle, 3U, GRID_ROWS - 1U, UINT8_MAX);
+    }
+    else
+    {
+        Display.drawLineVertical(0U, _paddle, _paddle + 2U, UINT8_MAX);
+        Display.drawLineVertical(GRID_COLUMNS - 1U, _paddle, _paddle + 2U, UINT8_MAX);
     }
     xDec = x = clock == nullptr ? _paddle + 1U : GRID_COLUMNS - 2U;
     yDec = y = clock == nullptr ? GRID_ROWS - 2U : _paddle + 1U;
-    deg = random(clock == nullptr ? 60 : 150, clock == nullptr ? 121 : 211); // ±30°
-    Display.setPixel(x, y);
+    deg = static_cast<uint16_t>(random(clock == nullptr ? 60 : 150, clock == nullptr ? 121 : 211)); // ±30°
+    Display.setPixel(x, y, UINT8_MAX);
 }
 
 void PingPongMode::handle()
@@ -115,7 +122,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleB.back(), GRID_ROWS - 1U, 0U);
         paddleB.pop_back();
         paddleB.push_front(paddleB.front() - 1U);
-        Display.setPixel(paddleB.front(), GRID_ROWS - 1U);
+        Display.setPixel(paddleB.front(), GRID_ROWS - 1U, UINT8_MAX);
     }
     else if (clock == nullptr && xDec > paddleB.back() && bRad < 1U && paddleB.back() < GRID_COLUMNS - 1U)
     {
@@ -123,7 +130,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleB.front(), GRID_ROWS - 1U, 0U);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
-        Display.setPixel(paddleB.back(), GRID_ROWS - 1U);
+        Display.setPixel(paddleB.back(), GRID_ROWS - 1U, UINT8_MAX);
     }
     else if (clock != nullptr && yDec > paddleA.back() && aRad < 1U && paddleA.back() < GRID_ROWS - 1U)
     {
@@ -144,7 +151,7 @@ void PingPongMode::handle()
     else if (clock != nullptr && yDec > paddleB.back() && bRad < 1U && paddleB.back() < GRID_ROWS - 1U)
     {
         // Right: down
-        Display.setPixel(GRID_COLUMNS - 1U, paddleB.front(), 0);
+        Display.setPixel(GRID_COLUMNS - 1U, paddleB.front(), 0U);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
         Display.setPixel(GRID_COLUMNS - 1U, paddleB.back(), INT8_MAX);
@@ -163,7 +170,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleA.back(), 0U, 0U);
         paddleA.pop_back();
         paddleA.push_front(paddleA.front() - 1U);
-        Display.setPixel(paddleA.front(), 0U);
+        Display.setPixel(paddleA.front(), 0U, UINT8_MAX);
     }
     else if (clock == nullptr && xDec > paddleA.back() && aRad < 1U && paddleA.back() < GRID_COLUMNS - 1U)
     {
@@ -171,7 +178,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleA.front(), 0U, 0U);
         paddleA.pop_front();
         paddleA.push_back(paddleA.back() + 1U);
-        Display.setPixel(paddleA.back(), 0U);
+        Display.setPixel(paddleA.back(), 0U, UINT8_MAX);
     }
 }
 

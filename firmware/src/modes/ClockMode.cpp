@@ -55,7 +55,7 @@ void ClockMode::handle()
             const TextHandler mm2(std::to_string(minute % 10), *font);
             const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
             strikethrough = mm2.getHeight() > 6U;
-            Display.clearFrame();
+            Display.fillFrame(0U);
             hh1.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - hh1.getWidth()) / 2U)),
                      static_cast<int8_t>((GRID_ROWS / 2U) - 1U - hh1.getHeight()));
             hh2.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) + 1U + ((fontWidth - hh2.getWidth()) / 2U)),

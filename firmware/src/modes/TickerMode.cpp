@@ -97,7 +97,7 @@ void TickerMode::handle()
             return;
         }
 #endif // EXTENSION_MICROPHONE
-        Display.clearFrame();
+        Display.fillFrame(0U);
         text->draw(offsetX, offsetY);
         --offsetX;
     }

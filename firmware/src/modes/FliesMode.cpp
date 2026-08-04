@@ -8,10 +8,10 @@ void FliesMode::handle()
 {
     if (pending)
     {
-        Display.clearFrame();
-        for (const auto &[id, pixel] : flies)
+        Display.fillFrame(0U);
+        for (const std::unordered_map<uint8_t, std::pair<uint8_t, uint8_t>>::value_type &fly : flies)
         {
-            Display.setPixel(pixel.x, pixel.y);
+            Display.setPixel(fly.second.first, fly.second.second, UINT8_MAX);
         }
         pending = false;
     }
@@ -22,7 +22,8 @@ void FliesMode::onReceive(JsonObjectConst payload,
 {
     if (payload["id"].is<uint8_t>() && payload["x"].is<uint8_t>() && payload["y"].is<uint8_t>())
     {
-        flies[payload["id"].as<uint8_t>()] = Dot{payload["x"].as<uint8_t>(), payload["y"].as<uint8_t>()};
+        flies[payload["id"].as<uint8_t>()] =
+            std::pair<uint8_t, uint8_t>{payload["x"].as<uint8_t>(), payload["y"].as<uint8_t>()};
         pending = true;
     }
 }

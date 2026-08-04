@@ -45,7 +45,7 @@ void MessageExtension::handle()
         }
         else if (text)
         {
-            Display.clearFrame();
+            Display.fillFrame(0U);
             text->draw(offsetX, offsetY);
             --offsetX;
             lastMillis = millis();

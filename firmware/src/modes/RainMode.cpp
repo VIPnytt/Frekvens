@@ -19,7 +19,7 @@ void RainMode::begin()
         drop.delay = random(INT8_MAX, UINT8_MAX);
         drop.lastMillis = millis();
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
 }
 
 void RainMode::handle()

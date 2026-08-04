@@ -72,7 +72,7 @@ void CountdownMode::handle()
             const TextHandler _bl(std::to_string(lower / 10U), *font);
             const TextHandler _br(std::to_string(lower % 10U), *font);
             const uint8_t fontWidth{max({_tl.getWidth(), _tr.getWidth(), _bl.getWidth(), _br.getWidth()})};
-            Display.clearFrame();
+            Display.fillFrame(0U);
             _tl.draw((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - _tl.getWidth()) / 2U),
                      static_cast<int8_t>((GRID_ROWS / 2U) - 1U - _tl.getHeight()));
             _tr.draw((GRID_COLUMNS / 2U) + 1U + ((fontWidth - _tr.getWidth()) / 2U),
