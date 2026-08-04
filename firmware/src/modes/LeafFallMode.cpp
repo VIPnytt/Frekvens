@@ -18,7 +18,7 @@ void LeafFallMode::begin()
         leaf.delay = random(UINT8_MAX, 600);
         leaf.lastMillis = millis();
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
 }
 
 void LeafFallMode::handle()

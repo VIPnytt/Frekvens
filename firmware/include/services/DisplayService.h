@@ -76,7 +76,12 @@ private:
 
     Orientation orientation{Orientation::deg0};
 
+#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
     void mapPixel(uint8_t logical, uint8_t physical);
+#else
+    void mapPixel(uint16_t logical, uint16_t physical);
+#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+
     void transmit();
 
     static void onPowerOff();

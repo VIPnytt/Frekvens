@@ -84,13 +84,8 @@ void DisplayService::flush()
         const uint8_t _brightness{frame[logical]};
         if (_brightness != 0U)
         {
-#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-            const std::pair<uint8_t, uint8_t> &mapping{pixelsMapped[logical]};
-            planes[0U][mapping.second] |= static_cast<uint8_t>(mapping.first);
-#else
-            const std::pair<uint16_t, uint8_t> &mapping{pixelsMapped[logical]};
-            planes[0U][mapping.second] |= static_cast<uint16_t>(mapping.first);
-#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+            const std::pair<size_t, size_t> &mapping{pixelsMapped[logical]};
+            planes[0U][mapping.second] |= mapping.first;
             if (_brightness != UINT8_MAX)
             {
                 ++counts[_brightness];
@@ -187,14 +182,10 @@ void DisplayService::setOrientation(Orientation _orientation)
     pending = true;
 }
 
-void DisplayService::mapPixel(uint8_t logical, uint8_t physical)
+void DisplayService::mapPixel(size_t logical, size_t physical)
 {
-#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-    pixelsMapped[logical].first = static_cast<uint8_t>(0x80U >> (physical & 7U));
-#else
-    pixelsMapped[logical].first = static_cast<uint16_t>(0x80U >> (physical & 7U));
-#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-    pixelsMapped[logical].second = static_cast<uint8_t>(physical >> 3U);
+    pixelsMapped[logical].first = static_cast<size_t>(0x80U >> (physical & 7U));
+    pixelsMapped[logical].second = static_cast<size_t>(physical >> 3U);
 }
 
 bool DisplayService::getPower() const { return power; }
