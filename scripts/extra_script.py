@@ -10,6 +10,13 @@ else:
 
 
 def main() -> None:
+    """
+    Run the Frekvens build workflow for the current SCons environment.
+    
+    The function synchronizes the scripts dependencies, cleans the project for
+    clean targets, and otherwise executes the Frekvens workflow. It returns
+    without action for the ``erase``, ``menuconfig``, and ``size`` targets.
+    """
     if COMMAND_LINE_TARGETS in [
         ["erase"],
         ["menuconfig"],
