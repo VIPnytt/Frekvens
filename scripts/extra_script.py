@@ -1,6 +1,4 @@
 import os
-import pathlib
-import re
 import subprocess
 import sys
 import typing
@@ -28,12 +26,13 @@ def main() -> None:
         [sys.executable, "-m", "uv", "sync", "--active", "--inexact", "--only-group", "scripts"],
         stderr=subprocess.DEVNULL,
         env=uv_env,
+        check=False,
     )
     if uv.returncode:
-        match = re.search(r'"(uv==\d+\.\d+\.\d+)"', pathlib.Path("pyproject.toml").read_text())
         pip = subprocess.run(
-            [sys.executable, "-m", "pip", "install", match.group(1) if match else "uv"],
+            [sys.executable, "-m", "pip", "install", "uv"],
             stderr=subprocess.DEVNULL,
+            check=False,
         )
         if pip.returncode:
             subprocess.run([sys.executable, "-m", "ensurepip"], check=True)
