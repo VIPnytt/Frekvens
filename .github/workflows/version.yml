@@ -30,12 +30,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: 3.14
-          activate-environment: true
-
-      - name: Set up Python packages
-        run: uv sync --only-group packaging
+          version: latest-known
 
       - name: Version check
-        run: python .github/scripts/version.py
+        run: uv run --only-group packaging .github/scripts/version.py

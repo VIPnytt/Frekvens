@@ -29,20 +29,16 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: 3.14
-          activate-environment: true
-
-      - name: Set up Python packages
-        run: uv sync --only-group nodejs --only-group platformio
+          version: latest-known
 
       - name: Node.js cache
         id: nodejs
-        run: echo "cache=$(npm config get cache)" >> "$GITHUB_OUTPUT"
+        run: echo "cache=$(uv run --only-group nodejs npm config get cache)" >> "$GITHUB_OUTPUT"
 
       - name: PlatformIO environments
         id: platformio
-        run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default
@@ -116,12 +112,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -139,7 +131,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   minimal:
     name: Minimal
@@ -208,12 +200,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -240,7 +228,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   typical:
     name: Typical
@@ -297,12 +285,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -390,7 +374,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   extensive:
     name: Extensive
@@ -447,12 +431,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -572,4 +552,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}

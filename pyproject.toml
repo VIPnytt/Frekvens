@@ -61,9 +61,6 @@ scripts = [
     "tzdata==2026.3",
     "tzlocal==5.4.4",
 ]
-uv = [
-    "uv==0.11.26",
-]
 
 [tool.ruff]
 extend-exclude = [

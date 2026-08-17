@@ -24,16 +24,12 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: 3.14
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO environments
         id: config
-        run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   format:
     name: Format
@@ -104,12 +100,8 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
           python-version: 3.13
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          version: latest-known
 
       - name: PlatformIO compilation database
         run: |
@@ -220,7 +212,7 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          pio run -t compiledb -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -t compiledb -e ${{ matrix.environment }}
 
       - name: Clang tidy
         uses: cpp-linter/cpp-linter-action@8e85cd02c8c3fe3ae527c94b5683fe2366b144ed # v2.20.0
