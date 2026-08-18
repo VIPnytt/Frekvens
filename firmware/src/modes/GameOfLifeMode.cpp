@@ -122,6 +122,9 @@ void GameOfLifeMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock-enabled state.
+ */
 void GameOfLifeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -129,6 +132,12 @@ void GameOfLifeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies a received clock configuration.
+ *
+ * @param payload Incoming JSON payload containing an optional Boolean `clock` value.
+ * @param source Source identifier for the received payload.
+ */
 void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
@@ -139,6 +148,13 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery metadata for the Game of Life clock switch.
+ *
+ * @param discovery JSON document to which the switch configuration is added.
+ * @param topic Base topic for the device mode.
+ * @param unique Unique identifier prefix for the switch.
+ */
 void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

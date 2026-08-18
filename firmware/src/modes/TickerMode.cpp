@@ -49,6 +49,9 @@ void TickerMode::configure()
     transmit();
 }
 
+/**
+ * @brief Prepares the ticker for initialization using its persisted or default font.
+ */
 void TickerMode::begin()
 {
     nvs_handle_t handle{};
@@ -142,6 +145,9 @@ void TickerMode::setMessage(std::string_view _message)
     }
 }
 
+/**
+ * @brief Transmits the current ticker font and message configuration.
+ */
 void TickerMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -150,6 +156,12 @@ void TickerMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies font and message settings received in a JSON payload.
+ *
+ * @param payload JSON object containing optional `font` and `message` string properties.
+ * @param source Origin of the received payload.
+ */
 void TickerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
@@ -164,9 +176,19 @@ void TickerMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
+/**
+ * @brief Releases the active text handler.
+ */
 void TickerMode::end() { text.reset(); }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Configures Home Assistant discovery entities for ticker font selection and message editing.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for ticker state and commands.
+ * @param unique Unique identifier prefix for the discovered entities.
+ */
 void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
 
+/**
+ * @brief Maps a Unicode character to its small-font symbol.
+ *
+ * @param character Unicode character to convert.
+ * @return FontModule::Symbol The corresponding symbol, or an empty symbol for unsupported characters.
+ */
 FontModule::Symbol SmallFont::getChar(char32_t character) const
 {
     if (character >= '#' && character <= '&')

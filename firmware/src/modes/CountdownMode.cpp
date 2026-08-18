@@ -40,6 +40,9 @@ void CountdownMode::configure()
     transmit();
 }
 
+/**
+ * @brief Resets the countdown display state and blinking.
+ */
 void CountdownMode::begin()
 {
     blink = 0U;
@@ -136,6 +139,11 @@ void CountdownMode::setFont(std::string_view _fontName)
     }
 }
 
+/**
+ * @brief Publishes the current font, available fonts, and countdown timestamp.
+ *
+ * The timestamp is formatted as a local ISO-like date and time.
+ */
 void CountdownMode::transmit()
 {
     std::array<char, 32U> buffer{};
@@ -153,6 +161,11 @@ void CountdownMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Updates the countdown font or target time from a received payload.
+ *
+ * @param payload Payload containing a font name, a duration in seconds, or a local timestamp.
+ */
 void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
@@ -177,6 +190,13 @@ void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery components for countdown configuration.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base command and state topic for the countdown mode.
+ * @param unique Unique identifier prefix for the discovered entities.
+ */
 void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

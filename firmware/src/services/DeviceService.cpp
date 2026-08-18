@@ -112,6 +112,9 @@ void DeviceService::begin()
     ESP_LOGD(name.data(), "ready"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
+/**
+ * @brief Services connectivity, display, and mode handling, and periodically publishes device status.
+ */
 void DeviceService::handle()
 {
     Connectivity.handle();
@@ -194,7 +197,13 @@ void DeviceService::transmit()
     transmit(doc.as<JsonObjectConst>(), name);
 }
 
-// NOLINTNEXTLINE(readability-make-member-function-const)
+/**
+ * @brief Records and forwards a payload to registered extension modules.
+ *
+ * @param payload Payload to record and transmit.
+ * @param source Identifier of the payload source.
+ * @param retain Whether to retain the payload under its source identifier.
+ */
 void DeviceService::transmit(JsonObjectConst payload, std::string_view source, bool retain)
 {
     if (retain)
@@ -211,6 +220,13 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
     }
 }
 
+/**
+ * @brief Routes an incoming payload to the specified device service or module.
+ *
+ * @param payload Payload to deliver.
+ * @param source Origin of the payload.
+ * @param destination Name of the service or module that should receive the payload.
+ */
 void DeviceService::receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const
 {
     if (operational)
@@ -258,6 +274,11 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
     }
 }
 
+/**
+ * @brief Handles power-management actions received in a payload.
+ *
+ * @param payload Payload containing an optional `action` value.
+ */
 void DeviceService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action
@@ -283,6 +304,13 @@ void DeviceService::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery definitions for device controls and temperature.
+ *
+ * @param discovery JSON document to receive the discovery components.
+ * @param topic Base topic used for device commands and temperature updates.
+ * @param unique Prefix used to create unique component identifiers.
+ */
 void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

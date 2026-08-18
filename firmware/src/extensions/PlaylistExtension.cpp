@@ -148,6 +148,12 @@ void PlaylistExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Deactivates the playlist when an external mode selection changes the current mode.
+ *
+ * @param payload Transmitted mode payload.
+ * @param source Source identifier for the transmission.
+ */
 void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Modes: Mode
@@ -158,6 +164,14 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view sou
     }
 }
 
+/**
+ * @brief Applies playlist and activation updates from a received JSON payload.
+ *
+ * Playlist entries must provide a string `mode` and a `uint16_t` `duration`.
+ * The optional `active` field updates the playlist's activation state.
+ *
+ * @param payload Received JSON payload containing optional playlist settings.
+ */
 void PlaylistExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Playlist
@@ -182,6 +196,13 @@ void PlaylistExtension::onReceive(JsonObjectConst payload, std::string_view sour
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant switch discovery configuration for the playlist.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic used for playlist commands and state.
+ * @param unique Unique identifier prefix for the Home Assistant entity.
+ */
 void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

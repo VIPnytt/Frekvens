@@ -117,16 +117,22 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 
 uint8_t TextHandler::getHeight() const { return height; }
 
+/**
+ * @brief Retrieves the measured text width.
+ *
+ * @return uint8_t Text width in pixels.
+ */
 uint8_t TextHandler::getWidth() const { return width; }
 
 /**
  * @brief Decodes the next UTF-8 code point from the stored text.
  *
- * Invalid or incomplete sequences are replaced with U+FFFD.
+ * Invalid, incomplete, overlong, surrogate, and out-of-range sequences are
+ * replaced with U+FFFD.
  *
- * @param index Position of the next byte to decode; updated past the decoded sequence.
- * @param buffer Receives the decoded code point.
- * @return true if a byte sequence was processed, false if the end of the text was reached.
+ * @param index Index of the next byte to inspect; advanced past the consumed bytes.
+ * @param buffer Receives the decoded code point or U+FFFD for an invalid sequence.
+ * @return true if input bytes were available, false if the end of the text was reached.
  */
 bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 {
@@ -196,6 +202,12 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 
 template <typename T>
     requires std::is_unsigned_v<T>
+/**
+ * @brief Finds the highest set bit in a bitmap.
+ *
+ * @param bitmap Bitmap elements to inspect.
+ * @return uint8_t Index of the highest set bit, or zero if the bitmap is empty or contains no set bits.
+ */
 uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 {
     uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)

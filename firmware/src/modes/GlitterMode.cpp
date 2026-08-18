@@ -7,7 +7,7 @@
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 /**
- * @brief Updates a randomly selected display pixel with a random brightness.
+ * @brief Sets a randomly selected display pixel to a random brightness when activated.
  */
 void GlitterMode::handle()
 {

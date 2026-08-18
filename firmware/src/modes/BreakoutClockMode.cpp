@@ -32,7 +32,10 @@ void BreakoutClockMode::begin()
 }
 
 /**
- * @brief Advances the Breakout game by one update cycle.
+ * @brief Updates the game clock, ball position, collisions, and paddle movement.
+ *
+ * Pauses the ball's launch when microphone-triggered launching is enabled and
+ * awaiting activation.
  */
 void BreakoutClockMode::handle()
 {

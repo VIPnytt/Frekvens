@@ -81,10 +81,10 @@ void DisplayService::handle()
 }
 
 /**
- * @brief Converts the current frame into brightness planes for display output.
+ * @brief Converts the pending frame into brightness planes for transmission.
  *
- * Updates the planes only when rendering is pending, then clears the pending
- * render state.
+ * Skips conversion when rendering is not pending and clears the pending state
+ * after conversion.
  */
 void DisplayService::flush()
 {
@@ -137,14 +137,19 @@ void DisplayService::flush()
 
 float DisplayService::getRatio() const { return ratio; }
 
+/**
+ * @brief Gets the display orientation.
+ *
+ * @return Orientation The current display orientation.
+ */
 DisplayService::Orientation DisplayService::getOrientation() const { return orientation; }
 
 /**
- * @brief Sets the display orientation and updates its pixel mapping.
+ * @brief Applies a supported display orientation and updates its pixel mapping.
  *
- * Persists the orientation, updates the display aspect ratio when applicable,
- * and schedules the frame and device state for transmission. Unsupported
- * orientations are ignored on non-square displays.
+ * Unsupported orientations are ignored on non-square displays. The selected
+ * orientation is persisted, the display aspect ratio is updated when needed,
+ * and rendering and device-state transmission are scheduled.
  *
  * @param _orientation Orientation to apply.
  */
@@ -208,10 +213,10 @@ void DisplayService::setOrientation(Orientation _orientation)
 }
 
 /**
- * @brief Maps a logical pixel to its physical display bit position.
+ * @brief Maps a logical pixel to its physical byte offset and bit mask.
  *
  * @param logical Logical pixel index.
- * @param physical Physical pixel index used to determine the bit mask and plane offset.
+ * @param physical Physical pixel index.
  */
 void DisplayService::mapPixel(size_t logical, size_t physical)
 {
@@ -229,9 +234,8 @@ bool DisplayService::getPower() const { return power; }
 /**
  * @brief Fades the display on or off.
  *
- * Powering on activates display modes and schedules rendering. Powering off
- * fades the output to zero and completes shutdown through the power-off
- * callback.
+ * Activating the display enables display modes and schedules rendering.
+ * Deactivating it fades the output to zero before completing shutdown.
  *
  * @param _power Whether the display should be powered on.
  */
@@ -286,6 +290,11 @@ void DisplayService::setPower(bool _power)
     }
 }
 
+/**
+ * @brief Gets the display brightness.
+ *
+ * @return uint8_t Current display brightness.
+ */
 uint8_t DisplayService::getBrightness() const { return brightness; }
 
 /**
@@ -396,9 +405,9 @@ void DisplayService::getFrame(std::span<uint8_t, GRID_COLUMNS * GRID_ROWS> _fram
 }
 
 /**
- * @brief Replaces the display frame with the specified brightness values.
+ * @brief Replaces the display frame with the specified pixel brightness values.
  *
- * @param _frame Brightness values for all display pixels.
+ * @param _frame Brightness values for each display pixel.
  */
 void DisplayService::setFrame(std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS> _frame)
 {
@@ -520,12 +529,12 @@ void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t 
 }
 
 /**
- * @brief Fills an ellipse centered at the specified coordinates.
+ * @brief Fills the interior of an ellipse centered at the specified coordinates.
  *
  * @param x Horizontal coordinate of the ellipse center.
  * @param y Vertical coordinate of the ellipse center.
  * @param radius Ellipse radius.
- * @param _brightness Brightness value applied to pixels inside the ellipse.
+ * @param _brightness Brightness value for pixels inside the ellipse.
  */
 void DisplayService::drawEllipseSolid(float x, float y, float radius, uint8_t _brightness)
 {
@@ -740,9 +749,9 @@ void DisplayService::onPowerOff()
 }
 
 /**
- * @brief Applies brightness, orientation, and power settings from a JSON payload.
+ * @brief Applies supported display settings from a JSON payload.
  *
- * @param payload JSON object containing the settings to apply.
+ * @param payload JSON object containing optional brightness, orientation, and power settings.
  */
 void DisplayService::onReceive(JsonObjectConst payload, std::string_view source)
 {

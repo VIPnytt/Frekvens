@@ -35,6 +35,9 @@ void ClockMode::configure()
     transmit();
 }
 
+/**
+ * @brief Marks the clock display for redraw.
+ */
 void ClockMode::begin() { pending = true; }
 
 /**
@@ -139,6 +142,9 @@ void ClockMode::setTicking(bool _ticking)
     transmit();
 }
 
+/**
+ * @brief Publishes the current clock font and second-indicator configuration.
+ */
 void ClockMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -152,6 +158,12 @@ void ClockMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies supported font and second-indicator settings from a received payload.
+ *
+ * @param payload Received configuration fields.
+ * @param source Source identifier for the received payload.
+ */
 void ClockMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
@@ -167,6 +179,13 @@ void ClockMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery definitions for the clock font selector and second indicator.
+ *
+ * @param discovery JSON document to populate with component definitions.
+ * @param topic Base topic used for component commands and state updates.
+ * @param unique Prefix used to generate unique component identifiers.
+ */
 void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

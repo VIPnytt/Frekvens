@@ -35,6 +35,12 @@ void WeatherMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the weather provider from persistent configuration.
+ *
+ * Uses the first available provider when no valid provider is configured and
+ * schedules the selected provider for an immediate update.
+ */
 void WeatherMode::begin()
 {
     nvs_handle_t handle{};
@@ -160,6 +166,9 @@ void WeatherMode::setProvider(std::string_view providerName)
     }
 }
 
+/**
+ * @brief Publishes the current weather state and available providers.
+ */
 void WeatherMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -180,6 +189,12 @@ void WeatherMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Handles incoming provider selection requests.
+ *
+ * @param payload Message payload containing an optional string-valued `provider` field.
+ * @param source Message source.
+ */
 void WeatherMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Provider
@@ -190,6 +205,13 @@ void WeatherMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Registers the weather provider selector with Home Assistant.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for the selector's command and state messages.
+ * @param unique Prefix used to construct the selector's unique identifier.
+ */
 void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

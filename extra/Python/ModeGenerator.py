@@ -34,6 +34,15 @@ class ModeGenerator:
             ]
 
     def _animation_h(self, count: int) -> str:
+        """
+        Generate a C++ header containing the mode's animation frames.
+        
+        Parameters:
+            count (int): Total number of CSV rows used to determine the frame count.
+        
+        Returns:
+            str: The generated header filename.
+        """
         frames = [
             "#pragma once",
             "",
@@ -82,9 +91,9 @@ class ModeGenerator:
     def _animation_cpp(self) -> str:
         """
         Generate the C++ source file for an animated drawing mode.
-
+        
         Returns:
-            str (str): The generated source filename.
+            str: The generated source filename.
         """
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
             f.write(
@@ -122,6 +131,15 @@ class ModeGenerator:
         return f"{self.id}Mode.cpp"
 
     def _drawing_h(self, count: int) -> str:
+        """
+        Generate a C++ header containing the static bitmap frame and mode declaration.
+        
+        Parameters:
+            count (int): Number of rows in the bitmap frame.
+        
+        Returns:
+            str: Name of the generated header file.
+        """
         frame = [
             "#pragma once",
             "",

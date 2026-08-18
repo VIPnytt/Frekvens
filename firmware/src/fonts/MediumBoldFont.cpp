@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 6U, __STRING(FONT_MEDIUMBOLD) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUMBOLD) " is not compatible with this device's display size.");
 
+/**
+ * @brief Returns the glyph for a supported character in the medium-bold font.
+ *
+ * @param character Character to convert to a glyph.
+ * @return FontModule::Symbol The corresponding glyph, or an empty symbol for unsupported characters.
+ */
 FontModule::Symbol MediumBoldFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')

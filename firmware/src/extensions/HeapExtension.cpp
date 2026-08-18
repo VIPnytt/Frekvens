@@ -15,6 +15,12 @@ void HeapExtension::handle()
     }
 }
 
+/**
+ * @brief Transmits current stack and heap usage metrics.
+ *
+ * Includes extension-task, heap, and main-task usage, along with modes-task
+ * usage when the modes task is available.
+ */
 void HeapExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -29,6 +35,13 @@ void HeapExtension::transmit()
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Configures Home Assistant diagnostic sensors for memory usage.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base state topic for the sensors.
+ * @param unique Prefix used to generate unique sensor identifiers.
+ */
 void HeapExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -25,6 +25,9 @@ void HomeThermometerMode::configure()
 
 void HomeThermometerMode::begin() { pending = true; }
 
+/**
+ * @brief Updates the display when a temperature change is pending.
+ */
 void HomeThermometerMode::handle()
 {
     if (pending && (indoor != 0 || outdoor != 0))
@@ -49,6 +52,9 @@ void HomeThermometerMode::draw()
     textOutdoor.draw(static_cast<int16_t>((GRID_COLUMNS - textOutdoor.getWidth()) / 2), GRID_ROWS - marginsY - height);
 }
 
+/**
+ * @brief Transmits the current indoor and outdoor temperatures when either value is set.
+ */
 void HomeThermometerMode::transmit()
 {
     if (indoor != 0 || outdoor != 0)
@@ -60,6 +66,12 @@ void HomeThermometerMode::transmit()
     }
 }
 
+/**
+ * @brief Updates indoor and outdoor temperatures from a JSON payload.
+ *
+ * @param payload JSON object containing optional indoor and outdoor temperature values.
+ *        Floating-point values are rounded before being stored.
+ */
 void HomeThermometerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     if (payload["indoor"].is<int16_t>())
@@ -80,6 +92,12 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload, std::string_view so
     }
 }
 
+/**
+ * @brief Updates an indoor or outdoor temperature and publishes the current values.
+ *
+ * @param where Selects the temperature to update; supported values are `"indoor"` and `"outdoor"`.
+ * @param temperature New temperature value.
+ */
 void HomeThermometerMode::setTemperature(std::string_view where, int16_t temperature)
 {
     if (where == "indoor")
@@ -103,6 +121,13 @@ void HomeThermometerMode::setTemperature(std::string_view where, int16_t tempera
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Configures Home Assistant entities for indoor and outdoor temperatures.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base topic for temperature state and command messages.
+ * @param unique Prefix used to generate unique entity identifiers.
+ */
 void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

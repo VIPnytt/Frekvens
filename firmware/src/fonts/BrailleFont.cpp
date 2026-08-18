@@ -45,6 +45,12 @@ FontModule::Symbol BrailleFont::toSymbol(uint8_t bits) const
             static_cast<int8_t>(3 - size)};
 }
 
+/**
+ * @brief Converts a supported Unicode character to its Braille symbol.
+ *
+ * @param character Character to convert.
+ * @return FontModule::Symbol Braille symbol for the character, or an empty symbol if unsupported.
+ */
 FontModule::Symbol BrailleFont::getChar(char32_t character) const
 {
     if (character >= '1' && character <= '9')

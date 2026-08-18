@@ -9,11 +9,12 @@
 static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_SCAN) " is not compatible with this device's display size.");
 
 /**
- * @brief Advances the scanning highlight across the display.
+ * @brief Advances the scan highlight across the display.
  *
- * When microphone support is enabled, advancement also requires a microphone
- * trigger. The highlight wraps after passing the display columns and clears
- * the column two positions behind it.
+ * Updates the highlight after at least INT8_MAX milliseconds have elapsed.
+ * When microphone support is enabled, a microphone trigger is also required.
+ * Clears the column two positions behind the highlight and wraps the scan
+ * position after GRID_COLUMNS + 2U.
  */
 void ScanMode::handle()
 {

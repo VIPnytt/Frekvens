@@ -15,6 +15,12 @@ void WebSocketExtension::begin()
 
 void WebSocketExtension::handle() { server->cleanupClients(); }
 
+/**
+ * @brief Broadcasts a payload to all connected WebSocket clients.
+ *
+ * @param payload JSON payload to transmit.
+ * @param source Property name under which the payload is sent.
+ */
 void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -25,6 +31,14 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view so
     server->textAll(message.data(), length);
 }
 
+/**
+ * @brief Handles WebSocket connection and text-data events.
+ *
+ * Sends the device's available transmits to newly connected clients and forwards
+ * complete JSON object messages to the device. Fragmented text messages are
+ * reassembled before processing; invalid JSON and non-object properties are
+ * ignored.
+ */
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                                  const uint8_t *data, size_t len)
 {

@@ -22,6 +22,9 @@ void ExtensionsService::begin()
 
 std::span<ExtensionModule *const> ExtensionsService::getAll() { return modules; }
 
+/**
+ * @brief Transmits the names of all registered extensions.
+ */
 void ExtensionsService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -34,6 +37,9 @@ void ExtensionsService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Processes all registered extensions continuously.
+ */
 void ExtensionsService::onTask(void *parameter)
 {
     for (;;)

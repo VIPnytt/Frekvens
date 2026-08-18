@@ -3,6 +3,12 @@
 #include "handlers/TextHandler.h"    // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the displayed clock when the local time changes.
+ *
+ * The display uses either 24-hour or 12-hour formatting according to the
+ * configured clock mode.
+ */
 void ClockHandler::handle()
 {
     if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))

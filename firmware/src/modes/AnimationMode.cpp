@@ -15,6 +15,12 @@ void AnimationMode::begin()
     pending = true;
 }
 
+/**
+ * @brief Advances the animation and displays the next stored frame when ready.
+ *
+ * A configured microphone trigger is also required when microphone support is enabled.
+ * Missing frames reset playback after the animation has started.
+ */
 void AnimationMode::handle()
 {
 #if EXTENSION_MICROPHONE
@@ -52,6 +58,12 @@ void AnimationMode::handle()
     }
 }
 
+/**
+ * @brief Stores an animation frame and restarts playback from the first frame.
+ *
+ * @param _index Zero-based frame index.
+ * @param frame Frame data to store.
+ */
 void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2U);
@@ -97,6 +109,12 @@ void AnimationMode::setInterval(uint16_t _interval)
     }
 }
 
+/**
+ * @brief Transmits an animation frame and its playback metadata.
+ *
+ * @param index Frame index.
+ * @param frame Frame bytes to transmit.
+ */
 void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -110,6 +128,11 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
+/**
+ * @brief Applies animation control, frame, frame-count, and interval updates from a payload.
+ *
+ * @param payload JSON payload containing the requested animation update.
+ */
 void AnimationMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action: Pull

@@ -16,6 +16,9 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Restores the persisted clock setting and transmits the current configuration.
+ */
 void SnakeMode::configure()
 {
     nvs_handle_t handle{};
@@ -50,6 +53,9 @@ void SnakeMode::begin()
     stage = 0U;
 }
 
+/**
+ * @brief Updates the clock and advances the snake animation.
+ */
 void SnakeMode::handle()
 {
     if (clock != nullptr)
@@ -85,6 +91,11 @@ void SnakeMode::idle()
     stage = 1U;
 }
 
+/**
+ * @brief Determines the snake's next position toward its target.
+ *
+ * @return The next unoccupied position, or `std::nullopt` when no adjacent position is available.
+ */
 std::optional<SnakeMode::Pixel> SnakeMode::next() const
 {
     Pixel start{snake.back()};
@@ -167,8 +178,9 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
 /**
  * @brief Advances the snake toward its target.
  *
- * Extends the snake when it reaches the target and transitions to blinking when
- * no further move is available.
+ * Updates the snake's display trail as it moves, selects a new target when the
+ * current target is reached, and starts the blinking stage when movement is
+ * blocked.
  */
 void SnakeMode::move()
 {
@@ -271,6 +283,9 @@ void SnakeMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock-enabled state.
+ */
 void SnakeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -278,6 +293,11 @@ void SnakeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies the clock setting from an incoming payload.
+ *
+ * @param payload Incoming JSON payload containing an optional boolean `clock` value.
+ */
 void SnakeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
@@ -288,6 +308,13 @@ void SnakeMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds the Snake mode clock switch to Home Assistant discovery data.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used for the switch's state and command messages.
+ * @param unique Prefix used to generate the switch's unique identifier.
+ */
 void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

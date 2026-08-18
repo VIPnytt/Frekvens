@@ -104,6 +104,12 @@ void HomeAssistantExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Processes power updates and discovery removal actions.
+ *
+ * @param payload Message payload containing a power update or action.
+ * @param source Name of the service that sent the payload.
+ */
 void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Power
@@ -118,6 +124,13 @@ void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_vie
     }
 }
 
+/**
+ * @brief Adds the Home Assistant light component configuration to a discovery document.
+ *
+ * @param discovery Discovery document to update.
+ * @param topic Base MQTT topic for the component state.
+ * @param unique Prefix used to construct the component's unique identifier.
+ */
 void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

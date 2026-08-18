@@ -12,6 +12,9 @@
 static_assert(GRID_COLUMNS == 16U, __STRING(MODE_WAVEFORM) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 12U, __STRING(MODE_WAVEFORM) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads the saved wave selection and transmits the current configuration.
+ */
 void WaveformMode::configure()
 {
     nvs_handle_t handle{};
@@ -79,6 +82,9 @@ void WaveformMode::setWave(std::string_view waveName)
     transmit();
 }
 
+/**
+ * @brief Transmits the selected wave and available wave names.
+ */
 void WaveformMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -91,6 +97,12 @@ void WaveformMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Processes an incoming wave selection payload.
+ *
+ * @param payload Payload containing the wave selection.
+ * @param source Origin of the payload.
+ */
 void WaveformMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Wave
@@ -101,6 +113,13 @@ void WaveformMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds a Home Assistant select entity for choosing the waveform.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used for the entity's command and state topics.
+ * @param unique Prefix used to construct the entity's unique identifier.
+ */
 void WaveformMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -10,6 +10,9 @@
 #include <nvs.h>
 #include <span>
 
+/**
+ * @brief Loads the stored signal duration and transmits the current configuration.
+ */
 void SignalExtension::begin()
 {
     nvs_handle_t handle{};
@@ -75,6 +78,9 @@ void SignalExtension::setDuration(uint8_t seconds)
     }
 }
 
+/**
+ * @brief Transmits the configured signal duration in seconds.
+ */
 void SignalExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -82,6 +88,14 @@ void SignalExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Processes incoming duration and bitmap configuration data.
+ *
+ * Numeric bitmap elements are stored as 16-bit values, while string elements
+ * are filtered to binary characters and interpreted as base-2 values.
+ *
+ * @param payload Incoming configuration data.
+ */
 void SignalExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Duration

@@ -148,6 +148,13 @@ void StreamMode::onE131(AsyncUDPPacket packet)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery metadata for selecting the streaming protocol.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic used for protocol state and commands.
+ * @param unique Prefix used to construct the entity's unique identifier.
+ */
 void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

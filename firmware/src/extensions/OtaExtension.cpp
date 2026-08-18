@@ -26,6 +26,9 @@ void OtaExtension::configure()
 #endif // EXTENSION_STATUSLED
 }
 
+/**
+ * @brief Starts OTA support and registers the unauthenticated upload endpoint when authentication is disabled.
+ */
 void OtaExtension::begin()
 {
     ArduinoOTA.begin();
@@ -40,6 +43,9 @@ void OtaExtension::begin()
 
 void OtaExtension::handle() { ArduinoOTA.handle(); }
 
+/**
+ * @brief Prepares the device display for an OTA update.
+ */
 void OtaExtension::onStart()
 {
     ESP_LOGI(name.data(), "updating"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -51,16 +57,39 @@ void OtaExtension::onStart()
     Display.flush();
 }
 
+/**
+ * @brief Logs completion of the OTA update.
+ */
 void OtaExtension::onEnd()
 {
     ESP_LOGI(name.data(), "complete"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
 #if EXTENSION_STATUSLED
+/**
+ * @brief Signals an OTA update error through the status LED.
+ *
+ * @param error OTA error code.
+ */
 void OtaExtension::onError(ota_error_t error) { Extensions.StatusLed().error(); }
 #endif // EXTENSION_STATUSLED
 
 #ifndef OTA_KEY
+/**
+ * @brief Processes a chunk of an unauthenticated HTTP OTA firmware upload.
+ *
+ * Selects the LittleFS or flash update target from the filename, writes the
+ * upload data, and finalizes the update when the last chunk is received.
+ * Sends HTTP 500 when initialization, writing, or finalization fails; sends
+ * HTTP 204 after successful completion.
+ *
+ * @param request HTTP request used to send the upload result.
+ * @param filename Uploaded file name used to select the update target.
+ * @param index Zero-based offset of the current chunk in the upload.
+ * @param data Upload chunk data.
+ * @param len Number of bytes in the current chunk.
+ * @param final Whether the current chunk completes the upload.
+ */
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,
                           size_t len, bool final)
 {

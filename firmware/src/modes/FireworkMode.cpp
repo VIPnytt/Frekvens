@@ -39,6 +39,9 @@ void FireworkMode::pad()
     }
 }
 
+/**
+ * @brief Advances the rocket toward the upper half of the display and starts the explosion stage.
+ */
 void FireworkMode::launching()
 {
     if (millis() - lastMillis > (1U << 6U))

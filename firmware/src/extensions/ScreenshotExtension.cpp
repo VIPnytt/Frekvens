@@ -17,6 +17,9 @@ void ScreenshotExtension::handle()
     }
 }
 
+/**
+ * @brief Captures the current display frame and transmits it through the screenshot extension.
+ */
 void ScreenshotExtension::transmit()
 {
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
@@ -30,6 +33,11 @@ void ScreenshotExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
+/**
+ * @brief Requests capture of a screenshot when the payload action is `"pull"`.
+ *
+ * @param payload Incoming extension payload.
+ */
 void ScreenshotExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action: Pull

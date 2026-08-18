@@ -76,6 +76,9 @@ void DrawMode::save(bool cache)
     }
 }
 
+/**
+ * @brief Transmits the current pixel frame to the device.
+ */
 void DrawMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -87,6 +90,12 @@ void DrawMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
+/**
+ * @brief Processes actions and pixel data received in a JSON payload.
+ *
+ * @param payload JSON payload containing an optional action, frame, or pixel updates.
+ * @param source Origin of the received payload.
+ */
 void DrawMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action

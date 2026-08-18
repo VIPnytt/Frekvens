@@ -9,7 +9,7 @@ static_assert(GRID_COLUMNS * GRID_ROWS >= 20U,
               __STRING(MODE_LEAFFALL) " is not compatible with this device's display size.");
 
 /**
- * @brief Initializes leaf positions, brightness, movement delays, and display state.
+ * @brief Initializes leaf state and clears the display frame.
  */
 void LeafFallMode::begin()
 {

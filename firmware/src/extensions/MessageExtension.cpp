@@ -10,6 +10,11 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Loads the stored font and repeat configuration.
+ *
+ * Marks the configuration as pending for transmission.
+ */
 void MessageExtension::begin()
 {
     nvs_handle_t handle{};
@@ -127,6 +132,9 @@ void MessageExtension::setRepeat(uint8_t count)
     pending = true;
 }
 
+/**
+ * @brief Transmits the current font and repeat settings.
+ */
 void MessageExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -135,6 +143,11 @@ void MessageExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies message extension settings and queues a received message.
+ *
+ * @param payload Payload containing optional font, repeat count, and message fields.
+ */
 void MessageExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
@@ -155,6 +168,13 @@ void MessageExtension::onReceive(JsonObjectConst payload, std::string_view sourc
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds the message extension's active-state switch to Home Assistant discovery.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for the switch's commands and state.
+ * @param unique Unique identifier prefix for the discovered component.
+ */
 void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -8,6 +8,9 @@
 static_assert(GRID_COLUMNS >= 12U, __STRING(MODE_BINARYCLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 14U, __STRING(MODE_BINARYCLOCK) " is not compatible with this device's display size.");
 
+/**
+ * @brief Marks the display for a full refresh when the mode starts.
+ */
 void BinaryClockMode::begin() { pending = true; }
 
 /**

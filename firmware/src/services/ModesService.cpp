@@ -89,7 +89,12 @@ void ModesService::setActive(bool active)
     }
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+/**
+ * @brief Creates a mode module for the specified mode name.
+ *
+ * @param modeName Name of the mode to create.
+ * @return A newly allocated mode module, or `nullptr` if the mode is unavailable or unknown.
+ */
 std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
 {
 #if MODE_ANIMATION
@@ -366,6 +371,11 @@ void ModesService::setMode(std::string_view modeName, bool power)
 
 ModeModule *ModesService::getMode() { return mode.get(); }
 
+/**
+ * @brief Retrieves the handle of the mode task.
+ *
+ * @return TaskHandle_t Handle of the mode task.
+ */
 TaskHandle_t ModesService::getTaskHandle() const { return taskHandle; }
 
 /**
@@ -406,6 +416,9 @@ void ModesService::setModePrevious()
     }
 }
 
+/**
+ * @brief Publishes the configured modes and currently selected mode.
+ */
 void ModesService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -421,6 +434,12 @@ void ModesService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Selects the mode specified in an incoming JSON payload.
+ *
+ * @param payload JSON payload containing the requested mode.
+ * @param source Source of the payload.
+ */
 void ModesService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Mode
@@ -431,6 +450,13 @@ void ModesService::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds Home Assistant discovery metadata for selecting the device mode.
+ *
+ * @param discovery JSON document to populate with the select component configuration.
+ * @param topic Base MQTT topic for mode commands and state updates.
+ * @param unique Identifier used to create a unique component ID.
+ */
 void ModesService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

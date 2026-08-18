@@ -13,6 +13,9 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_PINGPONG) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 9U, __STRING(MODE_PINGPONG) " is not compatible with this device's display size.");
 
+/**
+ * @brief Restores the persisted clock mode setting and transmits the current state.
+ */
 void PingPongMode::configure()
 {
     nvs_handle_t handle{};
@@ -229,6 +232,9 @@ void PingPongMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock mode state.
+ */
 void PingPongMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -236,6 +242,11 @@ void PingPongMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies a clock-mode update from an incoming payload.
+ *
+ * @param payload Incoming JSON payload containing the optional `clock` setting.
+ */
 void PingPongMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
@@ -246,6 +257,13 @@ void PingPongMode::onReceive(JsonObjectConst payload, std::string_view source)
 }
 
 #if EXTENSION_HOMEASSISTANT
+/**
+ * @brief Adds a Home Assistant switch discovery configuration for clock mode.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for clock-mode commands and state.
+ * @param unique Prefix used to construct the switch's unique identifier.
+ */
 void PingPongMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

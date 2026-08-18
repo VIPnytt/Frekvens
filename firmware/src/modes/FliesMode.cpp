@@ -21,12 +21,11 @@ void FliesMode::handle()
 }
 
 /**
- * @brief Stores a fly's coordinates from a received payload.
+ * @brief Updates a fly's stored coordinates from a received payload.
  *
  * Invalid payloads are ignored. A valid payload marks the display for updating.
  *
  * @param payload Payload containing the fly ID and its x and y coordinates.
- * @param source Message source.
  */
 void FliesMode::onReceive(JsonObjectConst payload, std::string_view source)
 {

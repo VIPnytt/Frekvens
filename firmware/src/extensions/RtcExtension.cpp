@@ -82,7 +82,11 @@ void RtcExtension::transmit()
 #endif // TEMPERATURE_FAHRENHEIT
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
-#endif // defined(RTC_DS3231) || defined(RTC_DS3232)
+#endif /**
+ * @brief Updates the RTC with the UTC time received from SNTP.
+ *
+ * @param tv SNTP timestamp containing the synchronized time.
+ */
 
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
@@ -94,6 +98,15 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 }
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+/**
+ * @brief Adds the RTC temperature sensor to Home Assistant discovery data.
+ *
+ * The sensor is disabled by default and reports temperature measurements using the configured unit.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic MQTT topic used for temperature state updates.
+ * @param unique Prefix used to construct the sensor's unique identifier.
+ */
 void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

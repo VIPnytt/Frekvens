@@ -26,9 +26,7 @@ void RainMode::begin()
 }
 
 /**
- * @brief Advances and renders each raindrop whose delay has elapsed.
- *
- * @return void
+ * @brief Advances and renders raindrops whose delays have elapsed.
  */
 void RainMode::handle()
 {

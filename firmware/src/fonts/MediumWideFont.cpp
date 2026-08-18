@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_MEDIUMWIDE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUMWIDE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Converts a supported character to its medium-wide font symbol.
+ *
+ * @param character Character to convert.
+ * @return Font symbol for a supported digit, space, or selected letter; an empty symbol otherwise.
+ */
 FontModule::Symbol MediumWideFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
