@@ -128,11 +128,11 @@ void DrawMode::onReceive(JsonObjectConst payload, std::string_view source)
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == frame.size())
     {
         const JsonArrayConst _frame{payload["frame"].as<JsonArrayConst>()};
-        for (size_t i{0U}; i < frame.size(); ++i)
+        for (size_t idx{0U}; idx < frame.size(); ++idx)
         {
-            if (_frame[i].is<uint8_t>())
+            if (_frame[idx].is<uint8_t>())
             {
-                frame[i] = _frame[i].as<uint8_t>();
+                frame[idx] = _frame[idx].as<uint8_t>();
             }
         }
         render = true;

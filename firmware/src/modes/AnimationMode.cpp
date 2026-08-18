@@ -84,10 +84,10 @@ void AnimationMode::setFrames(uint8_t count)
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        for (uint8_t i{count}; i >= 2U; ++i)
+        for (uint8_t idx{count}; idx >= 2U; ++idx)
         {
-            if (nvs_find_key(handle, std::to_string(i).c_str(), nullptr) != ESP_OK ||
-                nvs_erase_key(handle, std::to_string(i).c_str()) != ESP_OK)
+            if (nvs_find_key(handle, std::to_string(idx).c_str(), nullptr) != ESP_OK ||
+                nvs_erase_key(handle, std::to_string(idx).c_str()) != ESP_OK)
             {
                 break;
             }
@@ -120,9 +120,9 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["interval"].set(interval);
     JsonArray _frame{doc["frame"].to<JsonArray>()};
-    for (size_t i{0U}; i < frame.size(); ++i)
+    for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
-        _frame.add(frame[i]);
+        _frame.add(frame[idx]);
     }
     doc["index"].set(index);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
@@ -148,11 +148,11 @@ void AnimationMode::onReceive(JsonObjectConst payload, std::string_view source)
     {
         std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
         const JsonArrayConst &_frame{payload["frame"].as<JsonArrayConst>()};
-        for (size_t i{0U}; i < frame.size(); ++i)
+        for (size_t idx{0U}; idx < frame.size(); ++idx)
         {
-            if (_frame[i].is<uint8_t>())
+            if (_frame[idx].is<uint8_t>())
             {
-                frame[i] = _frame[i].as<uint8_t>();
+                frame[idx] = _frame[idx].as<uint8_t>();
             }
         }
         setFrame(payload["index"].as<uint8_t>(), frame);

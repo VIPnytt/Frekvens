@@ -10,9 +10,9 @@ static_assert(GRID_COLUMNS * GRID_ROWS >= 50U,
 
 void MetaballsMode::begin()
 {
-    for (size_t i{0U}; i < contributions.size(); ++i)
+    for (size_t idx{0U}; idx < contributions.size(); ++idx)
     {
-        contributions[i] = ((UINT8_MAX - i) * (UINT8_MAX - i) * (0b1U << 6U)) >> (0b1U << 4U);
+        contributions[idx] = ((UINT8_MAX - idx) * (UINT8_MAX - idx) * (0b1U << 6U)) >> (0b1U << 4U);
     }
     for (Ball &ball : balls)
     {

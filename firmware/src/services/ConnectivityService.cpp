@@ -325,12 +325,12 @@ void ConnectivityService::onScan(arduino_event_id_t event)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
         JsonArray scan{doc["scan"].to<JsonArray>()};
-        for (int16_t i{0}; i < count; ++i)
+        for (int16_t idx{0}; idx < count; ++idx)
         {
             JsonObject _scan{scan.add<JsonObject>()};
-            _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
-            _scan["rssi"].set(WiFi.RSSI(i));
-            _scan["ssid"].set(WiFi.SSID(i));
+            _scan["encrypted"].set(WiFi.encryptionType(idx) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            _scan["rssi"].set(WiFi.RSSI(idx));
+            _scan["ssid"].set(WiFi.SSID(idx));
         }
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }

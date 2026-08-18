@@ -96,7 +96,7 @@ void MessageExtension::handle()
 void MessageExtension::addMessage(std::string message) // NOLINT(readability-make-member-function-const)
 {
     messages.push_back(message);
-    for (uint8_t i{0U}; i < repeat; ++i)
+    for (uint8_t count{0U}; count < repeat; ++count)
     {
         messages.push_back(message);
     }

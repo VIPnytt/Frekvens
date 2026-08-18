@@ -60,7 +60,7 @@ void GameOfLifeMode::handle()
         return;
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
-    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)
+    for (uint8_t idx{active}; idx < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++idx)
     {
         seeds[random(1, GRID_COLUMNS - 1) + (random(yMin + 1U, GRID_ROWS - 1) * (GRID_COLUMNS - yMin))] = true;
     }
