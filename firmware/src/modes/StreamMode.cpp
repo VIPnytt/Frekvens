@@ -6,7 +6,6 @@
 #include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h"
 
 #include <nvs.h>
 
@@ -25,19 +24,17 @@ void StreamMode::begin()
 {
     if (udp.listen(port))
     {
-        switch (port)
+        if (port == 4048U)
         {
-        case 4048U:
             udp.onPacket(&onDistributedDisplayProtocol);
-            break;
-        case 5568U:
+        }
+        else if (port == 5568U)
+        {
             udp.onPacket(&onE131);
-            break;
-        case 6454U:
+        }
+        else if (port == 6454U)
+        {
             udp.onPacket(&onArtNet);
-            break;
-        default:
-            return;
         }
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
@@ -81,7 +78,7 @@ void StreamMode::onReceive(JsonObjectConst payload,
 
 void StreamMode::onArtNet(AsyncUDPPacket packet)
 {
-    if (packet.length() == 18U + GRID_COLUMNS * GRID_ROWS)
+    if (packet.length() == 18U + (GRID_COLUMNS * GRID_ROWS))
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(18U)));
@@ -92,12 +89,12 @@ void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
 {
     const std::span<const uint8_t> data{std::span(packet.data(), packet.length())};
     const bool time{(data.front() & (0b1U << 4U)) != 0U};
-    if (!time && packet.length() == 10U + GRID_COLUMNS * GRID_ROWS)
+    if (!time && packet.length() == 10U + (GRID_COLUMNS * GRID_ROWS))
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(10U)));
     }
-    else if (time && packet.length() == 14U + GRID_COLUMNS * GRID_ROWS)
+    else if (time && packet.length() == 14U + (GRID_COLUMNS * GRID_ROWS))
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(14U)));
@@ -106,7 +103,7 @@ void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
 
 void StreamMode::onE131(AsyncUDPPacket packet)
 {
-    if (packet.length() == 126U + GRID_COLUMNS * GRID_ROWS)
+    if (packet.length() == 126U + (GRID_COLUMNS * GRID_ROWS))
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(126U)));
