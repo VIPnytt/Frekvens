@@ -49,7 +49,6 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
         // U+0075-U+0078
         return toSymbol(latinSmallLetterU_latinSmallLetterX[character - 'u']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -95,7 +94,6 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MINI

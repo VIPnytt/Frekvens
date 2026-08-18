@@ -103,7 +103,6 @@ template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<u
 
 std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Condition condition)
 {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (condition)
     {
     case Condition::CLEAR:
@@ -135,6 +134,5 @@ std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler
     case Condition::WIND:
         return bitmapWind;
     }
-    // NOLINTEND(bugprone-branch-clone)
     return {};
 }

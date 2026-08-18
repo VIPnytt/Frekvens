@@ -62,7 +62,7 @@ void HomeThermometerMode::transmit()
 
 void HomeThermometerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
-    if (payload["indoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
+    if (payload["indoor"].is<int16_t>())
     {
         setTemperature("indoor", payload["indoor"].as<int16_t>());
     }
@@ -70,7 +70,7 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload, std::string_view so
     {
         setTemperature("indoor", lroundf(payload["indoor"].as<float>()));
     }
-    if (payload["outdoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
+    if (payload["outdoor"].is<int16_t>())
     {
         setTemperature("outdoor", payload["outdoor"].as<int16_t>());
     }

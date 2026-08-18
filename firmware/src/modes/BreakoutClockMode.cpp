@@ -83,7 +83,7 @@ void BreakoutClockMode::handle()
     y = lroundf(yDec);
     Display.setPixel(x, y, UINT8_MAX);
     const float rad{atanf((GRID_ROWS - 2U - yDec) / abs(paddle[1U] - xDec))};
-    if (xDec < paddle.front() && rad < 1.0F && paddle.front() != 0U) // NOLINT(bugprone-branch-clone)
+    if (xDec < paddle.front() && rad < 1.0F && paddle.front() != 0U)
     {
         // Left
         Display.setPixel(paddle.back(), GRID_ROWS - 1U, 0U);
@@ -91,7 +91,7 @@ void BreakoutClockMode::handle()
         paddle.push_front(paddle.front() - 1U);
         Display.setPixel(paddle.front(), GRID_ROWS - 1U, UINT8_MAX);
     }
-    else if (xDec > paddle.back() && rad < 1.0F && paddle.back() < GRID_COLUMNS - 1U) // NOLINT(bugprone-branch-clone)
+    else if (xDec > paddle.back() && rad < 1.0F && paddle.back() < GRID_COLUMNS - 1U)
     {
         // Right
         Display.setPixel(paddle.front(), GRID_ROWS - 1U, 0U);

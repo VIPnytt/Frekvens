@@ -14,7 +14,6 @@ FontModule::Symbol MediumBoldFont::getChar(char32_t character) const
         // U+0030-U+0039
         return toSymbol(digitZero_digitNine[character - '0']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -28,7 +27,6 @@ FontModule::Symbol MediumBoldFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MEDIUMBOLD

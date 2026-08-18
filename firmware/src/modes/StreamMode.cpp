@@ -30,17 +30,19 @@ void StreamMode::begin()
 {
     if (udp.listen(port))
     {
-        if (port == 4048U)
+        switch (port)
         {
+        case 4048U:
             udp.onPacket(&onDistributedDisplayProtocol);
-        }
-        else if (port == 5568U)
-        {
+            break;
+        case 5568U:
             udp.onPacket(&onE131);
-        }
-        else if (port == 6454U)
-        {
+            break;
+        case 6454U:
             udp.onPacket(&onArtNet);
+            break;
+        default:
+            return;
         }
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);

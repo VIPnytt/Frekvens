@@ -49,7 +49,6 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
         // U+007B-U+007D
         return toSymbol(leftCurlyBracket_rightCurlyBracket[character - '{']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -137,7 +136,6 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_SMALL

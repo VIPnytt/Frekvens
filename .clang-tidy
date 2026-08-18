@@ -3,6 +3,7 @@ Checks: >
   -altera-id-dependent-backward-branch,
   -altera-struct-pack-align,
   -altera-unroll-loops,
+  -bugprone-branch-clone,
   -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-macro-to-enum,

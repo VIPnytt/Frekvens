@@ -62,7 +62,6 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
         // U+0061-U+007A
         return toSymbol(latinLetterA_latinLetterZ[character - 'a']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -97,7 +96,6 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_BRAILLE
