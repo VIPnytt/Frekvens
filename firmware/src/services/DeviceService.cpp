@@ -211,7 +211,6 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DeviceService::receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const
 {
     if (operational)
@@ -259,8 +258,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
     }
 }
 
-void DeviceService::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+void DeviceService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action
     if (payload["action"].is<std::string_view>())
@@ -285,7 +283,6 @@ void DeviceService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

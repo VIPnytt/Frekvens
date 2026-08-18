@@ -34,7 +34,7 @@ void ExtensionsService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ExtensionsService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
+void ExtensionsService::onTask(void *parameter)
 {
     for (;;)
     {

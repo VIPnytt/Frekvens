@@ -166,8 +166,7 @@ void InfraredExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void InfraredExtension::onReceive(JsonObjectConst payload,
-                                  std::string_view source) // NOLINT(misc-unused-parameters)
+void InfraredExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -177,7 +176,6 @@ void InfraredExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void InfraredExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

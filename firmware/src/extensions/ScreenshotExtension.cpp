@@ -30,8 +30,7 @@ void ScreenshotExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void ScreenshotExtension::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+void ScreenshotExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action: Pull
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")

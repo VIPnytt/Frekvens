@@ -104,8 +104,7 @@ void PhotocellExtension::transmit()
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload,
-                                   std::string_view source) // NOLINT(misc-unused-parameters)
+void PhotocellExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -130,7 +129,6 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

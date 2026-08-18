@@ -87,8 +87,7 @@ void DrawMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void DrawMode::onReceive(JsonObjectConst payload,
-                         std::string_view source) // NOLINT(misc-unused-parameters)
+void DrawMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action
     if (payload["action"].is<std::string_view>())

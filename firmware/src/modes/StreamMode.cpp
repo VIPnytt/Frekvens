@@ -88,8 +88,7 @@ void StreamMode::transmit()
  * @param payload Configuration payload containing the optional `port` value.
  * @param source Source identifier for the received configuration.
  */
-void StreamMode::onReceive(JsonObjectConst payload,
-                           std::string_view source) // NOLINT(misc-unused-parameters)
+void StreamMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Port
     if (payload["port"].is<uint16_t>())
@@ -147,7 +146,6 @@ void StreamMode::onE131(AsyncUDPPacket packet)
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -57,10 +57,7 @@ void OtaExtension::onEnd()
 }
 
 #if EXTENSION_STATUSLED
-void OtaExtension::onError(ota_error_t error) // NOLINT(misc-unused-parameters)
-{
-    Extensions.StatusLed().error();
-}
+void OtaExtension::onError(ota_error_t error) { Extensions.StatusLed().error(); }
 #endif // EXTENSION_STATUSLED
 
 #ifndef OTA_KEY

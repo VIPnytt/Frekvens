@@ -180,8 +180,7 @@ void WeatherMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void WeatherMode::onReceive(JsonObjectConst payload,
-                            std::string_view source) // NOLINT(misc-unused-parameters)
+void WeatherMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Provider
     if (payload["provider"].is<std::string_view>())
@@ -191,7 +190,6 @@ void WeatherMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

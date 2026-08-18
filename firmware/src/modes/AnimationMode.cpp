@@ -52,7 +52,6 @@ void AnimationMode::handle()
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2U);
@@ -111,8 +110,7 @@ void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void AnimationMode::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+void AnimationMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action: Pull
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")

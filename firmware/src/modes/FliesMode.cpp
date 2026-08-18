@@ -28,8 +28,7 @@ void FliesMode::handle()
  * @param payload Payload containing the fly ID and its x and y coordinates.
  * @param source Message source.
  */
-void FliesMode::onReceive(JsonObjectConst payload,
-                          std::string_view source) // NOLINT(misc-unused-parameters)
+void FliesMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     if (payload["id"].is<uint8_t>() && payload["x"].is<uint8_t>() && payload["y"].is<uint8_t>())
     {

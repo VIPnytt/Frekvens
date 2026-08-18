@@ -60,8 +60,7 @@ void HomeThermometerMode::transmit()
     }
 }
 
-void HomeThermometerMode::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+void HomeThermometerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     if (payload["indoor"].is<int16_t>()) // NOLINT(bugprone-branch-clone)
     {
@@ -81,7 +80,6 @@ void HomeThermometerMode::onReceive(JsonObjectConst payload,
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HomeThermometerMode::setTemperature(std::string_view where, int16_t temperature)
 {
     if (where == "indoor")
@@ -105,7 +103,6 @@ void HomeThermometerMode::setTemperature(std::string_view where, int16_t tempera
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

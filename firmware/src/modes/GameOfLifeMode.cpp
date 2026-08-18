@@ -129,8 +129,7 @@ void GameOfLifeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void GameOfLifeMode::onReceive(JsonObjectConst payload,
-                               std::string_view source) // NOLINT(misc-unused-parameters)
+void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -140,7 +139,6 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

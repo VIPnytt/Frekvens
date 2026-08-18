@@ -60,7 +60,7 @@ void MqttExtension::disconnect()
     }
 }
 
-void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-parameters)
+void MqttExtension::onConnect(bool sessionPresent)
 {
     ESP_LOGD(name.data(), "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",
@@ -71,12 +71,12 @@ void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-paramet
                                      "online");
 }
 
-void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
-                              const char *topic, const uint8_t *payload, size_t len, size_t index, size_t total)
+void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
+                              const uint8_t *payload, size_t len, size_t index, size_t total)
 {
-    if (index != 0 || len != total)
+    if (index != 0U || len != total)
     {
-        if (index == 0)
+        if (index == 0U)
         {
             buffer.resize(total);
         }
@@ -97,7 +97,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
     }
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
     ESP_LOGD(name.data(), "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)

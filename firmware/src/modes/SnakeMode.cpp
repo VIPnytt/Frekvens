@@ -278,8 +278,7 @@ void SnakeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(JsonObjectConst payload,
-                          std::string_view source) // NOLINT(misc-unused-parameters)
+void SnakeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -289,7 +288,6 @@ void SnakeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

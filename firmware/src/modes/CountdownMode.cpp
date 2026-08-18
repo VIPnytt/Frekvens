@@ -153,8 +153,7 @@ void CountdownMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -178,7 +177,6 @@ void CountdownMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -150,8 +150,7 @@ void TickerMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void TickerMode::onReceive(JsonObjectConst payload,
-                           std::string_view source) // NOLINT(misc-unused-parameters)
+void TickerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -168,7 +167,6 @@ void TickerMode::onReceive(JsonObjectConst payload,
 void TickerMode::end() { text.reset(); }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

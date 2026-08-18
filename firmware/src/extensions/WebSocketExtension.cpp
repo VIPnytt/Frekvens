@@ -25,9 +25,8 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view so
     server->textAll(message.data(), length);
 }
 
-void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-parameters)
-                                 AsyncWebSocketClient *client, AwsEventType type, void *arg, const uint8_t *data,
-                                 size_t len)
+void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
+                                 const uint8_t *data, size_t len)
 {
     switch (type)
     {

@@ -150,7 +150,7 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(bugprone-easily-swappable-parameters)
+void ConnectivityService::connect(const char *ssid, const char *key)
 {
     if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
@@ -162,7 +162,7 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onConnected(arduino_event_id_t event)
 {
     ESP_LOGD(name.data(), "Wi-Fi connected");            // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());   // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -183,8 +183,7 @@ void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-u
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                         arduino_event_info_t info)
+void ConnectivityService::onDisconnected(arduino_event_id_t event, arduino_event_info_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mdns)
@@ -199,8 +198,7 @@ void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(mis
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+void ConnectivityService::onIPv4(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -215,8 +213,7 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
     }
 }
 
-void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+void ConnectivityService::onIPv6(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
@@ -269,7 +266,7 @@ void ConnectivityService::onRoutable()
     }
 }
 
-void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onScan(arduino_event_id_t event)
 {
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)
@@ -318,8 +315,7 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+void ConnectivityService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Connect
     if (payload["ssid"].is<const char *>())
@@ -337,7 +333,6 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

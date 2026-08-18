@@ -124,9 +124,8 @@ void AlexaExtension::onMdns()
     MDNS.addServiceTxt("hue", "tcp", "modelid", "BSB002");
 }
 
-void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
-                                size_t index, // NOLINT(misc-unused-parameters)
-                                size_t total) // NOLINT(misc-unused-parameters)
+void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                                size_t total)
 {
     const std::span<const uint8_t> _body{data, len};
     const std::string body{_body.begin(), _body.end()};
@@ -159,11 +158,8 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
                       .c_str());
 }
 
-void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
-                               const uint8_t *data, // NOLINT(misc-unused-parameters)
-                               size_t len,          // NOLINT(misc-unused-parameters)
-                               size_t index,        // NOLINT(misc-unused-parameters)
-                               size_t total)        // NOLINT(misc-unused-parameters)
+void AlexaExtension::onPostApi(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                               size_t total)
 {
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", R"([{"success":{"username":"alexa"}}])");
 }

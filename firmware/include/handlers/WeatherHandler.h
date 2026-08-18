@@ -39,7 +39,6 @@ public:
     [[nodiscard]] std::variant<std::span<const uint8_t>, std::span<const uint16_t>> getSign(Condition condition);
 
 protected:
-    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     explicit WeatherHandler(std::string_view name, unsigned long interval = 0b1U << 20U)
         : name(name), interval(interval) {};
 

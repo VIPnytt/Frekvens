@@ -94,7 +94,6 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 }
 
 #if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

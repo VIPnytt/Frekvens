@@ -158,8 +158,7 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view sou
     }
 }
 
-void PlaylistExtension::onReceive(JsonObjectConst payload,
-                                  std::string_view source) // NOLINT(misc-unused-parameters)
+void PlaylistExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())
@@ -183,7 +182,6 @@ void PlaylistExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

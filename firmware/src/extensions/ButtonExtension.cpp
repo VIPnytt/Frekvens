@@ -124,7 +124,7 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #endif // PIN_SW2
 }
 
-void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugprone-easily-swappable-parameters)
+void ButtonExtension::event(const char *key, const char *value)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;
@@ -132,7 +132,6 @@ void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugpro
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void ButtonExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

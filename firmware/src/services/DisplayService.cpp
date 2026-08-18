@@ -96,7 +96,7 @@ void DisplayService::flush()
     planes[0U].fill(0U);
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame[logical]};
+        const uint8_t _brightness{frame[logical]}; // NOLINT(cppcoreguidelines-init-variables)
         if (_brightness != 0U)
         {
             const std::pair<size_t, size_t> &mapping{pixelsMapped[logical]};
@@ -116,7 +116,7 @@ void DisplayService::flush()
     std::array<std::pair<uint8_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> indices;
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame[logical]};
+        const uint8_t _brightness{frame[logical]}; // NOLINT(cppcoreguidelines-init-variables)
         if (_brightness != 0U && _brightness != UINT8_MAX)
         {
             indices[next[_brightness]++] = pixelsMapped[logical];
@@ -125,6 +125,7 @@ void DisplayService::flush()
     for (uint8_t plane{1U}; plane < planes.size(); ++plane)
     {
         planes[plane] = planes[plane - 1U];
+        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for (uint16_t idx{offsets[plane]}; idx < offsets[plane] + counts[plane]; ++idx)
         {
             const std::pair<uint8_t, uint8_t> &mapping{indices[idx]};
@@ -212,7 +213,7 @@ void DisplayService::setOrientation(Orientation _orientation)
  * @param logical Logical pixel index.
  * @param physical Physical pixel index used to determine the bit mask and plane offset.
  */
-void DisplayService::mapPixel(size_t logical, size_t physical) // NOLINT(bugprone-easily-swappable-parameters)
+void DisplayService::mapPixel(size_t logical, size_t physical)
 {
     pixelsMapped[logical].first = static_cast<size_t>(0x80U >> (physical & 7U));
     pixelsMapped[logical].second = static_cast<size_t>(physical >> 3U);
@@ -365,7 +366,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
  * @param idx Frame index of the pixel.
  * @param _brightness Pixel brightness value.
  */
-void DisplayService::setPixel(size_t idx, uint8_t _brightness) // NOLINT(bugprone-easily-swappable-parameters)
+void DisplayService::setPixel(size_t idx, uint8_t _brightness)
 {
     frame[idx] = _brightness;
     render = true;
@@ -630,7 +631,7 @@ void DisplayService::fillFrame(uint8_t _brightness)
  * @param y Row index to fill.
  * @param _brightness Brightness value applied to each pixel in the row.
  */
-void DisplayService::fillRow(size_t y, uint8_t _brightness) // NOLINT(misc-unused-parameters)
+void DisplayService::fillRow(size_t y, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(y * GRID_COLUMNS, GRID_COLUMNS), _brightness);
     render = true;
@@ -743,8 +744,7 @@ void DisplayService::onPowerOff()
  *
  * @param payload JSON object containing the settings to apply.
  */
-void DisplayService::onReceive(JsonObjectConst payload,
-                               std::string_view source) // NOLINT(misc-unused-parameters)
+void DisplayService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Brightness
     if (payload["brightness"].is<uint8_t>())

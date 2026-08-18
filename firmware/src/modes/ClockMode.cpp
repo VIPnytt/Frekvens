@@ -152,8 +152,7 @@ void ClockMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ClockMode::onReceive(JsonObjectConst payload,
-                          std::string_view source) // NOLINT(misc-unused-parameters)
+void ClockMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -168,7 +167,6 @@ void ClockMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

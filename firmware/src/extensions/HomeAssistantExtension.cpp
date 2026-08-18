@@ -118,7 +118,6 @@ void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_vie
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

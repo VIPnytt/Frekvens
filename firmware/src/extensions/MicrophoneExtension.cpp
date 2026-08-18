@@ -153,8 +153,7 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+void MicrophoneExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -169,7 +168,6 @@ void MicrophoneExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
