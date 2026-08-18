@@ -58,13 +58,13 @@ void PingPongMode::begin()
     }
     else
     {
-        Display.drawLineVertical(0U, _paddle, _paddle + 2U, UINT8_MAX);
-        Display.drawLineVertical(GRID_COLUMNS - 1U, _paddle, _paddle + 2U, UINT8_MAX);
+        Display.drawLineVertical(0U, _paddle, _paddle + 2U, INT8_MAX);
+        Display.drawLineVertical(GRID_COLUMNS - 1U, _paddle, _paddle + 2U, INT8_MAX);
     }
     xDec = x = clock == nullptr ? _paddle + 1U : GRID_COLUMNS - 2U;
     yDec = y = clock == nullptr ? GRID_ROWS - 2U : _paddle + 1U;
     deg = static_cast<uint16_t>(random(clock == nullptr ? 60 : 150, clock == nullptr ? 121 : 211)); // ±30°
-    Display.setPixel(x, y, UINT8_MAX);
+    Display.setPixel(x, y, clock == nullptr ? UINT8_MAX : INT8_MAX);
 }
 
 void PingPongMode::handle()
@@ -80,7 +80,7 @@ void PingPongMode::handle()
         else if (xDec >= GRID_COLUMNS - 2U && (deg < 90U || deg >= 270U))
         {
             // Right
-            deg = random(135, 226); // ±45°
+            deg = static_cast<uint16_t>(random(135, 226)); // ±45°
         }
     }
     else
@@ -88,12 +88,12 @@ void PingPongMode::handle()
         if (yDec >= GRID_ROWS - 2U && deg >= 180U)
         {
             // Bottom
-            deg = random(45, 136); // ±45°
+            deg = static_cast<uint16_t>(random(45, 136)); // ±45°
         }
         else if (yDec <= 1U && deg < 180U)
         {
             // Top
-            deg = random(225, 316); // ±45°
+            deg = static_cast<uint16_t>(random(225, 316)); // ±45°
         }
     }
     if ((clock == nullptr && xDec <= 0U) || xDec >= GRID_COLUMNS - 1U)

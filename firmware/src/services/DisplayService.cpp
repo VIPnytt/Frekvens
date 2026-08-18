@@ -559,9 +559,9 @@ void DisplayService::onPowerOff()
     Display.power = false;
     Display.pending = true;
     Modes.setActive(false);
-    for (uint16_t plane{0U}; plane < planes.size(); ++plane)
+    for (auto &plane : planes)
     {
-        planes[plane].fill(0U);
+        plane.fill(0U);
     }
 }
 

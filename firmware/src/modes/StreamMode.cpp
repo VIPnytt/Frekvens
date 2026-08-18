@@ -88,13 +88,12 @@ void StreamMode::onArtNet(AsyncUDPPacket packet)
 void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
 {
     const std::span<const uint8_t> data{std::span(packet.data(), packet.length())};
-    const bool time{(data.front() & (0b1U << 4U)) != 0U};
-    if (!time && packet.length() == 10U + (GRID_COLUMNS * GRID_ROWS))
+    if (packet.length() == 10U + (GRID_COLUMNS * GRID_ROWS) && (data.front() & (0b1U << 4U)) == 0U)
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(10U)));
     }
-    else if (time && packet.length() == 14U + (GRID_COLUMNS * GRID_ROWS))
+    else if (packet.length() == 14U + (GRID_COLUMNS * GRID_ROWS) && (data.front() & (0b1U << 4U)) != 0U)
     {
         Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
             std::span(packet.data(), packet.length()).subspan(14U)));

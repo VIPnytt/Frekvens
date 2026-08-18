@@ -160,7 +160,7 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
 
 void SnakeMode::move()
 {
-    if (millis() - lastMillis + snake.size() > INT8_MAX)
+    if (millis() - lastMillis > INT8_MAX + snake.size())
     {
         std::optional<SnakeMode::Pixel> step{next()};
         if (step.has_value())
