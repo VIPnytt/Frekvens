@@ -33,7 +33,8 @@ void ArrowMode::handle()
         if (index == 0U)
         {
             direction = true;
-        }else if (index == arrows0.size() + arrows1.size() - 1U)
+        }
+        else if (index == arrows0.size() + arrows1.size() - 1U)
         {
             direction = false;
         }
