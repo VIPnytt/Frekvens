@@ -7,6 +7,12 @@
 
 static_assert(GRID_ROWS >= 6U, __STRING(MODE_BLINDS) " is not compatible with this device's display size.");
 
+/**
+ * @brief Advances the blinds animation after the update interval elapses.
+ *
+ * When microphone support is enabled, an update also requires a microphone
+ * trigger.
+ */
 void BlindsMode::handle()
 {
 #if EXTENSION_MICROPHONE
@@ -16,19 +22,29 @@ void BlindsMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        Display.clearFrame();
-        for (uint8_t y{static_cast<uint8_t>(modulo / 2U)}; y < GRID_ROWS; y += modulo)
+        if (modulo == 1U)
         {
-            for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
+            Display.fillFrame(UINT8_MAX);
+            direction = true;
+            ++modulo;
+        }
+        else
+        {
+            Display.fillFrame(0U);
+            for (uint8_t y{static_cast<uint8_t>(modulo / 2U)}; y < GRID_ROWS; y += modulo)
             {
-                Display.setPixel(x, y, UINT8_MAX);
+                Display.fillRow(y, UINT8_MAX);
+            }
+            if (modulo == moduloMax)
+            {
+                direction = !direction;
+                --modulo;
+            }
+            else
+            {
+                direction ? ++modulo : --modulo;
             }
         }
-        if (modulo == 1U || modulo == moduloMax)
-        {
-            direction = !direction;
-        }
-        direction ? ++modulo : --modulo;
     }
 }
 

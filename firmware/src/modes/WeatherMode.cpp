@@ -35,6 +35,12 @@ void WeatherMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the weather provider from persistent configuration.
+ *
+ * Uses the first available provider when no valid provider is configured and
+ * schedules the selected provider for an immediate update.
+ */
 void WeatherMode::begin()
 {
     nvs_handle_t handle{};
@@ -59,6 +65,13 @@ void WeatherMode::begin()
     lastMillis = millis() - provider->interval;
 }
 
+/**
+ * @brief Updates weather data and renders the current condition and temperature.
+ *
+ * Refreshes the provider data after the configured interval when Wi-Fi is connected.
+ * When both values are available, displays the condition above the centered temperature
+ * and publishes the updated state.
+ */
 void WeatherMode::handle()
 {
     if (WiFi.isConnected() && millis() - lastMillis > provider->interval)
@@ -77,7 +90,7 @@ void WeatherMode::handle()
                     // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                     const uint8_t marginsY{
                         static_cast<uint8_t>(max(0U, GRID_ROWS - bitmap.getHeight() - textHeight) / 3U)};
-                    Display.clearFrame();
+                    Display.fillFrame(0U);
                     bitmap.draw((GRID_COLUMNS - bitmap.getWidth()) / 2U, marginsY);
                     text.draw((GRID_COLUMNS - text.getWidth()) / 2U, GRID_ROWS - marginsY - textHeight);
                 },
@@ -153,6 +166,9 @@ void WeatherMode::setProvider(std::string_view providerName)
     }
 }
 
+/**
+ * @brief Publishes the current weather state and available providers.
+ */
 void WeatherMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -173,8 +189,13 @@ void WeatherMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void WeatherMode::onReceive(JsonObjectConst payload,
-                            std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles incoming provider selection requests.
+ *
+ * @param payload Message payload containing an optional string-valued `provider` field.
+ * @param source Message source.
+ */
+void WeatherMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Provider
     if (payload["provider"].is<std::string_view>())
@@ -184,7 +205,13 @@ void WeatherMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Registers the weather provider selector with Home Assistant.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for the selector's command and state messages.
+ * @param unique Prefix used to construct the selector's unique identifier.
+ */
 void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

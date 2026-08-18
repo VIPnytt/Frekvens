@@ -45,6 +45,9 @@ void MqttExtension::handle()
 #endif // EXTENSION_STATUSLED
 }
 
+/**
+ * @brief Disconnects from the MQTT broker after publishing a retained unavailable status.
+ */
 void MqttExtension::disconnect()
 {
     lastMillis = millis();
@@ -60,7 +63,14 @@ void MqttExtension::disconnect()
     }
 }
 
-void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles a successful MQTT connection.
+ *
+ * Subscribes to device set commands and publishes the retained online availability status.
+ *
+ * @param sessionPresent Indicates whether the broker restored a previous session.
+ */
+void MqttExtension::onConnect(bool sessionPresent)
 {
     ESP_LOGD(name.data(), "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     Extensions.MQTT().client.subscribe("frekvens/" HOSTNAME "/+/set",
@@ -71,12 +81,25 @@ void MqttExtension::onConnect(bool sessionPresent) // NOLINT(misc-unused-paramet
                                      "online");
 }
 
-void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, // NOLINT(misc-unused-parameters)
-                              const char *topic, const uint8_t *payload, size_t len, size_t index, size_t total)
+/**
+ * @brief Processes an MQTT message and forwards valid JSON payloads to the device.
+ *
+ * Reassembles fragmented payloads before deserializing them. Invalid JSON payloads
+ * are ignored.
+ *
+ * @param properties MQTT message properties.
+ * @param topic Full MQTT topic associated with the message.
+ * @param payload Message payload or payload fragment.
+ * @param len Length of the payload or fragment.
+ * @param index Offset of the fragment within the complete payload.
+ * @param total Total length of the complete payload.
+ */
+void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &properties, const char *topic,
+                              const uint8_t *payload, size_t len, size_t index, size_t total)
 {
-    if (index != 0 || len != total)
+    if (index != 0U || len != total)
     {
-        if (index == 0)
+        if (index == 0U)
         {
             buffer.resize(total);
         }
@@ -97,7 +120,12 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
     }
 }
 
-void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Logs the MQTT disconnection and its reason.
+ *
+ * @param reason Reason reported for the disconnection.
+ */
+void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 {
     ESP_LOGD(name.data(), "disconnected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)

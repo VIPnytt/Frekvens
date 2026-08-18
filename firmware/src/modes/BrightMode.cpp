@@ -4,6 +4,9 @@
 
 #include "services/DisplayService.h"
 
-void BrightMode::begin() { Display.clearFrame(UINT8_MAX); }
+/**
+ * @brief Sets every display pixel to maximum brightness.
+ */
+void BrightMode::begin() { Display.fillFrame(UINT8_MAX); }
 
 #endif // MODE_BRIGHT

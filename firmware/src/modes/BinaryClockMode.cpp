@@ -8,15 +8,21 @@
 static_assert(GRID_COLUMNS >= 12U, __STRING(MODE_BINARYCLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 14U, __STRING(MODE_BINARYCLOCK) " is not compatible with this device's display size.");
 
+/**
+ * @brief Marks the display for a full refresh when the mode starts.
+ */
 void BinaryClockMode::begin() { pending = true; }
 
+/**
+ * @brief Updates the binary clock display with the current local time.
+ */
 void BinaryClockMode::handle()
 {
     if (getLocalTime(&local))
     {
         if (pending)
         {
-            Display.clearFrame();
+            Display.fillFrame(0U);
         }
         if (second != local.tm_sec || pending)
         {
@@ -37,17 +43,19 @@ void BinaryClockMode::handle()
     }
 }
 
+/**
+ * @brief Draws a six-bit binary value on the display.
+ *
+ * @param y Top row of the binary bars.
+ * @param digit Value whose six least significant bits are rendered.
+ */
 void BinaryClockMode::draw(uint8_t y, uint8_t digit)
 {
-    for (uint8_t i{0U}; i < 6U; ++i)
+    for (uint8_t idx{0U}; idx < 6U; ++idx)
     {
-        const uint8_t x{static_cast<uint8_t>((GRID_COLUMNS / 2U) + 4U - (i * 2U))};
-        const uint8_t brightness = (digit & (0b1U << i)) == 0U ? 0U : UINT8_MAX;
-        for (uint16_t _y{y}; _y < uint16_t{y} + 4U; ++_y)
-        {
-            Display.setPixel(static_cast<uint8_t>(x), static_cast<uint8_t>(_y), brightness);
-            Display.setPixel(static_cast<uint8_t>(x + 1U), static_cast<uint8_t>(_y), brightness);
-        }
+        const uint8_t x{static_cast<uint8_t>((GRID_COLUMNS / 2U) + 4U - (idx * 2U))};
+        const uint8_t brightness = (digit & (0b1U << idx)) == 0U ? 0U : UINT8_MAX;
+        Display.drawRectangleSolid(x, 2U, y, y + 3U, brightness);
     }
 }
 

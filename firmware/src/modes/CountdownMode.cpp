@@ -40,6 +40,9 @@ void CountdownMode::configure()
     transmit();
 }
 
+/**
+ * @brief Resets the countdown display state and blinking.
+ */
 void CountdownMode::begin()
 {
     blink = 0U;
@@ -47,6 +50,13 @@ void CountdownMode::begin()
     upper = 0U;
 }
 
+/**
+ * @brief Updates the countdown display and handles completion blinking.
+ *
+ * Redraws the remaining hours and minutes or minutes and seconds when they
+ * change. When the countdown reaches zero, begins blinking the display and
+ * publishes a completion event.
+ */
 void CountdownMode::handle()
 {
     const std::chrono::nanoseconds _nanoseconds{epoch - std::chrono::system_clock::now()};
@@ -72,7 +82,7 @@ void CountdownMode::handle()
             const TextHandler _bl(std::to_string(lower / 10U), *font);
             const TextHandler _br(std::to_string(lower % 10U), *font);
             const uint8_t fontWidth{max({_tl.getWidth(), _tr.getWidth(), _bl.getWidth(), _br.getWidth()})};
-            Display.clearFrame();
+            Display.fillFrame(0U);
             _tl.draw((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - _tl.getWidth()) / 2U),
                      static_cast<int8_t>((GRID_ROWS / 2U) - 1U - _tl.getHeight()));
             _tr.draw((GRID_COLUMNS / 2U) + 1U + ((fontWidth - _tr.getWidth()) / 2U),
@@ -129,6 +139,11 @@ void CountdownMode::setFont(std::string_view _fontName)
     }
 }
 
+/**
+ * @brief Publishes the current font, available fonts, and countdown timestamp.
+ *
+ * The timestamp is formatted as a local ISO-like date and time.
+ */
 void CountdownMode::transmit()
 {
     std::array<char, 32U> buffer{};
@@ -146,8 +161,12 @@ void CountdownMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Updates the countdown font or target time from a received payload.
+ *
+ * @param payload Payload containing a font name, a duration in seconds, or a local timestamp.
+ */
+void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -171,7 +190,13 @@ void CountdownMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery components for countdown configuration.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base command and state topic for the countdown mode.
+ * @param unique Unique identifier prefix for the discovered entities.
+ */
 void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

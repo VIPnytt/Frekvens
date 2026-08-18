@@ -117,6 +117,9 @@ void AlexaExtension::onGetLights(AsyncWebServerRequest *request)
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", std::format(R"({{"1":{}}})", light()).c_str());
 }
 
+/**
+ * @brief Advertises the Hue-compatible mDNS service and bridge metadata.
+ */
 void AlexaExtension::onMdns()
 {
     MDNS.addService("hue", "tcp", 80U);
@@ -124,9 +127,17 @@ void AlexaExtension::onMdns()
     MDNS.addServiceTxt("hue", "tcp", "modelid", "BSB002");
 }
 
-void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
-                                size_t index, // NOLINT(misc-unused-parameters)
-                                size_t total) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Updates the light's brightness and power state from a JSON request.
+ *
+ * @param request HTTP request receiving the response.
+ * @param data Request body data.
+ * @param len Length of the request body data.
+ * @param index Offset of the current body data segment.
+ * @param total Total request body length.
+ */
+void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                                size_t total)
 {
     const std::span<const uint8_t> _body{data, len};
     const std::string body{_body.begin(), _body.end()};
@@ -159,11 +170,11 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
                       .c_str());
 }
 
-void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
-                               const uint8_t *data, // NOLINT(misc-unused-parameters)
-                               size_t len,          // NOLINT(misc-unused-parameters)
-                               size_t index,        // NOLINT(misc-unused-parameters)
-                               size_t total)        // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles API authentication requests with a successful Alexa user response.
+ */
+void AlexaExtension::onPostApi(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                               size_t total)
 {
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", R"([{"success":{"username":"alexa"}}])");
 }

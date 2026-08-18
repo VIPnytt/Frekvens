@@ -8,6 +8,14 @@
 
 static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_SCAN) " is not compatible with this device's display size.");
 
+/**
+ * @brief Advances the scan highlight across the display.
+ *
+ * Updates the highlight after at least INT8_MAX milliseconds have elapsed.
+ * When microphone support is enabled, a microphone trigger is also required.
+ * Clears the column two positions behind the highlight and wraps the scan
+ * position after GRID_COLUMNS + 2U.
+ */
 void ScanMode::handle()
 {
 #if EXTENSION_MICROPHONE
@@ -17,21 +25,18 @@ void ScanMode::handle()
 #endif // EXTENSION_MICROPHONE
     {
         lastMillis = millis();
-        for (uint8_t y{0U}; y < GRID_ROWS; ++y)
+        if (x < GRID_COLUMNS)
         {
-            if (column < GRID_COLUMNS)
-            {
-                Display.setPixel(column, y);
-            }
-            if (column >= 2U)
-            {
-                Display.setPixel(column - 2U, y, 0U);
-            }
+            Display.fillColumn(x, UINT8_MAX);
         }
-        ++column;
-        if (column >= GRID_COLUMNS + 2U)
+        if (x >= 2U)
         {
-            column = 0U;
+            Display.fillColumn(x - 2U, 0U);
+        }
+        ++x;
+        if (x >= GRID_COLUMNS + 2U)
+        {
+            x = 0U;
         }
     }
 }

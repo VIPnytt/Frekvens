@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_MEDIUMWIDE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUMWIDE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Converts a supported character to its medium-wide font symbol.
+ *
+ * @param character Character to convert.
+ * @return Font symbol for a supported digit, space, or selected letter; an empty symbol otherwise.
+ */
 FontModule::Symbol MediumWideFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
@@ -14,7 +20,6 @@ FontModule::Symbol MediumWideFont::getChar(char32_t character) const
         // U+0030-U+0039
         return toSymbol(digitZero_digitNine[character - '0']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -28,7 +33,6 @@ FontModule::Symbol MediumWideFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MEDIUMWIDE

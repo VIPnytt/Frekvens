@@ -6,13 +6,16 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Sets a randomly selected display pixel to a random brightness when activated.
+ */
 void GlitterMode::handle()
 {
 #if EXTENSION_MICROPHONE
     if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
-        Display.setPixel(random(GRID_COLUMNS), random(GRID_ROWS), random(1, 0b1U << 8U));
+        Display.setPixel(random(GRID_COLUMNS * GRID_ROWS), static_cast<uint8_t>(random(1, 0b1U << 8U)));
     }
 }
 

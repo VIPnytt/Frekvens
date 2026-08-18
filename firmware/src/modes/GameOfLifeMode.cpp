@@ -60,7 +60,7 @@ void GameOfLifeMode::handle()
         return;
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
-    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)
+    for (uint8_t idx{active}; idx < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++idx)
     {
         seeds[random(1, GRID_COLUMNS - 1) + (random(yMin + 1U, GRID_ROWS - 1) * (GRID_COLUMNS - yMin))] = true;
     }
@@ -122,6 +122,9 @@ void GameOfLifeMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock-enabled state.
+ */
 void GameOfLifeMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -129,8 +132,13 @@ void GameOfLifeMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void GameOfLifeMode::onReceive(JsonObjectConst payload,
-                               std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies a received clock configuration.
+ *
+ * @param payload Incoming JSON payload containing an optional Boolean `clock` value.
+ * @param source Source identifier for the received payload.
+ */
+void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -140,7 +148,13 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery metadata for the Game of Life clock switch.
+ *
+ * @param discovery JSON document to which the switch configuration is added.
+ * @param topic Base topic for the device mode.
+ * @param unique Unique identifier prefix for the switch.
+ */
 void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

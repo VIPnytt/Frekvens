@@ -2,7 +2,6 @@
 
 #include "modes/FireworkMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
@@ -40,6 +39,9 @@ void FireworkMode::pad()
     }
 }
 
+/**
+ * @brief Advances the rocket toward the upper half of the display and starts the explosion stage.
+ */
 void FireworkMode::launching()
 {
     if (millis() - lastMillis > (1U << 6U))
@@ -67,12 +69,18 @@ void FireworkMode::launching()
     }
 }
 
+/**
+ * @brief Advances the firework explosion and renders its expanding ellipse.
+ *
+ * Transitions the firework to the fading stage when the maximum explosion radius
+ * is reached.
+ */
 void FireworkMode::exploding()
 {
     if (millis() - lastMillis > INT8_MAX)
     {
         ++radius;
-        Display.drawEllipse(rocketX, rocketY, radius, true, UINT8_MAX / maxRadius * radius);
+        Display.drawEllipseSolid(rocketX, rocketY, radius, UINT8_MAX / maxRadius * radius);
         lastMillis = millis();
         if (radius >= maxRadius)
         {
@@ -82,18 +90,20 @@ void FireworkMode::exploding()
     }
 }
 
+/**
+ * @brief Fades the firework explosion until it disappears.
+ */
 void FireworkMode::fading()
 {
     if (random(3) == 0)
     {
         --brightness;
     }
-    Display.drawEllipse(rocketX, rocketY, radius, true, brightness);
+    Display.drawEllipseSolid(rocketX, rocketY, radius, brightness);
     lastMillis = millis();
     if (brightness == 0U)
     {
         stage = 0U;
-        Display.clearFrame();
     }
 }
 

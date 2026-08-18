@@ -67,9 +67,12 @@ private:
     uint8_t brightness{0U};
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
+
+    std::array<std::pair<size_t, size_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
 
     Orientation orientation{Orientation::deg0};
+
+    void mapPixel(size_t logical, size_t physical);
 
     void transmit();
 
@@ -78,6 +81,8 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
+    static constexpr std::array<size_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
+
     void configure();
     void handle();
 
@@ -92,18 +97,34 @@ public:
     [[nodiscard]] uint8_t getBrightness() const;
     void setBrightness(uint8_t _brightness);
 
-    void getFrame(std::span<uint8_t> _frame) const;
-    void setFrame(std::span<const uint8_t> _frame);
+    void getFrame(std::span<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame) const;
+    void setFrame(std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS> _frame);
 
-    void clearFrame(uint8_t _brightness = 0U);
-    void invertFrame();
-
+    [[nodiscard]] uint8_t getPixel(size_t idx) const;
     [[nodiscard]] uint8_t getPixel(uint8_t x, uint8_t y) const;
-    void setPixel(uint8_t x, uint8_t y, uint8_t _brightness = UINT8_MAX);
 
-    void drawEllipse(float x, float y, float radius, bool fill = false, uint8_t _brightness = UINT8_MAX);
+    void setPixel(size_t idx, uint8_t _brightness);
+    void setPixel(uint8_t x, uint8_t y, uint8_t _brightness);
+
+    void drawEllipseOutline(float x, float y, float radius, uint8_t _brightness);
+    void drawEllipseSolid(float x, float y, float radius, uint8_t _brightness);
+
+    void drawRectangleOutline(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness);
+    void drawRectangleSolid(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness);
+
+    void drawLineHorizontal(size_t xMin, size_t columns, size_t y, uint8_t _brightness);
+    void drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uint8_t _brightness);
+
+    void fillColumn(uint8_t x, uint8_t _brightness);
+
+    void fillFrame(uint8_t _brightness);
+
+    void fillRow(size_t y, uint8_t _brightness);
+    void fillRows(size_t minY, size_t rows, uint8_t _brightness);
 
     void flush();
+
+    void invertFrame();
 
     void onReceive(JsonObjectConst payload, std::string_view source) override;
 

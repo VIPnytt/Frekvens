@@ -12,6 +12,9 @@
 static_assert(GRID_COLUMNS == 16U, __STRING(MODE_WAVEFORM) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 12U, __STRING(MODE_WAVEFORM) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads the saved wave selection and transmits the current configuration.
+ */
 void WaveformMode::configure()
 {
     nvs_handle_t handle{};
@@ -25,11 +28,18 @@ void WaveformMode::configure()
     transmit();
 }
 
+/**
+ * @brief Updates the display with a waveform or centered row at regular intervals.
+ *
+ * When microphone support is enabled, draws a waveform for triggered input;
+ * otherwise, fills the center row. Without microphone support, always draws a
+ * waveform.
+ */
 void WaveformMode::handle()
 {
     if (millis() - lastMillis > (0b1U << 9U))
     {
-        Display.clearFrame();
+        Display.fillFrame(0U);
 #if EXTENSION_MICROPHONE
         if (Extensions.Microphone().isTriggered())
         {
@@ -37,10 +47,7 @@ void WaveformMode::handle()
         }
         else
         {
-            for (uint8_t x{0U}; x < GRID_COLUMNS; ++x)
-            {
-                Display.setPixel(x, GRID_ROWS / 2U);
-            }
+            Display.fillRow(GRID_ROWS / 2U, UINT8_MAX);
         }
 #else
         draw();
@@ -75,6 +82,9 @@ void WaveformMode::setWave(std::string_view waveName)
     transmit();
 }
 
+/**
+ * @brief Transmits the selected wave and available wave names.
+ */
 void WaveformMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -87,8 +97,13 @@ void WaveformMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void WaveformMode::onReceive(JsonObjectConst payload,
-                             std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes an incoming wave selection payload.
+ *
+ * @param payload Payload containing the wave selection.
+ * @param source Origin of the payload.
+ */
+void WaveformMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Wave
     if (payload["wave"].is<std::string_view>())
@@ -98,7 +113,13 @@ void WaveformMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds a Home Assistant select entity for choosing the waveform.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used for the entity's command and state topics.
+ * @param unique Prefix used to construct the entity's unique identifier.
+ */
 void WaveformMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

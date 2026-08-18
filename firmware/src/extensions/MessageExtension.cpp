@@ -10,6 +10,11 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Loads the stored font and repeat configuration.
+ *
+ * Marks the configuration as pending for transmission.
+ */
 void MessageExtension::begin()
 {
     nvs_handle_t handle{};
@@ -29,6 +34,12 @@ void MessageExtension::begin()
     pending = true;
 }
 
+/**
+ * @brief Processes pending configuration and advances queued message display.
+ *
+ * Scrolls messages across the display while powered, activates the extension display mode
+ * while messages are shown, and restores the previous display state when the queue is empty.
+ */
 void MessageExtension::handle()
 {
     if (pending)
@@ -45,7 +56,7 @@ void MessageExtension::handle()
         }
         else if (text)
         {
-            Display.clearFrame();
+            Display.fillFrame(0U);
             text->draw(offsetX, offsetY);
             --offsetX;
             lastMillis = millis();
@@ -85,7 +96,7 @@ void MessageExtension::handle()
 void MessageExtension::addMessage(std::string message) // NOLINT(readability-make-member-function-const)
 {
     messages.push_back(message);
-    for (uint8_t i{0U}; i < repeat; ++i)
+    for (uint8_t count{0U}; count < repeat; ++count)
     {
         messages.push_back(message);
     }
@@ -121,6 +132,9 @@ void MessageExtension::setRepeat(uint8_t count)
     pending = true;
 }
 
+/**
+ * @brief Transmits the current font and repeat settings.
+ */
 void MessageExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -129,8 +143,12 @@ void MessageExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MessageExtension::onReceive(JsonObjectConst payload,
-                                 std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies message extension settings and queues a received message.
+ *
+ * @param payload Payload containing optional font, repeat count, and message fields.
+ */
+void MessageExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -150,7 +168,13 @@ void MessageExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds the message extension's active-state switch to Home Assistant discovery.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for the switch's commands and state.
+ * @param unique Unique identifier prefix for the discovered component.
+ */
 void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

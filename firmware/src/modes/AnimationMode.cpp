@@ -15,6 +15,12 @@ void AnimationMode::begin()
     pending = true;
 }
 
+/**
+ * @brief Advances the animation and displays the next stored frame when ready.
+ *
+ * A configured microphone trigger is also required when microphone support is enabled.
+ * Missing frames reset playback after the animation has started.
+ */
 void AnimationMode::handle()
 {
 #if EXTENSION_MICROPHONE
@@ -52,7 +58,12 @@ void AnimationMode::handle()
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Stores an animation frame and restarts playback from the first frame.
+ *
+ * @param _index Zero-based frame index.
+ * @param frame Frame data to store.
+ */
 void AnimationMode::setFrame(uint8_t _index, std::span<const uint8_t> frame)
 {
     lastMillis = millis() + (frame.size() * 2U);
@@ -73,10 +84,10 @@ void AnimationMode::setFrames(uint8_t count)
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
-        for (uint8_t i{count}; i >= 2U; ++i)
+        for (uint8_t idx{count}; idx >= 2U; ++idx)
         {
-            if (nvs_find_key(handle, std::to_string(i).c_str(), nullptr) != ESP_OK ||
-                nvs_erase_key(handle, std::to_string(i).c_str()) != ESP_OK)
+            if (nvs_find_key(handle, std::to_string(idx).c_str(), nullptr) != ESP_OK ||
+                nvs_erase_key(handle, std::to_string(idx).c_str()) != ESP_OK)
             {
                 break;
             }
@@ -98,21 +109,31 @@ void AnimationMode::setInterval(uint16_t _interval)
     }
 }
 
+/**
+ * @brief Transmits an animation frame and its playback metadata.
+ *
+ * @param index Frame index.
+ * @param frame Frame bytes to transmit.
+ */
 void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["interval"].set(interval);
     JsonArray _frame{doc["frame"].to<JsonArray>()};
-    for (size_t i{0U}; i < frame.size(); ++i)
+    for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
-        _frame.add(frame[i]);
+        _frame.add(frame[idx]);
     }
     doc["index"].set(index);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void AnimationMode::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies animation control, frame, frame-count, and interval updates from a payload.
+ *
+ * @param payload JSON payload containing the requested animation update.
+ */
+void AnimationMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action: Pull
     if (payload["action"].is<std::string_view>() && payload["action"].as<std::string_view>() == "pull")
@@ -127,11 +148,11 @@ void AnimationMode::onReceive(JsonObjectConst payload,
     {
         std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
         const JsonArrayConst &_frame{payload["frame"].as<JsonArrayConst>()};
-        for (size_t i{0U}; i < frame.size(); ++i)
+        for (size_t idx{0U}; idx < frame.size(); ++idx)
         {
-            if (_frame[i].is<uint8_t>())
+            if (_frame[idx].is<uint8_t>())
             {
-                frame[i] = _frame[i].as<uint8_t>();
+                frame[idx] = _frame[idx].as<uint8_t>();
             }
         }
         setFrame(payload["index"].as<uint8_t>(), frame);

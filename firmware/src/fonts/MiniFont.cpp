@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
 
+/**
+ * @brief Maps a supported Unicode character to its mini-font symbol.
+ *
+ * @param character Unicode character to map.
+ * @return FontModule::Symbol The corresponding symbol, or an empty symbol when unsupported.
+ */
 FontModule::Symbol MiniFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
@@ -49,7 +55,6 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
         // U+0075-U+0078
         return toSymbol(latinSmallLetterU_latinSmallLetterX[character - 'u']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -95,7 +100,6 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MINI

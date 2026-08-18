@@ -8,6 +8,14 @@
 static_assert(GRID_COLUMNS * GRID_ROWS >= 9U,
               __STRING(MODE_NOISE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Moves noise dots whose movement delays have elapsed.
+ *
+ * Clears each eligible dot's current pixel, assigns it a random display position,
+ * lights the new pixel at maximum intensity, and schedules its next movement.
+ * When microphone support is enabled, movement is deferred until the microphone
+ * is triggered.
+ */
 void NoiseMode::handle()
 {
     for (Dot &dot : dots)
@@ -21,11 +29,10 @@ void NoiseMode::handle()
                 break;
             }
 #endif // EXTENSION_MICROPHONE
-            Display.setPixel(dot.x, dot.y, 0U);
-            dot.x = random(GRID_COLUMNS);
-            dot.y = random(GRID_ROWS);
-            dot.delay = random(0b1U << 6U, INT8_MAX);
-            Display.setPixel(dot.x, dot.y);
+            Display.setPixel(dot.idx, 0U);
+            dot.idx = static_cast<size_t>(random(GRID_COLUMNS * GRID_ROWS));
+            Display.setPixel(dot.idx, UINT8_MAX);
+            dot.delay = static_cast<uint8_t>(random(0b1U << 6U, INT8_MAX));
             dot.lastMillis = millis();
         }
     }

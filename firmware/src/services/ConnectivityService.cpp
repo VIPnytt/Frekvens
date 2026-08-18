@@ -131,6 +131,9 @@ void ConnectivityService::initStation()
     multi.run();
 }
 
+/**
+ * @brief Starts the Wi-Fi access point and wildcard DNS service for hotspot operation.
+ */
 void ConnectivityService::initHotspot()
 {
     ESP_LOGV(name.data(), "initializing Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -150,7 +153,13 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(bugprone-easily-swappable-parameters)
+/**
+ * @brief Starts a strict connection attempt using the specified Wi-Fi credentials.
+ *
+ * @param ssid Wi-Fi network name.
+ * @param key Wi-Fi network password.
+ */
+void ConnectivityService::connect(const char *ssid, const char *key)
 {
     if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
@@ -162,7 +171,15 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles a successful Wi-Fi connection.
+ *
+ * Logs the connection status and signal strength, and stores the detected
+ * Wi-Fi country code when no fixed country configuration is provided.
+ *
+ * @param event Wi-Fi event identifier.
+ */
+void ConnectivityService::onConnected(arduino_event_id_t event)
 {
     ESP_LOGD(name.data(), "Wi-Fi connected");            // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());   // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -183,8 +200,16 @@ void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-u
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                         arduino_event_info_t info)
+/**
+ * @brief Handles Wi-Fi disconnection events.
+ *
+ * Marks the service as non-routable, stops mDNS when active, and logs the
+ * disconnection reason.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event-specific information containing the disconnection reason.
+ */
+void ConnectivityService::onDisconnected(arduino_event_id_t event, arduino_event_info_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mdns)
@@ -199,8 +224,13 @@ void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(mis
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+/**
+ * @brief Marks the service routable when the station receives an IPv4 address.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event data containing the assigned IPv4 address.
+ */
+void ConnectivityService::onIPv4(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -215,8 +245,16 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
     }
 }
 
-void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+/**
+ * @brief Handles assignment of a global IPv6 address.
+ *
+ * Logs the assigned address and marks the service routable when a global IPv6
+ * address is available.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event data containing the assigned IPv6 address.
+ */
+void ConnectivityService::onIPv6(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
@@ -235,6 +273,12 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused
     }
 }
 
+/**
+ * @brief Marks the service as routable and initializes network services.
+ *
+ * Terminates hotspot operation when transitioning from hotspot mode, starts
+ * mDNS service registration, and triggers SNTP synchronization.
+ */
 void ConnectivityService::onRoutable()
 {
     if (!Connectivity.routable)
@@ -269,24 +313,32 @@ void ConnectivityService::onRoutable()
     }
 }
 
-void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes completed Wi-Fi scans and transmits the discovered networks.
+ *
+ * Each network includes its SSID, signal strength, and encryption status.
+ */
+void ConnectivityService::onScan(arduino_event_id_t event)
 {
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)
     {
         JsonDocument doc; // NOLINT(misc-const-correctness)
         JsonArray scan{doc["scan"].to<JsonArray>()};
-        for (int16_t i{0}; i < count; ++i)
+        for (int16_t idx{0}; idx < count; ++idx)
         {
             JsonObject _scan{scan.add<JsonObject>()};
-            _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
-            _scan["rssi"].set(WiFi.RSSI(i));
-            _scan["ssid"].set(WiFi.SSID(i));
+            _scan["encrypted"].set(WiFi.encryptionType(idx) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            _scan["rssi"].set(WiFi.RSSI(idx));
+            _scan["ssid"].set(WiFi.SSID(idx));
         }
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }
 }
 
+/**
+ * @brief Transmits the current Wi-Fi connectivity status and saved network names.
+ */
 void ConnectivityService::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -318,8 +370,13 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles incoming Wi-Fi credentials and scan requests.
+ *
+ * @param payload Incoming payload containing optional Wi-Fi credentials or an action.
+ * @param source Source identifier for the payload.
+ */
+void ConnectivityService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Connect
     if (payload["ssid"].is<const char *>())
@@ -337,7 +394,13 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds a Home Assistant diagnostic sensor for Wi-Fi signal strength.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used to read the signal-strength value.
+ * @param unique Prefix used to construct the sensor's unique identifier.
+ */
 void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

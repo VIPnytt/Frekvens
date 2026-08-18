@@ -10,19 +10,24 @@
 class PixelSequenceMode final : public ModeModule
 {
 private:
-    static constexpr std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
+#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+    static inline std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{};
+#else
+    static inline std::array<uint16_t, GRID_COLUMNS * GRID_ROWS> pixels{};
+#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
 
-    bool lit = true;
+    bool lit{true};
 
-    uint16_t idx = 0;
+    uint16_t idx{0U};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Pixel sequence"};
 
     explicit PixelSequenceMode() : ModeModule(name) {};
 
+    void configure() override;
     void handle() override;
 };
 

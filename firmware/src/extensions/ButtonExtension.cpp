@@ -88,6 +88,12 @@ void ButtonExtension::handle()
 #endif // PIN_SW2
 }
 
+/**
+ * @brief Records power and mode button presses and releases for deferred handling.
+ *
+ * A press stores its start time and marks the button as pressed. A release marks a
+ * short press when no long press was detected and resets the button state.
+ */
 void IRAM_ATTR ButtonExtension::onInterrupt()
 {
 #ifdef PIN_SW1
@@ -124,7 +130,13 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 #endif // PIN_SW2
 }
 
-void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugprone-easily-swappable-parameters)
+/**
+ * @brief Transmits a button event with the specified key and value.
+ *
+ * @param key Event field name.
+ * @param value Event field value.
+ */
+void ButtonExtension::event(const char *key, const char *value)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
     doc["event"][key] = value;
@@ -132,7 +144,13 @@ void ButtonExtension::event(const char *key, const char *value) // NOLINT(bugpro
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant device automation triggers for power and mode button presses.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic MQTT topic associated with the device.
+ * @param unique Device identifier used to construct the discovery topic.
+ */
 void ButtonExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

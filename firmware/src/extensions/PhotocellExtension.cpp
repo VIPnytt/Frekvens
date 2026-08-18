@@ -95,6 +95,9 @@ void PhotocellExtension::setGamma(float _gamma)
     }
 }
 
+/**
+ * @brief Publishes the current active state and raw illuminance reading.
+ */
 void PhotocellExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -104,8 +107,13 @@ void PhotocellExtension::transmit()
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload,
-                                   std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies an incoming active-state update.
+ *
+ * @param payload Payload containing an optional boolean `active` field.
+ * @param source Source of the incoming payload.
+ */
+void PhotocellExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -114,6 +122,12 @@ void PhotocellExtension::onReceive(JsonObjectConst payload,
     }
 }
 
+/**
+ * @brief Adjusts the gamma value when the display brightness changes while active.
+ *
+ * @param payload Transmitted display payload containing the requested brightness.
+ * @param source Source of the transmitted payload.
+ */
 void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Brightness
@@ -130,7 +144,13 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery entries for photocell activation and illuminance.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic for the generated entities.
+ * @param unique Prefix used to generate unique entity identifiers.
+ */
 void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

@@ -10,6 +10,9 @@
 #include <nvs.h>
 #include <span>
 
+/**
+ * @brief Loads the stored signal duration and transmits the current configuration.
+ */
 void SignalExtension::begin()
 {
     nvs_handle_t handle{};
@@ -25,6 +28,12 @@ void SignalExtension::begin()
     transmit();
 }
 
+/**
+ * @brief Displays the next queued signal bitmap or restores the previous frame.
+ *
+ * Processes signals only when the display is powered on and the configured
+ * display interval has elapsed.
+ */
 void SignalExtension::handle()
 {
     if (Display.getPower() && millis() - lastMillis > duration)
@@ -34,7 +43,7 @@ void SignalExtension::handle()
             Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
-            Display.clearFrame();
+            Display.fillFrame(0U);
             BitmapHandler(std::span<const uint16_t>{signals.front()}).draw();
             signals.erase(signals.begin());
             lastMillis = millis();
@@ -69,6 +78,9 @@ void SignalExtension::setDuration(uint8_t seconds)
     }
 }
 
+/**
+ * @brief Transmits the configured signal duration in seconds.
+ */
 void SignalExtension::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -76,8 +88,15 @@ void SignalExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(JsonObjectConst payload,
-                                std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes incoming duration and bitmap configuration data.
+ *
+ * Numeric bitmap elements are stored as 16-bit values, while string elements
+ * are filtered to binary characters and interpreted as base-2 values.
+ *
+ * @param payload Incoming configuration data.
+ */
+void SignalExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())
