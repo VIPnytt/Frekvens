@@ -28,6 +28,12 @@ void PingPongMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the ping-pong display animation.
+ *
+ * Restores the persisted clock-mode setting, initializes the paddles and ball,
+ * and draws them in the layout appropriate for the selected mode.
+ */
 void PingPongMode::begin()
 {
     nvs_handle_t handle{};
@@ -67,6 +73,12 @@ void PingPongMode::begin()
     Display.setPixel(x, y, clock == nullptr ? UINT8_MAX : INT8_MAX);
 }
 
+/**
+ * @brief Advances the ping-pong animation and adjusts paddle positions.
+ *
+ * Updates the ball position and direction, reflects it at the relevant display
+ * boundaries, and moves paddles toward the ball when interception is possible.
+ */
 void PingPongMode::handle()
 {
     if (clock != nullptr)

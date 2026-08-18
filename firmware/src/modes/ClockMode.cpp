@@ -37,6 +37,9 @@ void ClockMode::configure()
 
 void ClockMode::begin() { pending = true; }
 
+/**
+ * @brief Updates the clock display and optional second indicator using the local time.
+ */
 void ClockMode::handle()
 {
     if (getLocalTime(&local))

@@ -8,6 +8,12 @@
 static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_CIRCLE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 3U, __STRING(MODE_CIRCLE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Advances the expanding concentric-circle animation.
+ *
+ * Updates the animation after more than 64 milliseconds have elapsed and, when
+ * microphone support is enabled, only while the microphone is triggered.
+ */
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE

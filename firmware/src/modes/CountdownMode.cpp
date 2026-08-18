@@ -47,6 +47,13 @@ void CountdownMode::begin()
     upper = 0U;
 }
 
+/**
+ * @brief Updates the countdown display and handles completion blinking.
+ *
+ * Redraws the remaining hours and minutes or minutes and seconds when they
+ * change. When the countdown reaches zero, begins blinking the display and
+ * publishes a completion event.
+ */
 void CountdownMode::handle()
 {
     const std::chrono::nanoseconds _nanoseconds{epoch - std::chrono::system_clock::now()};

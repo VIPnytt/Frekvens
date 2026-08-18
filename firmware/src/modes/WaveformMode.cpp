@@ -25,6 +25,13 @@ void WaveformMode::configure()
     transmit();
 }
 
+/**
+ * @brief Updates the display with a waveform or centered row at regular intervals.
+ *
+ * When microphone support is enabled, draws a waveform for triggered input;
+ * otherwise, fills the center row. Without microphone support, always draws a
+ * waveform.
+ */
 void WaveformMode::handle()
 {
     if (millis() - lastMillis > (0b1U << 9U))

@@ -10,6 +10,12 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 10U, __STRING(MODE_BREAKOUTCLOCK) " is not compatible with this device's display size.");
 
+/**
+ * @brief Initializes the Breakout game state and display.
+ *
+ * Fills the upper playfield with bricks, positions and draws the paddle,
+ * and places the ball above the paddle with a random launch angle.
+ */
 void BreakoutClockMode::begin()
 {
     Display.fillRows(0U, GRID_ROWS - 4U, UINT8_MAX);
@@ -25,6 +31,9 @@ void BreakoutClockMode::begin()
     Display.setPixel(x, y, UINT8_MAX);
 }
 
+/**
+ * @brief Advances the Breakout game by one update cycle.
+ */
 void BreakoutClockMode::handle()
 {
     clock.handle();

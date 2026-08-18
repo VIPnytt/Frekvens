@@ -6,6 +6,9 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates a randomly selected display pixel with a random brightness.
+ */
 void GlitterMode::handle()
 {
 #if EXTENSION_MICROPHONE

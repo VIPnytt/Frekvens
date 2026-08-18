@@ -9,7 +9,10 @@ class BlinkMode final : public ModeModule
 private:
     bool lit{true};
 
-    unsigned long lastMillis{0UL};
+    /**
+ * Creates a blink mode.
+ */
+unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Blink"};

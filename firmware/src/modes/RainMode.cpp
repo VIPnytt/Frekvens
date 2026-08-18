@@ -9,6 +9,9 @@
 static_assert(GRID_COLUMNS >= 3U, __STRING(MODE_RAIN) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 5U, __STRING(MODE_RAIN) " is not compatible with this device's display size.");
 
+/**
+ * @brief Initializes raindrop positions, lengths, delays, and timestamps, then clears the display frame.
+ */
 void RainMode::begin()
 {
     for (Drop &drop : drops)
@@ -22,6 +25,11 @@ void RainMode::begin()
     Display.fillFrame(0U);
 }
 
+/**
+ * @brief Advances and renders each raindrop whose delay has elapsed.
+ *
+ * @return void
+ */
 void RainMode::handle()
 {
     for (Drop &drop : drops)

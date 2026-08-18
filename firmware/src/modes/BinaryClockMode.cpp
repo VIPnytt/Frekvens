@@ -10,6 +10,9 @@ static_assert(GRID_ROWS >= 14U, __STRING(MODE_BINARYCLOCK) " is not compatible w
 
 void BinaryClockMode::begin() { pending = true; }
 
+/**
+ * @brief Updates the binary clock display with the current local time.
+ */
 void BinaryClockMode::handle()
 {
     if (getLocalTime(&local))
@@ -37,6 +40,12 @@ void BinaryClockMode::handle()
     }
 }
 
+/**
+ * @brief Draws a six-bit binary value on the display.
+ *
+ * @param y Top row of the binary bars.
+ * @param digit Value whose six least significant bits are rendered.
+ */
 void BinaryClockMode::draw(uint8_t y, uint8_t digit)
 {
     for (uint8_t idx{0U}; idx < 6U; ++idx)

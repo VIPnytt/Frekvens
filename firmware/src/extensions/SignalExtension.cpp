@@ -25,6 +25,12 @@ void SignalExtension::begin()
     transmit();
 }
 
+/**
+ * @brief Displays the next queued signal bitmap or restores the previous frame.
+ *
+ * Processes signals only when the display is powered on and the configured
+ * display interval has elapsed.
+ */
 void SignalExtension::handle()
 {
     if (Display.getPower() && millis() - lastMillis > duration)

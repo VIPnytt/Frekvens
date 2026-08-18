@@ -6,6 +6,13 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
+/**
+ * @brief Advances the blink state when the update interval has elapsed.
+ *
+ * When microphone support is enabled, the display updates only when the
+ * microphone is triggered. Each update alternates between maximum and zero
+ * brightness.
+ */
 void BlinkMode::handle()
 {
 #if EXTENSION_MICROPHONE

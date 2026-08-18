@@ -123,6 +123,11 @@ void DeviceService::handle()
     }
 }
 
+/**
+ * @brief Restarts the device or powers it off.
+ *
+ * @param power `true` to restart the device; `false` to enter deep sleep.
+ */
 void DeviceService::setPower(bool power)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -326,7 +331,11 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif /**
+ * @brief Retrieves the singleton device service instance.
+ *
+ * @return DeviceService& Reference to the shared device service instance.
+ */
 
 DeviceService &DeviceService::getInstance()
 {

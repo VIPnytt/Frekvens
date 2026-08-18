@@ -7,6 +7,12 @@
 
 static_assert(GRID_ROWS >= 6U, __STRING(MODE_BLINDS) " is not compatible with this device's display size.");
 
+/**
+ * @brief Advances the blinds animation after the update interval elapses.
+ *
+ * When microphone support is enabled, an update also requires a microphone
+ * trigger.
+ */
 void BlindsMode::handle()
 {
 #if EXTENSION_MICROPHONE

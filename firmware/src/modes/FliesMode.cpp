@@ -4,6 +4,9 @@
 
 #include "services/DisplayService.h"
 
+/**
+ * @brief Updates the display with the current fly positions when an update is pending.
+ */
 void FliesMode::handle()
 {
     if (pending)
@@ -17,6 +20,14 @@ void FliesMode::handle()
     }
 }
 
+/**
+ * @brief Stores a fly's coordinates from a received payload.
+ *
+ * Invalid payloads are ignored. A valid payload marks the display for updating.
+ *
+ * @param payload Payload containing the fly ID and its x and y coordinates.
+ * @param source Message source.
+ */
 void FliesMode::onReceive(JsonObjectConst payload,
                           std::string_view source) // NOLINT(misc-unused-parameters)
 {

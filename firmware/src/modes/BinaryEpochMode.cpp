@@ -8,6 +8,12 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_BINARYEPOCH) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 16U, __STRING(MODE_BINARYEPOCH) " is not compatible with this device's display size.");
 
+/**
+ * @brief Displays the current Unix epoch time in binary on the device grid.
+ *
+ * The display is refreshed when the epoch value changes, with each bit represented
+ * by a 2-by-4 rectangle.
+ */
 void BinaryEpochMode::handle()
 {
     const time_t _epoch{time(nullptr)};

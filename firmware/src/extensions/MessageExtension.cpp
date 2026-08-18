@@ -29,6 +29,12 @@ void MessageExtension::begin()
     pending = true;
 }
 
+/**
+ * @brief Processes pending configuration and advances queued message display.
+ *
+ * Scrolls messages across the display while powered, activates the extension display mode
+ * while messages are shown, and restores the previous display state when the queue is empty.
+ */
 void MessageExtension::handle()
 {
     if (pending)

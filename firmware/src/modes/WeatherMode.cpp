@@ -59,6 +59,13 @@ void WeatherMode::begin()
     lastMillis = millis() - provider->interval;
 }
 
+/**
+ * @brief Updates weather data and renders the current condition and temperature.
+ *
+ * Refreshes the provider data after the configured interval when Wi-Fi is connected.
+ * When both values are available, displays the condition above the centered temperature
+ * and publishes the updated state.
+ */
 void WeatherMode::handle()
 {
     if (WiFi.isConnected() && millis() - lastMillis > provider->interval)

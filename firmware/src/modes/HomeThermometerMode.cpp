@@ -33,6 +33,9 @@ void HomeThermometerMode::handle()
     }
 }
 
+/**
+ * @brief Renders the indoor and outdoor temperatures centered on the display.
+ */
 void HomeThermometerMode::draw()
 {
     pending = false;

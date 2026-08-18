@@ -9,6 +9,9 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Loads the persisted streaming port and publishes the current configuration.
+ */
 void StreamMode::configure()
 {
     nvs_handle_t handle{};
@@ -20,6 +23,9 @@ void StreamMode::configure()
     transmit();
 }
 
+/**
+ * @brief Starts UDP listening on the configured port and registers its protocol handler.
+ */
 void StreamMode::begin()
 {
     if (udp.listen(port))
@@ -41,6 +47,13 @@ void StreamMode::begin()
     }
 }
 
+/**
+ * @brief Sets the streaming protocol port and restarts UDP listening.
+ *
+ * Persists the port when it is supported, then publishes the updated configuration.
+ *
+ * @param _port Supported streaming port: 4048, 5568, or 6454.
+ */
 void StreamMode::set(uint16_t _port)
 {
     if (_port != 4048U && _port != 5568U && _port != 6454U)
@@ -59,6 +72,9 @@ void StreamMode::set(uint16_t _port)
     transmit();
 }
 
+/**
+ * @brief Publishes the configured streaming port.
+ */
 void StreamMode::transmit()
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
@@ -66,6 +82,12 @@ void StreamMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Applies a received streaming port configuration.
+ *
+ * @param payload Configuration payload containing the optional `port` value.
+ * @param source Source identifier for the received configuration.
+ */
 void StreamMode::onReceive(JsonObjectConst payload,
                            std::string_view source) // NOLINT(misc-unused-parameters)
 {
@@ -76,6 +98,11 @@ void StreamMode::onReceive(JsonObjectConst payload,
     }
 }
 
+/**
+ * @brief Processes an Art-Net packet containing one complete display frame.
+ *
+ * @param packet UDP packet with an 18-byte Art-Net header followed by the frame data.
+ */
 void StreamMode::onArtNet(AsyncUDPPacket packet)
 {
     if (packet.length() == 18U + (GRID_COLUMNS * GRID_ROWS))
@@ -85,6 +112,11 @@ void StreamMode::onArtNet(AsyncUDPPacket packet)
     }
 }
 
+/**
+ * @brief Processes a Distributed Display Protocol packet and updates the display frame.
+ *
+ * @param packet UDP packet containing a supported protocol header followed by a complete display frame.
+ */
 void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
 {
     const std::span<const uint8_t> data{std::span(packet.data(), packet.length())};
@@ -100,6 +132,11 @@ void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
     }
 }
 
+/**
+ * @brief Processes an E1.31 packet and updates the display frame.
+ *
+ * @param packet UDP packet containing a 126-byte E1.31 header followed by a complete display frame.
+ */
 void StreamMode::onE131(AsyncUDPPacket packet)
 {
     if (packet.length() == 126U + (GRID_COLUMNS * GRID_ROWS))

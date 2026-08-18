@@ -8,6 +8,12 @@
 
 static_assert(GRID_COLUMNS >= 4U, __STRING(MODE_LINES) " is not compatible with this device's display size.");
 
+/**
+ * @brief Advances the line animation when its update interval has elapsed.
+ *
+ * When microphone support is enabled, the animation advances only when the
+ * microphone is triggered.
+ */
 void LinesMode::handle()
 {
 #if EXTENSION_MICROPHONE

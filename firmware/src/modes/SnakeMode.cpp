@@ -31,6 +31,9 @@ void SnakeMode::configure()
     transmit();
 }
 
+/**
+ * @brief Restores the clock setting, clears the display, and resets the animation stage.
+ */
 void SnakeMode::begin()
 {
     nvs_handle_t handle{};
@@ -69,6 +72,9 @@ void SnakeMode::handle()
     }
 }
 
+/**
+ * @brief Places a one-segment snake at a random valid position and starts its movement.
+ */
 void SnakeMode::idle()
 {
     const uint8_t x{static_cast<uint8_t>(random(GRID_COLUMNS))};
@@ -158,6 +164,12 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     return std::nullopt;
 }
 
+/**
+ * @brief Advances the snake toward its target.
+ *
+ * Extends the snake when it reaches the target and transitions to blinking when
+ * no further move is available.
+ */
 void SnakeMode::move()
 {
     if (millis() - lastMillis > INT8_MAX + snake.size())

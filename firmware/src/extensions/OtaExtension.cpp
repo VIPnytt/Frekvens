@@ -38,7 +38,9 @@ void OtaExtension::begin()
 #endif // OTA_KEY
 }
 
-void OtaExtension::handle() { ArduinoOTA.handle(); } // NOLINT(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
+void OtaExtension::handle() { ArduinoOTA.handle(); } /**
+ * @brief Prepares the device for an OTA update.
+ */
 
 void OtaExtension::onStart()
 {

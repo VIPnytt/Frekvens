@@ -8,6 +8,12 @@
 static_assert(GRID_COLUMNS * GRID_ROWS >= 9U,
               __STRING(MODE_NOISE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Updates noise dots whose movement delays have elapsed.
+ *
+ * When microphone support is enabled, updates are deferred until the microphone
+ * is triggered.
+ */
 void NoiseMode::handle()
 {
     for (Dot &dot : dots)

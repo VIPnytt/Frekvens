@@ -7,6 +7,9 @@
 
 static_assert(GRID_COLUMNS >= 4U, __STRING(MODE_EQUALIZER) " is not compatible with this device's display size.");
 
+/**
+ * @brief Clears the separator columns between equalizer bars.
+ */
 void EqualizerMode::begin()
 {
     for (uint8_t x{width}; x < GRID_COLUMNS; x += width + 1U)
@@ -15,6 +18,12 @@ void EqualizerMode::begin()
     }
 }
 
+/**
+ * @brief Updates the equalizer bars and redraws their current heights.
+ *
+ * Bar targets are randomized, with optional microphone input influencing target
+ * selection when microphone support is enabled.
+ */
 void EqualizerMode::handle()
 {
     if (millis() - lastMillis > (0b1U << 4U))

@@ -3,6 +3,12 @@
 #include "config/constants.h"        // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Initializes a text handler and calculates the text dimensions.
+ *
+ * @param text UTF-8 text to measure and render.
+ * @param font Font used to retrieve glyph metrics and bitmap data.
+ */
 TextHandler::TextHandler(std::string text, const FontModule &font) : text(text), font(&font)
 {
     if (text.length())
@@ -113,6 +119,15 @@ uint8_t TextHandler::getHeight() const { return height; }
 
 uint8_t TextHandler::getWidth() const { return width; }
 
+/**
+ * @brief Decodes the next UTF-8 code point from the stored text.
+ *
+ * Invalid or incomplete sequences are replaced with U+FFFD.
+ *
+ * @param index Position of the next byte to decode; updated past the decoded sequence.
+ * @param buffer Receives the decoded code point.
+ * @return true if a byte sequence was processed, false if the end of the text was reached.
+ */
 bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 {
     if (index >= text.length())
@@ -194,6 +209,12 @@ uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
     return msbMax;
 }
 
+/**
+ * @brief Encodes a Unicode code point as a null-terminated UTF-8 sequence.
+ *
+ * @param codepoint Unicode code point to encode.
+ * @return A five-byte array containing the UTF-8 sequence, or an empty string for an invalid or surrogate code point.
+ */
 std::array<char, 5U> TextHandler::encode(char32_t codepoint)
 {
     if (codepoint >= 0x110000U || (codepoint >= 0xD800U && codepoint <= 0xDFFFU))

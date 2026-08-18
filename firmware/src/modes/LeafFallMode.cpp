@@ -8,6 +8,9 @@
 static_assert(GRID_COLUMNS * GRID_ROWS >= 20U,
               __STRING(MODE_LEAFFALL) " is not compatible with this device's display size.");
 
+/**
+ * @brief Initializes leaf positions, brightness, movement delays, and display state.
+ */
 void LeafFallMode::begin()
 {
     for (Leaf &leaf : leaves)
@@ -21,6 +24,13 @@ void LeafFallMode::begin()
     Display.fillFrame(0U);
 }
 
+/**
+ * @brief Advances each leaf whose movement delay has elapsed.
+ *
+ * Clears the previous position, moves leaves downward or diagonally, respawns
+ * leaves at an available position at the top, and updates their brightness
+ * and movement timing.
+ */
 void LeafFallMode::handle()
 {
     for (Leaf &leaf : leaves)

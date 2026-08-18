@@ -293,6 +293,16 @@ std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
     return nullptr;
 }
 
+/**
+ * @brief Selects and prepares a display mode.
+ *
+ * Invalid mode names leave the current mode unchanged. When a valid mode is
+ * selected, the current mode is stopped, the new mode is scheduled, and its
+ * name is rendered on the display.
+ *
+ * @param modeName Name of the mode to select.
+ * @param power Whether to enable display power.
+ */
 void ModesService::setMode(std::string_view modeName, bool power)
 {
     if (std::unique_ptr<ModeModule> _mode{getMode(modeName)})
@@ -358,6 +368,11 @@ ModeModule *ModesService::getMode() { return mode.get(); }
 
 TaskHandle_t ModesService::getTaskHandle() const { return taskHandle; }
 
+/**
+ * @brief Selects the next configured display mode.
+ *
+ * Powers on the display and wraps to the first configured mode after the last one.
+ */
 void ModesService::setModeNext()
 {
     Display.setPower(true);
@@ -372,6 +387,11 @@ void ModesService::setModeNext()
     }
 }
 
+/**
+ * @brief Selects the previous configured display mode.
+ *
+ * Powers on the display and wraps to the last configured mode when the current mode is first.
+ */
 void ModesService::setModePrevious()
 {
     Display.setPower(true);

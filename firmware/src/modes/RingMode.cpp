@@ -7,6 +7,13 @@
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
+/**
+ * @brief Updates and displays the ring animation when an update is due.
+ *
+ * With microphone support enabled, an update also requires the microphone to
+ * be triggered. Each update redraws the current ring frame and reverses the
+ * animation direction at either end of the ring sequence.
+ */
 void RingMode::handle()
 {
 #if EXTENSION_MICROPHONE

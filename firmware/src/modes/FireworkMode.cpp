@@ -66,6 +66,12 @@ void FireworkMode::launching()
     }
 }
 
+/**
+ * @brief Advances the firework explosion and renders its expanding ellipse.
+ *
+ * Transitions the firework to the fading stage when the maximum explosion radius
+ * is reached.
+ */
 void FireworkMode::exploding()
 {
     if (millis() - lastMillis > INT8_MAX)
@@ -81,6 +87,9 @@ void FireworkMode::exploding()
     }
 }
 
+/**
+ * @brief Fades the firework explosion until it disappears.
+ */
 void FireworkMode::fading()
 {
     if (random(3) == 0)

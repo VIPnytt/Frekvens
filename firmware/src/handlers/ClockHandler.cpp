@@ -19,6 +19,16 @@ void ClockHandler::handle()
     }
 }
 
+/**
+ * @brief Renders a 3×5 bitmap at the specified display position.
+ *
+ * Set bits illuminate pixels. When opaque rendering is enabled, unset bits clear
+ * the corresponding pixels.
+ *
+ * @param bitmap 15-bit bitmap containing the glyph pattern.
+ * @param x Horizontal display position.
+ * @param y Vertical display position.
+ */
 void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
 {
     for (uint8_t _x{0U}; _x < 3U; ++_x)
@@ -37,4 +47,7 @@ void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
     }
 }
 
+/**
+ * @brief Clears the first five rows of the display.
+ */
 void ClockHandler::clear() const { Display.fillRows(0U, 5U, 0U); }

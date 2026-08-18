@@ -73,6 +73,13 @@ void TickerMode::begin()
     pending = true;
 }
 
+/**
+ * @brief Updates and renders the scrolling ticker text.
+ *
+ * Initializes pending text, advances its position at timed intervals, and
+ * restarts the scroll cycle after the text leaves the display. When microphone
+ * support is enabled, a microphone trigger is required to begin each cycle.
+ */
 void TickerMode::handle()
 {
     if (pending)

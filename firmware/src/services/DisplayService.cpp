@@ -9,6 +9,12 @@
 #include <nvs.h>
 #include <ranges>
 
+/**
+ * @brief Initializes the display hardware and restores persisted display settings.
+ *
+ * Configures the SPI interface, refresh timer, PWM output, brightness, and orientation,
+ * then renders and flushes the splash screen.
+ */
 void DisplayService::configure()
 {
     pinMode(PIN_CS, OUTPUT);
@@ -62,6 +68,9 @@ void DisplayService::configure()
     flush();
 }
 
+/**
+ * @brief Transmits the current display state when an update is pending.
+ */
 void DisplayService::handle()
 {
     if (pending)
@@ -71,6 +80,12 @@ void DisplayService::handle()
     }
 }
 
+/**
+ * @brief Converts the current frame into brightness planes for display output.
+ *
+ * Updates the planes only when rendering is pending, then clears the pending
+ * render state.
+ */
 void DisplayService::flush()
 {
     if (!render)
@@ -123,6 +138,15 @@ float DisplayService::getRatio() const { return ratio; }
 
 DisplayService::Orientation DisplayService::getOrientation() const { return orientation; }
 
+/**
+ * @brief Sets the display orientation and updates its pixel mapping.
+ *
+ * Persists the orientation, updates the display aspect ratio when applicable,
+ * and schedules the frame and device state for transmission. Unsupported
+ * orientations are ignored on non-square displays.
+ *
+ * @param _orientation Orientation to apply.
+ */
 void DisplayService::setOrientation(Orientation _orientation)
 {
     switch (_orientation)
@@ -182,14 +206,34 @@ void DisplayService::setOrientation(Orientation _orientation)
     pending = true;
 }
 
+/**
+ * @brief Maps a logical pixel to its physical display bit position.
+ *
+ * @param logical Logical pixel index.
+ * @param physical Physical pixel index used to determine the bit mask and plane offset.
+ */
 void DisplayService::mapPixel(size_t logical, size_t physical) // NOLINT(bugprone-easily-swappable-parameters)
 {
     pixelsMapped[logical].first = static_cast<size_t>(0x80U >> (physical & 7U));
     pixelsMapped[logical].second = static_cast<size_t>(physical >> 3U);
 }
 
+/**
+ * @brief Gets the display power state.
+ *
+ * @return `true` if the display is powered on, `false` otherwise.
+ */
 bool DisplayService::getPower() const { return power; }
 
+/**
+ * @brief Fades the display on or off.
+ *
+ * Powering on activates display modes and schedules rendering. Powering off
+ * fades the output to zero and completes shutdown through the power-off
+ * callback.
+ *
+ * @param _power Whether the display should be powered on.
+ */
 void DisplayService::setPower(bool _power)
 {
     if (_power && !power)
@@ -243,6 +287,11 @@ void DisplayService::setPower(bool _power)
 
 uint8_t DisplayService::getBrightness() const { return brightness; }
 
+/**
+ * @brief Sets the display brightness and enables the display when necessary.
+ *
+ * @param _brightness Desired brightness level.
+ */
 void DisplayService::setBrightness(uint8_t _brightness)
 {
     if (_brightness != brightness || !power)
@@ -290,44 +339,94 @@ void DisplayService::setBrightness(uint8_t _brightness)
     }
 }
 
+/**
+ * @brief Gets the brightness of a pixel by its frame index.
+ *
+ * @param idx Pixel index in the frame.
+ * @return uint8_t Brightness value of the specified pixel.
+ */
 uint8_t DisplayService::getPixel(size_t idx) const { return frame[idx]; }
 
+/**
+ * @brief Retrieves the brightness of a pixel at the specified coordinates.
+ *
+ * @param x Horizontal pixel coordinate.
+ * @param y Vertical pixel coordinate.
+ * @return uint8_t Pixel brightness value.
+ */
 uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
 {
     return frame[static_cast<size_t>(x + (y * GRID_COLUMNS))];
 }
 
+/**
+ * @brief Sets the brightness of a pixel by its frame index.
+ *
+ * @param idx Frame index of the pixel.
+ * @param _brightness Pixel brightness value.
+ */
 void DisplayService::setPixel(size_t idx, uint8_t _brightness) // NOLINT(bugprone-easily-swappable-parameters)
 {
     frame[idx] = _brightness;
     render = true;
 }
 
+/**
+ * @brief Sets the brightness of a pixel at the specified coordinates.
+ *
+ * @param x Horizontal pixel coordinate.
+ * @param y Vertical pixel coordinate.
+ * @param _brightness Pixel brightness value.
+ */
 void DisplayService::setPixel(uint8_t x, uint8_t y, uint8_t _brightness)
 {
     frame[static_cast<size_t>(x + (y * GRID_COLUMNS))] = _brightness;
     render = true;
 }
 
+/**
+ * @brief Copies the current display frame into the specified buffer.
+ *
+ * @param _frame Destination buffer for the frame brightness values.
+ */
 void DisplayService::getFrame(std::span<uint8_t, GRID_COLUMNS * GRID_ROWS> _frame) const
 {
     std::ranges::copy(frame, _frame.begin());
 }
 
+/**
+ * @brief Replaces the display frame with the specified brightness values.
+ *
+ * @param _frame Brightness values for all display pixels.
+ */
 void DisplayService::setFrame(std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS> _frame)
 {
     std::ranges::copy(_frame, frame.begin());
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
+/**
+ * @brief Draws a horizontal line at the specified row.
+ *
+ * @param xMin Starting column.
+ * @param columns Number of columns to fill.
+ * @param y Row containing the line.
+ * @param _brightness Brightness value applied to each pixel.
+ */
 void DisplayService::drawLineHorizontal(size_t xMin, size_t columns, size_t y, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(xMin + (y * GRID_COLUMNS), columns), _brightness);
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Draws a vertical line at the specified column.
+ *
+ * @param x Column coordinate.
+ * @param yMin Starting row coordinate, inclusive.
+ * @param yMax Ending row coordinate, inclusive.
+ * @param _brightness Brightness value applied to each pixel.
+ */
 void DisplayService::drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uint8_t _brightness)
 {
     for (size_t idx{static_cast<size_t>(x + (yMin * GRID_COLUMNS))}; idx <= x + (yMax * GRID_COLUMNS);
@@ -338,7 +437,17 @@ void DisplayService::drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uin
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Draws an ellipse outline on the frame.
+ *
+ * The ellipse is adjusted for display pitch and orientation, and clipped to
+ * the display boundaries.
+ *
+ * @param x Horizontal center coordinate.
+ * @param y Vertical center coordinate.
+ * @param radius Ellipse radius.
+ * @param _brightness Brightness assigned to the outline pixels.
+ */
 void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t _brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
@@ -409,7 +518,14 @@ void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t 
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
+/**
+ * @brief Fills an ellipse centered at the specified coordinates.
+ *
+ * @param x Horizontal coordinate of the ellipse center.
+ * @param y Vertical coordinate of the ellipse center.
+ * @param radius Ellipse radius.
+ * @param _brightness Brightness value applied to pixels inside the ellipse.
+ */
 void DisplayService::drawEllipseSolid(float x, float y, float radius, uint8_t _brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
@@ -442,7 +558,15 @@ void DisplayService::drawEllipseSolid(float x, float y, float radius, uint8_t _b
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Draws a rectangular outline on the frame.
+ *
+ * @param minX Leftmost column of the rectangle.
+ * @param columns Number of columns in the rectangle.
+ * @param minY Top row of the rectangle.
+ * @param maxY Bottom row of the rectangle.
+ * @param _brightness Brightness applied to the outline pixels.
+ */
 void DisplayService::drawRectangleOutline(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(minX + (minY * GRID_COLUMNS), columns), _brightness);
@@ -456,7 +580,15 @@ void DisplayService::drawRectangleOutline(size_t minX, size_t columns, size_t mi
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
+/**
+ * @brief Fills a rectangular region of the frame with a brightness value.
+ *
+ * @param minX Starting column of the rectangle.
+ * @param columns Number of columns to fill.
+ * @param minY Starting row of the rectangle.
+ * @param maxY Ending row of the rectangle, inclusive.
+ * @param _brightness Brightness value applied to each pixel.
+ */
 void DisplayService::drawRectangleSolid(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness)
 {
     for (size_t y{minY}; y <= maxY; ++y)
@@ -466,6 +598,12 @@ void DisplayService::drawRectangleSolid(size_t minX, size_t columns, size_t minY
     render = true;
 }
 
+/**
+ * @brief Fills a display column with the specified brightness.
+ *
+ * @param x Column index to fill.
+ * @param _brightness Brightness value assigned to each pixel in the column.
+ */
 void DisplayService::fillColumn(uint8_t x, uint8_t _brightness)
 {
     for (size_t idx{static_cast<size_t>(x)}; idx < GRID_COLUMNS * GRID_ROWS; idx += GRID_COLUMNS)
@@ -475,25 +613,45 @@ void DisplayService::fillColumn(uint8_t x, uint8_t _brightness)
     render = true;
 }
 
+/**
+ * @brief Fills the entire frame with the specified brightness.
+ *
+ * @param _brightness Brightness value applied to every pixel.
+ */
 void DisplayService::fillFrame(uint8_t _brightness)
 {
     frame.fill(_brightness);
     render = true;
 }
 
+/**
+ * @brief Fills a row of the frame with the specified brightness.
+ *
+ * @param y Row index to fill.
+ * @param _brightness Brightness value applied to each pixel in the row.
+ */
 void DisplayService::fillRow(size_t y, uint8_t _brightness) // NOLINT(misc-unused-parameters)
 {
     std::ranges::fill(std::span{frame}.subspan(y * GRID_COLUMNS, GRID_COLUMNS), _brightness);
     render = true;
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
+/**
+ * @brief Fills consecutive rows of the frame with a brightness value.
+ *
+ * @param minY Index of the first row to fill.
+ * @param rows Number of consecutive rows to fill.
+ * @param _brightness Brightness value assigned to each pixel.
+ */
 void DisplayService::fillRows(size_t minY, size_t rows, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(minY * GRID_COLUMNS, rows * GRID_COLUMNS), _brightness);
     render = true;
 }
 
+/**
+ * @brief Inverts the brightness of every pixel in the frame.
+ */
 void DisplayService::invertFrame()
 {
     for (uint8_t &_brightness : frame)
@@ -503,6 +661,9 @@ void DisplayService::invertFrame()
     render = true;
 }
 
+/**
+ * @brief Transmits the display's current state and dimensions.
+ */
 void DisplayService::transmit()
 {
     const bool rotated{(static_cast<uint8_t>(orientation) & 0b1U) != 0U};
@@ -524,7 +685,13 @@ void DisplayService::transmit()
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery metadata for display orientation control.
+ *
+ * @param discovery Discovery document to which the orientation component is added.
+ * @param topic Base MQTT topic for the display.
+ * @param unique Prefix used to construct the component's unique identifier.
+ */
 void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
@@ -552,7 +719,12 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif /**
+ * @brief Handles display power-off state changes.
+ *
+ * Clears all brightness planes, deactivates display modes, and schedules a
+ * device state transmission.
+ */
 
 void DisplayService::onPowerOff()
 {
@@ -565,6 +737,11 @@ void DisplayService::onPowerOff()
     }
 }
 
+/**
+ * @brief Applies brightness, orientation, and power settings from a JSON payload.
+ *
+ * @param payload JSON object containing the settings to apply.
+ */
 void DisplayService::onReceive(JsonObjectConst payload,
                                std::string_view source) // NOLINT(misc-unused-parameters)
 {
@@ -586,6 +763,9 @@ void DisplayService::onReceive(JsonObjectConst payload,
     }
 }
 
+/**
+ * @brief Transmits the next brightness plane to the display over SPI.
+ */
 IRAM_ATTR void DisplayService::onTimer()
 {
     static DRAM_ATTR uint8_t plane{0U};
@@ -598,6 +778,11 @@ IRAM_ATTR void DisplayService::onTimer()
     }
 }
 
+/**
+ * @brief Returns the shared display service instance.
+ *
+ * @return DisplayService& Reference to the singleton display service.
+ */
 DisplayService &DisplayService::getInstance()
 {
     static DRAM_ATTR DisplayService instance;
