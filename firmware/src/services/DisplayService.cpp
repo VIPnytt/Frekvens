@@ -182,7 +182,7 @@ void DisplayService::setOrientation(Orientation _orientation)
     pending = true;
 }
 
-void DisplayService::mapPixel(size_t logical, size_t physical)
+void DisplayService::mapPixel(size_t logical, size_t physical) // NOLINT(bugprone-easily-swappable-parameters)
 {
     pixelsMapped[logical].first = static_cast<size_t>(0x80U >> (physical & 7U));
     pixelsMapped[logical].second = static_cast<size_t>(physical >> 3U);
@@ -297,7 +297,7 @@ uint8_t DisplayService::getPixel(uint8_t x, uint8_t y) const
     return frame[static_cast<size_t>(x + (y * GRID_COLUMNS))];
 }
 
-void DisplayService::setPixel(size_t idx, uint8_t _brightness)
+void DisplayService::setPixel(size_t idx, uint8_t _brightness) // NOLINT(bugprone-easily-swappable-parameters)
 {
     frame[idx] = _brightness;
     render = true;
@@ -320,12 +320,14 @@ void DisplayService::setFrame(std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
 void DisplayService::drawLineHorizontal(size_t xMin, size_t columns, size_t y, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(xMin + (y * GRID_COLUMNS), columns), _brightness);
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uint8_t _brightness)
 {
     for (size_t idx{static_cast<size_t>(x + (yMin * GRID_COLUMNS))}; idx <= x + (yMax * GRID_COLUMNS);
@@ -336,6 +338,7 @@ void DisplayService::drawLineVertical(uint8_t x, uint8_t yMin, uint8_t yMax, uin
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t _brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
@@ -357,22 +360,22 @@ void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t 
          _x <= min(GRID_COLUMNS - 1U, static_cast<unsigned int>(floorf(x + (radius / xRatio))));
          ++_x)
     {
-        const float dx{xRatio * (static_cast<float>(_x) - x)};
-        const float dy{sqrtf(max(.0F, radiusSq - (dx * dx))) / yRatio};
-        const int top{static_cast<int>(ceilf(y - dy))};
+        const float xDistance{xRatio * (static_cast<float>(_x) - x)};
+        const float yDistance{sqrtf(max(.0F, radiusSq - (xDistance * xDistance))) / yRatio};
+        const int top{static_cast<int>(ceilf(y - yDistance))};
         for (int _y{max(0, top - 1)}; _y <= min(static_cast<int>(GRID_ROWS - 1U), top + 1); ++_y)
         {
-            const float _dy{yRatio * (static_cast<float>(_y) - y)};
-            if (fabsf((dx * dx) + (_dy * _dy) - radiusSq) < radius)
+            const float _yDistance{yRatio * (static_cast<float>(_y) - y)};
+            if (fabsf((xDistance * xDistance) + (_yDistance * _yDistance) - radiusSq) < radius)
             {
                 frame[_x + (static_cast<size_t>(_y) * GRID_COLUMNS)] = _brightness;
             }
         }
-        const int bottom{static_cast<int>(floorf(y + dy))};
+        const int bottom{static_cast<int>(floorf(y + yDistance))};
         for (int _y{max(0, bottom - 1)}; _y <= min(static_cast<int>(GRID_ROWS - 1U), bottom + 1); ++_y)
         {
             const float _dy{yRatio * (static_cast<float>(_y) - y)};
-            if (fabsf((dx * dx) + (_dy * _dy) - radiusSq) < radius)
+            if (fabsf((xDistance * xDistance) + (_dy * _dy) - radiusSq) < radius)
             {
                 frame[_x + (static_cast<size_t>(_y) * GRID_COLUMNS)] = _brightness;
             }
@@ -382,22 +385,22 @@ void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t 
          _y <= min(GRID_ROWS - 1U, static_cast<unsigned int>(floorf(y + (radius / yRatio))));
          ++_y)
     {
-        const float dy{yRatio * (static_cast<float>(_y) - y)};
-        const float dx{sqrtf(max(.0F, radiusSq - (dy * dy))) / xRatio};
-        const int left{static_cast<int>(ceilf(x - dx))};
+        const float yDistance{yRatio * (static_cast<float>(_y) - y)};
+        const float xDistance{sqrtf(max(.0F, radiusSq - (yDistance * yDistance))) / xRatio};
+        const int left{static_cast<int>(ceilf(x - xDistance))};
         for (int _x{max(0, left - 1)}; _x <= min(static_cast<int>(GRID_COLUMNS - 1U), left + 1); ++_x)
         {
-            const float _dx{xRatio * (static_cast<float>(_x) - x)};
-            if (fabsf((_dx * _dx) + (dy * dy) - radiusSq) < radius)
+            const float _xDistance{xRatio * (static_cast<float>(_x) - x)};
+            if (fabsf((_xDistance * _xDistance) + (yDistance * yDistance) - radiusSq) < radius)
             {
                 frame[static_cast<size_t>(_x) + (_y * GRID_COLUMNS)] = _brightness;
             }
         }
-        const int right{static_cast<int>(floorf(x + dx))};
+        const int right{static_cast<int>(floorf(x + xDistance))};
         for (int _x{max(0, right - 1)}; _x <= min(static_cast<int>(GRID_COLUMNS - 1U), right + 1); ++_x)
         {
-            const float _dx{xRatio * (static_cast<float>(_x) - x)};
-            if (fabsf((_dx * _dx) + (dy * dy) - radiusSq) < radius)
+            const float _xDistance{xRatio * (static_cast<float>(_x) - x)};
+            if (fabsf((_xDistance * _xDistance) + (yDistance * yDistance) - radiusSq) < radius)
             {
                 frame[static_cast<size_t>(_x) + (_y * GRID_COLUMNS)] = _brightness;
             }
@@ -427,17 +430,18 @@ void DisplayService::drawEllipseSolid(float x, float y, float radius, uint8_t _b
          _y <= min(GRID_ROWS - 1U, static_cast<unsigned int>(floorf(y + (radius / yRatio))));
          ++_y)
     {
-        const float dy{yRatio * (static_cast<float>(_y) - y)};
-        const float dx{sqrtf(max(.0F, radiusSq - (dy * dy))) / xRatio};
-        const size_t minX{static_cast<size_t>(max(.0F, ceilf(x - dx)))};
-        std::ranges::fill(
-            std::span{frame}.subspan(static_cast<size_t>(minX + (_y * GRID_COLUMNS)),
-                                     min<size_t>(GRID_COLUMNS - 1U, static_cast<size_t>(floorf(x + dx))) - minX + 1U),
-            _brightness);
+        const float yDistance{yRatio * (static_cast<float>(_y) - y)};
+        const float xDistance{sqrtf(max(.0F, radiusSq - (yDistance * yDistance))) / xRatio};
+        const size_t minX{static_cast<size_t>(max(.0F, ceilf(x - xDistance)))};
+        std::ranges::fill(std::span{frame}.subspan(
+                              static_cast<size_t>(minX + (_y * GRID_COLUMNS)),
+                              min<size_t>(GRID_COLUMNS - 1U, static_cast<size_t>(floorf(x + xDistance))) - minX + 1U),
+                          _brightness);
     }
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void DisplayService::drawRectangleOutline(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(minX + (minY * GRID_COLUMNS), columns), _brightness);
@@ -451,6 +455,7 @@ void DisplayService::drawRectangleOutline(size_t minX, size_t columns, size_t mi
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
 void DisplayService::drawRectangleSolid(size_t minX, size_t columns, size_t minY, size_t maxY, uint8_t _brightness)
 {
     for (size_t y{minY}; y <= maxY; ++y)
@@ -475,12 +480,13 @@ void DisplayService::fillFrame(uint8_t _brightness)
     render = true;
 }
 
-void DisplayService::fillRow(size_t y, uint8_t _brightness)
+void DisplayService::fillRow(size_t y, uint8_t _brightness) // NOLINT(misc-unused-parameters)
 {
     std::ranges::fill(std::span{frame}.subspan(y * GRID_COLUMNS, GRID_COLUMNS), _brightness);
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
 void DisplayService::fillRows(size_t minY, size_t rows, uint8_t _brightness)
 {
     std::ranges::fill(std::span{frame}.subspan(minY * GRID_COLUMNS, rows * GRID_COLUMNS), _brightness);
