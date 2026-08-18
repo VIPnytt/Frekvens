@@ -82,9 +82,9 @@ class ModeGenerator:
     def _animation_cpp(self) -> str:
         """
         Generate the C++ source file for an animated drawing mode.
-        
+
         Returns:
-        	str (str): The generated source filename.
+            str (str): The generated source filename.
         """
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
             f.write(
@@ -161,9 +161,9 @@ class ModeGenerator:
 
     def _drawing_cpp(self) -> str:
         """Generate the C++ implementation file for a static drawing mode.
-        
+
         Returns:
-        	str: The generated C++ source filename.
+            str: The generated C++ source filename.
         """
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
             f.write(

@@ -331,7 +331,9 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 }
-#endif /**
+#endif // EXTENSION_HOMEASSISTANT
+
+/**
  * @brief Retrieves the singleton device service instance.
  *
  * @return DeviceService& Reference to the shared device service instance.

@@ -14,13 +14,13 @@ static_assert(GRID_COLUMNS * GRID_ROWS >= (0b1U << 4U),
 void StarsMode::begin() { Display.fillFrame(0U); }
 
 /**
-     * @brief Advances the star animation according to each star's timing and brightness.
-     *
-     * Fully dimmed stars are repositioned on unoccupied pixels and reintroduced with
-     * increasing brightness. When microphone support is enabled, dimmed stars wait
-     * for a microphone trigger before reappearing.
-     */
-    void StarsMode::handle()
+ * @brief Advances the star animation according to each star's timing and brightness.
+ *
+ * Fully dimmed stars are repositioned on unoccupied pixels and reintroduced with
+ * increasing brightness. When microphone support is enabled, dimmed stars wait
+ * for a microphone trigger before reappearing.
+ */
+void StarsMode::handle()
 {
     for (Star &star : stars)
     {

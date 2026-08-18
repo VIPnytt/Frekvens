@@ -96,7 +96,7 @@ void DisplayService::flush()
     planes[0U].fill(0U);
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame.at(logical)};
+        const uint8_t _brightness{frame[logical]};
         if (_brightness != 0U)
         {
             const std::pair<size_t, size_t> &mapping{pixelsMapped[logical]};
@@ -719,13 +719,14 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
     }
 }
-#endif /**
- * @brief Handles display power-off state changes.
- *
- * Clears all brightness planes, deactivates display modes, and schedules a
- * device state transmission.
- */
+#endif // EXTENSION_HOMEASSISTANT
 
+/**                                                                                                             \
+ * @brief Handles display power-off state changes.                                                              \
+ *                                                                                                              \
+ * Clears all brightness planes, deactivates display modes, and schedules a                                     \
+ * device state transmission.                                                                                   \
+ */
 void DisplayService::onPowerOff()
 {
     Display.power = false;

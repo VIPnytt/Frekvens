@@ -134,7 +134,7 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
     {
         return false;
     }
-    const uint8_t first{static_cast<uint8_t>(text.at(index))};
+    const uint8_t first{static_cast<uint8_t>(text[index])};
     ++index;
     if (first < 0x80U)
     {
@@ -175,7 +175,7 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
     }
     while (remaining != 0U)
     {
-        const uint8_t next{static_cast<uint8_t>(text.at(index))};
+        const uint8_t next{static_cast<uint8_t>(text[index])};
         if ((next & 0xC0U) != 0x80U)
         {
             buffer = U'\uFFFD';

@@ -30,17 +30,15 @@ void OtaExtension::begin()
 {
     ArduinoOTA.begin();
 #ifdef OTA_KEY
-    MDNS.enableArduino(3232, true);
+    MDNS.enableArduino(3232U, true);
 #else
-    MDNS.enableArduino(3232);
+    MDNS.enableArduino(3232U, false);
     WebServer.http->on(
         AsyncURIMatcher::exact("/ota"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, &onPost);
 #endif // OTA_KEY
 }
 
-void OtaExtension::handle() { ArduinoOTA.handle(); } /**
- * @brief Prepares the device for an OTA update.
- */
+void OtaExtension::handle() { ArduinoOTA.handle(); }
 
 void OtaExtension::onStart()
 {
@@ -69,11 +67,11 @@ void OtaExtension::onError(ota_error_t error) // NOLINT(misc-unused-parameters)
 void OtaExtension::onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data,
                           size_t len, bool final)
 {
-    if (index == 0)
+    if (index == 0U)
     {
         onStart();
     }
-    if ((index == 0 && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
+    if ((index == 0U && !Update.begin(UPDATE_SIZE_UNKNOWN, filename.indexOf("littlefs") >= 0 ? U_LITTLEFS : U_FLASH)) ||
         Update.write(data, len) != len || (final && !Update.end(true)))
     {
         ESP_LOGE(name.data(), "%s", Update.errorString()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
