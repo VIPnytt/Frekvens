@@ -9,7 +9,7 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     {
         {
             char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-            int8_t yMax{0};
+            int8_t yMax{0};         // NOLINT(misc-const-correctness)
             int8_t yMin{0};
             size_t index{0U}; // NOLINT(misc-const-correctness)
             while (nextCodepoint(index, codepoint))
@@ -119,7 +119,7 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
     {
         return false;
     }
-    const uint8_t first{static_cast<uint8_t>(text[index])};
+    const uint8_t first{static_cast<uint8_t>(text.at(index))};
     ++index;
     if (first < 0x80U)
     {
@@ -158,9 +158,9 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
         buffer = U'\uFFFD';
         return true;
     }
-    while (remaining > 0U)
+    while (remaining != 0U)
     {
-        const uint8_t next{static_cast<uint8_t>(text[index])};
+        const uint8_t next{static_cast<uint8_t>(text.at(index))};
         if ((next & 0xC0U) != 0x80U)
         {
             buffer = U'\uFFFD';
@@ -196,31 +196,45 @@ uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 
 std::array<char, 5U> TextHandler::encode(char32_t codepoint)
 {
-    std::array<char, 5U> out{};
-    if (codepoint < 0x110000U && (codepoint < 0xD800U || codepoint > 0xDFFFU))
+    if (codepoint >= 0x110000U || (codepoint >= 0xD800U && codepoint <= 0xDFFFU))
     {
-        if (codepoint < 0x80U)
-        {
-            out[0U] = static_cast<char>(codepoint);
-        }
-        else if (codepoint < 0x800U)
-        {
-            out[0U] = static_cast<char>(0xC0U | (codepoint >> 6U));
-            out[1U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
-        else if (codepoint < 0x10000U)
-        {
-            out[0U] = static_cast<char>(0xE0U | (codepoint >> 12U));
-            out[1U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
-            out[2U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
-        else
-        {
-            out[0U] = static_cast<char>(0xF0U | (codepoint >> 18U));
-            out[1U] = static_cast<char>(0x80U | ((codepoint >> 12U) & 0x3FU));
-            out[2U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
-            out[3U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
+        return std::array<char, 5U>{'\0'};
     }
-    return out;
+    if (codepoint < 0x80U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(codepoint),
+            '\0',
+            '\0',
+            '\0',
+            '\0',
+        };
+    }
+    if (codepoint < 0x800U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(0xC0U | (codepoint >> 6U)),
+            static_cast<char>(0x80U | (codepoint & 0x3FU)),
+            '\0',
+            '\0',
+            '\0',
+        };
+    }
+    if (codepoint < 0x10000U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(0xE0U | (codepoint >> 12U)),
+            static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU)),
+            static_cast<char>(0x80U | (codepoint & 0x3FU)),
+            '\0',
+            '\0',
+        };
+    }
+    return std::array<char, 5U>{
+        static_cast<char>(0xF0U | (codepoint >> 18U)),
+        static_cast<char>(0x80U | ((codepoint >> 12U) & 0x3FU)),
+        static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU)),
+        static_cast<char>(0x80U | (codepoint & 0x3FU)),
+        '\0',
+    };
 }

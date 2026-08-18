@@ -81,7 +81,7 @@ void DisplayService::flush()
     planes[0U].fill(0U);
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame[logical]};
+        const uint8_t _brightness{frame.at(logical)};
         if (_brightness != 0U)
         {
             const std::pair<size_t, size_t> &mapping{pixelsMapped[logical]};
@@ -409,6 +409,7 @@ void DisplayService::drawEllipseOutline(float x, float y, float radius, uint8_t 
     render = true;
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters,misc-unused-parameters)
 void DisplayService::drawEllipseSolid(float x, float y, float radius, uint8_t _brightness)
 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
