@@ -68,19 +68,11 @@ private:
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
-#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-    std::array<std::pair<uint8_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
-#else
-    std::array<std::pair<uint16_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
-#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+    std::array<std::pair<size_t, size_t>, GRID_COLUMNS * GRID_ROWS> pixelsMapped{};
 
     Orientation orientation{Orientation::deg0};
 
-#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-    void mapPixel(uint8_t logical, uint8_t physical);
-#else
-    void mapPixel(uint16_t logical, uint16_t physical);
-#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+    void mapPixel(size_t logical, size_t physical);
 
     void transmit();
 
@@ -89,11 +81,7 @@ private:
     static IRAM_ATTR void onTimer();
 
 public:
-#if GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
-    static constexpr std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
-#else
-    static constexpr std::array<uint16_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
-#endif // GRID_COLUMNS * GRID_ROWS <= 0b1U << 8U
+    static constexpr std::array<size_t, GRID_COLUMNS * GRID_ROWS> pixels{LED_MAP};
 
     void configure();
     void handle();
