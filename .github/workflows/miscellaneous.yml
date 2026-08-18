@@ -14,13 +14,6 @@ jobs:
   animation-splitter:
     name: Animation splitter
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -28,7 +21,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           version: latest-known
 
       - name: Animation splitter
@@ -120,13 +113,6 @@ jobs:
   homethermometer-updater:
     name: Home thermometer updater
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -134,7 +120,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           version: latest-known
 
       - name: Set up HTTP server
@@ -157,13 +143,6 @@ jobs:
   mode-switcher:
     name: Mode switcher
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -171,7 +150,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           version: latest-known
 
       - name: Set up HTTP server
@@ -223,7 +202,7 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: 3.14
+          python-version: "3.10"
           version: latest-known
 
       - name: uv lock check
