@@ -82,12 +82,13 @@ void RtcExtension::transmit()
 #endif // TEMPERATURE_FAHRENHEIT
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
-#endif /**
- * @brief Updates the RTC with the UTC time received from SNTP.
- *
- * @param tv SNTP timestamp containing the synchronized time.
- */
+#endif // defined(RTC_DS3231) || defined(RTC_DS3232)
 
+/**                                                                                                             \
+ * @brief Updates the RTC with the UTC time received from SNTP.                                                 \
+ *                                                                                                              \
+ * @param tv SNTP timestamp containing the synchronized time.                                                   \
+ */
 void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
 {
     const time_t timer{tv->tv_sec};

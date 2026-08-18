@@ -9,10 +9,7 @@ class ScanMode final : public ModeModule
 private:
     uint8_t x{0U};
 
-    /**
- * Initializes the scan mode.
- */
-unsigned long lastMillis{0UL};
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Scan"};
