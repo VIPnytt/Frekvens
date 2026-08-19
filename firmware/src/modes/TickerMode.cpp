@@ -12,7 +12,8 @@
 #include <nvs.h>
 
 /**
- * @brief Loads the persisted ticker message and font, applies a fallback font when needed, and transmits the resulting configuration.
+ * @brief Loads the persisted ticker message and font, applies a fallback font when needed, and transmits the resulting
+ * configuration.
  */
 void TickerMode::configure()
 {

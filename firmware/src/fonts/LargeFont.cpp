@@ -11,7 +11,8 @@ static_assert(GRID_ROWS >= 8U, __STRING(FONT_LARGE) " is not compatible with thi
  * @brief Converts a supported character to its large-font symbol.
  *
  * @param character Character to convert.
- * @return FontModule::Symbol The corresponding glyph, six-unit whitespace for a space, or an empty symbol when unsupported.
+ * @return FontModule::Symbol The corresponding glyph, six-unit whitespace for a space, or an empty symbol when
+ * unsupported.
  */
 FontModule::Symbol LargeFont::getChar(char32_t character) const
 {
