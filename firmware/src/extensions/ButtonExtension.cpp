@@ -7,6 +7,9 @@
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
 
+/**
+ * @brief Configures available button pins as pull-up inputs and attaches change interrupts.
+ */
 void ButtonExtension::configure()
 {
 #ifdef PIN_SW1
@@ -23,6 +26,9 @@ void ButtonExtension::configure()
 #endif
 }
 
+/**
+ * @brief Processes input from the enabled power and mode buttons.
+ */
 void ButtonExtension::handle()
 {
 #ifdef PIN_SW1
@@ -34,6 +40,12 @@ void ButtonExtension::handle()
 }
 
 #ifdef PIN_SW1
+/**
+ * @brief Processes power-button presses, releases, and holds.
+ *
+ * Short presses toggle display power. Long presses emit a power event and
+ * begin brightness control; continued holds adjust brightness.
+ */
 void ButtonExtension::handlePower()
 {
     if (powerInput)
@@ -101,6 +113,13 @@ void ButtonExtension::handlePower()
 #endif // PIN_SW1
 
 #ifdef PIN_SW2
+/**
+ * @brief Processes mode button presses, holds, and releases.
+ *
+ * A short press advances to the next mode when a separate power button is
+ * available; otherwise, it toggles display power. A long press powers on the
+ * display when it is off, and continued holding periodically advances modes.
+ */
 void ButtonExtension::handleMode()
 {
     if (modeInput)
@@ -148,10 +167,16 @@ void ButtonExtension::handleMode()
 #endif // PIN_SW2
 
 #ifdef PIN_SW1
+/**
+ * @brief Updates the power button input state when its signal changes.
+ */
 void IRAM_ATTR ButtonExtension::onChangePower() { powerInput = digitalRead(PIN_SW1) == LOW; }
 #endif // PIN_SW1
 
 #ifdef PIN_SW2
+/**
+ * @brief Updates the mode button input state when its pin changes.
+ */
 void IRAM_ATTR ButtonExtension::onChangeMode() { modeInput = digitalRead(PIN_SW2) == LOW; }
 #endif // PIN_SW2
 
