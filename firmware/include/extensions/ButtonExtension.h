@@ -10,31 +10,44 @@ class ButtonExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Button"};
 
+    enum class State : uint8_t // NOLINT(performance-enum-size)
+    {
+        NONE,
+        PRESS,
+        HOLD,
+    };
+
 #ifdef PIN_SW1
-    bool brightnessIncrease = false;
-    static inline bool powerLong = false;
-    static inline bool powerShort = false;
-#endif
-#ifdef PIN_SW2
-    static inline bool modeLong = false;
-    static inline bool modeShort = false;
+    bool brightnessIncrease{false};
 #endif
 
 #ifdef PIN_SW1
-    static inline volatile bool powerState = false;
+    unsigned long powerMillis{0U};
 #endif
 #ifdef PIN_SW2
-    static inline volatile bool modeState = false;
+    unsigned long modeMillis{0U};
 #endif
 
 #ifdef PIN_SW1
-    static inline volatile unsigned long powerMillis = 0;
+    State powerState{State::NONE};
 #endif
 #ifdef PIN_SW2
-    static inline volatile unsigned long modeMillis = 0;
+    State modeState{State::NONE};
 #endif
 
-    static IRAM_ATTR void onInterrupt();
+#ifdef PIN_SW1
+    static inline volatile bool powerInput{false};
+#endif
+#ifdef PIN_SW2
+    static inline volatile bool modeInput{false};
+#endif
+
+#ifdef PIN_SW1
+    static IRAM_ATTR void onChangePower();
+#endif
+#ifdef PIN_SW2
+    static IRAM_ATTR void onChangeMode();
+#endif
 
     static void event(const char *key, const char *value);
 
@@ -43,6 +56,13 @@ public:
 
     void configure() override;
     void handle() override;
+
+#ifdef PIN_SW1
+    void handlePower();
+#endif
+#ifdef PIN_SW2
+    void handleMode();
+#endif
 
 #if EXTENSION_HOMEASSISTANT
     void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
