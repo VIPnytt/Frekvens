@@ -32,7 +32,7 @@ void ConnectivityService::configure()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, 3U> country{};
-        size_t length{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{country.size()};
         if (nvs_get_str(handle, "country", country.data(), &length) == ESP_OK && length == country.size())
         {
             esp_wifi_set_country_code(country.data(), true);
@@ -82,7 +82,7 @@ void ConnectivityService::handle()
 
 void ConnectivityService::initStation()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
@@ -181,9 +181,9 @@ void ConnectivityService::connect(const char *ssid, const char *key)
  */
 void ConnectivityService::onConnected(arduino_event_id_t event)
 {
-    ESP_LOGD(name.data(), "Wi-Fi connected");            // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());   // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI(name.data(), "Hostname" HOSTNAME ".local"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "Wi-Fi connected");             // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());    // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI(name.data(), "Hostname " HOSTNAME ".local"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifndef WIFI_COUNTRY
     nvs_handle_t handle{};
     std::array<char, 3U> country{};
@@ -286,7 +286,7 @@ void ConnectivityService::onRoutable()
         Connectivity.routable = true;
         if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
         {
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             doc["event"].set("connected");
             Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -323,14 +323,12 @@ void ConnectivityService::onScan(arduino_event_id_t event)
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)
     {
-        JsonDocument doc; // NOLINT(misc-const-correctness)
-        JsonArray scan{doc["scan"].to<JsonArray>()};
+        JsonDocument doc{};
         for (int16_t idx{0}; idx < count; ++idx)
         {
-            JsonObject _scan{scan.add<JsonObject>()};
-            _scan["encrypted"].set(WiFi.encryptionType(idx) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
-            _scan["rssi"].set(WiFi.RSSI(idx));
-            _scan["ssid"].set(WiFi.SSID(idx));
+            doc["scan"][idx]["encrypted"].set(WiFi.encryptionType(idx) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            doc["scan"][idx]["rssi"].set(WiFi.RSSI(idx));
+            doc["scan"][idx]["ssid"].set(WiFi.SSID(idx));
         }
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }
@@ -341,7 +339,7 @@ void ConnectivityService::onScan(arduino_event_id_t event)
  */
 void ConnectivityService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["host"].set(HOSTNAME ".local");
     doc["rssi"].set(WiFi.RSSI());
     {
@@ -351,7 +349,7 @@ void ConnectivityService::transmit()
             size_t length{0U};
             if (nvs_get_blob(handle, "Wi-Fi", nullptr, &length) == ESP_OK && length != 0U)
             {
-                JsonDocument _saved; // NOLINT(misc-const-correctness)
+                JsonDocument _saved{};
                 std::vector<char> buffer(length);
                 if (nvs_get_blob(handle, "Wi-Fi", buffer.data(), &length) == ESP_OK &&
                     deserializeJson(_saved, buffer.data(), length) == DeserializationError::Code::Ok)

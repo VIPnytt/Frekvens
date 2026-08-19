@@ -2,10 +2,12 @@
 
 #include "modes/RingMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "handlers/BitmapHandler.h" // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
+
+static_assert(GRID_COLUMNS == 16U, __STRING(MODE_RING) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS == 16U, __STRING(MODE_RING) " is not compatible with this device's display size.");
 
 /**
  * @brief Updates and displays the ring animation when an update is due.
@@ -27,7 +29,7 @@ void RingMode::handle()
         Display.fillFrame(0U);
         BitmapHandler(ring[index]).draw();
         direction ? index++ : index--;
-        if (index <= 0 || index >= ring.size() - 1)
+        if (index == 0U || index == ring.size() - 1U)
         {
             direction = !direction;
         }

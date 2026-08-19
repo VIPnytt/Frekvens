@@ -15,7 +15,7 @@ private:
 
     bool pending{false};
 
-    int8_t offsetY{GRID_ROWS / 2};
+    int8_t offsetY{static_cast<int8_t>(GRID_ROWS / 2U)};
 
     int16_t offsetX{GRID_COLUMNS};
     int16_t width{0};

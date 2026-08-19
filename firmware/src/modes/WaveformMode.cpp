@@ -64,11 +64,11 @@ void WaveformMode::draw()
 
 void WaveformMode::setWave(std::string_view waveName)
 {
-    for (size_t i{0U}; i < waveNames.size(); ++i)
+    for (size_t idx{0U}; idx < waveNames.size(); ++idx)
     {
-        if (waveName == waveNames[i])
+        if (waveName == waveNames[idx])
         {
-            wave = static_cast<Wave>(i);
+            wave = static_cast<Wave>(idx);
             break;
         }
     }
@@ -87,7 +87,7 @@ void WaveformMode::setWave(std::string_view waveName)
  */
 void WaveformMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["wave"].set(waveNames[static_cast<uint8_t>(wave)]);
     JsonArray _waves{doc["waves"].to<JsonArray>()};
     for (const std::string_view _wave : waveNames)

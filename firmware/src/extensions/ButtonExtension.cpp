@@ -188,7 +188,7 @@ void IRAM_ATTR ButtonExtension::onChangeMode() { modeInput = digitalRead(PIN_SW2
  */
 void ButtonExtension::event(const char *key, const char *value)
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["event"][key].set(value);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }

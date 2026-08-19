@@ -25,10 +25,10 @@ void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condit
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["attributes"]["temperature"].set(true);
     filter["state"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["attributes"]["temperature"].is<float>() && doc["state"].is<std::string_view>())
     {

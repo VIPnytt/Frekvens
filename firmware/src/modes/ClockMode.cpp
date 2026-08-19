@@ -19,7 +19,7 @@ void ClockMode::configure()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
             std::ranges::find(fontNames, std::string_view{_fontName.data(), length - 1U}) != fontNames.end())
         {
@@ -147,7 +147,7 @@ void ClockMode::setTicking(bool _ticking)
  */
 void ClockMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(fontName);
     JsonArray _fonts{doc["fonts"].to<JsonArray>()};
     for (const std::string_view _font : fontNames)

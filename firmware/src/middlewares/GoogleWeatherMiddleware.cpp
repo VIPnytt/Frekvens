@@ -24,10 +24,10 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &c
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["temperature"]["degrees"].set(true);
     filter["weatherCondition"]["type"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["temperature"]["degrees"].is<float>() && doc["weatherCondition"]["type"].is<std::string_view>())
     {

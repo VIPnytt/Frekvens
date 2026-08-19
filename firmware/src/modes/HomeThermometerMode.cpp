@@ -2,19 +2,22 @@
 
 #include "modes/HomeThermometerMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"   // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
+
+static_assert(GRID_COLUMNS >= 6U, __STRING(MODE_HOMETHERMOMETER) " is not compatible with this device's display size.");
+static_assert(GRID_ROWS >= 11U, __STRING(MODE_HOMETHERMOMETER) " is not compatible with this device's display size.");
 
 void HomeThermometerMode::configure()
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         nvs_get_i16(handle, "indoor", &indoor);
         nvs_get_i16(handle, "outdoor", &outdoor);
@@ -59,7 +62,7 @@ void HomeThermometerMode::transmit()
 {
     if (indoor != 0 || outdoor != 0)
     {
-        JsonDocument doc; // NOLINT(misc-const-correctness)
+        JsonDocument doc{};
         doc["indoor"].set(indoor);
         doc["outdoor"].set(outdoor);
         Device.transmit(doc.as<JsonObjectConst>(), name);
@@ -132,7 +135,7 @@ void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string t
 {
     topic.append(name);
     {
-        for (const auto &where : {
+        for (const std::pair<const char *, const char *> &where : {
                  std::pair<const char *, const char *>{"indoor", "Indoor"},
                  std::pair<const char *, const char *>{"outdoor", "Outdoor"},
              })
@@ -145,19 +148,25 @@ void HomeThermometerMode::onHomeAssistant(JsonDocument &discovery, std::string t
             component[HomeAssistantAbbreviations::device_class].set("temperature");
             component[HomeAssistantAbbreviations::entity_category].set("config");
             component[HomeAssistantAbbreviations::icon].set("mdi:thermometer");
-#if GRID_COLUMNS < 18
-            component[HomeAssistantAbbreviations::max].set(999);
-            component[HomeAssistantAbbreviations::min].set(-99);
-#elif GRID_COLUMNS < 22
-            component[HomeAssistantAbbreviations::max].set(9999);
-            component[HomeAssistantAbbreviations::min].set(-999);
-#elif GRID_COLUMNS < 26
-            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
-            component[HomeAssistantAbbreviations::min].set(-9999);
-#else
+#if GRID_COLUMNS >= 26
             component[HomeAssistantAbbreviations::max].set(INT16_MAX);
             component[HomeAssistantAbbreviations::min].set(INT16_MIN);
-#endif // GRID_COLUMNS < 18
+#elif GRID_COLUMNS >= 22
+            component[HomeAssistantAbbreviations::max].set(INT16_MAX);
+            component[HomeAssistantAbbreviations::min].set(-9999);
+#elif GRID_COLUMNS >= 18
+            component[HomeAssistantAbbreviations::max].set(9999U);
+            component[HomeAssistantAbbreviations::min].set(-999);
+#elif GRID_COLUMNS >= 14
+            component[HomeAssistantAbbreviations::max].set(999U);
+            component[HomeAssistantAbbreviations::min].set(-99);
+#elif GRID_COLUMNS >= 10
+            component[HomeAssistantAbbreviations::max].set(99U);
+            component[HomeAssistantAbbreviations::min].set(-9);
+#else
+            component[HomeAssistantAbbreviations::max].set(9U);
+            component[HomeAssistantAbbreviations::min].set(0);
+#endif // GRID_COLUMNS >= 26
             component[HomeAssistantAbbreviations::mode].set("box");
             component[HomeAssistantAbbreviations::name].set(where.second);
             component[HomeAssistantAbbreviations::platform].set("number");

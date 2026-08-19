@@ -14,16 +14,16 @@
 
 void AlexaExtension::begin()
 {
-    WebServer.http->on(
+    WebServer.http.on(
         AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, nullptr, &onPostApi);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights"), WebRequestMethod::HTTP_GET, &onGetLights);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights/1"), WebRequestMethod::HTTP_GET, &onGetLight);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights/1/state"),
-                       WebRequestMethod::HTTP_PUT,
-                       &WebServerService::onEmpty,
-                       nullptr,
-                       &onPutState);
-    WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGetDescription);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights"), WebRequestMethod::HTTP_GET, &onGetLights);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights/1"), WebRequestMethod::HTTP_GET, &onGetLight);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights/1/state"),
+                      WebRequestMethod::HTTP_PUT,
+                      &WebServerService::onEmpty,
+                      nullptr,
+                      &onPutState);
+    WebServer.http.on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGetDescription);
     upnp.onPacket(&onUpnp);
     upnp.listenMulticast(IPAddress(239U, 255U, 255U, 250U), 1900U);
 }
@@ -141,11 +141,11 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
 {
     const std::span<const uint8_t> _body{data, len};
     const std::string body{_body.begin(), _body.end()};
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     deserializeJson(doc, body);
     if (doc["bri"].is<uint8_t>())
     {
-        const uint8_t brightness{doc["bri"].as<uint8_t>()}; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t brightness{doc["bri"].as<uint8_t>()};
         if (Display.getBrightness() != brightness)
         {
             Display.setBrightness(brightness);
@@ -153,7 +153,7 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
     }
     if (doc["on"].is<bool>())
     {
-        const bool power{doc["on"].as<bool>()}; // NOLINT(cppcoreguidelines-init-variables)
+        const bool power{doc["on"].as<bool>()};
         if (Display.getPower() != power)
         {
             Display.setPower(power);
@@ -186,7 +186,6 @@ void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
             request, "M-SEARCH", {}, std::identity{}, [](char character) { return static_cast<uint8_t>(character); })
             .begin() != request.end())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const bool root{std::ranges::search(request,
                                             "upnp:rootdevice",
                                             {},

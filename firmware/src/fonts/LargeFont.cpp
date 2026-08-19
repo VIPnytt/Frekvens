@@ -9,7 +9,6 @@ static_assert(GRID_ROWS >= 8U, __STRING(FONT_LARGE) " is not compatible with thi
 
 FontModule::Symbol LargeFont::getChar(char32_t character) const
 {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -27,7 +26,6 @@ FontModule::Symbol LargeFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_LARGE

@@ -111,7 +111,7 @@ void MqttExtension::onMessage(const espMqttClientTypes::MessageProperties &prope
         payload = buffer.data();
         len = buffer.size();
     }
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, payload, len) == DeserializationError::Code::Ok)
     {
         const std::string_view _topic{topic};
@@ -134,9 +134,9 @@ void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
 
 void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
-    const size_t length = measureJson(payload);
-    std::vector<char> message(length + 1);
-    serializeJson(payload, message.data(), length + 1);
+    const size_t length{measureJson(payload)};
+    std::vector<char> message(length + 1U);
+    serializeJson(payload, message.data(), length + 1U);
     client.publish(std::string("frekvens/" HOSTNAME "/").append(source).c_str(),
                    payload["event"].isUnbound() ? static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS0)
                                                 : static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2),

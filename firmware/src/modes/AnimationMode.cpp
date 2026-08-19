@@ -33,7 +33,7 @@ void AnimationMode::handle()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
-            size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{frame.size()};
             if (nvs_get_blob(handle, std::to_string(index).c_str(), frame.data(), &length) == ESP_OK)
             {
                 lastMillis = millis();
@@ -101,7 +101,7 @@ void AnimationMode::setInterval(uint16_t _interval)
 {
     interval = _interval;
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u16(handle, "interval", interval);
         nvs_commit(handle);
@@ -117,14 +117,13 @@ void AnimationMode::setInterval(uint16_t _interval)
  */
 void AnimationMode::transmit(uint8_t index, std::span<const uint8_t> frame)
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["interval"].set(interval);
-    JsonArray _frame{doc["frame"].to<JsonArray>()};
+    JsonDocument doc{};
     for (size_t idx{0U}; idx < frame.size(); ++idx)
     {
-        _frame.add(frame[idx]);
+        doc["frame"][idx].set(frame[idx]);
     }
     doc["index"].set(index);
+    doc["interval"].set(interval);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 

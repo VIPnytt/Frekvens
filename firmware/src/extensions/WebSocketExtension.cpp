@@ -10,7 +10,7 @@
 void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
-    WebServer.http->addHandler(server);
+    WebServer.http.addHandler(server);
 }
 
 void WebSocketExtension::handle() { server->cleanupClients(); }
@@ -23,7 +23,7 @@ void WebSocketExtension::handle() { server->cleanupClients(); }
  */
 void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc[source].set(payload);
     const size_t length{measureJson(doc)};
     std::vector<char> message(length + 1U);
@@ -73,7 +73,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
                 data = buffer.data();
                 len = buffer.size();
             }
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok && doc.is<JsonObjectConst>())
             {
                 for (const JsonPairConst pair : doc.as<JsonObjectConst>())

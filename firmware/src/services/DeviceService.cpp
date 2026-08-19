@@ -135,7 +135,7 @@ void DeviceService::setPower(bool power)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGI(name.data(), "%s...", power ? "rebooting" : "powering off");
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
@@ -186,7 +186,7 @@ JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonOb
 
 void DeviceService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["board"].set(ARDUINO_BOARD);
     doc["model"].set(MODEL);
     doc["name"].set(NAME);
@@ -260,7 +260,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
                 return;
             }
         }
-        ModeModule *mode{Modes.getMode()}; // NOLINT(misc-const-correctness)
+        ModeModule *mode{Modes.getMode()};
         if (mode != nullptr && mode->name == destination)
         {
             mode->onReceive(payload, source);
@@ -315,6 +315,18 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
 {
     topic.append(name);
     {
+        const std::string id{std::string(name).append("_power")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:power");
+        component[HomeAssistantAbbreviations::name].set("Power off");
+        component[HomeAssistantAbbreviations::payload_press].set("power");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+    }
+    {
         const std::string id{std::string(name).append("_reboot")};
         JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
         component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
@@ -324,18 +336,6 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::name].set("Reboot");
         component[HomeAssistantAbbreviations::payload_press].set("reboot");
-        component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
-    }
-    {
-        const std::string id{std::string(name).append("_power")};
-        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:power");
-        component[HomeAssistantAbbreviations::name].set("Power off");
-        component[HomeAssistantAbbreviations::payload_press].set("power");
         component[HomeAssistantAbbreviations::platform].set("button");
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
     }

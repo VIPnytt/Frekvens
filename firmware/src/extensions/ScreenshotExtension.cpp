@@ -24,7 +24,7 @@ void ScreenshotExtension::transmit()
 {
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
     Display.getFrame(frame);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray _frame{doc["frame"].to<JsonArray>()};
     for (const uint8_t pixel : frame)
     {

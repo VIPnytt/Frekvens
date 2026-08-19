@@ -7,5 +7,5 @@ void setup() { Device.begin(); }
 void loop()
 {
     Device.handle();
-    vTaskDelay(1);
+    vTaskDelay(1U);
 }

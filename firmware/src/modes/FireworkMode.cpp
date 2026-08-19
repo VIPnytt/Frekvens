@@ -33,7 +33,7 @@ void FireworkMode::pad()
     if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
-        rocketX = random(GRID_COLUMNS);
+        rocketX = static_cast<uint8_t>(random(GRID_COLUMNS));
         rocketY = GRID_ROWS;
         stage = 1U;
     }
@@ -44,7 +44,7 @@ void FireworkMode::pad()
  */
 void FireworkMode::launching()
 {
-    if (millis() - lastMillis > (1U << 6U))
+    if (millis() - lastMillis > (0b1U << 6U))
     {
         if (rocketY < GRID_ROWS)
         {
@@ -57,12 +57,13 @@ void FireworkMode::launching()
         {
             radius = 0U;
 #if PITCH_VERTICAL == PITCH_HORIZONTAL
-            maxRadius = random(1, min(GRID_COLUMNS, GRID_ROWS) / 2);
+            maxRadius = static_cast<uint8_t>(random(1, min(GRID_COLUMNS, GRID_ROWS) / 2));
 #else
-            maxRadius = random(2,
-                               min(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
-                                   GRID_ROWS / static_cast<float>(PITCH_HORIZONTAL * PITCH_VERTICAL)) /
-                                   2.0F);
+            maxRadius =
+                static_cast<uint8_t>(random(2,
+                                            min(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
+                                                GRID_ROWS / static_cast<float>(PITCH_HORIZONTAL * PITCH_VERTICAL)) /
+                                                2.0F));
 #endif // PITCH_VERTICAL == PITCH_HORIZONTAL
             stage = 2U;
         }

@@ -8,24 +8,24 @@
 void ServerSentEventsExtension::begin()
 {
     events.onConnect(&onConnect);
-    WebServer.http->addHandler(&events);
+    WebServer.http.addHandler(&events);
 }
 
 void ServerSentEventsExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
-    const size_t length = measureJson(payload);
-    std::vector<char> message(length + 1);
-    serializeJson(payload, message.data(), length + 1);
-    events.send(message.data(), std::string(source).c_str());
+    const size_t length{measureJson(payload)};
+    std::vector<char> message(length + 1U);
+    serializeJson(payload, message.data(), length + 1U);
+    events.send(message.data(), source.data());
 }
 
 void ServerSentEventsExtension::onConnect(AsyncEventSourceClient *client)
 {
     for (const JsonPairConst pair : Device.getTransmits())
     {
-        const size_t length = measureJson(pair.value());
-        std::vector<char> message(length + 1);
-        serializeJson(pair.value(), message.data(), length + 1);
+        const size_t length{measureJson(pair.value())};
+        std::vector<char> message(length + 1U);
+        serializeJson(pair.value(), message.data(), length + 1U);
         client->send(message.data(), pair.key().c_str());
     }
 }

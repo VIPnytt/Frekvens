@@ -56,7 +56,7 @@ void MicrophoneExtension::handle()
                     triggered = true;
                     if (millis() - lastMillis > UINT16_MAX)
                     {
-                        JsonDocument doc; // NOLINT(misc-const-correctness)
+                        JsonDocument doc{};
                         doc["event"].set("sound");
                         Device.transmit(doc.as<JsonObjectConst>(), name, false);
                         lastMillis = millis();
@@ -148,7 +148,7 @@ bool MicrophoneExtension::isTriggered() const { return triggered; }
  */
 void MicrophoneExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     doc["ceiling"].set(soundCeiling);
     doc["floor"].set(soundFloor);

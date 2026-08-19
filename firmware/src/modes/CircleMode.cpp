@@ -17,9 +17,9 @@ static_assert(GRID_ROWS >= 3U, __STRING(MODE_CIRCLE) " is not compatible with th
 void CircleMode::handle()
 {
 #if EXTENSION_MICROPHONE
-    if (millis() - lastMillis > (1U << 6U) && Extensions.Microphone().isTriggered())
+    if (millis() - lastMillis > (0b1U << 6U) && Extensions.Microphone().isTriggered())
 #else
-    if (millis() - lastMillis > (1U << 6U))
+    if (millis() - lastMillis > (0b1U << 6U))
 #endif // EXTENSION_MICROPHONE
     {
         bool _lit{lit};

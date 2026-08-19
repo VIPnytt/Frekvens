@@ -79,7 +79,7 @@ void StreamMode::set(uint16_t _port)
  */
 void StreamMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["port"].set(port);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
@@ -168,10 +168,9 @@ void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:protocol");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" protocol"));
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        options.add("Art-Net");
-        options.add("Distributed Display Protocol");
-        options.add("E1.31");
+        component[HomeAssistantAbbreviations::options][0U].set("Art-Net");
+        component[HomeAssistantAbbreviations::options][1U].set("Distributed Display Protocol");
+        component[HomeAssistantAbbreviations::options][2U].set("E1.31");
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);

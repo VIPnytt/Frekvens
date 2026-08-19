@@ -10,8 +10,8 @@
 
 void RestfulExtension::begin()
 {
-    WebServer.http->on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
-    WebServer.http->on(
+    WebServer.http.on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
+    WebServer.http.on(
         AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_PATCH, &WebServerService::onEmpty, nullptr, &onPatch);
 }
 
@@ -59,7 +59,7 @@ void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *da
             data = buffer.data();
             len = buffer.size();
         }
-        JsonDocument doc; // NOLINT(misc-const-correctness)
+        JsonDocument doc{};
         if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok)
         {
             const String destination{request->url().substring(prefixLength)};

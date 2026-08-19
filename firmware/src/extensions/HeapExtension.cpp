@@ -23,7 +23,7 @@ void HeapExtension::handle()
  */
 void HeapExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["extensions"].set(Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle));
     doc["heap"].set(ESP.getHeapSize() - ESP.getFreeHeap());
     doc["main"].set(CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle));

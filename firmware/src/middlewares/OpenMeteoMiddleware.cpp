@@ -25,10 +25,10 @@ void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Condition> &condi
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["current"]["temperature_2m"].set(true);
     filter["current"]["weather_code"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["current"]["temperature_2m"].is<float>() && doc["current"]["weather_code"].is<uint8_t>())
     {

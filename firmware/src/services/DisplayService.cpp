@@ -31,7 +31,6 @@ void DisplayService::configure()
 #endif // PIN_MISO
     SPI.beginTransaction(
         SPISettings(min<uint32_t>((0b1U << 9U) * GRID_COLUMNS * GRID_ROWS * fps, SPI_FREQUENCY), MSBFIRST, SPI_MODE0));
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     hw_timer_t *timer{timerBegin(static_cast<uint32_t>(planes.size()) * fps)};
     timerAttachInterrupt(timer, &onTimer);
     timerAlarm(timer, 1U, true, 0U);
@@ -96,7 +95,7 @@ void DisplayService::flush()
     planes[0U].fill(0U);
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame[logical]}; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t _brightness{frame[logical]};
         if (_brightness != 0U)
         {
             const std::pair<size_t, size_t> &mapping{pixelsMapped[logical]};
@@ -116,7 +115,7 @@ void DisplayService::flush()
     std::array<std::pair<uint8_t, uint8_t>, GRID_COLUMNS * GRID_ROWS> indices;
     for (size_t logical{0U}; logical < frame.size(); ++logical)
     {
-        const uint8_t _brightness{frame[logical]}; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t _brightness{frame[logical]};
         if (_brightness != 0U && _brightness != UINT8_MAX)
         {
             indices[next[_brightness]++] = pixelsMapped[logical];
@@ -125,7 +124,6 @@ void DisplayService::flush()
     for (uint8_t plane{1U}; plane < planes.size(); ++plane)
     {
         planes[plane] = planes[plane - 1U];
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         for (uint16_t idx{offsets[plane]}; idx < offsets[plane] + counts[plane]; ++idx)
         {
             const std::pair<uint8_t, uint8_t> &mapping{indices[idx]};
@@ -677,7 +675,7 @@ void DisplayService::invertFrame()
 void DisplayService::transmit()
 {
     const bool rotated{(static_cast<uint8_t>(orientation) & 0b1U) != 0U};
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["brightness"].set(brightness);
 #if GRID_COLUMNS == GRID_ROWS
     doc["columns"].set(GRID_COLUMNS);
@@ -714,14 +712,13 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:rotate-right-variant");
         component[HomeAssistantAbbreviations::name].set("Orientation");
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        options.add("0°");
+        component[HomeAssistantAbbreviations::options][0U].set("0°");
 #if GRID_COLUMNS == GRID_ROWS
-        options.add("90°");
-#endif // GRID_COLUMNS == GRID_ROWS
-        options.add("180°");
-#if GRID_COLUMNS == GRID_ROWS
-        options.add("270°");
+        component[HomeAssistantAbbreviations::options][1U].set("90°");
+        component[HomeAssistantAbbreviations::options][2U].set("180°");
+        component[HomeAssistantAbbreviations::options][3U].set("270°");
+#else
+        component[HomeAssistantAbbreviations::options][1U].set("180°");
 #endif // GRID_COLUMNS == GRID_ROWS
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
@@ -731,11 +728,11 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
 }
 #endif // EXTENSION_HOMEASSISTANT
 
-/**                                                                                                             \
- * @brief Handles display power-off state changes.                                                              \
- *                                                                                                              \
- * Clears all brightness planes, deactivates display modes, and schedules a                                     \
- * device state transmission.                                                                                   \
+/**
+ * @brief Handles display power-off state changes.
+ *
+ * Clears all brightness planes, deactivates display modes, and schedules a
+ * device state transmission.
  */
 void DisplayService::onPowerOff()
 {

@@ -30,7 +30,7 @@ void TickerMode::configure()
         }
         {
             std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-            size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_fontName.size()};
             if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
             {
                 setFont({_fontName.data(), length - 1U});
@@ -43,7 +43,7 @@ void TickerMode::configure()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0U]);
+        setFont(FontsService::names[0U]);
 #endif // FONT_SMALL
     }
     transmit();
@@ -58,7 +58,7 @@ void TickerMode::begin()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
         {
             setFont({_fontName.data(), length - 1U});
@@ -70,7 +70,7 @@ void TickerMode::begin()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0U]);
+        setFont(FontsService::names[0U]);
 #endif // FONT_SMALL
     }
     pending = true;
@@ -150,7 +150,7 @@ void TickerMode::setMessage(std::string_view _message)
  */
 void TickerMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(font->name);
     doc["message"].set(message);
     Device.transmit(doc.as<JsonObjectConst>(), name);
@@ -202,7 +202,7 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : Fonts.names)
+        for (const std::string_view _font : FontsService::names)
         {
             options.add(_font);
         }

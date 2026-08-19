@@ -24,10 +24,10 @@ void TomorrowIoMiddleware::update(std::optional<WeatherHandler::Condition> &cond
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["data"]["values"]["temperature"].set(true);
     filter["data"]["values"]["weatherCode"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["data"]["values"]["temperature"].is<float>() && doc["data"]["values"]["weatherCode"].is<uint32_t>())
     {

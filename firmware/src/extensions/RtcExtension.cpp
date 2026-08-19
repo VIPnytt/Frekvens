@@ -21,7 +21,7 @@ void RtcExtension::configure()
         tm local{};
         if (!getLocalTime(&local))
         {
-            struct timeval tv{}; // NOLINT(misc-const-correctness)
+            struct timeval tv{};
             tv.tv_sec = static_cast<time_t>(rtc.GetDateTime().Unix64Time());
             settimeofday(&tv, nullptr);
             ESP_LOGD(name.data(), "synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -74,7 +74,7 @@ IRAM_ATTR void RtcExtension::onInterrupt() { pending = true; }
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
 void RtcExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
 #if TEMPERATURE_FAHRENHEIT
     doc["temperature"].set(rtc.GetTemperature().AsFloatDegF());
 #else

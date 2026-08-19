@@ -24,10 +24,10 @@ void YrMiddleware::update(std::optional<WeatherHandler::Condition> &condition, s
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["properties"]["timeseries"][0U]["data"]["instant"]["details"]["air_temperature"].set(true);
     filter["properties"]["timeseries"][0U]["data"]["next_1_hours"]["summary"]["symbol_code"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["properties"]["timeseries"][0U]["data"]["instant"]["details"]["air_temperature"].is<float>() &&
         doc["properties"]["timeseries"][0U]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string_view>())
