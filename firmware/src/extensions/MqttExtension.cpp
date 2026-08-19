@@ -132,6 +132,12 @@ void MqttExtension::onDisconnect(espMqttClientTypes::DisconnectReason reason)
     ESP_LOGV(name.data(), "%s", espMqttClientTypes::disconnectReasonToString(reason));
 }
 
+/**
+ * @brief Publishes a device event payload to its MQTT topic.
+ *
+ * @param payload JSON payload to publish.
+ * @param source Device source used to construct the MQTT topic.
+ */
 void MqttExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     const size_t length{measureJson(payload)};

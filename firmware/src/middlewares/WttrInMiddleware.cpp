@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature data from the wttr.in provider.
+ *
+ * @param condition Receives the weather condition.
+ * @param temperature Receives the temperature in the configured unit.
+ * @param lastMillis Timestamp used to schedule provider updates and retries.
+ */
 void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                               unsigned long &lastMillis)
 {

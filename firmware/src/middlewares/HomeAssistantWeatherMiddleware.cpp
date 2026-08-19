@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature values from Home Assistant.
+ *
+ * @param condition Optional weather condition to update.
+ * @param temperature Optional rounded temperature in degrees to update.
+ * @param lastMillis Timestamp used to schedule the next update.
+ */
 void HomeAssistantWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                             std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {

@@ -60,7 +60,10 @@ private:
 #endif
     })};
 
-    static constexpr size_t providerNamesMaxLength{[]
+    /**
+                                                    * Stores the length of the longest configured weather-provider name.
+                                                    */
+                                                   static constexpr size_t providerNamesMaxLength{[]
                                                    {
                                                        size_t length{0U};
                                                        for (const std::string_view _name : providerNames)

@@ -89,12 +89,12 @@ void SignalExtension::transmit()
 }
 
 /**
- * @brief Processes incoming duration and bitmap configuration data.
+ * @brief Applies an incoming signal duration and queues bitmap data.
  *
- * Numeric bitmap elements are stored as 16-bit values, while string elements
- * are filtered to binary characters and interpreted as base-2 values.
+ * Numeric bitmap elements are stored as 16-bit values. String elements are
+ * filtered to binary characters and converted from base 2 when nonempty.
  *
- * @param payload Incoming configuration data.
+ * @param payload Incoming duration and bitmap configuration.
  */
 void SignalExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {

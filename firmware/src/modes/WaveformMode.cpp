@@ -62,6 +62,11 @@ void WaveformMode::draw()
     BitmapHandler(_wave[random(_wave.size())]).draw();
 }
 
+/**
+ * @brief Selects a waveform by name and persists the selection.
+ *
+ * @param waveName Name of the waveform to select.
+ */
 void WaveformMode::setWave(std::string_view waveName)
 {
     for (size_t idx{0U}; idx < waveNames.size(); ++idx)

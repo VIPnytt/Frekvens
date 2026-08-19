@@ -73,6 +73,13 @@ void TextHandler::draw(uint8_t brightness) const
     draw(max(0U, (GRID_COLUMNS - width) / 2U), (GRID_ROWS - height) / 2U, brightness);
 }
 
+/**
+ * @brief Renders the text at the specified position.
+ *
+ * @param x Horizontal starting position.
+ * @param y Vertical baseline position.
+ * @param brightness Pixel brightness.
+ */
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
     char32_t codepoint{0U};

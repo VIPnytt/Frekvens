@@ -7,12 +7,18 @@
 
 #include <span>
 
+/**
+ * @brief Registers the WebSocket event callback and attaches the server to the HTTP server.
+ */
 void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
     WebServer.http.addHandler(server);
 }
 
+/**
+ * @brief Removes inactive WebSocket clients from the server.
+ */
 void WebSocketExtension::handle() { server->cleanupClients(); }
 
 /**
@@ -32,12 +38,15 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view so
 }
 
 /**
- * @brief Handles WebSocket connection and text-data events.
+ * @brief Handles WebSocket connections and text messages.
  *
- * Sends the device's available transmits to newly connected clients and forwards
- * complete JSON object messages to the device. Fragmented text messages are
- * reassembled before processing; invalid JSON and non-object properties are
- * ignored.
+ * Sends available transmits to newly connected clients and forwards each
+ * object-valued property in a valid JSON object to the device. Reassembles
+ * fragmented text messages before processing them.
+ *
+ * @param client WebSocket client associated with the event.
+ * @param data Event payload data.
+ * @param len Number of bytes in the event payload.
  */
 void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
                                  const uint8_t *data, size_t len)

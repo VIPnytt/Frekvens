@@ -17,6 +17,9 @@
 static_assert(GRID_COLUMNS >= 8U, __STRING(MODE_COUNTDOWN) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 11U, __STRING(MODE_COUNTDOWN) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads the persisted countdown configuration and publishes the current settings.
+ */
 void CountdownMode::configure()
 {
     nvs_handle_t handle{};

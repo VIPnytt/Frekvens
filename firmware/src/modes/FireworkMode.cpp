@@ -27,6 +27,12 @@ void FireworkMode::handle()
     }
 }
 
+/**
+ * @brief Initializes a rocket launch when the firework trigger is activated.
+ *
+ * Selects a random launch column, places the rocket below the display, and
+ * sets the mode to the launching stage.
+ */
 void FireworkMode::pad()
 {
 #if EXTENSION_MICROPHONE
@@ -40,7 +46,7 @@ void FireworkMode::pad()
 }
 
 /**
- * @brief Advances the rocket toward the upper half of the display and starts the explosion stage.
+ * @brief Moves the rocket upward and begins the explosion stage at a random height in the upper half of the display.
  */
 void FireworkMode::launching()
 {

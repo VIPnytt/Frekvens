@@ -26,7 +26,11 @@ public:
 
     [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
 
-    static constexpr auto names{std::to_array<std::string_view>({
+    /**
+ * Provides access to the singleton fonts service instance.
+ * @returns Reference to the singleton FontsService instance.
+ */
+static constexpr auto names{std::to_array<std::string_view>({
 #if FONT_BRAILLE
         BrailleFont::name,
 #endif // FONT_BRAILLE

@@ -17,6 +17,12 @@ void ModesService::configure()
     }
 }
 
+/**
+ * @brief Initializes the active display mode.
+ *
+ * Selects a random mode after an abnormal reset; otherwise restores the persisted
+ * mode when available and falls back to a random configured mode.
+ */
 void ModesService::begin()
 {
     const esp_reset_reason_t reason{esp_reset_reason()};
@@ -44,6 +50,12 @@ void ModesService::begin()
     }
 }
 
+/**
+ * @brief Starts the scheduled mode and publishes its current state.
+ *
+ * Persists the selected mode when NVS is available and transmits the updated
+ * mode state.
+ */
 void ModesService::handle()
 {
     if (scheduled && millis() - lastMillis > (0b1U << 11U))
@@ -63,6 +75,11 @@ void ModesService::handle()
     }
 }
 
+/**
+ * @brief Processes the active mode and refreshes the display continuously.
+ *
+ * @param parameter Task parameter supplied by FreeRTOS.
+ */
 void ModesService::onTask(void *parameter)
 {
     for (;;)

@@ -34,6 +34,13 @@ void MicrophoneExtension::begin()
     }
 }
 
+/**
+ * @brief Processes pending microphone updates and monitors sound activity.
+ *
+ * Samples the microphone while monitoring is active and the display is powered,
+ * updates the triggered state, and adjusts the learned sound floor and ceiling
+ * when necessary.
+ */
 void MicrophoneExtension::handle()
 {
     if (pending)

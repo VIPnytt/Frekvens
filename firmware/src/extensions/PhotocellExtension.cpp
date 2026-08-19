@@ -24,6 +24,13 @@ void PhotocellExtension::begin()
     }
 }
 
+/**
+ * @brief Processes photocell readings and adjusts display brightness when active.
+ *
+ * Periodically transmits the raw sensor reading and, while the display is powered,
+ * applies the configured gamma curve to update the display brightness after the
+ * accumulated change exceeds the adjustment threshold.
+ */
 void PhotocellExtension::handle()
 {
     if (pending || millis() - lastMillis > UINT16_MAX)

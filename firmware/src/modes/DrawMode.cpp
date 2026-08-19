@@ -40,6 +40,11 @@ void DrawMode::handle()
 
 void DrawMode::end() { save(true); }
 
+/**
+ * @brief Loads a cached or saved frame from persistent storage.
+ *
+ * @param cache Whether to try loading the cached frame before the saved frame.
+ */
 void DrawMode::load(bool cache)
 {
     nvs_handle_t handle{};

@@ -165,7 +165,12 @@ public:
 
     static constexpr size_t namesMaxLength{[]
                                            {
-                                               size_t length{0U};
+                                               /**
+                                            * Computes the maximum length among the configured mode names.
+                                            *
+                                            * @return The length of the longest configured mode name.
+                                            */
+                                           size_t length{0U};
                                                for (const std::string_view _name : names)
                                                {
                                                    if (_name.size() > length)

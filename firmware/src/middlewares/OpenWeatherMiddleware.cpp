@@ -4,6 +4,16 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the weather condition and temperature from the configured provider.
+ *
+ * Supports OpenWeather API versions 2.5, 3.0, and 4.0. Removes endpoints that
+ * return client errors or unsupported response formats.
+ *
+ * @param condition Receives the mapped weather condition.
+ * @param temperature Receives the rounded temperature.
+ * @param lastMillis Timestamp used to schedule subsequent updates.
+ */
 void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                    std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {

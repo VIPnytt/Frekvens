@@ -29,6 +29,12 @@ void GameOfLifeMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the Game of Life mode from its persisted clock setting.
+ *
+ * Enables the clock display, reserves the top five rows, clears the clock, and
+ * sets maximum brightness when the persisted setting is enabled.
+ */
 void GameOfLifeMode::begin()
 {
     nvs_handle_t handle{};
@@ -46,6 +52,9 @@ void GameOfLifeMode::begin()
     }
 }
 
+/**
+ * @brief Updates the optional clock and advances the Conway's Game of Life simulation.
+ */
 void GameOfLifeMode::handle()
 {
     if (clock != nullptr)
@@ -97,6 +106,11 @@ void GameOfLifeMode::handle()
     }
 }
 
+/**
+ * @brief Enables or disables the clock display and updates the display configuration.
+ *
+ * @param _clock Whether to enable the clock display.
+ */
 void GameOfLifeMode::setClock(bool _clock)
 {
     nvs_handle_t handle{};

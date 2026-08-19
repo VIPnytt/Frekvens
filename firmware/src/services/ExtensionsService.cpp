@@ -77,6 +77,11 @@ StatusLedExtension &ExtensionsService::StatusLed() { return extensionStatusLed; 
 WebSocketExtension &ExtensionsService::WebSocket() { return extensionWebSocket; }
 #endif
 
+/**
+ * @brief Provides access to the shared extensions service instance.
+ *
+ * @return ExtensionsService& Reference to the singleton service instance.
+ */
 ExtensionsService &ExtensionsService::getInstance()
 {
     static ExtensionsService instance;

@@ -27,6 +27,9 @@ void RainMode::begin()
 
 /**
  * @brief Advances and renders raindrops whose delays have elapsed.
+ *
+ * Raindrops that leave the display are repositioned with randomized length and delay
+ * before their visible segments are rendered.
  */
 void RainMode::handle()
 {

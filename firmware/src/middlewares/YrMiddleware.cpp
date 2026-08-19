@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature from the configured provider.
+ *
+ * @param condition Receives the parsed weather condition.
+ * @param temperature Receives the rounded temperature in the configured unit.
+ * @param lastMillis Receives the timestamp used to schedule the next update.
+ */
 void YrMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                           unsigned long &lastMillis)
 {
