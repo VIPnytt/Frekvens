@@ -39,13 +39,7 @@ private:
     static inline volatile bool powerInput{false};
 #endif
 #ifdef PIN_SW2
-    /**
- * Processes input changes from the power button.
- */
-/**
- * Processes input changes from the mode button.
- */
-static inline volatile bool modeInput{false};
+    static inline volatile bool modeInput{false};
 #endif
 
 #ifdef PIN_SW1
