@@ -27,7 +27,7 @@ std::span<ExtensionModule *const> ExtensionsService::getAll() { return modules; 
  */
 void ExtensionsService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray list{doc["list"].to<JsonArray>()};
     for (const ExtensionModule *extension : modules)
     {
@@ -84,4 +84,4 @@ ExtensionsService &ExtensionsService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-ExtensionsService &Extensions = ExtensionsService::getInstance();
+ExtensionsService &Extensions{ExtensionsService::getInstance()};

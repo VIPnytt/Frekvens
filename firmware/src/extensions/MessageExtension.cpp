@@ -21,7 +21,7 @@ void MessageExtension::begin()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
             std::ranges::find(FontsService::names, std::string_view{_fontName.data(), length - 1U}) !=
                 FontsService::names.end())
@@ -79,7 +79,7 @@ void MessageExtension::handle()
                 active = true;
             }
             lastMillis = millis();
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             doc["event"].set(messages.front());
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
@@ -137,7 +137,7 @@ void MessageExtension::setRepeat(uint8_t count)
  */
 void MessageExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(fontName);
     doc["repeat"].set(repeat);
     Device.transmit(doc.as<JsonObjectConst>(), name);

@@ -45,7 +45,7 @@ void DrawMode::load(bool cache)
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{frame.size()};
         const char *key{nullptr};
         if ((cache && nvs_get_blob(handle, "cache", frame.data(), &length) == ESP_OK) ||
             nvs_get_blob(handle, "saved", frame.data(), &length) == ESP_OK)
@@ -81,7 +81,7 @@ void DrawMode::save(bool cache)
  */
 void DrawMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray _frame{doc["frame"].to<JsonArray>()};
     for (const uint8_t pixel : frame)
     {

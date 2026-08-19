@@ -11,7 +11,7 @@
 
 void PlaylistExtension::begin()
 {
-    const esp_reset_reason_t reason = esp_reset_reason();
+    const esp_reset_reason_t reason{esp_reset_reason()};
     if (std::ranges::none_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
         nvs_handle_t handle{};
@@ -37,7 +37,7 @@ void PlaylistExtension::handle()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint16_t _duration{0U};
-            size_t length{0U}; // NOLINT(cppcoreguidelines-init-variables,misc-const-correctness)
+            size_t length{0U};
             const std::string _modeKey{std::string("mode").append(std::to_string(step))};
             if (nvs_get_str(handle, _modeKey.c_str(), nullptr, &length) == ESP_OK && length > 1U &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(step)).c_str(), &_duration) ==
@@ -117,7 +117,7 @@ void PlaylistExtension::setPlaylist(std::span<const std::pair<std::string, uint1
 
 void PlaylistExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     JsonArray playlist{doc["playlist"].to<JsonArray>()};
     nvs_handle_t handle{};
@@ -127,7 +127,7 @@ void PlaylistExtension::transmit()
         for (size_t _step{0U}; _step <= UINT8_MAX; ++_step)
         {
             uint16_t _duration{0U};
-            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_modeName.size()};
             if (nvs_get_str(
                     handle, std::string("mode").append(std::to_string(_step)).c_str(), _modeName.data(), &length) ==
                     ESP_OK &&

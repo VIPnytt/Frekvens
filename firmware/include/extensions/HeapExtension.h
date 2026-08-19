@@ -9,7 +9,7 @@ class HeapExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Heap"};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 public:
     explicit HeapExtension() : ExtensionModule(name) {};

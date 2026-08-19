@@ -141,10 +141,10 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step{target}; // NOLINT(misc-const-correctness)
-        while (from.at(step) != start)
+        Pixel step{target};
+        while (from[step] != start)
         {
-            step = from.at(step);
+            step = from[step];
         }
         return step;
     }
@@ -197,7 +197,6 @@ void SnakeMode::move()
             }
             else
             {
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
                 for (size_t idx{0U}; idx < snake.size(); ++idx)
                 {
@@ -221,7 +220,7 @@ void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 1U) == 0U ? 0U : UINT8_MAX)};
+        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 0b1U) == 0U ? 0U : UINT8_MAX)};
         for (const Pixel &pixel : snake)
         {
             Display.setPixel(pixel.x, pixel.y, brightness);
@@ -251,19 +250,19 @@ void SnakeMode::clean()
 
 void SnakeMode::setTarget()
 {
-    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)}; // NOLINT(cppcoreguidelines-init-variables)
-    do                                                                    // NOLINT(cppcoreguidelines-avoid-do-while)
+    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
+    do // NOLINT(cppcoreguidelines-avoid-do-while)
     {
-        target.x = random(GRID_COLUMNS);
-        target.y = random(yMin, GRID_ROWS);
+        target.x = static_cast<uint8_t>(random(GRID_COLUMNS));
+        target.y = static_cast<uint8_t>(random(yMin, GRID_ROWS));
     } while (Display.getPixel(target.x, target.y) != 0U);
-    Display.setPixel(target.x, target.y, random(1, 0b1U << 8U));
+    Display.setPixel(target.x, target.y, static_cast<uint8_t>(random(1, 0b1U << 8U)));
 }
 
 void SnakeMode::setClock(bool _clock)
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "clock", static_cast<uint8_t>(_clock)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
@@ -288,7 +287,7 @@ void SnakeMode::setClock(bool _clock)
  */
 void SnakeMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

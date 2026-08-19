@@ -10,9 +10,10 @@
 class MetaballsMode final : public ModeModule
 {
 private:
-    static constexpr float radius{min<float>(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
-                                             GRID_ROWS *PITCH_VERTICAL / static_cast<float>(PITCH_HORIZONTAL)) /
-                                  5.0F};
+    static constexpr float radius{
+        min<float>(static_cast<float>(GRID_COLUMNS * PITCH_HORIZONTAL) / static_cast<float>(PITCH_VERTICAL),
+                   static_cast<float>(GRID_ROWS *PITCH_VERTICAL) / static_cast<float>(PITCH_HORIZONTAL)) /
+        5.0F};
     static constexpr float radiusSq{radius * radius};
     static constexpr float speed{1e-6F * static_cast<float>(GRID_COLUMNS * GRID_ROWS)};
 

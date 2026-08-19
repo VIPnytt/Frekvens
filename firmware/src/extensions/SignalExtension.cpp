@@ -48,7 +48,7 @@ void SignalExtension::handle()
             signals.erase(signals.begin());
             lastMillis = millis();
             Display.flush();
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             doc["event"].set("signal");
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
@@ -83,7 +83,7 @@ void SignalExtension::setDuration(uint8_t seconds)
  */
 void SignalExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["duration"].set(duration / 1'000U);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
@@ -115,14 +115,17 @@ void SignalExtension::onReceive(JsonObjectConst payload, std::string_view source
             }
             else if (bitset.is<std::string>())
             {
-                std::string bits = bitset.as<std::string>();
-                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit) { return bit < 0x30 || bit > 0x31; }),
+                std::string bits{bitset.as<std::string>()};
+                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit) { return bit != '0' && bit != '1'; }),
                            bits.end());
-                sign.push_back(std::stoi(bits, nullptr, 2));
+                if (!bits.empty())
+                {
+                    sign.push_back(std::stoi(bits, nullptr, 2));
+                }
             }
+            signals.push_back(sign);
+            ESP_LOGD(name.data(), "received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
-        signals.push_back(sign);
-        ESP_LOGD("Queue", "received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
 }
 

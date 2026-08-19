@@ -21,7 +21,7 @@ void WeatherMode::configure()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, providerNamesMaxLength + 1U> _providerName{};
-        size_t length{_providerName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_providerName.size()};
         if (nvs_get_str(handle, "provider", _providerName.data(), &length) == ESP_OK)
         {
             setProvider({_providerName.data(), length - 1U});
@@ -50,7 +50,7 @@ void WeatherMode::begin()
         if (nvs_get_str(handle, "provider", nullptr, &length) == ESP_OK && length > 1U)
         {
             std::array<char, providerNamesMaxLength + 1U> _providerName{};
-            size_t length{_providerName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_providerName.size()};
             if (nvs_get_str(handle, "provider", _providerName.data(), &length) == ESP_OK)
             {
                 setProvider({_providerName.data(), length - 1U});
@@ -87,7 +87,6 @@ void WeatherMode::handle()
                     const MiniFont font;
                     const TextHandler text(std::to_string(temperature.value()) + "°", font);
                     const uint8_t textHeight{text.getHeight()};
-                    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                     const uint8_t marginsY{
                         static_cast<uint8_t>(max(0U, GRID_ROWS - bitmap.getHeight() - textHeight) / 3U)};
                     Display.fillFrame(0U);
@@ -171,7 +170,7 @@ void WeatherMode::setProvider(std::string_view providerName)
  */
 void WeatherMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (condition.has_value())
     {
         doc["condition"].set(conditionNames[static_cast<size_t>(condition.value())]);

@@ -14,10 +14,10 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
     if (text.length())
     {
         {
-            char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-            int8_t yMax{0};         // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
+            int8_t yMax{0};
             int8_t yMin{0};
-            size_t index{0U}; // NOLINT(misc-const-correctness)
+            size_t index{0U};
             while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
@@ -37,8 +37,8 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             width = 0U;
-            char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-            size_t index{0U};       // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
+            size_t index{0U};
             while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
@@ -75,8 +75,8 @@ void TextHandler::draw(uint8_t brightness) const
 
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-    size_t index{0U};       // NOLINT(misc-const-correctness)
+    char32_t codepoint{0U};
+    size_t index{0U};
     while (nextCodepoint(index, codepoint))
     {
         const FontModule::Symbol character{font->getChar(codepoint)};
@@ -210,7 +210,7 @@ template <typename T>
  */
 uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 {
-    uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)
+    uint8_t msbMax{0U};
     for (const T bitset : bitmap)
     {
         if (bitset != 0U)

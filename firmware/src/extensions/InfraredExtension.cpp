@@ -164,7 +164,7 @@ void InfraredExtension::setActive(bool _active)
  */
 void InfraredExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

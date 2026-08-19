@@ -30,7 +30,7 @@ void ModesService::begin()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             std::array<char, namesMaxLength + 1U> _modeName{};
-            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_modeName.size()};
             if (nvs_get_str(handle, "mode", _modeName.data(), &length) == ESP_OK && length > 1U)
             {
                 setMode({_modeName.data(), length - 1U});
@@ -46,7 +46,7 @@ void ModesService::begin()
 
 void ModesService::handle()
 {
-    if (scheduled && millis() - lastMillis > (1U << 11U))
+    if (scheduled && millis() - lastMillis > (0b1U << 11U))
     {
         scheduled = false;
         ESP_LOGI(name.data(), "Mode %s", mode->name.data()); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -63,7 +63,7 @@ void ModesService::handle()
     }
 }
 
-void ModesService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
+void ModesService::onTask(void *parameter)
 {
     for (;;)
     {
@@ -339,7 +339,7 @@ void ModesService::setMode(std::string_view modeName, bool power)
                 words.back().push_back(character);
             }
         }
-        uint8_t height{0U}; // NOLINT(misc-const-correctness)
+        uint8_t height{0U};
         std::vector<std::unique_ptr<TextHandler>> lines;
 #if FONT_MICRO
         const std::unique_ptr<const FontModule> font{Fonts.get(MicroFont::name)};
@@ -421,7 +421,7 @@ void ModesService::setModePrevious()
  */
 void ModesService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray list{doc["list"].to<JsonArray>()};
     for (const std::string_view _name : names)
     {

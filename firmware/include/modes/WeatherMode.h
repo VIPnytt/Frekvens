@@ -62,7 +62,7 @@ private:
 
     static constexpr size_t providerNamesMaxLength{[]
                                                    {
-                                                       size_t length{0U}; // NOLINT(misc-const-correctness)
+                                                       size_t length{0U};
                                                        for (const std::string_view _name : providerNames)
                                                        {
                                                            if (_name.size() > length)

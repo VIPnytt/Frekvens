@@ -40,6 +40,7 @@ void GameOfLifeMode::begin()
             yMin = 5U;
             clock = std::make_unique<ClockHandler>();
             clock->clear();
+            brightness = INT8_MAX;
         }
         nvs_close(handle);
     }
@@ -71,10 +72,8 @@ void GameOfLifeMode::handle()
         for (uint8_t y{yMin}; y < GRID_ROWS; ++y)
         {
             uint8_t count{0U};
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             for (uint8_t _x{static_cast<uint8_t>(max<int16_t>(x - 1, 0))}; _x <= x + 1U && _x < GRID_COLUMNS; ++_x)
             {
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 for (uint8_t _y{static_cast<uint8_t>(max<int16_t>(yMin, y - 1U))}; _y <= y + 1U && _y < GRID_ROWS; ++_y)
                 {
                     if ((_x != x || _y != y) &&
@@ -84,7 +83,6 @@ void GameOfLifeMode::handle()
                     }
                 }
             }
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             const bool lit{seeds[x + (y * (GRID_COLUMNS - yMin))] || Display.getPixel(x, y) != 0U};
             if (lit && (count < 2U || count > 3U))
             {
@@ -113,11 +111,13 @@ void GameOfLifeMode::setClock(bool _clock)
         yMin = 5U;
         clock = std::make_unique<ClockHandler>();
         clock->clear();
+        brightness = INT8_MAX;
     }
     else
     {
         clock.reset();
         yMin = 0U;
+        brightness = UINT8_MAX;
     }
     transmit();
 }
@@ -127,7 +127,7 @@ void GameOfLifeMode::setClock(bool _clock)
  */
 void GameOfLifeMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }

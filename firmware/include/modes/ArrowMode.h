@@ -10,91 +10,91 @@
 class ArrowMode final : public ModeModule
 {
 private:
-    static constexpr std::array<uint16_t, 15> arrow0{
-        0b000000010000000,
-        0b000000010000000,
-        0b000000000000000,
-        0b000000000000000,
-        0b000000000000000,
-        0b000000010000000,
-        0b000000010000000,
-        0b000000000000000,
-        0b000000000000000,
-        0b100000000000001,
-        0b000000010000000,
-        0b000100010001000,
-        0b000000000000000,
-        0b000001000100000,
-        0b000000000000000,
+    static constexpr std::array<uint16_t, 15U> arrow0{
+        0b000000010000000U,
+        0b000000010000000U,
+        0b000000000000000U,
+        0b000000000000000U,
+        0b000000000000000U,
+        0b000000010000000U,
+        0b000000010000000U,
+        0b000000000000000U,
+        0b000000000000000U,
+        0b100000000000001U,
+        0b000000010000000U,
+        0b000100010001000U,
+        0b000000000000000U,
+        0b000001000100000U,
+        0b000000000000000U,
     };
-    static constexpr std::array<uint16_t, 14> arrow1{
-        0b0000001000000,
-        0b0000001000000,
-        0b0000000000000,
-        0b0000000000000,
-        0b0000000000000,
-        0b0000000000000,
-        0b0000001000000,
-        0b0000001000000,
-        0b0000000000000,
-        0b1000000000001,
-        0b0000000000000,
-        0b0010000000100,
-        0b0000001000000,
-        0b0000101010000,
+    static constexpr std::array<uint16_t, 14U> arrow1{
+        0b0000001000000U,
+        0b0000001000000U,
+        0b0000000000000U,
+        0b0000000000000U,
+        0b0000000000000U,
+        0b0000000000000U,
+        0b0000001000000U,
+        0b0000001000000U,
+        0b0000000000000U,
+        0b1000000000001U,
+        0b0000000000000U,
+        0b0010000000100U,
+        0b0000001000000U,
+        0b0000101010000U,
     };
-    static constexpr std::array<uint16_t, 11> arrow2{
-        0b00000100000,
-        0b00000100000,
-        0b00000000000,
-        0b00000000000,
-        0b00000000000,
-        0b00000000000,
-        0b00000100000,
-        0b10000100001,
-        0b00000000000,
-        0b00100000100,
-        0b00000000000,
+    static constexpr std::array<uint16_t, 11U> arrow2{
+        0b00000100000U,
+        0b00000100000U,
+        0b00000000000U,
+        0b00000000000U,
+        0b00000000000U,
+        0b00000000000U,
+        0b00000100000U,
+        0b10000100001U,
+        0b00000000000U,
+        0b00100000100U,
+        0b00000000000U,
     };
-    static constexpr std::array<uint16_t, 8> arrow3{
-        0b000010000,
-        0b000010000,
-        0b000000000,
-        0b000000000,
-        0b000000000,
-        0b100000001,
-        0b000010000,
-        0b001010100,
+    static constexpr std::array<uint16_t, 8U> arrow3{
+        0b000010000U,
+        0b000010000U,
+        0b000000000U,
+        0b000000000U,
+        0b000000000U,
+        0b100000001U,
+        0b000010000U,
+        0b001010100U,
     };
-    static constexpr std::array<uint8_t, 5> arrow4{
-        0b0001000,
-        0b0001000,
-        0b0000000,
-        0b1000001,
-        0b0000000,
+    static constexpr std::array<uint8_t, 5U> arrow4{
+        0b0001000U,
+        0b0001000U,
+        0b0000000U,
+        0b1000001U,
+        0b0000000U,
     };
-    static constexpr std::array<uint8_t, 2> arrow5{
-        0b00100,
-        0b10101,
+    static constexpr std::array<uint8_t, 2U> arrow5{
+        0b00100U,
+        0b10101U,
     };
 
-    static constexpr std::array<std::span<const uint16_t>, 4> arrows0{
+    static constexpr std::array<std::span<const uint16_t>, 4U> arrows0{
         arrow0,
         arrow1,
         arrow2,
         arrow3,
     };
 
-    static constexpr std::array<std::span<const uint8_t>, 2> arrows1{
+    static constexpr std::array<std::span<const uint8_t>, 2U> arrows1{
         arrow4,
         arrow5,
     };
 
-    bool direction = true;
+    bool direction{true};
 
-    uint8_t index = 0;
+    uint8_t index{0U};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Arrow"};

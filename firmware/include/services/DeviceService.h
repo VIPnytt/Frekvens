@@ -11,7 +11,7 @@ private:
 
     bool operational{false};
 
-    unsigned long lastMillis{0};
+    unsigned long lastMillis{0UL};
 
     JsonDocument transmits;
 
@@ -20,7 +20,7 @@ private:
     void onReceive(JsonObjectConst payload, std::string_view source) override;
 
 public:
-    static constexpr std::array<esp_reset_reason_t, 6> resetAbnormalities{
+    static constexpr std::array<esp_reset_reason_t, 6U> resetAbnormalities{
         esp_reset_reason_t::ESP_RST_BROWNOUT,
         esp_reset_reason_t::ESP_RST_CPU_LOCKUP,
         esp_reset_reason_t::ESP_RST_INT_WDT,
@@ -29,7 +29,7 @@ public:
         esp_reset_reason_t::ESP_RST_WDT,
     };
 
-    TaskHandle_t taskHandle = nullptr;
+    TaskHandle_t taskHandle{nullptr};
 
     void begin();
     void handle();
