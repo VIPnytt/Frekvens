@@ -12,10 +12,9 @@ private:
 
     enum class State : uint8_t // NOLINT(performance-enum-size)
     {
-        IDLE,
+        NONE,
         PRESS,
-        SHORT,
-        LONG,
+        HOLD,
     };
 
 #ifdef PIN_SW1
@@ -23,17 +22,24 @@ private:
 #endif
 
 #ifdef PIN_SW1
-    static inline unsigned long powerMillis{0U};
+    unsigned long powerMillis{0U};
 #endif
 #ifdef PIN_SW2
-    static inline unsigned long modeMillis{0U};
+    unsigned long modeMillis{0U};
 #endif
 
 #ifdef PIN_SW1
-    static inline State powerState{State::IDLE};
+    State powerState{State::NONE};
 #endif
 #ifdef PIN_SW2
-    static inline State modeState{State::IDLE};
+    State modeState{State::NONE};
+#endif
+
+#ifdef PIN_SW1
+    static inline bool powerInput{false};
+#endif
+#ifdef PIN_SW2
+    static inline bool modeInput{false};
 #endif
 
 #ifdef PIN_SW1
@@ -50,6 +56,13 @@ public:
 
     void configure() override;
     void handle() override;
+
+#ifdef PIN_SW1
+    void handlePower();
+#endif
+#ifdef PIN_SW2
+    void handleMode();
+#endif
 
 #if EXTENSION_HOMEASSISTANT
     void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;

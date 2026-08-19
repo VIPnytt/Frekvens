@@ -26,111 +26,133 @@ void ButtonExtension::configure()
 void ButtonExtension::handle()
 {
 #ifdef PIN_SW1
-    if (powerState == State::SHORT)
-    {
-        powerState = State::IDLE;
-        Display.setPower(!Display.getPower());
-        event("power", "short");
-    }
-    else if (powerState == State::PRESS && millis() - powerMillis > UINT8_MAX)
-    {
-        powerState = State::LONG;
-        event("power", "long");
-        if (!Display.getPower())
-        {
-            powerMillis = millis();
-            brightnessIncrease = true;
-            Display.setBrightness(1U);
-        }
-        else
-        {
-            const uint8_t brightness{Display.getBrightness()};
-            if (brightness == UINT8_MAX)
-            {
-                brightnessIncrease = false;
-            }
-            else if (brightness <= 1U)
-            {
-                brightnessIncrease = true;
-            }
-            else
-            {
-                brightnessIncrease = !brightnessIncrease;
-            }
-        }
-    }
-    else if (powerState == State::LONG && millis() - powerMillis > (0b1U << 4U))
-    {
-        powerMillis = millis();
-        const uint8_t brightness{Display.getBrightness()};
-        if (brightnessIncrease && brightness < UINT8_MAX)
-        {
-            Display.setBrightness(brightness + 1U);
-        }
-        else if (!brightnessIncrease && brightness > 1U)
-        {
-            Display.setBrightness(brightness - 1U);
-        }
-    }
+    handlePower();
 #endif // PIN_SW1
 #ifdef PIN_SW2
-    if (modeState == State::SHORT)
-    {
-        modeState = State::IDLE;
-#ifdef PIN_SW1
-        Modes.setModeNext();
-#else
-        ESP_LOGI(name.data(), "power");
-        Display.setPower(!Display.getPower());
-#endif // PIN_SW1
-        event("mode", "short");
-    }
-    else if (modeState == State::PRESS && millis() - modeMillis > UINT8_MAX)
-    {
-        modeState = State::LONG;
-        event("mode", "long");
-        if (!Display.getPower())
-        {
-            modeMillis = millis();
-            Display.setPower(true);
-        }
-    }
-    else if (modeState == State::LONG && millis() - modeMillis > (0b1U << 10U))
-    {
-        modeMillis = millis();
-        Modes.setModeNext();
-    }
+    handleMode();
 #endif // PIN_SW2
 }
 
 #ifdef PIN_SW1
-void IRAM_ATTR ButtonExtension::onChangePower()
+void ButtonExtension::handlePower()
 {
-    if (digitalRead(PIN_SW1) == LOW)
+    if (powerInput)
     {
-        powerMillis = millis();
-        powerState = State::PRESS;
+        if (powerState == State::NONE)
+        {
+            powerMillis = millis();
+            powerState = State::PRESS;
+        }
+        else if (powerState == State::PRESS && millis() - powerMillis > UINT8_MAX)
+        {
+            powerState = State::HOLD;
+            event("power", "long");
+            if (!Display.getPower())
+            {
+                powerMillis = millis();
+                brightnessIncrease = true;
+                Display.setBrightness(1U);
+            }
+            else
+            {
+                const uint8_t brightness{Display.getBrightness()};
+                if (brightness == UINT8_MAX)
+                {
+                    brightnessIncrease = false;
+                }
+                else if (brightness <= 1U)
+                {
+                    brightnessIncrease = true;
+                }
+                else
+                {
+                    brightnessIncrease = !brightnessIncrease;
+                }
+            }
+        }
+        else if (powerState == State::HOLD && millis() - powerMillis > (0b1U << 4U))
+        {
+            powerMillis = millis();
+            const uint8_t brightness{Display.getBrightness()};
+            if (brightnessIncrease && brightness < UINT8_MAX)
+            {
+                Display.setBrightness(brightness + 1U);
+            }
+            else if (!brightnessIncrease && brightness > 1U)
+            {
+                Display.setBrightness(brightness - 1U);
+            }
+        }
     }
     else
     {
-        powerState = powerState == State::PRESS ? State::SHORT : State::IDLE;
+        if (powerState == State::PRESS)
+        {
+            powerState = State::NONE;
+            Display.setPower(!Display.getPower());
+            event("power", "short");
+        }
+        else if (powerState == State::HOLD)
+        {
+            powerState = State::NONE;
+        }
     }
 }
 #endif // PIN_SW1
 
 #ifdef PIN_SW2
-void IRAM_ATTR ButtonExtension::onChangeMode()
+void ButtonExtension::handleMode()
 {
-    if (digitalRead(PIN_SW2) == LOW)
+    if (modeInput)
     {
-        modeMillis = millis();
-        modeState = State::PRESS;
+        if (modeState == State::NONE)
+        {
+            modeMillis = millis();
+            modeState = State::PRESS;
+        }
+        else if (modeState == State::PRESS && millis() - modeMillis > UINT8_MAX)
+        {
+            modeState = State::HOLD;
+            event("mode", "long");
+            if (!Display.getPower())
+            {
+                modeMillis = millis();
+                Display.setPower(true);
+            }
+        }
+        else if (modeState == State::HOLD && millis() - modeMillis > (0b1U << 10U))
+        {
+            modeMillis = millis();
+            Modes.setModeNext();
+        }
     }
     else
     {
-        modeState = modeState == State::PRESS ? State::SHORT : State::IDLE;
+        if (modeState == State::PRESS)
+        {
+            modeState = State::NONE;
+#ifdef PIN_SW1
+            Modes.setModeNext();
+#else
+            ESP_LOGI(name.data(), "power");
+            Display.setPower(!Display.getPower());
+#endif // PIN_SW1
+            event("mode", "short");
+        }
+        else if (modeState == State::HOLD)
+        {
+            modeState = State::NONE;
+        }
     }
 }
+#endif // PIN_SW2
+
+#ifdef PIN_SW1
+void IRAM_ATTR ButtonExtension::onChangePower() { powerInput = digitalRead(PIN_SW1) == LOW; }
+#endif // PIN_SW1
+
+#ifdef PIN_SW2
+void IRAM_ATTR ButtonExtension::onChangeMode() { modeInput = digitalRead(PIN_SW2) == LOW; }
 #endif // PIN_SW2
 
 /**
