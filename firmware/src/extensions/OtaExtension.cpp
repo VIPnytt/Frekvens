@@ -36,8 +36,7 @@ void OtaExtension::begin()
     MDNS.enableArduino(3232U, true);
 #else
     MDNS.enableArduino(3232U, false);
-    WebServer.http->on(
-        AsyncURIMatcher::exact("/ota"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, &onPost);
+    WebServer.http.on(AsyncURIMatcher::exact("/ota"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, &onPost);
 #endif // OTA_KEY
 }
 
