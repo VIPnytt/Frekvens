@@ -4,6 +4,9 @@
 
 void setup() { Device.begin(); }
 
+/**
+ * @brief Processes device operations and yields the task for one tick.
+ */
 void loop()
 {
     Device.handle();

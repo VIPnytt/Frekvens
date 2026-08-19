@@ -12,6 +12,9 @@
 #include <WiFi.h>
 #include <array>
 
+/**
+ * @brief Publishes the device's Home Assistant MQTT discovery configuration.
+ */
 void HomeAssistantExtension::begin()
 {
     const std::string topic{std::string("frekvens/" HOSTNAME "/")};
@@ -81,6 +84,9 @@ void HomeAssistantExtension::handle()
     }
 }
 
+/**
+ * @brief Removes the Home Assistant MQTT discovery configuration.
+ */
 void HomeAssistantExtension::undiscover()
 {
     MqttExtension &_mqtt{Extensions.MQTT()};
@@ -92,6 +98,9 @@ void HomeAssistantExtension::undiscover()
     ESP_LOGI(name.data(), "discovery packet removed"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
+/**
+ * @brief Transmits the display power state to Home Assistant.
+ */
 void HomeAssistantExtension::transmit()
 {
     JsonDocument doc{};

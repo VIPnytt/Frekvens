@@ -178,9 +178,8 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
 /**
  * @brief Advances the snake toward its target.
  *
- * Updates the snake's display trail as it moves, selects a new target when the
- * current target is reached, and starts the blinking stage when movement is
- * blocked.
+ * Extends the snake when it reaches the target, otherwise updates its trail
+ * and removes the tail. Starts the blinking stage when no movement is available.
  */
 void SnakeMode::move()
 {
@@ -216,6 +215,9 @@ void SnakeMode::move()
     }
 }
 
+/**
+ * @brief Blinks the snake's pixels and advances to cleanup after six toggles.
+ */
 void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
@@ -248,6 +250,12 @@ void SnakeMode::clean()
     }
 }
 
+/**
+ * @brief Selects an unoccupied display position as the snake's target.
+ *
+ * The target is assigned a random brightness and is placed below the clock area
+ * when the clock is enabled.
+ */
 void SnakeMode::setTarget()
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
@@ -259,6 +267,14 @@ void SnakeMode::setTarget()
     Display.setPixel(target.x, target.y, static_cast<uint8_t>(random(1, 0b1U << 8U)));
 }
 
+/**
+ * @brief Enables or disables the Snake mode clock.
+ *
+ * Persists the clock setting, updates the clock handler and target as needed,
+ * and transmits the updated configuration.
+ *
+ * @param _clock Whether the clock should be enabled.
+ */
 void SnakeMode::setClock(bool _clock)
 {
     nvs_handle_t handle{};

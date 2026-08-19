@@ -184,6 +184,9 @@ void DeviceService::restore()
 
 JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonObjectConst>(); }
 
+/**
+ * @brief Publishes the current device status.
+ */
 void DeviceService::transmit()
 {
     JsonDocument doc{};
@@ -221,11 +224,11 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
 }
 
 /**
- * @brief Routes an incoming payload to the specified device service or module.
+ * @brief Delivers an incoming payload to the matching service, extension, or mode.
  *
  * @param payload Payload to deliver.
  * @param source Origin of the payload.
- * @param destination Name of the service or module that should receive the payload.
+ * @param destination Name of the intended recipient.
  */
 void DeviceService::receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const
 {

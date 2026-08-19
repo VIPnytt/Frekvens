@@ -4,6 +4,16 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the weather condition and temperature from the configured provider.
+ *
+ * Removes the current provider and schedules an earlier retry when the provider
+ * returns a client error or an unsupported response format.
+ *
+ * @param condition Weather condition to update.
+ * @param temperature Temperature to update, in the configured unit.
+ * @param lastMillis Timestamp used to schedule the next update.
+ */
 void OpenMeteoMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                  std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {

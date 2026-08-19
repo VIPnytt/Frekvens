@@ -14,6 +14,9 @@
 static_assert(GRID_COLUMNS >= 6U, __STRING(MODE_HOMETHERMOMETER) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 11U, __STRING(MODE_HOMETHERMOMETER) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads saved indoor and outdoor temperatures, then publishes the current readings.
+ */
 void HomeThermometerMode::configure()
 {
     nvs_handle_t handle{};

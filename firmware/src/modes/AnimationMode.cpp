@@ -97,6 +97,11 @@ void AnimationMode::setFrames(uint8_t count)
     }
 }
 
+/**
+ * @brief Updates and persists the animation playback interval.
+ *
+ * @param _interval Playback interval to set.
+ */
 void AnimationMode::setInterval(uint16_t _interval)
 {
     interval = _interval;

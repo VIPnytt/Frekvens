@@ -9,6 +9,9 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Restores the persisted playlist activation state or transmits the current state after an abnormal reset.
+ */
 void PlaylistExtension::begin()
 {
     const esp_reset_reason_t reason{esp_reset_reason()};
@@ -29,6 +32,9 @@ void PlaylistExtension::begin()
     }
 }
 
+/**
+ * @brief Advances the playlist when the current entry has elapsed.
+ */
 void PlaylistExtension::handle()
 {
     if (active && Display.getPower() && millis() - lastMillis > duration)
@@ -115,6 +121,11 @@ void PlaylistExtension::setPlaylist(std::span<const std::pair<std::string, uint1
     }
 }
 
+/**
+ * @brief Transmits the playlist activation state and stored entries.
+ *
+ * @return The transmitted playlist state.
+ */
 void PlaylistExtension::transmit()
 {
     JsonDocument doc{};

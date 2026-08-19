@@ -8,6 +8,9 @@
 
 #include <esp_sntp.h>
 
+/**
+ * @brief Initializes the RTC, synchronizes the system clock when possible, and registers time synchronization handling.
+ */
 void RtcExtension::configure()
 {
 #ifdef PIN_INT
@@ -72,6 +75,9 @@ IRAM_ATTR void RtcExtension::onInterrupt() { pending = true; }
 #endif // PIN_INT
 
 #if defined(RTC_DS3231) || defined(RTC_DS3232)
+/**
+ * @brief Transmits the RTC temperature measurement.
+ */
 void RtcExtension::transmit()
 {
     JsonDocument doc{};

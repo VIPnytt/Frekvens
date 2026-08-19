@@ -12,6 +12,9 @@
 #include <format>
 #include <vector>
 
+/**
+ * @brief Initializes the Alexa-compatible HTTP and UPnP services.
+ */
 void AlexaExtension::begin()
 {
     WebServer.http.on(
@@ -128,12 +131,12 @@ void AlexaExtension::onMdns()
 }
 
 /**
- * @brief Updates the light's brightness and power state from a JSON request.
+ * @brief Applies brightness and power updates from a JSON request body.
  *
  * @param request HTTP request receiving the response.
- * @param data Request body data.
- * @param len Length of the request body data.
- * @param index Offset of the current body data segment.
+ * @param data Current request body data segment.
+ * @param len Length of the current body data segment.
+ * @param index Offset of the current body data segment within the request body.
  * @param total Total request body length.
  */
 void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
@@ -179,6 +182,11 @@ void AlexaExtension::onPostApi(AsyncWebServerRequest *request, const uint8_t *da
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", R"([{"success":{"username":"alexa"}}])");
 }
 
+/**
+ * @brief Responds to Hue-compatible UPnP discovery requests.
+ *
+ * @param packet Received UDP packet containing the discovery request.
+ */
 void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
 {
     const std::span<const uint8_t> request{packet.data(), packet.length()};

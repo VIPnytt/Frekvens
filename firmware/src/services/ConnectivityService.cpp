@@ -9,6 +9,12 @@
 #include <esp_wifi.h>
 #include <nvs.h>
 
+/**
+ * @brief Configures Wi-Fi, event handlers, country settings, and time synchronization.
+ *
+ * Selects hotspot mode when a configured boot switch is held during a normal boot;
+ * otherwise, initializes station mode.
+ */
 void ConnectivityService::configure()
 {
 #ifdef PIN_SW1
@@ -80,6 +86,12 @@ void ConnectivityService::handle()
     }
 }
 
+/**
+ * @brief Loads saved Wi-Fi credentials and starts station-mode connection attempts.
+ *
+ * Combines persisted credentials with the configured station credentials, stores the
+ * resulting credential set, and adds each network to the multi-network connector.
+ */
 void ConnectivityService::initStation()
 {
     JsonDocument doc{};

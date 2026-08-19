@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature from the World Weather Online provider.
+ *
+ * @param condition Weather condition output.
+ * @param temperature Temperature output in the configured unit.
+ * @param lastMillis Timestamp used to schedule provider retries.
+ */
 void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                           std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {

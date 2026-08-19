@@ -13,6 +13,9 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads persisted clock settings and publishes the active configuration.
+ */
 void ClockMode::configure()
 {
     nvs_handle_t handle{};

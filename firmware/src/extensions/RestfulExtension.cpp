@@ -8,6 +8,9 @@
 #include <HTTPClient.h>
 #include <vector>
 
+/**
+ * @brief Registers the RESTful GET and PATCH endpoint handlers.
+ */
 void RestfulExtension::begin()
 {
     WebServer.http.on(AsyncURIMatcher::dir("/restful/"), WebRequestMethod::HTTP_GET, &onGet);
@@ -39,6 +42,19 @@ void RestfulExtension::onGet(AsyncWebServerRequest *request)
     }
 }
 
+/**
+ * @brief Processes a JSON PATCH request body and delivers it to the target device.
+ *
+ * Reassembles multipart request data before deserializing it. Successful JSON
+ * requests are forwarded to the device and receive an HTTP 204 response.
+ * Completed requests with another content type receive an HTTP 400 response.
+ *
+ * @param request Incoming HTTP request.
+ * @param data Current request-body chunk.
+ * @param len Number of bytes in the current chunk.
+ * @param index Offset of the current chunk within the complete request body.
+ * @param total Total request-body size in bytes.
+ */
 void RestfulExtension::onPatch(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
                                size_t total)
 {

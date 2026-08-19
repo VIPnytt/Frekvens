@@ -15,6 +15,12 @@
 static_assert(GRID_COLUMNS >= 14U, __STRING(MODE_WEATHER) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 14U, __STRING(MODE_WEATHER) " is not compatible with this device's display size.");
 
+/**
+ * @brief Configures the weather provider from persisted settings.
+ *
+ * Selects the persisted provider when available, otherwise selects the first
+ * provider, then publishes the current weather mode state.
+ */
 void WeatherMode::configure()
 {
     nvs_handle_t handle{};

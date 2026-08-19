@@ -8,6 +8,9 @@
 
 void StatusLedExtension::configure() { pinMode(PIN_LED, OUTPUT); }
 
+/**
+ * @brief Updates the status LED according to warning, connectivity, and critical error conditions.
+ */
 void StatusLedExtension::handle()
 {
     const unsigned long delta{millis() - lastMillis};
