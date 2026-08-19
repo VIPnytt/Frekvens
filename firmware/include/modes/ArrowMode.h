@@ -94,10 +94,7 @@ private:
 
     uint8_t index{0U};
 
-    /**
- * Initializes the arrow display mode.
- */
-unsigned long lastMillis{0UL};
+    unsigned long lastMillis{0UL};
 
 public:
     static constexpr std::string_view name{"Arrow"};

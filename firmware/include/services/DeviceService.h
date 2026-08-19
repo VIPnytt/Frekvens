@@ -29,12 +29,7 @@ public:
         esp_reset_reason_t::ESP_RST_WDT,
     };
 
-    /**
- * Provides access to the singleton device service instance.
- *
- * @return The singleton DeviceService instance.
- */
-TaskHandle_t taskHandle{nullptr};
+    TaskHandle_t taskHandle{nullptr};
 
     void begin();
     void handle();

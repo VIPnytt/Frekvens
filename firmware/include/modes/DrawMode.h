@@ -11,10 +11,7 @@ class DrawMode final : public ModeModule
 {
 private:
     bool pending{false};
-    /**
- * Creates the Draw mode module.
- */
-bool render{false};
+    bool render{false};
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 
