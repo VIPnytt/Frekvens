@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: PlatformIO Dependency Updater
         uses: VIPnytt/platformio-dependency-updater@16a5978cf218a60c5868f5287b8bb46bc1fec012 # v1.0.0-b1
