@@ -2,9 +2,9 @@
 
 #include "extensions/ButtonExtension.h"
 
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
 
 void ButtonExtension::configure()
@@ -16,34 +16,40 @@ void ButtonExtension::configure()
     pinMode(PIN_SW2, INPUT_PULLUP);
 #endif
 #ifdef PIN_SW1
-    attachInterrupt(PIN_SW1, &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW1, &onChangePower, CHANGE);
 #endif
 #ifdef PIN_SW2
-    attachInterrupt(PIN_SW2, &onInterrupt, CHANGE);
+    attachInterrupt(PIN_SW2, &onChangeMode, CHANGE);
 #endif
 }
 
 void ButtonExtension::handle()
 {
 #ifdef PIN_SW1
-    if (powerShort)
+    if (powerState == State::SHORT)
     {
+        powerState = State::IDLE;
         Display.setPower(!Display.getPower());
         event("power", "short");
-        powerShort = false;
     }
-    else if (powerState && millis() - powerMillis > UINT8_MAX)
+    else if (powerState == State::PRESS && millis() - powerMillis > UINT8_MAX)
     {
-        const uint8_t brightness = Display.getPower() ? Display.getBrightness() : 0;
-        if (!powerLong)
+        powerState = State::LONG;
+        event("power", "long");
+        if (!Display.getPower())
         {
-            powerLong = true;
-            event("power", "long");
-            if (brightness >= UINT8_MAX)
+            powerMillis = millis();
+            brightnessIncrease = true;
+            Display.setBrightness(1U);
+        }
+        else
+        {
+            const uint8_t brightness{Display.getBrightness()};
+            if (brightness == UINT8_MAX)
             {
                 brightnessIncrease = false;
             }
-            else if (brightness <= 1)
+            else if (brightness <= 1U)
             {
                 brightnessIncrease = true;
             }
@@ -52,20 +58,25 @@ void ButtonExtension::handle()
                 brightnessIncrease = !brightnessIncrease;
             }
         }
+    }
+    else if (powerState == State::LONG && millis() - powerMillis > (0b1U << 4U))
+    {
+        powerMillis = millis();
+        const uint8_t brightness{Display.getBrightness()};
         if (brightnessIncrease && brightness < UINT8_MAX)
         {
-            Display.setBrightness(brightness + 1);
+            Display.setBrightness(brightness + 1U);
         }
-        else if (!brightnessIncrease && brightness > 1)
+        else if (!brightnessIncrease && brightness > 1U)
         {
-            Display.setBrightness(brightness - 1);
+            Display.setBrightness(brightness - 1U);
         }
     }
 #endif // PIN_SW1
-
 #ifdef PIN_SW2
-    if (modeShort)
+    if (modeState == State::SHORT)
     {
+        modeState = State::IDLE;
 #ifdef PIN_SW1
         Modes.setModeNext();
 #else
@@ -73,62 +84,54 @@ void ButtonExtension::handle()
         Display.setPower(!Display.getPower());
 #endif // PIN_SW1
         event("mode", "short");
-        modeShort = false;
     }
-    else if (modeState && millis() - modeMillis > (1UL << 10U))
+    else if (modeState == State::PRESS && millis() - modeMillis > UINT8_MAX)
+    {
+        modeState = State::LONG;
+        event("mode", "long");
+        if (!Display.getPower())
+        {
+            modeMillis = millis();
+            Display.setPower(true);
+        }
+    }
+    else if (modeState == State::LONG && millis() - modeMillis > (0b1U << 10U))
     {
         modeMillis = millis();
-        if (!modeLong)
-        {
-            modeLong = true;
-            event("mode", "long");
-        }
         Modes.setModeNext();
     }
 #endif // PIN_SW2
 }
 
-/**
- * @brief Records power and mode button presses and releases for deferred handling.
- *
- * A press stores its start time and marks the button as pressed. A release marks a
- * short press when no long press was detected and resets the button state.
- */
-void IRAM_ATTR ButtonExtension::onInterrupt()
-{
 #ifdef PIN_SW1
+void IRAM_ATTR ButtonExtension::onChangePower()
+{
     if (digitalRead(PIN_SW1) == LOW)
     {
         powerMillis = millis();
-        powerState = true;
+        powerState = State::PRESS;
     }
     else
     {
-        if (powerState && !powerLong)
-        {
-            powerShort = true;
-        }
-        powerLong = false;
-        powerState = false;
+        powerState = powerState == State::PRESS ? State::SHORT : State::IDLE;
     }
+}
 #endif // PIN_SW1
+
 #ifdef PIN_SW2
+void IRAM_ATTR ButtonExtension::onChangeMode()
+{
     if (digitalRead(PIN_SW2) == LOW)
     {
         modeMillis = millis();
-        modeState = true;
+        modeState = State::PRESS;
     }
     else
     {
-        if (modeState && !modeLong)
-        {
-            modeShort = true;
-        }
-        modeLong = false;
-        modeState = false;
+        modeState = modeState == State::PRESS ? State::SHORT : State::IDLE;
     }
-#endif // PIN_SW2
 }
+#endif // PIN_SW2
 
 /**
  * @brief Transmits a button event with the specified key and value.
@@ -139,7 +142,7 @@ void IRAM_ATTR ButtonExtension::onInterrupt()
 void ButtonExtension::event(const char *key, const char *value)
 {
     JsonDocument doc; // NOLINT(misc-const-correctness)
-    doc["event"][key] = value;
+    doc["event"][key].set(value);
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 

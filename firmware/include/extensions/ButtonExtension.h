@@ -10,31 +10,38 @@ class ButtonExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"Button"};
 
+    enum class State : uint8_t // NOLINT(performance-enum-size)
+    {
+        IDLE,
+        PRESS,
+        SHORT,
+        LONG,
+    };
+
 #ifdef PIN_SW1
-    bool brightnessIncrease = false;
-    static inline bool powerLong = false;
-    static inline bool powerShort = false;
-#endif
-#ifdef PIN_SW2
-    static inline bool modeLong = false;
-    static inline bool modeShort = false;
+    bool brightnessIncrease{false};
 #endif
 
 #ifdef PIN_SW1
-    static inline volatile bool powerState = false;
+    static inline unsigned long powerMillis{0U};
 #endif
 #ifdef PIN_SW2
-    static inline volatile bool modeState = false;
+    static inline unsigned long modeMillis{0U};
 #endif
 
 #ifdef PIN_SW1
-    static inline volatile unsigned long powerMillis = 0;
+    static inline State powerState{State::IDLE};
 #endif
 #ifdef PIN_SW2
-    static inline volatile unsigned long modeMillis = 0;
+    static inline State modeState{State::IDLE};
 #endif
 
-    static IRAM_ATTR void onInterrupt();
+#ifdef PIN_SW1
+    static IRAM_ATTR void onChangePower();
+#endif
+#ifdef PIN_SW2
+    static IRAM_ATTR void onChangeMode();
+#endif
 
     static void event(const char *key, const char *value);
 
