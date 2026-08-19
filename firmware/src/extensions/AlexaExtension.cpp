@@ -133,6 +133,7 @@ void AlexaExtension::onMdns()
 /**
  * @brief Applies brightness and power updates from a JSON request body.
  *
+ * @param request HTTP request receiving the response.
  * @param data Current request body data segment.
  * @param len Length of the current body data segment.
  * @param index Offset of the current body data segment within the request body.

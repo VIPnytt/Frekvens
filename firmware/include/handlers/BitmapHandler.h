@@ -32,12 +32,8 @@ public:
 
     void draw(uint8_t brightness = UINT8_MAX) const;
     void draw(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX) const;
-    /**
- * Draws the bitmap centered within the configured display grid.
- *
- * @param brightness Brightness used for set pixels.
- */
-[[nodiscard]] uint8_t getHeight() const;
+
+    [[nodiscard]] uint8_t getHeight() const;
     [[nodiscard]] uint8_t getWidth() const;
 };
 

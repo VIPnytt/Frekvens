@@ -15,10 +15,7 @@ private:
 
     unsigned long lastMillis{0UL};
 
-    /**
- * Stores incoming MQTT message data.
- */
-static inline std::vector<uint8_t> buffer{};
+    static inline std::vector<uint8_t> buffer{};
 
     static constexpr size_t prefixLength{sizeof("frekvens/" HOSTNAME "/") - 1U};
     static constexpr size_t suffixLength{sizeof("/set") - 1U};
