@@ -42,9 +42,9 @@ class Deprecated:
 
     def __init__(self, project: "Frekvens") -> None:
         """Initialize the migration utility for a project.
-        
+
         Parameters:
-        	project (Frekvens): The project whose legacy configuration and build settings are migrated.
+            project (Frekvens): The project whose legacy configuration and build settings are migrated.
         """
         self.project = project
 
@@ -56,7 +56,7 @@ class Deprecated:
     def _env(self) -> None:
         """
         Migrate deprecated environment variables to their replacement options.
-        
+
         Deprecated values are copied to replacement options when those options are absent. Weather mode values also populate the corresponding weather-specific option, and deprecated variables are removed afterward.
         """
         for old_option, old_name, new_option, new_name in self.FEATURES:

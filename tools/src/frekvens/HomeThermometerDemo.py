@@ -3,8 +3,9 @@
 # Demo script for setting the Home thermometer temperatures.
 
 import argparse
-import httpx
 import logging
+
+import httpx
 
 
 class HomeThermometerDemo:
@@ -16,8 +17,8 @@ class HomeThermometerDemo:
 
     def set(
         self,
-        indoor: float | int | None = None,
-        outdoor: float | int | None = None,
+        indoor: float | None = None,
+        outdoor: float | None = None,
         activate: bool = False,
     ) -> None:
         logging.warning("Deprecation: HomeThermometerDemo is deprecated. Use HomeThermometerUpdater instead.")

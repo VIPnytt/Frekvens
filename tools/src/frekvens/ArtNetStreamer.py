@@ -4,10 +4,11 @@
 
 import argparse
 import csv
-import httpx
 import logging
 import socket
 import time
+
+import httpx
 
 
 class ArtNetStreamer:

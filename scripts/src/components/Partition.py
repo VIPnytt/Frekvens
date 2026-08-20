@@ -15,9 +15,9 @@ class Partition:
 
     def __init__(self, project: "Frekvens") -> None:
         """Initialize a partition-table manager for the specified project.
-        
+
         Parameters:
-        	project (Frekvens): Project whose partition-table configuration is managed.
+            project (Frekvens): Project whose partition-table configuration is managed.
         """
         self.project = project
 
@@ -43,7 +43,7 @@ class Partition:
     def _lookup_table(self) -> pathlib.Path:
         """
         Select the partition table appropriate for the configured flash size and OTA setting.
-        
+
         Returns:
             pathlib.Path: The path to the selected partition table.
         """

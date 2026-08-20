@@ -23,7 +23,7 @@ class Ota:
     def configure(self) -> None:
         """
         Configure the OTA authentication key for project use.
-        
+
         Stores the original key for upload authentication and replaces the project key with its SHA-256 hexadecimal digest when it is not already a 64-character hash.
         """
         if "OTA_KEY" in self.project.dotenv and len(self.project.dotenv["OTA_KEY"]) != 64:

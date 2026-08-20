@@ -43,7 +43,7 @@ class Frekvens:
     def __init__(self, env: Environment) -> None:
         """
         Initialize the project orchestrator with the provided build environment.
-        
+
         Parameters:
             env (Environment): SCons build environment used to configure project components.
         """
@@ -77,7 +77,7 @@ class Frekvens:
     def initialize(self) -> None:
         """
         Initialize project settings and enabled components.
-        
+
         Determines default application and host names, normalizes configured hostnames, and initializes the available project components.
         """
         if "NAME" not in self.dotenv:

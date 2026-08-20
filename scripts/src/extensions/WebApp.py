@@ -26,9 +26,9 @@ class WebApp:
 
     def __init__(self, project: "Frekvens") -> None:
         """Initialize the web application extension for a project.
-        
+
         Parameters:
-        	project (Frekvens): The project associated with the web application.
+            project (Frekvens): The project associated with the web application.
         """
         self.path = pathlib.Path("webapp")
         self.project = project
@@ -94,18 +94,18 @@ class WebApp:
     def _commissioning(self, target: list[str], source: list[str], env: Environment) -> None:
         """
         Display the local URL for the web application.
-        
+
         Parameters:
-        	target (list[str]): Commissioning target paths.
-        	source (list[str]): Commissioning source paths.
-        	env (Environment): Build environment associated with the commissioning operation.
+            target (list[str]): Commissioning target paths.
+            source (list[str]): Commissioning source paths.
+            env (Environment): Build environment associated with the commissioning operation.
         """
         print(f"{self.NAME}: http://{self.project.dotenv['HOSTNAME']}.local")
 
     def _npm_build(self) -> None:
         """
         Build the web application and compress its generated index page for packaging.
-        
+
         The build retries after installing dependencies when the initial build fails and falls back to the system `npm` executable when the bundled npm tool is unavailable.
         """
         build_cmd = ["run", "build"]

@@ -25,7 +25,7 @@ class Dependency:
     def initialize(self) -> None:
         """
         Check GitHub for a newer Frekvens release and display its release notes URL when available.
-        
+
         The update check is skipped for the ``compiledb`` command-line target.
         """
         if COMMAND_LINE_TARGETS in [

@@ -29,7 +29,7 @@ class Weather:
     def configure(self) -> None:
         """
         Configure weather settings and normalize location-related options.
-        
+
         Weather is disabled unless the weather mode option is set to ``"true"``.
         Latitude and longitude are formatted as decimal strings with up to four
         decimal places, and the location is URL-encoded when provided.

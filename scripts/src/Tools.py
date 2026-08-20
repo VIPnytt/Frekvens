@@ -12,9 +12,9 @@ class Tools:
 
     def __init__(self, project: "Frekvens") -> None:
         """Initialize the tools with a project instance.
-        
+
         Parameters:
-        	project (Frekvens): Project instance associated with the tools.
+            project (Frekvens): Project instance associated with the tools.
         """
         self.project = project
 

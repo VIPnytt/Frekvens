@@ -4,11 +4,12 @@
 
 import argparse
 import csv
-import httpx
 import pathlib
 import socket
 import time
 import typing
+
+import httpx
 
 
 class StreamCsv:
