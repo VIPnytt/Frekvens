@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 class Deprecated:
-    FEATURES: set[tuple[str, str, str, str]] = {
+    FEATURES: typing.Final[set[tuple[str, str, str, str]]] = {
         ("MODE_ARTNET", "Art-Net", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_BOLDCLOCK", "Bold clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", Stream.ENV_OPTION, Stream.NAME),
@@ -41,13 +41,24 @@ class Deprecated:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the migration utility for a project.
+
+        Parameters:
+            project (Frekvens): The project whose legacy configuration and build settings are migrated.
+        """
         self.project = project
 
-    def initialize(self) -> None:
+    def migrate(self) -> None:
+        """Migrate deprecated environment variables and PlatformIO settings."""
         self._env()
         self._platformio_ini()
 
     def _env(self) -> None:
+        """
+        Migrate deprecated environment variables to their replacement options.
+
+        Deprecated values are copied to replacement options when those options are absent. Weather mode values also populate the corresponding weather-specific option, and deprecated variables are removed afterward.
+        """
         for old_option, old_name, new_option, new_name in self.FEATURES:
             if old_option in self.project.dotenv:
                 if new_option == Weather.ENV_OPTION:
@@ -55,7 +66,7 @@ class Deprecated:
                     if old_name != "Open Weather":
                         weather_option = weather_option.removesuffix("WEATHER")
                     logging.warning(
-                        "%s '%s' is deprecated. Use %s '%s' and %s '%s' instead.",
+                        "%s %r is deprecated. Use %s %r and %s %r instead.",
                         old_option,
                         old_name,
                         new_option,
@@ -67,13 +78,14 @@ class Deprecated:
                         self.project.dotenv[weather_option] = self.project.dotenv[old_option]
                 else:
                     logging.warning(
-                        "%s '%s' is deprecated. Use %s '%s' instead.", old_option, old_name, new_option, new_name
+                        "%s %r is deprecated. Use %s %r instead.", old_option, old_name, new_option, new_name
                     )
                 if new_option not in self.project.dotenv:
                     self.project.dotenv[new_option] = self.project.dotenv[old_option]
                 del self.project.dotenv[old_option]
 
     def _platformio_ini(self) -> None:
+        """Checks PlatformIO settings for deprecated embedded certificate and partition-table configurations."""
         embed_option = "board_build.embed_files"
         embed_path = "firmware/embed/x509_crt_bundle.bin"
         embed_paths = self.project.env.GetProjectOption(embed_option, None)
@@ -91,27 +103,26 @@ class Deprecated:
         partition_table = self.project.env.GetProjectOption("board_build.partitions", None)
         if "partitions/2MB_no_ota.csv" == partition_table:
             logging.warning(
-                "The '2MB_no_ota.csv' partition table is deprecated, please migrate to the newer '2MB_no_ota_rev2.csv' table"
+                "The '2MB_no_ota.csv' partition table is deprecated, please migrate to '2MB_no_ota_rev2.csv'"
             )
         elif "partitions/4MB.csv" == partition_table:
-            logging.warning(
-                "The '4MB.csv' partition table is deprecated, please migrate to the newer '4MB_rev2.csv' table"
-            )
+            logging.warning("The '4MB.csv' partition table is deprecated, please migrate to '4MB_rev2.csv'")
 
     @staticmethod
     def clean() -> None:
-        for file in {
+        """Remove legacy certificate bundle files and their empty parent directories."""
+        for file in (
             "firmware/certs/bundle/ca_roots.pem",
             "firmware/embed/x509_crt_bundle.bin",
-        }:
+        ):
             if os.path.isfile(file):
                 os.remove(file)
                 print(f"Removing {file}")
-        for directory in {
+        for directory in (
             "firmware/certs/bundle",
             "firmware/certs",
             "firmware/embed",
-        }:
+        ):
             if os.path.isdir(directory):
                 os.rmdir(directory)
                 print(f"Removing {directory}")

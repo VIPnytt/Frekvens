@@ -3,13 +3,15 @@
 # Set the Home thermometer temperatures.
 
 import argparse
-import httpx
+import typing
 import urllib.parse
+
+import httpx
 
 
 class HomeThermometerUpdater:
     host: str
-    mode: str = "Home thermometer"
+    mode: typing.Final[str] = "Home thermometer"
 
     def __init__(self, host: str = "frekvens.local") -> None:
         self.host = host

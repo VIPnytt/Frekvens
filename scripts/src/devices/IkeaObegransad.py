@@ -1,3 +1,6 @@
+import typing
+
+
 class IkeaObegransad:
-    ENV_OPTION: str = "IKEA_OBEGRANSAD"
-    NAME: str = "Obegränsad"
+    ENV_OPTION: typing.Final[str] = "IKEA_OBEGRANSAD"
+    NAME: typing.Final[str] = "Obegränsad"

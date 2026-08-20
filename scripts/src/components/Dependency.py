@@ -1,23 +1,38 @@
 import json
 import logging
-import packaging.version
 import typing
 import urllib.error
 import urllib.request
+
+import packaging.version
 
 from ..config.version import VERSION
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
+    from .Types import COMMAND_LINE_TARGETS
+else:
+    from SCons.Script import COMMAND_LINE_TARGETS
 
 
 class Dependency:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the dependency with its associated Frekvens project."""
         self.project = project
 
     def initialize(self) -> None:
+        """
+        Check GitHub for a newer Frekvens release and display its release notes URL when available.
+
+        The update check is skipped for the ``compiledb`` command-line target.
+        """
+        if COMMAND_LINE_TARGETS in [
+            ["compiledb"],
+        ]:
+            self.project.dependency = None
+            return
         try:
             tag = json.load(
                 urllib.request.urlopen(
@@ -26,7 +41,7 @@ class Dependency:
                         headers={
                             "Accept": "application/vnd.github+json",
                             "User-Agent": f"Frekvens/{VERSION} (+https://github.com/VIPnytt/Frekvens)",
-                            "X-GitHub-Api-Version": "2022-11-28",
+                            "X-GitHub-Api-Version": "2026-03-10",
                         },
                     )
                 )

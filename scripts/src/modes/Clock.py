@@ -1,3 +1,6 @@
+import typing
+
+
 class Clock:
-    ENV_OPTION: str = "MODE_CLOCK"
-    NAME: str = "Clock"
+    ENV_OPTION: typing.Final[str] = "MODE_CLOCK"
+    NAME: typing.Final[str] = "Clock"

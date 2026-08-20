@@ -3,13 +3,14 @@
 # Generate font source files from .ttf or .otf files.
 
 import argparse
+import pathlib
+import unicodedata
+
 import fontTools.ttLib
 import matplotlib.font_manager
-import pathlib
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
-import unicodedata
 
 
 class FontGenerator:
@@ -91,6 +92,16 @@ class FontGenerator:
         }
 
     def _source_h(self, unique: str, friendly: str) -> str:
+        """
+        Generate a C++ header containing the font class and rendered glyph data.
+
+        Parameters:
+            unique (str): Unique identifier used for the generated class and filename.
+            friendly (str): Display name embedded in the generated font class.
+
+        Returns:
+            str: Path to the generated header file.
+        """
         h = [
             "#pragma once",
             "",
@@ -113,11 +124,11 @@ class FontGenerator:
                 codepoint = ord(character)
                 name = unicodedata.name(character)
                 self.characters[character] = (name, offsetX, offsetY)
-                comment = character in {
+                comment = character in (
                     "∪",  # U+222A UNION
                     "⊨",  # U+22A8 TRUE
                     "⊻",  # U+22BB XOR
-                }
+                )
                 if comment:
                     h.append("    /*")
                 h.append(f"    // U+{codepoint:04X} {character} {name}")
@@ -146,6 +157,14 @@ class FontGenerator:
         return f"{unique}Font.h"
 
     def _source_cpp(self, unique: str) -> str:
+        """Generate a C++ implementation file that maps Unicode characters to font glyph symbols.
+
+        Parameters:
+            unique (str): The unique font identifier used in the generated filename and C++ class name.
+
+        Returns:
+            str: The path of the generated C++ implementation file.
+        """
         cpp = [
             f'#include "fonts/{unique}Font.h"',
             "",
@@ -165,10 +184,10 @@ class FontGenerator:
             escape = (
                 "\\"
                 if character
-                in {
+                in (
                     "'",  # U+0027 APOSTROPHE
                     "\\",  # U+005C REVERSE SOLIDUS
-                }
+                )
                 else ""
             )
             variable = "".join(

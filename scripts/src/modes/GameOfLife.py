@@ -1,3 +1,6 @@
+import typing
+
+
 class GameOfLife:
-    ENV_OPTION: str = "MODE_GAMEOFLIFE"
-    NAME: str = "Game of Life"
+    ENV_OPTION: typing.Final[str] = "MODE_GAMEOFLIFE"
+    NAME: typing.Final[str] = "Game of Life"
