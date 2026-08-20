@@ -16,15 +16,24 @@ class Ota:
     auth: str | None
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the OTA manager with a project and no authentication key."""
         self.auth = None
         self.project = project
 
     def configure(self) -> None:
+        """
+        Configure the OTA authentication key for project use.
+        
+        Stores the original key for upload authentication and replaces the project key with its SHA-256 hexadecimal digest when it is not already a 64-character hash.
+        """
         if "OTA_KEY" in self.project.dotenv and len(self.project.dotenv["OTA_KEY"]) != 64:
             self.auth = self.project.dotenv["OTA_KEY"]
             self.project.dotenv["OTA_KEY"] = hashlib.sha256(self.project.dotenv["OTA_KEY"].encode()).hexdigest()
 
     def validate(self) -> None:
+        """
+        Validate OTA support against the selected partition table and upload protocol.
+        """
         if "no_ota" in self.project.partition.table.name:
             if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] != "false":
                 logging.error("%s: Partition table does not support %s updates.", self.ENV_OPTION, self.NAME)
@@ -39,6 +48,9 @@ class Ota:
             )
 
     def finalize(self) -> None:
+        """
+        Configure OTA upload settings, including the protocol, host-based port, and authentication flags.
+        """
         protocol = self.project.env.GetProjectOption("upload_protocol", None)
         if protocol != "espota" and any(target.endswith("ota") for target in COMMAND_LINE_TARGETS):
             protocol = "espota"

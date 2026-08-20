@@ -14,9 +14,11 @@ class Weather:
     NAME: typing.Final[str] = "Weather"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the weather mode with a project reference."""
         self.project = project
 
     def initialize(self) -> None:
+        """Disable weather configuration for filesystem build and upload targets."""
         if COMMAND_LINE_TARGETS in [
             ["buildfs"],
             ["uploadfs"],
@@ -25,6 +27,13 @@ class Weather:
             self.project.weather = None
 
     def configure(self) -> None:
+        """
+        Configure weather settings and normalize location-related options.
+        
+        Weather is disabled unless the weather mode option is set to ``"true"``.
+        Latitude and longitude are formatted as decimal strings with up to four
+        decimal places, and the location is URL-encoded when provided.
+        """
         if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] != "true":
             self.project.weather = None
             return

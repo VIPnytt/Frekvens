@@ -14,6 +14,7 @@ class Extra:
 
     @staticmethod
     def clean() -> None:
+        """Remove the Python bytecode cache directory if it exists."""
         path = "extra/Python/__pycache__"
         if os.path.exists(path):
             shutil.rmtree(path, ignore_errors=True)

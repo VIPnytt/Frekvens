@@ -14,14 +14,25 @@ class Partition:
     table: pathlib.Path
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize a partition-table manager for the specified project.
+        
+        Parameters:
+        	project (Frekvens): Project whose partition-table configuration is managed.
+        """
         self.project = project
 
     def initialize(self) -> None:
+        """
+        Selects the configured or default partition table and updates the board configuration with its path.
+        """
         table = self.project.env.GetProjectOption("board_build.partitions", None)
         self.table = pathlib.Path(table) if table else self._lookup_table()
         self.project.env.BoardConfig().update("build.arduino.partitions", str(self.table))
 
     def validate(self) -> None:
+        """
+        Validate that the selected partition table exists as a file and warn when it is unsupported.
+        """
         if not self.table.is_file():
             logging.warning(
                 "Partition table %r is unsupported, please use %r instead.",
@@ -30,6 +41,12 @@ class Partition:
             )
 
     def _lookup_table(self) -> pathlib.Path:
+        """
+        Select the partition table appropriate for the configured flash size and OTA setting.
+        
+        Returns:
+            pathlib.Path: The path to the selected partition table.
+        """
         flash_size = (
             self.project.env.GetProjectOption("board_upload.flash_size", None)
             or self.project.env.BoardConfig().get("upload.flash_size", None)

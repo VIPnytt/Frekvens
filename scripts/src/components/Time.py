@@ -19,9 +19,15 @@ class Time:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the time component with its associated project.
+        
+        Parameters:
+            project (Frekvens): Project whose time configuration is managed.
+        """
         self.project = project
 
     def initialize(self) -> None:
+        """Disable project time configuration for filesystem build and upload targets."""
         if COMMAND_LINE_TARGETS in [
             ["buildfs"],
             ["uploadfs"],
@@ -30,6 +36,14 @@ class Time:
             self.project.time = None
 
     def configure(self) -> None:
+        """
+        Configure the project's timezone and clock display settings.
+        
+        The timezone is stored in IANA and POSIX formats. The clock display preference is
+        set from ``CLOCK_FORMAT`` when provided, or inferred from the system locale.
+        Unsupported clock format values are ignored.
+        
+        """
         iana, posix = self._get_zone()
         self.project.dotenv["TIME_ZONE"] = iana
         self.project.dotenv["TIME_ZONE_POSIX"] = posix
@@ -57,6 +71,12 @@ class Time:
                 self.project.dotenv[clock] = "true"
 
     def _get_zone(self) -> tuple[str, str]:
+        """
+        Resolve the configured or system timezone for the project.
+        
+        Returns:
+        	tuple[str, str]: The IANA timezone name and its corresponding POSIX timezone string.
+        """
         if "TIME_ZONE" in self.project.dotenv:
             posix = self._lookup_zone(self.project.dotenv["TIME_ZONE"])
             if posix:
@@ -69,6 +89,15 @@ class Time:
 
     @staticmethod
     def _lookup_zone(iana: str) -> str | None:
+        """Resolve an IANA timezone identifier to its embedded POSIX timezone string.
+        
+        Parameters:
+        	iana (str): IANA timezone identifier to resolve.
+        
+        Returns:
+        	str: The embedded POSIX timezone string.
+        	None: If the timezone cannot be found or contains invalid data.
+        """
         paths = [pathlib.Path(path) for path in zoneinfo.TZPATH]
         spec = importlib.util.find_spec("tzdata")
         if spec and spec.submodule_search_locations:

@@ -41,13 +41,24 @@ class Deprecated:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the migration utility for a project.
+        
+        Parameters:
+        	project (Frekvens): The project whose legacy configuration and build settings are migrated.
+        """
         self.project = project
 
     def migrate(self) -> None:
+        """Migrate deprecated environment variables and PlatformIO settings."""
         self._env()
         self._platformio_ini()
 
     def _env(self) -> None:
+        """
+        Migrate deprecated environment variables to their replacement options.
+        
+        Deprecated values are copied to replacement options when those options are absent. Weather mode values also populate the corresponding weather-specific option, and deprecated variables are removed afterward.
+        """
         for old_option, old_name, new_option, new_name in self.FEATURES:
             if old_option in self.project.dotenv:
                 if new_option == Weather.ENV_OPTION:
@@ -74,6 +85,7 @@ class Deprecated:
                 del self.project.dotenv[old_option]
 
     def _platformio_ini(self) -> None:
+        """Checks PlatformIO settings for deprecated embedded certificate and partition-table configurations."""
         embed_option = "board_build.embed_files"
         embed_path = "firmware/embed/x509_crt_bundle.bin"
         embed_paths = self.project.env.GetProjectOption(embed_option, None)
@@ -98,6 +110,7 @@ class Deprecated:
 
     @staticmethod
     def clean() -> None:
+        """Remove legacy certificate bundle files and their empty parent directories."""
         for file in (
             "firmware/certs/bundle/ca_roots.pem",
             "firmware/embed/x509_crt_bundle.bin",

@@ -19,9 +19,15 @@ class Dependency:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the dependency with its associated Frekvens project."""
         self.project = project
 
     def initialize(self) -> None:
+        """
+        Check GitHub for a newer Frekvens release and display its release notes URL when available.
+        
+        The update check is skipped for the ``compiledb`` command-line target.
+        """
         if COMMAND_LINE_TARGETS in [
             ["compiledb"],
         ]:

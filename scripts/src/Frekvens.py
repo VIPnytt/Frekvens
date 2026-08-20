@@ -41,6 +41,12 @@ class Frekvens:
     webapp: WebApp | None = None
 
     def __init__(self, env: Environment) -> None:
+        """
+        Initialize the project orchestrator with the provided build environment.
+        
+        Parameters:
+            env (Environment): SCons build environment used to configure project components.
+        """
         self.env = env
         self.dotenv = {key: (value if value is not None else "") for key, value in dotenv.dotenv_values(".env").items()}
         self.dependency = Dependency(self)
@@ -59,6 +65,9 @@ class Frekvens:
             self.webapp = WebApp(self)
 
     def run(self) -> None:
+        """
+        Execute the complete Frekvens build lifecycle.
+        """
         print(f"Frekvens {VERSION}")
         self.initialize()
         self.configure()
@@ -66,6 +75,11 @@ class Frekvens:
         self.finalize()
 
     def initialize(self) -> None:
+        """
+        Initialize project settings and enabled components.
+        
+        Determines default application and host names, normalizes configured hostnames, and initializes the available project components.
+        """
         if "NAME" not in self.dotenv:
             if IkeaFrekvens.ENV_OPTION in self.dotenv and self.dotenv[IkeaFrekvens.ENV_OPTION] == "true":
                 self.dotenv["NAME"] = IkeaFrekvens.NAME
@@ -94,6 +108,7 @@ class Frekvens:
             self.webapp.initialize()
 
     def configure(self) -> None:
+        """Configure the enabled OTA, time, and weather components."""
         if self.ota:
             self.ota.configure()
         if self.time:
@@ -102,6 +117,7 @@ class Frekvens:
             self.weather.configure()
 
     def validate(self) -> None:
+        """Validate the configured OTA, partition, weather, and web application components."""
         if self.ota:
             self.ota.validate()
         self.partition.validate()
@@ -120,6 +136,7 @@ class Frekvens:
 
     @staticmethod
     def clean() -> None:
+        """Remove generated files and directories from the project workspace."""
         Deprecated.clean()
         Extra.clean()
         WebApp.clean()

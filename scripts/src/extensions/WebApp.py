@@ -25,10 +25,18 @@ class WebApp:
     project: "Frekvens"
 
     def __init__(self, project: "Frekvens") -> None:
+        """Initialize the web application extension for a project.
+        
+        Parameters:
+        	project (Frekvens): The project associated with the web application.
+        """
         self.path = pathlib.Path("webapp")
         self.project = project
 
     def initialize(self) -> None:
+        """
+        Disable the web app for command-line targets that do not require it.
+        """
         if COMMAND_LINE_TARGETS in [
             ["build"],
             ["compiledb"],
@@ -37,6 +45,7 @@ class WebApp:
             self.project.webapp = None
 
     def validate(self) -> None:
+        """Validate web app configuration against the project settings and partition table."""
         if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] == "false":
             self.project.webapp = None
         elif "no_fs" in self.project.partition.table.name:
@@ -46,6 +55,9 @@ class WebApp:
             logging.warning("%s: %s is required by %s.", WebSocket.ENV_OPTION, WebSocket.NAME, self.NAME)
 
     def finalize(self) -> None:
+        """
+        Synchronize project settings with the web app, build the app, and register OTA commissioning actions.
+        """
         options = (
             "HOSTNAME",
             "NAME",
@@ -80,9 +92,22 @@ class WebApp:
             self.project.env.AddPostAction(target, self._commissioning)
 
     def _commissioning(self, target: list[str], source: list[str], env: Environment) -> None:
+        """
+        Display the local URL for the web application.
+        
+        Parameters:
+        	target (list[str]): Commissioning target paths.
+        	source (list[str]): Commissioning source paths.
+        	env (Environment): Build environment associated with the commissioning operation.
+        """
         print(f"{self.NAME}: http://{self.project.dotenv['HOSTNAME']}.local")
 
     def _npm_build(self) -> None:
+        """
+        Build the web application and compress its generated index page for packaging.
+        
+        The build retries after installing dependencies when the initial build fails and falls back to the system `npm` executable when the bundled npm tool is unavailable.
+        """
         build_cmd = ["run", "build"]
         install_cmd = ["install"]
         try:
@@ -100,6 +125,7 @@ class WebApp:
 
     @staticmethod
     def clean() -> None:
+        """Remove generated web app files and dependencies from the project."""
         for path in (
             "data/webapp",
             "webapp/dist",
