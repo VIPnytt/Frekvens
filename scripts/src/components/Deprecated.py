@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 class Deprecated:
-    FEATURES: set[tuple[str, str, str, str]] = {
+    FEATURES: typing.Final[set[tuple[str, str, str, str]]] = {
         ("MODE_ARTNET", "Art-Net", Stream.ENV_OPTION, Stream.NAME),
         ("MODE_BOLDCLOCK", "Bold clock", Clock.ENV_OPTION, Clock.NAME),
         ("MODE_DISTRIBUTEDDISPLAYPROTOCOL", "Distributed Display Protocol", Stream.ENV_OPTION, Stream.NAME),
@@ -55,7 +55,7 @@ class Deprecated:
                     if old_name != "Open Weather":
                         weather_option = weather_option.removesuffix("WEATHER")
                     logging.warning(
-                        "%s '%s' is deprecated. Use %s '%s' and %s '%s' instead.",
+                        "%s %r is deprecated. Use %s %r and %s %r instead.",
                         old_option,
                         old_name,
                         new_option,
@@ -67,7 +67,7 @@ class Deprecated:
                         self.project.dotenv[weather_option] = self.project.dotenv[old_option]
                 else:
                     logging.warning(
-                        "%s '%s' is deprecated. Use %s '%s' instead.", old_option, old_name, new_option, new_name
+                        "%s %r is deprecated. Use %s %r instead.", old_option, old_name, new_option, new_name
                     )
                 if new_option not in self.project.dotenv:
                     self.project.dotenv[new_option] = self.project.dotenv[old_option]
@@ -100,18 +100,18 @@ class Deprecated:
 
     @staticmethod
     def clean() -> None:
-        for file in {
+        for file in (
             "firmware/certs/bundle/ca_roots.pem",
             "firmware/embed/x509_crt_bundle.bin",
-        }:
+        ):
             if os.path.isfile(file):
                 os.remove(file)
                 print(f"Removing {file}")
-        for directory in {
+        for directory in (
             "firmware/certs/bundle",
             "firmware/certs",
             "firmware/embed",
-        }:
+        ):
             if os.path.isdir(directory):
                 os.rmdir(directory)
                 print(f"Removing {directory}")

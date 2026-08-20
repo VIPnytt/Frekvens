@@ -9,6 +9,9 @@ import zoneinfo
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
+    from .Types import COMMAND_LINE_TARGETS
+else:
+    from SCons.Script import COMMAND_LINE_TARGETS
 
 
 class Time:
@@ -17,29 +20,40 @@ class Time:
     def __init__(self, project: "Frekvens") -> None:
         self.project = project
 
+    def initialize(self) -> None:
+        if COMMAND_LINE_TARGETS in [
+            ["buildfs"],
+            ["uploadfs"],
+            ["uploadfsota"],
+        ]:
+            self.project.time = None
+
     def configure(self) -> None:
         iana, posix = self._get_zone()
         self.project.dotenv["TIME_ZONE"] = iana
         self.project.dotenv["TIME_ZONE_POSIX"] = posix
-        if "CLOCK_FORMAT" in self.project.dotenv:
-            if (format := self.project.dotenv.get("CLOCK_FORMAT")) in {"12", "24"}:
-                self.project.dotenv[f"CLOCK_{format}H"] = "true"
-            else:
-                logging.warning(
-                    "CLOCK_FORMAT %r is unsupported. Valid values are '12' and '24'.",
-                    self.project.dotenv["CLOCK_FORMAT"],
-                )
-        else:
+        format = self.project.dotenv.get("CLOCK_FORMAT")
+        if format is None:
             previous = locale.setlocale(locale.LC_TIME)
             try:
                 locale.setlocale(locale.LC_TIME, "")
-                clock = datetime.datetime.now().replace(hour=23).strftime("%X")
-                if clock.startswith("23"):
-                    self.project.dotenv["CLOCK_24H"] = "true"
-                elif clock.startswith("11"):
-                    self.project.dotenv["CLOCK_12H"] = "true"
+                clock = {
+                    "11": "CLOCK_12H",
+                    "23": "CLOCK_24H",
+                }.get(datetime.datetime.now(datetime.timezone.utc).replace(hour=23).strftime("%X")[:2])
+                if clock is not None:
+                    self.project.dotenv[clock] = "true"
             finally:
                 locale.setlocale(locale.LC_TIME, previous)
+        else:
+            clock = {
+                "12": "CLOCK_12H",
+                "24": "CLOCK_24H",
+            }.get(format)
+            if clock is None:
+                logging.warning("CLOCK_FORMAT %r is unsupported. Valid values are '12' and '24'.", format)
+            else:
+                self.project.dotenv[clock] = "true"
 
     def _get_zone(self) -> tuple[str, str]:
         if "TIME_ZONE" in self.project.dotenv:
@@ -63,7 +77,8 @@ class Time:
             if zone_file.is_file():
                 zone = zone_file.read_bytes()
                 if zone.startswith(b"TZif") and zone.endswith(b"\n"):
-                    if posix := zone.rsplit(b"\n", 2)[-2].decode("ascii", errors="strict"):
+                    posix = zone.rsplit(b"\n", 2)[-2].decode("ascii", errors="strict")
+                    if posix:
                         return posix
-        logging.warning(f"Unknown timezone: {iana}")
+        logging.warning("Unknown timezone: %r", iana)
         return None

@@ -14,9 +14,7 @@ class Extra:
 
     @staticmethod
     def clean() -> None:
-        for path in [
-            "extra/Python/__pycache__",
-        ]:
-            if os.path.exists(path):
-                shutil.rmtree(path, ignore_errors=True)
-                print(f"Removing {path}")
+        path = "extra/Python/__pycache__"
+        if os.path.exists(path):
+            shutil.rmtree(path, ignore_errors=True)
+            print(f"Removing {path}")

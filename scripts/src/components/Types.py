@@ -1,5 +1,7 @@
+import collections.abc
 import typing
 
+BUILD_TARGETS = globals().get("BUILD_TARGETS", [])
 COMMAND_LINE_TARGETS = globals().get("COMMAND_LINE_TARGETS", [])
 
 
@@ -18,6 +20,11 @@ class ProjectConfig:
 
 class Environment:
     def __getitem__(self, key: str) -> str:
+        raise NotImplementedError
+
+    def AddPostAction(
+        self, target: str, action: collections.abc.Callable[[list[str], list[str], "Environment"], int | None]
+    ) -> None:
         raise NotImplementedError
 
     def Append(self, **kwargs: typing.Any) -> None:

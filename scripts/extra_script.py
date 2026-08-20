@@ -4,9 +4,9 @@ import sys
 import typing
 
 if typing.TYPE_CHECKING:
-    from .src.components.Types import COMMAND_LINE_TARGETS, Environment, Import  # noqa: E402
+    from .src.components.Types import COMMAND_LINE_TARGETS, Environment, Import
 else:
-    from SCons.Script import COMMAND_LINE_TARGETS, Environment, Import  # noqa: E402
+    from SCons.Script import COMMAND_LINE_TARGETS, Environment, Import
 
 
 def main() -> None:
@@ -17,11 +17,11 @@ def main() -> None:
     clean targets, and otherwise executes the Frekvens workflow. It returns
     without action for the ``erase``, ``menuconfig``, and ``size`` targets.
     """
-    if COMMAND_LINE_TARGETS in [
-        ["erase"],
-        ["menuconfig"],
-        ["size"],
-    ]:
+    if not {
+        "erase",
+        "menuconfig",
+        "size",
+    }.isdisjoint(COMMAND_LINE_TARGETS):
         return
 
     Import("env")
@@ -46,7 +46,7 @@ def main() -> None:
             subprocess.run(pip.args, check=True)
         subprocess.run(uv.args, env=uv_env, check=True)
 
-    from src.Frekvens import Frekvens  # noqa: E402
+    from src.Frekvens import Frekvens
 
     if env.IsCleanTarget():
         Frekvens.clean()

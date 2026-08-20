@@ -113,11 +113,11 @@ class FontGenerator:
                 codepoint = ord(character)
                 name = unicodedata.name(character)
                 self.characters[character] = (name, offsetX, offsetY)
-                comment = character in {
+                comment = character in (
                     "∪",  # U+222A UNION
                     "⊨",  # U+22A8 TRUE
                     "⊻",  # U+22BB XOR
-                }
+                )
                 if comment:
                     h.append("    /*")
                 h.append(f"    // U+{codepoint:04X} {character} {name}")
@@ -165,10 +165,10 @@ class FontGenerator:
             escape = (
                 "\\"
                 if character
-                in {
+                in (
                     "'",  # U+0027 APOSTROPHE
                     "\\",  # U+005C REVERSE SOLIDUS
-                }
+                )
                 else ""
             )
             variable = "".join(

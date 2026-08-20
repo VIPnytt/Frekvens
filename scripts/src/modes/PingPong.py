@@ -1,3 +1,6 @@
+import typing
+
+
 class PingPong:
-    ENV_OPTION: str = "MODE_PINGPONG"
-    NAME: str = "Ping-pong"
+    ENV_OPTION: typing.Final[str] = "MODE_PINGPONG"
+    NAME: typing.Final[str] = "Ping-pong"

@@ -1,3 +1,6 @@
+import typing
+
+
 class Waveform:
-    ENV_OPTION: str = "MODE_WAVEFORM"
-    NAME: str = "Waveform"
+    ENV_OPTION: typing.Final[str] = "MODE_WAVEFORM"
+    NAME: typing.Final[str] = "Waveform"

@@ -9,6 +9,9 @@ from ..config.version import VERSION
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
+    from .Types import COMMAND_LINE_TARGETS
+else:
+    from SCons.Script import COMMAND_LINE_TARGETS
 
 
 class Dependency:
@@ -18,6 +21,11 @@ class Dependency:
         self.project = project
 
     def initialize(self) -> None:
+        if COMMAND_LINE_TARGETS in [
+            ["compiledb"],
+        ]:
+            self.project.dependency = None
+            return
         try:
             tag = json.load(
                 urllib.request.urlopen(
@@ -26,7 +34,7 @@ class Dependency:
                         headers={
                             "Accept": "application/vnd.github+json",
                             "User-Agent": f"Frekvens/{VERSION} (+https://github.com/VIPnytt/Frekvens)",
-                            "X-GitHub-Api-Version": "2022-11-28",
+                            "X-GitHub-Api-Version": "2026-03-10",
                         },
                     )
                 )
