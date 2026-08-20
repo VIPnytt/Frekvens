@@ -92,18 +92,9 @@ Specify your board in the [platformio.ini](https://github.com/VIPnytt/Frekvens/b
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
 ```ini
-[env:seeed_xiao_esp32s3]
-board = seeed_xiao_esp32s3 ; Board ID
+[env:esp32-s3-devkitc-1]
+board = esp32-s3-devkitc-1 ; Board ID
 ```
-
-### File Structure
-
-Configuration is split into shared and firmware-specific settings:
-
-- **Shared variables** used by the firmware and web app are defined in [`.env`](https://github.com/VIPnytt/Frekvens/blob/main/.env)
-- **Firmware-only** settings go in [`firmware/include/config/secrets.h`](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h)
-
-This separation keeps common parameters in one place, while allowing firmware builds to have their own purpose-specific configuration.
 
 ### Environment Template
 

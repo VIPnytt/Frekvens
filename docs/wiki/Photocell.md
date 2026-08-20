@@ -2,7 +2,7 @@
 
 Automatic ambient brightness adjustment can be achieved by installing a Light Dependent Resistor (LDR). This simple sensor changes resistance with light levels, allowing the ESP32 to measure surrounding brightness and adapt the display accordingly.
 
-Most common LDRs work well when paired with a reasonably sized resistor. A good starting point is an CdS photoresistor (e.g. [this](https://www.adafruit.com/product/161)) paired with an 10 kΩ through-hole resistor (e.g. [this](https://www.adafruit.com/product/2892)). For a clean installation, the LDR can be placed inside a standard LED cap (e.g. [this](https://www.toby.co.uk/led-and-light-pipes/led-mounts-and-spacers/lc3-and-lc5-valcon-3mm-and-5mm-led-lens-caps/)).
+Most common LDRs work well when paired with a reasonably sized resistor. A good starting point is an CdS photoresistor (e.g. [this](https://www.adafruit.com/product/161)) paired with an 10 kΩ through-hole resistor (e.g. [this](https://www.adafruit.com/product/2784)). For a clean installation, the LDR can be placed inside a standard LED cap (e.g. [this](https://www.toby.co.uk/led-and-light-pipes/led-mounts-and-spacers/lc3-and-lc5-valcon-3mm-and-5mm-led-lens-caps/)).
 
 ## 📌 Schematics
 

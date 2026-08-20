@@ -76,10 +76,10 @@ Black ┼─ 0 V DC
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
-   SPI CS ─┤     ──►     ├─ SPI CS
- SPI SCLK ─┤     ──►     ├─ SPI SCLK
- SPI MOSI ─┤     ──►     ├─ SPI MOSI
-       OE ─┤     ──►     ├─ OE
+   SPI CS ─┤ A1  ──►  B1 ├─ SPI CS
+ SPI SCLK ─┤ A2  ──►  B2 ├─ SPI SCLK
+ SPI MOSI ─┤ A3  ──►  B3 ├─ SPI MOSI
+       OE ─┤ A4  ──►  B4 ├─ OE
            └─────────────┘
 ```
 
@@ -114,12 +114,12 @@ If reusing existing connections is preferred, the wire on the `SW` pad can eithe
 
 ## ↔️ Logic level shifter
 
-For safe and reliable communication between the ESP32 and the LED panels, a suitable logic level shifter is required.
+For safe and reliable communication between the ESP32 and the LED panels, a suitable logic level shifter is required. An [TXU0104](https://www.ti.com/lit/ds/symlink/txu0104.pdf) is the ideal choice for this application, but alternatives such as the [SN74AHCT125](https://www.ti.com/lit/ds/symlink/sn74ahct125.pdf), [TXB0104](https://www.ti.com/lit/ds/symlink/txb0104.pdf)/[TXB0108](https://www.ti.com/lit/ds/symlink/txb0108.pdf), and even [TXS0104E](https://www.ti.com/lit/ds/symlink/txs0104e.pdf)/[TXS0108E](https://www.ti.com/lit/ds/symlink/txs0108e.pdf) are reported to work as well, altough with some minor caveats.
 
-The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V and uses pull-up resistors on its inputs — which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
+The ESP32’s 3.3 V signals are too weak for the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) to reliably register. At the same time, the [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 5 V and uses pull-resistors on its inputs — which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines must go through a level shifter*.
 
 > [!WARNING]
-> Some users have reported success without level shifting, but this is outside the specifications. Skipping it can lead to misread signals, unstable behavior, or even permanent damage to the ESP32.
+> Some users have reported success without level shifting, but this is outside the specifications of both ESP32 and SCT2024. Skipping it can lead to unstable behavior, and even damage the ESP32.
 
 ## 🛠️ Hardware considerations
 
