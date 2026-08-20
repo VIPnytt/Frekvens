@@ -5,10 +5,10 @@ import pathlib
 import typing
 
 if typing.TYPE_CHECKING:
-    from .components.Types import COMMAND_LINE_TARGETS, Environment
+    from .components.Types import COMMAND_LINE_TARGETS
     from .Frekvens import Frekvens
 else:
-    from SCons.Script import COMMAND_LINE_TARGETS, Environment  # ruff:ignore[F401]
+    from SCons.Script import COMMAND_LINE_TARGETS
 
 
 class Firmware:
