@@ -132,7 +132,7 @@ The last step is to connect the buttons: `SW` and `SW1` each connect to separate
 
 ## ↔️ Logic level shifter
 
-For safe and reliable communication between the ESP32 and the LED panel, a suitable logic level shifter is required. An [TXU0104](https://www.ti.com/lit/ds/symlink/txu0104.pdf) is the ideal choice for this application, but alternatives such as the [SN74AHCT125](https://www.ti.com/lit/ds/symlink/sn74ahct125.pdf), [TXB0104](https://www.ti.com/lit/ds/symlink/txb0104.pdf)/[TXB0108](https://www.ti.com/lit/ds/symlink/txb0108.pdf), and even [TXS0104E](https://www.ti.com/lit/ds/symlink/txs0104e.pdf)/[TXS0108E](https://www.ti.com/lit/ds/symlink/txs0108e.pdf) are reported to work as well, altough with some minor caveats.
+For safe and reliable communication between the ESP32 and the LED panel, a suitable logic level shifter is required. An [TXU0104](https://www.ti.com/lit/ds/symlink/txu0104.pdf) is the ideal choice for this application, but alternatives such as the [TXB0104](https://www.ti.com/lit/ds/symlink/txb0104.pdf)/[TXB0108](https://www.ti.com/lit/ds/symlink/txb0108.pdf), and even [TXS0104E](https://www.ti.com/lit/ds/symlink/txs0104e.pdf)/[TXS0108E](https://www.ti.com/lit/ds/symlink/txs0108e.pdf) are reported to work as well, although with some minor caveats.
 
 The [SCT2024](http://www.starchips.com.tw/pdf/datasheet/SCT2024V01_03.pdf) operates at 4 V and uses pull-resistors on its inputs — which can feed unsafe voltages back into the ESP32. To protect the microcontroller and ensure consistent communication, *all signal lines should go through a level shifter*, not just those that are at risk.
 

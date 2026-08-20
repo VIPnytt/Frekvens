@@ -185,7 +185,7 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 EXTENSION_MESSAGE='true'
 ```
 
-See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#ticker).
+See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#-ticker).
 
 ## 🎙️ Microphone
 
