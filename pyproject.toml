@@ -66,4 +66,8 @@ scripts = [
 extend-exclude = [
     ".pio",
 ]
+ignore = [
+    "LOG015",
+    "N999",
+]
 line-length = 120
