@@ -94,9 +94,7 @@ class Deprecated:
                 "The '2MB_no_ota.csv' partition table is deprecated, please migrate to '2MB_no_ota_rev2.csv'"
             )
         elif "partitions/4MB.csv" == partition_table:
-            logging.warning(
-                "The '4MB.csv' partition table is deprecated, please migrate to '4MB_rev2.csv'"
-            )
+            logging.warning("The '4MB.csv' partition table is deprecated, please migrate to '4MB_rev2.csv'")
 
     @staticmethod
     def clean() -> None:
