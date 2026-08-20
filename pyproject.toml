@@ -66,8 +66,10 @@ scripts = [
 extend-exclude = [
     ".pio",
 ]
+line-length = 120
+
+[tool.ruff.lint]
 ignore = [
     "LOG015",
     "N999",
 ]
-line-length = 120
