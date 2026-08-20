@@ -13,13 +13,16 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 16U, __STRING(MODE_CLOCK) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads persisted clock settings and publishes the active configuration.
+ */
 void ClockMode::configure()
 {
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
             std::ranges::find(fontNames, std::string_view{_fontName.data(), length - 1U}) != fontNames.end())
         {
@@ -35,8 +38,14 @@ void ClockMode::configure()
     transmit();
 }
 
+/**
+ * @brief Marks the clock display for redraw.
+ */
 void ClockMode::begin() { pending = true; }
 
+/**
+ * @brief Updates the clock display and optional second indicator using the local time.
+ */
 void ClockMode::handle()
 {
     if (getLocalTime(&local))
@@ -55,7 +64,7 @@ void ClockMode::handle()
             const TextHandler mm2(std::to_string(minute % 10), *font);
             const uint8_t fontWidth{max({hh1.getWidth(), hh2.getWidth(), mm1.getWidth(), mm2.getWidth()})};
             strikethrough = mm2.getHeight() > 6U;
-            Display.clearFrame();
+            Display.fillFrame(0U);
             hh1.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - hh1.getWidth()) / 2U)),
                      static_cast<int8_t>((GRID_ROWS / 2U) - 1U - hh1.getHeight()));
             hh2.draw(static_cast<int16_t>((GRID_COLUMNS / 2U) + 1U + ((fontWidth - hh2.getWidth()) / 2U)),
@@ -136,9 +145,12 @@ void ClockMode::setTicking(bool _ticking)
     transmit();
 }
 
+/**
+ * @brief Publishes the current clock font and second-indicator configuration.
+ */
 void ClockMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(fontName);
     JsonArray _fonts{doc["fonts"].to<JsonArray>()};
     for (const std::string_view _font : fontNames)
@@ -149,8 +161,13 @@ void ClockMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ClockMode::onReceive(JsonObjectConst payload,
-                          std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies supported font and second-indicator settings from a received payload.
+ *
+ * @param payload Received configuration fields.
+ * @param source Source identifier for the received payload.
+ */
+void ClockMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -165,7 +182,13 @@ void ClockMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery definitions for the clock font selector and second indicator.
+ *
+ * @param discovery JSON document to populate with component definitions.
+ * @param topic Base topic used for component commands and state updates.
+ * @param unique Prefix used to generate unique component identifiers.
+ */
 void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

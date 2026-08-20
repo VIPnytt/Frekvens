@@ -22,9 +22,12 @@ void ExtensionsService::begin()
 
 std::span<ExtensionModule *const> ExtensionsService::getAll() { return modules; }
 
+/**
+ * @brief Transmits the names of all registered extensions.
+ */
 void ExtensionsService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray list{doc["list"].to<JsonArray>()};
     for (const ExtensionModule *extension : modules)
     {
@@ -34,7 +37,10 @@ void ExtensionsService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ExtensionsService::onTask(void *parameter) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes all registered extensions continuously.
+ */
+void ExtensionsService::onTask(void *parameter)
 {
     for (;;)
     {
@@ -71,6 +77,11 @@ StatusLedExtension &ExtensionsService::StatusLed() { return extensionStatusLed; 
 WebSocketExtension &ExtensionsService::WebSocket() { return extensionWebSocket; }
 #endif
 
+/**
+ * @brief Provides access to the shared extensions service instance.
+ *
+ * @return ExtensionsService& Reference to the singleton service instance.
+ */
 ExtensionsService &ExtensionsService::getInstance()
 {
     static ExtensionsService instance;
@@ -78,4 +89,4 @@ ExtensionsService &ExtensionsService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-ExtensionsService &Extensions = ExtensionsService::getInstance();
+ExtensionsService &Extensions{ExtensionsService::getInstance()};

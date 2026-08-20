@@ -4,6 +4,16 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the weather condition and temperature from the configured provider.
+ *
+ * Supports OpenWeather API versions 2.5, 3.0, and 4.0. Removes endpoints that
+ * return client errors or unsupported response formats.
+ *
+ * @param condition Receives the mapped weather condition.
+ * @param temperature Receives the rounded temperature.
+ * @param lastMillis Timestamp used to schedule subsequent updates.
+ */
 void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                    std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
@@ -25,14 +35,14 @@ void OpenWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &con
         }
         return;
     }
-    JsonDocument filter;                               // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["current"]["temp"].set(true);               // API 3.0
     filter["current"]["weather"][0U]["id"].set(true);  // API 3.0
     filter["data"][0U]["temp"].set(true);              // API 4.0
     filter["data"][0U]["weather"][0U]["id"].set(true); // API 4.0
     filter["main"]["temp"].set(true);                  // API 2.5
     filter["weather"][0U]["id"].set(true);             // API 2.5
-    JsonDocument doc;                                  // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     const bool deserialization{deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) ==
                                DeserializationError::Code::Ok};
     if (deserialization && doc["main"]["temp"].is<float>() && doc["weather"][0U]["id"].is<uint16_t>())

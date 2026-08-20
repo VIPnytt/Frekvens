@@ -34,6 +34,15 @@ class ModeGenerator:
             ]
 
     def _animation_h(self, count: int) -> str:
+        """
+        Generate a C++ header containing the mode's animation frames.
+
+        Parameters:
+            count (int): Total number of CSV rows used to determine the frame count.
+
+        Returns:
+            str: The generated header filename.
+        """
         frames = [
             "#pragma once",
             "",
@@ -80,6 +89,12 @@ class ModeGenerator:
         return f"{self.id}Mode.h"
 
     def _animation_cpp(self) -> str:
+        """
+        Generate the C++ source file for an animated drawing mode.
+
+        Returns:
+            str: The generated source filename.
+        """
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
             f.write(
                 "\n".join(
@@ -99,7 +114,7 @@ class ModeGenerator:
                         "    if (millis() - lastMillis >= 500U)",
                         "    {",
                         "        lastMillis = millis();",
-                        "        Display.clearFrame();",
+                        "        Display.fillFrame(0U);",
                         "        const BitmapHandler bitmap(frames[index]);",
                         "        bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0U);",
                         "        ++index;",
@@ -116,6 +131,15 @@ class ModeGenerator:
         return f"{self.id}Mode.cpp"
 
     def _drawing_h(self, count: int) -> str:
+        """
+        Generate a C++ header containing the static bitmap frame and mode declaration.
+
+        Parameters:
+            count (int): Number of rows in the bitmap frame.
+
+        Returns:
+            str: Name of the generated header file.
+        """
         frame = [
             "#pragma once",
             "",
@@ -154,6 +178,11 @@ class ModeGenerator:
         return f"{self.id}Mode.h"
 
     def _drawing_cpp(self) -> str:
+        """Generate the C++ implementation file for a static drawing mode.
+
+        Returns:
+            str: The generated C++ source filename.
+        """
         with open(f"{self.id}Mode.cpp", "w", encoding="utf-8") as f:
             f.write(
                 "\n".join(
@@ -170,7 +199,7 @@ class ModeGenerator:
                         "",
                         f"void {self.id}Mode::begin()",
                         "{",
-                        "    Display.clearFrame();",
+                        "    Display.fillFrame(0U);",
                         "    const BitmapHandler bitmap(frame);",
                         "    bitmap.draw(GRID_COLUMNS - bitmap.getWidth(), 0U);",
                         "}",

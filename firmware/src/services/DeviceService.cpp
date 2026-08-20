@@ -112,6 +112,9 @@ void DeviceService::begin()
     ESP_LOGD(name.data(), "ready"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
+/**
+ * @brief Services connectivity, display, and mode handling, and periodically publishes device status.
+ */
 void DeviceService::handle()
 {
     Connectivity.handle();
@@ -123,16 +126,21 @@ void DeviceService::handle()
     }
 }
 
+/**
+ * @brief Restarts the device or powers it off.
+ *
+ * @param power `true` to restart the device; `false` to enter deep sleep.
+ */
 void DeviceService::setPower(bool power)
 {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     ESP_LOGI(name.data(), "%s...", power ? "rebooting" : "powering off");
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["event"].set(power ? "reboot" : "power");
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
     Modes.setActive(false);
     Display.setPower(false);
-    Display.clearFrame();
+    Display.fillFrame(0U);
     Display.flush();
 #if EXTENSION_MQTT
     Extensions.MQTT().disconnect();
@@ -176,9 +184,12 @@ void DeviceService::restore()
 
 JsonObjectConst DeviceService::getTransmits() const { return transmits.as<JsonObjectConst>(); }
 
+/**
+ * @brief Publishes the current device status.
+ */
 void DeviceService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["board"].set(ARDUINO_BOARD);
     doc["model"].set(MODEL);
     doc["name"].set(NAME);
@@ -189,7 +200,13 @@ void DeviceService::transmit()
     transmit(doc.as<JsonObjectConst>(), name);
 }
 
-// NOLINTNEXTLINE(readability-make-member-function-const)
+/**
+ * @brief Records and forwards a payload to registered extension modules.
+ *
+ * @param payload Payload to record and transmit.
+ * @param source Identifier of the payload source.
+ * @param retain Whether to retain the payload under its source identifier.
+ */
 void DeviceService::transmit(JsonObjectConst payload, std::string_view source, bool retain)
 {
     if (retain)
@@ -206,7 +223,13 @@ void DeviceService::transmit(JsonObjectConst payload, std::string_view source, b
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Delivers an incoming payload to the matching service, extension, or mode.
+ *
+ * @param payload Payload to deliver.
+ * @param source Origin of the payload.
+ * @param destination Name of the intended recipient.
+ */
 void DeviceService::receive(JsonObjectConst payload, std::string_view source, std::string_view destination) const
 {
     if (operational)
@@ -240,7 +263,7 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
                 return;
             }
         }
-        ModeModule *mode{Modes.getMode()}; // NOLINT(misc-const-correctness)
+        ModeModule *mode{Modes.getMode()};
         if (mode != nullptr && mode->name == destination)
         {
             mode->onReceive(payload, source);
@@ -254,8 +277,12 @@ void DeviceService::receive(JsonObjectConst payload, std::string_view source, st
     }
 }
 
-void DeviceService::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles power-management actions received in a payload.
+ *
+ * @param payload Payload containing an optional `action` value.
+ */
+void DeviceService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action
     if (payload["action"].is<std::string_view>())
@@ -280,10 +307,28 @@ void DeviceService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery definitions for device controls and temperature.
+ *
+ * @param discovery JSON document to receive the discovery components.
+ * @param topic Base topic used for device commands and temperature updates.
+ * @param unique Prefix used to create unique component identifiers.
+ */
 void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
+    {
+        const std::string id{std::string(name).append("_power")};
+        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
+        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
+        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
+        component[HomeAssistantAbbreviations::entity_category].set("config");
+        component[HomeAssistantAbbreviations::icon].set("mdi:power");
+        component[HomeAssistantAbbreviations::name].set("Power off");
+        component[HomeAssistantAbbreviations::payload_press].set("power");
+        component[HomeAssistantAbbreviations::platform].set("button");
+        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
+    }
     {
         const std::string id{std::string(name).append("_reboot")};
         JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
@@ -294,18 +339,6 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::name].set("Reboot");
         component[HomeAssistantAbbreviations::payload_press].set("reboot");
-        component[HomeAssistantAbbreviations::platform].set("button");
-        component[HomeAssistantAbbreviations::unique_id].set(unique + id);
-    }
-    {
-        const std::string id{std::string(name).append("_power")};
-        JsonObject component{discovery[HomeAssistantAbbreviations::components][id].to<JsonObject>()};
-        component[HomeAssistantAbbreviations::command_template].set(R"({"action":"{{value}}"})");
-        component[HomeAssistantAbbreviations::command_topic].set(topic + "/set");
-        component[HomeAssistantAbbreviations::entity_category].set("config");
-        component[HomeAssistantAbbreviations::icon].set("mdi:power");
-        component[HomeAssistantAbbreviations::name].set("Power off");
-        component[HomeAssistantAbbreviations::payload_press].set("power");
         component[HomeAssistantAbbreviations::platform].set("button");
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);
     }
@@ -328,6 +361,12 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
 }
 #endif // EXTENSION_HOMEASSISTANT
 
+/**
+ * @brief Retrieves the singleton device service instance.
+ *
+ * @return DeviceService& Reference to the shared device service instance.
+ */
+
 DeviceService &DeviceService::getInstance()
 {
     static DeviceService instance;
@@ -335,4 +374,4 @@ DeviceService &DeviceService::getInstance()
 }
 
 // NOLINTNEXTLINE(bugprone-throwing-static-initialization,cert-err58-cpp,cppcoreguidelines-avoid-non-const-global-variables)
-DeviceService &Device = DeviceService::getInstance();
+DeviceService &Device{DeviceService::getInstance()};

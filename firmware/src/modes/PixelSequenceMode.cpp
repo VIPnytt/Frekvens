@@ -2,10 +2,29 @@
 
 #include "modes/PixelSequenceMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
+/**
+ * @brief Initializes the pixel sequence mapping.
+ *
+ * Associates each display pixel identifier with its sequential index.
+ */
+void PixelSequenceMode::configure()
+{
+    for (uint16_t pixel{0U}; pixel < DisplayService::pixels.size(); ++pixel)
+    {
+        pixels[DisplayService::pixels[pixel]] = pixel;
+    }
+}
+
+/**
+ * @brief Advances the pixel sequence after the update interval has elapsed.
+ *
+ * When microphone support is enabled, an update also requires a microphone trigger.
+ * The current pixel is set according to the active sequence phase, and the sequence
+ * wraps around while toggling that phase after all pixels have been processed.
+ */
 void PixelSequenceMode::handle()
 {
 #if EXTENSION_MICROPHONE
@@ -14,18 +33,10 @@ void PixelSequenceMode::handle()
     if (millis() - lastMillis > INT8_MAX)
 #endif // EXTENSION_MICROPHONE
     {
-        for (uint16_t i = 0; i < GRID_COLUMNS * GRID_ROWS; ++i)
+        Display.setPixel(pixels[idx], lit ? UINT8_MAX : 0U);
+        if (++idx == pixels.size())
         {
-            if (pixels[i] == idx)
-            {
-                Display.setPixel(i % GRID_COLUMNS, i / GRID_COLUMNS, lit ? UINT8_MAX : 0);
-                break;
-            }
-        }
-        ++idx;
-        if (idx >= GRID_COLUMNS * GRID_ROWS)
-        {
-            idx = 0;
+            idx = 0U;
             lit = !lit;
         }
         lastMillis = millis();

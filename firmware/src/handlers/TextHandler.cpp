@@ -3,15 +3,21 @@
 #include "config/constants.h"        // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Initializes a text handler and calculates the text dimensions.
+ *
+ * @param text UTF-8 text to measure and render.
+ * @param font Font used to retrieve glyph metrics and bitmap data.
+ */
 TextHandler::TextHandler(std::string text, const FontModule &font) : text(text), font(&font)
 {
     if (text.length())
     {
         {
-            char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
             int8_t yMax{0};
             int8_t yMin{0};
-            size_t index{0U}; // NOLINT(misc-const-correctness)
+            size_t index{0U};
             while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
@@ -31,8 +37,8 @@ TextHandler::TextHandler(std::string text, const FontModule &font) : text(text),
         tracking = static_cast<uint8_t>(ceilf(height / Display.getRatio() / 10.0F));
         {
             width = 0U;
-            char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-            size_t index{0U};       // NOLINT(misc-const-correctness)
+            char32_t codepoint{0U};
+            size_t index{0U};
             while (nextCodepoint(index, codepoint))
             {
                 const FontModule::Symbol character{font.getChar(codepoint)};
@@ -67,10 +73,17 @@ void TextHandler::draw(uint8_t brightness) const
     draw(max(0U, (GRID_COLUMNS - width) / 2U), (GRID_ROWS - height) / 2U, brightness);
 }
 
+/**
+ * @brief Renders the text at the specified position.
+ *
+ * @param x Horizontal starting position.
+ * @param y Vertical baseline position.
+ * @param brightness Pixel brightness.
+ */
 void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 {
-    char32_t codepoint{0U}; // NOLINT(misc-const-correctness)
-    size_t index{0U};       // NOLINT(misc-const-correctness)
+    char32_t codepoint{0U};
+    size_t index{0U};
     while (nextCodepoint(index, codepoint))
     {
         const FontModule::Symbol character{font->getChar(codepoint)};
@@ -111,8 +124,23 @@ void TextHandler::draw(int16_t x, int8_t y, uint8_t brightness) const
 
 uint8_t TextHandler::getHeight() const { return height; }
 
+/**
+ * @brief Retrieves the measured text width.
+ *
+ * @return uint8_t Text width in pixels.
+ */
 uint8_t TextHandler::getWidth() const { return width; }
 
+/**
+ * @brief Decodes the next UTF-8 code point from the stored text.
+ *
+ * Invalid, incomplete, overlong, surrogate, and out-of-range sequences are
+ * replaced with U+FFFD.
+ *
+ * @param index Index of the next byte to inspect; advanced past the consumed bytes.
+ * @param buffer Receives the decoded code point or U+FFFD for an invalid sequence.
+ * @return true if input bytes were available, false if the end of the text was reached.
+ */
 bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 {
     if (index >= text.length())
@@ -158,7 +186,7 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
         buffer = U'\uFFFD';
         return true;
     }
-    while (remaining > 0U)
+    while (remaining != 0U)
     {
         const uint8_t next{static_cast<uint8_t>(text[index])};
         if ((next & 0xC0U) != 0x80U)
@@ -181,9 +209,15 @@ bool TextHandler::nextCodepoint(size_t &index, char32_t &buffer) const
 
 template <typename T>
     requires std::is_unsigned_v<T>
+/**
+ * @brief Finds the highest set bit in a bitmap.
+ *
+ * @param bitmap Bitmap elements to inspect.
+ * @return uint8_t Index of the highest set bit, or zero if the bitmap is empty or contains no set bits.
+ */
 uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
 {
-    uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)
+    uint8_t msbMax{0U};
     for (const T bitset : bitmap)
     {
         if (bitset != 0U)
@@ -194,33 +228,53 @@ uint8_t TextHandler::calcMsbMax(std::span<const T> bitmap) const
     return msbMax;
 }
 
+/**
+ * @brief Encodes a Unicode code point as a null-terminated UTF-8 sequence.
+ *
+ * @param codepoint Unicode code point to encode.
+ * @return A five-byte array containing the UTF-8 sequence, or an empty string for an invalid or surrogate code point.
+ */
 std::array<char, 5U> TextHandler::encode(char32_t codepoint)
 {
-    std::array<char, 5U> out{};
-    if (codepoint < 0x110000U && (codepoint < 0xD800U || codepoint > 0xDFFFU))
+    if (codepoint >= 0x110000U || (codepoint >= 0xD800U && codepoint <= 0xDFFFU))
     {
-        if (codepoint < 0x80U)
-        {
-            out[0U] = static_cast<char>(codepoint);
-        }
-        else if (codepoint < 0x800U)
-        {
-            out[0U] = static_cast<char>(0xC0U | (codepoint >> 6U));
-            out[1U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
-        else if (codepoint < 0x10000U)
-        {
-            out[0U] = static_cast<char>(0xE0U | (codepoint >> 12U));
-            out[1U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
-            out[2U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
-        else
-        {
-            out[0U] = static_cast<char>(0xF0U | (codepoint >> 18U));
-            out[1U] = static_cast<char>(0x80U | ((codepoint >> 12U) & 0x3FU));
-            out[2U] = static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU));
-            out[3U] = static_cast<char>(0x80U | (codepoint & 0x3FU));
-        }
+        return std::array<char, 5U>{'\0'};
     }
-    return out;
+    if (codepoint < 0x80U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(codepoint),
+            '\0',
+            '\0',
+            '\0',
+            '\0',
+        };
+    }
+    if (codepoint < 0x800U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(0xC0U | (codepoint >> 6U)),
+            static_cast<char>(0x80U | (codepoint & 0x3FU)),
+            '\0',
+            '\0',
+            '\0',
+        };
+    }
+    if (codepoint < 0x10000U)
+    {
+        return std::array<char, 5U>{
+            static_cast<char>(0xE0U | (codepoint >> 12U)),
+            static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU)),
+            static_cast<char>(0x80U | (codepoint & 0x3FU)),
+            '\0',
+            '\0',
+        };
+    }
+    return std::array<char, 5U>{
+        static_cast<char>(0xF0U | (codepoint >> 18U)),
+        static_cast<char>(0x80U | ((codepoint >> 12U) & 0x3FU)),
+        static_cast<char>(0x80U | ((codepoint >> 6U) & 0x3FU)),
+        static_cast<char>(0x80U | (codepoint & 0x3FU)),
+        '\0',
+    };
 }

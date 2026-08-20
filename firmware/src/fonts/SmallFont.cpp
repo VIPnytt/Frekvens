@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
 
+/**
+ * @brief Maps a Unicode character to its small-font symbol.
+ *
+ * @param character Unicode character to convert.
+ * @return FontModule::Symbol The corresponding symbol, or an empty symbol for unsupported characters.
+ */
 FontModule::Symbol SmallFont::getChar(char32_t character) const
 {
     if (character >= '#' && character <= '&')
@@ -49,7 +55,6 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
         // U+007B-U+007D
         return toSymbol(leftCurlyBracket_rightCurlyBracket[character - '{']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -137,7 +142,6 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_SMALL

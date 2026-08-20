@@ -10,6 +10,9 @@
 #include <nvs.h>
 #include <span>
 
+/**
+ * @brief Loads the stored signal duration and transmits the current configuration.
+ */
 void SignalExtension::begin()
 {
     nvs_handle_t handle{};
@@ -25,6 +28,12 @@ void SignalExtension::begin()
     transmit();
 }
 
+/**
+ * @brief Displays the next queued signal bitmap or restores the previous frame.
+ *
+ * Processes signals only when the display is powered on and the configured
+ * display interval has elapsed.
+ */
 void SignalExtension::handle()
 {
     if (Display.getPower() && millis() - lastMillis > duration)
@@ -34,12 +43,12 @@ void SignalExtension::handle()
             Modes.setActive(false);
             Display.getFrame(frame);
             active = true;
-            Display.clearFrame();
+            Display.fillFrame(0U);
             BitmapHandler(std::span<const uint16_t>{signals.front()}).draw();
             signals.erase(signals.begin());
             lastMillis = millis();
             Display.flush();
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             doc["event"].set("signal");
             Device.transmit(doc.as<JsonObjectConst>(), name, false);
         }
@@ -69,15 +78,25 @@ void SignalExtension::setDuration(uint8_t seconds)
     }
 }
 
+/**
+ * @brief Transmits the configured signal duration in seconds.
+ */
 void SignalExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["duration"].set(duration / 1'000U);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SignalExtension::onReceive(JsonObjectConst payload,
-                                std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies an incoming signal duration and queues bitmap data.
+ *
+ * Numeric bitmap elements are stored as 16-bit values. String elements are
+ * filtered to binary characters and converted from base 2 when nonempty.
+ *
+ * @param payload Incoming duration and bitmap configuration.
+ */
+void SignalExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Duration
     if (payload["duration"].is<uint8_t>())
@@ -96,14 +115,17 @@ void SignalExtension::onReceive(JsonObjectConst payload,
             }
             else if (bitset.is<std::string>())
             {
-                std::string bits = bitset.as<std::string>();
-                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit) { return bit < 0x30 || bit > 0x31; }),
+                std::string bits{bitset.as<std::string>()};
+                bits.erase(std::remove_if(bits.begin(), bits.end(), [](char bit) { return bit != '0' && bit != '1'; }),
                            bits.end());
-                sign.push_back(std::stoi(bits, nullptr, 2));
+                if (!bits.empty())
+                {
+                    sign.push_back(std::stoi(bits, nullptr, 2));
+                }
             }
+            signals.push_back(sign);
+            ESP_LOGD(name.data(), "received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         }
-        signals.push_back(sign);
-        ESP_LOGD("Queue", "received"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
 }
 

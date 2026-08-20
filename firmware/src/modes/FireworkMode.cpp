@@ -2,7 +2,6 @@
 
 #include "modes/FireworkMode.h"
 
-#include "extensions/MicrophoneExtension.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h"
 
@@ -28,21 +27,30 @@ void FireworkMode::handle()
     }
 }
 
+/**
+ * @brief Initializes a rocket launch when the firework trigger is activated.
+ *
+ * Selects a random launch column, places the rocket below the display, and
+ * sets the mode to the launching stage.
+ */
 void FireworkMode::pad()
 {
 #if EXTENSION_MICROPHONE
     if (Extensions.Microphone().isTriggered())
 #endif // EXTENSION_MICROPHONE
     {
-        rocketX = random(GRID_COLUMNS);
+        rocketX = static_cast<uint8_t>(random(GRID_COLUMNS));
         rocketY = GRID_ROWS;
         stage = 1U;
     }
 }
 
+/**
+ * @brief Moves the rocket upward and begins the explosion stage at a random height in the upper half of the display.
+ */
 void FireworkMode::launching()
 {
-    if (millis() - lastMillis > (1U << 6U))
+    if (millis() - lastMillis > (0b1U << 6U))
     {
         if (rocketY < GRID_ROWS)
         {
@@ -55,24 +63,31 @@ void FireworkMode::launching()
         {
             radius = 0U;
 #if PITCH_VERTICAL == PITCH_HORIZONTAL
-            maxRadius = random(1, min(GRID_COLUMNS, GRID_ROWS) / 2);
+            maxRadius = static_cast<uint8_t>(random(1, min(GRID_COLUMNS, GRID_ROWS) / 2));
 #else
-            maxRadius = random(2,
-                               min(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
-                                   GRID_ROWS / static_cast<float>(PITCH_HORIZONTAL * PITCH_VERTICAL)) /
-                                   2.0F);
+            maxRadius =
+                static_cast<uint8_t>(random(2,
+                                            min(GRID_COLUMNS * PITCH_HORIZONTAL / static_cast<float>(PITCH_VERTICAL),
+                                                GRID_ROWS / static_cast<float>(PITCH_HORIZONTAL * PITCH_VERTICAL)) /
+                                                2.0F));
 #endif // PITCH_VERTICAL == PITCH_HORIZONTAL
             stage = 2U;
         }
     }
 }
 
+/**
+ * @brief Advances the firework explosion and renders its expanding ellipse.
+ *
+ * Transitions the firework to the fading stage when the maximum explosion radius
+ * is reached.
+ */
 void FireworkMode::exploding()
 {
     if (millis() - lastMillis > INT8_MAX)
     {
         ++radius;
-        Display.drawEllipse(rocketX, rocketY, radius, true, UINT8_MAX / maxRadius * radius);
+        Display.drawEllipseSolid(rocketX, rocketY, radius, UINT8_MAX / maxRadius * radius);
         lastMillis = millis();
         if (radius >= maxRadius)
         {
@@ -82,18 +97,20 @@ void FireworkMode::exploding()
     }
 }
 
+/**
+ * @brief Fades the firework explosion until it disappears.
+ */
 void FireworkMode::fading()
 {
     if (random(3) == 0)
     {
         --brightness;
     }
-    Display.drawEllipse(rocketX, rocketY, radius, true, brightness);
+    Display.drawEllipseSolid(rocketX, rocketY, radius, brightness);
     lastMillis = millis();
     if (brightness == 0U)
     {
         stage = 0U;
-        Display.clearFrame();
     }
 }
 

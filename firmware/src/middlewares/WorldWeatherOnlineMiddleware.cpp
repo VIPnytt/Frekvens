@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature from the World Weather Online provider.
+ *
+ * @param condition Weather condition output.
+ * @param temperature Temperature output in the configured unit.
+ * @param lastMillis Timestamp used to schedule provider retries.
+ */
 void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                           std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
@@ -24,14 +31,14 @@ void WorldWeatherOnlineMiddleware::update(std::optional<WeatherHandler::Conditio
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
 #if TEMPERATURE_FAHRENHEIT
     filter["data"]["current_condition"][0U]["temp_F"].set(true);
 #else
     filter["data"]["current_condition"][0U]["temp_C"].set(true);
 #endif // TEMPERATURE_FAHRENHEIT
     filter["data"]["current_condition"][0U]["weatherCode"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
 #if TEMPERATURE_FAHRENHEIT
         doc["data"]["current_condition"][0U]["temp_F"].is<std::string_view>() &&

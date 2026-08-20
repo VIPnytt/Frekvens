@@ -17,13 +17,16 @@
 static_assert(GRID_COLUMNS >= 8U, __STRING(MODE_COUNTDOWN) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 11U, __STRING(MODE_COUNTDOWN) " is not compatible with this device's display size.");
 
+/**
+ * @brief Loads the persisted countdown configuration and publishes the current settings.
+ */
 void CountdownMode::configure()
 {
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK &&
             std::ranges::find(FontsService::names, std::string_view{_fontName.data(), length - 1U}) !=
                 FontsService::names.end())
@@ -40,6 +43,9 @@ void CountdownMode::configure()
     transmit();
 }
 
+/**
+ * @brief Resets the countdown display state and blinking.
+ */
 void CountdownMode::begin()
 {
     blink = 0U;
@@ -47,6 +53,13 @@ void CountdownMode::begin()
     upper = 0U;
 }
 
+/**
+ * @brief Updates the countdown display and handles completion blinking.
+ *
+ * Redraws the remaining hours and minutes or minutes and seconds when they
+ * change. When the countdown reaches zero, begins blinking the display and
+ * publishes a completion event.
+ */
 void CountdownMode::handle()
 {
     const std::chrono::nanoseconds _nanoseconds{epoch - std::chrono::system_clock::now()};
@@ -54,11 +67,8 @@ void CountdownMode::handle()
     const std::chrono::minutes _minutes{std::chrono::duration_cast<std::chrono::minutes>(_nanoseconds - _hours)};
     const int64_t hours{_hours.count()};
     const int64_t minutes{_minutes.count()};
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     const int64_t seconds{std::chrono::duration_cast<std::chrono::seconds>(_nanoseconds - _hours - _minutes).count()};
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     const uint8_t _upper{static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? hours % 100 : minutes, 0, 99))};
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     const uint8_t _lower{static_cast<uint8_t>(std::clamp<int64_t>(hours > 0 ? minutes : seconds, 0, 99))};
     if (_lower != lower || _upper != upper)
     {
@@ -72,7 +82,7 @@ void CountdownMode::handle()
             const TextHandler _bl(std::to_string(lower / 10U), *font);
             const TextHandler _br(std::to_string(lower % 10U), *font);
             const uint8_t fontWidth{max({_tl.getWidth(), _tr.getWidth(), _bl.getWidth(), _br.getWidth()})};
-            Display.clearFrame();
+            Display.fillFrame(0U);
             _tl.draw((GRID_COLUMNS / 2U) - 1U - fontWidth + ((fontWidth - _tl.getWidth()) / 2U),
                      static_cast<int8_t>((GRID_ROWS / 2U) - 1U - _tl.getHeight()));
             _tr.draw((GRID_COLUMNS / 2U) + 1U + ((fontWidth - _tr.getWidth()) / 2U),
@@ -85,13 +95,13 @@ void CountdownMode::handle()
             {
                 blink = INT8_MAX;
                 odd = true;
-                JsonDocument doc; // NOLINT(misc-const-correctness)
+                JsonDocument doc{};
                 doc["event"].set("done");
                 Device.transmit(doc.as<JsonObjectConst>(), name, false);
             }
         }
     }
-    else if (blink != 0U && odd == static_cast<bool>(static_cast<uint64_t>(seconds) & 1U))
+    else if (blink != 0U && odd == static_cast<bool>(static_cast<uint64_t>(seconds) & 0b1U))
     {
         --blink;
         odd = !odd;
@@ -129,13 +139,18 @@ void CountdownMode::setFont(std::string_view _fontName)
     }
 }
 
+/**
+ * @brief Publishes the current font, available fonts, and countdown timestamp.
+ *
+ * The timestamp is formatted as a local ISO-like date and time.
+ */
 void CountdownMode::transmit()
 {
     std::array<char, 32U> buffer{};
-    time_t timer{std::chrono::system_clock::to_time_t(epoch)}; // NOLINT(cppcoreguidelines-init-variables)
+    time_t timer{std::chrono::system_clock::to_time_t(epoch)};
     tm local{*std::localtime(&timer)};
     const size_t length{strftime(buffer.data(), buffer.size(), "%FT%T", &local)};
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(fontName);
     JsonArray _fonts{doc["fonts"].to<JsonArray>()};
     for (const std::string_view _font : fontNames)
@@ -146,8 +161,12 @@ void CountdownMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void CountdownMode::onReceive(JsonObjectConst payload,
-                              std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Updates the countdown font or target time from a received payload.
+ *
+ * @param payload Payload containing a font name, a duration in seconds, or a local timestamp.
+ */
+void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -171,7 +190,13 @@ void CountdownMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery components for countdown configuration.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base command and state topic for the countdown mode.
+ * @param unique Unique identifier prefix for the discovered entities.
+ */
 void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

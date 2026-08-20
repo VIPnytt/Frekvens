@@ -13,6 +13,9 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_PINGPONG) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 9U, __STRING(MODE_PINGPONG) " is not compatible with this device's display size.");
 
+/**
+ * @brief Restores the persisted clock mode setting and transmits the current state.
+ */
 void PingPongMode::configure()
 {
     nvs_handle_t handle{};
@@ -28,6 +31,12 @@ void PingPongMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the ping-pong display animation.
+ *
+ * Restores the persisted clock-mode setting, initializes the paddles and ball,
+ * and draws them in the layout appropriate for the selected mode.
+ */
 void PingPongMode::begin()
 {
     nvs_handle_t handle{};
@@ -40,26 +49,39 @@ void PingPongMode::begin()
         }
         nvs_close(handle);
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
 #if GRID_COLUMNS == GRID_ROWS
     const uint8_t _paddle{static_cast<uint8_t>(random(clock == nullptr ? 0 : 5, GRID_COLUMNS - 3U))};
 #else
     const uint8_t _paddle{random(clock == nullptr ? 0 : 5, clock ? GRID_ROWS - 3U : GRID_COLUMNS - 3U)};
 #endif // GRID_COLUMNS == GRID_ROWS
-    for (uint8_t i{0U}; i < 3U; ++i)
+    for (uint8_t idx{0U}; idx < 3U; ++idx)
     {
-        paddleA.push_back(_paddle + i);
-        paddleB.push_back(_paddle + i);
-        Display.setPixel(clock == nullptr ? _paddle + i : 0U, clock == nullptr ? 0U : _paddle + i);
-        Display.setPixel(clock == nullptr ? _paddle + i : GRID_COLUMNS - 1U,
-                         clock == nullptr ? GRID_ROWS - 1U : _paddle + i);
+        paddleA.push_back(_paddle + idx);
+        paddleB.push_back(_paddle + idx);
+    }
+    if (clock == nullptr)
+    {
+        Display.drawLineHorizontal(_paddle, 3U, 0U, UINT8_MAX);
+        Display.drawLineHorizontal(_paddle, 3U, GRID_ROWS - 1U, UINT8_MAX);
+    }
+    else
+    {
+        Display.drawLineVertical(0U, _paddle, _paddle + 2U, INT8_MAX);
+        Display.drawLineVertical(GRID_COLUMNS - 1U, _paddle, _paddle + 2U, INT8_MAX);
     }
     xDec = x = clock == nullptr ? _paddle + 1U : GRID_COLUMNS - 2U;
     yDec = y = clock == nullptr ? GRID_ROWS - 2U : _paddle + 1U;
-    deg = random(clock == nullptr ? 60 : 150, clock == nullptr ? 121 : 211); // ±30°
-    Display.setPixel(x, y);
+    deg = static_cast<uint16_t>(random(clock == nullptr ? 60 : 150, clock == nullptr ? 121 : 211)); // ±30°
+    Display.setPixel(x, y, clock == nullptr ? UINT8_MAX : INT8_MAX);
 }
 
+/**
+ * @brief Advances the ping-pong animation and adjusts paddle positions.
+ *
+ * Updates the ball position and direction, reflects it at the relevant display
+ * boundaries, and moves paddles toward the ball when interception is possible.
+ */
 void PingPongMode::handle()
 {
     if (clock != nullptr)
@@ -73,7 +95,7 @@ void PingPongMode::handle()
         else if (xDec >= GRID_COLUMNS - 2U && (deg < 90U || deg >= 270U))
         {
             // Right
-            deg = random(135, 226); // ±45°
+            deg = static_cast<uint16_t>(random(135, 226)); // ±45°
         }
     }
     else
@@ -81,12 +103,12 @@ void PingPongMode::handle()
         if (yDec >= GRID_ROWS - 2U && deg >= 180U)
         {
             // Bottom
-            deg = random(45, 136); // ±45°
+            deg = static_cast<uint16_t>(random(45, 136)); // ±45°
         }
         else if (yDec <= 1U && deg < 180U)
         {
             // Top
-            deg = random(225, 316); // ±45°
+            deg = static_cast<uint16_t>(random(225, 316)); // ±45°
         }
     }
     if ((clock == nullptr && xDec <= 0U) || xDec >= GRID_COLUMNS - 1U)
@@ -115,7 +137,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleB.back(), GRID_ROWS - 1U, 0U);
         paddleB.pop_back();
         paddleB.push_front(paddleB.front() - 1U);
-        Display.setPixel(paddleB.front(), GRID_ROWS - 1U);
+        Display.setPixel(paddleB.front(), GRID_ROWS - 1U, UINT8_MAX);
     }
     else if (clock == nullptr && xDec > paddleB.back() && bRad < 1U && paddleB.back() < GRID_COLUMNS - 1U)
     {
@@ -123,7 +145,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleB.front(), GRID_ROWS - 1U, 0U);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
-        Display.setPixel(paddleB.back(), GRID_ROWS - 1U);
+        Display.setPixel(paddleB.back(), GRID_ROWS - 1U, UINT8_MAX);
     }
     else if (clock != nullptr && yDec > paddleA.back() && aRad < 1U && paddleA.back() < GRID_ROWS - 1U)
     {
@@ -144,7 +166,7 @@ void PingPongMode::handle()
     else if (clock != nullptr && yDec > paddleB.back() && bRad < 1U && paddleB.back() < GRID_ROWS - 1U)
     {
         // Right: down
-        Display.setPixel(GRID_COLUMNS - 1U, paddleB.front(), 0);
+        Display.setPixel(GRID_COLUMNS - 1U, paddleB.front(), 0U);
         paddleB.pop_front();
         paddleB.push_back(paddleB.back() + 1U);
         Display.setPixel(GRID_COLUMNS - 1U, paddleB.back(), INT8_MAX);
@@ -163,7 +185,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleA.back(), 0U, 0U);
         paddleA.pop_back();
         paddleA.push_front(paddleA.front() - 1U);
-        Display.setPixel(paddleA.front(), 0U);
+        Display.setPixel(paddleA.front(), 0U, UINT8_MAX);
     }
     else if (clock == nullptr && xDec > paddleA.back() && aRad < 1U && paddleA.back() < GRID_COLUMNS - 1U)
     {
@@ -171,7 +193,7 @@ void PingPongMode::handle()
         Display.setPixel(paddleA.front(), 0U, 0U);
         paddleA.pop_front();
         paddleA.push_back(paddleA.back() + 1U);
-        Display.setPixel(paddleA.back(), 0U);
+        Display.setPixel(paddleA.back(), 0U, UINT8_MAX);
     }
 }
 
@@ -210,15 +232,22 @@ void PingPongMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock mode state.
+ */
 void PingPongMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void PingPongMode::onReceive(JsonObjectConst payload,
-                             std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies a clock-mode update from an incoming payload.
+ *
+ * @param payload Incoming JSON payload containing the optional `clock` setting.
+ */
+void PingPongMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -228,7 +257,13 @@ void PingPongMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds a Home Assistant switch discovery configuration for clock mode.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for clock-mode commands and state.
+ * @param unique Prefix used to construct the switch's unique identifier.
+ */
 void PingPongMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

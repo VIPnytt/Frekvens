@@ -7,9 +7,15 @@
 static_assert(GRID_COLUMNS >= 8U, __STRING(FONT_LARGE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 8U, __STRING(FONT_LARGE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Converts a supported character to its large-font symbol.
+ *
+ * @param character Character to convert.
+ * @return FontModule::Symbol The corresponding glyph, six-unit whitespace for a space, or an empty symbol when
+ * unsupported.
+ */
 FontModule::Symbol LargeFont::getChar(char32_t character) const
 {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -27,7 +33,6 @@ FontModule::Symbol LargeFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_LARGE

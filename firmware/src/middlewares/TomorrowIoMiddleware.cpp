@@ -4,6 +4,16 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the weather condition and temperature from the latest query.
+ *
+ * Removes queries that produce client errors or unsupported response data and
+ * adjusts the retry time for those failures.
+ *
+ * @param condition Output weather condition.
+ * @param temperature Output temperature in the configured unit.
+ * @param lastMillis Timestamp used to schedule subsequent updates.
+ */
 void TomorrowIoMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                   std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
@@ -24,10 +34,10 @@ void TomorrowIoMiddleware::update(std::optional<WeatherHandler::Condition> &cond
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["data"]["values"]["temperature"].set(true);
     filter["data"]["values"]["weatherCode"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["data"]["values"]["temperature"].is<float>() && doc["data"]["values"]["weatherCode"].is<uint32_t>())
     {

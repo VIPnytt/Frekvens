@@ -8,19 +8,29 @@
 static_assert(GRID_COLUMNS * GRID_ROWS >= 20U,
               __STRING(MODE_LEAFFALL) " is not compatible with this device's display size.");
 
+/**
+ * @brief Initializes leaf state and clears the display frame.
+ */
 void LeafFallMode::begin()
 {
     for (Leaf &leaf : leaves)
     {
-        leaf.x = random(GRID_COLUMNS);
-        leaf.y = random(GRID_ROWS);
-        leaf.brightness = random(0b1U << 4U, 0b1U << 8U);
-        leaf.delay = random(UINT8_MAX, 600);
+        leaf.x = static_cast<uint8_t>(random(GRID_COLUMNS));
+        leaf.y = static_cast<uint8_t>(random(GRID_ROWS));
+        leaf.brightness = static_cast<uint8_t>(random(0b1U << 4U, 0b1U << 8U));
+        leaf.delay = static_cast<uint16_t>(random(UINT8_MAX, 600));
         leaf.lastMillis = millis();
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
 }
 
+/**
+ * @brief Advances each leaf whose movement delay has elapsed.
+ *
+ * Clears the previous position, moves leaves downward or diagonally, respawns
+ * leaves at an available position at the top, and updates their brightness
+ * and movement timing.
+ */
 void LeafFallMode::handle()
 {
     for (Leaf &leaf : leaves)
@@ -28,17 +38,18 @@ void LeafFallMode::handle()
         if (millis() - leaf.lastMillis > leaf.delay)
         {
             Display.setPixel(leaf.x, leaf.y, 0U);
-            if (leaf.y + 1 >= GRID_ROWS)
+            if (leaf.y >= GRID_ROWS - 1U)
             {
 #if EXTENSION_MICROPHONE
-                leaf.brightness = Extensions.Microphone().isTriggered() ? random(0b1U << 4U, 0b1U << 8U) : 0U;
+                leaf.brightness =
+                    static_cast<uint8_t>(Extensions.Microphone().isTriggered() ? random(0b1U << 4U, 0b1U << 8U) : 0U);
 #else
-                leaf.brightness = random(0b1U << 4U, 0b1U << 8U);
+                leaf.brightness = static_cast<uint8_t>(random(0b1U << 4U, 0b1U << 8U));
 #endif // EXTENSION_MICROPHONE
                 leaf.y = 0U;
                 do
                 {
-                    leaf.x = random(GRID_COLUMNS);
+                    leaf.x = static_cast<uint8_t>(random(GRID_COLUMNS));
                 } while (Display.getPixel(leaf.x, leaf.y) != 0U);
             }
             else if (leaf.x != 0U && random(4) == 0)
@@ -61,7 +72,7 @@ void LeafFallMode::handle()
 #else
             Display.setPixel(leaf.x, leaf.y, leaf.brightness);
 #endif // EXTENSION_MICROPHONE
-            leaf.delay = random(UINT8_MAX, 600);
+            leaf.delay = static_cast<uint16_t>(random(UINT8_MAX, 600));
             leaf.lastMillis = millis();
         }
     }

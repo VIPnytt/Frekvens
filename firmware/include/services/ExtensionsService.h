@@ -29,7 +29,7 @@ class ExtensionsService final : public ServiceModule
 private:
     explicit ExtensionsService() : ServiceModule("Extensions") {};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
 #if EXTENSION_ALEXA
     AlexaExtension extensionAlexa;

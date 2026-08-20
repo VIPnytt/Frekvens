@@ -15,9 +15,15 @@ void HeapExtension::handle()
     }
 }
 
+/**
+ * @brief Transmits current stack and heap usage metrics.
+ *
+ * Includes extension-task, heap, and main-task usage, along with modes-task
+ * usage when the modes task is available.
+ */
 void HeapExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["extensions"].set(Extensions.stackSize - uxTaskGetStackHighWaterMark(Extensions.taskHandle));
     doc["heap"].set(ESP.getHeapSize() - ESP.getFreeHeap());
     doc["main"].set(CONFIG_ARDUINO_LOOP_STACK_SIZE - uxTaskGetStackHighWaterMark(Device.taskHandle));
@@ -29,7 +35,13 @@ void HeapExtension::transmit()
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Configures Home Assistant diagnostic sensors for memory usage.
+ *
+ * @param discovery Home Assistant discovery document to populate.
+ * @param topic Base state topic for the sensors.
+ * @param unique Prefix used to generate unique sensor identifiers.
+ */
 void HeapExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

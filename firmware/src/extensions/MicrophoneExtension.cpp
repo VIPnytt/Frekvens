@@ -34,6 +34,13 @@ void MicrophoneExtension::begin()
     }
 }
 
+/**
+ * @brief Processes pending microphone updates and monitors sound activity.
+ *
+ * Samples the microphone while monitoring is active and the display is powered,
+ * updates the triggered state, and adjusts the learned sound floor and ceiling
+ * when necessary.
+ */
 void MicrophoneExtension::handle()
 {
     if (pending)
@@ -56,7 +63,7 @@ void MicrophoneExtension::handle()
                     triggered = true;
                     if (millis() - lastMillis > UINT16_MAX)
                     {
-                        JsonDocument doc; // NOLINT(misc-const-correctness)
+                        JsonDocument doc{};
                         doc["event"].set("sound");
                         Device.transmit(doc.as<JsonObjectConst>(), name, false);
                         lastMillis = millis();
@@ -143,9 +150,12 @@ void MicrophoneExtension::setThreshold(uint16_t _threshold)
 
 bool MicrophoneExtension::isTriggered() const { return triggered; }
 
+/**
+ * @brief Transmits the microphone monitoring state and sound levels.
+ */
 void MicrophoneExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     doc["ceiling"].set(soundCeiling);
     doc["floor"].set(soundFloor);
@@ -153,8 +163,13 @@ void MicrophoneExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void MicrophoneExtension::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies microphone activity and detection threshold settings from a received payload.
+ *
+ * @param payload Received settings containing optional `active` and `threshold` values.
+ * @param source Origin of the received payload.
+ */
+void MicrophoneExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -169,7 +184,13 @@ void MicrophoneExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery components for microphone monitoring.
+ *
+ * @param discovery Document receiving the generated discovery components.
+ * @param topic Base topic used for microphone state and commands.
+ * @param unique Prefix used to generate unique component identifiers.
+ */
 void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

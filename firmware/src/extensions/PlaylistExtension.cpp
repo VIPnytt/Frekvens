@@ -9,9 +9,12 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Restores the persisted playlist activation state or transmits the current state after an abnormal reset.
+ */
 void PlaylistExtension::begin()
 {
-    const esp_reset_reason_t reason = esp_reset_reason();
+    const esp_reset_reason_t reason{esp_reset_reason()};
     if (std::ranges::none_of(Device.resetAbnormalities, [&](esp_reset_reason_t _reason) { return _reason == reason; }))
     {
         nvs_handle_t handle{};
@@ -29,6 +32,9 @@ void PlaylistExtension::begin()
     }
 }
 
+/**
+ * @brief Advances the playlist when the current entry has elapsed.
+ */
 void PlaylistExtension::handle()
 {
     if (active && Display.getPower() && millis() - lastMillis > duration)
@@ -37,7 +43,7 @@ void PlaylistExtension::handle()
         if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
         {
             uint16_t _duration{0U};
-            size_t length{0U}; // NOLINT(cppcoreguidelines-init-variables,misc-const-correctness)
+            size_t length{0U};
             const std::string _modeKey{std::string("mode").append(std::to_string(step))};
             if (nvs_get_str(handle, _modeKey.c_str(), nullptr, &length) == ESP_OK && length > 1U &&
                 nvs_get_u16(handle, std::string("duration").append(std::to_string(step)).c_str(), &_duration) ==
@@ -115,9 +121,14 @@ void PlaylistExtension::setPlaylist(std::span<const std::pair<std::string, uint1
     }
 }
 
+/**
+ * @brief Transmits the playlist activation state and stored entries.
+ *
+ * @return The transmitted playlist state.
+ */
 void PlaylistExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     JsonArray playlist{doc["playlist"].to<JsonArray>()};
     nvs_handle_t handle{};
@@ -127,7 +138,7 @@ void PlaylistExtension::transmit()
         for (size_t _step{0U}; _step <= UINT8_MAX; ++_step)
         {
             uint16_t _duration{0U};
-            size_t length{_modeName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_modeName.size()};
             if (nvs_get_str(
                     handle, std::string("mode").append(std::to_string(_step)).c_str(), _modeName.data(), &length) ==
                     ESP_OK &&
@@ -148,6 +159,12 @@ void PlaylistExtension::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Deactivates the playlist when an external mode selection changes the current mode.
+ *
+ * @param payload Transmitted mode payload.
+ * @param source Source identifier for the transmission.
+ */
 void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Modes: Mode
@@ -158,8 +175,15 @@ void PlaylistExtension::onTransmit(JsonObjectConst payload, std::string_view sou
     }
 }
 
-void PlaylistExtension::onReceive(JsonObjectConst payload,
-                                  std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies playlist and activation updates from a received JSON payload.
+ *
+ * Playlist entries must provide a string `mode` and a `uint16_t` `duration`.
+ * The optional `active` field updates the playlist's activation state.
+ *
+ * @param payload Received JSON payload containing optional playlist settings.
+ */
+void PlaylistExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Playlist
     if (payload["playlist"].is<JsonArrayConst>())
@@ -183,7 +207,13 @@ void PlaylistExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant switch discovery configuration for the playlist.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic used for playlist commands and state.
+ * @param unique Unique identifier prefix for the Home Assistant entity.
+ */
 void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

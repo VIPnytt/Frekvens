@@ -16,6 +16,9 @@
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 
+/**
+ * @brief Restores the persisted clock setting and transmits the current configuration.
+ */
 void SnakeMode::configure()
 {
     nvs_handle_t handle{};
@@ -31,6 +34,9 @@ void SnakeMode::configure()
     transmit();
 }
 
+/**
+ * @brief Restores the clock setting, clears the display, and resets the animation stage.
+ */
 void SnakeMode::begin()
 {
     nvs_handle_t handle{};
@@ -43,10 +49,13 @@ void SnakeMode::begin()
         }
         nvs_close(handle);
     }
-    Display.clearFrame();
+    Display.fillFrame(0U);
     stage = 0U;
 }
 
+/**
+ * @brief Updates the clock and advances the snake animation.
+ */
 void SnakeMode::handle()
 {
     if (clock != nullptr)
@@ -69,16 +78,24 @@ void SnakeMode::handle()
     }
 }
 
+/**
+ * @brief Places a one-segment snake at a random valid position and starts its movement.
+ */
 void SnakeMode::idle()
 {
     const uint8_t x{static_cast<uint8_t>(random(GRID_COLUMNS))};
     const uint8_t y{static_cast<uint8_t>(random(clock == nullptr ? 0 : 5, GRID_ROWS))};
     snake = {{x, y}};
-    Display.setPixel(x, y);
+    Display.setPixel(x, y, UINT8_MAX);
     setTarget();
     stage = 1U;
 }
 
+/**
+ * @brief Determines the snake's next position toward its target.
+ *
+ * @return The next unoccupied position, or `std::nullopt` when no adjacent position is available.
+ */
 std::optional<SnakeMode::Pixel> SnakeMode::next() const
 {
     Pixel start{snake.back()};
@@ -124,10 +141,10 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     }
     if (pathFound)
     {
-        Pixel step{target}; // NOLINT(misc-const-correctness)
-        while (from.at(step) != start)
+        Pixel step{target};
+        while (from[step] != start)
         {
-            step = from.at(step);
+            step = from[step];
         }
         return step;
     }
@@ -158,6 +175,12 @@ std::optional<SnakeMode::Pixel> SnakeMode::next() const
     return std::nullopt;
 }
 
+/**
+ * @brief Advances the snake toward its target.
+ *
+ * Extends the snake when it reaches the target, otherwise updates its trail
+ * and removes the tail. Starts the blinking stage when no movement is available.
+ */
 void SnakeMode::move()
 {
     if (millis() - lastMillis > INT8_MAX + snake.size())
@@ -168,16 +191,15 @@ void SnakeMode::move()
             snake.push_back(step.value());
             if (snake.back() == target)
             {
-                Display.setPixel(target.x, target.y);
+                Display.setPixel(target.x, target.y, UINT8_MAX);
                 setTarget();
             }
             else
             {
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
-                for (size_t i{0U}; i < snake.size(); ++i)
+                for (size_t idx{0U}; idx < snake.size(); ++idx)
                 {
-                    Display.setPixel(snake[i].x, snake[i].y, step * (i + 1U));
+                    Display.setPixel(snake[idx].x, snake[idx].y, step * (idx + 1U));
                 }
                 Display.setPixel(snake.front().x, snake.front().y, 0U);
                 snake.pop_front();
@@ -193,11 +215,14 @@ void SnakeMode::move()
     }
 }
 
+/**
+ * @brief Blinks the snake's pixels and advances to cleanup after six toggles.
+ */
 void SnakeMode::blink()
 {
     if (millis() - lastMillis > UINT8_MAX)
     {
-        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 1U) == 0U ? 0U : UINT8_MAX)};
+        const uint8_t brightness{static_cast<uint8_t>((blinkCount & 0b1U) == 0U ? 0U : UINT8_MAX)};
         for (const Pixel &pixel : snake)
         {
             Display.setPixel(pixel.x, pixel.y, brightness);
@@ -225,21 +250,35 @@ void SnakeMode::clean()
     }
 }
 
+/**
+ * @brief Selects an unoccupied display position as the snake's target.
+ *
+ * The target is assigned a random brightness and is placed below the clock area
+ * when the clock is enabled.
+ */
 void SnakeMode::setTarget()
 {
-    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)}; // NOLINT(cppcoreguidelines-init-variables)
-    do                                                                    // NOLINT(cppcoreguidelines-avoid-do-while)
+    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
+    do // NOLINT(cppcoreguidelines-avoid-do-while)
     {
-        target.x = random(GRID_COLUMNS);
-        target.y = random(yMin, GRID_ROWS);
+        target.x = static_cast<uint8_t>(random(GRID_COLUMNS));
+        target.y = static_cast<uint8_t>(random(yMin, GRID_ROWS));
     } while (Display.getPixel(target.x, target.y) != 0U);
-    Display.setPixel(target.x, target.y, random(1, 0b1U << 8U));
+    Display.setPixel(target.x, target.y, static_cast<uint8_t>(random(1, 0b1U << 8U)));
 }
 
+/**
+ * @brief Enables or disables the Snake mode clock.
+ *
+ * Persists the clock setting, updates the clock handler and target as needed,
+ * and transmits the updated configuration.
+ *
+ * @param _clock Whether the clock should be enabled.
+ */
 void SnakeMode::setClock(bool _clock)
 {
     nvs_handle_t handle{};
-    if (nvs_open(std::string(name).c_str(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
+    if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
     {
         nvs_set_u8(handle, "clock", static_cast<uint8_t>(_clock)); // NOLINT(readability-implicit-bool-conversion)
         nvs_commit(handle);
@@ -259,15 +298,22 @@ void SnakeMode::setClock(bool _clock)
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock-enabled state.
+ */
 void SnakeMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void SnakeMode::onReceive(JsonObjectConst payload,
-                          std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies the clock setting from an incoming payload.
+ *
+ * @param payload Incoming JSON payload containing an optional boolean `clock` value.
+ */
+void SnakeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -277,7 +323,13 @@ void SnakeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds the Snake mode clock switch to Home Assistant discovery data.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used for the switch's state and command messages.
+ * @param unique Prefix used to generate the switch's unique identifier.
+ */
 void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

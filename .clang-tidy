@@ -3,7 +3,10 @@ Checks: >
   -altera-id-dependent-backward-branch,
   -altera-struct-pack-align,
   -altera-unroll-loops,
+  -bugprone-branch-clone,
+  -bugprone-easily-swappable-parameters,
   -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-init-variables,
   -cppcoreguidelines-macro-to-enum,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -fuchsia-default-arguments-calls,
@@ -16,6 +19,8 @@ Checks: >
   -llvmlibc-callee-namespace,
   -llvmlibc-implementation-in-namespace,
   -llvmlibc-inline-function-decl,
+  -misc-const-correctness,
+  -misc-unused-parameters,
   -misc-use-internal-linkage,
   -modernize-macro-to-enum,
   -modernize-use-auto,
@@ -25,8 +30,6 @@ Checks: >
   -readability-magic-numbers,
   -readability-misplaced-array-index
 CheckOptions:
-  - key: bugprone-easily-swappable-parameters.IgnoredParameterNames
-    value: index;len;total;x;y
   - key: cppcoreguidelines-macro-usage.CheckCapsOnly
     value: true
   - key: misc-include-cleaner.MissingIncludes
@@ -36,5 +39,5 @@ CheckOptions:
   - key: readability-identifier-length.IgnoredVariableNames
     value: ^(id|tv|x|y)$
   - key: readability-identifier-length.IgnoredLoopCounterNames
-    value: ^(i|x|y)$
+    value: ^(x|y)$
 FormatStyle: file

@@ -40,12 +40,17 @@ void DrawMode::handle()
 
 void DrawMode::end() { save(true); }
 
+/**
+ * @brief Loads a cached or saved frame from persistent storage.
+ *
+ * @param cache Whether to try loading the cached frame before the saved frame.
+ */
 void DrawMode::load(bool cache)
 {
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
-        size_t length{frame.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{frame.size()};
         const char *key{nullptr};
         if ((cache && nvs_get_blob(handle, "cache", frame.data(), &length) == ESP_OK) ||
             nvs_get_blob(handle, "saved", frame.data(), &length) == ESP_OK)
@@ -76,9 +81,12 @@ void DrawMode::save(bool cache)
     }
 }
 
+/**
+ * @brief Transmits the current pixel frame to the device.
+ */
 void DrawMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray _frame{doc["frame"].to<JsonArray>()};
     for (const uint8_t pixel : frame)
     {
@@ -87,8 +95,13 @@ void DrawMode::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-void DrawMode::onReceive(JsonObjectConst payload,
-                         std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes actions and pixel data received in a JSON payload.
+ *
+ * @param payload JSON payload containing an optional action, frame, or pixel updates.
+ * @param source Origin of the received payload.
+ */
+void DrawMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Action
     if (payload["action"].is<std::string_view>())
@@ -120,11 +133,11 @@ void DrawMode::onReceive(JsonObjectConst payload,
     if (payload["frame"].is<JsonArrayConst>() && payload["frame"].size() == frame.size())
     {
         const JsonArrayConst _frame{payload["frame"].as<JsonArrayConst>()};
-        for (size_t i{0U}; i < frame.size(); ++i)
+        for (size_t idx{0U}; idx < frame.size(); ++idx)
         {
-            if (_frame[i].is<uint8_t>())
+            if (_frame[idx].is<uint8_t>())
             {
-                frame[i] = _frame[i].as<uint8_t>();
+                frame[idx] = _frame[idx].as<uint8_t>();
             }
         }
         render = true;

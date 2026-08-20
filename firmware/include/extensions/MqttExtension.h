@@ -13,12 +13,12 @@ class MqttExtension final : public ExtensionModule
 private:
     static constexpr std::string_view name{"MQTT"};
 
-    unsigned long lastMillis = 0;
+    unsigned long lastMillis{0UL};
 
     static inline std::vector<uint8_t> buffer{};
 
-    static constexpr size_t prefixLength = sizeof("frekvens/" HOSTNAME "/") - 1;
-    static constexpr size_t suffixLength = sizeof("/set") - 1;
+    static constexpr size_t prefixLength{sizeof("frekvens/" HOSTNAME "/") - 1U};
+    static constexpr size_t suffixLength{sizeof("/set") - 1U};
 
     static void onConnect(bool sessionPresent);
     static void onDisconnect(espMqttClientTypes::DisconnectReason reason);
@@ -28,7 +28,7 @@ private:
 public:
     explicit MqttExtension() : ExtensionModule(name) {};
 
-    static constexpr std::array<uint8_t, 1> emptyMessage{0};
+    static constexpr std::array<uint8_t, 1U> emptyMessage{0U};
 
     espMqttClient client{espMqttClientTypes::UseInternalTask::NO};
 

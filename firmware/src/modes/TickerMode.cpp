@@ -11,6 +11,10 @@
 
 #include <nvs.h>
 
+/**
+ * @brief Loads the persisted ticker message and font, applies a fallback font when needed, and transmits the resulting
+ * configuration.
+ */
 void TickerMode::configure()
 {
     nvs_handle_t handle{};
@@ -30,7 +34,7 @@ void TickerMode::configure()
         }
         {
             std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-            size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+            size_t length{_fontName.size()};
             if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
             {
                 setFont({_fontName.data(), length - 1U});
@@ -43,19 +47,22 @@ void TickerMode::configure()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0U]);
+        setFont(FontsService::names[0U]);
 #endif // FONT_SMALL
     }
     transmit();
 }
 
+/**
+ * @brief Prepares the ticker for initialization using its persisted or default font.
+ */
 void TickerMode::begin()
 {
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, FontsService::namesMaxLength + 1U> _fontName{};
-        size_t length{_fontName.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{_fontName.size()};
         if (nvs_get_str(handle, "font", _fontName.data(), &length) == ESP_OK)
         {
             setFont({_fontName.data(), length - 1U});
@@ -67,12 +74,19 @@ void TickerMode::begin()
 #if FONT_SMALL
         setFont(SmallFont::name);
 #else
-        setFont(Fonts.names[0U]);
+        setFont(FontsService::names[0U]);
 #endif // FONT_SMALL
     }
     pending = true;
 }
 
+/**
+ * @brief Updates and renders the scrolling ticker text.
+ *
+ * Initializes pending text, advances its position at timed intervals, and
+ * restarts the scroll cycle after the text leaves the display. When microphone
+ * support is enabled, a microphone trigger is required to begin each cycle.
+ */
 void TickerMode::handle()
 {
     if (pending)
@@ -97,7 +111,7 @@ void TickerMode::handle()
             return;
         }
 #endif // EXTENSION_MICROPHONE
-        Display.clearFrame();
+        Display.fillFrame(0U);
         text->draw(offsetX, offsetY);
         --offsetX;
     }
@@ -135,16 +149,24 @@ void TickerMode::setMessage(std::string_view _message)
     }
 }
 
+/**
+ * @brief Transmits the current ticker font and message configuration.
+ */
 void TickerMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["font"].set(font->name);
     doc["message"].set(message);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void TickerMode::onReceive(JsonObjectConst payload,
-                           std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies font and message settings received in a JSON payload.
+ *
+ * @param payload JSON object containing optional `font` and `message` string properties.
+ * @param source Origin of the received payload.
+ */
+void TickerMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Font
     if (payload["font"].is<std::string_view>())
@@ -158,10 +180,19 @@ void TickerMode::onReceive(JsonObjectConst payload,
     }
 }
 
+/**
+ * @brief Releases the active text handler.
+ */
 void TickerMode::end() { text.reset(); }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Configures Home Assistant discovery entities for ticker font selection and message editing.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic for ticker state and commands.
+ * @param unique Unique identifier prefix for the discovered entities.
+ */
 void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
@@ -175,7 +206,7 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::icon].set("mdi:format-font");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" font"));
         JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        for (const std::string_view _font : Fonts.names)
+        for (const std::string_view _font : FontsService::names)
         {
             options.add(_font);
         }

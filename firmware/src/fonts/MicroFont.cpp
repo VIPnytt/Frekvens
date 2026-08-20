@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
 
+/**
+ * @brief Maps a Unicode character to its corresponding micro-font symbol.
+ *
+ * @param character Unicode character to map.
+ * @return Corresponding font symbol, or an empty symbol for unsupported characters.
+ */
 FontModule::Symbol MicroFont::getChar(char32_t character) const
 {
     if (character == '(' || character == ')')
@@ -39,7 +45,6 @@ FontModule::Symbol MicroFont::getChar(char32_t character) const
         // U+007B-U+007D
         return toSymbol(leftCurlyBracket_rightCurlyBracket[character - '{']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -65,7 +70,6 @@ FontModule::Symbol MicroFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MICRO

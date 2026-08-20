@@ -24,25 +24,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: 3.14
-          activate-environment: true
-
-      - name: Set up Python packages
-        run: uv sync --only-group nodejs --only-group platformio
+          python-version: "3.10"
+          version: latest-known
 
       - name: Node.js cache
         id: nodejs
-        run: echo "cache=$(npm config get cache)" >> "$GITHUB_OUTPUT"
+        run: echo "cache=$(uv run --only-group nodejs npm config get cache)" >> "$GITHUB_OUTPUT"
 
       - name: PlatformIO environments
         id: platformio
-        run: echo "environments=$(pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
 
   default:
     name: Default
@@ -52,54 +48,10 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
-        exclude:
-          - environment: adafruit_qtpy_esp32s2
-            toolchain:
-              python-version: '3.10'
-
-          - environment: adafruit_qtpy_esp32s3_n4r2
-            toolchain:
-              python-version: '3.10'
-
-          - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_d32
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_d32_pro
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_s3_mini
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32c3
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32c6
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32s3
-            toolchain:
-              python-version: '3.10'
-
-          - environment: wemos_d1_mini32
-            toolchain:
-              python-version: '3.10'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -114,14 +66,10 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          python-version: "3.10"
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -139,7 +87,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   minimal:
     name: Minimal
@@ -149,54 +97,10 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
-        exclude:
-          - environment: adafruit_qtpy_esp32s2
-            toolchain:
-              python-version: '3.10'
-
-          - environment: adafruit_qtpy_esp32s3_n4r2
-            toolchain:
-              python-version: '3.10'
-
-          - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_d32
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_d32_pro
-            toolchain:
-              python-version: '3.10'
-
-          - environment: lolin_s3_mini
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32c3
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32c6
-            toolchain:
-              python-version: '3.10'
-
-          - environment: seeed_xiao_esp32s3
-            toolchain:
-              python-version: '3.10'
-
-          - environment: wemos_d1_mini32
-            toolchain:
-              python-version: '3.10'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -206,14 +110,10 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          python-version: "3.10"
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -240,7 +140,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   typical:
     name: Typical
@@ -250,18 +150,9 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
-
-          - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              python-version: '3.10'
-
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
           - environment: esp32-c6-devkitm-1
@@ -271,16 +162,11 @@ jobs:
           - environment: lolin_s3_mini
           - environment: seeed_xiao_esp32c3
           - environment: seeed_xiao_esp32c6
-
-          - environment: seeed_xiao_esp32s3
-            toolchain:
-              python-version: '3.10'
-
           - environment: wemos_d1_mini32
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -295,14 +181,10 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          python-version: "3.10"
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -390,7 +272,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}
 
   extensive:
     name: Extensive
@@ -400,18 +282,9 @@ jobs:
     strategy:
       matrix:
         environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
         exclude:
           - environment: adafruit_qtpy_esp32s2
           - environment: adafruit_qtpy_esp32s3_n4r2
-
-          - environment: adafruit_qtpy_esp32s3_nopsram
-            toolchain:
-              python-version: '3.10'
-
           - environment: esp32-c3-devkitm-1
           - environment: esp32-c5-devkitc-1
           - environment: esp32-c6-devkitm-1
@@ -421,16 +294,11 @@ jobs:
           - environment: lolin_s3_mini
           - environment: seeed_xiao_esp32c3
           - environment: seeed_xiao_esp32c6
-
-          - environment: seeed_xiao_esp32s3
-            toolchain:
-              python-version: '3.10'
-
           - environment: wemos_d1_mini32
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -445,14 +313,10 @@ jobs:
           path: .platformio/.cache
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up PlatformIO
-        run: uv sync --only-group platformio
+          python-version: "3.10"
+          version: latest-known
 
       - name: PlatformIO build
         run: |
@@ -572,4 +436,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e ${{ matrix.environment }}

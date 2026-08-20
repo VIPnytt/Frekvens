@@ -8,6 +8,13 @@
 #include <HTTPClient.h>
 #include <LittleFS.h>
 
+/**
+ * @brief Configures the root web application route and its cache metadata.
+ *
+ * Opens the configured web application file, records its length, generates an
+ * ETag from its last-write timestamp, and registers handlers for root GET and
+ * HEAD requests when the file is available.
+ */
 void WebAppExtension::configure()
 {
     File file{LittleFS.open(path.data())};
@@ -23,8 +30,8 @@ void WebAppExtension::configure()
     {
         snprintf(etag.data(), etag.size(), R"("%08lx")", static_cast<unsigned long>(file.getLastWrite()));
         file.close();
-        WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_GET, &onGetRoot);
-        WebServer.http->on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
+        WebServer.http.on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_GET, &onGetRoot);
+        WebServer.http.on(AsyncURIMatcher::exact("/"), WebRequestMethod::HTTP_HEAD, &onHeadRoot);
     }
 }
 

@@ -3,10 +3,21 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-void WebServerService::configure() const { http->begin(); }
+/**
+ * @brief Initializes the HTTP server.
+ */
+void WebServerService::configure() { http.begin(); }
 
-void WebServerService::begin() const { http->onNotFound(&onNotFound); }
+/**
+ * @brief Registers the handler for requests that do not match a configured route.
+ */
+void WebServerService::begin() { http.onNotFound(&onNotFound); }
 
+/**
+ * @brief Handles HTTP requests that do not match a registered route.
+ *
+ * @param request Request that could not be matched to a route.
+ */
 void WebServerService::onNotFound(AsyncWebServerRequest *request)
 {
 #if EXTENSION_WEBAPP

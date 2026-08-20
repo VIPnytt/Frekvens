@@ -11,8 +11,8 @@ private:
 
     bool critical{false};
 
-    unsigned long lastMillis{0};
-    unsigned long lastMillisWarning{0};
+    unsigned long lastMillis{0UL};
+    unsigned long lastMillisWarning{0UL};
 
 public:
     explicit StatusLedExtension() : ExtensionModule(name) {};

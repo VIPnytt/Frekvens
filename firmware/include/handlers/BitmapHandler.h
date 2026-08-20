@@ -32,6 +32,7 @@ public:
 
     void draw(uint8_t brightness = UINT8_MAX) const;
     void draw(uint8_t x, uint8_t y, uint8_t brightness = UINT8_MAX) const;
+
     [[nodiscard]] uint8_t getHeight() const;
     [[nodiscard]] uint8_t getWidth() const;
 };
@@ -42,7 +43,7 @@ BitmapHandler<T>::BitmapHandler(std::span<const T> bitmap) : bitmap(bitmap)
 {
     if (!bitmap.empty())
     {
-        uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)
+        uint8_t msbMax{0U};
         for (T bitset : bitmap)
         {
             uint8_t msb{0U};
@@ -71,7 +72,7 @@ template <typename T>
     requires std::is_unsigned_v<T>
 void BitmapHandler<T>::draw(uint8_t x, uint8_t y, uint8_t brightness) const
 {
-    uint8_t msbMax{0U}; // NOLINT(misc-const-correctness)
+    uint8_t msbMax{0U};
     for (T bitset : bitmap)
     {
         uint8_t msb{0U};

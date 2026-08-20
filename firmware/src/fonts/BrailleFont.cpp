@@ -45,6 +45,12 @@ FontModule::Symbol BrailleFont::toSymbol(uint8_t bits) const
             static_cast<int8_t>(3 - size)};
 }
 
+/**
+ * @brief Converts a supported Unicode character to its Braille symbol.
+ *
+ * @param character Character to convert.
+ * @return FontModule::Symbol Braille symbol for the character, or an empty symbol if unsupported.
+ */
 FontModule::Symbol BrailleFont::getChar(char32_t character) const
 {
     if (character >= '1' && character <= '9')
@@ -62,7 +68,6 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
         // U+0061-U+007A
         return toSymbol(latinLetterA_latinLetterZ[character - 'a']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -97,7 +102,6 @@ FontModule::Symbol BrailleFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_BRAILLE

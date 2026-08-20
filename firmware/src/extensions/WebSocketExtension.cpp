@@ -7,17 +7,29 @@
 
 #include <span>
 
+/**
+ * @brief Registers the WebSocket event callback and attaches the server to the HTTP server.
+ */
 void WebSocketExtension::begin()
 {
     server->onEvent(&onEvent);
-    WebServer.http->addHandler(server);
+    WebServer.http.addHandler(server);
 }
 
+/**
+ * @brief Removes inactive WebSocket clients from the server.
+ */
 void WebSocketExtension::handle() { server->cleanupClients(); }
 
+/**
+ * @brief Broadcasts a payload to all connected WebSocket clients.
+ *
+ * @param payload JSON payload to transmit.
+ * @param source Property name under which the payload is sent.
+ */
 void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc[source].set(payload);
     const size_t length{measureJson(doc)};
     std::vector<char> message(length + 1U);
@@ -25,9 +37,19 @@ void WebSocketExtension::onTransmit(JsonObjectConst payload, std::string_view so
     server->textAll(message.data(), length);
 }
 
-void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-parameters)
-                                 AsyncWebSocketClient *client, AwsEventType type, void *arg, const uint8_t *data,
-                                 size_t len)
+/**
+ * @brief Handles WebSocket connections and text messages.
+ *
+ * Sends available transmits to newly connected clients and forwards each
+ * object-valued property in a valid JSON object to the device. Reassembles
+ * fragmented text messages before processing them.
+ *
+ * @param client WebSocket client associated with the event.
+ * @param data Event payload data.
+ * @param len Number of bytes in the event payload.
+ */
+void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg,
+                                 const uint8_t *data, size_t len)
 {
     switch (type)
     {
@@ -60,7 +82,7 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, // NOLINT(misc-unused-p
                 data = buffer.data();
                 len = buffer.size();
             }
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             if (deserializeJson(doc, data, len) == DeserializationError::Code::Ok && doc.is<JsonObjectConst>())
             {
                 for (const JsonPairConst pair : doc.as<JsonObjectConst>())

@@ -12,10 +12,10 @@ private:
     static void onNotFound(AsyncWebServerRequest *request);
 
 public:
-    AsyncWebServer *http{new AsyncWebServer(80U)};
+    AsyncWebServer http{80U};
 
-    void configure() const;
-    void begin() const;
+    void configure();
+    void begin();
 
     static void onEmpty(AsyncWebServerRequest *request);
 

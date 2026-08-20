@@ -9,6 +9,12 @@
 #include <esp_wifi.h>
 #include <nvs.h>
 
+/**
+ * @brief Configures Wi-Fi, event handlers, country settings, and time synchronization.
+ *
+ * Selects hotspot mode when a configured boot switch is held during a normal boot;
+ * otherwise, initializes station mode.
+ */
 void ConnectivityService::configure()
 {
 #ifdef PIN_SW1
@@ -32,7 +38,7 @@ void ConnectivityService::configure()
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
         std::array<char, 3U> country{};
-        size_t length{country.size()}; // NOLINT(cppcoreguidelines-init-variables)
+        size_t length{country.size()};
         if (nvs_get_str(handle, "country", country.data(), &length) == ESP_OK && length == country.size())
         {
             esp_wifi_set_country_code(country.data(), true);
@@ -80,9 +86,15 @@ void ConnectivityService::handle()
     }
 }
 
+/**
+ * @brief Loads saved Wi-Fi credentials and starts station-mode connection attempts.
+ *
+ * Combines persisted credentials with the configured station credentials, stores the
+ * resulting credential set, and adds each network to the multi-network connector.
+ */
 void ConnectivityService::initStation()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READONLY, &handle) == ESP_OK)
     {
@@ -131,6 +143,9 @@ void ConnectivityService::initStation()
     multi.run();
 }
 
+/**
+ * @brief Starts the Wi-Fi access point and wildcard DNS service for hotspot operation.
+ */
 void ConnectivityService::initHotspot()
 {
     ESP_LOGV(name.data(), "initializing Wi-Fi hotspot"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -150,7 +165,13 @@ void ConnectivityService::initHotspot()
 #endif // EXTENSION_WEBAPP
 }
 
-void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(bugprone-easily-swappable-parameters)
+/**
+ * @brief Starts a strict connection attempt using the specified Wi-Fi credentials.
+ *
+ * @param ssid Wi-Fi network name.
+ * @param key Wi-Fi network password.
+ */
+void ConnectivityService::connect(const char *ssid, const char *key)
 {
     if (WiFiClass::getMode() == wifi_mode_t::WIFI_MODE_AP)
     {
@@ -162,11 +183,19 @@ void ConnectivityService::connect(const char *ssid, const char *key) // NOLINT(b
     multi.run();
 }
 
-void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles a successful Wi-Fi connection.
+ *
+ * Logs the connection status and signal strength, and stores the detected
+ * Wi-Fi country code when no fixed country configuration is provided.
+ *
+ * @param event Wi-Fi event identifier.
+ */
+void ConnectivityService::onConnected(arduino_event_id_t event)
 {
-    ESP_LOGD(name.data(), "Wi-Fi connected");            // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());   // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-    ESP_LOGI(name.data(), "Hostname" HOSTNAME ".local"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGD(name.data(), "Wi-Fi connected");             // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGV(name.data(), "RSSI %d dBm", WiFi.RSSI());    // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+    ESP_LOGI(name.data(), "Hostname " HOSTNAME ".local"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 #ifndef WIFI_COUNTRY
     nvs_handle_t handle{};
     std::array<char, 3U> country{};
@@ -183,8 +212,16 @@ void ConnectivityService::onConnected(arduino_event_id_t event) // NOLINT(misc-u
 #endif // WIFI_COUNTRY
 }
 
-void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                         arduino_event_info_t info)
+/**
+ * @brief Handles Wi-Fi disconnection events.
+ *
+ * Marks the service as non-routable, stops mDNS when active, and logs the
+ * disconnection reason.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event-specific information containing the disconnection reason.
+ */
+void ConnectivityService::onDisconnected(arduino_event_id_t event, arduino_event_info_t info)
 {
     Connectivity.routable = false;
     if (Connectivity.mdns)
@@ -199,8 +236,13 @@ void ConnectivityService::onDisconnected(arduino_event_id_t event, // NOLINT(mis
              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
 }
 
-void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+/**
+ * @brief Marks the service routable when the station receives an IPv4 address.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event data containing the assigned IPv4 address.
+ */
+void ConnectivityService::onIPv4(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasIP())
     {
@@ -215,8 +257,16 @@ void ConnectivityService::onIPv4(arduino_event_id_t event, // NOLINT(misc-unused
     }
 }
 
-void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused-parameters)
-                                 arduino_event_info_t info)
+/**
+ * @brief Handles assignment of a global IPv6 address.
+ *
+ * Logs the assigned address and marks the service routable when a global IPv6
+ * address is available.
+ *
+ * @param event Wi-Fi event identifier.
+ * @param info Event data containing the assigned IPv6 address.
+ */
+void ConnectivityService::onIPv6(arduino_event_id_t event, arduino_event_info_t info)
 {
     if (WiFi.STA.hasGlobalIPv6())
     {
@@ -235,6 +285,12 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, // NOLINT(misc-unused
     }
 }
 
+/**
+ * @brief Marks the service as routable and initializes network services.
+ *
+ * Terminates hotspot operation when transitioning from hotspot mode, starts
+ * mDNS service registration, and triggers SNTP synchronization.
+ */
 void ConnectivityService::onRoutable()
 {
     if (!Connectivity.routable)
@@ -242,7 +298,7 @@ void ConnectivityService::onRoutable()
         Connectivity.routable = true;
         if (WiFiClass::getMode() != wifi_mode_t::WIFI_MODE_STA)
         {
-            JsonDocument doc; // NOLINT(misc-const-correctness)
+            JsonDocument doc{};
             doc["event"].set("connected");
             Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -269,27 +325,33 @@ void ConnectivityService::onRoutable()
     }
 }
 
-void ConnectivityService::onScan(arduino_event_id_t event) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Processes completed Wi-Fi scans and transmits the discovered networks.
+ *
+ * Each network includes its SSID, signal strength, and encryption status.
+ */
+void ConnectivityService::onScan(arduino_event_id_t event)
 {
     const int16_t count{WiFi.scanComplete()};
     if (count > 0)
     {
-        JsonDocument doc; // NOLINT(misc-const-correctness)
-        JsonArray scan{doc["scan"].to<JsonArray>()};
-        for (int16_t i{0}; i < count; ++i)
+        JsonDocument doc{};
+        for (int16_t idx{0}; idx < count; ++idx)
         {
-            JsonObject _scan{scan.add<JsonObject>()};
-            _scan["encrypted"].set(WiFi.encryptionType(i) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
-            _scan["rssi"].set(WiFi.RSSI(i));
-            _scan["ssid"].set(WiFi.SSID(i));
+            doc["scan"][idx]["encrypted"].set(WiFi.encryptionType(idx) != wifi_auth_mode_t::WIFI_AUTH_OPEN);
+            doc["scan"][idx]["rssi"].set(WiFi.RSSI(idx));
+            doc["scan"][idx]["ssid"].set(WiFi.SSID(idx));
         }
         Device.transmit(doc.as<JsonObjectConst>(), Connectivity.name, false);
     }
 }
 
+/**
+ * @brief Transmits the current Wi-Fi connectivity status and saved network names.
+ */
 void ConnectivityService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["host"].set(HOSTNAME ".local");
     doc["rssi"].set(WiFi.RSSI());
     {
@@ -299,7 +361,7 @@ void ConnectivityService::transmit()
             size_t length{0U};
             if (nvs_get_blob(handle, "Wi-Fi", nullptr, &length) == ESP_OK && length != 0U)
             {
-                JsonDocument _saved; // NOLINT(misc-const-correctness)
+                JsonDocument _saved{};
                 std::vector<char> buffer(length);
                 if (nvs_get_blob(handle, "Wi-Fi", buffer.data(), &length) == ESP_OK &&
                     deserializeJson(_saved, buffer.data(), length) == DeserializationError::Code::Ok)
@@ -318,8 +380,13 @@ void ConnectivityService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void ConnectivityService::onReceive(JsonObjectConst payload,
-                                    std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles incoming Wi-Fi credentials and scan requests.
+ *
+ * @param payload Incoming payload containing optional Wi-Fi credentials or an action.
+ * @param source Source identifier for the payload.
+ */
+void ConnectivityService::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Connect
     if (payload["ssid"].is<const char *>())
@@ -337,7 +404,13 @@ void ConnectivityService::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds a Home Assistant diagnostic sensor for Wi-Fi signal strength.
+ *
+ * @param discovery Home Assistant discovery document to update.
+ * @param topic Base topic used to read the signal-strength value.
+ * @param unique Prefix used to construct the sensor's unique identifier.
+ */
 void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

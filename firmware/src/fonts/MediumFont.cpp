@@ -7,6 +7,12 @@
 static_assert(GRID_COLUMNS >= 6U, __STRING(FONT_MEDIUM) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUM) " is not compatible with this device's display size.");
 
+/**
+ * @brief Converts a supported character to its medium-font symbol.
+ *
+ * @param character Character to convert.
+ * @return FontModule::Symbol The corresponding symbol, or an empty symbol for unsupported characters.
+ */
 FontModule::Symbol MediumFont::getChar(char32_t character) const
 {
     if (character >= '0' && character <= '9')
@@ -14,7 +20,6 @@ FontModule::Symbol MediumFont::getChar(char32_t character) const
         // U+0030-U+0039
         return toSymbol(digitZero_digitNine[character - '0']);
     }
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (character)
     {
     case ' ': // U+0020 SPACE
@@ -28,7 +33,6 @@ FontModule::Symbol MediumFont::getChar(char32_t character) const
     default:
         return {};
     }
-    // NOLINTEND(bugprone-branch-clone)
 }
 
 #endif // FONT_MEDIUM

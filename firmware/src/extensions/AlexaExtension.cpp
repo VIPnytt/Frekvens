@@ -12,18 +12,21 @@
 #include <format>
 #include <vector>
 
+/**
+ * @brief Initializes the Alexa-compatible HTTP and UPnP services.
+ */
 void AlexaExtension::begin()
 {
-    WebServer.http->on(
+    WebServer.http.on(
         AsyncURIMatcher::exact("/api"), WebRequestMethod::HTTP_POST, &WebServerService::onEmpty, nullptr, &onPostApi);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights"), WebRequestMethod::HTTP_GET, &onGetLights);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights/1"), WebRequestMethod::HTTP_GET, &onGetLight);
-    WebServer.http->on(AsyncURIMatcher::exact("/api/alexa/lights/1/state"),
-                       WebRequestMethod::HTTP_PUT,
-                       &WebServerService::onEmpty,
-                       nullptr,
-                       &onPutState);
-    WebServer.http->on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGetDescription);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights"), WebRequestMethod::HTTP_GET, &onGetLights);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights/1"), WebRequestMethod::HTTP_GET, &onGetLight);
+    WebServer.http.on(AsyncURIMatcher::exact("/api/alexa/lights/1/state"),
+                      WebRequestMethod::HTTP_PUT,
+                      &WebServerService::onEmpty,
+                      nullptr,
+                      &onPutState);
+    WebServer.http.on(AsyncURIMatcher::exact("/description.xml"), WebRequestMethod::HTTP_GET, &onGetDescription);
     upnp.onPacket(&onUpnp);
     upnp.listenMulticast(IPAddress(239U, 255U, 255U, 250U), 1900U);
 }
@@ -117,6 +120,9 @@ void AlexaExtension::onGetLights(AsyncWebServerRequest *request)
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", std::format(R"({{"1":{}}})", light()).c_str());
 }
 
+/**
+ * @brief Advertises the Hue-compatible mDNS service and bridge metadata.
+ */
 void AlexaExtension::onMdns()
 {
     MDNS.addService("hue", "tcp", 80U);
@@ -124,17 +130,25 @@ void AlexaExtension::onMdns()
     MDNS.addServiceTxt("hue", "tcp", "modelid", "BSB002");
 }
 
-void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len,
-                                size_t index, // NOLINT(misc-unused-parameters)
-                                size_t total) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies brightness and power updates from a JSON request body.
+ *
+ * @param request HTTP request receiving the response.
+ * @param data Current request body data segment.
+ * @param len Length of the current body data segment.
+ * @param index Offset of the current body data segment within the request body.
+ * @param total Total request body length.
+ */
+void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                                size_t total)
 {
     const std::span<const uint8_t> _body{data, len};
     const std::string body{_body.begin(), _body.end()};
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     deserializeJson(doc, body);
     if (doc["bri"].is<uint8_t>())
     {
-        const uint8_t brightness{doc["bri"].as<uint8_t>()}; // NOLINT(cppcoreguidelines-init-variables)
+        const uint8_t brightness{doc["bri"].as<uint8_t>()};
         if (Display.getBrightness() != brightness)
         {
             Display.setBrightness(brightness);
@@ -142,7 +156,7 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
     }
     if (doc["on"].is<bool>())
     {
-        const bool power{doc["on"].as<bool>()}; // NOLINT(cppcoreguidelines-init-variables)
+        const bool power{doc["on"].as<bool>()};
         if (Display.getPower() != power)
         {
             Display.setPower(power);
@@ -159,15 +173,20 @@ void AlexaExtension::onPutState(AsyncWebServerRequest *request, const uint8_t *d
                       .c_str());
 }
 
-void AlexaExtension::onPostApi(AsyncWebServerRequest *request,
-                               const uint8_t *data, // NOLINT(misc-unused-parameters)
-                               size_t len,          // NOLINT(misc-unused-parameters)
-                               size_t index,        // NOLINT(misc-unused-parameters)
-                               size_t total)        // NOLINT(misc-unused-parameters)
+/**
+ * @brief Handles API authentication requests with a successful Alexa user response.
+ */
+void AlexaExtension::onPostApi(AsyncWebServerRequest *request, const uint8_t *data, size_t len, size_t index,
+                               size_t total)
 {
     request->send(t_http_codes::HTTP_CODE_OK, "application/json", R"([{"success":{"username":"alexa"}}])");
 }
 
+/**
+ * @brief Responds to Hue-compatible UPnP discovery requests.
+ *
+ * @param packet Received UDP packet containing the discovery request.
+ */
 void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
 {
     const std::span<const uint8_t> request{packet.data(), packet.length()};
@@ -175,7 +194,6 @@ void AlexaExtension::onUpnp(AsyncUDPPacket &packet)
             request, "M-SEARCH", {}, std::identity{}, [](char character) { return static_cast<uint8_t>(character); })
             .begin() != request.end())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const bool root{std::ranges::search(request,
                                             "upnp:rootdevice",
                                             {},

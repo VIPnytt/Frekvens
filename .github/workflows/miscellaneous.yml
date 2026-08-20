@@ -14,26 +14,15 @@ jobs:
   animation-splitter:
     name: Animation splitter
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
-          activate-environment: true
-
-      - name: Set up Frekvens tools
-        run: uv sync --no-dev
+          python-version: "3.10"
+          version: latest-known
 
       - name: Animation splitter
         run: |
@@ -74,7 +63,7 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Frames.csv
 
-          python -m frekvens.AnimationSplitter -i Frames.csv
+          uv run --no-dev -m frekvens.AnimationSplitter -i Frames.csv
 
       - name: Frame comparison
         run: |
@@ -124,30 +113,19 @@ jobs:
   homethermometer-updater:
     name: Home thermometer updater
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
-          activate-environment: true
-
-      - name: Set up Frekvens tools
-        run: uv sync --no-dev
+          python-version: "3.10"
+          version: latest-known
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run --no-dev - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -160,35 +138,24 @@ jobs:
           sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Home thermometer updater
-        run: python -m frekvens.HomeThermometerUpdater 127.0.0.1 --indoor=22 --outdoor=8
+        run: uv run --no-dev -m frekvens.HomeThermometerUpdater 127.0.0.1 --indoor=22 --outdoor=8
 
   mode-switcher:
     name: Mode switcher
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.python-version }}
-          activate-environment: true
-
-      - name: Set up Frekvens tools
-        run: uv sync --no-dev
+          python-version: "3.10"
+          version: latest-known
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run --no-dev - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -201,7 +168,7 @@ jobs:
           sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
       - name: Mode switcher
-        run: python -m frekvens.ModeSwitcher 127.0.0.1 --mode=Test
+        run: uv run --no-dev -m frekvens.ModeSwitcher 127.0.0.1 --mode=Test
 
   package-lock:
     name: package-lock.json consistency
@@ -209,10 +176,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
@@ -230,13 +197,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: 3.14
+          python-version: "3.10"
+          version: latest-known
 
       - name: uv lock check
         run: uv lock --check

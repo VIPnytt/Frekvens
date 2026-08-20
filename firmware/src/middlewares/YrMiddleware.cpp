@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates weather condition and temperature from the configured provider.
+ *
+ * @param condition Receives the parsed weather condition.
+ * @param temperature Receives the rounded temperature in the configured unit.
+ * @param lastMillis Receives the timestamp used to schedule the next update.
+ */
 void YrMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                           unsigned long &lastMillis)
 {
@@ -24,10 +31,10 @@ void YrMiddleware::update(std::optional<WeatherHandler::Condition> &condition, s
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["properties"]["timeseries"][0U]["data"]["instant"]["details"]["air_temperature"].set(true);
     filter["properties"]["timeseries"][0U]["data"]["next_1_hours"]["summary"]["symbol_code"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["properties"]["timeseries"][0U]["data"]["instant"]["details"]["air_temperature"].is<float>() &&
         doc["properties"]["timeseries"][0U]["data"]["next_1_hours"]["summary"]["symbol_code"].is<std::string_view>())

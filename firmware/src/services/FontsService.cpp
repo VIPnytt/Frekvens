@@ -57,9 +57,12 @@ std::unique_ptr<const FontModule> FontsService::get(std::string_view fontName) c
     return nullptr;
 }
 
+/**
+ * @brief Publishes the names of the available fonts.
+ */
 void FontsService::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     JsonArray list{doc["list"].to<JsonArray>()};
     for (const std::string_view _name : names)
     {

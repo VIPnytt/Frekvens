@@ -3,6 +3,12 @@
 #include "handlers/TextHandler.h"    // NOLINT(misc-include-cleaner)
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the displayed clock when the local time changes.
+ *
+ * The display uses either 24-hour or 12-hour formatting according to the
+ * configured clock mode.
+ */
 void ClockHandler::handle()
 {
     if (getLocalTime(&local) && (minute != local.tm_min || hour != local.tm_hour))
@@ -19,6 +25,16 @@ void ClockHandler::handle()
     }
 }
 
+/**
+ * @brief Renders a 3×5 bitmap at the specified display position.
+ *
+ * Set bits illuminate pixels. When opaque rendering is enabled, unset bits clear
+ * the corresponding pixels.
+ *
+ * @param bitmap 15-bit bitmap containing the glyph pattern.
+ * @param x Horizontal display position.
+ * @param y Vertical display position.
+ */
 void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
 {
     for (uint8_t _x{0U}; _x < 3U; ++_x)
@@ -37,21 +53,7 @@ void ClockHandler::draw(uint16_t bitmap, uint8_t x, uint8_t y) const
     }
 }
 
-void ClockHandler::clear() const
-{
-    for (uint8_t y{0U}; y < 5U; ++y)
-    {
-        for (uint8_t x{0U}; x < (GRID_COLUMNS / 2U) - 8U; ++x)
-        {
-            Display.setPixel(x, y, 0U);
-        }
-        Display.setPixel((GRID_COLUMNS / 2U) - 5U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) - 1U, y, 0U);
-        Display.setPixel(GRID_COLUMNS / 2U, y, 0U);
-        Display.setPixel((GRID_COLUMNS / 2U) + 4U, y, 0U);
-        for (uint8_t x{(GRID_COLUMNS / 2U) + 8U}; x < GRID_COLUMNS; ++x)
-        {
-            Display.setPixel(x, y, 0U);
-        }
-    }
-}
+/**
+ * @brief Clears the first five rows of the display.
+ */
+void ClockHandler::clear() const { Display.fillRows(0U, 5U, 0U); }

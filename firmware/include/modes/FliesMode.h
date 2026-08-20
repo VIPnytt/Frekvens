@@ -10,15 +10,9 @@
 class FliesMode final : public ModeModule
 {
 private:
-    struct Dot
-    {
-        uint8_t x = 0;
-        uint8_t y = 0;
-    };
+    bool pending{false};
 
-    bool pending = false;
-
-    std::unordered_map<uint8_t, Dot> flies{};
+    std::unordered_map<uint8_t, std::pair<uint8_t, uint8_t>> flies{};
 
 public:
     static constexpr std::string_view name{"Flies"};

@@ -8,11 +8,14 @@
 
 void StatusLedExtension::configure() { pinMode(PIN_LED, OUTPUT); }
 
+/**
+ * @brief Updates the status LED according to warning, connectivity, and critical error conditions.
+ */
 void StatusLedExtension::handle()
 {
-    const unsigned long delta = millis() - lastMillis;
-    if ((delta > (1U << 10U) && digitalRead(PIN_LED) == LOW) ||
-        (delta > (1U << 9U) && (millis() - lastMillisWarning < (1U << 10U) || !WiFi.isConnected())) ||
+    const unsigned long delta{millis() - lastMillis};
+    if ((delta > (0b1U << 10U) && digitalRead(PIN_LED) == LOW) ||
+        (delta > (0b1U << 9U) && (millis() - lastMillisWarning < (0b1U << 10U) || !WiFi.isConnected())) ||
         (delta > INT8_MAX && critical))
     {
         lastMillis = millis();

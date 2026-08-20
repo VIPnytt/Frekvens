@@ -31,7 +31,6 @@ protected:
     template <typename T, size_t N> [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap) const;
     template <typename T, size_t N> [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, int8_t offsetY) const;
     template <typename T, size_t N>
-    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     [[nodiscard]] Symbol toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX, int8_t offsetY) const;
 
     [[nodiscard]] Symbol whitespace(uint8_t offsetX) const;
@@ -43,14 +42,12 @@ template <typename T, size_t N> FontModule::Symbol FontModule::toSymbol(const st
 }
 
 template <typename T, size_t N>
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 FontModule::Symbol FontModule::toSymbol(const std::array<T, N> &bitmap, int8_t offsetY) const
 {
     return {bitmap, 0U, offsetY};
 }
 
 template <typename T, size_t N>
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 FontModule::Symbol FontModule::toSymbol(const std::array<T, N> &bitmap, uint8_t offsetX, int8_t offsetY) const
 {
     return {bitmap, offsetX, offsetY};

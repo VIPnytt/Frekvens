@@ -2,14 +2,16 @@
 
 #include "modes/StreamMode.h"
 
-#include "config/constants.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
+#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <nvs.h>
-#include <span>
 
+/**
+ * @brief Loads the persisted streaming port and publishes the current configuration.
+ */
 void StreamMode::configure()
 {
     nvs_handle_t handle{};
@@ -21,19 +23,42 @@ void StreamMode::configure()
     transmit();
 }
 
+/**
+ * @brief Starts UDP listening on the configured port and registers its protocol handler.
+ */
 void StreamMode::begin()
 {
     if (udp.listen(port))
     {
-        udp.onPacket(&onPacket);
+        switch (port)
+        {
+        case 4048U:
+            udp.onPacket(&onDistributedDisplayProtocol);
+            break;
+        case 5568U:
+            udp.onPacket(&onE131);
+            break;
+        case 6454U:
+            udp.onPacket(&onArtNet);
+            break;
+        default:
+            return;
+        }
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
     }
 }
 
+/**
+ * @brief Sets the streaming protocol port and restarts UDP listening.
+ *
+ * Persists the port when it is supported, then publishes the updated configuration.
+ *
+ * @param _port Supported streaming port: 4048, 5568, or 6454.
+ */
 void StreamMode::set(uint16_t _port)
 {
-    if (_port != 4048 && _port != 5568 && _port != 6454)
+    if (_port != 4048U && _port != 5568U && _port != 6454U)
     {
         return;
     }
@@ -45,23 +70,27 @@ void StreamMode::set(uint16_t _port)
         nvs_commit(handle);
         nvs_close(handle);
     }
-    if (udp.listen(port))
-    {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-        ESP_LOGD(name.data(), "listening at " HOSTNAME ".local:%u", port);
-        transmit();
-    }
+    begin();
+    transmit();
 }
 
+/**
+ * @brief Publishes the configured streaming port.
+ */
 void StreamMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["port"].set(port);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void StreamMode::onReceive(JsonObjectConst payload,
-                           std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies a received streaming port configuration.
+ *
+ * @param payload Configuration payload containing the optional `port` value.
+ * @param source Source identifier for the received configuration.
+ */
+void StreamMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Port
     if (payload["port"].is<uint16_t>())
@@ -70,19 +99,62 @@ void StreamMode::onReceive(JsonObjectConst payload,
     }
 }
 
-void StreamMode::onPacket(AsyncUDPPacket packet)
+/**
+ * @brief Processes an Art-Net packet containing one complete display frame.
+ *
+ * @param packet UDP packet with an 18-byte Art-Net header followed by the frame data.
+ */
+void StreamMode::onArtNet(AsyncUDPPacket packet)
 {
-    const size_t len = packet.length();
-    if ((port == 4048 && (len == 10 + (GRID_COLUMNS * GRID_ROWS) || len == 14 + (GRID_COLUMNS * GRID_ROWS))) ||
-        (port == 6454 && len == 18 + (GRID_COLUMNS * GRID_ROWS)) ||
-        (port == 5568 && len == 126 + (GRID_COLUMNS * GRID_ROWS)))
+    if (packet.length() == 18U + (GRID_COLUMNS * GRID_ROWS))
     {
-        Display.setFrame(std::span<const uint8_t>(packet.data(), len).last(GRID_COLUMNS * GRID_ROWS));
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(18U)));
+    }
+}
+
+/**
+ * @brief Processes a Distributed Display Protocol packet and updates the display frame.
+ *
+ * @param packet UDP packet containing a supported protocol header followed by a complete display frame.
+ */
+void StreamMode::onDistributedDisplayProtocol(AsyncUDPPacket packet)
+{
+    const std::span<const uint8_t> data{std::span(packet.data(), packet.length())};
+    if (packet.length() == 10U + (GRID_COLUMNS * GRID_ROWS) && (data.front() & (0b1U << 4U)) == 0U)
+    {
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(10U)));
+    }
+    else if (packet.length() == 14U + (GRID_COLUMNS * GRID_ROWS) && (data.front() & (0b1U << 4U)) != 0U)
+    {
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(14U)));
+    }
+}
+
+/**
+ * @brief Processes an E1.31 packet and updates the display frame.
+ *
+ * @param packet UDP packet containing a 126-byte E1.31 header followed by a complete display frame.
+ */
+void StreamMode::onE131(AsyncUDPPacket packet)
+{
+    if (packet.length() == 126U + (GRID_COLUMNS * GRID_ROWS))
+    {
+        Display.setFrame(static_cast<std::span<const uint8_t, GRID_COLUMNS * GRID_ROWS>>(
+            std::span(packet.data(), packet.length()).subspan(126U)));
     }
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery metadata for selecting the streaming protocol.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic used for protocol state and commands.
+ * @param unique Prefix used to construct the entity's unique identifier.
+ */
 void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
@@ -96,10 +168,9 @@ void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::entity_category].set("config");
         component[HomeAssistantAbbreviations::icon].set("mdi:protocol");
         component[HomeAssistantAbbreviations::name].set(std::string(name).append(" protocol"));
-        JsonArray options{component[HomeAssistantAbbreviations::options].to<JsonArray>()};
-        options.add("Art-Net");
-        options.add("Distributed Display Protocol");
-        options.add("E1.31");
+        component[HomeAssistantAbbreviations::options][0U].set("Art-Net");
+        component[HomeAssistantAbbreviations::options][1U].set("Distributed Display Protocol");
+        component[HomeAssistantAbbreviations::options][2U].set("E1.31");
         component[HomeAssistantAbbreviations::platform].set("select");
         component[HomeAssistantAbbreviations::state_topic].set(topic);
         component[HomeAssistantAbbreviations::unique_id].set(unique + id);

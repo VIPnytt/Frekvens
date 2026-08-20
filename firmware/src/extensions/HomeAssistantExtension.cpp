@@ -12,6 +12,9 @@
 #include <WiFi.h>
 #include <array>
 
+/**
+ * @brief Publishes the device's Home Assistant MQTT discovery configuration.
+ */
 void HomeAssistantExtension::begin()
 {
     const std::string topic{std::string("frekvens/" HOSTNAME "/")};
@@ -45,16 +48,11 @@ void HomeAssistantExtension::begin()
         device[HomeAssistantDeviceAbbreviations::configuration_url].set("http://" HOSTNAME ".local");
 #endif // EXTENSION_WEBAPP
         {
-            JsonArray _connections{device[HomeAssistantDeviceAbbreviations::connections].to<JsonArray>()};
-            {
-                JsonArray _wifi{_connections.add<JsonArray>()};
-                _wifi.add("mac");
-                _wifi.add(WiFi.macAddress());
-            }
+            device[HomeAssistantDeviceAbbreviations::connections][0U][0U].set("mac");
+            device[HomeAssistantDeviceAbbreviations::connections][0U][1U].set(WiFi.macAddress());
         }
         device[HomeAssistantDeviceAbbreviations::hw_version].set(ARDUINO_BOARD);
-        device[HomeAssistantDeviceAbbreviations::identifiers].to<JsonArray>().add(
-            std::format("0x{:x}", ESP.getEfuseMac()));
+        device[HomeAssistantDeviceAbbreviations::identifiers][0U].set(std::format("0x{:x}", ESP.getEfuseMac()));
         device[HomeAssistantDeviceAbbreviations::manufacturer].set(MANUFACTURER);
         device[HomeAssistantDeviceAbbreviations::model].set(MODEL);
         device[HomeAssistantDeviceAbbreviations::name].set(NAME);
@@ -68,8 +66,8 @@ void HomeAssistantExtension::begin()
         }
     }
     const size_t length{measureJson(discovery)};
-    std::vector<uint8_t> payload(length + 1);
-    serializeJson(discovery, payload.data(), length + 1);
+    std::vector<uint8_t> payload(length + 1U);
+    serializeJson(discovery, payload.data(), length + 1U);
     Extensions.MQTT().client.publish(discoveryTopic.c_str(),
                                      static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS0),
                                      true,
@@ -86,9 +84,12 @@ void HomeAssistantExtension::handle()
     }
 }
 
+/**
+ * @brief Removes the Home Assistant MQTT discovery configuration.
+ */
 void HomeAssistantExtension::undiscover()
 {
-    MqttExtension &_mqtt{Extensions.MQTT()}; // NOLINT(misc-const-correctness)
+    MqttExtension &_mqtt{Extensions.MQTT()};
     _mqtt.client.publish(discoveryTopic.c_str(),
                          static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
                          true,
@@ -97,13 +98,22 @@ void HomeAssistantExtension::undiscover()
     ESP_LOGI(name.data(), "discovery packet removed"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
+/**
+ * @brief Transmits the display power state to Home Assistant.
+ */
 void HomeAssistantExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc[Display.name]["power"].set(Display.getPower() ? payloadOn : payloadOff);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
+/**
+ * @brief Processes power updates and discovery removal actions.
+ *
+ * @param payload Message payload containing a power update or action.
+ * @param source Name of the service that sent the payload.
+ */
 void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Power
@@ -118,7 +128,13 @@ void HomeAssistantExtension::onTransmit(JsonObjectConst payload, std::string_vie
     }
 }
 
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds the Home Assistant light component configuration to a discovery document.
+ *
+ * @param discovery Discovery document to update.
+ * @param topic Base MQTT topic for the component state.
+ * @param unique Prefix used to construct the component's unique identifier.
+ */
 void HomeAssistantExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

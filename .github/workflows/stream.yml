@@ -22,27 +22,19 @@ jobs:
           - 5568
           - 6454
 
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up Frekvens tools
-        run: uv sync --no-dev
+          python-version: "3.10"
+          version: latest-known
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run --no-dev - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -93,7 +85,7 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Animation.csv
 
-          timeout --preserve-status -s INT 10s python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Animation.csv
+          timeout --preserve-status -s INT 10s uv run --no-dev -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Animation.csv
 
   drawing:
     name: Drawing
@@ -106,27 +98,19 @@ jobs:
           - 5568
           - 6454
 
-        toolchain:
-          - python-version: '3.10'
-          - python-version: 3.14
-
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@d31148d669074a8d0a63714ba94f3201e7020bc3 # v8.3.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          version-file: pyproject.toml
-          python-version: ${{ matrix.toolchain.python-version }}
-          activate-environment: true
-
-      - name: Set up Frekvens tools
-        run: uv sync --no-dev
+          python-version: "3.10"
+          version: latest-known
 
       - name: Set up HTTP server
         run: |
-          python - << 'EOF' &
+          uv run --no-dev - << 'EOF' &
           import http.server
           class Test(http.server.BaseHTTPRequestHandler):
               def do_PATCH(self):
@@ -161,4 +145,4 @@ jobs:
 
           sed -i 's/\r\{0,1\}$/\r/' Drawing.csv
 
-          python -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Drawing.csv
+          uv run --no-dev -m frekvens.StreamCsv 127.0.0.1:${{ matrix.port }} -i Drawing.csv

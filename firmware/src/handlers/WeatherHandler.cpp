@@ -101,9 +101,16 @@ template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<u
 template std::optional<WeatherHandler::Condition> WeatherHandler::getCondition<uint32_t>(
     uint32_t code, std::span<const std::pair<WeatherHandler::Condition, std::span<const uint32_t>>> codesets);
 
+/**
+ * @brief Selects the bitmap associated with a weather condition.
+ *
+ * For clear conditions, selects a bitmap appropriate to the display orientation.
+ *
+ * @param condition Weather condition to represent.
+ * @return Bitmap span for the condition, or an empty variant when no bitmap is available.
+ */
 std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler::getSign(Condition condition)
 {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch (condition)
     {
     case Condition::CLEAR:
@@ -135,6 +142,5 @@ std::variant<std::span<const uint8_t>, std::span<const uint16_t>> WeatherHandler
     case Condition::WIND:
         return bitmapWind;
     }
-    // NOLINTEND(bugprone-branch-clone)
     return {};
 }

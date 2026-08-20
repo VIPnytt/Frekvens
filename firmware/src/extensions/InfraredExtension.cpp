@@ -159,15 +159,22 @@ void InfraredExtension::setActive(bool _active)
     transmit();
 }
 
+/**
+ * @brief Publishes the infrared extension's active state.
+ */
 void InfraredExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void InfraredExtension::onReceive(JsonObjectConst payload,
-                                  std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Updates the infrared receiver state from an incoming payload.
+ *
+ * @param payload Payload containing the optional `active` state.
+ */
+void InfraredExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -177,7 +184,13 @@ void InfraredExtension::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery configuration for the infrared extension switch.
+ *
+ * @param discovery Document receiving the discovery component configuration.
+ * @param topic Base topic used for command and state communication.
+ * @param unique Prefix used to construct the component's unique identifier.
+ */
 void InfraredExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

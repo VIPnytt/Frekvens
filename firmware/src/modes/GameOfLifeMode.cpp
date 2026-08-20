@@ -29,6 +29,12 @@ void GameOfLifeMode::configure()
     transmit();
 }
 
+/**
+ * @brief Initializes the Game of Life mode from its persisted clock setting.
+ *
+ * Enables the clock display, reserves the top five rows, clears the clock, and
+ * sets maximum brightness when the persisted setting is enabled.
+ */
 void GameOfLifeMode::begin()
 {
     nvs_handle_t handle{};
@@ -40,11 +46,15 @@ void GameOfLifeMode::begin()
             yMin = 5U;
             clock = std::make_unique<ClockHandler>();
             clock->clear();
+            brightness = INT8_MAX;
         }
         nvs_close(handle);
     }
 }
 
+/**
+ * @brief Updates the optional clock and advances the Conway's Game of Life simulation.
+ */
 void GameOfLifeMode::handle()
 {
     if (clock != nullptr)
@@ -60,7 +70,7 @@ void GameOfLifeMode::handle()
         return;
     }
     std::vector<bool> seeds(GRID_COLUMNS * (GRID_ROWS - yMin), false);
-    for (uint8_t i{active}; i < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++i)
+    for (uint8_t idx{active}; idx < static_cast<uint8_t>(GRID_COLUMNS * (GRID_ROWS - yMin) / (0b1U << 4U)); ++idx)
     {
         seeds[random(1, GRID_COLUMNS - 1) + (random(yMin + 1U, GRID_ROWS - 1) * (GRID_COLUMNS - yMin))] = true;
     }
@@ -71,10 +81,8 @@ void GameOfLifeMode::handle()
         for (uint8_t y{yMin}; y < GRID_ROWS; ++y)
         {
             uint8_t count{0U};
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             for (uint8_t _x{static_cast<uint8_t>(max<int16_t>(x - 1, 0))}; _x <= x + 1U && _x < GRID_COLUMNS; ++_x)
             {
-                // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
                 for (uint8_t _y{static_cast<uint8_t>(max<int16_t>(yMin, y - 1U))}; _y <= y + 1U && _y < GRID_ROWS; ++_y)
                 {
                     if ((_x != x || _y != y) &&
@@ -84,7 +92,6 @@ void GameOfLifeMode::handle()
                     }
                 }
             }
-            // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
             const bool lit{seeds[x + (y * (GRID_COLUMNS - yMin))] || Display.getPixel(x, y) != 0U};
             if (lit && (count < 2U || count > 3U))
             {
@@ -99,6 +106,11 @@ void GameOfLifeMode::handle()
     }
 }
 
+/**
+ * @brief Enables or disables the clock display and updates the display configuration.
+ *
+ * @param _clock Whether to enable the clock display.
+ */
 void GameOfLifeMode::setClock(bool _clock)
 {
     nvs_handle_t handle{};
@@ -113,24 +125,34 @@ void GameOfLifeMode::setClock(bool _clock)
         yMin = 5U;
         clock = std::make_unique<ClockHandler>();
         clock->clear();
+        brightness = INT8_MAX;
     }
     else
     {
         clock.reset();
         yMin = 0U;
+        brightness = UINT8_MAX;
     }
     transmit();
 }
 
+/**
+ * @brief Transmits the current clock-enabled state.
+ */
 void GameOfLifeMode::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["clock"].set(clock != nullptr);
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-void GameOfLifeMode::onReceive(JsonObjectConst payload,
-                               std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies a received clock configuration.
+ *
+ * @param payload Incoming JSON payload containing an optional Boolean `clock` value.
+ * @param source Source identifier for the received payload.
+ */
+void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Clock
     if (payload["clock"].is<bool>())
@@ -140,7 +162,13 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload,
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery metadata for the Game of Life clock switch.
+ *
+ * @param discovery JSON document to which the switch configuration is added.
+ * @param topic Base topic for the device mode.
+ * @param unique Unique identifier prefix for the switch.
+ */
 void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);

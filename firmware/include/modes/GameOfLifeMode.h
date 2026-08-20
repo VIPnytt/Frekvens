@@ -11,7 +11,7 @@ class GameOfLifeMode final : public ModeModule
 {
 private:
     uint8_t active{0U};
-    uint8_t brightness{INT8_MAX};
+    uint8_t brightness{UINT8_MAX};
     uint8_t yMin{0U};
 
     unsigned long lastMillis{0UL};

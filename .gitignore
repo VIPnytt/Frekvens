@@ -1,10 +1,11 @@
 __pycache__
 /.env*
+/.idea
 /.pio
 /.platformio
 /.ruff_cache
 /.venv
-/.vscode/*
+/.vscode
 /build
 /compile_commands.json
 /data/webapp
@@ -19,7 +20,4 @@ __pycache__
 /webapp/.env*
 /webapp/dist
 /webapp/node_modules
-!/.vscode/extensions.json
-!/.vscode/README.md
-!/.vscode/settings.json
 !/sdkconfig.defaults*

@@ -4,6 +4,13 @@
 
 #include <ArduinoJson.h> // NOLINT(misc-include-cleaner)
 
+/**
+ * @brief Updates the weather condition and temperature from the configured provider.
+ *
+ * @param condition Receives the current weather condition when the response is valid.
+ * @param temperature Receives the current temperature in degrees Celsius, or Kelvin when enabled.
+ * @param lastMillis Receives the timestamp used to schedule the next update.
+ */
 void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &condition,
                                      std::optional<int16_t> &temperature, unsigned long &lastMillis)
 {
@@ -24,10 +31,10 @@ void GoogleWeatherMiddleware::update(std::optional<WeatherHandler::Condition> &c
         }
         return;
     }
-    JsonDocument filter; // NOLINT(misc-const-correctness)
+    JsonDocument filter{};
     filter["temperature"]["degrees"].set(true);
     filter["weatherCondition"]["type"].set(true);
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     if (deserializeJson(doc, body.data(), DeserializationOption::Filter(filter)) == DeserializationError::Code::Ok &&
         doc["temperature"]["degrees"].is<float>() && doc["weatherCondition"]["type"].is<std::string_view>())
     {

@@ -24,6 +24,13 @@ void PhotocellExtension::begin()
     }
 }
 
+/**
+ * @brief Processes photocell readings and adjusts display brightness when active.
+ *
+ * Periodically transmits the raw sensor reading and, while the display is powered,
+ * applies the configured gamma curve to update the display brightness after the
+ * accumulated change exceeds the adjustment threshold.
+ */
 void PhotocellExtension::handle()
 {
     if (pending || millis() - lastMillis > UINT16_MAX)
@@ -39,7 +46,6 @@ void PhotocellExtension::handle()
     {
         _lastMillis = millis();
         raw = analogRead(PIN_LDR);
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const uint8_t _brightness{static_cast<uint8_t>(std::clamp<int16_t>(
             lroundf(((0b1U << 8U) + 1U) *
                         powf(static_cast<float>(raw + 1U) / static_cast<float>((0b1U << 12U) + 1U), gamma) -
@@ -95,17 +101,25 @@ void PhotocellExtension::setGamma(float _gamma)
     }
 }
 
+/**
+ * @brief Publishes the current active state and raw illuminance reading.
+ */
 void PhotocellExtension::transmit()
 {
-    JsonDocument doc; // NOLINT(misc-const-correctness)
+    JsonDocument doc{};
     doc["active"].set(active);
     doc["illuminance"].set(raw);
     Device.transmit(doc.as<JsonObjectConst>(), name);
     lastMillis = millis();
 }
 
-void PhotocellExtension::onReceive(JsonObjectConst payload,
-                                   std::string_view source) // NOLINT(misc-unused-parameters)
+/**
+ * @brief Applies an incoming active-state update.
+ *
+ * @param payload Payload containing an optional boolean `active` field.
+ * @param source Source of the incoming payload.
+ */
+void PhotocellExtension::onReceive(JsonObjectConst payload, std::string_view source)
 {
     // Active
     if (payload["active"].is<bool>())
@@ -114,12 +128,17 @@ void PhotocellExtension::onReceive(JsonObjectConst payload,
     }
 }
 
+/**
+ * @brief Adjusts the gamma value when the display brightness changes while active.
+ *
+ * @param payload Transmitted display payload containing the requested brightness.
+ * @param source Source of the transmitted payload.
+ */
 void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view source)
 {
     // Display: Brightness
     if (active && source == Display.name && payload["brightness"].is<uint8_t>())
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
         const uint8_t _brightness{payload["brightness"].as<uint8_t>()};
         if (_brightness != brightness)
         {
@@ -130,7 +149,13 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
 }
 
 #if EXTENSION_HOMEASSISTANT
-// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+/**
+ * @brief Adds Home Assistant discovery entries for photocell activation and illuminance.
+ *
+ * @param discovery JSON document receiving the discovery configuration.
+ * @param topic Base topic for the generated entities.
+ * @param unique Prefix used to generate unique entity identifiers.
+ */
 void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique)
 {
     topic.append(name);
