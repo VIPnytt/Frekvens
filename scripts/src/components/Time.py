@@ -4,8 +4,9 @@ import locale
 import logging
 import pathlib
 import typing
-import tzlocal
 import zoneinfo
+
+import tzlocal
 
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens

@@ -1,9 +1,10 @@
 import json
 import logging
-import packaging.version
 import typing
 import urllib.error
 import urllib.request
+
+import packaging.version
 
 from ..config.version import VERSION
 

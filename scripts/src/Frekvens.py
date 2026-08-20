@@ -1,9 +1,10 @@
-import dotenv
 import os
 import re
 import shutil
 import typing
 import unicodedata
+
+import dotenv
 
 from .components.Dependency import Dependency
 from .components.Deprecated import Deprecated
@@ -51,7 +52,7 @@ class Frekvens:
         self.tools = Tools(self)
         self.deprecated.migrate()
         if Ota.ENV_OPTION in self.dotenv and self.dotenv[Ota.ENV_OPTION] == "true":
-                    self.ota = Ota(self)
+            self.ota = Ota(self)
         if Weather.ENV_OPTION in self.dotenv and self.dotenv[Weather.ENV_OPTION] == "true":
             self.weather = Weather(self)
         if WebApp.ENV_OPTION in self.dotenv and self.dotenv[WebApp.ENV_OPTION] == "true":
