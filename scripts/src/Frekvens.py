@@ -45,12 +45,13 @@ class Frekvens:
         self.dependency = Dependency(self)
         self.deprecated = Deprecated(self)
         self.extra = Extra(self)
-        if Ota.ENV_OPTION in self.dotenv and self.dotenv[Ota.ENV_OPTION] == "true":
-            self.ota = Ota(self)
         self.firmware = Firmware(self)
         self.partition = Partition(self)
         self.time = Time(self)
         self.tools = Tools(self)
+        self.deprecated.migrate()
+        if Ota.ENV_OPTION in self.dotenv and self.dotenv[Ota.ENV_OPTION] == "true":
+                    self.ota = Ota(self)
         if Weather.ENV_OPTION in self.dotenv and self.dotenv[Weather.ENV_OPTION] == "true":
             self.weather = Weather(self)
         if WebApp.ENV_OPTION in self.dotenv and self.dotenv[WebApp.ENV_OPTION] == "true":
@@ -81,7 +82,6 @@ class Frekvens:
             ).strip("-")
         if self.dependency:
             self.dependency.initialize()
-        self.deprecated.initialize()
         if self.firmware:
             self.firmware.initialize()
         self.partition.initialize()
