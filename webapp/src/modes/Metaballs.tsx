@@ -1,10 +1,10 @@
 import { mdiBasketball, mdiCircleExpand, mdiSpeedometer } from "@mdi/js";
-import { type Component, createSignal } from "solid-js";
+import { type Component, createSignal, For } from "solid-js";
 import { Icon } from "../components/Icon";
+import { Tooltip } from "../components/Tooltip";
 import { SidebarSection } from "../extensions/WebApp";
 import { WebSocketWS } from "../extensions/WebSocket";
 import { MainComponent as ModesMainComponent } from "../services/Modes";
-import { Tooltip } from "../components/Tooltip";
 
 export const name = "Metaballs";
 
@@ -17,6 +17,34 @@ export const receiver = (json: { speed?: number; radius?: number }) => {
 };
 
 export const Main: Component = () => <ModesMainComponent icon={mdiBasketball} />;
+
+// Radius values the visualization actually renders sensibly.
+const radiusOptions = [
+    {
+        value: 4,
+        label: "Tiny",
+    },
+    {
+        value: 5,
+        label: "Small",
+    },
+    {
+        value: 6,
+        label: "Medium",
+    },
+    {
+        value: 7,
+        label: "Large",
+    },
+    {
+        value: 8,
+        label: "Huge",
+    },
+    {
+        value: 9,
+        label: "Massive",
+    },
+];
 
 export const Sidebar: Component = () => {
     const handleSpeed = (speed: number) => {
@@ -44,11 +72,13 @@ export const Sidebar: Component = () => {
     return (
         <SidebarSection>
             <div class="action grid-cols-[--spacing(4)_1fr]">
-                <Icon path={mdiSpeedometer} />
+                <Tooltip text={`"These go to eleven!"`}>
+                    <Icon path={mdiSpeedometer} />
+                </Tooltip>
                 <Tooltip text={`Metaball speed ${getSpeed()}`}>
                     <input
                         class="w-full"
-                        max="10"
+                        max="11"
                         min="1"
                         onInput={(e) => handleSpeed(e.currentTarget.valueAsNumber)}
                         type="range"
@@ -59,14 +89,13 @@ export const Sidebar: Component = () => {
             <div class="action grid-cols-[--spacing(4)_1fr]">
                 <Icon path={mdiCircleExpand} />
                 <Tooltip text={`Metaball radius ${getRadius()}`}>
-                    <input
+                    <select
                         class="w-full"
-                        max="10"
-                        min="1"
-                        onInput={(e) => handleRadius(e.currentTarget.valueAsNumber)}
-                        type="range"
+                        onchange={(e) => handleRadius(Number(e.currentTarget.value))}
                         value={getRadius()}
-                    />
+                    >
+                        <For each={radiusOptions}>{({ value, label }) => <option value={value}>{label}</option>}</For>
+                    </select>
                 </Tooltip>
             </div>
         </SidebarSection>
