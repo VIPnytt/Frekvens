@@ -18,7 +18,7 @@ private:
     static inline float radiusSq{radius * radius};
 
     static constexpr float baseSpeed{1e-6F * static_cast<float>(GRID_COLUMNS * GRID_ROWS)};
-    static inline uint8_t speedFactor{2U};
+    static inline uint8_t speedFactor{4U};
     static inline float speed{static_cast<float>(speedFactor) * baseSpeed};
 
     static constexpr uint8_t multiplier{1U << 3U};
@@ -39,6 +39,7 @@ private:
 
     void setSpeed(uint8_t _speed);
     void setRadius(uint8_t _radius);
+    void updateRadius();
     void transmit();
 
 public:

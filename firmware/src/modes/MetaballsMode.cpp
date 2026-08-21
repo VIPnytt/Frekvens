@@ -29,8 +29,7 @@ void MetaballsMode::configure()
         if (nvs_get_u8(handle, "radius", &_radius) == ESP_OK)
         {
             radiusFactor = _radius;
-            radius = maxRadius / static_cast<float>(radiusFactor);
-            radiusSq = radius * radius;
+            updateRadius();
         }
         nvs_close(handle);
     }
@@ -53,6 +52,7 @@ void MetaballsMode::begin()
         ball.xVelocity = speed * static_cast<float>(random(1, multiplier) * ((random(2) * 2) - 1));
         ball.yVelocity = speed * static_cast<float>(random(1, multiplier) * ((random(2) * 2) - 1));
     }
+    Display.fillFrame(0U);
 }
 
 /**
@@ -182,7 +182,7 @@ void MetaballsMode::setSpeed(uint8_t _speed)
 /**
  * @brief Sets the radius of the metaballs and stores it in non-volatile storage.
  *
- * Uses arbitrary units for radius, where 1 is the smallest and 10 is the largest.
+ * Uses arbitrary units for _radius, where 1 is the smallest and 10 is the largest.
  * The actual radius is calculated based on the maximum radius and the radius factor.
  *
  * @param _radius New radius factor for the metaballs.
@@ -202,8 +202,10 @@ void MetaballsMode::setRadius(uint8_t _radius)
         radiusFactor = 11U - _radius;
     }
 
-    radius = maxRadius / static_cast<float>(radiusFactor);
-    radiusSq = radius * radius;
+    updateRadius();
+    /* After changing the radius, we need to clear the display to avoid visual
+       artifacts from the previous radius. */
+    Display.fillFrame(0U);
 
     nvs_handle_t handle{};
     if (nvs_open(name.data(), nvs_open_mode_t::NVS_READWRITE, &handle) == ESP_OK)
@@ -213,6 +215,12 @@ void MetaballsMode::setRadius(uint8_t _radius)
         nvs_close(handle);
     }
     transmit();
+}
+
+void MetaballsMode::updateRadius()
+{
+    radius = maxRadius / static_cast<float>(radiusFactor);
+    radiusSq = radius * radius;
 }
 
 /**
