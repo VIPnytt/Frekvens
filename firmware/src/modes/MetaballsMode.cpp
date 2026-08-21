@@ -217,6 +217,9 @@ void MetaballsMode::setRadius(uint8_t _radius)
     transmit();
 }
 
+/**
+ * @brief Updates the radius of the metaballs based on the current radius factor.
+ */
 void MetaballsMode::updateRadius()
 {
     radius = maxRadius / static_cast<float>(radiusFactor);

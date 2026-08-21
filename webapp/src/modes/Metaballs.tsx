@@ -8,8 +8,8 @@ import { MainComponent as ModesMainComponent } from "../services/Modes";
 
 export const name = "Metaballs";
 
-const [getSpeed, setSpeed] = createSignal<number>(1);
-const [getRadius, setRadius] = createSignal<number>(5);
+const [getSpeed, setSpeed] = createSignal<number>(4);
+const [getRadius, setRadius] = createSignal<number>(9);
 
 export const receiver = (json: { speed?: number; radius?: number }) => {
     json?.speed !== undefined && setSpeed(json.speed);
@@ -18,7 +18,9 @@ export const receiver = (json: { speed?: number; radius?: number }) => {
 
 export const Main: Component = () => <ModesMainComponent icon={mdiBasketball} />;
 
-// Radius values the visualization actually renders sensibly.
+/**
+ * Radius values the visualization actually renders sensibly.
+ */
 const radiusOptions = [
     {
         value: 4,
@@ -60,8 +62,8 @@ export const Sidebar: Component = () => {
         }
     };
 
-    const handleRadius = (radius: number) => {
-        setRadius(radius);
+    const handleRadius = (value: number) => {
+        setRadius(value);
         WebSocketWS.send(
             JSON.stringify({
                 [name]: {
