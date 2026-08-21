@@ -72,7 +72,7 @@ export const Sidebar: Component = () => {
     return (
         <SidebarSection>
             <div class="action grid-cols-[--spacing(4)_1fr]">
-                <Tooltip text={`"These go to eleven!"`}>
+                <Tooltip text={`"These go to eleven."`}>
                     <Icon path={mdiSpeedometer} />
                 </Tooltip>
                 <Tooltip text={`Metaball speed ${getSpeed()}`}>
@@ -88,7 +88,7 @@ export const Sidebar: Component = () => {
             </div>
             <div class="action grid-cols-[--spacing(4)_1fr]">
                 <Icon path={mdiCircleExpand} />
-                <Tooltip text={`Metaball radius ${getRadius()}`}>
+                <Tooltip text={`Metaball radius`}>
                     <select
                         class="w-full"
                         onchange={(e) => handleRadius(Number(e.currentTarget.value))}
