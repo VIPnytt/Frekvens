@@ -30,10 +30,10 @@ Article number: `504.203.67`
 ### LED diode schema
 
 ```text
-┌────────┐
-│  Anode ├─ +4 V DC
-│ Catode ├─ LED
-└────────┘
+┌─────────┐
+│   Anode ├─ +4 V DC
+│ Cathode ├─ LED
+└─────────┘
 ```
 
 ### Microphone schema
