@@ -70,16 +70,16 @@ Most common RTC modules with I²C will work. Good starting points include the DS
 ### ESP32 schema
 
 ```text
-┌────────────────┐
-│            VIN ├─ +5 V DC
-│            3V3 ├─ +3.3 V DC
-│            GND ├─ 0 V DC
-│                │
-│            SCL ├─ I²C SCL
-│            SDA ├─ I²C SDA
-│                │
-│  Digital input ├─ RTC INT
-└────────────────┘
+┌───────────────┐
+│           VIN ├─ +5 V DC
+│           3V3 ├─ +3.3 V DC
+│           GND ├─ 0 V DC
+│               │
+│           SCL ├─ I²C SCL
+│           SDA ├─ I²C SDA
+│               │
+│ Digital input ├─ RTC INT
+└───────────────┘
 ```
 
 ### Logic level shifter schema
@@ -89,9 +89,9 @@ Most common RTC modules with I²C will work. Good starting points include the DS
 +3.3 V DC ────┐   │   ┌──── +5 V DC
            ┌──┴───┴───┴──┐
            │ VCC GND VCC │
- I²C SCL  ─┤     ──►     ├─ I²C SCL
- I²C SDA  ─┤     ◄─►     ├─ I²C SDA
- RTC INT  ─┤     ◄──     ├─ RTC INT
+ I²C SCL  ─┤ A1  ──►  B1 ├─ I²C SCL
+ I²C SDA  ─┤ A2  ◄─►  B2 ├─ I²C SDA
+ RTC INT  ─┤ A3  ◄──  B3 ├─ RTC INT
            └─────────────┘
 ```
 

@@ -21,28 +21,12 @@ Most remotes operate around the 38 kHz frequency band. While many IR sensors and
 
 ```text
 ┌───────────────┐
-│           VIN ├─ +5 V DC
 │           3V3 ├─ +3.3 V DC
 │           GND ├─ 0 V DC
 │               │
 │ Digital input ├─ Data
 └───────────────┘
 ```
-
-### Logic level shifter schema
-
-```text
-   0 V DC ────────┬──────── 0 V DC
-+3.3 V DC ────┐   │   ┌──── +5 V DC
-           ┌──┴───┴───┴──┐
-           │ VCC GND VCC │
-    Data  ─┤     ◄──     ├─ Data
-           └─────────────┘
-```
-
-## ↔️ Logic level shifter
-
-Most IR sensors are 3.3 V compatible, but some variants use higher logic levels (e.g. 5 V). If so, a logic level shifter is required to protect the ESP32. Unlike the high-speed SPI lines for the display, this signal is low-speed and single-channel — meaning almost any level-shifting method can be used.
 
 ## 🔧 Configuration
 
