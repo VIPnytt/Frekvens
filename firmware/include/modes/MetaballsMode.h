@@ -22,7 +22,7 @@ private:
     static inline float speed{static_cast<float>(speedFactor) * baseSpeed};
 
     static constexpr uint8_t multiplier{1U << 3U};
-    static constexpr uint8_t feathering{(GRID_COLUMNS * GRID_ROWS) - 1U};
+    static constexpr uint16_t feathering{(GRID_COLUMNS * GRID_ROWS) - 1U};
 
     struct Ball
     {
@@ -32,7 +32,7 @@ private:
         float yVelocity;
     };
 
-    static constexpr uint8_t numBalls{(GRID_COLUMNS * GRID_ROWS / 50U) - 1};
+    static constexpr uint8_t numBalls{(GRID_COLUMNS * GRID_ROWS / 50U)};
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{};
     std::array<Ball, numBalls> balls{};

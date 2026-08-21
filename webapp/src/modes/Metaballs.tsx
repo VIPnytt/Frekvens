@@ -47,15 +47,17 @@ const radiusOptions = [
 ];
 
 export const Sidebar: Component = () => {
-    const handleSpeed = (speed: number) => {
-        setSpeed(speed);
-        WebSocketWS.send(
-            JSON.stringify({
-                [name]: {
-                    speed: getSpeed(),
-                },
-            }),
-        );
+    const handleSpeed = (value: number, send: boolean = false) => {
+        setSpeed(value);
+        if (send) {
+            WebSocketWS.send(
+                JSON.stringify({
+                    [name]: {
+                        speed: getSpeed(),
+                    },
+                }),
+            );
+        }
     };
 
     const handleRadius = (radius: number) => {
@@ -78,10 +80,13 @@ export const Sidebar: Component = () => {
                 <Tooltip text={`Metaball speed ${getSpeed()}`}>
                     <input
                         class="w-full"
+                        aria-label="Metaball speed"
+                        type="range"
                         max="11"
                         min="1"
-                        onInput={(e) => handleSpeed(e.currentTarget.valueAsNumber)}
-                        type="range"
+                        onInput={(e) => handleSpeed(e.currentTarget.valueAsNumber, false)}
+                        onKeyUp={() => handleSpeed(getSpeed(), true)}
+                        onPointerUp={() => handleSpeed(getSpeed(), true)}
                         value={getSpeed()}
                     />
                 </Tooltip>
@@ -91,6 +96,7 @@ export const Sidebar: Component = () => {
                 <Tooltip text={`Metaball radius`}>
                     <select
                         class="w-full"
+                        aria-label="Metaball radius"
                         onchange={(e) => handleRadius(Number(e.currentTarget.value))}
                         value={getRadius()}
                     >
