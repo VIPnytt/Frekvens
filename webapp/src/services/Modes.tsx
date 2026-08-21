@@ -78,7 +78,11 @@ import {
 } from "../modes/HomeThermometer";
 import { Main as ModeLeafFallMain, name as ModeLeafFallName } from "../modes/LeafFall";
 import { Main as ModeLinesMain, name as ModeLinesName } from "../modes/Lines";
-import { Main as ModeMetaballsMain, name as ModeMetaballsName } from "../modes/Metaballs";
+import {
+    Main as ModeMetaballsMain,
+    name as ModeMetaballsName,
+    Sidebar as ModeMetaballsSidebar,
+} from "../modes/Metaballs";
 import { Main as ModeNoiseMain, name as ModeNoiseName } from "../modes/Noise";
 import { Main as ModePingPongMain, name as ModePingPongName, Sidebar as ModePingPongSidebar } from "../modes/PingPong";
 import { Main as ModePixelSequenceMain, name as ModePixelSequenceName } from "../modes/PixelSequence";
@@ -328,6 +332,11 @@ export const Sidebar: Component = () => {
                 {MODE_GAMEOFLIFE && (
                     <Match when={getMode() === ModeGameOfLifeName}>
                         <ModeGameOfLifeSidebar />
+                    </Match>
+                )}
+                {MODE_METABALLS && (
+                    <Match when={getMode() === ModeMetaballsName}>
+                        <ModeMetaballsSidebar />
                     </Match>
                 )}
                 {MODE_PINGPONG && (
