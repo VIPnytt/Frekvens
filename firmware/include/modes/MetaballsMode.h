@@ -22,7 +22,11 @@ private:
     static inline float speed{static_cast<float>(speedFactor) * baseSpeed};
 
     static constexpr uint8_t multiplier{1U << 3U};
-    static constexpr uint16_t feathering{(GRID_COLUMNS * GRID_ROWS) - 1U};
+    // How many discrete distance steps a ball's brightness falloff is quantized into, from its
+    // center (0) to its edge (falloffResolution); this is the resolution of contributions below.
+    static constexpr uint8_t falloffResolution{UINT8_MAX};
+    // Size must stay equal to falloffResolution + 1
+    std::array<uint8_t, falloffResolution + 1U> contributions{};
 
     struct Ball
     {
@@ -34,7 +38,6 @@ private:
 
     static constexpr uint8_t numBalls{(GRID_COLUMNS * GRID_ROWS / 50U)};
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{};
     std::array<Ball, numBalls> balls{};
 
     void setSpeed(uint8_t _speed);
