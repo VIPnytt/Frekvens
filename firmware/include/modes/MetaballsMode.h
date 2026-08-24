@@ -36,9 +36,10 @@ private:
         float yVelocity;
     };
 
-    static constexpr uint8_t numBalls{(GRID_COLUMNS * GRID_ROWS / 50U)};
+    static constexpr uint8_t numBallsMax{25U};
+    static inline uint8_t numBalls{(GRID_COLUMNS * GRID_ROWS / 50U)};
 
-    std::array<Ball, numBalls> balls{};
+    std::array<Ball, numBallsMax> balls{};
 
     void setSpeed(uint8_t _speed);
     void setRadius(uint8_t _radius);

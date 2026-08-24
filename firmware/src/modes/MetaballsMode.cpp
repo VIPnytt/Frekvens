@@ -7,6 +7,7 @@
 #include "services/ExtensionsService.h"
 
 #include <nvs.h>
+#include <span>
 
 static_assert(GRID_COLUMNS * GRID_ROWS >= 50U,
               __STRING(MODE_METABALLS) " is not compatible with this device's display size.");
@@ -52,6 +53,8 @@ void MetaballsMode::begin()
         const float normalizedDistance{static_cast<float>(falloffResolution - idx) / span};
         contributions[idx] = static_cast<uint8_t>(peakBrightness * normalizedDistance * normalizedDistance);
     }
+    // All balls are initialized (not just the active numBalls) so they can simply be (de)activated
+    // by adjusting numBalls, without needing to (re)spawn any of them.
     for (Ball &ball : balls)
     {
         ball.x = static_cast<float>(random(GRID_COLUMNS));
@@ -83,7 +86,7 @@ void MetaballsMode::handle()
     const float yRatio{static_cast<float>(2U * (rotated ? PITCH_HORIZONTAL : PITCH_VERTICAL)) /
                        static_cast<float>(PITCH_VERTICAL + PITCH_HORIZONTAL)};
 #endif // PITCH_HORIZONTAL != PITCH_VERTICAL
-    for (const Ball &ball : balls)
+    for (const Ball &ball : std::span<const Ball>{balls}.first(numBalls))
     {
         const uint8_t yMax{static_cast<uint8_t>(
             min<int8_t>(static_cast<int8_t>(ceilf(ball.y + radius - min(ball.yVelocity, .0F))), GRID_ROWS - 1U))};
@@ -98,7 +101,7 @@ void MetaballsMode::handle()
             for (uint8_t y{yMin}; y <= yMax; ++y)
             {
                 uint8_t brightness{0U};
-                for (const Ball &ball : balls)
+                for (const Ball &ball : std::span<const Ball>{balls}.first(numBalls))
                 {
 #if PITCH_HORIZONTAL == PITCH_VERTICAL
                     const float xDistance{ball.x - static_cast<float>(x)};
@@ -125,7 +128,7 @@ void MetaballsMode::handle()
             }
         }
     }
-    for (Ball &ball : balls)
+    for (Ball &ball : std::span<Ball>{balls}.first(numBalls))
     {
         ball.x += ball.xVelocity;
         ball.y += ball.yVelocity;
