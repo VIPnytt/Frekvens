@@ -10,9 +10,16 @@ static_assert(GRID_COLUMNS * GRID_ROWS >= 50U,
 
 void MetaballsMode::begin()
 {
+    // Builds a lookup table of a single ball's brightness contribution by distance: full brightness
+    // at the center (idx 0), fading quadratically to none at the edge (idx == falloffResolution).
+    // Multiple overlapping balls add their contributions together, so peakBrightness is kept well
+    // below UINT8_MAX to require several overlapping balls before a pixel reaches full brightness.
+    constexpr float peakBrightness{64.0F};
+    constexpr float span{static_cast<float>(falloffResolution) + 1.0F};
     for (size_t idx{0U}; idx < contributions.size(); ++idx)
     {
-        contributions[idx] = ((UINT8_MAX - idx) * (UINT8_MAX - idx) * (0b1U << 6U)) >> (0b1U << 4U);
+        const float normalizedDistance{static_cast<float>(falloffResolution - idx) / span};
+        contributions[idx] = static_cast<uint8_t>(peakBrightness * normalizedDistance * normalizedDistance);
     }
     for (Ball &ball : balls)
     {
@@ -65,10 +72,11 @@ void MetaballsMode::handle()
                     const float distanceSq{(xDistance * xDistance) + (yDistance * yDistance)};
                     if (distanceSq < radiusSq)
                     {
-                        brightness = static_cast<uint8_t>(
-                            min<uint16_t>(static_cast<uint16_t>(brightness) +
-                                              contributions[static_cast<uint8_t>(distanceSq * (0b1U << 6U) / radiusSq)],
-                                          UINT8_MAX));
+                        brightness = static_cast<uint8_t>(min<uint16_t>(
+                            static_cast<uint16_t>(brightness) +
+                                contributions[static_cast<uint8_t>(min<float>(distanceSq * falloffResolution / radiusSq,
+                                                                              static_cast<float>(falloffResolution)))],
+                            UINT8_MAX));
                         if (brightness == UINT8_MAX)
                         {
                             break;
