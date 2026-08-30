@@ -18,6 +18,11 @@ private:
     static constexpr float speed{1e-6F * static_cast<float>(GRID_COLUMNS * GRID_ROWS)};
 
     static constexpr uint8_t multiplier{1U << 4U};
+    // How many discrete distance steps a ball's brightness falloff is quantized into, from its
+    // center (0) to its edge (falloffResolution); this is the resolution of contributions below.
+    static constexpr uint8_t falloffResolution{UINT8_MAX};
+    // Size must stay equal to falloffResolution + 1
+    std::array<uint8_t, falloffResolution + 1U> contributions{};
 
     struct Ball
     {
@@ -27,7 +32,6 @@ private:
         float yVelocity;
     };
 
-    std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> contributions{};
     std::array<Ball, GRID_COLUMNS * GRID_ROWS / 50U> balls{};
 
 public:
