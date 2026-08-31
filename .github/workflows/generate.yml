@@ -47,8 +47,6 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
           echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
@@ -57,7 +55,7 @@ jobs:
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
 
   mode-dynamic:
     name: Dynamic mode
@@ -129,17 +127,14 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
 
   mode-static:
     name: Static mode
@@ -195,14 +190,11 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
