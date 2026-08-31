@@ -110,6 +110,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO compilation database
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           ${{ matrix.device-id }}='true'
@@ -218,7 +220,7 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          uv run --only-group platformio pio run -t compiledb -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -t compiledb -e "$PIO_ENVIRONMENT"
 
       - name: Clang tidy
         uses: cpp-linter/cpp-linter-action@cab1143a2c149bc41e85b070a9de81716974c18f # v2.21.0

@@ -76,6 +76,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           echo "IKEA_FREKVENS='true'" >> .env
 
@@ -91,7 +93,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   minimal:
     name: Minimal
@@ -122,6 +124,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -146,7 +150,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   typical:
     name: Typical
@@ -195,6 +199,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -280,7 +286,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   extensive:
     name: Extensive
@@ -329,6 +335,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -446,4 +454,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
