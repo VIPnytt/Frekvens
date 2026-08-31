@@ -460,7 +460,7 @@ nodejs = [{ name = "nodejs-wheel", specifier = "==24.16.0" }]
 packaging = [{ name = "packaging", specifier = "==26.3" }]
 platformio = [{ name = "platformio", specifier = "==6.1.19" }]
 ruff = [{ name = "ruff", specifier = "==0.15.22" }]
-scons = [{ name = "scons", specifier = "==4.11.0" }]
+scons = [{ name = "scons", specifier = "==4.11.1" }]
 scripts = [
     { name = "nodejs-wheel", specifier = "==24.16.0" },
     { name = "packaging", specifier = "==26.3" },
@@ -1119,11 +1119,11 @@ wheels = [
 
 [[package]]
 name = "scons"
-version = "4.11.0"
+version = "4.11.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/dd/82/3c4e089ac8df2eaee8a7f14e489b2a76f94f4c1d8defa4e46c8ad15cae86/scons-4.11.0.tar.gz", hash = "sha256:5ba48f9e2eb6b9178cabdc9893792418e6970c84f43f4b027e4468e20616a89c", size = 3269126, upload-time = "2026-08-11T04:29:45.62Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/42/b9/b7a5c88f348a0c34594d88100872c55fa1cae863ccb222c1c438341b5503/scons-4.11.1.tar.gz", hash = "sha256:4210d1a80a62e986029208117991b6347ccaaaab37b67463a3ff31ee065dc487", size = 3268963, upload-time = "2026-08-27T04:33:18.232Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/ac/a4445bbbd58a5fa6a5c8b3b0458ffbee04e4acaff87677058eab9c6af682/scons-4.11.0-py3-none-any.whl", hash = "sha256:2edc077aaeafc43377ba46ce1fa3e7b40edea59c62db9ef7e39e07dc88b754fa", size = 4123742, upload-time = "2026-08-11T04:29:42.881Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/43/d6285848e893c19682c06e92679dc1a07d37ff7ea148747b1df681ec496c/scons-4.11.1-py3-none-any.whl", hash = "sha256:454cef364348053422696e3d2ecb4fa593c96a624f955842eaaea64f95c8d11d", size = 4123659, upload-time = "2026-08-27T04:33:12.728Z" },
 ]
 
 [[package]]
