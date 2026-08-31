@@ -48,7 +48,6 @@ jobs:
 
       - name: Clang summary
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
