@@ -50,6 +50,8 @@ void SnakeMode::begin()
         nvs_close(handle);
     }
     Display.fillFrame(0U);
+    target = static_cast<size_t>(random(clock == nullptr ? 0L : static_cast<long>(5U * GRID_COLUMNS),
+                                        static_cast<long>(GRID_COLUMNS * GRID_ROWS)));
     stage = Stage::READY;
 }
 
@@ -84,10 +86,10 @@ void SnakeMode::handle()
  */
 void SnakeMode::idle()
 {
-    snake = {static_cast<size_t>((random(clock == nullptr ? 0 : 5, GRID_ROWS) * GRID_COLUMNS) + random(GRID_COLUMNS))};
-    Display.setPixel(snake.front(), static_cast<uint8_t>(random(1, 0b1U << 8U)));
-    target = static_cast<size_t>(random(static_cast<long>(clock == nullptr ? 0U : 5U * GRID_COLUMNS),
-                                        static_cast<long>(GRID_COLUMNS * GRID_ROWS)));
+    snake = {static_cast<size_t>(random(clock == nullptr ? 0L : static_cast<long>(5U * GRID_COLUMNS),
+                                        static_cast<long>(GRID_COLUMNS * GRID_ROWS)))};
+    Display.setPixel(snake.front(), static_cast<uint8_t>(random(1L, static_cast<long>(0b1U << 8U))));
+    setTarget();
     stage = Stage::MOVE;
 }
 
