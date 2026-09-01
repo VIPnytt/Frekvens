@@ -30,7 +30,7 @@ private:
 
     std::unique_ptr<ClockHandler> clock{};
 
-    Stage stage{0U};
+    Stage stage{Stage::READY};
 
     void idle();
     [[nodiscard]] std::optional<size_t> findStepPath() const;
