@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -52,6 +54,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -72,6 +76,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           echo "IKEA_FREKVENS='true'" >> .env
 
@@ -87,7 +93,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   minimal:
     name: Minimal
@@ -101,6 +107,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Cache for PlatformIO
         continue-on-error: true
@@ -116,6 +124,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_BUTTON='true'
@@ -140,7 +150,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   typical:
     name: Typical
@@ -167,6 +177,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -187,6 +199,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -272,7 +286,7 @@ jobs:
           #define WIFI_SSID "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"
 
   extensive:
     name: Extensive
@@ -299,6 +313,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Cache for Node.js
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -319,6 +335,8 @@ jobs:
           version: latest-known
 
       - name: PlatformIO build
+        env:
+          PIO_ENVIRONMENT: ${{ matrix.environment }}
         run: |
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
@@ -436,4 +454,4 @@ jobs:
           #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
-          uv run --only-group platformio pio run -e ${{ matrix.environment }}
+          uv run --only-group platformio pio run -e "$PIO_ENVIRONMENT"

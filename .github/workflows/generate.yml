@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
@@ -45,17 +47,14 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
 
   mode-dynamic:
     name: Dynamic mode
@@ -63,6 +62,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -125,17 +126,14 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
 
   mode-static:
     name: Static mode
@@ -143,6 +141,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -189,14 +189,11 @@ jobs:
           tidy-checks: "-*"
 
       - name: Clang summary
-        env:
-          clang-threshold: 0
         run: |
-          echo "Status: ${{ steps.clang.outputs.checks-failed }} checks failed, threshold for success is ${{ env.clang-threshold }}."
           echo "Clang report:"
           if [ -n "${{ github.event.pull_request.number }}" ]; then
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?pr=${{ github.event.pull_request.number }}"
           else
             echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi
-          exit $(( ${{ steps.clang.outputs.checks-failed }} > ${{ env.clang-threshold }} ))
+          exit $(( ${{ steps.clang.outputs.checks-failed }} != 0 ))
