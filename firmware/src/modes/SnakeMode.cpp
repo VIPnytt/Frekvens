@@ -99,7 +99,6 @@ std::optional<size_t> SnakeMode::findStepPath() const
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> from{};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> frontier{};
     std::array<bool, GRID_COLUMNS * GRID_ROWS> visited{};
-    bool pathFound{false};
     size_t frontierHead{0U};
     size_t frontierTail{0U};
     const size_t start{snake.back()};
@@ -111,8 +110,12 @@ std::optional<size_t> SnakeMode::findStepPath() const
         const size_t current{frontier[frontierHead++]};
         if (current == target)
         {
-            pathFound = true;
-            break;
+            size_t step{target};
+            while (from[step] != start)
+            {
+                step = from[step];
+            }
+            return step;
         }
         std::array<size_t, 4U> neighbors{};
         size_t neighborCount{0U};
@@ -143,15 +146,6 @@ std::optional<size_t> SnakeMode::findStepPath() const
             frontier[frontierTail++] = neighbors[idx];
         }
     }
-    if (pathFound)
-    {
-        size_t step{target};
-        while (from[step] != start)
-        {
-            step = from[step];
-        }
-        return step;
-    }
     return findStepAny();
 }
 
@@ -179,8 +173,7 @@ std::optional<size_t> SnakeMode::findStepAny() const
     }
     for (size_t idx{fallbackCount}; idx > 1U; --idx)
     {
-        const size_t swapIndex{static_cast<size_t>(random(idx))};
-        std::swap(fallback[idx - 1U], fallback[swapIndex]);
+        std::swap(fallback[idx - 1U], fallback[static_cast<size_t>(random(static_cast<long>(idx)))]);
     }
     for (size_t idx{0U}; idx < fallbackCount; ++idx)
     {
