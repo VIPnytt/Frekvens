@@ -32,17 +32,17 @@ private:
 
     Stage stage{Stage::READY};
 
-    void idle();
-    [[nodiscard]] std::optional<size_t> findStepPath() const;
-    [[nodiscard]] std::optional<size_t> findStepAny() const;
-    void move();
     void blink();
     void clean();
-
+    void idle();
+    void move();
     void setClock(bool _clock);
     void setDead();
     void setTarget();
     void transmit();
+
+    [[nodiscard]] std::optional<size_t> findStepAvailable() const;
+    [[nodiscard]] std::optional<size_t> findStepPath() const;
 
 public:
     static constexpr std::string_view name{"Snake"};

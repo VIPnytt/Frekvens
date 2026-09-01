@@ -99,12 +99,12 @@ void SnakeMode::idle()
 std::optional<size_t> SnakeMode::findStepPath() const
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
+    const size_t start{snake.back()};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> from{};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> frontier{};
     std::array<bool, GRID_COLUMNS * GRID_ROWS> visited{};
     size_t frontierHead{0U};
     size_t frontierTail{0U};
-    const size_t start{snake.back()};
     frontier[frontierTail++] = start;
     from[start] = start;
     visited[start] = true;
@@ -151,10 +151,10 @@ std::optional<size_t> SnakeMode::findStepPath() const
             ++frontierTail;
         }
     }
-    return findStepAny();
+    return findStepAvailable();
 }
 
-std::optional<size_t> SnakeMode::findStepAny() const
+std::optional<size_t> SnakeMode::findStepAvailable() const
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
     const size_t start{snake.back()};
