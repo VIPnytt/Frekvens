@@ -280,6 +280,8 @@ void SnakeMode::setTarget()
             return;
         }
     }
+    blinkCount = 0U;
+    lastMillis = millis();
     stage = Stage::DEATH;
 }
 
