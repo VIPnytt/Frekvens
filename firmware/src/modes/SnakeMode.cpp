@@ -118,7 +118,7 @@ std::optional<size_t> SnakeMode::findStepPath() const
             {
                 step = from[step];
             }
-            return step; // NOLINT(bugprone-narrowing-conversions)
+            return std::optional<size_t>{step};
         }
         std::array<size_t, 4U> neighbors{};
         size_t neighborCount{0U};
@@ -182,7 +182,7 @@ std::optional<size_t> SnakeMode::findStepAny() const
     {
         if (std::find(snake.begin(), snake.end(), fallback[idx]) == snake.end())
         {
-            return fallback[idx];
+            return std::optional<size_t>{fallback[idx]};
         }
     }
     return std::nullopt;
