@@ -50,6 +50,7 @@ void SnakeMode::begin()
         nvs_close(handle);
     }
     Display.fillFrame(0U);
+    snakeClear();
     target = static_cast<size_t>(random(clock == nullptr ? 0L : static_cast<long>(5U * GRID_COLUMNS),
                                         static_cast<long>(GRID_COLUMNS * GRID_ROWS)));
     stage = Stage::READY;
@@ -86,9 +87,9 @@ void SnakeMode::handle()
  */
 void SnakeMode::idle()
 {
-    snake = {static_cast<size_t>(random(clock == nullptr ? 0L : static_cast<long>(5U * GRID_COLUMNS),
-                                        static_cast<long>(GRID_COLUMNS * GRID_ROWS)))};
-    Display.setPixel(snake.front(), static_cast<uint8_t>(random(1L, static_cast<long>(0b1U << 8U))));
+    snakeReset(static_cast<size_t>(random(clock == nullptr ? 0L : static_cast<long>(5U * GRID_COLUMNS),
+                                          static_cast<long>(GRID_COLUMNS * GRID_ROWS))));
+    Display.setPixel(snakeHead(), static_cast<uint8_t>(random(1L, static_cast<long>(0b1U << 8U))));
     setTarget();
     stage = Stage::MOVE;
 }
@@ -101,7 +102,7 @@ void SnakeMode::idle()
 std::optional<size_t> SnakeMode::findStepPath() const
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
-    const size_t start{snake.back()};
+    const size_t start{snakeHead()};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> from{};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> frontier{};
     std::array<bool, GRID_COLUMNS * GRID_ROWS> visited{};
@@ -143,7 +144,7 @@ std::optional<size_t> SnakeMode::findStepPath() const
         }
         for (size_t idx{0U}; idx < neighborCount; ++idx)
         {
-            if (visited[neighbors[idx]] || std::find(snake.begin(), snake.end(), neighbors[idx]) != snake.end())
+            if (visited[neighbors[idx]] || snakeContains(neighbors[idx]))
             {
                 continue;
             }
@@ -159,7 +160,7 @@ std::optional<size_t> SnakeMode::findStepPath() const
 std::optional<size_t> SnakeMode::findStepAvailable() const
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
-    const size_t start{snake.back()};
+    const size_t start{snakeHead()};
     std::array<size_t, 4U> fallback{};
     size_t fallbackCount{0U};
     if (start % GRID_COLUMNS != 0U)
@@ -184,7 +185,7 @@ std::optional<size_t> SnakeMode::findStepAvailable() const
     }
     for (size_t idx{0U}; idx < fallbackCount; ++idx)
     {
-        if (std::find(snake.begin(), snake.end(), fallback[idx]) == snake.end())
+        if (!snakeContains(fallback[idx]))
         {
             return std::optional<size_t>{fallback[idx]};
         }
@@ -200,26 +201,28 @@ std::optional<size_t> SnakeMode::findStepAvailable() const
  */
 void SnakeMode::move()
 {
-    if (millis() - lastMillis > snake.size() + INT8_MAX)
+    if (millis() - lastMillis > snakeLength + INT8_MAX)
     {
         const std::optional<size_t> step{findStepPath()};
         if (step.has_value())
         {
-            snake.push_back(step.value());
-            if (snake.back() == target)
+            if (!snakePushBack(step.value()))
+            {
+                setDead();
+            }
+            else if (snakeHead() == target)
             {
                 Display.setPixel(target, UINT8_MAX);
                 setTarget();
             }
             else
             {
-                const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snake.size())};
-                for (size_t idx{0U}; idx < snake.size(); ++idx)
+                const uint8_t step{static_cast<uint8_t>(UINT8_MAX / snakeLength)};
+                for (size_t idx{0U}; idx < snakeLength; ++idx)
                 {
-                    Display.setPixel(snake[idx], step * (idx + 1U));
+                    Display.setPixel(snakeAt(idx), step * (idx + 1U));
                 }
-                Display.setPixel(snake.front(), 0U);
-                snake.pop_front();
+                Display.setPixel(snakePopFront(), 0U);
             }
         }
         else
@@ -238,9 +241,9 @@ void SnakeMode::blink()
     if (millis() - lastMillis > UINT8_MAX)
     {
         const uint8_t brightness{static_cast<uint8_t>((blinkCount & 0b1U) == 0U ? 0U : UINT8_MAX)};
-        for (const size_t &pixel : snake)
+        for (size_t idx{0U}; idx < snakeLength; ++idx)
         {
-            Display.setPixel(pixel, brightness);
+            Display.setPixel(snakeAt(idx), brightness);
         }
         if (++blinkCount >= 6U)
         {
@@ -252,17 +255,74 @@ void SnakeMode::blink()
 
 void SnakeMode::clean()
 {
-    if (millis() - lastMillis > INT8_MAX && !snake.empty())
+    if (millis() - lastMillis > INT8_MAX && snakeLength > 0U)
     {
-        Display.setPixel(snake.front(), 0U);
-        snake.pop_front();
+        Display.setPixel(snakePopFront(), 0U);
         lastMillis = millis();
     }
-    else if (snake.empty())
+    else if (snakeLength == 0U)
     {
         Display.setPixel(target, 0U);
         stage = Stage::READY;
     }
+}
+
+void SnakeMode::snakeReset(size_t start)
+{
+    snakeClear();
+    snake[0U] = start;
+    snakeOccupied[start] = true;
+    snakeHeadIndex = 0U;
+    snakeLength = 1U;
+}
+
+void SnakeMode::snakeClear()
+{
+    snakeOccupied.fill(false);
+    snakeHeadIndex = 0U;
+    snakeLength = 0U;
+}
+
+bool SnakeMode::snakePushBack(size_t pixel)
+{
+    if (snakeLength >= snakeCapacity)
+    {
+        return false;
+    }
+    snakeHeadIndex = (snakeHeadIndex + 1U) % snakeCapacity;
+    snake[snakeHeadIndex] = pixel;
+    snakeOccupied[pixel] = true;
+    ++snakeLength;
+    return true;
+}
+
+size_t SnakeMode::snakePopFront()
+{
+    const size_t tailIndex{(snakeHeadIndex + snakeCapacity - (snakeLength - 1U)) % snakeCapacity};
+    const size_t tail{snake[tailIndex]};
+    snakeOccupied[tail] = false;
+    --snakeLength;
+    if (snakeLength == 0U)
+    {
+        snakeHeadIndex = 0U;
+    }
+    return tail;
+}
+
+size_t SnakeMode::snakeHead() const
+{
+    return snake[snakeHeadIndex];
+}
+
+size_t SnakeMode::snakeAt(size_t index) const
+{
+    const size_t tailIndex{(snakeHeadIndex + snakeCapacity - (snakeLength - 1U)) % snakeCapacity};
+    return snake[(tailIndex + index) % snakeCapacity];
+}
+
+bool SnakeMode::snakeContains(size_t pixel) const
+{
+    return snakeOccupied[pixel];
 }
 
 void SnakeMode::setDead()
