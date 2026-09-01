@@ -93,7 +93,7 @@ void SnakeMode::idle()
  *
  * @return The next unoccupied position, or `std::nullopt` when no adjacent position is available.
  */
-std::optional<size_t> SnakeMode::next() const
+std::optional<size_t> SnakeMode::findStepPath() const
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
     std::array<size_t, GRID_COLUMNS * GRID_ROWS> from{};
@@ -116,21 +116,19 @@ std::optional<size_t> SnakeMode::next() const
         }
         std::array<size_t, 4U> neighbors{};
         size_t neighborCount{0U};
-        const uint8_t currentX{static_cast<uint8_t>(current % GRID_COLUMNS)};
-        if (currentX != 0U)
+        if (current % GRID_COLUMNS != 0U)
         {
             neighbors[neighborCount++] = current - 1U;
         }
-        if (currentX < GRID_COLUMNS - 1U)
+        if (current % GRID_COLUMNS < GRID_COLUMNS - 1U)
         {
             neighbors[neighborCount++] = current + 1U;
         }
-        const uint8_t currentY{static_cast<uint8_t>(current / GRID_COLUMNS)};
-        if (currentY > yMin)
+        if (current / GRID_COLUMNS > yMin)
         {
             neighbors[neighborCount++] = current - GRID_COLUMNS;
         }
-        if (currentY < GRID_ROWS - 1U)
+        if (current / GRID_COLUMNS < GRID_ROWS - 1U)
         {
             neighbors[neighborCount++] = current + GRID_COLUMNS;
         }
@@ -147,30 +145,35 @@ std::optional<size_t> SnakeMode::next() const
     }
     if (pathFound)
     {
-        size_t stepIndex{target};
-        while (from[stepIndex] != start)
+        size_t step{target};
+        while (from[step] != start)
         {
-            stepIndex = from[stepIndex];
+            step = from[step];
         }
-        return stepIndex;
+        return step;
     }
+    return findStepAny();
+}
+
+std::optional<size_t> SnakeMode::findStepAny() const
+{
+    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
+    const size_t start{snake.back()};
     std::array<size_t, 4U> fallback{};
     size_t fallbackCount{0U};
-    const uint8_t startX{static_cast<uint8_t>(start % GRID_COLUMNS)};
-    if (startX != 0U)
+    if (start % GRID_COLUMNS != 0U)
     {
         fallback[fallbackCount++] = start - 1U;
     }
-    if (startX < GRID_COLUMNS - 1U)
+    if (start % GRID_COLUMNS < GRID_COLUMNS - 1U)
     {
         fallback[fallbackCount++] = start + 1U;
     }
-    const uint8_t startY{static_cast<uint8_t>(start / GRID_COLUMNS)};
-    if (startY > yMin)
+    if (start / GRID_COLUMNS > yMin)
     {
         fallback[fallbackCount++] = start - GRID_COLUMNS;
     }
-    if (startY < GRID_ROWS - 1U)
+    if (start / GRID_COLUMNS < GRID_ROWS - 1U)
     {
         fallback[fallbackCount++] = start + GRID_COLUMNS;
     }
@@ -199,7 +202,7 @@ void SnakeMode::move()
 {
     if (millis() - lastMillis > snake.size() + INT8_MAX)
     {
-        std::optional<size_t> step{next()};
+        const std::optional<size_t> step{findStepPath()};
         if (step.has_value())
         {
             snake.push_back(step.value());
@@ -273,7 +276,7 @@ void SnakeMode::clean()
 void SnakeMode::setTarget()
 {
     const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
-    for (uint16_t idx{0U}; idx < GRID_COLUMNS * (GRID_ROWS - yMin); ++idx)
+    for (size_t idx{0U}; idx < GRID_COLUMNS * (GRID_ROWS - yMin); ++idx)
     {
         target = static_cast<size_t>((random(yMin, GRID_ROWS) * GRID_COLUMNS) + random(GRID_COLUMNS));
         if (Display.getPixel(target) == 0U)

@@ -33,7 +33,8 @@ private:
     Stage stage{0U};
 
     void idle();
-    [[nodiscard]] std::optional<size_t> next() const;
+    [[nodiscard]] std::optional<size_t> findStepPath() const;
+    [[nodiscard]] std::optional<size_t> findStepAny() const;
     void move();
     void blink();
     void clean();
