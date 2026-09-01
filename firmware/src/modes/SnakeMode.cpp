@@ -9,7 +9,9 @@
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
-#include <nvs.h>
+#include <algorithm>
+#include <array>
+#include <nvs.h
 
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
