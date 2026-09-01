@@ -31,9 +31,9 @@ jobs:
     name: ESPHome
     needs: esphome
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.esphome-version == 'latest' }}
 
     strategy:
-      fail-fast: false
       matrix:
         esphome-version:
           - ${{ needs.esphome.outputs.min_version }}
