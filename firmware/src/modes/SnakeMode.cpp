@@ -110,7 +110,8 @@ std::optional<size_t> SnakeMode::findStepPath() const
     visited[start] = true;
     while (frontierHead < frontierTail)
     {
-        const size_t current{frontier[frontierHead++]};
+        const size_t current{frontier[frontierHead]};
+        ++frontierHead;
         if (current == target)
         {
             size_t step{target};
@@ -146,7 +147,8 @@ std::optional<size_t> SnakeMode::findStepPath() const
             }
             visited[neighbors[idx]] = true;
             from[neighbors[idx]] = current;
-            frontier[frontierTail++] = neighbors[idx];
+            frontier[frontierTail] = neighbors[idx];
+            ++frontierTail;
         }
     }
     return findStepAny();
