@@ -174,6 +174,11 @@ std::optional<size_t> SnakeMode::next() const
     {
         fallback[fallbackCount++] = start + GRID_COLUMNS;
     }
+    for (size_t idx{fallbackCount}; idx > 1U; --idx)
+    {
+        const size_t swapIndex{static_cast<size_t>(random(idx))};
+        std::swap(fallback[idx - 1U], fallback[swapIndex]);
+    }
     for (size_t idx{0U}; idx < fallbackCount; ++idx)
     {
         if (std::find(snake.begin(), snake.end(), fallback[idx]) == snake.end())
