@@ -12,28 +12,28 @@
 class SnakeMode final : public ModeModule
 {
 private:
-    struct Pixel
+    enum class Stage : uint8_t // NOLINT(performance-enum-size)
     {
-        uint8_t x{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
-        uint8_t y{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
-        bool operator==(const Pixel &pixel) const { return x == pixel.x && y == pixel.y; }
-        bool operator!=(const Pixel &pixel) const { return x != pixel.x || y != pixel.y; }
-        bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }
+        READY,
+        MOVE,
+        DEATH,
+        REMOVE,
     };
 
     unsigned long lastMillis{0UL};
 
     uint8_t blinkCount{0U};
-    uint8_t stage{0U};
 
-    Pixel target;
+    size_t target{0U};
 
-    std::deque<Pixel> snake{};
+    std::deque<size_t> snake{};
 
     std::unique_ptr<ClockHandler> clock{};
 
+    Stage stage{0U};
+
     void idle();
-    [[nodiscard]] std::optional<Pixel> next() const;
+    [[nodiscard]] std::optional<size_t> next() const;
     void move();
     void blink();
     void clean();
