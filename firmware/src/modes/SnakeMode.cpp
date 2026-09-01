@@ -11,7 +11,7 @@
 
 #include <algorithm>
 #include <array>
-#include <nvs.h
+#include <nvs.h>
 
 static_assert(GRID_COLUMNS >= 16U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
 static_assert(GRID_ROWS >= 7U, __STRING(MODE_SNAKE) " is not compatible with this device's display size.");
@@ -86,7 +86,8 @@ void SnakeMode::idle()
 {
     snake = {static_cast<size_t>((random(clock == nullptr ? 0 : 5, GRID_ROWS) * GRID_COLUMNS) + random(GRID_COLUMNS))};
     Display.setPixel(snake.front(), static_cast<uint8_t>(random(1, 0b1U << 8U)));
-    setTarget();
+    target = static_cast<size_t>(random(static_cast<long>(clock == nullptr ? 0U : 5U * GRID_COLUMNS),
+                                        static_cast<long>(GRID_COLUMNS * GRID_ROWS)));
     stage = Stage::MOVE;
 }
 
@@ -219,9 +220,7 @@ void SnakeMode::move()
         }
         else
         {
-            lastMillis = millis();
-            blinkCount = 0U;
-            stage = Stage::DEATH;
+            setDead();
         }
         lastMillis = millis();
     }
@@ -262,6 +261,13 @@ void SnakeMode::clean()
     }
 }
 
+void SnakeMode::setDead()
+{
+    blinkCount = 0U;
+    lastMillis = millis();
+    stage = Stage::DEATH;
+}
+
 /**
  * @brief Selects an unoccupied display position as the snake's target.
  *
@@ -270,19 +276,21 @@ void SnakeMode::clean()
  */
 void SnakeMode::setTarget()
 {
-    const uint8_t yMin{static_cast<uint8_t>(clock == nullptr ? 0U : 5U)};
-    for (size_t idx{0U}; idx < GRID_COLUMNS * (GRID_ROWS - yMin); ++idx)
+    const size_t offset{static_cast<size_t>(clock == nullptr ? 0U : 5U * GRID_COLUMNS)};
+    for (size_t idx{offset}; idx < GRID_COLUMNS * GRID_ROWS; ++idx)
     {
-        target = static_cast<size_t>((random(yMin, GRID_ROWS) * GRID_COLUMNS) + random(GRID_COLUMNS));
-        if (Display.getPixel(target) == 0U)
+        if (Display.getPixel(idx) == 0U)
         {
-            Display.setPixel(target, static_cast<uint8_t>(random(1, 0b1U << 8U)));
+            while (Display.getPixel(target) != 0U)
+            {
+                target =
+                    static_cast<size_t>(random(static_cast<long>(offset), static_cast<long>(GRID_COLUMNS * GRID_ROWS)));
+            }
+            Display.setPixel(target, static_cast<uint8_t>(random(1L, static_cast<long>(0b1U << 8U))));
             return;
         }
     }
-    blinkCount = 0U;
-    lastMillis = millis();
-    stage = Stage::DEATH;
+    setDead();
 }
 
 /**

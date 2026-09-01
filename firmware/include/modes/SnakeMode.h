@@ -40,6 +40,7 @@ private:
     void clean();
 
     void setClock(bool _clock);
+    void setDead();
     void setTarget();
     void transmit();
 
