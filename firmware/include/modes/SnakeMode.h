@@ -5,42 +5,54 @@
 #include "handlers/ClockHandler.h" // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
+#include <array>
 #include <bits/unique_ptr.h>
-#include <deque>
 #include <optional>
 
 class SnakeMode final : public ModeModule
 {
 private:
-    struct Pixel
+    enum class Stage : uint8_t // NOLINT(performance-enum-size)
     {
-        uint8_t x{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
-        uint8_t y{0U}; // NOLINT(misc-non-private-member-variables-in-classes)
-        bool operator==(const Pixel &pixel) const { return x == pixel.x && y == pixel.y; }
-        bool operator!=(const Pixel &pixel) const { return x != pixel.x || y != pixel.y; }
-        bool operator<(const Pixel &pixel) const { return y < pixel.y || (y == pixel.y && x < pixel.x); }
+        READY,
+        MOVE,
+        DEATH,
+        REMOVE,
     };
 
     unsigned long lastMillis{0UL};
 
     uint8_t blinkCount{0U};
-    uint8_t stage{0U};
 
-    Pixel target;
+    size_t head{0U};
+    size_t length{0U};
+    size_t target{0U};
 
-    std::deque<Pixel> snake{};
+    std::array<size_t, GRID_COLUMNS * GRID_ROWS> snake{};
+    std::array<bool, GRID_COLUMNS * GRID_ROWS> occupied{};
 
     std::unique_ptr<ClockHandler> clock{};
 
-    void idle();
-    [[nodiscard]] std::optional<Pixel> next() const;
-    void move();
+    Stage stage{Stage::READY};
+
     void blink();
     void clean();
-
+    void idle();
+    void move();
     void setClock(bool _clock);
+    void setDead();
     void setTarget();
+    void snakeReset(size_t start);
+    void snakeClear();
     void transmit();
+
+    [[nodiscard]] bool snakePushBack(size_t pixel);
+
+    [[nodiscard]] size_t snakeAt(size_t index) const;
+    [[nodiscard]] size_t snakePopFront();
+
+    [[nodiscard]] std::optional<size_t> findStepAvailable() const;
+    [[nodiscard]] std::optional<size_t> findStepPath() const;
 
 public:
     static constexpr std::string_view name{"Snake"};
