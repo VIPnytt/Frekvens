@@ -24,13 +24,12 @@ private:
 
     uint8_t blinkCount{0U};
 
+    size_t head{0U};
+    size_t length{0U};
     size_t target{0U};
 
-    static constexpr size_t snakeCapacity{GRID_COLUMNS * GRID_ROWS};
-    std::array<size_t, snakeCapacity> snake{};
-    std::array<bool, snakeCapacity> snakeOccupied{};
-    size_t snakeHeadIndex{0U};
-    size_t snakeLength{0U};
+    std::array<size_t, GRID_COLUMNS * GRID_ROWS> snake{};
+    std::array<bool, GRID_COLUMNS * GRID_ROWS> occupied{};
 
     std::unique_ptr<ClockHandler> clock{};
 
@@ -45,12 +44,12 @@ private:
     void setTarget();
     void snakeReset(size_t start);
     void snakeClear();
-    bool snakePushBack(size_t pixel);
-    size_t snakePopFront();
-    [[nodiscard]] size_t snakeHead() const;
-    [[nodiscard]] size_t snakeAt(size_t index) const;
-    [[nodiscard]] bool snakeContains(size_t pixel) const;
     void transmit();
+
+    [[nodiscard]] bool snakePushBack(size_t pixel);
+
+    [[nodiscard]] size_t snakeAt(size_t index) const;
+    [[nodiscard]] size_t snakePopFront();
 
     [[nodiscard]] std::optional<size_t> findStepAvailable() const;
     [[nodiscard]] std::optional<size_t> findStepPath() const;
