@@ -46,7 +46,7 @@ packaging = [
     "packaging==26.3",
 ]
 platformio = [
-    "platformio==6.1.19",
+    "platformio==6.2.0",
 ]
 ruff = [
     "ruff==0.15.22",
