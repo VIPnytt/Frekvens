@@ -52,7 +52,7 @@ ruff = [
     "ruff==0.15.22",
 ]
 scons = [
-    "scons==4.11.0",
+    "scons==4.11.1",
 ]
 scripts = [
     { include-group = "nodejs" },
