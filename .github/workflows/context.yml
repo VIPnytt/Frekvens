@@ -3,9 +3,6 @@ name: Context
 on:
   workflow_call:
     outputs:
-      npm-cache:
-        description: "Node.js cache path"
-        value: ${{ jobs.npm-cache.outputs.npm }}
       pio-environments:
         description: "PlatformIO environments"
         value: ${{ jobs.pio-environments.outputs.pio }}
@@ -19,8 +16,6 @@ jobs:
   npm-cache:
     name: Node.js cache
     runs-on: ubuntu-latest
-    outputs:
-      npm: ${{ steps.npm.outputs.cache }}
     concurrency:
       group: npm-cache
       queue: max
