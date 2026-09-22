@@ -49,6 +49,7 @@ jobs:
       - name: Node.js package install
         if: steps.cache.outputs.cache-hit != 'true'
         run: uv run --only-group nodejs npm ci
+        working-directory: ./webapp
 
   pio-cache:
     name: PlatformIO cache
