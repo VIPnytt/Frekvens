@@ -48,7 +48,7 @@ jobs:
 
       - name: Node.js package install
         if: steps.cache.outputs.cache-hit != 'true'
-        run: uv run npm ci
+        run: uv run --only-group nodejs npm ci
 
   pio-cache:
     name: PlatformIO cache
@@ -80,7 +80,7 @@ jobs:
 
       - name: PlatformIO package install
         if: steps.cache.outputs.cache-hit != 'true'
-        run: uv run pio pkg install
+        run: uv run --only-group platformio pio pkg install
 
   pio-environments:
     name: PlatformIO environments
@@ -102,4 +102,4 @@ jobs:
 
       - name: PlatformIO environments
         id: platformio
-        run: echo "environments=$(uv run pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
