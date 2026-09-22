@@ -1,0 +1,101 @@
+name: Context
+
+on:
+  workflow_call:
+    outputs:
+      pio-environments:
+        description: "PlatformIO environments"
+        value: ${{ jobs.pio-environments.outputs.pio }}
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm-cache:
+    name: Node.js cache
+    runs-on: ubuntu-latest
+    concurrency:
+      group: npm-cache
+      queue: max
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Cache for Node.js
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cache
+        with:
+          key: nodejs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('webapp/package-lock.json') }}
+          path: ~/.npm
+          lookup-only: true
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          python-version: "3.10"
+          version: latest-known
+
+      - name: Node.js package install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: uv run --only-group nodejs npm ci
+        working-directory: ./webapp
+
+  pio-cache:
+    name: PlatformIO cache
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pio-cache
+      queue: max
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Cache for PlatformIO
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cache
+        with:
+          key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
+          path: .platformio/.cache/downloads
+          lookup-only: true
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          python-version: "3.10"
+          version: latest-known
+
+      - name: PlatformIO package install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: uv run --only-group platformio pio pkg install
+
+  pio-environments:
+    name: PlatformIO environments
+    runs-on: ubuntu-latest
+    outputs:
+      pio: ${{ steps.platformio.outputs.environments }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          python-version: "3.10"
+          version: latest-known
+
+      - name: PlatformIO environments
+        id: platformio
+        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"

@@ -8,27 +8,9 @@ permissions:
   contents: read
 
 jobs:
-  platformio:
-    name: PlatformIO environments
-    runs-on: ubuntu-latest
-    outputs:
-      environments: ${{ steps.config.outputs.environments }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
-        with:
-          python-version: "3.10"
-          version: latest-known
-
-      - name: PlatformIO environments
-        id: config
-        run: echo "environments=$(uv run --only-group platformio pio project config --json-output | jq -c '[.[] | .[0] | select(startswith("env:")) | sub("^env:"; "")]')" >> "$GITHUB_OUTPUT"
+  context:
+    name: Context
+    uses: ./.github/workflows/context.yml
 
   format:
     name: Format
@@ -64,7 +46,7 @@ jobs:
 
   tidy:
     name: Tidy
-    needs: platformio
+    needs: context
     runs-on: ubuntu-latest
 
     strategy:
@@ -73,7 +55,7 @@ jobs:
           - IKEA_FREKVENS
           - IKEA_OBEGRANSAD
 
-        environment: ${{ fromJSON(needs.platformio.outputs.environments) }}
+        environment: ${{ fromJSON(needs.context.outputs.pio-environments) }}
 
         exclude:
           - environment: adafruit_qtpy_esp32s2
@@ -93,12 +75,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Cache for PlatformIO
-        continue-on-error: true
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Restore Cache for PlatformIO
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
+          fail-on-cache-miss: ${{ runner.environment == 'github-hosted' }}
           key: platformio-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platformio.ini') }}
-          path: .platformio/.cache
+          path: .platformio/.cache/downloads
 
       - name: Set up uv
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
