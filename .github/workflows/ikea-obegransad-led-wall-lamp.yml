@@ -6,9 +6,6 @@ on:
       - checks_requested
 
   pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
 
 permissions:
