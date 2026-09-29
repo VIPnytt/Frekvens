@@ -35,7 +35,7 @@ void SnakeMode::configure()
 }
 
 /**
- * @brief Restores the clock setting, clears the display, and resets the animation stage.
+ * @brief Restores the clock setting, clears the display and snake, and resets the animation stage.
  */
 void SnakeMode::begin()
 {
@@ -97,7 +97,11 @@ void SnakeMode::idle()
 /**
  * @brief Determines the snake's next position toward its target.
  *
- * @return The next unoccupied position, or `std::nullopt` when no adjacent position is available.
+ * Follows a shortest unoccupied path to the target, falling back to findStepAvailable()
+ * when the target cannot be reached. Requires a nonempty snake.
+ *
+ * @return Frame index of the next step, the current head if already at the target,
+ * or `std::nullopt` when no unoccupied adjacent position is available.
  */
 std::optional<size_t> SnakeMode::findStepPath() const
 {
@@ -156,6 +160,13 @@ std::optional<size_t> SnakeMode::findStepPath() const
     return findStepAvailable();
 }
 
+/**
+ * @brief Chooses an unoccupied adjacent position with the smallest Manhattan distance to the target.
+ *
+ * Requires a nonempty snake. Ties favor left, right, up, then down.
+ *
+ * @return Frame index of the chosen position, or `std::nullopt` if no move is available.
+ */
 std::optional<size_t> SnakeMode::findStepAvailable() const
 {
     std::array<size_t, 4U> available{};
@@ -201,7 +212,8 @@ std::optional<size_t> SnakeMode::findStepAvailable() const
  * @brief Advances the snake toward its target.
  *
  * Extends the snake when it reaches the target, otherwise updates its trail
- * and removes the tail. Starts the blinking stage when no movement is available.
+ * and removes the tail. Starts the blinking stage when no movement is available,
+ * the snake cannot grow, or no space remains for a new target.
  */
 void SnakeMode::move()
 {
@@ -257,6 +269,11 @@ void SnakeMode::blink()
     }
 }
 
+/**
+ * @brief Erases one tail segment after more than 127 ms since the last animation update.
+ *
+ * Once the snake is empty, clears the target and readies the next snake.
+ */
 void SnakeMode::clean()
 {
     if (millis() - lastMillis > INT8_MAX && length > 0U)
@@ -271,6 +288,11 @@ void SnakeMode::clean()
     }
 }
 
+/**
+ * @brief Replaces the snake with one segment and resets occupancy to that position.
+ *
+ * @param start Valid frame index, encoded as x + y * GRID_COLUMNS.
+ */
 void SnakeMode::snakeReset(size_t start)
 {
     snakeClear();
@@ -280,6 +302,9 @@ void SnakeMode::snakeReset(size_t start)
     length = 1U;
 }
 
+/**
+ * @brief Empties the snake and marks all positions as unoccupied without changing the display.
+ */
 void SnakeMode::snakeClear()
 {
     occupied.fill(false);
@@ -287,6 +312,12 @@ void SnakeMode::snakeClear()
     length = 0U;
 }
 
+/**
+ * @brief Adds a new head segment and marks its position as occupied.
+ *
+ * @param pixel Valid, unoccupied frame index, encoded as x + y * GRID_COLUMNS; not checked.
+ * @return True on insertion, or false without changing the snake when its storage is full.
+ */
 bool SnakeMode::snakePushBack(size_t pixel)
 {
     if (length >= GRID_COLUMNS * GRID_ROWS)
@@ -300,6 +331,13 @@ bool SnakeMode::snakePushBack(size_t pixel)
     return true;
 }
 
+/**
+ * @brief Removes the tail segment and marks its position as unoccupied.
+ *
+ * Requires a nonempty snake; does not change the display.
+ *
+ * @return Frame index of the removed segment.
+ */
 size_t SnakeMode::snakePopFront()
 {
     const size_t tail{((GRID_COLUMNS * GRID_ROWS) + head - (length - 1U)) % (GRID_COLUMNS * GRID_ROWS)};
@@ -312,12 +350,20 @@ size_t SnakeMode::snakePopFront()
     return snake[tail];
 }
 
+/**
+ * @brief Returns a segment's frame index, counting from the tail toward the head.
+ *
+ * @param index Zero-based segment offset; must be less than the current snake length.
+ */
 size_t SnakeMode::snakeAt(size_t index) const
 {
     const size_t tail{((GRID_COLUMNS * GRID_ROWS) + head - (length - 1U)) % (GRID_COLUMNS * GRID_ROWS)};
     return snake[(tail + index) % (GRID_COLUMNS * GRID_ROWS)];
 }
 
+/**
+ * @brief Starts the death animation, resetting its blink count and timing.
+ */
 void SnakeMode::setDead()
 {
     blinkCount = 0U;
@@ -329,7 +375,8 @@ void SnakeMode::setDead()
  * @brief Selects an unoccupied display position as the snake's target.
  *
  * The target is assigned a random brightness and is placed below the clock area
- * when the clock is enabled.
+ * when the clock is enabled. If no unoccupied position remains in the playable area,
+ * starts the death animation and leaves the target unchanged.
  */
 void SnakeMode::setTarget()
 {
@@ -354,7 +401,7 @@ void SnakeMode::setTarget()
 /**
  * @brief Enables or disables the Snake mode clock.
  *
- * Persists the clock setting, updates the clock handler and target as needed,
+ * Attempts to persist the clock setting, updates the clock handler and target as needed,
  * and transmits the updated configuration.
  *
  * @param _clock Whether the clock should be enabled.
