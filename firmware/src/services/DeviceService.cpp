@@ -102,28 +102,28 @@ void DeviceService::begin()
     esp_deep_sleep_enable_gpio_wakeup((1ULL << static_cast<unsigned>(PIN_INT)) |
                                           (1ULL << static_cast<unsigned>(PIN_SW1)) |
                                           (1ULL << static_cast<unsigned>(PIN_SW2)),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW1)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << static_cast<unsigned>(PIN_INT)) |
                                           (1ULL << static_cast<unsigned>(PIN_SW1)),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT) && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << static_cast<unsigned>(PIN_INT)) |
                                           (1ULL << static_cast<unsigned>(PIN_SW2)),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW1) && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup((1ULL << static_cast<unsigned>(PIN_SW1)) |
                                           (1ULL << static_cast<unsigned>(PIN_SW2)),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_INT)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_INT),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW1)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW1),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #elif SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP && defined(PIN_SW2)
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW2),
-                                      esp_sleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
+                                      esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
 #if EXTENSION_WEBAPP
     if (!LittleFS.begin(false, "/littlefs", 1U, "littlefs"))
