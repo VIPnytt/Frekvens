@@ -96,7 +96,6 @@ jobs:
           ${{ matrix.device-id }}='true'
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
-          EXTENSION_HEAP='true'
           EXTENSION_HOMEASSISTANT='true'
           EXTENSION_INFRARED='true'
           EXTENSION_MESSAGE='true'
