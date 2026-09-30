@@ -8,7 +8,7 @@
 
 **Smart-home:** [Alexa](#-alexa) | [Home Assistant](#-home-assistant) | [MQTT](#️-mqtt)
 
-**Tools:** [Heap](#-heap) | [OTA](#️-ota) | [Screenshot](#-screenshot)
+**Tools:** [OTA](#️-ota) | [Screenshot](#-screenshot)
 
 ## 🎤 Alexa
 
@@ -79,18 +79,6 @@ EXTENSION_BUTTON='true'
 ```
 
 See also [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad).
-
-## 💾 Heap
-
-Reports memory usage.
-
-Integrated into the [Home Assistant](#-home-assistant) extensions.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-EXTENSION_HEAP='true'
-```
 
 ## 🧬 Home Assistant
 

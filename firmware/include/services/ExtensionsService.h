@@ -2,7 +2,6 @@
 
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
-#include "extensions/HeapExtension.h"
 #include "extensions/HomeAssistantExtension.h"
 #include "extensions/InfraredExtension.h"
 #include "extensions/MessageExtension.h"
@@ -35,9 +34,6 @@ private:
 #endif
 #if EXTENSION_BUTTON
     ButtonExtension extensionButton;
-#endif
-#if EXTENSION_HEAP
-    HeapExtension extensionHeap;
 #endif
 #if EXTENSION_HOMEASSISTANT
     HomeAssistantExtension extensionHomeAssistant;
@@ -91,9 +87,6 @@ private:
 #endif
 #if EXTENSION_BUTTON
         &extensionButton,
-#endif
-#if EXTENSION_HEAP
-        &extensionHeap,
 #endif
 #if EXTENSION_HOMEASSISTANT
         &extensionHomeAssistant,
