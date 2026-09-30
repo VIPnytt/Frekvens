@@ -1,6 +1,6 @@
 # 🎛️ Modes
 
-**Clocks:** [Binary clock](#0%EF%B8%8F⃣-binary-clock) | [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Clock](#️-clock) | [Game of Life](#-game-of-life) | [Ping-pong](#-ping-pong) | [Snake](#️-snake)
+**Clocks:** [Binary epoch](#1%EF%B8%8F⃣-binary-epoch) | [Breakout clock](#-breakout-clock) | [Clock](#️-clock) | [Game of Life](#-game-of-life) | [Ping-pong](#-ping-pong) | [Snake](#️-snake)
 
 **Games:** [Breakout clock](#-breakout-clock) | [Game of life](#-game-of-life) | [Ping-pong](#-ping-pong)| [Snake](#-snake)
 
