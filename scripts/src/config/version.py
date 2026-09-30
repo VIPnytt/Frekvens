@@ -1,3 +1,3 @@
 import typing
 
-VERSION: typing.Final[str] = "2.5.2"
+VERSION: typing.Final[str] = "3.0.0-alpha.1"

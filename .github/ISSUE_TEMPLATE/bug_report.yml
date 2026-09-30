@@ -15,6 +15,7 @@ body:
       description: Which version did you encounter the bug on?
       options:
         - main branch (development)
+        - v3.0.0-alpha.1
         - v2.5.2 (latest release)
         - v2.5.1
         - v2.5.0
