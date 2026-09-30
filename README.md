@@ -182,7 +182,7 @@ Home Assistant is deeply integrated and supports full control over power, bright
 
 ## 🤖 API
 
-Four API interfaces are supported:
+Three API interfaces are supported:
 
 - [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
 - [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful)
