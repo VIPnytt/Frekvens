@@ -14,7 +14,6 @@
 #include "extensions/RestfulExtension.h"
 #include "extensions/RtcExtension.h"
 #include "extensions/ScreenshotExtension.h"
-#include "extensions/ServerSentEventsExtension.h"
 #include "extensions/SignalExtension.h"
 #include "extensions/StatusLedExtension.h"
 #include "extensions/WebAppExtension.h"
@@ -73,9 +72,6 @@ private:
 #if EXTENSION_SCREENSHOT
     ScreenshotExtension extensionScreenshot;
 #endif
-#if EXTENSION_SERVERSENTEVENTS
-    ServerSentEventsExtension extensionServerSentEvents;
-#endif
 #if EXTENSION_SIGNAL
     SignalExtension extensionSignal;
 #endif
@@ -132,9 +128,6 @@ private:
 #if EXTENSION_SCREENSHOT
         &extensionScreenshot,
 #endif
-#if EXTENSION_SERVERSENTEVENTS
-        &extensionServerSentEvents,
-#endif
 #if EXTENSION_SIGNAL
         &extensionSignal,
 #endif
@@ -175,9 +168,6 @@ public:
 #endif
 #if EXTENSION_PLAYLIST
     PlaylistExtension &Playlist();
-#endif
-#if EXTENSION_SERVERSENTEVENTS
-    ServerSentEventsExtension &ServerSentEvents();
 #endif
 #if EXTENSION_STATUSLED
     StatusLedExtension &StatusLed();

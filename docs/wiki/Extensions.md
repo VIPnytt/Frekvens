@@ -2,7 +2,7 @@
 
 **Accessories:** [Button](#️-button) | [Infrared](#-infrared) | [Microphone](#️-microphone) | [Photocell](#-photocell) | [RTC](#-rtc) | [Status LED](#-status-led)
 
-**APIs:** [MQTT](#️-mqtt) | [RESTful](#️-restful) | [Server-Sent Events](#-server-sent-events) | [WebSocket](#-websocket)
+**APIs:** [MQTT](#️-mqtt) | [RESTful](#️-restful) | [WebSocket](#-websocket)
 
 **Interactive:** [Button](#️-button) | [Message](#-message) | [Playlist](#️-playlist) | [Signal](#️-signal) | [Web app](#-web-app)
 
@@ -365,8 +365,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 EXTENSION_RESTFUL='true'
 ```
 
-See also [Server-Sent Events](#-server-sent-events).
-
 ## ⏰ RTC
 
 By adding an [RTC-module](https://github.com/VIPnytt/Frekvens/wiki/Real-Time-Clock) you’ll get reliable clock, even without Wi-Fi connectivity.
@@ -390,20 +388,6 @@ EXTENSION_SCREENSHOT='true'
 ```
 
 See also [Web app](#-web-app).
-
-## 📜 Server-Sent Events
-
-Real-time event stream API.
-
-Endpoint: `http://frekvens.local/server-sent%20events`
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-EXTENSION_SERVERSENTEVENTS='true'
-```
-
-See also [RESTful](#️-restful).
 
 ## ☮️ Signal
 
