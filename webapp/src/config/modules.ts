@@ -12,7 +12,6 @@ export const EXTENSION_SIGNAL: boolean = import.meta.env.VITE_EXTENSION_SIGNAL =
 
 export const MODE_ANIMATION: boolean = import.meta.env.VITE_MODE_ANIMATION === "true";
 export const MODE_ARROW: boolean = import.meta.env.VITE_MODE_ARROW === "true";
-export const MODE_BINARYCLOCK: boolean = import.meta.env.VITE_MODE_BINARYCLOCK === "true";
 export const MODE_BINARYEPOCH: boolean = import.meta.env.VITE_MODE_BINARYEPOCH === "true";
 export const MODE_BLINK: boolean = import.meta.env.VITE_MODE_BLINK === "true";
 export const MODE_BLINDS: boolean = import.meta.env.VITE_MODE_BLINDS === "true";

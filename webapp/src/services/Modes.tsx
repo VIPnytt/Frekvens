@@ -5,7 +5,6 @@ import { Icon } from "../components/Icon";
 import {
     MODE_ANIMATION,
     MODE_ARROW,
-    MODE_BINARYCLOCK,
     MODE_BINARYEPOCH,
     MODE_BLINDS,
     MODE_BLINK,
@@ -45,7 +44,6 @@ import {
     Sidebar as ModeAnimationSidebar,
 } from "../modes/Animation";
 import { Main as ModeArrowMain, name as ModeArrowName } from "../modes/Arrow";
-import { Main as ModeBinaryClockMain, name as ModeBinaryClockName } from "../modes/BinaryClock";
 import { Main as ModeBinaryEpochMain, name as ModeBinaryEpochName } from "../modes/BinaryEpoch";
 import { Main as ModeBlindsMain, name as ModeBlindsName } from "../modes/Blinds";
 import { Main as ModeBlinkMain, name as ModeBlinkName } from "../modes/Blink";
@@ -116,11 +114,6 @@ export const Main: Component = () => (
         {MODE_ARROW && (
             <Match when={getMode() === ModeArrowName}>
                 <ModeArrowMain />
-            </Match>
-        )}
-        {MODE_BINARYCLOCK && (
-            <Match when={getMode() === ModeBinaryClockName}>
-                <ModeBinaryClockMain />
             </Match>
         )}
         {MODE_BINARYEPOCH && (

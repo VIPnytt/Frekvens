@@ -126,12 +126,6 @@ std::unique_ptr<ModeModule> ModesService::getMode(std::string_view modeName)
         return std::make_unique<ArrowMode>();
     }
 #endif
-#if MODE_BINARYCLOCK
-    if (modeName == BinaryClockMode::name)
-    {
-        return std::make_unique<BinaryClockMode>();
-    }
-#endif
 #if MODE_BINARYEPOCH
     if (modeName == BinaryEpochMode::name)
     {
