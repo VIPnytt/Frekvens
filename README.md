@@ -28,7 +28,7 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Text scrolling
   - Streaming content
   - Weather
-- **19 extensions**:
+- **18 extensions**:
   - Web app
   - Smart-home integrations
   - Notifications
@@ -182,11 +182,10 @@ Home Assistant is deeply integrated and supports full control over power, bright
 
 ## 🤖 API
 
-Four API interfaces are supported:
+Three API interfaces are supported:
 
 - [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt)
 - [RESTful](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-restful)
-- [Server-Sent Events](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-server-sent-events)
 - [WebSocket](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-websocket)
 
 Refer to the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for supported endpoints and use cases.

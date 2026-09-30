@@ -108,7 +108,6 @@ jobs:
           EXTENSION_RESTFUL='true'
           EXTENSION_RTC='true'
           EXTENSION_SCREENSHOT='true'
-          EXTENSION_SERVERSENTEVENTS='true'
           EXTENSION_SIGNAL='true'
           EXTENSION_STATUSLED='true'
           EXTENSION_WEBAPP='true'

@@ -180,9 +180,6 @@ void DeviceService::setPower(bool power)
 #if EXTENSION_MQTT
     Extensions.MQTT().disconnect();
 #endif
-#if EXTENSION_SERVERSENTEVENTS
-    Extensions.ServerSentEvents().events.close();
-#endif
 #if EXTENSION_WEBSOCKET
     Extensions.WebSocket().server->closeAll();
 #endif
@@ -201,9 +198,6 @@ void DeviceService::restore()
 #if EXTENSION_MQTT
     Extensions.MQTT().client.loop();
     Extensions.MQTT().client.disconnect();
-#endif
-#if EXTENSION_SERVERSENTEVENTS
-    Extensions.ServerSentEvents().events.close();
 #endif
 #if EXTENSION_WEBSOCKET
     Extensions.WebSocket().server->closeAll();
