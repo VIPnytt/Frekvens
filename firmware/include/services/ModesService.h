@@ -3,7 +3,6 @@
 // NOLINTBEGIN(misc-include-cleaner)
 #include "modes/AnimationMode.h"
 #include "modes/ArrowMode.h"
-#include "modes/BinaryClockMode.h"
 #include "modes/BinaryEpochMode.h"
 #include "modes/BlindsMode.h"
 #include "modes/BlinkMode.h"
@@ -67,9 +66,6 @@ public:
 #endif
 #if MODE_ARROW
         ArrowMode::name,
-#endif
-#if MODE_BINARYCLOCK
-        BinaryClockMode::name,
 #endif
 #if MODE_BINARYEPOCH
         BinaryEpochMode::name,

@@ -44,18 +44,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_ARROW='true'
 ```
 
-## 0️⃣ Binary clock
-
-Binary clock, counts seconds since midnight.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-MODE_BINARYCLOCK='true'
-```
-
-See also [Binary epoch](#1%EF%B8%8F⃣-binary-epoch).
-
 ## 1️⃣ Binary epoch
 
 Binary clock, counts seconds since 1970.
@@ -65,8 +53,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 ```ini
 MODE_BINARYEPOCH='true'
 ```
-
-See also [Binary clock](#0%EF%B8%8F⃣-binary-clock).
 
 ## 🪟 Blinds
 

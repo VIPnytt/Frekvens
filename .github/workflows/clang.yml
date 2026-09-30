@@ -124,7 +124,6 @@ jobs:
           HOSTNAME='frekvens'
           MODE_ANIMATION='true'
           MODE_ARROW='true'
-          MODE_BINARYCLOCK='true'
           MODE_BINARYEPOCH='true'
           MODE_BLINDS='true'
           MODE_BLINK='true'
