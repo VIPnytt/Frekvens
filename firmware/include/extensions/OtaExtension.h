@@ -17,10 +17,6 @@ private:
     static void onStart();
     static void onEnd();
 
-#if EXTENSION_STATUSLED
-    static void onError(ota_error_t error);
-#endif // EXTENSION_STATUSLED
-
 #ifndef OTA_KEY
     static void onPost(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len,
                        bool final);

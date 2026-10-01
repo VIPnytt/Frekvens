@@ -22,9 +22,6 @@ void WebAppExtension::configure()
     if (length == 0U)
     {
         ESP_LOGE(name.data(), "File not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-#if EXTENSION_STATUSLED
-        Extensions.StatusLed().error();
-#endif // EXTENSION_STATUSLED
     }
     else
     {

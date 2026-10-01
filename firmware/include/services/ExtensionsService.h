@@ -14,7 +14,6 @@
 #include "extensions/RtcExtension.h"
 #include "extensions/ScreenshotExtension.h"
 #include "extensions/SignalExtension.h"
-#include "extensions/StatusLedExtension.h"
 #include "extensions/WebAppExtension.h"
 #include "extensions/WebSocketExtension.h"
 #include "modules/ServiceModule.h"
@@ -71,9 +70,6 @@ private:
 #if EXTENSION_SIGNAL
     SignalExtension extensionSignal;
 #endif
-#if EXTENSION_STATUSLED
-    StatusLedExtension extensionStatusLed;
-#endif
 #if EXTENSION_WEBAPP
     WebAppExtension extensionWebApp;
 #endif
@@ -124,9 +120,6 @@ private:
 #if EXTENSION_SIGNAL
         &extensionSignal,
 #endif
-#if EXTENSION_STATUSLED
-        &extensionStatusLed,
-#endif
 #if EXTENSION_WEBAPP
         &extensionWebApp,
 #endif
@@ -161,9 +154,6 @@ public:
 #endif
 #if EXTENSION_PLAYLIST
     PlaylistExtension &Playlist();
-#endif
-#if EXTENSION_STATUSLED
-    StatusLedExtension &StatusLed();
 #endif
 #if EXTENSION_WEBSOCKET
     WebSocketExtension &WebSocket();

@@ -21,9 +21,6 @@ void OtaExtension::configure()
 #endif // OTA_KEY
     ArduinoOTA.onStart(&onStart);
     ArduinoOTA.onEnd(&onEnd);
-#if EXTENSION_STATUSLED
-    ArduinoOTA.onError(&onError);
-#endif // EXTENSION_STATUSLED
 }
 
 /**
@@ -63,15 +60,6 @@ void OtaExtension::onEnd()
 {
     ESP_LOGI(name.data(), "complete"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
-
-#if EXTENSION_STATUSLED
-/**
- * @brief Signals an OTA update error through the status LED.
- *
- * @param error OTA error code.
- */
-void OtaExtension::onError(ota_error_t error) { Extensions.StatusLed().error(); }
-#endif // EXTENSION_STATUSLED
 
 #ifndef OTA_KEY
 /**
