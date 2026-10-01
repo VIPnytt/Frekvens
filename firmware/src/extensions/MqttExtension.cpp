@@ -33,17 +33,7 @@ void MqttExtension::configure()
     }
 }
 
-void MqttExtension::handle()
-{
-    client.loop();
-#if EXTENSION_STATUSLED
-    if (!client.connected() && WiFi.isConnected() && millis() - lastMillis > UINT8_MAX)
-    {
-        lastMillis = millis();
-        Extensions.StatusLed().warning();
-    }
-#endif // EXTENSION_STATUSLED
-}
+void MqttExtension::handle() { client.loop(); }
 
 /**
  * @brief Disconnects from the MQTT broker after publishing a retained unavailable status.
