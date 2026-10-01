@@ -24,10 +24,6 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 > [!TIP]
 > Additional Wi-Fi credentials can be added later via the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app).
 
-**Wi-Fi hotspot:**
-
-Long press *any* [button](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-button) during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity). The [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) can then be used to add new Wi-Fi credentials if needed.
-
 **Wi-Fi country:**
 
 Regulatory country code in *ISO 3166-1 alpha-2* format.

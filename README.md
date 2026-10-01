@@ -140,7 +140,7 @@ Define the Wi-Fi credentials in [`secrets.h`](https://github.com/VIPnytt/Frekven
 ```
 
 > [!TIP]
-> Additional networks can be configured later in the web UI, optionally via Wi-Fi hotspot if needed.
+> Additional networks can be configured later in the web UI.
 
 ### Weather
 
@@ -194,7 +194,7 @@ Refer to the [Wiki](https://github.com/VIPnytt/Frekvens/wiki) for supported endp
 
 ### How do I change Wi-Fi network?
 
-Hold any button during startup to activate the Wi-Fi hotspot. Connect to it with your phone or computer, and a configuration portal will open. From there, you can configure new network credentials. Multiple networks can be saved.
+New networks can be configured directly from the web UI. If the device has lost access to its configured network, set up a temporary hotspot on your phone using the previous Wi-Fi credentials. Once the device connects, open the web UI to add the new network.
 
 ## 🚧 Troubleshooting
 

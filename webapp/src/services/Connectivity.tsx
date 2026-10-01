@@ -27,29 +27,19 @@ interface WiFi {
     ssid: string;
 }
 
-const [getConnecting, setConnecting] = createSignal<boolean>(false);
 const [getCredentialKey, setCredentialKey] = createSignal<string>("");
 const [getCredentialSsid, setCredentialSsid] = createSignal<string>("");
 const [getScan, setScan] = createSignal<WiFi[]>([]);
 const [getSaved, setSaved] = createSignal<string[]>([]);
 const [getSsid, setSsid] = createSignal<string | undefined>(undefined);
 
-export const receiver = (json: { event?: string; saved?: string[]; scan?: WiFi[]; ssid?: string | undefined }) => {
-    json?.event !== undefined && event(json.event);
+export const receiver = (json: { saved?: string[]; scan?: WiFi[]; ssid?: string | undefined }) => {
     json?.saved !== undefined && setSaved(json.saved);
     json?.scan !== undefined && setScan(json.scan);
     json?.ssid !== undefined && setSsid(json.ssid);
 };
 
 const { toast } = Toast();
-
-const event = (action: string) => {
-    switch (action) {
-        case "connected":
-            toast("Wi-Fi connected", 15e3);
-            break;
-    }
-};
 
 export const MainThird: Component = () => {
     const handleConnect = () => {
@@ -66,7 +56,6 @@ export const MainThird: Component = () => {
             }),
         );
         toast("Connecting to Wi-Fi...", 60e3);
-        setConnecting(true);
     };
 
     return (
@@ -81,7 +70,6 @@ export const MainThird: Component = () => {
                                 class="w-full"
                                 autofocus
                                 autocomplete="username"
-                                disabled={getConnecting()}
                                 id="ssid"
                                 list="scan"
                                 oninput={(e) => setCredentialSsid(e.currentTarget.value)}
@@ -98,7 +86,6 @@ export const MainThird: Component = () => {
                             <input
                                 class="w-full"
                                 autocomplete="current-password"
-                                disabled={getConnecting()}
                                 id="key"
                                 oninput={(e) => setCredentialKey(e.currentTarget.value)}
                                 placeholder={!getCredentialSsid() && getSsid() ? "********" : "Password"}
@@ -108,7 +95,6 @@ export const MainThird: Component = () => {
                         <button
                             class={`action-deactivated mt-3 w-full ${getCredentialKey().length >= 8 ? "action-positive" : ""}`}
                             disabled={
-                                getConnecting() ||
                                 !getCredentialSsid().length ||
                                 (getCredentialKey().length > 0 && getCredentialKey().length < 8)
                             }
@@ -120,7 +106,7 @@ export const MainThird: Component = () => {
                                 class="mr-2"
                                 path={mdiContentSave}
                             />
-                            {getConnecting() ? "Connecting" : "Connect"}
+                            Connect
                         </button>
                     </div>
                 </div>

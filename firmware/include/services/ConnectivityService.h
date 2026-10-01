@@ -18,12 +18,9 @@ private:
 
     unsigned long lastMillis{0UL};
 
-    std::unique_ptr<DNSServer> dns{};
-
     WiFiMulti multi;
 
     void initStation();
-    void initHotspot();
     void connect(const char *ssid, const char *key);
     void transmit();
 
