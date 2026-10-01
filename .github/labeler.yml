@@ -56,8 +56,6 @@ scripts:
       - scripts/**/*
 
   - head-branch:
-    - ^dependabot/uv/cryptography-
-    - ^dependabot/uv/httpx-
     - ^dependabot/uv/nodejs-
     - ^dependabot/uv/packaging-
     - ^dependabot/uv/platformio-
@@ -65,7 +63,6 @@ scripts:
     - ^dependabot/uv/scons-
     - ^dependabot/uv/tzdata-
     - ^dependabot/uv/tzlocal-
-    - ^dependabot/uv/uv-
 
 skip-changelog:
   - head-branch:
@@ -75,12 +72,3 @@ skip-changelog:
     - ^dependabot/uv/platformio-
     - ^dependabot/uv/ruff-
     - ^dependabot/uv/scons-
-    - ^dependabot/uv/uv-
-
-tools:
-  - changed-files:
-    - any-glob-to-any-file:
-      - tools/**/*
-
-  - head-branch:
-    - ^dependabot/uv/httpx-

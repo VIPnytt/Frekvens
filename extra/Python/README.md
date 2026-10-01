@@ -18,7 +18,3 @@ Installation of dependencies:
 pip install uv
 uv sync --extra font --inexact
 ```
-
-## 🏭 Mode generator
-
-Converts `.csv` files from the [Animation](https://github.com/VIPnytt/Frekvens/wiki/Modes#-animation) or [Draw](https://github.com/VIPnytt/Frekvens/wiki/Modes#-draw) modes into C++ source files that can easily be used as templates for new project modes.

@@ -37,4 +37,3 @@ Supplementary files and developer resources.
 - [Documentation overview](https://github.com/VIPnytt/Frekvens/tree/main/docs)
 - [Extra](https://github.com/VIPnytt/Frekvens/tree/main/extra)
 - [Partition tables](https://github.com/VIPnytt/Frekvens/tree/main/partitions)
-- [Tools](https://github.com/VIPnytt/Frekvens/tree/main/tools)
