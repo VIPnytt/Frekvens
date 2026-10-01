@@ -59,9 +59,6 @@ When the *Mode button* is the only button, it serves a dual purpose:
 
 Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
 
-> [!TIP]
-> Long press *any* button during startup to activate the [Wi-Fi hotspot](https://github.com/VIPnytt/Frekvens/wiki/Services#-connectivity).
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h

@@ -3,7 +3,6 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
-#include <DNSServer.h> // NOLINT(misc-include-cleaner)
 #include <WiFiMulti.h>
 #include <span>
 
@@ -18,12 +17,9 @@ private:
 
     unsigned long lastMillis{0UL};
 
-    std::unique_ptr<DNSServer> dns{};
-
     WiFiMulti multi;
 
     void initStation();
-    void initHotspot();
     void connect(const char *ssid, const char *key);
     void transmit();
 
