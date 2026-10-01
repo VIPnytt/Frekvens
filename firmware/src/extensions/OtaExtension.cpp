@@ -21,7 +21,9 @@ void OtaExtension::configure()
 }
 
 /**
- * @brief Starts OTA support and registers the unauthenticated upload endpoint when authentication is disabled.
+ * @brief Starts Arduino OTA and advertises it via mDNS on port 3232.
+ *
+ * Advertises authentication as required when OTA_KEY is defined.
  */
 void OtaExtension::begin()
 {
