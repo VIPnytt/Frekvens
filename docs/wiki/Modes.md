@@ -406,14 +406,11 @@ Multiple widely used streaming protocols are supported:
 - Distributed Display Protocol (DDP) – Efficient pixel-oriented data streaming.
 - E1.31 (sACN) – Network-based DMX512 data streaming.
 
-Receivers:
+Endpoint examples:
 
-- `example.local:4048`
-- `example.local:5568`
-- `example.local:6454`
-
-> [!TIP]
-> The [Stream csv](https://github.com/VIPnytt/Frekvens/blob/main/tools/src/frekvens/StreamCsv.py) Python script streams custom content such as [animations](#-animation) and [drawings](#-draw).
+- `frekvens.local:4048`
+- `frekvens.local:5568`
+- `frekvens.local:6454`
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 

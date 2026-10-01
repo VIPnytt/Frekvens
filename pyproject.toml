@@ -1,6 +1,6 @@
 [project]
 name = "frekvens"
-description = "Toolbox for the Frekvens project."
+description = "Build system for the Frekvens project."
 version = "3.0.0a1"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
@@ -8,9 +8,6 @@ classifiers = [
     "Private :: Do Not Upload",
 ]
 requires-python = ">=3.10"
-dependencies = [
-    'httpx==0.28.1',
-]
 
 [project.urls]
 Homepage = "https://github.com/VIPnytt/Frekvens"
@@ -21,17 +18,6 @@ font = [
     "fonttools==4.63.0",
     "matplotlib==3.10.9",
     "pillow==12.3.0",
-]
-
-[build-system]
-requires = [
-    "setuptools",
-]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools.packages.find]
-where = [
-    "tools/src",
 ]
 
 [dependency-groups]
