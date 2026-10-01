@@ -237,9 +237,7 @@ EXTENSION_MQTT='true'
 
 Over-the-Air updates, for ESP32.
 
-User-friendly interface for uploading `firmware.bin` and `littlefs.bin` files manually.
-
-Another option is directly from the IDE/editor via Wi-Fi using `espota`.
+Upload directly from the IDE/editor via Wi-Fi using `espota`.
 
 Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
 
@@ -248,9 +246,6 @@ upload_protocol = espota
 upload_port = frekvens.local
 ;upload_flags = --auth=secret
 ```
-
-> [!NOTE]
-> The optional password protection removes the ability to upload manually via the [Web app](#-web-app) user-interface.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
