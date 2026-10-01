@@ -3,7 +3,6 @@
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
 #include "modules/ServiceModule.h"
 
-#include <DNSServer.h> // NOLINT(misc-include-cleaner)
 #include <WiFiMulti.h>
 #include <span>
 
