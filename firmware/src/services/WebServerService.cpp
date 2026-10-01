@@ -14,7 +14,7 @@ void WebServerService::configure() { http.begin(); }
 void WebServerService::begin() { http.onNotFound(&onNotFound); }
 
 /**
- * @brief Handles HTTP requests that do not match a registered route.
+ * @brief Sends HTTP 404 Not Found for requests that do not match a registered route.
  *
  * @param request Request that could not be matched to a route.
  */

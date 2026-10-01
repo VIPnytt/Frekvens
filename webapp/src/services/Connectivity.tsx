@@ -33,6 +33,10 @@ const [getScan, setScan] = createSignal<WiFi[]>([]);
 const [getSaved, setSaved] = createSignal<string[]>([]);
 const [getSsid, setSsid] = createSignal<string | undefined>(undefined);
 
+/**
+ * Updates saved network names, scan results, and the current SSID from a connectivity payload.
+ * Omitted or undefined fields leave the corresponding state unchanged.
+ */
 export const receiver = (json: { saved?: string[]; scan?: WiFi[]; ssid?: string | undefined }) => {
     json?.saved !== undefined && setSaved(json.saved);
     json?.scan !== undefined && setScan(json.scan);
@@ -41,7 +45,15 @@ export const receiver = (json: { saved?: string[]; scan?: WiFi[]; ssid?: string 
 
 const { toast } = Toast();
 
+/**
+ * Renders the Wi-Fi connection form with scanned network suggestions.
+ * Enables submission for a nonempty SSID and a password that is empty or at least eight characters long.
+ */
 export const MainThird: Component = () => {
+    /**
+     * Requests a Wi-Fi connection with the entered SSID, omitting an empty password.
+     * Queues the request if the WebSocket is not open and shows a notice for up to 60 seconds.
+     */
     const handleConnect = () => {
         WebSocketWS.send(
             JSON.stringify({

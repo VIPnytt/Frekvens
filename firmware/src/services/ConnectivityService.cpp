@@ -12,8 +12,7 @@
 /**
  * @brief Configures Wi-Fi, event handlers, country settings, and time synchronization.
  *
- * Selects hotspot mode when a configured boot switch is held during a normal boot;
- * otherwise, initializes station mode.
+ * Initializes station mode and attempts to connect using saved and configured credentials.
  */
 void ConnectivityService::configure()
 {
@@ -50,6 +49,12 @@ void ConnectivityService::configure()
     configTzTime(TIME_ZONE_POSIX, "1.pool.ntp.org", "2.pool.ntp.org", "3.pool.ntp.org");
 }
 
+/**
+ * @brief Publishes Wi-Fi status when connected or retries a disconnected station.
+ *
+ * Acts only when more than 65,535 milliseconds have elapsed since the previous check.
+ * Connection retries may block while scanning or connecting.
+ */
 void ConnectivityService::handle()
 {
     if (millis() - lastMillis > UINT16_MAX)
@@ -126,8 +131,11 @@ void ConnectivityService::initStation()
 /**
  * @brief Starts a strict connection attempt using the specified Wi-Fi credentials.
  *
+ * Replaces the in-memory connection candidates with this network. May block while
+ * scanning or connecting; credential rejection and connection failure are not reported to the caller.
+ *
  * @param ssid Wi-Fi network name.
- * @param key Wi-Fi network password.
+ * @param key Wi-Fi network password, or nullptr or an empty string for an open network.
  */
 void ConnectivityService::connect(const char *ssid, const char *key)
 {
@@ -242,8 +250,9 @@ void ConnectivityService::onIPv6(arduino_event_id_t event, arduino_event_info_t 
 /**
  * @brief Marks the service as routable and initializes network services.
  *
- * Terminates hotspot operation when transitioning from hotspot mode, starts
- * mDNS service registration, and triggers SNTP synchronization.
+ * On the first transition to routable, attempts to start mDNS and registers enabled
+ * services if startup succeeds. Resets system time to the Unix epoch through SNTP,
+ * invoking any registered time-sync notification callback. Does nothing if already routable.
  */
 void ConnectivityService::onRoutable()
 {
