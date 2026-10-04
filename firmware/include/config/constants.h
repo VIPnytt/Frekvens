@@ -29,7 +29,6 @@
  * Essentials
  */
 #include "config/extensions.h"
-#include "config/modes.h"
 #include "config/services.h"
 #include "config/version.h"
 
