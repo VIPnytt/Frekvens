@@ -15,7 +15,6 @@
  */
 // #define LATITUDE "0.000" // °
 // #define LONGITUDE "0.000" // °
-// #define LOCATION "city"
 
 /**
  * Wi-Fi

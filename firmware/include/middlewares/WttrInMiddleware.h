@@ -56,25 +56,6 @@ private:
     // https://github.com/chubin/wttr.in#readme
     static inline std::vector<std::pair<const char *, const char *>> parts{
         {
-            "/",
-            "format=j1",
-        },
-        {
-            "/",
-            "format=j2",
-        },
-#ifdef LOCATION
-        {
-            "/" LOCATION,
-            "format=j1",
-        },
-        {
-            "/" LOCATION,
-            "format=j2",
-        },
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE)
-        {
             "/" LATITUDE "," LONGITUDE,
             "format=j1",
         },
@@ -82,7 +63,6 @@ private:
             "/" LATITUDE "," LONGITUDE,
             "format=j2",
         },
-#endif
     };
 
 public:

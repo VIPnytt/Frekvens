@@ -243,7 +243,6 @@ jobs:
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
           #define LATITUDE "0.000"
-          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define MQTT_HOST "mqtt.local"
           #define MQTT_KEY "redacted"
@@ -394,7 +393,6 @@ jobs:
           #define HOMEASSISTANT_KEY "redacted"
           #define HOMEASSISTANT_PORT 8123
           #define LATITUDE "0.000"
-          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define MQTT_HOST "mqtt.local"
           #define MQTT_PORT 1883

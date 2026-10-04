@@ -475,13 +475,12 @@ Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/
 ```h
 #define LATITUDE "0.000"  // °
 #define LONGITUDE "0.000" // °
-#define LOCATION "city"
 ```
 
 To find your coordinates, use any preferred map or coordinate service, such as [LatLong.net](https://www.latlong.net/my-location-latitude-longitude), [GPS-Coordinates.net](https://www.gps-coordinates.net/my-location) or [GPS-Coordinates.org](https://gps-coordinates.org/my-location.php).
 
 > [!NOTE]
-> Coordinates with 3-4 decimal places are usually more than accurate enough for weather data. Some providers also support a location name, usually in the form of a city or village.
+> Coordinates with 3-4 decimal places are usually more than accurate enough for weather data.
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 

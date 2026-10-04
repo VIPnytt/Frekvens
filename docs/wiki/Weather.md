@@ -2,16 +2,7 @@
 
 At least one weather provider is required to use the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
-| Provider                                       | Open access             | Coordinates             | Named location          | No place config    |
-| ---------------------------------------------- | ----------------------- | ----------------------- | ----------------------- | ------------------ |
-| [Google](%EF%B8%8F-google)                     | :x:                     | :white_check_mark:      | :x:                     | :x:                |
-| [Home Assistant](#-home-assistant)             | :x:                     | :x:                     | :x:                     | :white_check_mark: |
-| [Open-Meteo](#-open-meteo)                     | :ballot_box_with_check: | :white_check_mark:      | :x:                     | :x:                |
-| [Open Weather](#️-open-weather)                 | :x:                     | :white_check_mark:      | :white_check_mark:      | :x:                |
-| [Tomorrow.io](#-tomorrowio)                    | :x:                     | :white_check_mark:      | :white_check_mark:      | :x:                |
-| [World Weather Online](#-world-weather-online) | :x:                     | :white_check_mark:      | :x:                     | :x:                |
-| [Wttr.in](#️-wttrin)                            | :white_check_mark:      | :white_check_mark:      | :white_check_mark:      | :white_check_mark: |
-| [Yr](#️-yr)                                     | :white_check_mark:      | :white_check_mark:      | :x:                     | :x:                |
+[Google](%EF%B8%8F-google) | [Home Assistant](#-home-assistant) | [Open-Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [Tomorrow.io](#-tomorrowio) | [World Weather Online](#-world-weather-online) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
 ## ☁️ Google
 
@@ -31,9 +22,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_WEATHER='true'
 WEATHER_GOOGLE='true'
 ```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
 
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
@@ -86,9 +74,6 @@ MODE_WEATHER='true'
 WEATHER_OPENMETEO='true'
 ```
 
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
-
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
 ## ☀️ Open Weather
@@ -96,11 +81,6 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 Refreshed every ~17 minutes.
 
 Requires a [API-key](https://home.openweathermap.org/api_keys). Consumes up to 83 requests/day and 2 555 requests/month, depending on usage.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`
-- `LOCATION`
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -115,9 +95,6 @@ MODE_WEATHER='true'
 WEATHER_OPENWEATHER='true'
 ```
 
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
-
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
 ## 🌀 Tomorrow.io
@@ -125,11 +102,6 @@ See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode
 Refreshed every ~17 minutes.
 
 Requires a [API-key](https://app.tomorrow.io/development/keys). Consumes up to 83 requests/day, depending on usage.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`
-- `LOCATION`
 
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
@@ -144,19 +116,11 @@ MODE_WEATHER='true'
 WEATHER_TOMORROWIO='true'
 ```
 
-> [!NOTE]
-> Location coordinates `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
-
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
 ## 🌍 World Weather Online
 
 Refreshed every ~17 minutes.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`
-- `LOCATION`
 
 Requires a [API-key](https://www.worldweatheronline.com/weather-api/my/). Consumes up to 83 requests/day, depending on usage.
 
@@ -173,20 +137,11 @@ MODE_WEATHER='true'
 WEATHER_WORLDWEATHERONLINE='true'
 ```
 
-> [!NOTE]
-> Location coordinates `LATITUDE` and `LONGITUDE`, or a location name `LOCATION` is required.
-
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
 ## ☀️ Wttr.in
 
 Refreshed every ~17 minutes.
-
-Order of precedence:
-
-- `LATITUDE` and `LONGITUDE`
-- `LOCATION`
-- IP address
 
 Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 
@@ -207,8 +162,5 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 MODE_WEATHER='true'
 WEATHER_YR='true'
 ```
-
-> [!NOTE]
-> Location coordinates, `LATITUDE` and `LONGITUDE` are required.
 
 See also [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
