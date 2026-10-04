@@ -108,8 +108,6 @@ jobs:
           EXTENSION_RTC='true'
           EXTENSION_SCREENSHOT='true'
           EXTENSION_SIGNAL='true'
-          EXTENSION_WEBAPP='true'
-          EXTENSION_WEBSOCKET='true'
           HOSTNAME='frekvens'
           MODE_ANIMATION='true'
           MODE_ARROW='true'

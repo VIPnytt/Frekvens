@@ -56,13 +56,12 @@ class Frekvens:
         self.partition = Partition(self)
         self.time = Time(self)
         self.tools = Tools(self)
+        self.webapp = WebApp(self)
         self.deprecated.migrate()
         if Ota.ENV_OPTION in self.dotenv and self.dotenv[Ota.ENV_OPTION] == "true":
             self.ota = Ota(self)
         if Weather.ENV_OPTION in self.dotenv and self.dotenv[Weather.ENV_OPTION] == "true":
             self.weather = Weather(self)
-        if WebApp.ENV_OPTION in self.dotenv and self.dotenv[WebApp.ENV_OPTION] == "true":
-            self.webapp = WebApp(self)
 
     def run(self) -> None:
         """
@@ -123,8 +122,6 @@ class Frekvens:
         self.partition.validate()
         if self.weather:
             self.weather.validate()
-        if self.webapp:
-            self.webapp.validate()
 
     def finalize(self) -> None:
         if self.firmware:

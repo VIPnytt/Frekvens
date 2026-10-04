@@ -1,7 +1,5 @@
 #pragma once
 
-#if EXTENSION_WEBAPP
-
 #include "modules/ExtensionModule.h"
 
 #include <ESPAsyncWebServer.h>
@@ -25,5 +23,3 @@ public:
 
     void configure() override;
 };
-
-#endif // EXTENSION_WEBAPP

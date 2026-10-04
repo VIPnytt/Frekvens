@@ -1,7 +1,5 @@
 #pragma once
 
-#if EXTENSION_WEBSOCKET
-
 #include "modules/ExtensionModule.h"
 
 #include <AsyncWebSocket.h>
@@ -27,5 +25,3 @@ public:
 
     void onTransmit(JsonObjectConst payload, std::string_view source) override;
 };
-
-#endif // EXTENSION_WEBSOCKET

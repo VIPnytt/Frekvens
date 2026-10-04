@@ -1,5 +1,4 @@
 import gzip
-import logging
 import os
 import pathlib
 import shutil
@@ -9,8 +8,6 @@ import typing
 import dotenv
 import nodejs_wheel
 
-from .WebSocket import WebSocket
-
 if typing.TYPE_CHECKING:
     from ..components.Types import COMMAND_LINE_TARGETS, Environment
     from ..Frekvens import Frekvens
@@ -19,7 +16,6 @@ else:
 
 
 class WebApp:
-    ENV_OPTION: typing.Final[str] = "EXTENSION_WEBAPP"
     NAME: typing.Final[str] = "Web app"
     path: pathlib.Path
     project: "Frekvens"
@@ -43,16 +39,6 @@ class WebApp:
             ["upload"],
         ]:
             self.project.webapp = None
-
-    def validate(self) -> None:
-        """Validate web app configuration against the project settings and partition table."""
-        if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] == "false":
-            self.project.webapp = None
-        elif "no_fs" in self.project.partition.table.name:
-            if self.ENV_OPTION in self.project.dotenv and self.project.dotenv[self.ENV_OPTION] == "true":
-                logging.error("%s: Partition table has no filesystem support.", self.ENV_OPTION)
-        elif WebSocket.ENV_OPTION not in self.project.dotenv or self.project.dotenv[WebSocket.ENV_OPTION] == "false":
-            logging.warning("%s: %s is required by %s.", WebSocket.ENV_OPTION, WebSocket.NAME, self.NAME)
 
     def finalize(self) -> None:
         """

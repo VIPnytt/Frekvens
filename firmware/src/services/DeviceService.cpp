@@ -125,12 +125,10 @@ void DeviceService::begin()
     esp_deep_sleep_enable_gpio_wakeup(1ULL << static_cast<unsigned>(PIN_SW2),
                                       esp_deepsleep_gpio_wake_up_mode_t::ESP_GPIO_WAKEUP_GPIO_LOW);
 #endif // SOC_PM_SUPPORT_EXT_WAKEUP && CONFIG_IDF_TARGET_ESP32 && defined(PIN_INT) && defined(PIN_SW1)
-#if EXTENSION_WEBAPP
     if (!LittleFS.begin(false, "/littlefs", 1U, "littlefs"))
     {
         ESP_LOGE(name.data(), "Filesystem Image not found"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     }
-#endif // EXTENSION_WEBAPP
     taskHandle = xTaskGetCurrentTaskHandle();
     Display.configure();
     Connectivity.configure();
@@ -180,9 +178,7 @@ void DeviceService::setPower(bool power)
 #if EXTENSION_MQTT
     Extensions.MQTT().disconnect();
 #endif
-#if EXTENSION_WEBSOCKET
     Extensions.WebSocket().server->closeAll();
-#endif
     WiFi.disconnect(true);
     power ? ESP.restart() : esp_deep_sleep_start();
 }
@@ -199,9 +195,7 @@ void DeviceService::restore()
     Extensions.MQTT().client.loop();
     Extensions.MQTT().client.disconnect();
 #endif
-#if EXTENSION_WEBSOCKET
     Extensions.WebSocket().server->closeAll();
-#endif
     WiFi.disconnect(true, true);
     esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
 #if SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP && !SOC_GPIO_SUPPORT_HOLD_SINGLE_IO_IN_DSLP
