@@ -1,11 +1,6 @@
-#if FONT_SMALL
-
 #include "fonts/SmallFont.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-
-static_assert(GRID_COLUMNS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 7U, __STRING(FONT_SMALL) " is not compatible with this device's display size.");
 
 /**
  * @brief Maps a Unicode character to its small-font symbol.
@@ -143,5 +138,3 @@ FontModule::Symbol SmallFont::getChar(char32_t character) const
         return {};
     }
 }
-
-#endif // FONT_SMALL

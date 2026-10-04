@@ -1,11 +1,6 @@
-#if FONT_MEDIUM
-
 #include "fonts/MediumFont.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-
-static_assert(GRID_COLUMNS >= 6U, __STRING(FONT_MEDIUM) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUM) " is not compatible with this device's display size.");
 
 /**
  * @brief Converts a supported character to its medium-font symbol.
@@ -34,5 +29,3 @@ FontModule::Symbol MediumFont::getChar(char32_t character) const
         return {};
     }
 }
-
-#endif // FONT_MEDIUM

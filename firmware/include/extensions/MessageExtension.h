@@ -27,11 +27,7 @@ private:
 
     unsigned long lastMillis{0UL};
 
-#if FONT_SMALL
     std::string fontName{SmallFont::name};
-#else
-    std::string fontName{FontsService::names[0U]};
-#endif // FONT_SMALL
 
     std::array<uint8_t, GRID_COLUMNS * GRID_ROWS> frame{};
 

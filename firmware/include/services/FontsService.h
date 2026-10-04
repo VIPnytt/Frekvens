@@ -25,29 +25,15 @@ public:
 
     [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
 
-    static constexpr auto names{std::to_array<std::string_view>({
-#if FONT_MICRO
+    static constexpr std::array<std::string_view, 7U> names{
         MicroFont::name,
-#endif // FONT_MICRO
-#if FONT_MINI
         MiniFont::name,
-#endif // FONT_MINI
-#if FONT_SMALL
         SmallFont::name,
-#endif // FONT_SMALL
-#if FONT_MEDIUM
         MediumFont::name,
-#endif // FONT_MEDIUM
-#if FONT_MEDIUMBOLD
         MediumBoldFont::name,
-#endif // FONT_MEDIUMBOLD
-#if FONT_MEDIUMWIDE
         MediumWideFont::name,
-#endif // FONT_MEDIUMWIDE
-#if FONT_LARGE
         LargeFont::name,
-#endif // FONT_LARGE
-    })};
+    };
 
     static constexpr size_t namesMaxLength{[]
                                            {

@@ -352,11 +352,7 @@ void ModesService::setMode(std::string_view modeName, bool power)
         }
         uint8_t height{0U};
         std::vector<std::unique_ptr<TextHandler>> lines;
-#if FONT_MICRO
         const std::unique_ptr<const FontModule> font{Fonts.get(MicroFont::name)};
-#else
-        const std::unique_ptr<const FontModule> font{Fonts.get(FontsService::names[0U])};
-#endif // FONT_MICRO
         for (const std::string &word : words)
         {
             std::unique_ptr<TextHandler> text{std::make_unique<TextHandler>(word, *font)};

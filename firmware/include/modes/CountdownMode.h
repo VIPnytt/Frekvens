@@ -14,20 +14,12 @@
 class CountdownMode final : public ModeModule
 {
 private:
-    static constexpr auto fontNames{std::to_array<std::string_view>({
-#if FONT_MINI
+    static constexpr std::array<std::string_view, 4U> fontNames{
         MiniFont::name,
-#endif
-#if FONT_MEDIUM
         MediumFont::name,
-#endif
-#if FONT_MEDIUMBOLD
         MediumBoldFont::name,
-#endif
-#if FONT_MEDIUMWIDE
         MediumWideFont::name,
-#endif
-    })};
+    };
 
     static inline std::chrono::time_point<std::chrono::system_clock> epoch{};
 
