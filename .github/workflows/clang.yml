@@ -141,12 +141,7 @@ jobs:
           MODE_WAVEFORM='true'
           MODE_WEATHER='true'
           NAME='Frekvens'
-          WEATHER_GOOGLE='true'
-          WEATHER_HOMEASSISTANT='true'
           WEATHER_OPENMETEO='true'
-          WEATHER_OPENWEATHER='true'
-          WEATHER_TOMORROWIO='true'
-          WEATHER_WORLDWEATHERONLINE='true'
           WEATHER_WTTRIN='true'
           WEATHER_YR='true'
           EOL
@@ -154,15 +149,11 @@ jobs:
           cat <<'EOL' > firmware/include/config/secrets.h
           #pragma once
           #define CORE_DEBUG_LEVEL ARDUHAL_LOG_LEVEL_VERBOSE
-          #define GOOGLEWEATHER_KEY "redacted"
-          #define HOMEASSISTANT_KEY "redacted"
           #define LATITUDE "0.000"
           #define LONGITUDE "0.000"
           #define MQTT_HOST "mqtt.local"
           #define MQTT_USER "redacted"
           #define MQTT_KEY "redacted"
-          #define OPENMETEO_KEY "redacted"
-          #define OPENWEATHER_KEY "redacted"
           #define PIN_CS 1
           #define PIN_INT 2
           #define PIN_IR 3
@@ -176,10 +167,8 @@ jobs:
           #define PIN_SW1 11
           #define PIN_SW2 12
           #define RTC_DS3232
-          #define TOMORROWIO_KEY "redacted"
           #define WIFI_KEY "redacted"
           #define WIFI_SSID "redacted"
-          #define WORLDWEATHERONLINE_KEY "redacted"
           EOL
 
           uv run --only-group platformio pio run -t compiledb -e "$PIO_ENVIRONMENT"

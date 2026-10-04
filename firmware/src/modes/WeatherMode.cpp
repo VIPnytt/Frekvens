@@ -107,42 +107,12 @@ void WeatherMode::handle()
 
 void WeatherMode::setProvider(std::string_view providerName)
 {
-#if WEATHER_GOOGLE
-    if (providerName == GoogleWeatherMiddleware::name)
-    {
-        provider = std::make_unique<GoogleWeatherMiddleware>();
-    }
-#endif // WEATHER_GOOGLE
-#if WEATHER_HOMEASSISTANT
-    if (providerName == HomeAssistantWeatherMiddleware::name)
-    {
-        provider = std::make_unique<HomeAssistantWeatherMiddleware>();
-    }
-#endif // WEATHER_HOMEASSISTANT
 #if WEATHER_OPENMETEO
     if (providerName == OpenMeteoMiddleware::name)
     {
         provider = std::make_unique<OpenMeteoMiddleware>();
     }
 #endif // WEATHER_OPENMETEO
-#if WEATHER_OPENWEATHER
-    if (providerName == OpenWeatherMiddleware::name)
-    {
-        provider = std::make_unique<OpenWeatherMiddleware>();
-    }
-#endif // WEATHER_OPENWEATHER
-#if WEATHER_TOMORROWIO
-    if (providerName == TomorrowIoMiddleware::name)
-    {
-        provider = std::make_unique<TomorrowIoMiddleware>();
-    }
-#endif // WEATHER_TOMORROWIO
-#if WEATHER_WORLDWEATHERONLINE
-    if (providerName == WorldWeatherOnlineMiddleware::name)
-    {
-        provider = std::make_unique<WorldWeatherOnlineMiddleware>();
-    }
-#endif // WEATHER_WORLDWEATHERONLINE
 #if WEATHER_WTTRIN
     if (providerName == WttrInMiddleware::name)
     {
