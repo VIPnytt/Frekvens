@@ -6,7 +6,6 @@ Partition tables for ESP32 boards with different flash sizes. Choose a layout ma
 
 | Flash size | File                   | Feature capacity        | OTA updates        |
 | ---------- | ---------------------- | ----------------------- | ------------------ |
-|  2 MB      |  `2MB_no_ota_rev2.csv` | :ballot_box_with_check: | :x:                |
 |  4 MB      |  `4MB_no_ota.csv`      | :white_check_mark:      | :x:                |
 |  4 MB      |  `4MB_rev2.csv`        | :ballot_box_with_check: | :white_check_mark: |
 |  8 MB      |  `8MB.csv`             | :white_check_mark:      | :white_check_mark: |
@@ -28,20 +27,9 @@ Partition tables for ESP32 boards with different flash sizes. Choose a layout ma
 
 | Flash size | File              |
 | ---------- | ----------------- |
-|  2 MB      |  `2MB_no_ota.csv` |
 |  4 MB      |  `4MB.csv`        |
 
 These layouts are kept for backward compatibility, but are no longer recommended for new flashes. They were replaced in v2.5.0 by revised layouts with a better balance between firmware and filesystem space.
-
-## 2️⃣ 2 MB flash memory
-
-Boards with only 2 MB flash memory have very limited space, so only a minimal feature set with no OTA-capability is possible.
-
-Configure in [platformio.ini](https://github.com/VIPnytt/Frekvens/blob/main/platformio.ini):
-
-```ini
-board_build.partitions = partitions/2MB_no_ota_rev2.csv
-```
 
 ## 4️⃣ 4 MB flash memory
 

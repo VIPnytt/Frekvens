@@ -101,11 +101,7 @@ class Deprecated:
                 _path.parent.mkdir(parents=True, exist_ok=True)
                 _path.write_bytes(b"\x00")
         partition_table = self.project.env.GetProjectOption("board_build.partitions", None)
-        if "partitions/2MB_no_ota.csv" == partition_table:
-            logging.warning(
-                "The '2MB_no_ota.csv' partition table is deprecated, please migrate to '2MB_no_ota_rev2.csv'"
-            )
-        elif "partitions/4MB.csv" == partition_table:
+        if "partitions/4MB.csv" == partition_table:
             logging.warning("The '4MB.csv' partition table is deprecated, please migrate to '4MB_rev2.csv'")
 
     @staticmethod

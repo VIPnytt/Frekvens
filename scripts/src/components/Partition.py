@@ -53,9 +53,7 @@ class Partition:
             or "4MB"
         )
         size = int(flash_size[:-2]) if flash_size.endswith("MB") else 4
-        if size <= 2:
-            return self.path / "2MB_no_ota_rev2.csv"
-        elif size <= 4:
+        if size <= 4:
             return (
                 self.path / "4MB_rev2.csv"
                 if Ota.ENV_OPTION in self.project.dotenv and self.project.dotenv[Ota.ENV_OPTION] == "true"
