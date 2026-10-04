@@ -160,7 +160,6 @@ jobs:
           #define GOOGLEWEATHER_KEY "redacted"
           #define HOMEASSISTANT_KEY "redacted"
           #define LATITUDE "0.000"
-          #define LOCATION "redacted"
           #define LONGITUDE "0.000"
           #define MQTT_HOST "mqtt.local"
           #define MQTT_USER "redacted"

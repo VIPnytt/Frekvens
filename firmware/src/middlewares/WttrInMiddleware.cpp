@@ -14,20 +14,19 @@
 void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                               unsigned long &lastMillis)
 {
-    if (parts.empty())
+    if (queries.empty())
     {
         ESP_LOGE(name.data(), "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
-    path = parts.back().first;
-    query = parts.back().second;
+    query = queries.back();
     std::vector<char> body;
     const int status{fetch(body, lastMillis)};
     if (status != 200)
     {
         if (status >= 400 && status < 500)
         {
-            parts.pop_back();
+            queries.pop_back();
             lastMillis = millis() - interval + (0b1U << 12U);
         }
         return;
@@ -58,7 +57,7 @@ void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &conditio
 #endif // TEMPERATURE_FAHRENHEIT
         return;
     }
-    parts.pop_back();
+    queries.pop_back();
     ESP_LOGD(name.data(), "unsupported format"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     lastMillis = millis() - interval + (0b1U << 13U);
 }

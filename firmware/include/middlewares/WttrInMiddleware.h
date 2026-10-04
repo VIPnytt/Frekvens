@@ -54,41 +54,19 @@ private:
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
-    static inline std::vector<std::pair<const char *, const char *>> parts{
-        {
-            "/",
-            "format=j1",
-        },
-        {
-            "/",
-            "format=j2",
-        },
-#ifdef LOCATION
-        {
-            "/" LOCATION,
-            "format=j1",
-        },
-        {
-            "/" LOCATION,
-            "format=j2",
-        },
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE)
-        {
-            "/" LATITUDE "," LONGITUDE,
-            "format=j1",
-        },
-        {
-            "/" LATITUDE "," LONGITUDE,
-            "format=j2",
-        },
-#endif
+    static inline std::vector<const char *> queries{
+        "format=j1",
+        "format=j2",
     };
 
 public:
     static constexpr std::string_view name{"Wttr.in"};
 
-    explicit WttrInMiddleware() : WeatherHandler(name) { host = "wttr.in"; };
+    explicit WttrInMiddleware() : WeatherHandler(name)
+    {
+        host = "wttr.in";
+        path = "/" LATITUDE "," LONGITUDE;
+    };
 
     void update(std::optional<WeatherHandler::Condition> &condition, std::optional<int16_t> &temperature,
                 unsigned long &lastMillis) override;

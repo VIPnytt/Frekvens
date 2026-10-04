@@ -287,16 +287,9 @@ private:
 
     // https://docs.tomorrow.io/reference/realtime-weather
     static inline std::vector<const char *> queries{
-#if defined(LOCATION) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
-        "location=" LOCATION "&units=metric&apikey=" TOMORROWIO_KEY,
-#elif defined(LOCATION) && TEMPERATURE_FAHRENHEIT
-        "location=" LOCATION "&units=imperial&apikey=" TOMORROWIO_KEY,
-#else
-        "location=" LOCATION "&apikey=" TOMORROWIO_KEY,
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
+#if TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
         "location=" LATITUDE "," LONGITUDE "&units=metric&apikey=" TOMORROWIO_KEY,
-#elif defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_FAHRENHEIT
+#elif TEMPERATURE_FAHRENHEIT
         "location=" LATITUDE "," LONGITUDE "&units=imperial&apikey=" TOMORROWIO_KEY,
 #else
         "location=" LATITUDE "," LONGITUDE "&apikey=" TOMORROWIO_KEY,
