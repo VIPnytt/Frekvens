@@ -2,8 +2,6 @@ import logging
 import pathlib
 import typing
 
-from ..extensions.Ota import Ota
-
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
 
