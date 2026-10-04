@@ -2,10 +2,10 @@
 
 #if MODE_WEATHER
 
-#include "config/constants.h"                           // NOLINT(misc-include-cleaner)
-#include "middlewares/OpenMeteoMiddleware.h"            // NOLINT(misc-include-cleaner)
-#include "middlewares/WttrInMiddleware.h"               // NOLINT(misc-include-cleaner)
-#include "middlewares/YrMiddleware.h"                   // NOLINT(misc-include-cleaner)
+#include "config/constants.h"                // NOLINT(misc-include-cleaner)
+#include "middlewares/OpenMeteoMiddleware.h" // NOLINT(misc-include-cleaner)
+#include "middlewares/WttrInMiddleware.h"    // NOLINT(misc-include-cleaner)
+#include "middlewares/YrMiddleware.h"        // NOLINT(misc-include-cleaner)
 #include "modules/ModeModule.h"
 
 #include <array>
