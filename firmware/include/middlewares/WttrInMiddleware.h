@@ -54,7 +54,7 @@ private:
 
     // https://wttr.in/:help
     // https://github.com/chubin/wttr.in#readme
-    static inline std::vector<const char *> parts{
+    static inline std::vector<const char *> queries{
         "format=j1",
         "format=j2",
     };
