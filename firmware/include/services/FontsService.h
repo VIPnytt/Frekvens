@@ -1,6 +1,5 @@
 #pragma once
 
-#include "fonts/BrailleFont.h"    //NOLINT(misc-include-cleaner)
 #include "fonts/LargeFont.h"      //NOLINT(misc-include-cleaner)
 #include "fonts/MediumBoldFont.h" //NOLINT(misc-include-cleaner)
 #include "fonts/MediumFont.h"     //NOLINT(misc-include-cleaner)
@@ -27,9 +26,6 @@ public:
     [[nodiscard]] std::unique_ptr<const FontModule> get(std::string_view fontName) const;
 
     static constexpr auto names{std::to_array<std::string_view>({
-#if FONT_BRAILLE
-        BrailleFont::name,
-#endif // FONT_BRAILLE
 #if FONT_MICRO
         MicroFont::name,
 #endif // FONT_MICRO

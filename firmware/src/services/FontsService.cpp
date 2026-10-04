@@ -6,12 +6,6 @@ void FontsService::begin() { transmit(); }
 
 std::unique_ptr<const FontModule> FontsService::get(std::string_view fontName) const
 {
-#if FONT_BRAILLE
-    if (fontName == BrailleFont::name)
-    {
-        return std::make_unique<const BrailleFont>();
-    }
-#endif // FONT_BRAILLE
 #if FONT_MICRO
     if (fontName == MicroFont::name)
     {
