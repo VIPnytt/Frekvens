@@ -1,7 +1,5 @@
 #pragma once
 
-#if FONT_SMALL
-
 #include "modules/FontModule.h"
 
 #include <array>
@@ -1035,5 +1033,3 @@ public:
 
     [[nodiscard]] FontModule::Symbol getChar(char32_t character) const override;
 };
-
-#endif // FONT_SMALL

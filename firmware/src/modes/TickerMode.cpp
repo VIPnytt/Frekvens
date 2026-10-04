@@ -44,11 +44,7 @@ void TickerMode::configure()
     }
     if (!font)
     {
-#if FONT_SMALL
         setFont(SmallFont::name);
-#else
-        setFont(FontsService::names[0U]);
-#endif // FONT_SMALL
     }
     transmit();
 }
@@ -71,11 +67,7 @@ void TickerMode::begin()
     }
     if (!font)
     {
-#if FONT_SMALL
         setFont(SmallFont::name);
-#else
-        setFont(FontsService::names[0U]);
-#endif // FONT_SMALL
     }
     pending = true;
 }

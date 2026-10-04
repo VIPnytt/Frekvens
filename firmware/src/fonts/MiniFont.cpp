@@ -1,11 +1,6 @@
-#if FONT_MINI
-
 #include "fonts/MiniFont.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-
-static_assert(GRID_COLUMNS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 5U, __STRING(FONT_MINI) " is not compatible with this device's display size.");
 
 /**
  * @brief Maps a supported Unicode character to its mini-font symbol.
@@ -101,5 +96,3 @@ FontModule::Symbol MiniFont::getChar(char32_t character) const
         return {};
     }
 }
-
-#endif // FONT_MINI

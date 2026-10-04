@@ -65,7 +65,6 @@ class WebApp:
         )
         prefixes = (
             "EXTENSION_",
-            "FONT_",
             "IKEA_",
             "MODE_",
         )
