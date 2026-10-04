@@ -19,8 +19,7 @@ void WttrInMiddleware::update(std::optional<WeatherHandler::Condition> &conditio
         ESP_LOGE(name.data(), "weather provider unavailable"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         return;
     }
-    path = parts.back().first;
-    query = parts.back().second;
+    query = parts.back();
     std::vector<char> body;
     const int status{fetch(body, lastMillis)};
     if (status != 200)
