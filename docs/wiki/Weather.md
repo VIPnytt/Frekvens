@@ -2,7 +2,7 @@
 
 At least one weather provider is required to use the [Weather](https://github.com/VIPnytt/Frekvens/wiki/Modes#-weather) mode.
 
-[Open-Meteo](#-open-meteo) | [Open Weather](#️-open-weather) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
+[Open-Meteo](#-open-meteo) | [Wttr.in](#️-wttrin) | [Yr](#️-yr)
 
 ## ⛅ Open-Meteo
 
