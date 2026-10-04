@@ -133,10 +133,6 @@ MODE_CLOCK='true'
 
 Start a countdown timer.
 
-The display will blink when the timer reaches zero.
-
-Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to start a new countdown, it can also be automated via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
-
 API payload examples:
 
 ```json
@@ -238,8 +234,6 @@ MODE_GLITTER='true'
 Smart-home integration.
 
 Display the current indoor and outdoor temperatures.
-
-Integrated into [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#home-assistant).
 
 API payload example:
 
@@ -421,8 +415,6 @@ MODE_STREAM='true'
 ## 🅰️ Ticker
 
 Rolling text.
-
-Use the [Web app](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-web-app) to set a message, or automate it via [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Extensions#-home-assistant).
 
 > [!TIP]
 > The [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-microphone) extension can be used to play/pause the rolling text.

@@ -2,10 +2,10 @@
 
 #include "modes/WeatherMode.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"            // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"           // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"   // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"     // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 
@@ -209,7 +209,7 @@ void WeatherMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Registers the weather provider selector with Home Assistant.
  *
@@ -240,6 +240,6 @@ void WeatherMode::onHomeAssistant(JsonDocument &discovery, std::string topic, st
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.provider}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_WEATHER

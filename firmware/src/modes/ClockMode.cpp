@@ -2,7 +2,7 @@
 
 #include "modes/ClockMode.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -181,7 +181,7 @@ void ClockMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery definitions for the clock font selector and second indicator.
  *
@@ -230,6 +230,6 @@ void ClockMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.ticking}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_CLOCK

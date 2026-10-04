@@ -2,8 +2,8 @@
 
 #include "extensions/InfraredExtension.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"    // NOLINT(misc-include-cleaner)
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
@@ -183,7 +183,7 @@ void InfraredExtension::onReceive(JsonObjectConst payload, std::string_view sour
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery configuration for the infrared extension switch.
  *
@@ -212,6 +212,6 @@ void InfraredExtension::onHomeAssistant(JsonDocument &discovery, std::string top
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_INFRARED

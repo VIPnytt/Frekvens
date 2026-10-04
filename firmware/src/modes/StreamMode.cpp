@@ -2,8 +2,8 @@
 
 #include "modes/StreamMode.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -147,7 +147,7 @@ void StreamMode::onE131(AsyncUDPPacket packet)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery metadata for selecting the streaming protocol.
  *
@@ -178,6 +178,6 @@ void StreamMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
             R"({{{4048:"Distributed Display Protocol",5568:"E1.31",6454:"Art-Net"}.get(value_json.port)}})");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_STREAM

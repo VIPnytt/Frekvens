@@ -2,7 +2,7 @@
 
 void ServiceModule::onReceive(JsonObjectConst payload, std::string_view source) {}
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Handles Home Assistant discovery data.
  *
@@ -11,4 +11,4 @@ void ServiceModule::onReceive(JsonObjectConst payload, std::string_view source) 
  * @param unique Unique identifier for the Home Assistant entity.
  */
 void ServiceModule::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) {}
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
