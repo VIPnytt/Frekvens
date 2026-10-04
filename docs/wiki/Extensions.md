@@ -413,15 +413,6 @@ EXTENSION_SIGNAL='true'
 
 Handles the `./webapp` user-interface located in the filesystem partition.
 
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-EXTENSION_WEBAPP='true'
-```
-
-> [!NOTE]
-> Requires [WebSocket](#-websocket).
-
 ## 📞 WebSocket
 
 Handles the WebSocket protocol.
@@ -436,10 +427,4 @@ API message example:
         "key": "value"
     }
 }
-```
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-EXTENSION_WEBSOCKET='true'
 ```

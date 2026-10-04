@@ -266,12 +266,8 @@ void ConnectivityService::onRoutable()
 #if EXTENSION_ALEXA
             AlexaExtension::onMdns();
 #endif // EXTENSION_ALEXA
-#if EXTENSION_RESTFUL || EXTENSION_WEBAPP
             MDNS.addService("http", "tcp", 80U);
-#endif // EXTENSION_RESTFUL || EXTENSION_WEBAPP
-#if EXTENSION_WEBSOCKET
             MDNS.addService("ws", "tcp", 80U);
-#endif // EXTENSION_WEBSOCKET
         }
         timeval tv{};
         sntp_sync_time(&tv);

@@ -1,5 +1,3 @@
-#if EXTENSION_WEBSOCKET
-
 #include "extensions/WebSocketExtension.h"
 
 #include "services/DeviceService.h"
@@ -102,5 +100,3 @@ void WebSocketExtension::onEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
         break;
     }
 }
-
-#endif // EXTENSION_WEBSOCKET

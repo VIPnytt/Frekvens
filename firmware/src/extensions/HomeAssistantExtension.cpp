@@ -44,9 +44,7 @@ void HomeAssistantExtension::begin()
     }
     {
         JsonObject device{discovery[HomeAssistantAbbreviations::device].to<JsonObject>()};
-#if EXTENSION_WEBAPP
         device[HomeAssistantDeviceAbbreviations::configuration_url].set("http://" HOSTNAME ".local");
-#endif // EXTENSION_WEBAPP
         {
             device[HomeAssistantDeviceAbbreviations::connections][0U][0U].set("mac");
             device[HomeAssistantDeviceAbbreviations::connections][0U][1U].set(WiFi.macAddress());

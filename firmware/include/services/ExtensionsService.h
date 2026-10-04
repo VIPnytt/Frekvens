@@ -70,14 +70,11 @@ private:
 #if EXTENSION_SIGNAL
     SignalExtension extensionSignal;
 #endif
-#if EXTENSION_WEBAPP
     WebAppExtension extensionWebApp;
-#endif
-#if EXTENSION_WEBSOCKET
-    WebSocketExtension extensionWebSocket;
-#endif
 
-    const std::array<ExtensionModule *, COUNT_EXTENSION> modules{
+    WebSocketExtension extensionWebSocket;
+
+    const std::array<ExtensionModule *, 2U + COUNT_EXTENSION> modules{
 #if EXTENSION_ALEXA
         &extensionAlexa,
 #endif
@@ -120,12 +117,8 @@ private:
 #if EXTENSION_SIGNAL
         &extensionSignal,
 #endif
-#if EXTENSION_WEBAPP
         &extensionWebApp,
-#endif
-#if EXTENSION_WEBSOCKET
         &extensionWebSocket,
-#endif
     };
 
     void transmit();
@@ -155,9 +148,7 @@ public:
 #if EXTENSION_PLAYLIST
     PlaylistExtension &Playlist();
 #endif
-#if EXTENSION_WEBSOCKET
     WebSocketExtension &WebSocket();
-#endif
 
     [[nodiscard]] std::span<ExtensionModule *const> getAll();
 

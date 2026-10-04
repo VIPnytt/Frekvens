@@ -1,5 +1,3 @@
-#if EXTENSION_WEBAPP
-
 #include "extensions/WebAppExtension.h"
 
 #include "services/ExtensionsService.h"
@@ -61,5 +59,3 @@ void WebAppExtension::onHeadRoot(AsyncWebServerRequest *request)
     response->setContentLength(length);
     request->send(response);
 }
-
-#endif // EXTENSION_WEBAPP

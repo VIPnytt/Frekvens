@@ -67,9 +67,7 @@ PhotocellExtension &ExtensionsService::Photocell() { return extensionPhotocell; 
 #if EXTENSION_PLAYLIST
 PlaylistExtension &ExtensionsService::Playlist() { return extensionPlaylist; }
 #endif
-#if EXTENSION_WEBSOCKET
 WebSocketExtension &ExtensionsService::WebSocket() { return extensionWebSocket; }
-#endif
 
 /**
  * @brief Provides access to the shared extensions service instance.
