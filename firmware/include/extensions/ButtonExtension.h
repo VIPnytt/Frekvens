@@ -64,7 +64,7 @@ public:
     void handleMode();
 #endif
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
     void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
 #endif
 };

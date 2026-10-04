@@ -20,7 +20,7 @@ public:
     void onReceive(JsonObjectConst payload, std::string_view source) override;
     void onTransmit(JsonObjectConst payload, std::string_view source) override;
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
     void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
 #endif
 

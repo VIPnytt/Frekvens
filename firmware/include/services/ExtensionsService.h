@@ -2,7 +2,6 @@
 
 #include "extensions/AlexaExtension.h"
 #include "extensions/ButtonExtension.h"
-#include "extensions/HomeAssistantExtension.h"
 #include "extensions/InfraredExtension.h"
 #include "extensions/MessageExtension.h"
 #include "extensions/MicrophoneExtension.h"
@@ -33,9 +32,6 @@ private:
 #endif
 #if EXTENSION_BUTTON
     ButtonExtension extensionButton;
-#endif
-#if EXTENSION_HOMEASSISTANT
-    HomeAssistantExtension extensionHomeAssistant;
 #endif
 #if EXTENSION_INFRARED
     InfraredExtension extensionInfrared;
@@ -80,9 +76,6 @@ private:
 #endif
 #if EXTENSION_BUTTON
         &extensionButton,
-#endif
-#if EXTENSION_HOMEASSISTANT
-        &extensionHomeAssistant,
 #endif
 #if EXTENSION_INFRARED
         &extensionInfrared,
@@ -133,9 +126,6 @@ public:
     void configure();
     void begin();
 
-#if EXTENSION_HOMEASSISTANT
-    HomeAssistantExtension &HomeAssistant();
-#endif
 #if EXTENSION_MICROPHONE
     MicrophoneExtension &Microphone();
 #endif

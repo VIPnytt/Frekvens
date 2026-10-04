@@ -6,7 +6,7 @@
 
 **Interactive:** [Button](#️-button) | [Message](#-message) | [Playlist](#️-playlist) | [Signal](#️-signal) | [Web app](#-web-app)
 
-**Smart-home:** [Alexa](#-alexa) | [Home Assistant](#-home-assistant) | [MQTT](#️-mqtt)
+**Smart-home:** [Alexa](#-alexa) | [MQTT](#️-mqtt)
 
 **Tools:** [OTA](#️-ota) | [Screenshot](#-screenshot)
 
@@ -36,8 +36,6 @@ Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
 EXTENSION_ALEXA='true'
 ```
 
-See also [Home Assistant](#-home-assistant).
-
 ## ⏺️ Button
 
 Buttons allows physical control of the device.
@@ -57,8 +55,6 @@ When the *Mode button* is the only button, it serves a dual purpose:
   - Click: *Power on/off*
   - Hold: *Iterate between [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes)*
 
-Events such as `short` and `long` press is also implemented in [Home Assistant](#-home-assistant) and available via the API.
-
 Configure in [secrets.h](https://github.com/VIPnytt/Frekvens/blob/main/firmware/include/config/secrets.h):
 
 ```h
@@ -76,25 +72,6 @@ EXTENSION_BUTTON='true'
 ```
 
 See also [IKEA Frekvens](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Frekvens) and [IKEA Obegränsad](https://github.com/VIPnytt/Frekvens/wiki/IKEA-Obegransad).
-
-## 🧬 Home Assistant
-
-Smart-home integration.
-
-Key supported features include:
-
-- Power, brightness, and [mode](https://github.com/VIPnytt/Frekvens/wiki/Modes) selection.
-- Control over [extensions](https://github.com/VIPnytt/Frekvens/wiki/Extensions) like the microphone and infrared receiver.
-- Access to various statistics, debug data, and advanced settings.
-
-Configure in [.env](https://github.com/VIPnytt/Frekvens/blob/main/.env):
-
-```ini
-EXTENSION_HOMEASSISTANT='true'
-```
-
-> [!IMPORTANT]
-> The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
 ## 🔴 Infrared
 
@@ -118,9 +95,6 @@ By adding an [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-rec
 - [Playlist](#%EF%B8%8F-playlist): start/stop
   - Philips: Play/Pause ⏯️ Stop ⏹️
   - Sony: Play ▶️ Pause ⏸️ Stop ⏹️
-
-> [!TIP]
-> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to activate or deactivate this input method.
 
 API payload example:
 
@@ -148,8 +122,6 @@ Check out the [Infrared](https://github.com/VIPnytt/Frekvens/wiki/Infrared-recei
 
 Display rolling notification text messages on-demand.
 
-Use the [Web app](#-web-app) to send messages, or set up automations via [Home Assistant](#-home-assistant).
-
 API payload example:
 
 ```json
@@ -173,9 +145,6 @@ See also [Ticker](https://github.com/VIPnytt/Frekvens/wiki/Modes#-ticker).
 ## 🎙️ Microphone
 
 If the device isn’t already equipped with a [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone), adding one gives many [modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) the ability to react to sounds, eg. syncing animations up with the music.
-
-> [!TIP]
-> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
 
 API payload example:
 
@@ -201,7 +170,7 @@ Check out the [Microphone](https://github.com/VIPnytt/Frekvens/wiki/Microphone) 
 
 ## ✉️ MQTT
 
-API-endpoint.
+API-endpoint. Bundled with Home Assistant integration, but can also be used independently.
 
 Topic:
 
@@ -259,9 +228,6 @@ EXTENSION_OTA='true'
 
 By adding a [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell), you’ll get automatic ambient brightness adaption.
 
-> [!TIP]
-> Use the [Web app](#-web-app) or [Home Assistant](#-home-assistant) to control this input method.
-
 API payload example:
 
 ```json
@@ -287,8 +253,6 @@ Check out the [Photocell](https://github.com/VIPnytt/Frekvens/wiki/Photocell) wi
 ## ▶️ Playlist
 
 Set up a playlist of [Modes](https://github.com/VIPnytt/Frekvens/wiki/Modes) that loops with a timer.
-
-Integrated into the [Web app](#-web-app) and [Home Assistant](#-home-assistant) extensions.
 
 API payload example:
 

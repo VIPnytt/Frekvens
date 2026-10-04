@@ -2,9 +2,9 @@
 
 #include "extensions/RtcExtension.h"
 
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
-#include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
 
 #include <esp_sntp.h>
 
@@ -104,7 +104,7 @@ void RtcExtension::sntpSetTimeSyncNotificationCallback(struct timeval *tv)
     ESP_LOGV(name.data(), "NTP synced"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
 }
 
-#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+#if EXTENSION_MQTT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 /**
  * @brief Adds the RTC temperature sensor to Home Assistant discovery data.
  *
@@ -137,6 +137,6 @@ void RtcExtension::onHomeAssistant(JsonDocument &discovery, std::string topic, s
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+#endif // EXTENSION_MQTT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 
 #endif // EXTENSION_RTC
