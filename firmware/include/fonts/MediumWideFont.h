@@ -1,7 +1,5 @@
 #pragma once
 
-#if FONT_MEDIUMWIDE
-
 #include "modules/FontModule.h"
 
 #include <array>
