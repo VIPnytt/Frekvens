@@ -326,7 +326,6 @@ jobs:
           EXTENSION_SIGNAL='true'
           EXTENSION_WEBAPP='true'
           EXTENSION_WEBSOCKET='true'
-          FONT_BRAILLE='true'
           FONT_LARGE='true'
           FONT_MEDIUM='true'
           FONT_MEDIUMBOLD='true'

@@ -35,7 +35,7 @@ Frekvens replicates all original display modes while introducing a range of new 
   - Accessories
   - API interfaces
   - Miscellaneous
-- **8 fonts**
+- **7 fonts**
 - Extensive [documentation](https://github.com/VIPnytt/Frekvens/wiki)
 
 ## ⚙️ Hardware
