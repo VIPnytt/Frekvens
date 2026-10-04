@@ -1,11 +1,6 @@
-#if FONT_MEDIUMBOLD
-
 #include "fonts/MediumBoldFont.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-
-static_assert(GRID_COLUMNS >= 6U, __STRING(FONT_MEDIUMBOLD) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 7U, __STRING(FONT_MEDIUMBOLD) " is not compatible with this device's display size.");
 
 /**
  * @brief Returns the glyph for a supported character in the medium-bold font.
@@ -34,5 +29,3 @@ FontModule::Symbol MediumBoldFont::getChar(char32_t character) const
         return {};
     }
 }
-
-#endif // FONT_MEDIUMBOLD

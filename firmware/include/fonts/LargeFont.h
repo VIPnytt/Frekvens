@@ -1,7 +1,5 @@
 #pragma once
 
-#if FONT_LARGE
-
 #include "modules/FontModule.h"
 
 #include <array>

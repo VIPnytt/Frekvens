@@ -1,11 +1,6 @@
-#if FONT_MICRO
-
 #include "fonts/MicroFont.h"
 
 #include "config/constants.h" // NOLINT(misc-include-cleaner)
-
-static_assert(GRID_COLUMNS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
-static_assert(GRID_ROWS >= 3U, __STRING(FONT_MICRO) " is not compatible with this device's display size.");
 
 /**
  * @brief Maps a Unicode character to its corresponding micro-font symbol.
@@ -71,5 +66,3 @@ FontModule::Symbol MicroFont::getChar(char32_t character) const
         return {};
     }
 }
-
-#endif // FONT_MICRO
