@@ -52,24 +52,6 @@ private:
             "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code",
         },
 #endif // TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN
-#if defined(OPENMETEO_KEY) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
-        {
-            "customer-api.open-meteo.com",
-            "latitude=" LATITUDE "&longitude=" LONGITUDE
-            "&current=temperature_2m,weather_code&temperature_unit=celsius&apikey=" OPENMETEO_KEY,
-        },
-#elif defined(OPENMETEO_KEY) && TEMPERATURE_FAHRENHEIT
-        {
-            "customer-api.open-meteo.com",
-            "latitude=" LATITUDE "&longitude=" LONGITUDE
-            "&current=temperature_2m,weather_code&temperature_unit=fahrenheit&apikey=" OPENMETEO_KEY,
-        },
-#elif defined(OPENMETEO_KEY)
-        {
-            "customer-api.open-meteo.com",
-            "latitude=" LATITUDE "&longitude=" LONGITUDE "&current=temperature_2m,weather_code&apikey=" OPENMETEO_KEY,
-        },
-#endif // defined(OPENMETEO_KEY) && (TEMPERATURE_CELSIUS || TEMPERATURE_KELVIN)
     };
 
 public:

@@ -96,8 +96,6 @@ EXTENSION_HOMEASSISTANT='true'
 > [!IMPORTANT]
 > The Home Assistant [MQTT](https://www.home-assistant.io/integrations/mqtt) integration is required.
 
-See also [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant) weather.
-
 ## 🔴 Infrared
 
 By adding an [IR receiver](https://github.com/VIPnytt/Frekvens/wiki/Infrared-receiver), you can use a remote control, like a TV remote, to operate the device. This gives you the flexibility to use an existing remote you may already own.

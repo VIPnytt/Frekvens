@@ -461,12 +461,7 @@ MODE_WAVEFORM='true'
 
 Providers available:
 
-- [Google](https://github.com/VIPnytt/Frekvens/wiki/Weather#-google)
-- [Home Assistant](https://github.com/VIPnytt/Frekvens/wiki/Weather#-home-assistant)
 - [Open-Meteo](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-meteo)
-- [Open Weather](https://github.com/VIPnytt/Frekvens/wiki/Weather#-open-weather)
-- [Tomorrow.io](https://github.com/VIPnytt/Frekvens/wiki/Weather#-tomorrowio)
-- [World Weather Online](https://github.com/VIPnytt/Frekvens/wiki/Weather#-world-weather-online)
 - [Wttr.in](https://github.com/VIPnytt/Frekvens/wiki/Weather#-wttrin)
 - [Yr](https://github.com/VIPnytt/Frekvens/wiki/Weather#-yr)
 
