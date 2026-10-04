@@ -2,8 +2,6 @@ import logging
 import pathlib
 import typing
 
-from ..extensions.Ota import Ota
-
 if typing.TYPE_CHECKING:
     from ..Frekvens import Frekvens
 
@@ -53,10 +51,6 @@ class Partition:
             or "4MB"
         )
         size = int(flash_size[:-2]) if flash_size.endswith("MB") else 4
-        if size <= 4:
-            return (
-                self.path / "4MB_rev2.csv"
-                if Ota.ENV_OPTION in self.project.dotenv and self.project.dotenv[Ota.ENV_OPTION] == "true"
-                else self.path / "4MB_no_ota.csv"
-            )
-        return self.path / f"{min(32, 2 ** (size.bit_length() - 1))}MB.csv"
+        return (
+            self.path / "4MB_no_ota.csv" if size <= 4 else self.path / f"{min(32, 2 ** (size.bit_length() - 1))}MB.csv"
+        )
