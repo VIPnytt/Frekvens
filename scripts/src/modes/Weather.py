@@ -1,6 +1,5 @@
 import logging
 import typing
-import urllib.parse
 
 if typing.TYPE_CHECKING:
     from ..components.Types import COMMAND_LINE_TARGETS
