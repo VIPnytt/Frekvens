@@ -35,7 +35,7 @@ platformio = [
     "platformio==6.2.0",
 ]
 ruff = [
-    "ruff==0.15.22",
+    "ruff==0.16.9",
 ]
 scons = [
     "scons==4.11.1",
