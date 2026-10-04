@@ -32,7 +32,7 @@ class Weather:
 
         Weather is disabled unless the weather mode option is set to ``"true"``.
         Latitude and longitude are formatted as decimal strings with up to four
-        decimal places, and the location is URL-encoded when provided.
+        decimal places when provided.
         """
         if self.ENV_OPTION not in self.project.dotenv or self.project.dotenv[self.ENV_OPTION] != "true":
             self.project.weather = None
@@ -43,8 +43,6 @@ class Weather:
         ):
             if option in self.project.dotenv:
                 self.project.dotenv[option] = f"{float(self.project.dotenv[option]):.4f}".rstrip("0").rstrip(".")
-        if "LOCATION" in self.project.dotenv:
-            self.project.dotenv["LOCATION"] = urllib.parse.quote(self.project.dotenv["LOCATION"])
 
     def validate(self) -> None:
         found = False

@@ -34,12 +34,7 @@ private:
 
     // https://www.worldweatheronline.com/weather-api/api/docs/local-city-town-weather-api.aspx
     static inline std::vector<const char *> queries{
-#ifdef LOCATION
-        "q=" LOCATION "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
-#endif
-#if defined(LATITUDE) && defined(LONGITUDE)
         "q=" LATITUDE "," LONGITUDE "&cc=yes&fx=no&mca=no&format=json&key=" WORLDWEATHERONLINE_KEY,
-#endif
     };
 
 public:

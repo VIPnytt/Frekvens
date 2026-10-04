@@ -56,28 +56,7 @@ private:
     // https://openweathermap.org/api/one-call-3?collection=one_call_api#current
     // https://openweathermap.org/api/current?collection=current_forecast#one
     static inline std::vector<std::pair<const char *, const char *>> parts{
-#if defined(LOCATION) && TEMPERATURE_CELSIUS
-        {
-            "/data/2.5/weather",
-            "q=" LOCATION "&units=metric&appid=" OPENWEATHER_KEY,
-        },
-#elif defined(LOCATION) && TEMPERATURE_FAHRENHEIT
-        {
-            "/data/2.5/weather",
-            "q=" LOCATION "&units=imperial&appid=" OPENWEATHER_KEY,
-        },
-#elif defined(LOCATION) && TEMPERATURE_KELVIN
-        {
-            "/data/2.5/weather",
-            "q=" LOCATION "&units=standard&appid=" OPENWEATHER_KEY,
-        },
-#elif defined(LOCATION)
-        {
-            "/data/2.5/weather",
-            "q=" LOCATION "&appid=" OPENWEATHER_KEY,
-        },
-#endif // defined(LOCATION) && TEMPERATURE_CELSIUS
-#if defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_CELSIUS
+#if TEMPERATURE_CELSIUS
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE
@@ -91,7 +70,7 @@ private:
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&units=metric&appid=" OPENWEATHER_KEY,
         },
-#elif defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_FAHRENHEIT
+#elif TEMPERATURE_FAHRENHEIT
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE
@@ -105,7 +84,7 @@ private:
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&units=imperial&appid=" OPENWEATHER_KEY,
         },
-#elif defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_KELVIN
+#elif TEMPERATURE_KELVIN
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE
@@ -119,7 +98,7 @@ private:
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&units=standard&appid=" OPENWEATHER_KEY,
         },
-#elif defined(LATITUDE) && defined(LONGITUDE)
+#else
         {
             "/data/3.0/onecall",
             "lat=" LATITUDE "&lon=" LONGITUDE "&exclude=alerts,daily,hourly,minutely&appid=" OPENWEATHER_KEY,
@@ -132,7 +111,7 @@ private:
             "/data/2.5/weather",
             "lat=" LATITUDE "&lon=" LONGITUDE "&appid=" OPENWEATHER_KEY,
         },
-#endif // defined(LATITUDE) && defined(LONGITUDE) && TEMPERATURE_CELSIUS
+#endif // TEMPERATURE_CELSIUS
     };
 
 public:
