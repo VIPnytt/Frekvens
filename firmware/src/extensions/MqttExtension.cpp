@@ -148,11 +148,11 @@ void MqttExtension::onConnect(bool sessionPresent)
 {
     ESP_LOGD(name.data(), "connected"); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     client.subscribe("frekvens/" HOSTNAME "/+/set",
-                                       static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2));
+                     static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS2));
     client.publish("frekvens/" HOSTNAME "/availability",
-                                     static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
-                                     true,
-                                     "online");
+                   static_cast<uint8_t>(espMqttClientTypes::SubscribeReturncode::QOS1),
+                   true,
+                   "online");
 }
 
 /**
