@@ -2,8 +2,8 @@
 
 #include "modes/GameOfLifeMode.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
@@ -161,7 +161,7 @@ void GameOfLifeMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery metadata for the Game of Life clock switch.
  *
@@ -191,6 +191,6 @@ void GameOfLifeMode::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_GAMEOFLIFE

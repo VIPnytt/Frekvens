@@ -2,7 +2,7 @@
 
 #include "modes/CountdownMode.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "handlers/TextHandler.h"
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
@@ -189,7 +189,7 @@ void CountdownMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery components for countdown configuration.
  *
@@ -235,6 +235,6 @@ void CountdownMode::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.timestamp|as_datetime}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_COUNTDOWN

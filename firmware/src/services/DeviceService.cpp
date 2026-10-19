@@ -188,9 +188,6 @@ void DeviceService::restore()
     ESP_LOGW(name.data(), "restoring..."); // NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
     Modes.setActive(false);
     Display.setPower(false);
-#if EXTENSION_HOMEASSISTANT
-    Extensions.HomeAssistant().undiscover();
-#endif
 #if EXTENSION_MQTT
     Extensions.MQTT().client.loop();
     Extensions.MQTT().client.disconnect();
@@ -329,7 +326,7 @@ void DeviceService::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery definitions for device controls and temperature.
  *
@@ -382,7 +379,7 @@ void DeviceService::onHomeAssistant(JsonDocument &discovery, std::string topic, 
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.temperature}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 /**
  * @brief Retrieves the singleton device service instance.

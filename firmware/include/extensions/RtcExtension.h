@@ -52,9 +52,9 @@ public:
     void handle() override;
 #endif
 
-#if EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+#if EXTENSION_MQTT && (defined(RTC_DS3231) || defined(RTC_DS3232))
     void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) override;
-#endif // EXTENSION_HOMEASSISTANT && (defined(RTC_DS3231) || defined(RTC_DS3232))
+#endif // EXTENSION_MQTT && (defined(RTC_DS3231) || defined(RTC_DS3232))
 };
 
 #endif // EXTENSION_RTC
