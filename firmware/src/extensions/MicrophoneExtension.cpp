@@ -2,8 +2,8 @@
 
 #include "extensions/MicrophoneExtension.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -183,7 +183,7 @@ void MicrophoneExtension::onReceive(JsonObjectConst payload, std::string_view so
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery components for microphone monitoring.
  *
@@ -239,6 +239,6 @@ void MicrophoneExtension::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.threshold}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_MICROPHONE

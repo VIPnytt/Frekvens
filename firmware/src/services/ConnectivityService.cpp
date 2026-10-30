@@ -1,7 +1,7 @@
 #include "services/ConnectivityService.h"
 
 #include "extensions/AlexaExtension.h"
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 
 #include <ESPmDNS.h>
@@ -352,7 +352,7 @@ void ConnectivityService::onReceive(JsonObjectConst payload, std::string_view so
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds a Home Assistant diagnostic sensor for Wi-Fi signal strength.
  *
@@ -379,7 +379,7 @@ void ConnectivityService::onHomeAssistant(JsonDocument &discovery, std::string t
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.rssi}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 ConnectivityService &ConnectivityService::getInstance()
 {

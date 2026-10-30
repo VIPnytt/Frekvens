@@ -2,7 +2,7 @@
 
 #include "extensions/ButtonExtension.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ModesService.h"
@@ -193,7 +193,7 @@ void ButtonExtension::event(const char *key, const char *value)
     Device.transmit(doc.as<JsonObjectConst>(), name, false);
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant device automation triggers for power and mode button presses.
  *
@@ -237,6 +237,6 @@ void ButtonExtension::onHomeAssistant(JsonDocument &discovery, std::string topic
 #endif // PIN_SW2
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_BUTTON

@@ -13,7 +13,7 @@ void ExtensionModule::onReceive(JsonObjectConst payload, std::string_view source
  */
 void ExtensionModule::onTransmit(JsonObjectConst payload, std::string_view source) {}
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Handles Home Assistant discovery data.
  *
@@ -22,4 +22,4 @@ void ExtensionModule::onTransmit(JsonObjectConst payload, std::string_view sourc
  * @param unique Unique identifier for the discovery entry.
  */
 void ExtensionModule::onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique) {}
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT

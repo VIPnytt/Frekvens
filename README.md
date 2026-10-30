@@ -178,7 +178,7 @@ Control power and brightness via Amazon Alexa, using voice, app, or automation.
 
 ### Home Assistant
 
-Home Assistant is deeply integrated and supports full control over power, brightness, modes, extensions, and more.
+Home Assistant is deeply integrated and supports full control over power, brightness, modes, extensions, and more. Get started by setting up [MQTT](https://github.com/VIPnytt/Frekvens/wiki/Extensions#%EF%B8%8F-mqtt).
 
 ## 🤖 API
 

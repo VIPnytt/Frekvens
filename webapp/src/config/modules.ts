@@ -1,4 +1,3 @@
-export const EXTENSION_HOMEASSISTANT: boolean = import.meta.env.VITE_EXTENSION_HOMEASSISTANT === "true";
 export const EXTENSION_INFRARED: boolean = import.meta.env.VITE_EXTENSION_INFRARED === "true";
 export const EXTENSION_MESSAGE: boolean = import.meta.env.VITE_EXTENSION_MESSAGE === "true";
 export const EXTENSION_MICROPHONE: boolean = import.meta.env.VITE_EXTENSION_MICROPHONE === "true";
