@@ -2,10 +2,10 @@
 
 #include "modes/SnakeMode.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "fonts/MiniFont.h"                    // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/MiniFont.h"           // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"     // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -453,7 +453,7 @@ void SnakeMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds the Snake mode clock switch to Home Assistant discovery data.
  *
@@ -483,6 +483,6 @@ void SnakeMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std:
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.clock}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_SNAKE

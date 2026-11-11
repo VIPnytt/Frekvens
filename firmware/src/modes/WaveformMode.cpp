@@ -117,7 +117,7 @@ void WaveformMode::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds a Home Assistant select entity for choosing the waveform.
  *
@@ -148,6 +148,6 @@ void WaveformMode::onHomeAssistant(JsonDocument &discovery, std::string topic, s
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.wave}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_WAVEFORM

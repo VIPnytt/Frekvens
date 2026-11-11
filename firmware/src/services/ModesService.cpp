@@ -1,7 +1,7 @@
 #include "services/ModesService.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "handlers/TextHandler.h"              // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/TextHandler.h"     // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h"
@@ -456,7 +456,7 @@ void ModesService::onReceive(JsonObjectConst payload, std::string_view source)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery metadata for selecting the device mode.
  *
@@ -485,7 +485,7 @@ void ModesService::onHomeAssistant(JsonDocument &discovery, std::string topic, s
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.mode}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 ModesService &ModesService::getInstance()
 {

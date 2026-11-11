@@ -2,8 +2,8 @@
 
 #include "extensions/PhotocellExtension.h"
 
-#include "config/constants.h"                  // NOLINT(misc-include-cleaner)
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "config/constants.h"         // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 
@@ -148,7 +148,7 @@ void PhotocellExtension::onTransmit(JsonObjectConst payload, std::string_view so
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery entries for photocell activation and illuminance.
  *
@@ -189,6 +189,6 @@ void PhotocellExtension::onHomeAssistant(JsonDocument &discovery, std::string to
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.illuminance}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_PHOTOCELL

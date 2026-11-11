@@ -181,7 +181,6 @@ jobs:
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
-          EXTENSION_HOMEASSISTANT='true'
           EXTENSION_MESSAGE='true'
           EXTENSION_MQTT='true'
           EXTENSION_OTA='true'
@@ -301,7 +300,6 @@ jobs:
           cat <<'EOL' > .env
           EXTENSION_ALEXA='true'
           EXTENSION_BUTTON='true'
-          EXTENSION_HOMEASSISTANT='true'
           EXTENSION_INFRARED='true'
           EXTENSION_MESSAGE='true'
           EXTENSION_MICROPHONE='true'

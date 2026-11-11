@@ -4,7 +4,7 @@ import { type Component, createSignal } from "solid-js";
 import { Icon } from "../components/Icon";
 import { Tooltip } from "../components/Tooltip";
 import { TEMPERATURE_UNIT } from "../config/constants";
-import { EXTENSION_HOMEASSISTANT, EXTENSION_MQTT, EXTENSION_RESTFUL } from "../config/modules";
+import { EXTENSION_MQTT, EXTENSION_RESTFUL } from "../config/modules";
 import { name as ExtensionHomeAssistantName } from "../extensions/HomeAssistant";
 import { name as ExtensionMqttName, MqttTopic } from "../extensions/Mqtt";
 import { name as ExtensionRestfulName, RestfulUrl } from "../extensions/Restful";
@@ -87,7 +87,7 @@ export const MainSecondary: Component = () => {
                                 temperature readings.
                             </a>
                         </div>
-                        {EXTENSION_HOMEASSISTANT && (
+                        {EXTENSION_MQTT && (
                             <>
                                 <div class="border-t" />
                                 <h3>{ExtensionHomeAssistantName}</h3>
@@ -97,10 +97,6 @@ export const MainSecondary: Component = () => {
                                         Set up in the user-interface.
                                     </span>
                                 </div>
-                            </>
-                        )}
-                        {EXTENSION_MQTT && (
-                            <>
                                 <div class="border-t" />
                                 <h3>{ExtensionMqttName}</h3>
                                 <div class="text-sm">

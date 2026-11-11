@@ -1,7 +1,7 @@
 #include "services/DisplayService.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "handlers/BitmapHandler.h"            // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
+#include "handlers/BitmapHandler.h"   // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/ModesService.h"
 
@@ -692,7 +692,7 @@ void DisplayService::transmit()
     Device.transmit(doc.as<JsonObjectConst>(), name);
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant discovery metadata for display orientation control.
  *
@@ -726,7 +726,7 @@ void DisplayService::onHomeAssistant(JsonDocument &discovery, std::string topic,
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.orientation}}°");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 /**
  * @brief Handles display power-off state changes.

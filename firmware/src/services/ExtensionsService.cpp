@@ -52,9 +52,6 @@ void ExtensionsService::onTask(void *parameter)
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
-HomeAssistantExtension &ExtensionsService::HomeAssistant() { return extensionHomeAssistant; }
-#endif
 #if EXTENSION_MICROPHONE
 MicrophoneExtension &ExtensionsService::Microphone() { return extensionMicrophone; }
 #endif

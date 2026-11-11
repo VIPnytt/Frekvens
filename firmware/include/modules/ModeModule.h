@@ -25,7 +25,7 @@ public:
 
     virtual void onReceive(JsonObjectConst payload, std::string_view source);
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
     virtual void onHomeAssistant(JsonDocument &discovery, std::string topic, std::string unique);
 #endif
 };

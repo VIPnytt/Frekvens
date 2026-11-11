@@ -2,8 +2,8 @@
 
 #include "modes/TickerMode.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
-#include "fonts/SmallFont.h"                   // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
+#include "fonts/SmallFont.h"          // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/ExtensionsService.h" // NOLINT(misc-include-cleaner)
@@ -177,7 +177,7 @@ void TickerMode::onReceive(JsonObjectConst payload, std::string_view source)
  */
 void TickerMode::end() { text.reset(); }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Configures Home Assistant discovery entities for ticker font selection and message editing.
  *
@@ -220,6 +220,6 @@ void TickerMode::onHomeAssistant(JsonDocument &discovery, std::string topic, std
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.message}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // MODE_TICKER

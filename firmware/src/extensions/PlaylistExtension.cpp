@@ -2,7 +2,7 @@
 
 #include "extensions/PlaylistExtension.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h" // NOLINT(misc-include-cleaner)
 #include "services/ModesService.h"
@@ -206,7 +206,7 @@ void PlaylistExtension::onReceive(JsonObjectConst payload, std::string_view sour
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds Home Assistant switch discovery configuration for the playlist.
  *
@@ -237,6 +237,6 @@ void PlaylistExtension::onHomeAssistant(JsonDocument &discovery, std::string top
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_PLAYLIST

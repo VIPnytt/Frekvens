@@ -2,7 +2,7 @@
 
 #include "extensions/MessageExtension.h"
 
-#include "extensions/HomeAssistantExtension.h" // NOLINT(misc-include-cleaner)
+#include "extensions/MqttExtension.h" // NOLINT(misc-include-cleaner)
 #include "services/DeviceService.h"
 #include "services/DisplayService.h"
 #include "services/FontsService.h" // NOLINT(misc-include-cleaner)
@@ -167,7 +167,7 @@ void MessageExtension::onReceive(JsonObjectConst payload, std::string_view sourc
     }
 }
 
-#if EXTENSION_HOMEASSISTANT
+#if EXTENSION_MQTT
 /**
  * @brief Adds the message extension's active-state switch to Home Assistant discovery.
  *
@@ -196,6 +196,6 @@ void MessageExtension::onHomeAssistant(JsonDocument &discovery, std::string topi
         component[HomeAssistantAbbreviations::value_template].set("{{value_json.active}}");
     }
 }
-#endif // EXTENSION_HOMEASSISTANT
+#endif // EXTENSION_MQTT
 
 #endif // EXTENSION_MESSAGE
