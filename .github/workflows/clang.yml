@@ -23,7 +23,7 @@ jobs:
           persist-credentials: false
 
       - name: Clang format
-        uses: cpp-linter/cpp-linter-action@cab1143a2c149bc41e85b070a9de81716974c18f # v2.21.0
+        uses: cpp-linter/cpp-linter-action@774040af57f011a5fc47911f08ff0c3059d1835a # v2.24.0
         id: format
         env:
           clang-version: 22
@@ -175,7 +175,7 @@ jobs:
           uv run --only-group platformio pio run -t compiledb -e "$PIO_ENVIRONMENT"
 
       - name: Clang tidy
-        uses: cpp-linter/cpp-linter-action@cab1143a2c149bc41e85b070a9de81716974c18f # v2.21.0
+        uses: cpp-linter/cpp-linter-action@774040af57f011a5fc47911f08ff0c3059d1835a # v2.24.0
         id: tidy
         env:
           clang-version: 22
